@@ -93,6 +93,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     self.searchBar.scopeButtonTitles = @[@"No Inheritance", @"Include Inheritance"];
     [self.searchBar sizeToFit];
     self.tableView.tableHeaderView = self.searchBar;
+    
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -112,6 +115,12 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self.searchBar endEditing:YES];
+}
+
+- (void)refreshControlDidRefresh:(id)sender
+{
+    [self updateTableData];
+    [self.refreshControl endRefreshing];
 }
 
 
