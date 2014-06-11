@@ -13,6 +13,7 @@
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXLiveObjectsTableViewController.h"
+#import "FLEXFileBrowserTableViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowAppClasses,
@@ -24,7 +25,8 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowApplication,
     FLEXGlobalsRowKeyWindow,
     FLEXGlobalsRowMainScreen,
-    FLEXGlobalsRowCurrentDevice
+    FLEXGlobalsRowCurrentDevice,
+    FLEXGlobalsRowFileBrowser
 };
 
 @interface FLEXGlobalsTableViewController ()
@@ -55,6 +57,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     [super viewDidLoad];
 
     self.rows = @[@(FLEXGlobalsRowLiveObjects),
+                  @(FLEXGlobalsRowFileBrowser),
                   @(FLEXGlobalsRowSystemLibraries),
                   @(FLEXGlobalsRowAppClasses),
                   @(FLEXGlobalsRowAppDelegate),
@@ -124,6 +127,10 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         case FLEXGlobalsRowCurrentDevice:
             title = @"📱  +[UIDevice currentDevice]";
             break;
+            
+        case FLEXGlobalsRowFileBrowser:
+            title = @"📁  File Browser";
+            break;
     }
     return title;
 }
@@ -181,6 +188,10 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
             UIDevice *currentDevice = [UIDevice currentDevice];
             viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentDevice];
         } break;
+            
+        case FLEXGlobalsRowFileBrowser: {
+            viewController = [[FLEXFileBrowserTableViewController alloc] init];
+        }
     }
     return viewController;
 }
