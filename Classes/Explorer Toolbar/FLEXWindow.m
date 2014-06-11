@@ -15,9 +15,9 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        // Some apps have windows at UIWindowLevelStatusBar + 1.0, so we go one more above that.
-        // If necessary, this could be increased further.
-        self.windowLevel = UIWindowLevelStatusBar + 2.0;
+        // Some apps have windows at UIWindowLevelStatusBar + n.
+        // At CGFLOAT_MAX, we should be safe.
+        self.windowLevel = CGFLOAT_MAX;
     }
     return self;
 }
