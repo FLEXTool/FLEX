@@ -12,6 +12,7 @@
 #import "FLEXSetExplorerViewController.h"
 #import "FLEXDictionaryExplorerViewController.h"
 #import "FLEXDefaultsExplorerViewController.h"
+#import "FLEXViewControllerExplorerViewController.h"
 
 @implementation FLEXObjectExplorerFactory
 
@@ -25,10 +26,11 @@
     static NSDictionary *explorerSubclassesForObjectTypeStrings = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        explorerSubclassesForObjectTypeStrings = @{NSStringFromClass([NSArray class])        : [FLEXArrayExplorerViewController class],
-                                                   NSStringFromClass([NSSet class])          : [FLEXSetExplorerViewController class],
-                                                   NSStringFromClass([NSDictionary class])   : [FLEXDictionaryExplorerViewController class],
-                                                   NSStringFromClass([NSUserDefaults class]) : [FLEXDefaultsExplorerViewController class]};
+        explorerSubclassesForObjectTypeStrings = @{NSStringFromClass([NSArray class])          : [FLEXArrayExplorerViewController class],
+                                                   NSStringFromClass([NSSet class])            : [FLEXSetExplorerViewController class],
+                                                   NSStringFromClass([NSDictionary class])     : [FLEXDictionaryExplorerViewController class],
+                                                   NSStringFromClass([NSUserDefaults class])   : [FLEXDefaultsExplorerViewController class],
+                                                   NSStringFromClass([UIViewController class]) : [FLEXViewControllerExplorerViewController class]};
     });
     
     Class explorerClass = [FLEXObjectExplorerViewController class];
