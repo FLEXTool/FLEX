@@ -114,4 +114,36 @@
     return [self defaultFontOfSize:12.0];
 }
 
++ (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString
+{
+    static NSDictionary *escapingDictionary = nil;
+    static NSRegularExpression *regex = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        escapingDictionary = @{ @" " : @"&nbsp;",
+                                @">" : @"&gt;",
+                                @"<" : @"&lt;",
+                                @"&" : @"&amp;",
+                                @"'" : @"&apos;",
+                                @"\"" : @"&quot;",
+                                @"«" : @"&laquo;",
+                                @"»" : @"&raquo;"
+                                };
+        regex = [NSRegularExpression regularExpressionWithPattern:@"(&|>|<|'|\"|«|»)" options:0 error:nil];
+    });
+    
+    NSMutableString *mutableString = [originalString mutableCopy];
+    
+    NSArray *matches = [regex matchesInString:mutableString options:0 range:NSMakeRange(0, [mutableString length])];
+    for (NSTextCheckingResult *result in [matches reverseObjectEnumerator]) {
+        NSString *foundString = [mutableString substringWithRange:result.range];
+        NSString *replacementString = escapingDictionary[foundString];
+        if (replacementString) {
+            [mutableString replaceCharactersInRange:result.range withString:replacementString];
+        }
+    }
+    
+    return [mutableString copy];
+}
+
 @end

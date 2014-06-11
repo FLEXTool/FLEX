@@ -22,5 +22,6 @@
 + (NSString *)safeDescriptionForObject:(id)object;
 + (UIFont *)defaultFontOfSize:(CGFloat)size;
 + (UIFont *)defaultTableViewCellLabelFont;
++ (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 
 @end
