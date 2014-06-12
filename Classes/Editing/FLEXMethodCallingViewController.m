@@ -55,6 +55,7 @@
         free(argumentTypeEncoding);
         
         [argumentInputViews addObject:inputView];
+        argumentIndex++;
     }
     self.fieldEditorView.argumentInputViews = argumentInputViews;
 }
