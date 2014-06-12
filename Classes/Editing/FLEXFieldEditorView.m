@@ -78,6 +78,13 @@
     }
 }
 
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    [super setBackgroundColor:backgroundColor];
+    self.targetDescriptionLabel.backgroundColor = backgroundColor;
+    self.fieldDescriptionLabel.backgroundColor = backgroundColor;
+}
+
 - (void)setTargetDescription:(NSString *)targetDescription
 {
     if (![_targetDescription isEqual:targetDescription]) {
