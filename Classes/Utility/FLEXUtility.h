@@ -13,6 +13,7 @@
 
 + (UIColor *)consistentRandomColorForObject:(id)object;
 + (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame;
++ (NSString *)stringForCGRect:(CGRect)rect;
 + (UIViewController *)viewControllerForView:(UIView *)view;
 + (NSString *)detailDescriptionForView:(UIView *)view;
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius;

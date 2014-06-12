@@ -27,7 +27,7 @@
     }
     
     if (includeFrame) {
-        description = [description stringByAppendingFormat:@" frame:%@", NSStringFromCGRect(view.frame)];
+        description = [description stringByAppendingFormat:@" frame %@", [self stringForCGRect:view.frame]];
     }
     
     if ([view.accessibilityLabel length] > 0) {
@@ -35,6 +35,11 @@
     }
     
     return description;
+}
+
++ (NSString *)stringForCGRect:(CGRect)rect
+{
+    return [NSString stringWithFormat:@"{x: %g, y: %g, w: %g, h: %g}", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height];
 }
 
 + (UIViewController *)viewControllerForView:(UIView *)view
@@ -52,7 +57,7 @@
 
 + (NSString *)detailDescriptionForView:(UIView *)view
 {
-    return [NSString stringWithFormat:@"frame = %@", NSStringFromCGRect(view.frame)];
+    return [NSString stringWithFormat:@"frame %@", [self stringForCGRect:view.frame]];
 }
 
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius
