@@ -39,8 +39,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
-    // Force grouped style.
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:style];
     if (self) {
         self.title = @"🌎  Global State";
     }
