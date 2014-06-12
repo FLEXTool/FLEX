@@ -5,9 +5,7 @@
  - Note only supported back to iOS 6
  - Usage & feature explanations
  - Exception breakpoint note
-- Test on iOS 6
 - Access live instances from the class explorer
-- Rotation support
 - Better status bar managerment on iOS 7 (especially if not using view controller based status bar management)
 - Special CGRect editor
 - Special frame editor for views
