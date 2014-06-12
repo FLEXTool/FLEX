@@ -88,6 +88,8 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     if ([rowCookie isEqual:@(FLEXViewExplorerRowViewController)]) {
         drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:[FLEXUtility viewControllerForView:self.viewToExplore]];
     } else if ([rowCookie isEqual:@(FLEXViewExplorerRowFrame)]) {
+        // A quirk of UIView: frame is not actually a property from the perspective of the runtime.
+        // We add the property to the class at runtime if it hasn't been added yet.
         [FLEXRuntimeUtility addFramePropertyToUIViewIfNeeded];
         objc_property_t frameProperty = class_getProperty([UIView class], "frame");
         drillInViewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.viewToExplore property:frameProperty];
