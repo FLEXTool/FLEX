@@ -27,7 +27,7 @@
     [super viewDidLoad];
     
     self.searchBar = [[UISearchBar alloc] init];
-    self.searchBar.placeholder = @"Filter";
+    self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
     self.searchBar.delegate = self;
     [self.searchBar sizeToFit];
     self.tableView.tableHeaderView = self.searchBar;

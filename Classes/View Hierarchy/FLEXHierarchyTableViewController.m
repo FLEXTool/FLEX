@@ -61,7 +61,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     }
     
     self.searchBar = [[UISearchBar alloc] init];
-    self.searchBar.placeholder = @"Filter";
+    self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
     self.searchBar.delegate = self;
     if ([self showScopeBar]) {
         self.searchBar.showsScopeBar = YES;

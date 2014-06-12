@@ -87,7 +87,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     [super viewDidLoad];
     
     self.searchBar = [[UISearchBar alloc] init];
-    self.searchBar.placeholder = @"Filter";
+    self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
     self.searchBar.delegate = self;
     self.searchBar.showsScopeBar = YES;
     self.searchBar.scopeButtonTitles = @[@"No Inheritance", @"Include Inheritance"];

@@ -165,4 +165,9 @@
     return supportedOrientationsMask;
 }
 
++ (NSString *)searchBarPlaceholderText
+{
+    return @"Filter";
+}
+
 @end

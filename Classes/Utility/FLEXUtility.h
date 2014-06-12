@@ -24,5 +24,6 @@
 + (UIFont *)defaultTableViewCellLabelFont;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 + (NSUInteger)infoPlistSupportedInterfaceOrientationsMask;
++ (NSString *)searchBarPlaceholderText;
 
 @end
