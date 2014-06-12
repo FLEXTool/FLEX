@@ -175,6 +175,32 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return supportedOrientations;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
+        outlineView.hidden = YES;
+    }
+    self.selectedViewOverlay.hidden = YES;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    for (UIView *view in self.viewsAtTapPoint) {
+        NSValue *key = [NSValue valueWithNonretainedObject:view];
+        UIView *outlineView = self.outlineViewsForVisibleViews[key];
+        outlineView.frame = [self.view convertRect:view.bounds fromView:view];
+        if (self.currentMode == FLEXExplorerModeSelect) {
+            outlineView.hidden = NO;
+        }
+    }
+    
+    if (self.selectedView) {
+        self.selectedViewOverlay.frame = [self.view convertRect:self.selectedView.bounds fromView:self.selectedView];
+        self.selectedViewOverlay.hidden = NO;
+    }
+}
+
+
 #pragma mark - Setter Overrides
 
 - (void)setSelectedView:(UIView *)selectedView
