@@ -113,6 +113,11 @@
         originX = CGRectGetMaxX(toolbarItem.frame);
     }
     
+    // Make sure the last toolbar item goes to the edge to account for any accumulated rounding effects.
+    UIView *lastToolbarItem = [self.toolbarItems lastObject];
+    CGRect lastToolbarItemFrame = lastToolbarItem.frame;
+    lastToolbarItemFrame.size.width = CGRectGetMaxX(self.bounds) - lastToolbarItemFrame.origin.x;
+    lastToolbarItem.frame = lastToolbarItemFrame;
     
     const CGFloat kSelectedViewColorDiameter = [[self class] selectedViewColorIndicatorDiameter];
     const CGFloat kDescriptionLabelHeight = [[self class] descriptionLabelHeight];
