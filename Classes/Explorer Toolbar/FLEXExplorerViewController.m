@@ -88,12 +88,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Toolbar
     self.explorerToolbar = [[FLEXExplorerToolbar alloc] init];
     CGSize toolbarSize = [self.explorerToolbar sizeThatFits:self.view.bounds.size];
-    CGFloat toolbarOriginY = 0.0;
-    CGRect statusBarFrame = [self.view convertRect:[[UIApplication sharedApplication] statusBarFrame] fromView:nil];
-    CGFloat statusBarBottomEdge = CGRectGetMaxY(statusBarFrame);
-    if (statusBarBottomEdge > 0) {
-        toolbarOriginY = statusBarBottomEdge;
-    }
+    // Start the toolbar off below any bars that may be at the top of the view.
+    CGFloat toolbarOriginY = 100.0;
     self.explorerToolbar.frame = CGRectMake(0.0, toolbarOriginY, toolbarSize.width, toolbarSize.height);
     self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:self.explorerToolbar];
