@@ -326,10 +326,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     static NSArray *trackedViewKeyPaths = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSString *superviewKeyPath = NSStringFromSelector(@selector(superview));
         NSString *frameKeyPath = NSStringFromSelector(@selector(frame));
-        NSString *superviewFrameKeyPath = [NSString stringWithFormat:@"%@.%@", superviewKeyPath, frameKeyPath];
-        trackedViewKeyPaths = @[frameKeyPath, superviewKeyPath, superviewFrameKeyPath];
+        trackedViewKeyPaths = @[frameKeyPath];
     });
     return trackedViewKeyPaths;
 }
