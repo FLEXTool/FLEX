@@ -11,9 +11,12 @@
 #import "FLEXClassesTableViewController.h"
 #import <objc/runtime.h>
 
-@interface FLEXLibrariesTableViewController ()
+@interface FLEXLibrariesTableViewController () <UISearchBarDelegate>
 
 @property (nonatomic, strong) NSArray *imageNames;
+@property (nonatomic, strong) NSArray *filteredImageNames;
+
+@property (nonatomic, strong) UISearchBar *searchBar;
 
 @end
 
@@ -26,6 +29,17 @@
         [self loadImageNames];
     }
     return self;
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.searchBar = [[UISearchBar alloc] init];
+    self.searchBar.delegate = self;
+    self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
+    [self.searchBar sizeToFit];
+    self.tableView.tableHeaderView = self.searchBar;
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -74,6 +88,35 @@
     return shortName;
 }
 
+- (void)setImageNames:(NSArray *)imageNames
+{
+    if (![_imageNames isEqual:imageNames]) {
+        _imageNames = imageNames;
+        self.filteredImageNames = imageNames;
+    }
+}
+
+
+#pragma mark - Filtering
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    if ([searchText length] > 0) {
+        NSPredicate *searchPreidcate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+            BOOL matches = NO;
+            NSString *shortName = [self shortNameForImageName:evaluatedObject];
+            if ([shortName rangeOfString:searchText options:NSCaseInsensitiveSearch].length > 0) {
+                matches = YES;
+            }
+            return matches;
+        }];
+        self.filteredImageNames = [self.imageNames filteredArrayUsingPredicate:searchPreidcate];
+    } else {
+        self.filteredImageNames = self.imageNames;
+    }
+    [self.tableView reloadData];
+}
+
 
 #pragma mark - Table View Data Source
 
@@ -84,7 +127,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.imageNames count];
+    return [self.filteredImageNames count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -97,7 +140,7 @@
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
     }
     
-    NSString *fullImageName = self.imageNames[indexPath.row];
+    NSString *fullImageName = self.filteredImageNames[indexPath.row];
     cell.textLabel.text = [self shortNameForImageName:fullImageName];
     
     return cell;
@@ -109,7 +152,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXClassesTableViewController *classesViewController = [[FLEXClassesTableViewController alloc] init];
-    classesViewController.binaryImageName = self.imageNames[indexPath.row];
+    classesViewController.binaryImageName = self.filteredImageNames[indexPath.row];
     [self.navigationController pushViewController:classesViewController animated:YES];
 }
 
