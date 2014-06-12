@@ -21,6 +21,7 @@ extern const unsigned int kFLEXNumberOfImplicitArgs;
 + (NSString *)fullDescriptionForProperty:(objc_property_t)property;
 + (id)valueForProperty:(objc_property_t)property onObject:(id)object;
 + (NSString *)descriptionForIvarOrPropertyValue:(id)value;
++ (void)addFramePropertyToUIViewIfNeeded;
 
 // Ivar Helpers
 + (NSString *)prettyNameForIvar:(Ivar)ivar;

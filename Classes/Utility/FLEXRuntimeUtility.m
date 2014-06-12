@@ -162,6 +162,23 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return description;
 }
 
++ (void)addFramePropertyToUIViewIfNeeded
+{
+    const char *framePropertyName = "frame";
+    objc_property_t frameProperty = class_getProperty([UIView class], framePropertyName);
+    if (!frameProperty) {
+        objc_property_attribute_t typeAttribute;
+        typeAttribute.name = [kFLEXUtilityAttributeTypeEncoding UTF8String];
+        typeAttribute.value = @encode(CGRect);
+        objc_property_attribute_t nonatomicAttribute;
+        nonatomicAttribute.name = [kFLEXUtilityAttributeNonAtomic UTF8String];
+        nonatomicAttribute.value = "";
+        const unsigned int kAttributeCount = 2;
+        objc_property_attribute_t attributes[kAttributeCount] = {typeAttribute, nonatomicAttribute};
+        class_addProperty([UIView class], framePropertyName, attributes, kAttributeCount);
+    }
+}
+
 
 #pragma mark - Ivar Helpers (Public)
 
