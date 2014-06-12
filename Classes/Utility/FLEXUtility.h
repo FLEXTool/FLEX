@@ -23,5 +23,6 @@
 + (UIFont *)defaultFontOfSize:(CGFloat)size;
 + (UIFont *)defaultTableViewCellLabelFont;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
++ (NSUInteger)infoPlistSupportedInterfaceOrientationsMask;
 
 @end

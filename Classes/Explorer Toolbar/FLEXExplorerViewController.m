@@ -118,7 +118,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 // In general, our window shouldn't be the key window when this view controller is asked about the status bar.
 // However, we guard against infinite recursion and provide a reasonable default for status bar behavior in case our window is the keyWindow.
 
-- (UIViewController *)viewControllerForStatusBarProperties
+- (UIViewController *)viewControllerForStatusBarAndOrientationProperties
 {
     UIViewController *viewControllerToAsk = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     
@@ -134,7 +134,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
-    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarProperties];
+    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
     UIStatusBarStyle preferredStyle = UIStatusBarStyleDefault;
     if (viewControllerToAsk != self) {
         preferredStyle = [viewControllerToAsk preferredStatusBarStyle];
@@ -144,7 +144,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
 {
-    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarProperties];
+    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
     UIStatusBarAnimation preferredAnimation = UIStatusBarAnimationFade;
     if (viewControllerToAsk != self) {
         preferredAnimation = [viewControllerToAsk preferredStatusBarUpdateAnimation];
@@ -154,7 +154,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (BOOL)prefersStatusBarHidden
 {
-    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarProperties];
+    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
     BOOL prefersHidden = NO;
     if (viewControllerToAsk != self) {
         prefersHidden = [viewControllerToAsk prefersStatusBarHidden];
@@ -162,6 +162,18 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return prefersHidden;
 }
 
+
+#pragma mark - Rotation
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
+    NSUInteger supportedOrientations = [FLEXUtility infoPlistSupportedInterfaceOrientationsMask];
+    if (viewControllerToAsk != self) {
+        supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
+    }
+    return supportedOrientations;
+}
 
 #pragma mark - Setter Overrides
 
