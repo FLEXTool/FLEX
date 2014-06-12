@@ -792,6 +792,8 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     UIViewController *detailViewController = [self drillInViewControllerForRow:indexPath.row inExplorerSection:explorerSection];
     if (detailViewController) {
         [self.navigationController pushViewController:detailViewController animated:YES];
+    } else {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 
