@@ -8,12 +8,9 @@
 - Access live instances from the class explorer
 - Better status bar managerment on iOS 7 (especially if not using view controller based status bar management)
 - Special CGRect editor
-- Special frame editor for views
-- Quick link to view controller from view if it has one
 - Switch for BOOL properties/ivars
-- Search bar in system libraries VC
-- Custom explorer for views that calls drawViewHierarchyInRect:/renderInContext: to show an image preview of the view.
 - Custom explorer for UIImages that shows the image in an imageView
+- Image preview in the file browser for image files
 - Support setting mutable array/dictionary properties
 - Mutable collection editing
 - Feedback toast for when methods that return nil or void are called successfully
