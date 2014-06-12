@@ -21,18 +21,7 @@
 {
     NSString *description = [[view class] description];
     
-    NSString *viewControllerDescription = nil;
-    SEL viewDelSel = NSSelectorFromString([NSString stringWithFormat:@"%@ewDelegate", @"_vi"]);
-    if ([view respondsToSelector:viewDelSel]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        id viewDel = [view performSelector:viewDelSel];
-#pragma clang diagnostic pop
-        if (viewDel) {
-            viewControllerDescription = [[viewDel class] description];
-        }
-    }
-    
+    NSString *viewControllerDescription = [[[self viewControllerForView:view] class] description];
     if ([viewControllerDescription length] > 0) {
         description = [description stringByAppendingFormat:@" (%@)", viewControllerDescription];
     }
@@ -46,6 +35,19 @@
     }
     
     return description;
+}
+
++ (UIViewController *)viewControllerForView:(UIView *)view
+{
+    UIViewController *viewController = nil;
+    SEL viewDelSel = NSSelectorFromString([NSString stringWithFormat:@"%@ewDelegate", @"_vi"]);
+    if ([view respondsToSelector:viewDelSel]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        viewController = [view performSelector:viewDelSel];
+#pragma clang diagnostic pop
+    }
+    return viewController;
 }
 
 + (NSString *)detailDescriptionForView:(UIView *)view
