@@ -36,33 +36,25 @@
     self.fieldEditorView.fieldDescription = [FLEXRuntimeUtility prettyNameForIvar:self.ivar];
     
     [self updateTextFieldString];
-    
-    // Use the numeric keyboard for primitives and the letter keyboard for strings
-    NSString *typeEncoding = @(ivar_getTypeEncoding(self.ivar));
-    if ([typeEncoding isEqual:[[self class] stringTypeEncoding]]) {
-        self.firstInputView.keyboardType = UIKeyboardTypeAlphabet;
-    } else {
-        self.firstInputView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
-    }
 }
 
 - (void)actionButtonPressed:(id)sender
 {
     [super actionButtonPressed:sender];
     
-    [self updatePropertyFromString:self.firstInputView.inputText];
+    [self updateIvarFromString:self.firstInputView.inputOutput];
     [self updateTextFieldString];
 }
 
 - (void)updateTextFieldString
 {
     id ivarValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
-    self.firstInputView.inputText = [FLEXRuntimeUtility editiableDescriptionForObject:ivarValue];
+    self.firstInputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:ivarValue];
 }
 
-- (void)updatePropertyFromString:(NSString *)string
+- (void)updateIvarFromString:(NSString *)string
 {
-    [FLEXRuntimeUtility setIvar:self.ivar onObject:self.target withInputString:self.firstInputView.inputText];
+    [FLEXRuntimeUtility setIvar:self.ivar onObject:self.target withInputString:self.firstInputView.inputOutput];
 }
 
 + (BOOL)canEditIvar:(Ivar)ivar currentValue:(id)value

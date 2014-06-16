@@ -1,0 +1,99 @@
+//
+//  FLEXArgumentInputTextView.m
+//  FLEXInjected
+//
+//  Created by Ryan Olson on 6/15/14.
+//
+//
+
+#import "FLEXArgumentInputTextView.h"
+#import "FLEXUtility.h"
+
+@interface FLEXArgumentInputTextView ()
+
+@property (nonatomic, strong) UITextView *inputTextView;
+@property (nonatomic, readonly) NSUInteger numberOfInputLines;
+
+@end
+
+@implementation FLEXArgumentInputTextView
+
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
+{
+    self = [super initWithArgumentTypeEncoding:typeEncoding];
+    if (self) {
+        self.inputTextView = [[UITextView alloc] init];
+        self.inputTextView.font = [[self class] inputFont];
+        self.inputTextView.backgroundColor = [UIColor whiteColor];
+        self.inputTextView.layer.borderColor = [[UIColor blackColor] CGColor];
+        self.inputTextView.layer.borderWidth = 1.0;
+        self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
+        [self addSubview:self.inputTextView];
+    }
+    return self;
+}
+
+
+#pragma mark - Input/Output
+
+- (void)setInputOutput:(id)inputOutput
+{
+    self.inputTextView.text = inputOutput;
+}
+
+- (id)inputOutput
+{
+    return [self.inputTextView.text copy];
+}
+
+
+#pragma mark - Layout and Sizing
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    CGFloat originY = 0;
+    if (self.showsTitle) {
+        originY = CGRectGetMaxY(self.titleLabel.frame) + [[self class] titleBottomPadding];
+    }
+    self.inputTextView.frame = CGRectMake(0, originY, self.bounds.size.width, [self inputTextViewHeight]);
+}
+
+- (NSUInteger)numberOfInputLines
+{
+    NSUInteger numberOfInputLines = 0;
+    switch (self.targetSize) {
+        case FLEXArgumentInputViewSizeDefault:
+            numberOfInputLines = 2;
+            break;
+            
+        case FLEXArgumentInputViewSizeLarge:
+            numberOfInputLines = 8;
+            break;
+    }
+    return numberOfInputLines;
+}
+
+- (CGFloat)inputTextViewHeight
+{
+    return ceil([[self class] inputFont].lineHeight * self.numberOfInputLines) + 20.0;
+}
+
+- (CGSize)sizeThatFits:(CGSize)size
+{
+    CGSize fitSize = [super sizeThatFits:size];
+    fitSize.height += [self inputTextViewHeight];
+    return fitSize;
+}
+
+
+#pragma mark - Class Helpers
+
++ (UIFont *)inputFont
+{
+    return [FLEXUtility defaultFontOfSize:14.0];
+}
+
+@end

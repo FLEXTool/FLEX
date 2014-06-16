@@ -37,29 +37,21 @@
     id currentValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
     self.setterButton.enabled = [[self class] canEditProperty:self.property currentValue:currentValue];
     
-    [self updateTextFieldString];
-    
-    // Use the numeric keyboard for primitives and the letter keyboard for strings
-    NSString *typeEncoding = [FLEXRuntimeUtility typeEncodingForProperty:self.property];
-    if ([typeEncoding isEqual:[[self class] stringTypeEncoding]]) {
-        self.firstInputView.keyboardType = UIKeyboardTypeAlphabet;
-    } else {
-        self.firstInputView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
-    }
+    [self updateArgumentInputView];
 }
 
 - (void)actionButtonPressed:(id)sender
 {
     [super actionButtonPressed:sender];
     
-    [self updatePropertyFromString:self.firstInputView.inputText];
-    [self updateTextFieldString];
+    [self updatePropertyFromString:self.firstInputView.inputOutput];
+    [self updateArgumentInputView];
 }
 
-- (void)updateTextFieldString
+- (void)updateArgumentInputView
 {
     id propertyValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
-    self.firstInputView.inputText = [FLEXRuntimeUtility editiableDescriptionForObject:propertyValue];
+    self.firstInputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:propertyValue];
 }
 
 - (void)updatePropertyFromString:(NSString *)string

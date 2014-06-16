@@ -48,7 +48,7 @@
 {
     [super actionButtonPressed:sender];
     
-    id value = [FLEXRuntimeUtility objectValueFromEditableString:self.firstInputView.inputText];
+    id value = [FLEXRuntimeUtility objectValueFromEditableString:self.firstInputView.inputOutput];
     if (value) {
         [self.defaults setObject:value forKey:self.key];
     } else {
@@ -61,7 +61,7 @@
 - (void)updateTextFieldString
 {
     id defaultsValue = [self.defaults objectForKey:self.key];
-    self.firstInputView.inputText = [FLEXRuntimeUtility editiableDescriptionForObject:defaultsValue];
+    self.firstInputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:defaultsValue];
 }
 
 + (BOOL)canEditDefaultWithValue:(id)currentValue

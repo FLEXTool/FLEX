@@ -12,6 +12,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXArgumentInputView.h"
+#import "FLEXArgumentInputViewFactory.h"
 
 @interface FLEXMethodCallingViewController ()
 
@@ -41,7 +42,7 @@
     NSMutableArray *argumentInputViews = [NSMutableArray array];
     unsigned int argumentIndex = kFLEXNumberOfImplicitArgs;
     for (NSString *methodComponent in methodComponents) {
-        FLEXArgumentInputView *inputView = [[FLEXArgumentInputView alloc] init];
+        FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:NULL];
         inputView.backgroundColor = self.view.backgroundColor;
         inputView.title = methodComponent;
         
@@ -50,7 +51,7 @@
         char *argumentTypeEncoding = method_copyArgumentType(self.method, argumentIndex);
         NSValue *defaultValue = [[self class] defaultValueForEncoding:argumentTypeEncoding];
         if (defaultValue) {
-            inputView.inputText = [FLEXRuntimeUtility editiableDescriptionForObject:defaultValue];
+            inputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:defaultValue];
         }
         free(argumentTypeEncoding);
         
@@ -76,7 +77,7 @@
     
     NSMutableArray *arguments = [NSMutableArray array];
     for (FLEXArgumentInputView *inputView in self.fieldEditorView.argumentInputViews) {
-        NSString *argumentString = inputView.inputText;
+        NSString *argumentString = inputView.inputOutput;
         if (!argumentString) {
             // Use empty string as a placeholder in the array. It will be interpreted as nil.
             argumentString = @"";

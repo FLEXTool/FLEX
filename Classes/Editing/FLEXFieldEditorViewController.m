@@ -11,6 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXArgumentInputView.h"
+#import "FLEXArgumentInputViewFactory.h"
 
 @interface FLEXFieldEditorViewController () <UIScrollViewDelegate>
 
@@ -89,9 +90,9 @@
     [self.scrollView addSubview:self.fieldEditorView];
     
     // One argument input view by default. Subclasses can configure the field editor view with more/different argument input views if needed.
-    FLEXArgumentInputView *inputView = [[FLEXArgumentInputView alloc] init];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:NULL];
     inputView.backgroundColor = self.view.backgroundColor;
-    inputView.numberOfInputLines = 8;
+    inputView.targetSize = FLEXArgumentInputViewSizeLarge;
     self.fieldEditorView.argumentInputViews = @[inputView];
     
     self.setterButton = [[UIBarButtonItem alloc] initWithTitle:[self titleForActionButton] style:UIBarButtonItemStyleDone target:self action:@selector(actionButtonPressed:)];
