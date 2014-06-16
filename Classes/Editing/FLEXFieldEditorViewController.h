@@ -15,9 +15,6 @@
 
 - (id)initWithTarget:(id)target;
 
-+ (BOOL)canEditType:(NSString *)typeEncoding currentObjectValue:(id)value;
-+ (NSString *)stringTypeEncoding;
-
 // Convenience accessor since many subclasses only use one input view
 @property (nonatomic, readonly) FLEXArgumentInputView *firstInputView;
 

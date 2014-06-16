@@ -73,6 +73,22 @@
     return NO;
 }
 
+- (void)setInputOutput:(id)inputOutput
+{
+    // Subclasses should override.
+}
+
+- (id)inputOutput
+{
+    // Subclasses should override.
+    return nil;
+}
+
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
+{
+    return NO;
+}
+
 
 #pragma mark - Class Helpers
 

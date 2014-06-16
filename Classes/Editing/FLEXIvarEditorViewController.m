@@ -10,6 +10,7 @@
 #import "FLEXFieldEditorView.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXArgumentInputView.h"
+#import "FLEXArgumentInputViewFactory.h"
 
 @interface FLEXIvarEditorViewController ()
 
@@ -35,31 +36,24 @@
     
     self.fieldEditorView.fieldDescription = [FLEXRuntimeUtility prettyNameForIvar:self.ivar];
     
-    [self updateTextFieldString];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:ivar_getTypeEncoding(self.ivar)];
+    inputView.backgroundColor = self.view.backgroundColor;
+    inputView.targetSize = FLEXArgumentInputViewSizeLarge;
+    inputView.inputOutput = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
+    self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
 - (void)actionButtonPressed:(id)sender
 {
     [super actionButtonPressed:sender];
     
-    [self updateIvarFromString:self.firstInputView.inputOutput];
-    [self updateTextFieldString];
-}
-
-- (void)updateTextFieldString
-{
-    id ivarValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
-    self.firstInputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:ivarValue];
-}
-
-- (void)updateIvarFromString:(NSString *)string
-{
-    [FLEXRuntimeUtility setIvar:self.ivar onObject:self.target withInputString:self.firstInputView.inputOutput];
+    [FLEXRuntimeUtility setValue:self.firstInputView.inputOutput forIvar:self.ivar onObject:self.target];
+    self.firstInputView.inputOutput = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
 }
 
 + (BOOL)canEditIvar:(Ivar)ivar currentValue:(id)value
 {
-    return [self canEditType:@(ivar_getTypeEncoding(ivar)) currentObjectValue:value];
+    return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:ivar_getTypeEncoding(ivar) currentValue:value];
 }
 
 @end

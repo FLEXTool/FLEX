@@ -35,19 +35,6 @@
 }
 
 
-#pragma mark - Input/Output
-
-- (void)setInputOutput:(id)inputOutput
-{
-    self.inputTextView.text = inputOutput;
-}
-
-- (id)inputOutput
-{
-    return [self.inputTextView.text copy];
-}
-
-
 #pragma mark - Layout and Sizing
 
 - (void)layoutSubviews

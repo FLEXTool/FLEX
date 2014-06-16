@@ -10,6 +10,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXFieldEditorView.h"
 #import "FLEXArgumentInputView.h"
+#import "FLEXArgumentInputViewFactory.h"
 
 @interface FLEXPropertyEditorViewController ()
 
@@ -37,33 +38,30 @@
     id currentValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
     self.setterButton.enabled = [[self class] canEditProperty:self.property currentValue:currentValue];
     
-    [self updateArgumentInputView];
+    const char *typeEncoding = [[FLEXRuntimeUtility typeEncodingForProperty:self.property] UTF8String];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:typeEncoding];
+    inputView.backgroundColor = self.view.backgroundColor;
+    inputView.targetSize = FLEXArgumentInputViewSizeLarge;
+    inputView.inputOutput = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
 - (void)actionButtonPressed:(id)sender
 {
     [super actionButtonPressed:sender];
     
-    [self updatePropertyFromString:self.firstInputView.inputOutput];
-    [self updateArgumentInputView];
-}
-
-- (void)updateArgumentInputView
-{
-    id propertyValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
-    self.firstInputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:propertyValue];
-}
-
-- (void)updatePropertyFromString:(NSString *)string
-{
+    id userInputObject = self.firstInputView.inputOutput;
+    NSArray *arguments = userInputObject ? @[userInputObject] : nil;
     SEL setterSelector = [FLEXRuntimeUtility setterSelectorForProperty:self.property];
-    NSArray *arguments = string ? @[string] : nil;
     [FLEXRuntimeUtility performSelector:setterSelector onObject:self.target withArguments:arguments error:NULL];
+    
+    self.firstInputView.inputOutput = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
 }
 
 + (BOOL)canEditProperty:(objc_property_t)property currentValue:(id)value
 {
-    BOOL canEditType = [self canEditType:[FLEXRuntimeUtility typeEncodingForProperty:property] currentObjectValue:value];
+    const char *typeEncoding = [[FLEXRuntimeUtility typeEncodingForProperty:property] UTF8String];
+    BOOL canEditType = [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:typeEncoding currentValue:value];
     BOOL isReadonly = [FLEXRuntimeUtility isReadonlyProperty:property];
     return canEditType && !isReadonly;
 }

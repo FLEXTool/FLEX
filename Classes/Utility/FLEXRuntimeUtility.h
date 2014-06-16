@@ -26,7 +26,7 @@ extern const unsigned int kFLEXNumberOfImplicitArgs;
 // Ivar Helpers
 + (NSString *)prettyNameForIvar:(Ivar)ivar;
 + (id)valueForIvar:(Ivar)ivar onObject:(id)object;
-+ (void)setIvar:(Ivar)ivar onObject:(id)object withInputString:(NSString *)inputString;
++ (void)setValue:(id)value forIvar:(Ivar)ivar onObject:(id)object;
 
 // Method Helpers
 + (NSString *)prettyNameForMethod:(Method)method isClassMethod:(BOOL)isClassMethod;
@@ -34,7 +34,8 @@ extern const unsigned int kFLEXNumberOfImplicitArgs;
 
 // Method Calling/Field Editing
 + (id)performSelector:(SEL)selector onObject:(id)object withArguments:(NSArray *)arguments error:(NSError * __autoreleasing *)error;
-+ (NSString *)editiableDescriptionForObject:(id)object;
-+ (id)objectValueFromEditableString:(NSString *)string;
++ (NSString *)editableJSONStringForObject:(id)object;
++ (id)objectValueFromEditableJSONString:(NSString *)string;
++ (NSValue *)valueForNumberWithObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString;
 
 @end

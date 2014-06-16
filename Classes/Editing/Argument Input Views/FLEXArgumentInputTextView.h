@@ -10,4 +10,8 @@
 
 @interface FLEXArgumentInputTextView : FLEXArgumentInputView
 
+// For subclass eyes only
+
+@property (nonatomic, strong, readonly) UITextView *inputTextView;
+
 @end

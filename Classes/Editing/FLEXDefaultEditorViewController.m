@@ -10,6 +10,7 @@
 #import "FLEXFieldEditorView.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXArgumentInputView.h"
+#import "FLEXArgumentInputViewFactory.h"
 
 @interface FLEXDefaultEditorViewController ()
 
@@ -41,32 +42,31 @@
     
     self.fieldEditorView.fieldDescription = self.key;
     
-    [self updateTextFieldString];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(id)];
+    inputView.backgroundColor = self.view.backgroundColor;
+    inputView.targetSize = FLEXArgumentInputViewSizeLarge;
+    inputView.inputOutput = [self.defaults objectForKey:self.key];
+    self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
 - (void)actionButtonPressed:(id)sender
 {
     [super actionButtonPressed:sender];
     
-    id value = [FLEXRuntimeUtility objectValueFromEditableString:self.firstInputView.inputOutput];
+    id value = self.firstInputView.inputOutput;
     if (value) {
         [self.defaults setObject:value forKey:self.key];
     } else {
         [self.defaults removeObjectForKey:self.key];
     }
     [self.defaults synchronize];
-    [self updateTextFieldString];
-}
 
-- (void)updateTextFieldString
-{
-    id defaultsValue = [self.defaults objectForKey:self.key];
-    self.firstInputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:defaultsValue];
+    self.firstInputView.inputOutput = [self.defaults objectForKey:self.key];
 }
 
 + (BOOL)canEditDefaultWithValue:(id)currentValue
 {
-    return !currentValue || [FLEXRuntimeUtility editiableDescriptionForObject:currentValue] != nil;
+    return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:@encode(id) currentValue:currentValue];
 }
 
 @end

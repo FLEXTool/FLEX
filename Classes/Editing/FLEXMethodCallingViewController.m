@@ -42,19 +42,12 @@
     NSMutableArray *argumentInputViews = [NSMutableArray array];
     unsigned int argumentIndex = kFLEXNumberOfImplicitArgs;
     for (NSString *methodComponent in methodComponents) {
-        FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:NULL];
-        inputView.backgroundColor = self.view.backgroundColor;
-        inputView.title = methodComponent;
-        
-        // Prepopulate the structs that we parse from strings with the default values.
-        // This shows the intended formatting which would be less clear otherwise.
         char *argumentTypeEncoding = method_copyArgumentType(self.method, argumentIndex);
-        NSValue *defaultValue = [[self class] defaultValueForEncoding:argumentTypeEncoding];
-        if (defaultValue) {
-            inputView.inputOutput = [FLEXRuntimeUtility editiableDescriptionForObject:defaultValue];
-        }
+        FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:argumentTypeEncoding];
         free(argumentTypeEncoding);
         
+        inputView.backgroundColor = self.view.backgroundColor;
+        inputView.title = methodComponent;
         [argumentInputViews addObject:inputView];
         argumentIndex++;
     }
@@ -77,12 +70,12 @@
     
     NSMutableArray *arguments = [NSMutableArray array];
     for (FLEXArgumentInputView *inputView in self.fieldEditorView.argumentInputViews) {
-        NSString *argumentString = inputView.inputOutput;
-        if (!argumentString) {
-            // Use empty string as a placeholder in the array. It will be interpreted as nil.
-            argumentString = @"";
+        id argumentValue = inputView.inputOutput;
+        if (!argumentValue) {
+            // Use NSNulls as placeholders in the array. They will be interpreted as nil arguments.
+            argumentValue = [NSNull null];
         }
-        [arguments addObject:argumentString];
+        [arguments addObject:argumentValue];
     }
     
     id returnedObject = [FLEXRuntimeUtility performSelector:method_getName(self.method) onObject:self.target withArguments:arguments error:NULL];
@@ -92,29 +85,6 @@
         FLEXObjectExplorerViewController *explorerViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:returnedObject];
         [self.navigationController pushViewController:explorerViewController animated:YES];
     }
-}
-
-+ (NSValue *)defaultValueForEncoding:(const char *)typeEncoding
-{
-    NSValue *value = nil;
-    
-    if (strcmp(typeEncoding, @encode(CGRect)) == 0) {
-        value = [NSValue valueWithCGRect:CGRectZero];
-    } else if (strcmp(typeEncoding, @encode(CGSize)) == 0) {
-        value = [NSValue valueWithCGPoint:CGPointZero];
-    } else if (strcmp(typeEncoding, @encode(CGPoint)) == 0) {
-        value = [NSValue valueWithCGSize:CGSizeZero];
-    } else if (strcmp(typeEncoding, @encode(CGAffineTransform)) == 0) {
-        value = [NSValue valueWithCGAffineTransform:CGAffineTransformIdentity];
-    } else if (strcmp(typeEncoding, @encode(NSRange)) == 0) {
-        value = [NSValue valueWithRange:NSMakeRange(0, 0)];
-    } else if (strcmp(typeEncoding, @encode(UIEdgeInsets)) == 0) {
-        value = [NSValue valueWithUIEdgeInsets:UIEdgeInsetsZero];
-    } else if (strcmp(typeEncoding, @encode(UIOffset)) == 0) {
-        value = [NSValue valueWithUIOffset:UIOffsetZero];
-    }
-    
-    return value;
 }
 
 @end

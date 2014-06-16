@@ -25,7 +25,8 @@ static NSString *const kFLEXUtilityAttributeOldStyleTypeEncoding = @"t";
 static NSString *const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector = 0,
-    FLEXRuntimeUtilityErrorCodeInvocationFailed = 1
+    FLEXRuntimeUtilityErrorCodeInvocationFailed = 1,
+    FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch = 2
 };
 
 // Arguments 0 and 1 are self and _cmd always
@@ -199,27 +200,31 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     } else {
         ptrdiff_t offset = ivar_getOffset(ivar);
         void *pointer = (__bridge void *)object + offset;
-        value = [self valueForPrimitivePointer:pointer objcType:type];
+        value = [self valueForPrimitivePointer:pointer objCType:type];
     }
     return value;
 }
 
-+ (void)setIvar:(Ivar)ivar onObject:(id)object withInputString:(NSString *)inputString
++ (void)setValue:(id)value forIvar:(Ivar)ivar onObject:(id)object
 {
     const char *typeEncodingCString = ivar_getTypeEncoding(ivar);
     if (typeEncodingCString[0] == '@') {
-        // Object - use NSJSONSerialization
-        id ivarValue = [self objectValueFromEditableString:inputString];
-        object_setIvar(object, ivar, ivarValue);
-    } else {
-        // Primitive - try to parse a number or struct from the string based on the type encoding
+        object_setIvar(object, ivar, value);
+    } else if ([value isKindOfClass:[NSValue class]]) {
+        // Primitive - unbox the NSValue.
+        NSValue *valueValue = (NSValue *)value;
+        
+        // Make sure that the box contained the correct type.
+        NSAssert(strcmp([valueValue objCType], typeEncodingCString) == 0, @"Type encoding mismatch (value: %s; ivar: %s) in setting ivar named: %s on object: %@", [valueValue objCType], typeEncodingCString, ivar_getName(ivar), object);
+        
         NSUInteger bufferSize = 0;
         NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
-        void *buffer = malloc(bufferSize);
-        [self getPrimitiveValue:buffer withObjCType:typeEncodingCString fromInputString:inputString];
+        void *buffer = calloc(bufferSize, 1);
+        [valueValue getValue:buffer];
         ptrdiff_t offset = ivar_getOffset(ivar);
         void *pointer = (__bridge void *)object + offset;
         memcpy(pointer, buffer, bufferSize);
+        free(buffer);
     }
 }
 
@@ -288,24 +293,34 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSUInteger numberOfArguments = [methodSignature numberOfArguments];
     for (NSUInteger argumentIndex = kFLEXNumberOfImplicitArgs; argumentIndex < numberOfArguments; argumentIndex++) {
         NSUInteger argumentsArrayIndex = argumentIndex - kFLEXNumberOfImplicitArgs;
-        NSString *argumentString = [arguments count] > argumentsArrayIndex ? [arguments objectAtIndex:argumentsArrayIndex] : nil;
-        const char *typeEncodingCString = [methodSignature getArgumentTypeAtIndex:argumentIndex];
-        if (typeEncodingCString[0] == @encode(id)[0] || typeEncodingCString[0] == @encode(Class)[0]) {
-            // Object
-            id argumentObject = [self objectValueFromEditableString:argumentString];
-            [invocation setArgument:&argumentObject atIndex:argumentIndex];
-        } else if (strcmp(typeEncodingCString, @encode(const char *)) == 0 || strcmp(typeEncodingCString, @encode(char *)) == 0) {
-            // C string
-            const char *argumentCString = [argumentString UTF8String];
-            [invocation setArgument:&argumentCString atIndex:argumentIndex];
-        } else {
-            // Primitive number or struct
-            NSUInteger bufferSize = 0;
-            NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
-            void *buffer = malloc(bufferSize);
-            [self getPrimitiveValue:buffer withObjCType:typeEncodingCString fromInputString:argumentString];
-            [invocation setArgument:buffer atIndex:argumentIndex];
-            free(buffer);
+        id argumentObject = [arguments count] > argumentsArrayIndex ? [arguments objectAtIndex:argumentsArrayIndex] : nil;
+        
+        // NSNull in the arguments array can be passed as a placeholder to indicate nil. We only need to set the argument if it will be non-nil.
+        if (argumentObject && ![argumentObject isKindOfClass:[NSNull class]]) {
+            const char *typeEncodingCString = [methodSignature getArgumentTypeAtIndex:argumentIndex];
+            if (typeEncodingCString[0] == @encode(id)[0] || typeEncodingCString[0] == @encode(Class)[0]) {
+                // Object
+                [invocation setArgument:&argumentObject atIndex:argumentIndex];
+            } else if ([argumentObject isKindOfClass:[NSValue class]]){
+                // Primitive boxed in NSValue
+                NSValue *argumentValue = (NSValue *)argumentObject;
+                
+                // Ensure that the type encoding on the NSValue matches the type encoding of the argument in the method signature
+                if (strcmp([argumentValue objCType], typeEncodingCString) != 0) {
+                    if (error) {
+                        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Type encoding mismatch for agrument at index %lu. Value type: %s; Method argument type: %s.", (unsigned long)argumentsArrayIndex, [argumentValue objCType], typeEncodingCString]};
+                        *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch userInfo:userInfo];
+                    }
+                    return nil;
+                }
+                
+                NSUInteger bufferSize = 0;
+                NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
+                void *buffer = calloc(bufferSize, 1);
+                [argumentValue getValue:buffer];
+                [invocation setArgument:buffer atIndex:argumentIndex];
+                free(buffer);
+            }
         }
     }
     
@@ -336,7 +351,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             void *returnValue = malloc([methodSignature methodReturnLength]);
             if (returnValue) {
                 [invocation getReturnValue:returnValue];
-                returnObject = [self valueForPrimitivePointer:returnValue objcType:returnType];
+                returnObject = [self valueForPrimitivePointer:returnValue objCType:returnType];
                 free(returnValue);
             }
         }
@@ -345,31 +360,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return returnObject;
 }
 
-+ (NSString *)editiableDescriptionForObject:(id)object
++ (NSString *)editableJSONStringForObject:(id)object
 {
     NSString *editableDescription = nil;
     
-    if ([object isKindOfClass:[NSValue class]]) {
-        NSValue *value = (NSValue *)object;
-        const char *typeEncoding = [value objCType];
-        if (strcmp(typeEncoding, @encode(CGRect)) == 0) {
-            editableDescription = NSStringFromCGRect([value CGRectValue]);
-        } else if (strcmp(typeEncoding, @encode(CGSize)) == 0) {
-            editableDescription = NSStringFromCGSize([value CGSizeValue]);
-        } else if (strcmp(typeEncoding, @encode(CGPoint)) == 0) {
-            editableDescription = NSStringFromCGPoint([value CGPointValue]);
-        } else if (strcmp(typeEncoding, @encode(CGAffineTransform)) == 0) {
-            editableDescription = NSStringFromCGAffineTransform([value CGAffineTransformValue]);
-        } else if (strcmp(typeEncoding, @encode(NSRange)) == 0) {
-            editableDescription = NSStringFromRange([value rangeValue]);
-        } else if (strcmp(typeEncoding, @encode(UIEdgeInsets)) == 0) {
-            editableDescription = NSStringFromUIEdgeInsets([value UIEdgeInsetsValue]);
-        } else if (strcmp(typeEncoding, @encode(UIOffset)) == 0) {
-            editableDescription = NSStringFromUIOffset([value UIOffsetValue]);
-        }
-    }
-    
-    if (object && !editableDescription) {
+    if (object) {
         // This is a hack to use JSON serialzation for our editable objects.
         // NSJSONSerialization doesn't allow writing fragments - the top level object must be an array or dictionary.
         // We always wrap the object inside an array and then strip the outter square braces off the final string.
@@ -383,13 +378,62 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return editableDescription;
 }
 
-+ (id)objectValueFromEditableString:(NSString *)string
++ (id)objectValueFromEditableJSONString:(NSString *)string
 {
     id value = nil;
     // nil for empty string/whitespace
     if ([[string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 0) {
         value = [NSJSONSerialization JSONObjectWithData:[string dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:NULL];
     }
+    return value;
+}
+
++ (NSValue *)valueForNumberWithObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString
+{
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    NSNumber *number = [formatter numberFromString:inputString];
+    
+    // Make sure we box the number with the correct type encoding so it can be propperly unboxed later via getValue:
+    NSValue *value = nil;
+    if (strcmp(typeEncoding, @encode(char)) == 0) {
+        char primitiveValue = [number charValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(int)) == 0) {
+        int primitiveValue = [number intValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(short)) == 0) {
+        short primitiveValue = [number shortValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(long)) == 0) {
+        long primitiveValue = [number longValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(long long)) == 0) {
+        long long primitiveValue = [number longLongValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(unsigned char)) == 0) {
+        unsigned char primitiveValue = [number unsignedCharValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(unsigned int)) == 0) {
+        unsigned int primitiveValue = [number unsignedIntValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(unsigned short)) == 0) {
+        unsigned short primitiveValue = [number unsignedShortValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(unsigned long)) == 0) {
+        unsigned long primitiveValue = [number unsignedLongValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(unsigned long long)) == 0) {
+        unsigned long long primitiveValue = [number unsignedLongValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(float)) == 0) {
+        float primitiveValue = [number floatValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(double)) == 0) {
+        double primitiveValue = [number doubleValue];
+        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    }
+    
     return value;
 }
 
@@ -510,7 +554,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return encodingString;
 }
 
-+ (NSValue *)valueForPrimitivePointer:(void *)pointer objcType:(const char *)type
++ (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type
 {
     // CASE marcro inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
 #define CASE(ctype, selectorpart) \
@@ -541,66 +585,6 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
     
     return value;
-}
-
-+ (void)getPrimitiveValue:(void *)value withObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString
-{
-    if (strcmp(typeEncoding, @encode(CGRect)) == 0) {
-        *(CGRect *)value = CGRectFromString(inputString);
-    } else if (strcmp(typeEncoding, @encode(CGSize)) == 0) {
-        *(CGSize *)value = CGSizeFromString(inputString);
-    } else if (strcmp(typeEncoding, @encode(CGPoint)) == 0) {
-        *(CGPoint *)value = CGPointFromString(inputString);
-    } else if (strcmp(typeEncoding, @encode(CGAffineTransform)) == 0) {
-        *(CGAffineTransform *)value = CGAffineTransformFromString(inputString);
-    } else if (strcmp(typeEncoding, @encode(NSRange)) == 0) {
-        *(NSRange *)value = NSRangeFromString(inputString);
-    } else if (strcmp(typeEncoding, @encode(UIEdgeInsets)) == 0) {
-        *(UIEdgeInsets *)value = UIEdgeInsetsFromString(inputString);
-    } else if (strcmp(typeEncoding, @encode(UIOffset)) == 0) {
-        *(UIOffset *)value = UIOffsetFromString(inputString);
-    } else {
-        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-        NSNumber *number = [formatter numberFromString:inputString];
-        
-        if (strcmp(typeEncoding, @encode(char)) == 0) {
-            // Special case - ask for the string's BOOL value if we couldn't parse a number.
-            // This allows us to take YES/NO/true/false input.
-            if (number) {
-                *(char *)value = [number charValue];
-            } else {
-                *(char *)value = [inputString boolValue];
-            }
-        } else if (strcmp(typeEncoding, @encode(int)) == 0) {
-            *(int *)value = [number intValue];
-        } else if (strcmp(typeEncoding, @encode(short)) == 0) {
-            *(short *)value = [number shortValue];
-        } else if (strcmp(typeEncoding, @encode(long)) == 0) {
-            *(long *)value = [number longValue];
-        } else if (strcmp(typeEncoding, @encode(long long)) == 0) {
-            *(long long *)value = [number longLongValue];
-        } else if (strcmp(typeEncoding, @encode(unsigned char)) == 0) {
-            *(unsigned char *)value = [number unsignedCharValue];
-        } else if (strcmp(typeEncoding, @encode(unsigned int)) == 0) {
-            *(unsigned int *)value = [number unsignedIntValue];
-        } else if (strcmp(typeEncoding, @encode(unsigned short)) == 0) {
-            *(unsigned short *)value = [number unsignedShortValue];
-        } else if (strcmp(typeEncoding, @encode(unsigned long)) == 0) {
-            *(unsigned long *)value = [number unsignedLongValue];
-        } else if (strcmp(typeEncoding, @encode(unsigned long long)) == 0) {
-            *(unsigned long long *)value = [number unsignedLongLongValue];
-        } else if (strcmp(typeEncoding, @encode(float)) == 0) {
-            *(float *)value = [number floatValue];
-        } else if (strcmp(typeEncoding, @encode(double)) == 0) {
-            *(double *)value = [number doubleValue];
-        } else {
-            // If we didn't match one of the supported types, fill the buffer with zeros.
-            NSUInteger bytes = 0;
-            NSGetSizeAndAlignment(typeEncoding, &bytes, NULL);
-            memset(value, 0, bytes);
-        }
-    }
 }
 
 @end
