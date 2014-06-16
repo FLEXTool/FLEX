@@ -14,6 +14,7 @@
 #import "FLEXDefaultsExplorerViewController.h"
 #import "FLEXViewControllerExplorerViewController.h"
 #import "FLEXViewExplorerViewController.h"
+#import "FLEXImageExplorerViewController.h"
 
 @implementation FLEXObjectExplorerFactory
 
@@ -32,7 +33,8 @@
                                                    NSStringFromClass([NSDictionary class])     : [FLEXDictionaryExplorerViewController class],
                                                    NSStringFromClass([NSUserDefaults class])   : [FLEXDefaultsExplorerViewController class],
                                                    NSStringFromClass([UIViewController class]) : [FLEXViewControllerExplorerViewController class],
-                                                   NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class]};
+                                                   NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class],
+                                                   NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class]};
     });
     
     Class explorerClass = [FLEXObjectExplorerViewController class];
