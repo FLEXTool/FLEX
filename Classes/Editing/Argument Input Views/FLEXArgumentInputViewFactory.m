@@ -10,6 +10,7 @@
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputJSONObjectView.h"
 #import "FLEXArgumentInputNumberView.h"
+#import "FLEXArgumentInputSwitchView.h"
 
 @implementation FLEXArgumentInputViewFactory
 
@@ -31,7 +32,9 @@
     // Note that order is important here since multiple subclasses may support the same type.
     // An example is the number subclass and the bool subclass for the type @encode(BOOL).
     // Both work, but we'd prefer to use the bool subclass.
-    if ([FLEXArgumentInputNumberView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
+    if ([FLEXArgumentInputSwitchView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
+        argumentInputViewSubclass = [FLEXArgumentInputSwitchView class];
+    } else if ([FLEXArgumentInputNumberView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
         argumentInputViewSubclass = [FLEXArgumentInputNumberView class];
     } else if ([FLEXArgumentInputJSONObjectView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
         argumentInputViewSubclass = [FLEXArgumentInputJSONObjectView class];
