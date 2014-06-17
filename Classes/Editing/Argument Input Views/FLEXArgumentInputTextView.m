@@ -9,7 +9,7 @@
 #import "FLEXArgumentInputTextView.h"
 #import "FLEXUtility.h"
 
-@interface FLEXArgumentInputTextView ()
+@interface FLEXArgumentInputTextView () <UITextViewDelegate>
 
 @property (nonatomic, strong) UITextView *inputTextView;
 @property (nonatomic, readonly) NSUInteger numberOfInputLines;
@@ -29,9 +29,18 @@
         self.inputTextView.layer.borderWidth = 1.0;
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.inputTextView.delegate = self;
         [self addSubview:self.inputTextView];
     }
     return self;
+}
+
+
+#pragma mark - Text View Changes
+
+- (void)textViewDidChange:(UITextView *)textView
+{
+    [self.delegate argumentInputViewValueDidChange:self];
 }
 
 

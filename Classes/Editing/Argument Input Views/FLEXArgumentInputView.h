@@ -13,6 +13,8 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
     FLEXArgumentInputViewSizeLarge
 };
 
+@protocol FLEXArgumentInputViewDelegate;
+
 @interface FLEXArgumentInputView : UIView
 
 - (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding;
@@ -30,6 +32,9 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
 /// Useful to increase the use of space if there is only one input view on screen (i.e. for property and ivar editing).
 @property (nonatomic, assign) FLEXArgumentInputViewSize targetSize;
 
+/// Users of the input view can get delegate callbacks for incremental changes in user input.
+@property (nonatomic, weak) id <FLEXArgumentInputViewDelegate> delegate;
+
 // Subclasses can override
 
 /// If the input view has one or more text views, returns YES when one of them is focused.
@@ -45,5 +50,11 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
 @property (nonatomic, assign, readonly) const char *typeEncoding;
 @property (nonatomic, readonly) BOOL showsTitle;
 + (CGFloat)titleBottomPadding;
+
+@end
+
+@protocol FLEXArgumentInputViewDelegate <NSObject>
+
+- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)argumentInputView;
 
 @end
