@@ -73,12 +73,12 @@
     return NO;
 }
 
-- (void)setInputOutput:(id)inputOutput
+- (void)setInputValue:(id)inputValue
 {
     // Subclasses should override.
 }
 
-- (id)inputOutput
+- (id)inputValue
 {
     // Subclasses should override.
     return nil;

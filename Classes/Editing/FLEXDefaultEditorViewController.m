@@ -45,7 +45,7 @@
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(id)];
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.targetSize = FLEXArgumentInputViewSizeLarge;
-    inputView.inputOutput = [self.defaults objectForKey:self.key];
+    inputView.inputValue = [self.defaults objectForKey:self.key];
     self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
@@ -53,7 +53,7 @@
 {
     [super actionButtonPressed:sender];
     
-    id value = self.firstInputView.inputOutput;
+    id value = self.firstInputView.inputValue;
     if (value) {
         [self.defaults setObject:value forKey:self.key];
     } else {
@@ -61,7 +61,7 @@
     }
     [self.defaults synchronize];
 
-    self.firstInputView.inputOutput = [self.defaults objectForKey:self.key];
+    self.firstInputView.inputValue = [self.defaults objectForKey:self.key];
 }
 
 + (BOOL)canEditDefaultWithValue:(id)currentValue

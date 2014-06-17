@@ -22,12 +22,12 @@
     return self;
 }
 
-- (void)setInputOutput:(id)inputOutput
+- (void)setInputValue:(id)inputValue
 {
-    self.inputTextView.text = [FLEXRuntimeUtility editableJSONStringForObject:inputOutput];
+    self.inputTextView.text = [FLEXRuntimeUtility editableJSONStringForObject:inputValue];
 }
 
-- (id)inputOutput
+- (id)inputValue
 {
     return [FLEXRuntimeUtility objectValueFromEditableJSONString:self.inputTextView.text];
 }

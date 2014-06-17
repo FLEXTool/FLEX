@@ -20,14 +20,14 @@
     return self;
 }
 
-- (void)setInputOutput:(id)inputOutput
+- (void)setInputValue:(id)inputValue
 {
-    if ([inputOutput respondsToSelector:@selector(stringValue)]) {
-        self.inputTextView.text = [inputOutput stringValue];
+    if ([inputValue respondsToSelector:@selector(stringValue)]) {
+        self.inputTextView.text = [inputValue stringValue];
     }
 }
 
-- (id)inputOutput
+- (id)inputValue
 {
     return [FLEXRuntimeUtility valueForNumberWithObjCType:self.typeEncoding fromInputString:self.inputTextView.text];
 }

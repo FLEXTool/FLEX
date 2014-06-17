@@ -70,7 +70,7 @@
     
     NSMutableArray *arguments = [NSMutableArray array];
     for (FLEXArgumentInputView *inputView in self.fieldEditorView.argumentInputViews) {
-        id argumentValue = inputView.inputOutput;
+        id argumentValue = inputView.inputValue;
         if (!argumentValue) {
             // Use NSNulls as placeholders in the array. They will be interpreted as nil arguments.
             argumentValue = [NSNull null];

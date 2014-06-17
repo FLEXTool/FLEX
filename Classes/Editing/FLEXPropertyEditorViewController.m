@@ -42,7 +42,7 @@
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:typeEncoding];
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.targetSize = FLEXArgumentInputViewSizeLarge;
-    inputView.inputOutput = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    inputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
     self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
@@ -50,12 +50,12 @@
 {
     [super actionButtonPressed:sender];
     
-    id userInputObject = self.firstInputView.inputOutput;
+    id userInputObject = self.firstInputView.inputValue;
     NSArray *arguments = userInputObject ? @[userInputObject] : nil;
     SEL setterSelector = [FLEXRuntimeUtility setterSelectorForProperty:self.property];
     [FLEXRuntimeUtility performSelector:setterSelector onObject:self.target withArguments:arguments error:NULL];
     
-    self.firstInputView.inputOutput = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    self.firstInputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
 }
 
 + (BOOL)canEditProperty:(objc_property_t)property currentValue:(id)value

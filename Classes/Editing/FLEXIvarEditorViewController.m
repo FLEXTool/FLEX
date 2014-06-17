@@ -39,7 +39,7 @@
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:ivar_getTypeEncoding(self.ivar)];
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.targetSize = FLEXArgumentInputViewSizeLarge;
-    inputView.inputOutput = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
+    inputView.inputValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
     self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
@@ -47,8 +47,8 @@
 {
     [super actionButtonPressed:sender];
     
-    [FLEXRuntimeUtility setValue:self.firstInputView.inputOutput forIvar:self.ivar onObject:self.target];
-    self.firstInputView.inputOutput = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
+    [FLEXRuntimeUtility setValue:self.firstInputView.inputValue forIvar:self.ivar onObject:self.target];
+    self.firstInputView.inputValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
 }
 
 + (BOOL)canEditIvar:(Ivar)ivar currentValue:(id)value

@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
 /// To reteive the value input by the user, access the property.
 /// Primitive types and structs should/will be boxed in NSValue containers.
 /// Concrete subclasses *must* override both the setter and getter for this property.
-@property (nonatomic) id inputOutput;
+@property (nonatomic) id inputValue;
 
 /// Setting this value to large will make some argument input views increase the size of their input field(s).
 /// Useful to increase the use of space if there is only one input view on screen (i.e. for property and ivar editing).
