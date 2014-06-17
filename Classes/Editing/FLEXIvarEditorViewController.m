@@ -11,8 +11,9 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputViewFactory.h"
+#import "FLEXArgumentInputSwitchView.h"
 
-@interface FLEXIvarEditorViewController ()
+@interface FLEXIvarEditorViewController () <FLEXArgumentInputViewDelegate>
 
 @property (nonatomic, assign) Ivar ivar;
 
@@ -40,7 +41,13 @@
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.targetSize = FLEXArgumentInputViewSizeLarge;
     inputView.inputValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
+    inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
+    
+    // Don't show a "set" button for switches. Set the ivar when the switch toggles.
+    if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 - (void)actionButtonPressed:(id)sender
@@ -49,6 +56,13 @@
     
     [FLEXRuntimeUtility setValue:self.firstInputView.inputValue forIvar:self.ivar onObject:self.target];
     self.firstInputView.inputValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
+}
+
+- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)argumentInputView
+{
+    if ([argumentInputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
+        [self actionButtonPressed:nil];
+    }
 }
 
 + (BOOL)canEditIvar:(Ivar)ivar currentValue:(id)value

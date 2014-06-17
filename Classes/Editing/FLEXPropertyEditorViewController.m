@@ -11,8 +11,9 @@
 #import "FLEXFieldEditorView.h"
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputViewFactory.h"
+#import "FLEXArgumentInputSwitchView.h"
 
-@interface FLEXPropertyEditorViewController ()
+@interface FLEXPropertyEditorViewController () <FLEXArgumentInputViewDelegate>
 
 @property (nonatomic, assign) objc_property_t property;
 
@@ -43,7 +44,13 @@
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.targetSize = FLEXArgumentInputViewSizeLarge;
     inputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
+    
+    // Don't show a "set" button for switches - just call the setter immediately after the switch toggles.
+    if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
+        self.navigationItem.rightBarButtonItem = nil;
+    }
 }
 
 - (void)actionButtonPressed:(id)sender
@@ -56,6 +63,13 @@
     [FLEXRuntimeUtility performSelector:setterSelector onObject:self.target withArguments:arguments error:NULL];
     
     self.firstInputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+}
+
+- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)argumentInputView
+{
+    if ([argumentInputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
+        [self actionButtonPressed:nil];
+    }
 }
 
 + (BOOL)canEditProperty:(objc_property_t)property currentValue:(id)value
