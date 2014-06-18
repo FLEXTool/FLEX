@@ -334,6 +334,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    [self updateOverlayAndDescriptionForObjectIfNeeded:object];
+}
+
+- (void)updateOverlayAndDescriptionForObjectIfNeeded:(id)object
+{
     NSUInteger indexOfView = [self.viewsAtTapPoint indexOfObject:object];
     if (indexOfView != NSNotFound) {
         UIView *view = [self.viewsAtTapPoint objectAtIndex:indexOfView];
@@ -349,6 +354,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         self.explorerToolbar.selectedViewDescription = [FLEXUtility descriptionForView:self.selectedView includingFrame:YES];
         CGRect selectedViewOutlineFrame = [self.view convertRect:self.selectedView.bounds fromView:self.selectedView];
         self.selectedViewOverlay.frame = selectedViewOutlineFrame;
+    }
+}
+
+- (void)updateOverlaysForAllTrackedViews
+{
+    for (UIView *view in self.observedViews) {
+        [self updateOverlayAndDescriptionForObjectIfNeeded:view];
     }
 }
 
@@ -791,7 +803,18 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     self.previousKeyWindow = nil;
     
-    [self dismissViewControllerAnimated:animated completion:completion];
+    // If any changes were made to view frames while a modal was presented, they may be off since the frame conversion seemingly breaks when
+    // a modal is presented. Just in case, update all of the overlays to make sure they match up with their underlying views.
+    // We want to do this any time we dismiss a modal, regardles of which modal, so that's why it lives in the commmon dismiss method.
+    void (^commonCompletion)(void) = ^() {
+        if (completion) {
+            completion();
+        }
+        
+        [self updateOverlaysForAllTrackedViews];
+    };
+    
+    [self dismissViewControllerAnimated:animated completion:commonCompletion];
 }
 
 @end
