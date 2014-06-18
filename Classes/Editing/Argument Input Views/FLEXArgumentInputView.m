@@ -38,6 +38,12 @@
     }
 }
 
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    [super setBackgroundColor:backgroundColor];
+    self.titleLabel.backgroundColor = backgroundColor;
+}
+
 - (void)setTitle:(NSString *)title
 {
     if (![_title isEqual:title]) {
