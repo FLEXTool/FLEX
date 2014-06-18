@@ -44,6 +44,14 @@
 }
 
 
+#pragma mark - Superclass Overrides
+
+- (BOOL)inputViewIsFirstResponder
+{
+    return self.inputTextView.isFirstResponder;
+}
+
+
 #pragma mark - Layout and Sizing
 
 - (void)layoutSubviews
