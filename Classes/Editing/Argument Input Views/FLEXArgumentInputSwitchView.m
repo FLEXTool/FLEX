@@ -65,12 +65,7 @@
 {
     [super layoutSubviews];
     
-    CGFloat originY = 0;
-    if (self.showsTitle) {
-        originY = CGRectGetMaxY(self.titleLabel.frame) + [[self class] titleBottomPadding];
-    }
-    
-    self.inputSwitch.frame = CGRectMake(0, originY, self.inputSwitch.frame.size.width, self.inputSwitch.frame.size.height);
+    self.inputSwitch.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.inputSwitch.frame.size.width, self.inputSwitch.frame.size.height);
 }
 
 - (CGSize)sizeThatFits:(CGSize)size

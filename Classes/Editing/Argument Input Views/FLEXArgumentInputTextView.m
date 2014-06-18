@@ -50,11 +50,7 @@
 {
     [super layoutSubviews];
     
-    CGFloat originY = 0;
-    if (self.showsTitle) {
-        originY = CGRectGetMaxY(self.titleLabel.frame) + [[self class] titleBottomPadding];
-    }
-    self.inputTextView.frame = CGRectMake(0, originY, self.bounds.size.width, [self inputTextViewHeight]);
+    self.inputTextView.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.bounds.size.width, [self inputTextViewHeight]);
 }
 
 - (NSUInteger)numberOfInputLines

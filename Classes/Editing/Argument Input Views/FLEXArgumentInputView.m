@@ -65,6 +65,16 @@
     return [self.title length] > 0;
 }
 
+- (CGFloat)topInputFieldVerticalLayoutGuide
+{
+    CGFloat verticalLayoutGuide = 0;
+    if (self.showsTitle) {
+        CGFloat titleHeight = ceil([self.title sizeWithFont:[[self class] titleFont] constrainedToSize:self.bounds.size].height);
+        verticalLayoutGuide = titleHeight + [[self class] titleBottomPadding];
+    }
+    return verticalLayoutGuide;
+}
+
 
 #pragma mark - Subclasses Can Override
 
