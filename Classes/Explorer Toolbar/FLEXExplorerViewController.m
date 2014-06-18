@@ -448,6 +448,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)closeButtonTapped:(FLEXToolbarItem *)sender
 {
+    self.currentMode = FLEXExplorerModeDefault;
     [self.delegate explorerViewControllerDidFinish:self];
 }
 
