@@ -195,7 +195,25 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (BOOL)shouldShowDescription
 {
-    return ![self objectIsClass] && [[FLEXUtility safeDescriptionForObject:self.object] length] > 0;
+    BOOL showDescription = YES;
+    
+    // Not for class objects (matches the title in the nav bar).
+    if (showDescription) {
+        showDescription = ![self objectIsClass];
+    }
+    
+    // Not if it's empty or nil.
+    NSString *descripition = [FLEXUtility safeDescriptionForObject:self.object];
+    if (showDescription) {
+        showDescription = [descripition length] > 0;
+    }
+    
+    // Not if we have filter text that doesn't match the desctiption.
+    if (showDescription && [self.filterText length] > 0) {
+        showDescription = [descripition rangeOfString:self.filterText options:NSCaseInsensitiveSearch].length > 0;
+    }
+    
+    return showDescription;
 }
 
 
