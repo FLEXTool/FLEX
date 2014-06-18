@@ -111,9 +111,4 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     return drillInViewController;
 }
 
-- (BOOL)shouldShowDescription
-{
-    return YES;
-}
-
 @end

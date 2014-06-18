@@ -66,10 +66,4 @@ typedef NS_ENUM(NSUInteger, FLEXImageExplorerRow) {
     return drillInViewController;
 }
 
-- (BOOL)shouldShowDescription
-{
-    return YES;
-}
-
-
 @end
