@@ -61,6 +61,10 @@
             numberOfInputLines = 2;
             break;
             
+        case FLEXArgumentInputViewSizeSmall:
+            numberOfInputLines = 1;
+            break;
+            
         case FLEXArgumentInputViewSizeLarge:
             numberOfInputLines = 8;
             break;

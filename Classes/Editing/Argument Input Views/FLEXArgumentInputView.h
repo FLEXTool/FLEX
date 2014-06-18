@@ -10,6 +10,7 @@
 
 typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
     FLEXArgumentInputViewSizeDefault = 0,
+    FLEXArgumentInputViewSizeSmall,
     FLEXArgumentInputViewSizeLarge
 };
 
