@@ -43,7 +43,8 @@
 
 - (void)keyboardDidShow:(NSNotification *)notification
 {
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
     scrollInsets.bottom = keyboardSize.height;
     self.scrollView.contentInset = scrollInsets;
