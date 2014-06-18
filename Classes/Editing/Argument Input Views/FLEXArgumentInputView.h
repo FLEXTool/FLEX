@@ -47,9 +47,9 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
 // For subclass eyes only
 
 @property (nonatomic, strong, readonly) UILabel *titleLabel;
-@property (nonatomic, assign, readonly) const char *typeEncoding;
 @property (nonatomic, readonly) BOOL showsTitle;
 + (CGFloat)titleBottomPadding;
+@property (nonatomic, strong, readonly) NSString *typeEncoding;
 
 @end
 

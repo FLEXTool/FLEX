@@ -29,7 +29,7 @@
 
 - (id)inputValue
 {
-    return [FLEXRuntimeUtility valueForNumberWithObjCType:self.typeEncoding fromInputString:self.inputTextView.text];
+    return [FLEXRuntimeUtility valueForNumberWithObjCType:[self.typeEncoding UTF8String] fromInputString:self.inputTextView.text];
 }
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value

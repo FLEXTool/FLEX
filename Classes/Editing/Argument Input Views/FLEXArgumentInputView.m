@@ -12,7 +12,7 @@
 @interface FLEXArgumentInputView ()
 
 @property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, assign) const char *typeEncoding;
+@property (nonatomic, strong) NSString *typeEncoding;
 
 @end
 
@@ -22,7 +22,7 @@
 {
     self = [super initWithFrame:CGRectZero];
     if (self) {
-        self.typeEncoding = typeEncoding;
+        self.typeEncoding = @(typeEncoding);
     }
     return self;
 }
