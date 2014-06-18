@@ -437,6 +437,37 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return value;
 }
 
++ (void)enumerateTypesInStructEncoding:(const char *)structEncoding usingBlock:(void (^)(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset))typeBlock
+{
+    if (structEncoding && structEncoding[0] == '{') {
+        const char *equals = strchr(structEncoding, '=');
+        if (equals) {
+            const char *nameStart = structEncoding + 1;
+            NSString *structName = [@(structEncoding) substringWithRange:NSMakeRange(nameStart - structEncoding, equals - nameStart)];
+            
+            NSUInteger fieldAlignment = 0;
+            NSGetSizeAndAlignment(structEncoding, NULL, &fieldAlignment);
+            NSUInteger runningFieldIndex = 0;
+            NSUInteger runningFieldOffset = 0;
+            const char *typeStart = equals + 1;
+            while (*typeStart != '}') {
+                NSUInteger fieldSize = 0;
+                const char *nextTypeStart = NSGetSizeAndAlignment(typeStart, &fieldSize, NULL);
+                NSString *typeEncoding = [@(structEncoding) substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)];
+                typeBlock(structName, [typeEncoding UTF8String], [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
+                runningFieldOffset += fieldSize;
+                // Padding to keep propper alignment. __attribute((packed)) structs will break here.
+                // The type encoding is no different for packed structs, so it's not clear there's anything we can do for those.
+                if (runningFieldOffset % fieldAlignment != 0) {
+                    runningFieldOffset += fieldAlignment - runningFieldOffset % fieldAlignment;
+                }
+                runningFieldIndex++;
+                typeStart = nextTypeStart;
+            }
+        }
+    }
+}
+
 
 #pragma mark - Internal Helpers
 

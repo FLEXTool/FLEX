@@ -37,5 +37,6 @@ extern const unsigned int kFLEXNumberOfImplicitArgs;
 + (NSString *)editableJSONStringForObject:(id)object;
 + (id)objectValueFromEditableJSONString:(NSString *)string;
 + (NSValue *)valueForNumberWithObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString;
++ (void)enumerateTypesInStructEncoding:(const char *)structEncoding usingBlock:(void (^)(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset))typeBlock;
 
 @end
