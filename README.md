@@ -7,7 +7,7 @@
  - Note only supported back to iOS 6
  - Usage & feature explanations
  - Exception breakpoint note
-- Unsupported type argument input view 
+- Wrap NSGetSizeAndAlignment with try/catch
 - Access live instances from the class explorer
 - Quick access to alloc/new from class explorer
 - Inheritance chain section in object explorer
