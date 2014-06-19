@@ -33,7 +33,7 @@
             if (fieldIndex < [customTitles count]) {
                 inputView.title = [customTitles objectAtIndex:fieldIndex];
             } else {
-                inputView.title = [NSString stringWithFormat:@"%@ field %d (%@)", structName, fieldIndex, prettyTypeEncoding];
+                inputView.title = [NSString stringWithFormat:@"%@ field %lu (%@)", structName, (unsigned long)fieldIndex, prettyTypeEncoding];
             }
 
             [inputViews addObject:inputView];
