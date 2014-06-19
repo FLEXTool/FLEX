@@ -201,19 +201,7 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *className = [self.filteredClassNames objectAtIndex:indexPath.row];
-    const char *classNameCString = [className UTF8String];
-    NSMutableArray *instances = [NSMutableArray array];
-    [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
-        if (strcmp(classNameCString, class_getName(actualClass)) == 0) {
-            // Note: objects of certain classes crash when retain is called. It is up to the user to avoid tapping into instance lists for these classes.
-            // Ex. OS_dispatch_queue_specific_queue
-            // In the future, we could provide some kind of warning for classes that are known to be problematic.
-            [instances addObject:object];
-        }
-    }];
-    FLEXInstancesTableViewController *instancesViewController = [[FLEXInstancesTableViewController alloc] init];
-    instancesViewController.instances = instances;
-    instancesViewController.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)[instances count]];
+    FLEXInstancesTableViewController *instancesViewController = [FLEXInstancesTableViewController instancesTableViewControllerForClassName:className];
     [self.navigationController pushViewController:instancesViewController animated:YES];
 }
 

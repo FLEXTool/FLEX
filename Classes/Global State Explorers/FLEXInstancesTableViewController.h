@@ -12,4 +12,6 @@
 
 @property (nonatomic, strong) NSArray *instances;
 
++ (instancetype)instancesTableViewControllerForClassName:(NSString *)className;
+
 @end
