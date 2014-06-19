@@ -16,15 +16,6 @@
 #import "FLEXMethodCallingViewController.h"
 #import <objc/runtime.h>
 
-typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
-    FLEXObjectExplorerSectionDescription,
-    FLEXObjectExplorerSectionCustom,
-    FLEXObjectExplorerSectionProperties,
-    FLEXObjectExplorerSectionIvars,
-    FLEXObjectExplorerSectionMethods,
-    FLEXObjectExplorerSectionClassMethods
-};
-
 // Convenience boxes to keep runtime properties, ivars, and methods in foundation collections.
 @interface FLEXPropertyBox : NSObject
 @property (nonatomic, assign) objc_property_t property;
@@ -188,19 +179,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     [self.tableView reloadData];
 }
 
-- (BOOL)objectIsClass
-{
-    return self.object && [self.object class] == self.object;
-}
-
 - (BOOL)shouldShowDescription
 {
     BOOL showDescription = YES;
-    
-    // Not for class objects (matches the title in the nav bar).
-    if (showDescription) {
-        showDescription = ![self objectIsClass];
-    }
     
     // Not if it's empty or nil.
     NSString *descripition = [FLEXUtility safeDescriptionForObject:self.object];
@@ -288,7 +269,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (id)valueForPropertyAtIndex:(NSInteger)index
 {
     id value = nil;
-    if (![self objectIsClass]) {
+    if ([self canHaveInstanceState]) {
         FLEXPropertyBox *propertyBox = [self.filteredProperties objectAtIndex:index];
         value = [FLEXRuntimeUtility valueForProperty:propertyBox.property onObject:self.object];
     }
@@ -367,7 +348,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (id)valueForIvarAtIndex:(NSInteger)index
 {
     id value = nil;
-    if (![self objectIsClass]) {
+    if (![self canHaveInstanceState]) {
         FLEXIvarBox *ivarBox = [self.filteredIvars objectAtIndex:index];
         value = [FLEXRuntimeUtility valueForIvar:ivarBox.ivar onObject:self.object];
     }
@@ -472,17 +453,26 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 #pragma mark - Table View Data Helpers
 
+- (NSArray *)possibleExplorerSections
+{
+    static NSArray *possibleSections = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        possibleSections = @[@(FLEXObjectExplorerSectionDescription),
+                             @(FLEXObjectExplorerSectionCustom),
+                             @(FLEXObjectExplorerSectionProperties),
+                             @(FLEXObjectExplorerSectionIvars),
+                             @(FLEXObjectExplorerSectionMethods),
+                             @(FLEXObjectExplorerSectionClassMethods)];
+    });
+    return possibleSections;
+}
+
 - (NSArray *)visibleExplorerSections
 {
     NSMutableArray *visibleSections = [NSMutableArray array];
-    NSArray *possibleSections = @[@(FLEXObjectExplorerSectionDescription),
-                                  @(FLEXObjectExplorerSectionCustom),
-                                  @(FLEXObjectExplorerSectionProperties),
-                                  @(FLEXObjectExplorerSectionIvars),
-                                  @(FLEXObjectExplorerSectionMethods),
-                                  @(FLEXObjectExplorerSectionClassMethods)];
     
-    for (NSNumber *possibleSection in possibleSections) {
+    for (NSNumber *possibleSection in [self possibleExplorerSections]) {
         FLEXObjectExplorerSection explorerSection = [possibleSection unsignedIntegerValue];
         if ([self numberOfRowsForExplorerSection:explorerSection] > 0) {
             [visibleSections addObject:possibleSection];
@@ -572,11 +562,6 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (NSString *)subtitleForRow:(NSInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
 {
-    // No subtitles for if we're showing a class rather than an instance of the class.
-    if ([self objectIsClass]) {
-        return nil;
-    }
-    
     NSString *subtitle = nil;
     switch (section) {
         case FLEXObjectExplorerSectionDescription:
@@ -587,11 +572,11 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionProperties:
-            subtitle = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self valueForPropertyAtIndex:row]];
+            subtitle = [self canHaveInstanceState] ? [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self valueForPropertyAtIndex:row]] : nil;
             break;
             
         case FLEXObjectExplorerSectionIvars:
-            subtitle = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self valueForIvarAtIndex:row]];
+            subtitle = [self canHaveInstanceState] ? [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self valueForIvarAtIndex:row]] : nil;
             break;
             
         case FLEXObjectExplorerSectionMethods:
@@ -606,7 +591,6 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (BOOL)canDrillInToRow:(NSInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
 {
     BOOL canDrillIn = NO;
-    BOOL objectIsClass = [self objectIsClass];
     switch (section) {
         case FLEXObjectExplorerSectionDescription:
             break;
@@ -616,7 +600,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionProperties: {
-            if (!objectIsClass) {
+            if ([self canHaveInstanceState]) {
                 objc_property_t property = [[self.filteredProperties objectAtIndex:row] property];
                 id currentValue = [self valueForPropertyAtIndex:row];
                 BOOL canEdit = [FLEXPropertyEditorViewController canEditProperty:property currentValue:currentValue];
@@ -626,7 +610,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         }   break;
             
         case FLEXObjectExplorerSectionIvars: {
-            if (!objectIsClass) {
+            if ([self canHaveInstanceState]) {
                 Ivar ivar = [[self.filteredIvars objectAtIndex:row] ivar];
                 id currentValue = [self valueForIvarAtIndex:row];
                 BOOL canEdit = [FLEXIvarEditorViewController canEditIvar:ivar currentValue:currentValue];
@@ -636,7 +620,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         }   break;
             
         case FLEXObjectExplorerSectionMethods:
-            canDrillIn = !objectIsClass;
+            canDrillIn = [self canCallInstanceMethods];
             break;
             
         case FLEXObjectExplorerSectionClassMethods:
@@ -875,6 +859,16 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
     return nil;
+}
+
+- (BOOL)canHaveInstanceState
+{
+    return YES;
+}
+
+- (BOOL)canCallInstanceMethods
+{
+    return YES;
 }
 
 @end

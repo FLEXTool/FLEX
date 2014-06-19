@@ -8,6 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
+    FLEXObjectExplorerSectionDescription,
+    FLEXObjectExplorerSectionCustom,
+    FLEXObjectExplorerSectionProperties,
+    FLEXObjectExplorerSectionIvars,
+    FLEXObjectExplorerSectionMethods,
+    FLEXObjectExplorerSectionClassMethods
+};
+
 @interface FLEXObjectExplorerViewController : UITableViewController
 
 @property (nonatomic, strong) id object;
@@ -23,7 +32,18 @@
 - (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie;
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie;
 
-// If the custom section data makes the description redundant, subclasses can choose to hide it.
+// More subclass configuration hooks.
+
+/// Whether to allow showing/drilling in to current values for ivars and properties. Defalut is YES.
+- (BOOL)canHaveInstanceState;
+
+/// Whether to allow drilling in to method calling interfaces for instance methods. Default is YES.
+- (BOOL)canCallInstanceMethods;
+
+/// If the custom section data makes the description redundant, subclasses can choose to hide it. Default is YES.
 - (BOOL)shouldShowDescription;
+
+/// Subclasses can reorder/change which sections can display directly by overriding this method.
+- (NSArray *)possibleExplorerSections;
 
 @end
