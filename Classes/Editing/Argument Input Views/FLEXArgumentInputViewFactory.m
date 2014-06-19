@@ -12,6 +12,7 @@
 #import "FLEXArgumentInputNumberView.h"
 #import "FLEXArgumentInputSwitchView.h"
 #import "FLEXArgumentInputStructView.h"
+#import "FLEXArgumentInputNotSupportedView.h"
 
 @implementation FLEXArgumentInputViewFactory
 
@@ -19,9 +20,9 @@
 {
     Class subclass = [self argumentInputViewSubclassForTypeEncoding:typeEncoding currentValue:nil];
     if (!subclass) {
-        // Fall back to a generic FLEXArgumentInputView if we can't find a subclass that supports the type.
-        // The generic input view does not actually allow input, but it still shows the title of the field.
-        subclass = [FLEXArgumentInputView class];
+        // Fall back to a FLEXArgumentInputNotSupportedView if we can't find a subclass that fits the type encoding.
+        // The unsupported view shows "nil" and does not allow user input.
+        subclass = [FLEXArgumentInputNotSupportedView class];
     }
     return [[subclass alloc] initWithArgumentTypeEncoding:typeEncoding];
 }
