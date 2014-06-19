@@ -15,6 +15,8 @@
 #import "FLEXViewControllerExplorerViewController.h"
 #import "FLEXViewExplorerViewController.h"
 #import "FLEXImageExplorerViewController.h"
+#import "FLEXClassExplorerViewController.h"
+#import <objc/runtime.h>
 
 @implementation FLEXObjectExplorerFactory
 
@@ -37,12 +39,18 @@
                                                    NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class]};
     });
     
-    Class explorerClass = [FLEXObjectExplorerViewController class];
-    for (NSString *objectTypeString in explorerSubclassesForObjectTypeStrings) {
-        Class objectClass = NSClassFromString(objectTypeString);
-        if ([object isKindOfClass:objectClass]) {
-            explorerClass = [explorerSubclassesForObjectTypeStrings objectForKey:objectTypeString];
-            break;
+    Class explorerClass = nil;
+    BOOL objectIsClass = class_isMetaClass(object_getClass(object));
+    if (objectIsClass) {
+        explorerClass = [FLEXClassExplorerViewController class];
+    } else {
+        explorerClass = [FLEXObjectExplorerViewController class];
+        for (NSString *objectTypeString in explorerSubclassesForObjectTypeStrings) {
+            Class objectClass = NSClassFromString(objectTypeString);
+            if ([object isKindOfClass:objectClass]) {
+                explorerClass = [explorerSubclassesForObjectTypeStrings objectForKey:objectTypeString];
+                break;
+            }
         }
     }
     
