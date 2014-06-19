@@ -56,6 +56,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 @property (nonatomic, strong) NSArray *inheritedClassMethods;
 @property (nonatomic, strong) NSArray *filteredClassMethods;
 
+@property (nonatomic, strong) NSArray *superclasses;
+@property (nonatomic, strong) NSArray *filteredSuperclasses;
+
 @property (nonatomic, strong) NSArray *cachedCustomSectionRowCookies;
 @property (nonatomic, strong) NSIndexSet *customSectionVisibleIndexes;
 
@@ -166,6 +169,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     [self updateIvars];
     [self updateMethods];
     [self updateClassMethods];
+    [self updateSuperclasses];
     [self updateDisplayedData];
 }
 
@@ -176,6 +180,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     [self updateFilteredIvars];
     [self updateFilteredMethods];
     [self updateFilteredClassMethods];
+    [self updateFilteredSuperclasses];
     [self.tableView reloadData];
 }
 
@@ -451,6 +456,38 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 }
 
 
+#pragma mark - Superclasses
+
++ (NSArray *)superclassesForClass:(Class)class
+{
+    NSMutableArray *superClasses = [NSMutableArray array];
+    while ((class = [class superclass])) {
+        [superClasses addObject:class];
+    }
+    return superClasses;
+}
+
+- (void)updateSuperclasses
+{
+    self.superclasses = [[self class] superclassesForClass:[self.object class]];
+}
+
+- (void)updateFilteredSuperclasses
+{
+    if ([self.filterText length] > 0) {
+        NSMutableArray *filteredSuperclasses = [NSMutableArray array];
+        for (Class superclass in self.superclasses) {
+            if ([NSStringFromClass(superclass) rangeOfString:self.filterText options:NSCaseInsensitiveSearch].length > 0) {
+                [filteredSuperclasses addObject:superclass];
+            }
+        }
+        self.filteredSuperclasses = filteredSuperclasses;
+    } else {
+        self.filteredSuperclasses = self.superclasses;
+    }
+}
+
+
 #pragma mark - Table View Data Helpers
 
 - (NSArray *)possibleExplorerSections
@@ -463,7 +500,8 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
                              @(FLEXObjectExplorerSectionProperties),
                              @(FLEXObjectExplorerSectionIvars),
                              @(FLEXObjectExplorerSectionMethods),
-                             @(FLEXObjectExplorerSectionClassMethods)];
+                             @(FLEXObjectExplorerSectionClassMethods),
+                             @(FLEXObjectExplorerSectionSuperclasses)];
     });
     return possibleSections;
 }
@@ -525,6 +563,10 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         case FLEXObjectExplorerSectionClassMethods:
             numberOfRows = [self.filteredClassMethods count];
             break;
+            
+        case FLEXObjectExplorerSectionSuperclasses:
+            numberOfRows = [self.filteredSuperclasses count];
+            break;
     }
     return numberOfRows;
 }
@@ -556,6 +598,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         case FLEXObjectExplorerSectionClassMethods:
             title = [self titleForClassMethodAtIndex:row];
             break;
+            
+        case FLEXObjectExplorerSectionSuperclasses:
+            title = NSStringFromClass([self.filteredSuperclasses objectAtIndex:row]);
     }
     return title;
 }
@@ -583,6 +628,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionClassMethods:
+            break;
+            
+        case FLEXObjectExplorerSectionSuperclasses:
             break;
     }
     return subtitle;
@@ -624,6 +672,10 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionClassMethods:
+            canDrillIn = YES;
+            break;
+            
+        case FLEXObjectExplorerSectionSuperclasses:
             canDrillIn = YES;
             break;
     }
@@ -673,6 +725,10 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             }
             title = [self sectionTitleWithBaseName:@"Class Methods" totalCount:totalCount filteredCount:[self.filteredClassMethods count]];
         } break;
+            
+        case FLEXObjectExplorerSectionSuperclasses: {
+            title = [self sectionTitleWithBaseName:@"Superclasses" totalCount:[self.superclasses count] filteredCount:[self.filteredSuperclasses count]];
+        } break;
     }
     return title;
 }
@@ -717,6 +773,11 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             Method method = [[self.filteredClassMethods objectAtIndex:row] method];
             viewController = [[FLEXMethodCallingViewController alloc] initWithTarget:[self.object class] method:method];
         } break;
+            
+        case FLEXObjectExplorerSectionSuperclasses: {
+            Class superclass = [self.filteredSuperclasses objectAtIndex:row];
+            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:superclass];
+        }
     }
     return viewController;
 }

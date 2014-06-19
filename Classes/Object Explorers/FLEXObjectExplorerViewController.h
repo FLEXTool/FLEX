@@ -14,7 +14,8 @@ typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
     FLEXObjectExplorerSectionProperties,
     FLEXObjectExplorerSectionIvars,
     FLEXObjectExplorerSectionMethods,
-    FLEXObjectExplorerSectionClassMethods
+    FLEXObjectExplorerSectionClassMethods,
+    FLEXObjectExplorerSectionSuperclasses
 };
 
 @interface FLEXObjectExplorerViewController : UITableViewController
