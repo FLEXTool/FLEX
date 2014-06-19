@@ -61,52 +61,64 @@
         const char *structTypeEncoding = [inputValue objCType];
         if (strcmp([self.typeEncoding UTF8String], structTypeEncoding) == 0) {
             NSUInteger valueSize = 0;
-            NSGetSizeAndAlignment(structTypeEncoding, &valueSize, NULL);
-            void *unboxedValue = malloc(valueSize);
-            [inputValue getValue:unboxedValue];
-            [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
-                
-                void *fieldPointer = unboxedValue + fieldOffset;
-                FLEXArgumentInputView *inputView = [self.argumentInputViews objectAtIndex:fieldIndex];
-                
-                if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
-                    inputView.inputValue = (__bridge id)fieldPointer;
-                } else {
-                    NSValue *boxedField = [FLEXRuntimeUtility valueForPrimitivePointer:fieldPointer objCType:fieldTypeEncoding];
-                    inputView.inputValue = boxedField;
-                }
-            }];
-            free(unboxedValue);
+            @try {
+                // NSGetSizeAndAlignment barfs on type encoding for bitfields.
+                NSGetSizeAndAlignment(structTypeEncoding, &valueSize, NULL);
+            } @catch (NSException *exception) { }
+            
+            if (valueSize > 0) {
+                void *unboxedValue = malloc(valueSize);
+                [inputValue getValue:unboxedValue];
+                [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+                    
+                    void *fieldPointer = unboxedValue + fieldOffset;
+                    FLEXArgumentInputView *inputView = [self.argumentInputViews objectAtIndex:fieldIndex];
+                    
+                    if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
+                        inputView.inputValue = (__bridge id)fieldPointer;
+                    } else {
+                        NSValue *boxedField = [FLEXRuntimeUtility valueForPrimitivePointer:fieldPointer objCType:fieldTypeEncoding];
+                        inputView.inputValue = boxedField;
+                    }
+                }];
+                free(unboxedValue);
+            }
         }
     }
 }
 
 - (id)inputValue
 {
+    NSValue *boxedStruct = nil;
     const char *structTypeEncoding = [self.typeEncoding UTF8String];
     NSUInteger structSize = 0;
-    NSGetSizeAndAlignment(structTypeEncoding, &structSize, NULL);
-    void *unboxedStruct = malloc(structSize);
+    @try {
+        // NSGetSizeAndAlignment barfs on type encoding for bitfields.
+        NSGetSizeAndAlignment(structTypeEncoding, &structSize, NULL);
+    } @catch (NSException *exception) { }
     
-    [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
-        
-        void *fieldPointer = unboxedStruct + fieldOffset;
-        FLEXArgumentInputView *inputView = [self.argumentInputViews objectAtIndex:fieldIndex];
-        
-        if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
-            // Object fields
-            memcpy(fieldPointer, (__bridge void *)inputView.inputValue, sizeof(id));
-        } else {
-            // Boxed primitive/struct fields
-            id inputValue = inputView.inputValue;
-            if ([inputValue isKindOfClass:[NSValue class]] && strcmp([inputValue objCType], fieldTypeEncoding) == 0) {
-                [inputValue getValue:fieldPointer];
+    if (structSize > 0) {
+        void *unboxedStruct = malloc(structSize);
+        [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+            
+            void *fieldPointer = unboxedStruct + fieldOffset;
+            FLEXArgumentInputView *inputView = [self.argumentInputViews objectAtIndex:fieldIndex];
+            
+            if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
+                // Object fields
+                memcpy(fieldPointer, (__bridge void *)inputView.inputValue, sizeof(id));
+            } else {
+                // Boxed primitive/struct fields
+                id inputValue = inputView.inputValue;
+                if ([inputValue isKindOfClass:[NSValue class]] && strcmp([inputValue objCType], fieldTypeEncoding) == 0) {
+                    [inputValue getValue:fieldPointer];
+                }
             }
-        }
-    }];
-    
-    NSValue *boxedStruct = [NSValue value:unboxedStruct withObjCType:structTypeEncoding];
-    free(unboxedStruct);
+        }];
+        
+        boxedStruct = [NSValue value:unboxedStruct withObjCType:structTypeEncoding];
+        free(unboxedStruct);
+    }
     
     return boxedStruct;
 }

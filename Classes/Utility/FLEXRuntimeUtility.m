@@ -218,13 +218,18 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSAssert(strcmp([valueValue objCType], typeEncodingCString) == 0, @"Type encoding mismatch (value: %s; ivar: %s) in setting ivar named: %s on object: %@", [valueValue objCType], typeEncodingCString, ivar_getName(ivar), object);
         
         NSUInteger bufferSize = 0;
-        NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
-        void *buffer = calloc(bufferSize, 1);
-        [valueValue getValue:buffer];
-        ptrdiff_t offset = ivar_getOffset(ivar);
-        void *pointer = (__bridge void *)object + offset;
-        memcpy(pointer, buffer, bufferSize);
-        free(buffer);
+        @try {
+            // NSGetSizeAndAlignment barfs on type encoding for bitfields.
+            NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
+        } @catch (NSException *exception) { }
+        if (bufferSize > 0) {
+            void *buffer = calloc(bufferSize, 1);
+            [valueValue getValue:buffer];
+            ptrdiff_t offset = ivar_getOffset(ivar);
+            void *pointer = (__bridge void *)object + offset;
+            memcpy(pointer, buffer, bufferSize);
+            free(buffer);
+        }
     }
 }
 
@@ -315,11 +320,17 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 }
                 
                 NSUInteger bufferSize = 0;
-                NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
-                void *buffer = calloc(bufferSize, 1);
-                [argumentValue getValue:buffer];
-                [invocation setArgument:buffer atIndex:argumentIndex];
-                free(buffer);
+                @try {
+                    // NSGetSizeAndAlignment barfs on type encoding for bitfields.
+                    NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
+                } @catch (NSException *exception) { }
+                
+                if (bufferSize > 0) {
+                    void *buffer = calloc(bufferSize, 1);
+                    [argumentValue getValue:buffer];
+                    [invocation setArgument:buffer atIndex:argumentIndex];
+                    free(buffer);
+                }
             }
         }
     }
@@ -446,23 +457,31 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             NSString *structName = [@(structEncoding) substringWithRange:NSMakeRange(nameStart - structEncoding, equals - nameStart)];
             
             NSUInteger fieldAlignment = 0;
-            NSGetSizeAndAlignment(structEncoding, NULL, &fieldAlignment);
-            NSUInteger runningFieldIndex = 0;
-            NSUInteger runningFieldOffset = 0;
-            const char *typeStart = equals + 1;
-            while (*typeStart != '}') {
-                NSUInteger fieldSize = 0;
-                const char *nextTypeStart = NSGetSizeAndAlignment(typeStart, &fieldSize, NULL);
-                NSString *typeEncoding = [@(structEncoding) substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)];
-                typeBlock(structName, [typeEncoding UTF8String], [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
-                runningFieldOffset += fieldSize;
-                // Padding to keep propper alignment. __attribute((packed)) structs will break here.
-                // The type encoding is no different for packed structs, so it's not clear there's anything we can do for those.
-                if (runningFieldOffset % fieldAlignment != 0) {
-                    runningFieldOffset += fieldAlignment - runningFieldOffset % fieldAlignment;
+            NSUInteger structSize = 0;
+            @try {
+                // NSGetSizeAndAlignment barfs on type encoding for bitfields.
+                NSGetSizeAndAlignment(structEncoding, &structSize, &fieldAlignment);
+            } @catch (NSException *exception) { }
+            
+            if (structSize > 0) {
+                NSUInteger runningFieldIndex = 0;
+                NSUInteger runningFieldOffset = 0;
+                const char *typeStart = equals + 1;
+                while (*typeStart != '}') {
+                    NSUInteger fieldSize = 0;
+                    // If the struct type encoding was successfully handled by NSGetSizeAndAlignment above, we *should* be ok with the field here.
+                    const char *nextTypeStart = NSGetSizeAndAlignment(typeStart, &fieldSize, NULL);
+                    NSString *typeEncoding = [@(structEncoding) substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)];
+                    typeBlock(structName, [typeEncoding UTF8String], [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
+                    runningFieldOffset += fieldSize;
+                    // Padding to keep propper alignment. __attribute((packed)) structs will break here.
+                    // The type encoding is no different for packed structs, so it's not clear there's anything we can do for those.
+                    if (runningFieldOffset % fieldAlignment != 0) {
+                        runningFieldOffset += fieldAlignment - runningFieldOffset % fieldAlignment;
+                    }
+                    runningFieldIndex++;
+                    typeStart = nextTypeStart;
                 }
-                runningFieldIndex++;
-                typeStart = nextTypeStart;
             }
         }
     }
