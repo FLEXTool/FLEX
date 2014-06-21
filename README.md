@@ -7,15 +7,13 @@
  - Note only supported back to iOS 6
  - Usage & feature explanations
  - Exception breakpoint note
-- Wrap NSGetSizeAndAlignment with try/catch
-- Access live instances from the class explorer
-- Quick access to alloc/new from class explorer
-- Inheritance chain section in object explorer
-- Better status bar managerment on iOS 7 (especially if not using view controller based status bar management)
+ - Notes on unsupported: Classes that don't inherit from NSObject. Unions. Packed structs. C array arguments. Etc.
+ - Note that heap objects may have some false positives
+ - Thanks/credits section
 - Method calling feedback toast when methods that return nil or void are called successfully
 - Alert when method calling fails
-- Trigger scroll to top from taps on the nav bar title for modals with the status bar hidden
 - Add more common fields to custom view object explorer.
+- Considder a custom UILabel explorer that extends the UIView explorer
 - Blog post
 - Cleanup and comments
 
@@ -27,6 +25,7 @@
 - Demo app
 - File browser: try to parse binary files as plists even if they lack the .plist extension
 - UIColor argument input view
+- View hierarchy 3D perspective
 
 ### Community feature ideas
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
