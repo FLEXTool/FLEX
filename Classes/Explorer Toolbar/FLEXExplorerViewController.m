@@ -188,14 +188,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     for (UIView *view in self.viewsAtTapPoint) {
         NSValue *key = [NSValue valueWithNonretainedObject:view];
         UIView *outlineView = self.outlineViewsForVisibleViews[key];
-        outlineView.frame = [self.view convertRect:view.bounds fromView:view];
+        outlineView.frame = [self frameInLocalCoordinatesForView:view];
         if (self.currentMode == FLEXExplorerModeSelect) {
             outlineView.hidden = NO;
         }
     }
     
     if (self.selectedView) {
-        self.selectedViewOverlay.frame = [self.view convertRect:self.selectedView.bounds fromView:self.selectedView];
+        self.selectedViewOverlay.frame = [self frameInLocalCoordinatesForView:self.selectedView];
         self.selectedViewOverlay.hidden = NO;
     }
 }
@@ -345,23 +345,23 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         NSValue *key = [NSValue valueWithNonretainedObject:view];
         UIView *outline = [self.outlineViewsForVisibleViews objectForKey:key];
         if (outline) {
-            CGRect outlineFrame = [self.view convertRect:view.bounds fromView:view];
-            outline.frame = outlineFrame;
+            outline.frame = [self frameInLocalCoordinatesForView:view];
         }
     }
     if (object == self.selectedView) {
         // Update the selected view description since we show the frame value there.
         self.explorerToolbar.selectedViewDescription = [FLEXUtility descriptionForView:self.selectedView includingFrame:YES];
-        CGRect selectedViewOutlineFrame = [self.view convertRect:self.selectedView.bounds fromView:self.selectedView];
+        CGRect selectedViewOutlineFrame = [self frameInLocalCoordinatesForView:self.selectedView];
         self.selectedViewOverlay.frame = selectedViewOutlineFrame;
     }
 }
 
-- (void)updateOverlaysForAllTrackedViews
+- (CGRect)frameInLocalCoordinatesForView:(UIView *)view
 {
-    for (UIView *view in self.observedViews) {
-        [self updateOverlayAndDescriptionForObjectIfNeeded:view];
-    }
+    // First convert to window coordinates since the view may be in a different window than our view.
+    CGRect frameInWindow = [view convertRect:view.bounds toView:nil];
+    // Then convert from the window to our view's coordinate space.
+    return [self.view convertRect:frameInWindow fromView:nil];
 }
 
 
@@ -582,7 +582,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (UIView *)outlineViewForView:(UIView *)view
 {
-    CGRect outlineFrame = [self.view convertRect:view.bounds fromView:view];
+    CGRect outlineFrame = [self frameInLocalCoordinatesForView:view];
     UIView *outlineView = [[UIView alloc] initWithFrame:outlineFrame];
     outlineView.backgroundColor = [UIColor clearColor];
     outlineView.layer.borderColor = [[FLEXUtility consistentRandomColorForObject:view] CGColor];
@@ -804,18 +804,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     self.previousKeyWindow = nil;
     
-    // If any changes were made to view frames while a modal was presented, they may be off since the frame conversion seemingly breaks when
-    // a modal is presented. Just in case, update all of the overlays to make sure they match up with their underlying views.
-    // We want to do this any time we dismiss a modal, regardles of which modal, so that's why it lives in the commmon dismiss method.
-    void (^commonCompletion)(void) = ^() {
-        if (completion) {
-            completion();
-        }
-        
-        [self updateOverlaysForAllTrackedViews];
-    };
     
-    [self dismissViewControllerAnimated:animated completion:commonCompletion];
+    [self dismissViewControllerAnimated:animated completion:completion];
 }
 
 @end
