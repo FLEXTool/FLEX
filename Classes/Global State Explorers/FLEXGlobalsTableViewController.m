@@ -46,11 +46,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     return self;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];

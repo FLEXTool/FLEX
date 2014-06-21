@@ -68,11 +68,6 @@
     self.scrollView.scrollIndicatorInsets = scrollInsets;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];

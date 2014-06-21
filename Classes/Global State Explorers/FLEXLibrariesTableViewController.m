@@ -42,11 +42,6 @@
     self.tableView.tableHeaderView = self.searchBar;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 
 #pragma mark - Binary Images
 

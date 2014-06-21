@@ -33,11 +33,6 @@
     self.tableView.tableHeaderView = self.searchBar;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (void)setBinaryImageName:(NSString *)binaryImageName
 {
     if (![_binaryImageName isEqual:binaryImageName]) {

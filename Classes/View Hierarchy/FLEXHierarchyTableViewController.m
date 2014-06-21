@@ -80,11 +80,6 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     [self trySelectCellForSelectedViewWithScrollPosition:UITableViewScrollPositionMiddle];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 
 #pragma mark Selection and Filtering Helpers
 

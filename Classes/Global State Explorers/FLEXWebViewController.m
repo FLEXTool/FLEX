@@ -64,11 +64,6 @@
     }
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (void)copyButtonTapped:(id)sender
 {
     [[UIPasteboard generalPasteboard] setString:self.originalText];

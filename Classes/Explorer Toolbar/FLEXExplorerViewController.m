@@ -410,9 +410,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (NSArray *)allWindows
 {
-    NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
-    UIWindow *statusWindow = [[UIApplication sharedApplication] valueForKey:statusBarString];
     NSMutableArray *windows = [[[UIApplication sharedApplication] windows] mutableCopy];
+    UIWindow *statusWindow = [self statusWindow];
     if (statusWindow) {
         // The windows are ordered back to front, so default to inserting the status bar at the end.
         // However, it there are windows at status bar level, insert the status bar before them.
@@ -426,6 +425,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         [windows insertObject:statusWindow atIndex:insertionIndex];
     }
     return windows;
+}
+
+- (UIWindow *)statusWindow
+{
+    NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
+    return [[UIApplication sharedApplication] valueForKey:statusBarString];
 }
 
 - (void)moveButtonTapped:(FLEXToolbarItem *)sender
@@ -794,6 +799,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Make our window key to correctly handle input.
     [self.view.window makeKeyWindow];
     
+    // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
+    [[self statusWindow] setWindowLevel:self.view.window.windowLevel + 1.0];
+    
     // Show the view controller.
     [self presentViewController:viewController animated:animated completion:completion];
 }
@@ -804,6 +812,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     self.previousKeyWindow = nil;
     
+    // Restore the status bar window's normal window level.
+    // We want it above FLEX while a modal is presented for scroll to top, but below FLEX otherwise for exploration.
+    [[self statusWindow] setWindowLevel:UIWindowLevelStatusBar];
     
     [self dismissViewControllerAnimated:animated completion:completion];
 }

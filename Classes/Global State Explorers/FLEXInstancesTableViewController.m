@@ -37,11 +37,6 @@
     return instancesViewController;
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 
 #pragma mark - Table View Data Source
 

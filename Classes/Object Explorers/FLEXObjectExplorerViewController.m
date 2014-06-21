@@ -101,11 +101,6 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationNone];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self.searchBar endEditing:YES];

@@ -78,11 +78,6 @@
     self.scrollView.contentInset = UIEdgeInsetsMake(verticalInset, horizontalInset, verticalInset, horizontalInset);
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (void)copyButtonPressed:(id)sender
 {
     [[UIPasteboard generalPasteboard] setImage:self.image];

@@ -44,11 +44,6 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     [self reloadTableData];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
 - (NSArray *)allClassNames
 {
     return [self.instanceCountsForClassNames allKeys];
