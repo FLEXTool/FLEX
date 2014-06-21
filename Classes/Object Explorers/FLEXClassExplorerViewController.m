@@ -119,4 +119,14 @@ typedef NS_ENUM(NSUInteger, FLEXClassExplorerRow) {
     return NO;
 }
 
+- (BOOL)canCallInstanceMethods
+{
+    return NO;
+}
+
+- (BOOL)canHaveInstanceState
+{
+    return NO;
+}
+
 @end
