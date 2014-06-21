@@ -176,7 +176,10 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     [self updateFilteredMethods];
     [self updateFilteredClassMethods];
     [self updateFilteredSuperclasses];
-    [self.tableView reloadData];
+    
+    if (self.isViewLoaded) {
+        [self.tableView reloadData];
+    }
 }
 
 - (BOOL)shouldShowDescription
