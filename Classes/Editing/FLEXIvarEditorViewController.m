@@ -39,7 +39,6 @@
     
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:ivar_getTypeEncoding(self.ivar)];
     inputView.backgroundColor = self.view.backgroundColor;
-    inputView.targetSize = FLEXArgumentInputViewSizeLarge;
     inputView.inputValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
     inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];

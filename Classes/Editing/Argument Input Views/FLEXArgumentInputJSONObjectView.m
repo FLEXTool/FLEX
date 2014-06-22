@@ -18,6 +18,7 @@
         // Start with the numbers and punctuation keyboard since quotes, curly braces, or
         // square brackets are likely to be the first characters type for the JSON.
         self.inputTextView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        self.targetSize = FLEXArgumentInputViewSizeLarge;
     }
     return self;
 }

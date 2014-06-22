@@ -42,7 +42,6 @@
     const char *typeEncoding = [[FLEXRuntimeUtility typeEncodingForProperty:self.property] UTF8String];
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:typeEncoding];
     inputView.backgroundColor = self.view.backgroundColor;
-    inputView.targetSize = FLEXArgumentInputViewSizeLarge;
     inputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
     inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];

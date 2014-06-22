@@ -16,6 +16,7 @@
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.inputTextView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
+        self.targetSize = FLEXArgumentInputViewSizeSmall;
     }
     return self;
 }
