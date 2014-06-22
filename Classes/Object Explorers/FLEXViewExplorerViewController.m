@@ -15,7 +15,6 @@
 
 typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     FLEXViewExplorerRowViewController,
-    FLEXViewExplorerRowFrame,
     FLEXViewExplorerRowPreview
 };
 
@@ -43,38 +42,78 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
 
 - (NSArray *)customSectionRowCookies
 {
-    NSArray *rowCookies = @[@(FLEXViewExplorerRowPreview),
-                            @(FLEXViewExplorerRowFrame)];
+    NSMutableArray *rowCookies = [NSMutableArray array];
     
     if ([FLEXUtility viewControllerForView:self.viewToExplore]) {
-        rowCookies = [@[@(FLEXViewExplorerRowViewController)] arrayByAddingObjectsFromArray:rowCookies];
+        [rowCookies addObject:@(FLEXViewExplorerRowViewController)];
     }
     
+    [rowCookies addObject:@(FLEXViewExplorerRowPreview)];
+    [rowCookies addObjectsFromArray:[self shortcutPropertyNames]];
+    
     return rowCookies;
+}
+
+- (NSArray *)shortcutPropertyNames
+{
+    return @[@"frame", @"bounds", @"center", @"transform", @"backgroundColor", @"alpha", @"opaque", @"hidden", @"clipsToBounds", @"userInteractionEnabled"];
 }
 
 - (NSString *)customSectionTitleForRowCookie:(id)rowCookie
 {
     NSString *title = nil;
-    if ([rowCookie isEqual:@(FLEXViewExplorerRowViewController)]) {
-        title = @"View Controller";
-    } else if ([rowCookie isEqual:@(FLEXViewExplorerRowFrame)]) {
-        title = @"@property CGRect frame";
-    } else if ([rowCookie isEqual:@(FLEXViewExplorerRowPreview)]) {
-        title = @"Image Preview";
+    
+    if ([rowCookie isKindOfClass:[NSNumber class]]) {
+        FLEXViewExplorerRow row = [rowCookie unsignedIntegerValue];
+        switch (row) {
+            case FLEXViewExplorerRowViewController:
+                title = @"View Controller";
+                break;
+                
+            case FLEXViewExplorerRowPreview:
+                title = @"Preview Image";
+                break;
+        }
+    } else if ([rowCookie isKindOfClass:[NSString class]]) {
+        objc_property_t property = [self viewPropertyForName:rowCookie];
+        if (property) {
+            NSString *prettyPropertyName = [FLEXRuntimeUtility prettyNameForProperty:property];
+            // Since we're outside of the "properties" section, prepend @property for clarity.
+            title = [NSString stringWithFormat:@"@property %@", prettyPropertyName];
+        }
     }
+    
     return title;
 }
 
 - (NSString *)customSectionSubtitleForRowCookie:(id)rowCookie
 {
     NSString *subtitle = nil;
-    if ([rowCookie isEqual:@(FLEXViewExplorerRowViewController)]) {
-        subtitle = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[FLEXUtility viewControllerForView:self.viewToExplore]];
-    } else if ([rowCookie isEqual:@(FLEXViewExplorerRowFrame)]) {
-        subtitle = [FLEXUtility stringForCGRect:self.viewToExplore.frame];
+    
+    if ([rowCookie isKindOfClass:[NSNumber class]]) {
+        FLEXViewExplorerRow row = [rowCookie unsignedIntegerValue];
+        switch (row) {
+            case FLEXViewExplorerRowViewController:
+                subtitle = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[FLEXUtility viewControllerForView:self.viewToExplore]];
+                break;
+                
+            case FLEXViewExplorerRowPreview:
+                break;
+        }
+    } else if ([rowCookie isKindOfClass:[NSString class]]) {
+        objc_property_t property = [self viewPropertyForName:rowCookie];
+        if (property) {
+            id value = [FLEXRuntimeUtility valueForProperty:property onObject:self.viewToExplore];
+            subtitle = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:value];
+        }
     }
+    
     return subtitle;
+}
+
+- (objc_property_t)viewPropertyForName:(NSString *)propertyName
+{
+    return class_getProperty([self.viewToExplore class], [propertyName UTF8String]);
 }
 
 - (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
@@ -85,30 +124,73 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
     UIViewController *drillInViewController = nil;
-    if ([rowCookie isEqual:@(FLEXViewExplorerRowViewController)]) {
-        drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:[FLEXUtility viewControllerForView:self.viewToExplore]];
-    } else if ([rowCookie isEqual:@(FLEXViewExplorerRowFrame)]) {
-        // A quirk of UIView: frame is not actually a property from the perspective of the runtime.
-        // We add the property to the class at runtime if it hasn't been added yet.
-        [FLEXRuntimeUtility addFramePropertyToUIViewIfNeeded];
-        objc_property_t frameProperty = class_getProperty([UIView class], "frame");
-        drillInViewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.viewToExplore property:frameProperty];
-    } else if ([rowCookie isEqual:@(FLEXViewExplorerRowPreview)]) {
-        if (!CGRectIsEmpty(self.viewToExplore.bounds)) {
-            CGSize viewSize = self.viewToExplore.bounds.size;
-            UIGraphicsBeginImageContextWithOptions(viewSize, NO, 0.0);
-            if ([self.viewToExplore respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
-                [self.viewToExplore drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
-            } else {
-                CGContextRef imageContext = UIGraphicsGetCurrentContext();
-                [self.viewToExplore.layer renderInContext:imageContext];
-            }
-            UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            drillInViewController = [[FLEXViewSnapshotViewController alloc] initWithImage:previewImage];
+    
+    if ([rowCookie isKindOfClass:[NSNumber class]]) {
+        FLEXViewExplorerRow row = [rowCookie unsignedIntegerValue];
+        switch (row) {
+            case FLEXViewExplorerRowViewController:
+                drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:[FLEXUtility viewControllerForView:self.viewToExplore]];
+                break;
+                
+            case FLEXViewExplorerRowPreview:
+                drillInViewController = [[self class] imagePreviewViewControllerForView:self.viewToExplore];
+                break;
+        }
+    } else if ([rowCookie isKindOfClass:[NSString class]]) {
+        objc_property_t property = [self viewPropertyForName:rowCookie];
+        if (property) {
+            drillInViewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.viewToExplore property:property];
         }
     }
+
     return drillInViewController;
+}
+
++ (UIViewController *)imagePreviewViewControllerForView:(UIView *)view
+{
+    UIViewController *imagePreviewViewController = nil;
+    if (!CGRectIsEmpty(view.bounds)) {
+        CGSize viewSize = view.bounds.size;
+        UIGraphicsBeginImageContextWithOptions(viewSize, NO, 0.0);
+        if ([view respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
+            [view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
+        } else {
+            CGContextRef imageContext = UIGraphicsGetCurrentContext();
+            [view.layer renderInContext:imageContext];
+        }
+        UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        imagePreviewViewController = [[FLEXViewSnapshotViewController alloc] initWithImage:previewImage];
+    }
+    return imagePreviewViewController;
+}
+
+
+#pragma mark - Runtime Adjustment
+
++ (void)initialize
+{
+    // A quirk of UIView: a lot of the "@property"s are not actually properties from the perspective of the runtime.
+    // We add these properties to the class at runtime if they haven't been added yet.
+    // This way, we can use our property editor to access and change them.
+    // The property attributes match the declared attributes in UIView.h
+    NSDictionary *frameAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGRect)), kFLEXUtilityAttributeNonAtomic : @""};
+    [FLEXRuntimeUtility tryAddPropertyWithName:"frame" attributes:frameAttributes toClass:[UIView class]];
+    
+    NSDictionary *alphaAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGFloat)), kFLEXUtilityAttributeNonAtomic : @""};
+    [FLEXRuntimeUtility tryAddPropertyWithName:"alpha" attributes:alphaAttributes toClass:[UIView class]];
+    
+    NSDictionary *clipsAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @""};
+    [FLEXRuntimeUtility tryAddPropertyWithName:"clipsToBounds" attributes:clipsAttributes toClass:[UIView class]];
+    
+    NSDictionary *opaqueAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isOpaque"};
+    [FLEXRuntimeUtility tryAddPropertyWithName:"opaque" attributes:opaqueAttributes toClass:[UIView class]];
+    
+    NSDictionary *hiddenAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isHidden"};
+    [FLEXRuntimeUtility tryAddPropertyWithName:"hidden" attributes:hiddenAttributes toClass:[UIView class]];
+    
+    NSDictionary *backgroundColorAttributes = @{kFLEXUtilityAttributeTypeEncoding : @"@\"UIColor\"", kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCopy : @""};
+    [FLEXRuntimeUtility tryAddPropertyWithName:"backgroundColor" attributes:backgroundColorAttributes toClass:[UIView class]];
 }
 
 @end
