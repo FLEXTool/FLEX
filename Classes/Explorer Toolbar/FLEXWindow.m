@@ -16,9 +16,10 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         // Some apps have windows at UIWindowLevelStatusBar + n.
-        // Using CGFLOAT_MAX works on 7.0 devieces but doesn't work in the 7.1 sim.
-        // Hopefully status bar level + 1000.0 gets the job done. It works in the 7.1 sim.
-        self.windowLevel = UIWindowLevelStatusBar + 1000.0;
+        // If we make the window level too high, we block out UIAlertViews.
+        // There's a balance between staying above the app's windows and staying below alerts.
+        // UIWindowLevelStatusBar + 100 seems to hit that balance.
+        self.windowLevel = UIWindowLevelStatusBar + 100.0;
     }
     return self;
 }
