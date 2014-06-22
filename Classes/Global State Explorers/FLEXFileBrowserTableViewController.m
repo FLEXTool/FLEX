@@ -9,6 +9,7 @@
 #import "FLEXFileBrowserTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXWebViewController.h"
+#import "FLEXImagePreviewViewController.h"
 
 @interface FLEXFileBrowserTableViewController ()
 
@@ -99,8 +100,14 @@
         subtitle = [NSString stringWithFormat:@"%@ - %@", sizeString, [attributes fileModificationDate]];
     }
     
-    static NSString *cellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString *textCellIdentifier = @"textCell";
+    static NSString *imageCellIdentifier = @"imageCell";
+    UITableViewCell *cell = nil;
+    
+    // Separate image and text only cells because otherwise the separator lines get out-of-whack on image cells reused with text only.
+    BOOL showImagePreview = [FLEXUtility isImagePathExtension:[fullPath pathExtension]];
+    NSString *cellIdentifier = showImagePreview ? imageCellIdentifier : textCellIdentifier;
+
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
@@ -108,8 +115,14 @@
         cell.detailTextLabel.textColor = [UIColor grayColor];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
-    cell.textLabel.text = [subpath lastPathComponent];
+    NSString *cellTitle = [subpath lastPathComponent];
+    cell.textLabel.text = cellTitle;
     cell.detailTextLabel.text = subtitle;
+    
+    if (showImagePreview) {
+        cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
+        cell.imageView.image = [UIImage imageWithContentsOfFile:fullPath];
+    }
     
     return cell;
 }
@@ -124,6 +137,9 @@
         UIViewController *drillInViewController = nil;
         if (isDirectory) {
             drillInViewController = [[[self class] alloc] initWithPath:fullPath];
+        } else if ([FLEXUtility isImagePathExtension:[fullPath pathExtension]]) {
+            UIImage *image = [UIImage imageWithContentsOfFile:fullPath];
+            drillInViewController = [[FLEXImagePreviewViewController alloc] initWithImage:image];
         } else {
             // Special case keyed archives, json, and plists to get more readable data.
             NSString *prettyString = nil;
