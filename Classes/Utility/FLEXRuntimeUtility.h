@@ -11,6 +11,20 @@
 
 extern const unsigned int kFLEXNumberOfImplicitArgs;
 
+// See https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
+extern NSString *const kFLEXUtilityAttributeTypeEncoding;
+extern NSString *const kFLEXUtilityAttributeBackingIvar;
+extern NSString *const kFLEXUtilityAttributeReadOnly;
+extern NSString *const kFLEXUtilityAttributeCopy;
+extern NSString *const kFLEXUtilityAttributeRetain;
+extern NSString *const kFLEXUtilityAttributeNonAtomic;
+extern NSString *const kFLEXUtilityAttributeCustomGetter;
+extern NSString *const kFLEXUtilityAttributeCustomSetter;
+extern NSString *const kFLEXUtilityAttributeDynamic;
+extern NSString *const kFLEXUtilityAttributeWeak;
+extern NSString *const kFLEXUtilityAttributeGarbageCollectable;
+extern NSString *const kFLEXUtilityAttributeOldStyleTypeEncoding;
+
 @interface FLEXRuntimeUtility : NSObject
 
 // Property Helpers
@@ -21,7 +35,7 @@ extern const unsigned int kFLEXNumberOfImplicitArgs;
 + (NSString *)fullDescriptionForProperty:(objc_property_t)property;
 + (id)valueForProperty:(objc_property_t)property onObject:(id)object;
 + (NSString *)descriptionForIvarOrPropertyValue:(id)value;
-+ (void)addFramePropertyToUIViewIfNeeded;
++ (void)tryAddPropertyWithName:(const char *)name attributes:(NSDictionary *)attributePairs toClass:(__unsafe_unretained Class)theClass;
 
 // Ivar Helpers
 + (NSString *)prettyNameForIvar:(Ivar)ivar;

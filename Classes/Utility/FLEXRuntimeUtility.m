@@ -9,18 +9,18 @@
 #import "FLEXRuntimeUtility.h"
 
 // See https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
-static NSString *const kFLEXUtilityAttributeTypeEncoding = @"T";
-static NSString *const kFLEXUtilityAttributeBackingIvar = @"V";
-static NSString *const kFLEXUtilityAttributeReadOnly = @"R";
-static NSString *const kFLEXUtilityAttributeCopy = @"C";
-static NSString *const kFLEXUtilityAttributeRetain = @"&";
-static NSString *const kFLEXUtilityAttributeNonAtomic = @"N";
-static NSString *const kFLEXUtilityAttributeCustomGetter = @"G";
-static NSString *const kFLEXUtilityAttributeCustomSetter = @"S";
-static NSString *const kFLEXUtilityAttributeDynamic = @"D";
-static NSString *const kFLEXUtilityAttributeWeak = @"W";
-static NSString *const kFLEXUtilityAttributeGarbageCollectable = @"P";
-static NSString *const kFLEXUtilityAttributeOldStyleTypeEncoding = @"t";
+NSString *const kFLEXUtilityAttributeTypeEncoding = @"T";
+NSString *const kFLEXUtilityAttributeBackingIvar = @"V";
+NSString *const kFLEXUtilityAttributeReadOnly = @"R";
+NSString *const kFLEXUtilityAttributeCopy = @"C";
+NSString *const kFLEXUtilityAttributeRetain = @"&";
+NSString *const kFLEXUtilityAttributeNonAtomic = @"N";
+NSString *const kFLEXUtilityAttributeCustomGetter = @"G";
+NSString *const kFLEXUtilityAttributeCustomSetter = @"S";
+NSString *const kFLEXUtilityAttributeDynamic = @"D";
+NSString *const kFLEXUtilityAttributeWeak = @"W";
+NSString *const kFLEXUtilityAttributeGarbageCollectable = @"P";
+NSString *const kFLEXUtilityAttributeOldStyleTypeEncoding = @"t";
 
 static NSString *const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
@@ -163,20 +163,24 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return description;
 }
 
-+ (void)addFramePropertyToUIViewIfNeeded
++ (void)tryAddPropertyWithName:(const char *)name attributes:(NSDictionary *)attributePairs toClass:(__unsafe_unretained Class)theClass
 {
-    const char *framePropertyName = "frame";
-    objc_property_t frameProperty = class_getProperty([UIView class], framePropertyName);
-    if (!frameProperty) {
-        objc_property_attribute_t typeAttribute;
-        typeAttribute.name = [kFLEXUtilityAttributeTypeEncoding UTF8String];
-        typeAttribute.value = @encode(CGRect);
-        objc_property_attribute_t nonatomicAttribute;
-        nonatomicAttribute.name = [kFLEXUtilityAttributeNonAtomic UTF8String];
-        nonatomicAttribute.value = "";
-        const unsigned int kAttributeCount = 2;
-        objc_property_attribute_t attributes[kAttributeCount] = {typeAttribute, nonatomicAttribute};
-        class_addProperty([UIView class], framePropertyName, attributes, kAttributeCount);
+    objc_property_t property = class_getProperty(theClass, name);
+    if (!property) {
+        unsigned int totalAttributesCount = [attributePairs count];
+        objc_property_attribute_t *attributes = malloc(sizeof(objc_property_attribute_t) * totalAttributesCount);
+        if (attributes) {
+            unsigned int attributeIndex = 0;
+            for (NSString *attributeName in [attributePairs allKeys]) {
+                objc_property_attribute_t attribute;
+                attribute.name = [attributeName UTF8String];
+                attribute.value = [[attributePairs objectForKey:attributeName] UTF8String];
+                attributes[attributeIndex++] = attribute;
+            }
+            
+            class_addProperty(theClass, name, attributes, totalAttributesCount);
+            free(attributes);
+        }
     }
 }
 
