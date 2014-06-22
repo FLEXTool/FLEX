@@ -78,12 +78,22 @@
         [arguments addObject:argumentValue];
     }
     
-    id returnedObject = [FLEXRuntimeUtility performSelector:method_getName(self.method) onObject:self.target withArguments:arguments error:NULL];
+    NSError *error = nil;
+    id returnedObject = [FLEXRuntimeUtility performSelector:method_getName(self.method) onObject:self.target withArguments:arguments error:&error];
     
-    // For non-nil (or void) return types, push an explorer view controller to display the returned object
-    if (returnedObject) {
+    if (error) {
+        NSString *title = @"Method Call Failed";
+        NSString *message = [error localizedDescription];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+    } else if (returnedObject) {
+        // For non-nil (or void) return types, push an explorer view controller to display the returned object
         FLEXObjectExplorerViewController *explorerViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:returnedObject];
         [self.navigationController pushViewController:explorerViewController animated:YES];
+    } else {
+        // If we didn't get a returned object but the method call succeeded,
+        // pop this view controller off the stack to indicate that the call went through.
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
