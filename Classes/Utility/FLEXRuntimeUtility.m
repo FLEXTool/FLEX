@@ -167,7 +167,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 {
     objc_property_t property = class_getProperty(theClass, name);
     if (!property) {
-        unsigned int totalAttributesCount = [attributePairs count];
+        unsigned int totalAttributesCount = (unsigned int)[attributePairs count];
         objc_property_attribute_t *attributes = malloc(sizeof(objc_property_attribute_t) * totalAttributesCount);
         if (attributes) {
             unsigned int attributeIndex = 0;
