@@ -60,9 +60,21 @@
     id userInputObject = self.firstInputView.inputValue;
     NSArray *arguments = userInputObject ? @[userInputObject] : nil;
     SEL setterSelector = [FLEXRuntimeUtility setterSelectorForProperty:self.property];
-    [FLEXRuntimeUtility performSelector:setterSelector onObject:self.target withArguments:arguments error:NULL];
-    
-    self.firstInputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    NSError *error = nil;
+    [FLEXRuntimeUtility performSelector:setterSelector onObject:self.target withArguments:arguments error:&error];
+    if (error) {
+        NSString *title = @"Property Setter Failed";
+        NSString *message = [error localizedDescription];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        self.firstInputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    } else {
+        // If the setter was called without error, pop the view controller to indicate that and make the user's life easier.
+        // Don't do this for simulated taps on the action button (i.e. from switch/BOOL editors). The experience is weird there.
+        if (sender) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
 }
 
 - (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)argumentInputView
