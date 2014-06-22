@@ -136,7 +136,7 @@
                                 @"«" : @"&laquo;",
                                 @"»" : @"&raquo;"
                                 };
-        regex = [NSRegularExpression regularExpressionWithPattern:@"(&|>|<|'|\"|«|»)" options:0 error:nil];
+        regex = [NSRegularExpression regularExpressionWithPattern:@"(&|>|<|'|\"|«|»)" options:0 error:NULL];
     });
     
     NSMutableString *mutableString = [originalString mutableCopy];
