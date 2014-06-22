@@ -1,15 +1,15 @@
 //
-//  FLEXViewSnapshotViewController.m
+//  FLEXImagePreviewViewController.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/12/14.
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXViewSnapshotViewController.h"
+#import "FLEXImagePreviewViewController.h"
 #import "FLEXUtility.h"
 
-@interface FLEXViewSnapshotViewController () <UIScrollViewDelegate>
+@interface FLEXImagePreviewViewController () <UIScrollViewDelegate>
 
 @property (nonatomic, strong) UIImage *image;
 
@@ -18,7 +18,7 @@
 
 @end
 
-@implementation FLEXViewSnapshotViewController
+@implementation FLEXImagePreviewViewController
 
 - (id)initWithImage:(UIImage *)image
 {

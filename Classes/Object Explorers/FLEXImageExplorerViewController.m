@@ -7,7 +7,7 @@
 //
 
 #import "FLEXImageExplorerViewController.h"
-#import "FLEXViewSnapshotViewController.h"
+#import "FLEXImagePreviewViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXImageExplorerRow) {
     FLEXImageExplorerRowImage
@@ -61,7 +61,7 @@ typedef NS_ENUM(NSUInteger, FLEXImageExplorerRow) {
 {
     UIViewController *drillInViewController = nil;
     if ([rowCookie isEqual:@(FLEXImageExplorerRowImage)]) {
-        drillInViewController = [[FLEXViewSnapshotViewController alloc] initWithImage:self.image];
+        drillInViewController = [[FLEXImagePreviewViewController alloc] initWithImage:self.image];
     }
     return drillInViewController;
 }

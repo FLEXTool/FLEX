@@ -1,5 +1,5 @@
 //
-//  FLEXViewSnapshotViewController.h
+//  FLEXImagePreviewViewController.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/12/14.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FLEXViewSnapshotViewController : UIViewController
+@interface FLEXImagePreviewViewController : UIViewController
 
 - (id)initWithImage:(UIImage *)image;
 

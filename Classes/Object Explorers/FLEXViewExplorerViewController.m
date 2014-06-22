@@ -10,7 +10,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXObjectExplorerFactory.h"
-#import "FLEXViewSnapshotViewController.h"
+#import "FLEXImagePreviewViewController.h"
 #import "FLEXPropertyEditorViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
@@ -160,7 +160,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
         }
         UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
-        imagePreviewViewController = [[FLEXViewSnapshotViewController alloc] initWithImage:previewImage];
+        imagePreviewViewController = [[FLEXImagePreviewViewController alloc] initWithImage:previewImage];
     }
     return imagePreviewViewController;
 }
