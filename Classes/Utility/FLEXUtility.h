@@ -27,5 +27,6 @@
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 + (NSUInteger)infoPlistSupportedInterfaceOrientationsMask;
 + (NSString *)searchBarPlaceholderText;
++ (BOOL)isImagePathExtension:(NSString *)extension;
 
 @end

@@ -177,4 +177,10 @@
     return @"Filter";
 }
 
++ (BOOL)isImagePathExtension:(NSString *)extension
+{
+    // https://developer.apple.com/library/ios/documentation/uikit/reference/UIImage_Class/Reference/Reference.html#//apple_ref/doc/uid/TP40006890-CH3-SW3
+    return [@[@"jpg", @"jpeg", @"png", @"gif", @"tiff", @"tif"] containsObject:extension];
+}
+
 @end
