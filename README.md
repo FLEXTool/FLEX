@@ -12,17 +12,17 @@
  - Thanks/credits section
 - Blog post
 - Cleanup and comments
+- License
+- CocoaPods
 
 ### Nice to haves:
-- Image preview in the file browser for image files
+- Consider a custom UILabel explorer that extends the UIView explorer
 - Search bar filtering in file browser
-- View hierarchy 3D perspective
+- Sorting by file size in file browser
 - UIColor argument input view
 - UIFont argument input view
-- File browser: try to parse binary files as plists even if they lack the .plist extension
+- File browser: try to parse binary files as plists or keyed archives even if they lack the extension?
 - Demo app
-- Considder a custom UILabel explorer that extends the UIView explorer
-- Toast when method calling or property setting fails
 - Support setting mutable array/dictionary properties
 - Mutable collection editing
 - Drill in from class explorer to properties, ivars, and methods for full names and attributes ("call/set" disabled/hidden)
