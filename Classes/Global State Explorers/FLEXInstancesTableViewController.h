@@ -10,8 +10,7 @@
 
 @interface FLEXInstancesTableViewController : UITableViewController
 
-@property (nonatomic, strong) NSArray *instances;
-
 + (instancetype)instancesTableViewControllerForClassName:(NSString *)className;
++ (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object;
 
 @end

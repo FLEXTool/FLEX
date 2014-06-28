@@ -14,6 +14,7 @@
 #import "FLEXPropertyEditorViewController.h"
 #import "FLEXIvarEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
+#import "FLEXInstancesTableViewController.h"
 #import <objc/runtime.h>
 
 // Convenience boxes to keep runtime properties, ivars, and methods in foundation collections.
@@ -499,7 +500,8 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
                              @(FLEXObjectExplorerSectionIvars),
                              @(FLEXObjectExplorerSectionMethods),
                              @(FLEXObjectExplorerSectionClassMethods),
-                             @(FLEXObjectExplorerSectionSuperclasses)];
+                             @(FLEXObjectExplorerSectionSuperclasses),
+                             @(FLEXObjectExplorerSectionReferencingInstances)];
     });
     return possibleSections;
 }
@@ -565,6 +567,10 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         case FLEXObjectExplorerSectionSuperclasses:
             numberOfRows = [self.filteredSuperclasses count];
             break;
+            
+        case FLEXObjectExplorerSectionReferencingInstances:
+            numberOfRows = 1;
+            break;
     }
     return numberOfRows;
 }
@@ -599,6 +605,11 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             
         case FLEXObjectExplorerSectionSuperclasses:
             title = NSStringFromClass([self.filteredSuperclasses objectAtIndex:row]);
+            break;
+            
+        case FLEXObjectExplorerSectionReferencingInstances:
+            title = @"Other objects with ivars referencing this object";
+            break;
     }
     return title;
 }
@@ -629,6 +640,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionSuperclasses:
+            break;
+            
+        case FLEXObjectExplorerSectionReferencingInstances:
             break;
     }
     return subtitle;
@@ -674,6 +688,10 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionSuperclasses:
+            canDrillIn = YES;
+            break;
+            
+        case FLEXObjectExplorerSectionReferencingInstances:
             canDrillIn = YES;
             break;
     }
@@ -727,6 +745,10 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         case FLEXObjectExplorerSectionSuperclasses: {
             title = [self sectionTitleWithBaseName:@"Superclasses" totalCount:[self.superclasses count] filteredCount:[self.filteredSuperclasses count]];
         } break;
+            
+        case FLEXObjectExplorerSectionReferencingInstances: {
+            title = @"Object Graph";
+        } break;
     }
     return title;
 }
@@ -775,7 +797,11 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         case FLEXObjectExplorerSectionSuperclasses: {
             Class superclass = [self.filteredSuperclasses objectAtIndex:row];
             viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:superclass];
-        }
+        } break;
+            
+        case FLEXObjectExplorerSectionReferencingInstances: {
+            viewController = [FLEXInstancesTableViewController instancesTableViewControllerForInstancesReferencingObject:self.object];
+        } break;
     }
     return viewController;
 }

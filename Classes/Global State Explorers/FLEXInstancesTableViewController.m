@@ -15,6 +15,9 @@
 
 @interface FLEXInstancesTableViewController ()
 
+@property (nonatomic, strong) NSArray *instances;
+@property (nonatomic, strong) NSArray *fieldNames;
+
 @end
 
 @implementation FLEXInstancesTableViewController
@@ -34,6 +37,40 @@
     FLEXInstancesTableViewController *instancesViewController = [[self alloc] init];
     instancesViewController.instances = instances;
     instancesViewController.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)[instances count]];
+    return instancesViewController;
+}
+
++ (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object
+{
+    NSMutableArray *instances = [NSMutableArray array];
+    NSMutableArray *fieldNames = [NSMutableArray array];
+    [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
+        // Get all the ivars on the object. Start with the class and and travel up the inheritance chain.
+        // Once we find a match, record it and move on to the next object. There's no reason to find multiple matches within the same object.
+        Class tryClass = actualClass;
+        while (tryClass) {
+            unsigned int ivarCount = 0;
+            Ivar *ivars = class_copyIvarList(tryClass, &ivarCount);
+            for (unsigned int ivarIndex = 0; ivarIndex < ivarCount; ivarIndex++) {
+                Ivar ivar = ivars[ivarIndex];
+                const char *typeEncoding = ivar_getTypeEncoding(ivar);
+                if (typeEncoding[0] == @encode(id)[0] || typeEncoding[0] == @encode(Class)[0]) {
+                    ptrdiff_t offset = ivar_getOffset(ivar);
+                    uintptr_t *fieldPointer = (__bridge void *)tryObject + offset;
+                    if (*fieldPointer == (uintptr_t)(__bridge void *)object) {
+                        [instances addObject:tryObject];
+                        [fieldNames addObject:@(ivar_getName(ivar))];
+                        return;
+                    }
+                }
+            }
+            tryClass = class_getSuperclass(tryClass);
+        }
+    }];
+    FLEXInstancesTableViewController *instancesViewController = [[self alloc] init];
+    instancesViewController.instances = instances;
+    instancesViewController.fieldNames = fieldNames;
+    instancesViewController.title = [NSString stringWithFormat:@"Referencing %@ %p", NSStringFromClass(object_getClass(object)), object];
     return instancesViewController;
 }
 
@@ -64,7 +101,13 @@
     }
     
     id instance = [self.instances objectAtIndex:indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"%p", instance];
+    NSString *title = nil;
+    if ([self.fieldNames count] > indexPath.row) {
+        title = [NSString stringWithFormat:@"%@ %@", NSStringFromClass(object_getClass(instance)), [self.fieldNames objectAtIndex:indexPath.row]];
+    } else {
+        title = [NSString stringWithFormat:@"%@ %p", NSStringFromClass(object_getClass(instance)), instance];
+    }
+    cell.textLabel.text = title;
     cell.detailTextLabel.text = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:instance];
     
     return cell;
