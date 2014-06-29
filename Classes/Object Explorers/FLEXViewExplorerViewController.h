@@ -10,8 +10,4 @@
 
 @interface FLEXViewExplorerViewController : FLEXObjectExplorerViewController
 
-/// Array of NSStrings that match property names on the view we're exploring.
-/// Subclasses can override to modify or append properties that should show up in the custom "shortcuts" section.
-- (NSArray *)shortcutPropertyNames;
-
 @end
