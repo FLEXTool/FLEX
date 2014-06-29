@@ -56,7 +56,13 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
 
 - (NSArray *)shortcutPropertyNames
 {
-    return @[@"frame", @"bounds", @"center", @"transform", @"backgroundColor", @"alpha", @"opaque", @"hidden", @"clipsToBounds", @"userInteractionEnabled"];
+    NSArray *propertyNames = @[@"frame", @"bounds", @"center", @"transform", @"backgroundColor", @"alpha", @"opaque", @"hidden", @"clipsToBounds", @"userInteractionEnabled"];
+    
+    if ([self.viewToExplore isKindOfClass:[UILabel class]]) {
+        propertyNames = [@[@"text", @"font", @"textColor"] arrayByAddingObjectsFromArray:propertyNames];
+    }
+    
+    return propertyNames;
 }
 
 - (NSString *)customSectionTitleForRowCookie:(id)rowCookie
