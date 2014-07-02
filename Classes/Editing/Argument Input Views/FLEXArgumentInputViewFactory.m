@@ -15,6 +15,7 @@
 #import "FLEXArgumentInputNotSupportedView.h"
 #import "FLEXArgumentInputStringView.h"
 #import "FLEXArgumentInputFontView.h"
+#import "FLEXArgumentInputColorView.h"
 
 @implementation FLEXArgumentInputViewFactory
 
@@ -36,7 +37,9 @@
     // Note that order is important here since multiple subclasses may support the same type.
     // An example is the number subclass and the bool subclass for the type @encode(BOOL).
     // Both work, but we'd prefer to use the bool subclass.
-    if ([FLEXArgumentInputFontView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
+    if ([FLEXArgumentInputColorView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
+        argumentInputViewSubclass = [FLEXArgumentInputColorView class];
+    } else if ([FLEXArgumentInputFontView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
         argumentInputViewSubclass = [FLEXArgumentInputFontView class];
     } else if ([FLEXArgumentInputStringView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
         argumentInputViewSubclass = [FLEXArgumentInputStringView class];
