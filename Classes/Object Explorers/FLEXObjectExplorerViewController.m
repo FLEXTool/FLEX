@@ -95,11 +95,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSMutableArray *visibleIndexPaths = [NSMutableArray array];
-    for (UITableViewCell *cell in [self.tableView visibleCells]) {
-        [visibleIndexPaths addObject:[self.tableView indexPathForCell:cell]];
-    }
-    [self.tableView reloadRowsAtIndexPaths:visibleIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+    // Reload the entire table view rather than just the visible cells because the filtered rows
+    // may have changed (i.e. a change in the description row that causes it to get filtered out).
+    [self updateTableData];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
