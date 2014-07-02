@@ -353,7 +353,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     } @catch (NSException *exception) {
         // Bummer...
         if (error) {
-            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Exception thrown while performing selector %@ on object %@", object, NSStringFromSelector(selector)]};
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Exception thrown while performing selector %@ on object %@", NSStringFromSelector(selector), object]};
             *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeInvocationFailed userInfo:userInfo];
         }
     }
