@@ -16,11 +16,8 @@
 - CocoaPods
 
 ### Nice to haves:
-- Consider a custom UILabel explorer that extends the UIView explorer
 - Search bar filtering in file browser
 - Sorting by file size in file browser
-- UIColor argument input view
-- UIFont argument input view
 - File browser: try to parse binary files as plists or keyed archives even if they lack the extension?
 - Demo app
 - Support setting mutable array/dictionary properties
