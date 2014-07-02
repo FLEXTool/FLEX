@@ -200,7 +200,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     NSDictionary *hiddenAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isHidden"};
     [FLEXRuntimeUtility tryAddPropertyWithName:"hidden" attributes:hiddenAttributes toClass:[UIView class]];
     
-    NSDictionary *backgroundColorAttributes = @{kFLEXUtilityAttributeTypeEncoding : @"@\"UIColor\"", kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCopy : @""};
+    NSDictionary *backgroundColorAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(FLEXEncodeClass(UIColor)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCopy : @""};
     [FLEXRuntimeUtility tryAddPropertyWithName:"backgroundColor" attributes:backgroundColorAttributes toClass:[UIView class]];
 }
 

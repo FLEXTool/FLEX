@@ -7,6 +7,7 @@
 //
 
 #import "FLEXArgumentInputStringView.h"
+#import "FLEXRuntimeUtility.h"
 
 @implementation FLEXArgumentInputStringView
 
@@ -36,7 +37,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    BOOL supported = strcmp(type, "@\"NSString\"") == 0;
+    BOOL supported = strcmp(type, FLEXEncodeClass(NSString)) == 0;
     supported = supported || (value && [value isKindOfClass:[NSString class]]);
     return supported;
 }

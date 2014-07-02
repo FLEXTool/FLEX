@@ -25,6 +25,8 @@ extern NSString *const kFLEXUtilityAttributeWeak;
 extern NSString *const kFLEXUtilityAttributeGarbageCollectable;
 extern NSString *const kFLEXUtilityAttributeOldStyleTypeEncoding;
 
+#define FLEXEncodeClass(class) ("@\"" #class "\"")
+
 @interface FLEXRuntimeUtility : NSObject
 
 // Property Helpers

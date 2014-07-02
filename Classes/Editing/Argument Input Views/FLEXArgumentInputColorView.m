@@ -8,6 +8,7 @@
 
 #import "FLEXArgumentInputColorView.h"
 #import "FLEXUtility.h"
+#import "FLEXRuntimeUtility.h"
 
 @protocol FLEXColorComponentInputViewDelegate;
 
@@ -322,7 +323,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    return strcmp(type, @encode(CGColorRef)) == 0 || strcmp(type, "@\"UIColor\"") == 0 || [value isKindOfClass:[UIColor class]];
+    return strcmp(type, @encode(CGColorRef)) == 0 || strcmp(type, FLEXEncodeClass(UIColor)) == 0 || [value isKindOfClass:[UIColor class]];
 }
 
 @end

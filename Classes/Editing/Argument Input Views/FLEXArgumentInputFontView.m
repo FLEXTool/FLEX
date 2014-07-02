@@ -8,6 +8,7 @@
 
 #import "FLEXArgumentInputFontView.h"
 #import "FLEXArgumentInputViewFactory.h"
+#import "FLEXRuntimeUtility.h"
 
 @interface FLEXArgumentInputFontView ()
 
@@ -22,7 +23,7 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        self.fontNameInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:"@\"NSString\""];
+        self.fontNameInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:FLEXEncodeClass(NSString)];
         self.fontNameInput.backgroundColor = self.backgroundColor;
         self.fontNameInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.fontNameInput.title = @"Font Name:";
@@ -111,7 +112,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    BOOL supported = strcmp(type, "@\"UIFont\"") == 0;
+    BOOL supported = strcmp(type, FLEXEncodeClass(UIFont)) == 0;
     supported = supported || (value && [value isKindOfClass:[UIFont class]]);
     return supported;
 }
