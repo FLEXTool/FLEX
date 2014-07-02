@@ -310,6 +310,10 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             if (typeEncodingCString[0] == @encode(id)[0] || typeEncodingCString[0] == @encode(Class)[0]) {
                 // Object
                 [invocation setArgument:&argumentObject atIndex:argumentIndex];
+            } else if (strcmp(typeEncodingCString, @encode(CGColorRef)) == 0 && [argumentObject isKindOfClass:[UIColor class]]) {
+                // Bridging UIColor to CGColorRef
+                CGColorRef colorRef = [argumentObject CGColor];
+                [invocation setArgument:&colorRef atIndex:argumentIndex];
             } else if ([argumentObject isKindOfClass:[NSValue class]]){
                 // Primitive boxed in NSValue
                 NSValue *argumentValue = (NSValue *)argumentObject;
