@@ -307,7 +307,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         // NSNull in the arguments array can be passed as a placeholder to indicate nil. We only need to set the argument if it will be non-nil.
         if (argumentObject && ![argumentObject isKindOfClass:[NSNull class]]) {
             const char *typeEncodingCString = [methodSignature getArgumentTypeAtIndex:argumentIndex];
-            if (typeEncodingCString[0] == @encode(id)[0] || typeEncodingCString[0] == @encode(Class)[0]) {
+            if (typeEncodingCString[0] == @encode(id)[0] || typeEncodingCString[0] == @encode(Class)[0] || [self isTollFreeBridgedValue:argumentObject forCFType:typeEncodingCString]) {
                 // Object
                 [invocation setArgument:&argumentObject atIndex:argumentIndex];
             } else if (strcmp(typeEncodingCString, @encode(CGColorRef)) == 0 && [argumentObject isKindOfClass:[UIColor class]]) {
@@ -377,6 +377,44 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
     
     return returnObject;
+}
+
++ (BOOL)isTollFreeBridgedValue:(id)value forCFType:(const char *)typeEncoding
+{
+    // See https://developer.apple.com/library/ios/documentation/general/conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html
+#define CASE(cftype, foundationClass) \
+    if(strcmp(typeEncoding, @encode(cftype)) == 0) { \
+        return [value isKindOfClass:[foundationClass class]]; \
+    }
+    
+    CASE(CFArrayRef, NSArray);
+    CASE(CFAttributedStringRef, NSAttributedString);
+    CASE(CFCalendarRef, NSCalendar);
+    CASE(CFCharacterSetRef, NSCharacterSet);
+    CASE(CFDataRef, NSData);
+    CASE(CFDateRef, NSDate);
+    CASE(CFDictionaryRef, NSDictionary);
+    CASE(CFErrorRef, NSError);
+    CASE(CFLocaleRef, NSLocale);
+    CASE(CFMutableArrayRef, NSMutableArray);
+    CASE(CFMutableAttributedStringRef, NSMutableAttributedString);
+    CASE(CFMutableCharacterSetRef, NSMutableCharacterSet);
+    CASE(CFMutableDataRef, NSMutableData);
+    CASE(CFMutableDictionaryRef, NSMutableDictionary);
+    CASE(CFMutableSetRef, NSMutableSet);
+    CASE(CFMutableStringRef, NSMutableString);
+    CASE(CFNumberRef, NSNumber);
+    CASE(CFReadStreamRef, NSInputStream);
+    CASE(CFRunLoopTimerRef, NSTimer);
+    CASE(CFSetRef, NSSet);
+    CASE(CFStringRef, NSString);
+    CASE(CFTimeZoneRef, NSTimeZone);
+    CASE(CFURLRef, NSURL);
+    CASE(CFWriteStreamRef, NSOutputStream);
+    
+#undef CASE
+    
+    return NO;
 }
 
 + (NSString *)editableJSONStringForObject:(id)object
