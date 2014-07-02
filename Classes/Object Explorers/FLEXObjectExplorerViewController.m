@@ -569,7 +569,8 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionReferencingInstances:
-            numberOfRows = 1;
+            // Hide this section if there is fliter text since there's nothing searchable (only 1 row, always the same).
+            numberOfRows = [self.filterText length] == 0 ? 1 : 0;
             break;
     }
     return numberOfRows;
