@@ -145,7 +145,12 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     } else if ([rowCookie isKindOfClass:[NSString class]]) {
         objc_property_t property = [self viewPropertyForName:rowCookie];
         if (property) {
-            drillInViewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.viewToExplore property:property];
+            id currentValue = [FLEXRuntimeUtility valueForProperty:property onObject:self.viewToExplore];
+            if ([FLEXPropertyEditorViewController canEditProperty:property currentValue:currentValue]) {
+                drillInViewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.object property:property];
+            } else {
+                drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
+            }
         }
     }
 
