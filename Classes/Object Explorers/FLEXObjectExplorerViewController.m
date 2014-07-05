@@ -133,7 +133,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (void)setObject:(id)object
 {
     _object = object;
-    self.title = [[object class] description];
+    self.title = @(class_getName(object_getClass(object)));
     [self updateTableData];
 }
 
