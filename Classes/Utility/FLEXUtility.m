@@ -27,7 +27,7 @@
     }
     
     if (includeFrame) {
-        description = [description stringByAppendingFormat:@" frame %@", [self stringForCGRect:view.frame]];
+        description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:view.frame]];
     }
     
     if ([view.accessibilityLabel length] > 0) {
@@ -39,7 +39,7 @@
 
 + (NSString *)stringForCGRect:(CGRect)rect
 {
-    return [NSString stringWithFormat:@"{x: %g, y: %g, w: %g, h: %g}", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height];
+    return [NSString stringWithFormat:@"{(%g, %g), (%g, %g)}", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height];
 }
 
 + (UIViewController *)viewControllerForView:(UIView *)view
