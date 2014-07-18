@@ -133,7 +133,8 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (void)setObject:(id)object
 {
     _object = object;
-    self.title = @(class_getName(object_getClass(object)));
+    // Use [object class] here rather than object_getClass because we don't want to show the KVO prefix for observed objects.
+    self.title = [[object class] description];
     [self updateTableData];
 }
 
