@@ -112,7 +112,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    BOOL supported = strcmp(type, FLEXEncodeClass(UIFont)) == 0;
+    BOOL supported = type && strcmp(type, FLEXEncodeClass(UIFont)) == 0;
     supported = supported || (value && [value isKindOfClass:[UIFont class]]);
     return supported;
 }

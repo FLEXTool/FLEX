@@ -81,7 +81,7 @@
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
     // Only BOOLs. Current value is irrelevant.
-    return strcmp(type, @encode(BOOL)) == 0;
+    return type && strcmp(type, @encode(BOOL)) == 0;
 }
 
 @end

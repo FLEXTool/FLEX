@@ -36,7 +36,7 @@
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
     // Must be object type.
-    BOOL supported = type[0] == '@';
+    BOOL supported = type && type[0] == '@';
     
     if (supported) {
         if (value) {

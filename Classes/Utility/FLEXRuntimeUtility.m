@@ -190,8 +190,10 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)prettyNameForIvar:(Ivar)ivar
 {
-    NSString *name = @(ivar_getName(ivar));
-    NSString *encoding = @(ivar_getTypeEncoding(ivar));
+    const char *nameCString = ivar_getName(ivar);
+    NSString *name = nameCString ? @(nameCString) : nil;
+    const char *encodingCString = ivar_getTypeEncoding(ivar);
+    NSString *encoding = encodingCString ? @(encodingCString) : nil;
     NSString *readableType = [self readableTypeForEncoding:encoding];
     return [self appendName:name toType:readableType];
 }
@@ -562,6 +564,10 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)readableTypeForEncoding:(NSString *)encodingString
 {
+    if (!encodingString) {
+        return nil;
+    }
+    
     // See https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
     // class-dump has a much nicer and much more complete implementation for this task, but it is distributed under GPLv2 :/
     // See https://github.com/nygard/class-dump/blob/master/Source/CDType.m

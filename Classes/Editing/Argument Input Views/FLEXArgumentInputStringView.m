@@ -37,7 +37,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    BOOL supported = strcmp(type, FLEXEncodeClass(NSString)) == 0;
+    BOOL supported = type && strcmp(type, FLEXEncodeClass(NSString)) == 0;
     supported = supported || (value && [value isKindOfClass:[NSString class]]);
     return supported;
 }

@@ -51,7 +51,7 @@
                            @(@encode(float)),
                            @(@encode(double))];
     });
-    return [primitiveTypes containsObject:@(type)];
+    return type && [primitiveTypes containsObject:@(type)];
 }
 
 @end

@@ -176,7 +176,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    return type[0] == '{';
+    return type && type[0] == '{';
 }
 
 + (NSArray *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding
