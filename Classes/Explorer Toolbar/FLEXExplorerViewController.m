@@ -91,7 +91,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Start the toolbar off below any bars that may be at the top of the view.
     CGFloat toolbarOriginY = 100.0;
     self.explorerToolbar.frame = CGRectMake(0.0, toolbarOriginY, toolbarSize.width, toolbarSize.height);
-    self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.explorerToolbar];
     [self setupToolbarActions];
     [self setupToolbarGestures];
