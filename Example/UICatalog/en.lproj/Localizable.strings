@@ -1,0 +1,32 @@
+/*
+    <codex>
+        <abstract>Strings used across the application via the NSLocalizedString API.</abstract>
+    </codex>
+*/
+
+"OK" = "OK";
+"Cancel" = "Cancel";
+"Destructive Choice" = "Destructive Choice";
+"Safe Choice" = "Safe Choice";
+"A Short Title Is Best" = "A Short Title Is Best";
+"A message should be a short, complete sentence." = "A message should be a short, complete sentence.";
+"Choice One" = "Choice One";
+"Choice Two" = "Choice Two";
+"Button" = "Button";
+"X Button" = "X Button";
+"Image" = "Image";
+"Action" = "Action";
+"bold" = "bold";
+"highlighted" = "highlighted";
+"underlined" = "underlined";
+"tinted" = "tinted";
+"Placeholder text" = "Placeholder text";
+"Red color component value" = "Red color component value";
+"Green color component value" = "Green color component value";
+"Blue color component value" = "Blue color component value";
+"Animated images" = "Animated images";
+"Done" = "Done";
+"Search" = "Search";
+"Settings" = "Settings";
+"UICatalog" = "UICatalog";
+"An error occured:" = "An error occured:";

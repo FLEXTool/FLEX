@@ -1,0 +1,871 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3EC6487318FF8A5000024205 /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3EC6487218FF8A5000024205 /* ReadMe.txt */; };
+		5356823E18F3656900BAAD62 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356823D18F3656900BAAD62 /* Foundation.framework */; };
+		5356824018F3656900BAAD62 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356823F18F3656900BAAD62 /* CoreGraphics.framework */; };
+		5356824218F3656900BAAD62 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356824118F3656900BAAD62 /* UIKit.framework */; };
+		5356824A18F3656900BAAD62 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356824918F3656900BAAD62 /* main.m */; };
+		5356825118F3656900BAAD62 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5356824F18F3656900BAAD62 /* Main_iPhone.storyboard */; };
+		5356825418F3656900BAAD62 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5356825218F3656900BAAD62 /* Main_iPad.storyboard */; };
+		5356825918F3656900BAAD62 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5356825818F3656900BAAD62 /* Images.xcassets */; };
+		535682A718F3670300BAAD62 /* AAPLActionSheetViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356827618F3670200BAAD62 /* AAPLActionSheetViewController.m */; };
+		535682A818F3670300BAAD62 /* AAPLActivityIndicatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356827818F3670300BAAD62 /* AAPLActivityIndicatorViewController.m */; };
+		535682A918F3670300BAAD62 /* AAPLAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356827A18F3670300BAAD62 /* AAPLAlertViewController.m */; };
+		535682AA18F3670300BAAD62 /* AAPLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356827C18F3670300BAAD62 /* AAPLAppDelegate.m */; };
+		535682AB18F3670300BAAD62 /* AAPLButtonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356827E18F3670300BAAD62 /* AAPLButtonViewController.m */; };
+		535682AC18F3670300BAAD62 /* AAPLCustomSearchBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828018F3670300BAAD62 /* AAPLCustomSearchBarViewController.m */; };
+		535682AD18F3670300BAAD62 /* AAPLCustomToolbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828218F3670300BAAD62 /* AAPLCustomToolbarViewController.m */; };
+		535682AE18F3670300BAAD62 /* AAPLDatePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828418F3670300BAAD62 /* AAPLDatePickerController.m */; };
+		535682AF18F3670300BAAD62 /* AAPLDefaultSearchBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828618F3670300BAAD62 /* AAPLDefaultSearchBarViewController.m */; };
+		535682B018F3670300BAAD62 /* AAPLDefaultToolbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828818F3670300BAAD62 /* AAPLDefaultToolbarViewController.m */; };
+		535682B118F3670300BAAD62 /* AAPLImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828A18F3670300BAAD62 /* AAPLImageViewController.m */; };
+		535682B218F3670300BAAD62 /* AAPLMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828C18F3670300BAAD62 /* AAPLMasterViewController.m */; };
+		535682B318F3670300BAAD62 /* AAPLPageControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356828E18F3670300BAAD62 /* AAPLPageControlViewController.m */; };
+		535682B418F3670300BAAD62 /* AAPLPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829018F3670300BAAD62 /* AAPLPickerViewController.m */; };
+		535682B518F3670300BAAD62 /* AAPLProgressViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829218F3670300BAAD62 /* AAPLProgressViewController.m */; };
+		535682B618F3670300BAAD62 /* AAPLSegmentedControlViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829418F3670300BAAD62 /* AAPLSegmentedControlViewController.m */; };
+		535682B718F3670300BAAD62 /* AAPLSliderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829618F3670300BAAD62 /* AAPLSliderViewController.m */; };
+		535682B818F3670300BAAD62 /* AAPLSplitViewControllerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829818F3670300BAAD62 /* AAPLSplitViewControllerDelegate.m */; };
+		535682B918F3670300BAAD62 /* AAPLStepperViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829A18F3670300BAAD62 /* AAPLStepperViewController.m */; };
+		535682BA18F3670300BAAD62 /* AAPLSwitchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829C18F3670300BAAD62 /* AAPLSwitchViewController.m */; };
+		535682BB18F3670300BAAD62 /* AAPLTextFieldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5356829E18F3670300BAAD62 /* AAPLTextFieldViewController.m */; };
+		535682BC18F3670300BAAD62 /* AAPLTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A018F3670300BAAD62 /* AAPLTextViewController.m */; };
+		535682BD18F3670300BAAD62 /* AAPLTintedToolbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A218F3670300BAAD62 /* AAPLTintedToolbarViewController.m */; };
+		535682BE18F3670300BAAD62 /* AAPLWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A418F3670300BAAD62 /* AAPLWebViewController.m */; };
+		535682BF18F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */; };
+		53874F9918F36B1800510922 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53874F9718F36B1800510922 /* Localizable.strings */; };
+		943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */; };
+		944F7489197B458C009AB039 /* FLEXArrayExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7426197B458C009AB039 /* FLEXArrayExplorerViewController.m */; };
+		944F748A197B458C009AB039 /* FLEXClassExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7428197B458C009AB039 /* FLEXClassExplorerViewController.m */; };
+		944F748B197B458C009AB039 /* FLEXDefaultsExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F742A197B458C009AB039 /* FLEXDefaultsExplorerViewController.m */; };
+		944F748C197B458C009AB039 /* FLEXDescriptionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F742C197B458C009AB039 /* FLEXDescriptionTableViewCell.m */; };
+		944F748D197B458C009AB039 /* FLEXDictionaryExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F742E197B458C009AB039 /* FLEXDictionaryExplorerViewController.m */; };
+		944F748E197B458C009AB039 /* FLEXImageExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7430197B458C009AB039 /* FLEXImageExplorerViewController.m */; };
+		944F748F197B458C009AB039 /* FLEXObjectExplorerFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7432197B458C009AB039 /* FLEXObjectExplorerFactory.m */; };
+		944F7490197B458C009AB039 /* FLEXObjectExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7434197B458C009AB039 /* FLEXObjectExplorerViewController.m */; };
+		944F7491197B458C009AB039 /* FLEXSetExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7436197B458C009AB039 /* FLEXSetExplorerViewController.m */; };
+		944F7492197B458C009AB039 /* FLEXViewControllerExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7438197B458C009AB039 /* FLEXViewControllerExplorerViewController.m */; };
+		944F7493197B458C009AB039 /* FLEXViewExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F743A197B458C009AB039 /* FLEXViewExplorerViewController.m */; };
+		944F7494197B458C009AB039 /* FLEXHeapEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F743D197B458C009AB039 /* FLEXHeapEnumerator.m */; };
+		944F7495197B458C009AB039 /* FLEXResources.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F743F197B458C009AB039 /* FLEXResources.m */; };
+		944F7496197B458C009AB039 /* FLEXRuntimeUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7441197B458C009AB039 /* FLEXRuntimeUtility.m */; };
+		944F7497197B458C009AB039 /* FLEXUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7443197B458C009AB039 /* FLEXUtility.m */; };
+		944F7498197B458C009AB039 /* FLEXArgumentInputColorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7447197B458C009AB039 /* FLEXArgumentInputColorView.m */; };
+		944F7499197B458C009AB039 /* FLEXArgumentInputFontView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7449197B458C009AB039 /* FLEXArgumentInputFontView.m */; };
+		944F749A197B458C009AB039 /* FLEXArgumentInputJSONObjectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F744B197B458C009AB039 /* FLEXArgumentInputJSONObjectView.m */; };
+		944F749B197B458C009AB039 /* FLEXArgumentInputNotSupportedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F744D197B458C009AB039 /* FLEXArgumentInputNotSupportedView.m */; };
+		944F749C197B458C009AB039 /* FLEXArgumentInputNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F744F197B458C009AB039 /* FLEXArgumentInputNumberView.m */; };
+		944F749D197B458C009AB039 /* FLEXArgumentInputStringView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7451197B458C009AB039 /* FLEXArgumentInputStringView.m */; };
+		944F749E197B458C009AB039 /* FLEXArgumentInputStructView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7453197B458C009AB039 /* FLEXArgumentInputStructView.m */; };
+		944F749F197B458C009AB039 /* FLEXArgumentInputSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7455197B458C009AB039 /* FLEXArgumentInputSwitchView.m */; };
+		944F74A0197B458C009AB039 /* FLEXArgumentInputTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7457197B458C009AB039 /* FLEXArgumentInputTextView.m */; };
+		944F74A1197B458C009AB039 /* FLEXArgumentInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7459197B458C009AB039 /* FLEXArgumentInputView.m */; };
+		944F74A2197B458C009AB039 /* FLEXArgumentInputViewFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F745B197B458C009AB039 /* FLEXArgumentInputViewFactory.m */; };
+		944F74A3197B458C009AB039 /* FLEXDefaultEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F745D197B458C009AB039 /* FLEXDefaultEditorViewController.m */; };
+		944F74A4197B458C009AB039 /* FLEXFieldEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F745F197B458C009AB039 /* FLEXFieldEditorView.m */; };
+		944F74A5197B458C009AB039 /* FLEXFieldEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7461197B458C009AB039 /* FLEXFieldEditorViewController.m */; };
+		944F74A6197B458C009AB039 /* FLEXIvarEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7463197B458C009AB039 /* FLEXIvarEditorViewController.m */; };
+		944F74A7197B458C009AB039 /* FLEXMethodCallingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7465197B458C009AB039 /* FLEXMethodCallingViewController.m */; };
+		944F74A8197B458C009AB039 /* FLEXPropertyEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7467197B458C009AB039 /* FLEXPropertyEditorViewController.m */; };
+		944F74A9197B458C009AB039 /* FLEXExplorerToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F746A197B458C009AB039 /* FLEXExplorerToolbar.m */; };
+		944F74AA197B458C009AB039 /* FLEXExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F746C197B458C009AB039 /* FLEXExplorerViewController.m */; };
+		944F74AB197B458C009AB039 /* FLEXManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F746E197B458C009AB039 /* FLEXManager.m */; };
+		944F74AC197B458C009AB039 /* FLEXToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7470197B458C009AB039 /* FLEXToolbarItem.m */; };
+		944F74AD197B458C009AB039 /* FLEXWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7472197B458C009AB039 /* FLEXWindow.m */; };
+		944F74AE197B458C009AB039 /* FLEXClassesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7475197B458C009AB039 /* FLEXClassesTableViewController.m */; };
+		944F74AF197B458C009AB039 /* FLEXFileBrowserTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7477197B458C009AB039 /* FLEXFileBrowserTableViewController.m */; };
+		944F74B0197B458C009AB039 /* FLEXGlobalsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7479197B458C009AB039 /* FLEXGlobalsTableViewController.m */; };
+		944F74B1197B458C009AB039 /* FLEXInstancesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F747B197B458C009AB039 /* FLEXInstancesTableViewController.m */; };
+		944F74B2197B458C009AB039 /* FLEXLibrariesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F747D197B458C009AB039 /* FLEXLibrariesTableViewController.m */; };
+		944F74B3197B458C009AB039 /* FLEXLiveObjectsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F747F197B458C009AB039 /* FLEXLiveObjectsTableViewController.m */; };
+		944F74B4197B458C009AB039 /* FLEXWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7481197B458C009AB039 /* FLEXWebViewController.m */; };
+		944F74B5197B458C009AB039 /* FLEXHierarchyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7484197B458C009AB039 /* FLEXHierarchyTableViewCell.m */; };
+		944F74B6197B458C009AB039 /* FLEXHierarchyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7486197B458C009AB039 /* FLEXHierarchyTableViewController.m */; };
+		944F74B7197B458C009AB039 /* FLEXImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7488197B458C009AB039 /* FLEXImagePreviewViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3EC6487218FF8A5000024205 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = SOURCE_ROOT; };
+		5356823A18F3656900BAAD62 /* UICatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UICatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5356823D18F3656900BAAD62 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5356823F18F3656900BAAD62 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		5356824118F3656900BAAD62 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		5356824518F3656900BAAD62 /* UICatalog-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UICatalog-Info.plist"; sourceTree = "<group>"; };
+		5356824918F3656900BAAD62 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5356824B18F3656900BAAD62 /* UICatalog-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UICatalog-Prefix.pch"; sourceTree = "<group>"; };
+		5356825018F3656900BAAD62 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
+		5356825318F3656900BAAD62 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
+		5356825818F3656900BAAD62 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		5356827518F3670200BAAD62 /* AAPLActionSheetViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLActionSheetViewController.h; sourceTree = "<group>"; };
+		5356827618F3670200BAAD62 /* AAPLActionSheetViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLActionSheetViewController.m; sourceTree = "<group>"; };
+		5356827718F3670200BAAD62 /* AAPLActivityIndicatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLActivityIndicatorViewController.h; sourceTree = "<group>"; };
+		5356827818F3670300BAAD62 /* AAPLActivityIndicatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLActivityIndicatorViewController.m; sourceTree = "<group>"; };
+		5356827918F3670300BAAD62 /* AAPLAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLAlertViewController.h; sourceTree = "<group>"; };
+		5356827A18F3670300BAAD62 /* AAPLAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLAlertViewController.m; sourceTree = "<group>"; };
+		5356827B18F3670300BAAD62 /* AAPLAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLAppDelegate.h; sourceTree = "<group>"; };
+		5356827C18F3670300BAAD62 /* AAPLAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLAppDelegate.m; sourceTree = "<group>"; };
+		5356827D18F3670300BAAD62 /* AAPLButtonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLButtonViewController.h; sourceTree = "<group>"; };
+		5356827E18F3670300BAAD62 /* AAPLButtonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLButtonViewController.m; sourceTree = "<group>"; };
+		5356827F18F3670300BAAD62 /* AAPLCustomSearchBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCustomSearchBarViewController.h; sourceTree = "<group>"; };
+		5356828018F3670300BAAD62 /* AAPLCustomSearchBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCustomSearchBarViewController.m; sourceTree = "<group>"; };
+		5356828118F3670300BAAD62 /* AAPLCustomToolbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCustomToolbarViewController.h; sourceTree = "<group>"; };
+		5356828218F3670300BAAD62 /* AAPLCustomToolbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCustomToolbarViewController.m; sourceTree = "<group>"; };
+		5356828318F3670300BAAD62 /* AAPLDatePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLDatePickerController.h; sourceTree = "<group>"; };
+		5356828418F3670300BAAD62 /* AAPLDatePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLDatePickerController.m; sourceTree = "<group>"; };
+		5356828518F3670300BAAD62 /* AAPLDefaultSearchBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLDefaultSearchBarViewController.h; sourceTree = "<group>"; };
+		5356828618F3670300BAAD62 /* AAPLDefaultSearchBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLDefaultSearchBarViewController.m; sourceTree = "<group>"; };
+		5356828718F3670300BAAD62 /* AAPLDefaultToolbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLDefaultToolbarViewController.h; sourceTree = "<group>"; };
+		5356828818F3670300BAAD62 /* AAPLDefaultToolbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLDefaultToolbarViewController.m; sourceTree = "<group>"; };
+		5356828918F3670300BAAD62 /* AAPLImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLImageViewController.h; sourceTree = "<group>"; };
+		5356828A18F3670300BAAD62 /* AAPLImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLImageViewController.m; sourceTree = "<group>"; };
+		5356828B18F3670300BAAD62 /* AAPLMasterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLMasterViewController.h; sourceTree = "<group>"; };
+		5356828C18F3670300BAAD62 /* AAPLMasterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLMasterViewController.m; sourceTree = "<group>"; };
+		5356828D18F3670300BAAD62 /* AAPLPageControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLPageControlViewController.h; sourceTree = "<group>"; };
+		5356828E18F3670300BAAD62 /* AAPLPageControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLPageControlViewController.m; sourceTree = "<group>"; };
+		5356828F18F3670300BAAD62 /* AAPLPickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLPickerViewController.h; sourceTree = "<group>"; };
+		5356829018F3670300BAAD62 /* AAPLPickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLPickerViewController.m; sourceTree = "<group>"; };
+		5356829118F3670300BAAD62 /* AAPLProgressViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLProgressViewController.h; sourceTree = "<group>"; };
+		5356829218F3670300BAAD62 /* AAPLProgressViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLProgressViewController.m; sourceTree = "<group>"; };
+		5356829318F3670300BAAD62 /* AAPLSegmentedControlViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLSegmentedControlViewController.h; sourceTree = "<group>"; };
+		5356829418F3670300BAAD62 /* AAPLSegmentedControlViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLSegmentedControlViewController.m; sourceTree = "<group>"; };
+		5356829518F3670300BAAD62 /* AAPLSliderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLSliderViewController.h; sourceTree = "<group>"; };
+		5356829618F3670300BAAD62 /* AAPLSliderViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLSliderViewController.m; sourceTree = "<group>"; };
+		5356829718F3670300BAAD62 /* AAPLSplitViewControllerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLSplitViewControllerDelegate.h; sourceTree = "<group>"; };
+		5356829818F3670300BAAD62 /* AAPLSplitViewControllerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLSplitViewControllerDelegate.m; sourceTree = "<group>"; };
+		5356829918F3670300BAAD62 /* AAPLStepperViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLStepperViewController.h; sourceTree = "<group>"; };
+		5356829A18F3670300BAAD62 /* AAPLStepperViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLStepperViewController.m; sourceTree = "<group>"; };
+		5356829B18F3670300BAAD62 /* AAPLSwitchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLSwitchViewController.h; sourceTree = "<group>"; };
+		5356829C18F3670300BAAD62 /* AAPLSwitchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLSwitchViewController.m; sourceTree = "<group>"; };
+		5356829D18F3670300BAAD62 /* AAPLTextFieldViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLTextFieldViewController.h; sourceTree = "<group>"; };
+		5356829E18F3670300BAAD62 /* AAPLTextFieldViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLTextFieldViewController.m; sourceTree = "<group>"; };
+		5356829F18F3670300BAAD62 /* AAPLTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLTextViewController.h; sourceTree = "<group>"; };
+		535682A018F3670300BAAD62 /* AAPLTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLTextViewController.m; sourceTree = "<group>"; };
+		535682A118F3670300BAAD62 /* AAPLTintedToolbarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLTintedToolbarViewController.h; sourceTree = "<group>"; };
+		535682A218F3670300BAAD62 /* AAPLTintedToolbarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLTintedToolbarViewController.m; sourceTree = "<group>"; };
+		535682A318F3670300BAAD62 /* AAPLWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLWebViewController.h; sourceTree = "<group>"; };
+		535682A418F3670300BAAD62 /* AAPLWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLWebViewController.m; sourceTree = "<group>"; };
+		535682A518F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AAPLApplicationSpecific.h"; sourceTree = "<group>"; };
+		535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AAPLApplicationSpecific.m"; sourceTree = "<group>"; };
+		53874F9818F36B1800510922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
+		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
+		944F7425197B458C009AB039 /* FLEXArrayExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArrayExplorerViewController.h; sourceTree = "<group>"; };
+		944F7426197B458C009AB039 /* FLEXArrayExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArrayExplorerViewController.m; sourceTree = "<group>"; };
+		944F7427197B458C009AB039 /* FLEXClassExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXClassExplorerViewController.h; sourceTree = "<group>"; };
+		944F7428197B458C009AB039 /* FLEXClassExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXClassExplorerViewController.m; sourceTree = "<group>"; };
+		944F7429197B458C009AB039 /* FLEXDefaultsExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXDefaultsExplorerViewController.h; sourceTree = "<group>"; };
+		944F742A197B458C009AB039 /* FLEXDefaultsExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXDefaultsExplorerViewController.m; sourceTree = "<group>"; };
+		944F742B197B458C009AB039 /* FLEXDescriptionTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXDescriptionTableViewCell.h; sourceTree = "<group>"; };
+		944F742C197B458C009AB039 /* FLEXDescriptionTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXDescriptionTableViewCell.m; sourceTree = "<group>"; };
+		944F742D197B458C009AB039 /* FLEXDictionaryExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXDictionaryExplorerViewController.h; sourceTree = "<group>"; };
+		944F742E197B458C009AB039 /* FLEXDictionaryExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXDictionaryExplorerViewController.m; sourceTree = "<group>"; };
+		944F742F197B458C009AB039 /* FLEXImageExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXImageExplorerViewController.h; sourceTree = "<group>"; };
+		944F7430197B458C009AB039 /* FLEXImageExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXImageExplorerViewController.m; sourceTree = "<group>"; };
+		944F7431197B458C009AB039 /* FLEXObjectExplorerFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXObjectExplorerFactory.h; sourceTree = "<group>"; };
+		944F7432197B458C009AB039 /* FLEXObjectExplorerFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXObjectExplorerFactory.m; sourceTree = "<group>"; };
+		944F7433197B458C009AB039 /* FLEXObjectExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXObjectExplorerViewController.h; sourceTree = "<group>"; };
+		944F7434197B458C009AB039 /* FLEXObjectExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXObjectExplorerViewController.m; sourceTree = "<group>"; };
+		944F7435197B458C009AB039 /* FLEXSetExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXSetExplorerViewController.h; sourceTree = "<group>"; };
+		944F7436197B458C009AB039 /* FLEXSetExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXSetExplorerViewController.m; sourceTree = "<group>"; };
+		944F7437197B458C009AB039 /* FLEXViewControllerExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXViewControllerExplorerViewController.h; sourceTree = "<group>"; };
+		944F7438197B458C009AB039 /* FLEXViewControllerExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXViewControllerExplorerViewController.m; sourceTree = "<group>"; };
+		944F7439197B458C009AB039 /* FLEXViewExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXViewExplorerViewController.h; sourceTree = "<group>"; };
+		944F743A197B458C009AB039 /* FLEXViewExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXViewExplorerViewController.m; sourceTree = "<group>"; };
+		944F743C197B458C009AB039 /* FLEXHeapEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXHeapEnumerator.h; sourceTree = "<group>"; };
+		944F743D197B458C009AB039 /* FLEXHeapEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXHeapEnumerator.m; sourceTree = "<group>"; };
+		944F743E197B458C009AB039 /* FLEXResources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXResources.h; sourceTree = "<group>"; };
+		944F743F197B458C009AB039 /* FLEXResources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXResources.m; sourceTree = "<group>"; };
+		944F7440197B458C009AB039 /* FLEXRuntimeUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXRuntimeUtility.h; sourceTree = "<group>"; };
+		944F7441197B458C009AB039 /* FLEXRuntimeUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXRuntimeUtility.m; sourceTree = "<group>"; };
+		944F7442197B458C009AB039 /* FLEXUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXUtility.h; sourceTree = "<group>"; };
+		944F7443197B458C009AB039 /* FLEXUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXUtility.m; sourceTree = "<group>"; };
+		944F7446197B458C009AB039 /* FLEXArgumentInputColorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputColorView.h; sourceTree = "<group>"; };
+		944F7447197B458C009AB039 /* FLEXArgumentInputColorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputColorView.m; sourceTree = "<group>"; };
+		944F7448197B458C009AB039 /* FLEXArgumentInputFontView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputFontView.h; sourceTree = "<group>"; };
+		944F7449197B458C009AB039 /* FLEXArgumentInputFontView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputFontView.m; sourceTree = "<group>"; };
+		944F744A197B458C009AB039 /* FLEXArgumentInputJSONObjectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputJSONObjectView.h; sourceTree = "<group>"; };
+		944F744B197B458C009AB039 /* FLEXArgumentInputJSONObjectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputJSONObjectView.m; sourceTree = "<group>"; };
+		944F744C197B458C009AB039 /* FLEXArgumentInputNotSupportedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputNotSupportedView.h; sourceTree = "<group>"; };
+		944F744D197B458C009AB039 /* FLEXArgumentInputNotSupportedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputNotSupportedView.m; sourceTree = "<group>"; };
+		944F744E197B458C009AB039 /* FLEXArgumentInputNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputNumberView.h; sourceTree = "<group>"; };
+		944F744F197B458C009AB039 /* FLEXArgumentInputNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputNumberView.m; sourceTree = "<group>"; };
+		944F7450197B458C009AB039 /* FLEXArgumentInputStringView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputStringView.h; sourceTree = "<group>"; };
+		944F7451197B458C009AB039 /* FLEXArgumentInputStringView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputStringView.m; sourceTree = "<group>"; };
+		944F7452197B458C009AB039 /* FLEXArgumentInputStructView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputStructView.h; sourceTree = "<group>"; };
+		944F7453197B458C009AB039 /* FLEXArgumentInputStructView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputStructView.m; sourceTree = "<group>"; };
+		944F7454197B458C009AB039 /* FLEXArgumentInputSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputSwitchView.h; sourceTree = "<group>"; };
+		944F7455197B458C009AB039 /* FLEXArgumentInputSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputSwitchView.m; sourceTree = "<group>"; };
+		944F7456197B458C009AB039 /* FLEXArgumentInputTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputTextView.h; sourceTree = "<group>"; };
+		944F7457197B458C009AB039 /* FLEXArgumentInputTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputTextView.m; sourceTree = "<group>"; };
+		944F7458197B458C009AB039 /* FLEXArgumentInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputView.h; sourceTree = "<group>"; };
+		944F7459197B458C009AB039 /* FLEXArgumentInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputView.m; sourceTree = "<group>"; };
+		944F745A197B458C009AB039 /* FLEXArgumentInputViewFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputViewFactory.h; sourceTree = "<group>"; };
+		944F745B197B458C009AB039 /* FLEXArgumentInputViewFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputViewFactory.m; sourceTree = "<group>"; };
+		944F745C197B458C009AB039 /* FLEXDefaultEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXDefaultEditorViewController.h; sourceTree = "<group>"; };
+		944F745D197B458C009AB039 /* FLEXDefaultEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXDefaultEditorViewController.m; sourceTree = "<group>"; };
+		944F745E197B458C009AB039 /* FLEXFieldEditorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFieldEditorView.h; sourceTree = "<group>"; };
+		944F745F197B458C009AB039 /* FLEXFieldEditorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFieldEditorView.m; sourceTree = "<group>"; };
+		944F7460197B458C009AB039 /* FLEXFieldEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFieldEditorViewController.h; sourceTree = "<group>"; };
+		944F7461197B458C009AB039 /* FLEXFieldEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFieldEditorViewController.m; sourceTree = "<group>"; };
+		944F7462197B458C009AB039 /* FLEXIvarEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXIvarEditorViewController.h; sourceTree = "<group>"; };
+		944F7463197B458C009AB039 /* FLEXIvarEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXIvarEditorViewController.m; sourceTree = "<group>"; };
+		944F7464197B458C009AB039 /* FLEXMethodCallingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXMethodCallingViewController.h; sourceTree = "<group>"; };
+		944F7465197B458C009AB039 /* FLEXMethodCallingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMethodCallingViewController.m; sourceTree = "<group>"; };
+		944F7466197B458C009AB039 /* FLEXPropertyEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXPropertyEditorViewController.h; sourceTree = "<group>"; };
+		944F7467197B458C009AB039 /* FLEXPropertyEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXPropertyEditorViewController.m; sourceTree = "<group>"; };
+		944F7469197B458C009AB039 /* FLEXExplorerToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXExplorerToolbar.h; sourceTree = "<group>"; };
+		944F746A197B458C009AB039 /* FLEXExplorerToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXExplorerToolbar.m; sourceTree = "<group>"; };
+		944F746B197B458C009AB039 /* FLEXExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXExplorerViewController.h; sourceTree = "<group>"; };
+		944F746C197B458C009AB039 /* FLEXExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXExplorerViewController.m; sourceTree = "<group>"; };
+		944F746D197B458C009AB039 /* FLEXManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXManager.h; sourceTree = "<group>"; };
+		944F746E197B458C009AB039 /* FLEXManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXManager.m; sourceTree = "<group>"; };
+		944F746F197B458C009AB039 /* FLEXToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXToolbarItem.h; sourceTree = "<group>"; };
+		944F7470197B458C009AB039 /* FLEXToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXToolbarItem.m; sourceTree = "<group>"; };
+		944F7471197B458C009AB039 /* FLEXWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXWindow.h; sourceTree = "<group>"; };
+		944F7472197B458C009AB039 /* FLEXWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXWindow.m; sourceTree = "<group>"; };
+		944F7474197B458C009AB039 /* FLEXClassesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXClassesTableViewController.h; sourceTree = "<group>"; };
+		944F7475197B458C009AB039 /* FLEXClassesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXClassesTableViewController.m; sourceTree = "<group>"; };
+		944F7476197B458C009AB039 /* FLEXFileBrowserTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFileBrowserTableViewController.h; sourceTree = "<group>"; };
+		944F7477197B458C009AB039 /* FLEXFileBrowserTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFileBrowserTableViewController.m; sourceTree = "<group>"; };
+		944F7478197B458C009AB039 /* FLEXGlobalsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXGlobalsTableViewController.h; sourceTree = "<group>"; };
+		944F7479197B458C009AB039 /* FLEXGlobalsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXGlobalsTableViewController.m; sourceTree = "<group>"; };
+		944F747A197B458C009AB039 /* FLEXInstancesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXInstancesTableViewController.h; sourceTree = "<group>"; };
+		944F747B197B458C009AB039 /* FLEXInstancesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXInstancesTableViewController.m; sourceTree = "<group>"; };
+		944F747C197B458C009AB039 /* FLEXLibrariesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXLibrariesTableViewController.h; sourceTree = "<group>"; };
+		944F747D197B458C009AB039 /* FLEXLibrariesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXLibrariesTableViewController.m; sourceTree = "<group>"; };
+		944F747E197B458C009AB039 /* FLEXLiveObjectsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXLiveObjectsTableViewController.h; sourceTree = "<group>"; };
+		944F747F197B458C009AB039 /* FLEXLiveObjectsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXLiveObjectsTableViewController.m; sourceTree = "<group>"; };
+		944F7480197B458C009AB039 /* FLEXWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXWebViewController.h; sourceTree = "<group>"; };
+		944F7481197B458C009AB039 /* FLEXWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXWebViewController.m; sourceTree = "<group>"; };
+		944F7483197B458C009AB039 /* FLEXHierarchyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXHierarchyTableViewCell.h; sourceTree = "<group>"; };
+		944F7484197B458C009AB039 /* FLEXHierarchyTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXHierarchyTableViewCell.m; sourceTree = "<group>"; };
+		944F7485197B458C009AB039 /* FLEXHierarchyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXHierarchyTableViewController.h; sourceTree = "<group>"; };
+		944F7486197B458C009AB039 /* FLEXHierarchyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXHierarchyTableViewController.m; sourceTree = "<group>"; };
+		944F7487197B458C009AB039 /* FLEXImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXImagePreviewViewController.h; sourceTree = "<group>"; };
+		944F7488197B458C009AB039 /* FLEXImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXImagePreviewViewController.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5356823718F3656900BAAD62 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5356824018F3656900BAAD62 /* CoreGraphics.framework in Frameworks */,
+				5356824218F3656900BAAD62 /* UIKit.framework in Frameworks */,
+				5356823E18F3656900BAAD62 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5356823118F3656900BAAD62 = {
+			isa = PBXGroup;
+			children = (
+				3EC6487218FF8A5000024205 /* ReadMe.txt */,
+				5356824318F3656900BAAD62 /* UICatalog */,
+				943203FF1978F4B700E24DB3 /* 3rd Party */,
+				5356823C18F3656900BAAD62 /* Frameworks */,
+				5356823B18F3656900BAAD62 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5356823B18F3656900BAAD62 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5356823A18F3656900BAAD62 /* UICatalog.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5356823C18F3656900BAAD62 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5356823D18F3656900BAAD62 /* Foundation.framework */,
+				5356823F18F3656900BAAD62 /* CoreGraphics.framework */,
+				5356824118F3656900BAAD62 /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5356824318F3656900BAAD62 /* UICatalog */ = {
+			isa = PBXGroup;
+			children = (
+				944F74B8197B46D2009AB039 /* FLEX Integration */,
+				535682C018F3680D00BAAD62 /* View Controllers */,
+				53874F9A18F36B6900510922 /* Application */,
+				5356825818F3656900BAAD62 /* Images.xcassets */,
+				5356824418F3656900BAAD62 /* Supporting Files */,
+			);
+			path = UICatalog;
+			sourceTree = "<group>";
+		};
+		5356824418F3656900BAAD62 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5356824518F3656900BAAD62 /* UICatalog-Info.plist */,
+				5356824B18F3656900BAAD62 /* UICatalog-Prefix.pch */,
+				53874F9718F36B1800510922 /* Localizable.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		535682C018F3680D00BAAD62 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5356827518F3670200BAAD62 /* AAPLActionSheetViewController.h */,
+				5356827618F3670200BAAD62 /* AAPLActionSheetViewController.m */,
+				5356827718F3670200BAAD62 /* AAPLActivityIndicatorViewController.h */,
+				5356827818F3670300BAAD62 /* AAPLActivityIndicatorViewController.m */,
+				5356827918F3670300BAAD62 /* AAPLAlertViewController.h */,
+				5356827A18F3670300BAAD62 /* AAPLAlertViewController.m */,
+				5356827D18F3670300BAAD62 /* AAPLButtonViewController.h */,
+				5356827E18F3670300BAAD62 /* AAPLButtonViewController.m */,
+				5356828318F3670300BAAD62 /* AAPLDatePickerController.h */,
+				5356828418F3670300BAAD62 /* AAPLDatePickerController.m */,
+				5356828918F3670300BAAD62 /* AAPLImageViewController.h */,
+				5356828A18F3670300BAAD62 /* AAPLImageViewController.m */,
+				5356828D18F3670300BAAD62 /* AAPLPageControlViewController.h */,
+				5356828E18F3670300BAAD62 /* AAPLPageControlViewController.m */,
+				5356828F18F3670300BAAD62 /* AAPLPickerViewController.h */,
+				5356829018F3670300BAAD62 /* AAPLPickerViewController.m */,
+				5356829118F3670300BAAD62 /* AAPLProgressViewController.h */,
+				5356829218F3670300BAAD62 /* AAPLProgressViewController.m */,
+				5356829318F3670300BAAD62 /* AAPLSegmentedControlViewController.h */,
+				5356829418F3670300BAAD62 /* AAPLSegmentedControlViewController.m */,
+				5356829518F3670300BAAD62 /* AAPLSliderViewController.h */,
+				5356829618F3670300BAAD62 /* AAPLSliderViewController.m */,
+				5356829918F3670300BAAD62 /* AAPLStepperViewController.h */,
+				5356829A18F3670300BAAD62 /* AAPLStepperViewController.m */,
+				5356829B18F3670300BAAD62 /* AAPLSwitchViewController.h */,
+				5356829C18F3670300BAAD62 /* AAPLSwitchViewController.m */,
+				5356829D18F3670300BAAD62 /* AAPLTextFieldViewController.h */,
+				5356829E18F3670300BAAD62 /* AAPLTextFieldViewController.m */,
+				5356829F18F3670300BAAD62 /* AAPLTextViewController.h */,
+				535682A018F3670300BAAD62 /* AAPLTextViewController.m */,
+				535682A318F3670300BAAD62 /* AAPLWebViewController.h */,
+				535682A418F3670300BAAD62 /* AAPLWebViewController.m */,
+				5356828518F3670300BAAD62 /* AAPLDefaultSearchBarViewController.h */,
+				5356828618F3670300BAAD62 /* AAPLDefaultSearchBarViewController.m */,
+				5356827F18F3670300BAAD62 /* AAPLCustomSearchBarViewController.h */,
+				5356828018F3670300BAAD62 /* AAPLCustomSearchBarViewController.m */,
+				5356828718F3670300BAAD62 /* AAPLDefaultToolbarViewController.h */,
+				5356828818F3670300BAAD62 /* AAPLDefaultToolbarViewController.m */,
+				5356828118F3670300BAAD62 /* AAPLCustomToolbarViewController.h */,
+				5356828218F3670300BAAD62 /* AAPLCustomToolbarViewController.m */,
+				535682A118F3670300BAAD62 /* AAPLTintedToolbarViewController.h */,
+				535682A218F3670300BAAD62 /* AAPLTintedToolbarViewController.m */,
+				535682C118F3690500BAAD62 /* SplitView */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		535682C118F3690500BAAD62 /* SplitView */ = {
+			isa = PBXGroup;
+			children = (
+				5356828B18F3670300BAAD62 /* AAPLMasterViewController.h */,
+				5356828C18F3670300BAAD62 /* AAPLMasterViewController.m */,
+				5356829718F3670300BAAD62 /* AAPLSplitViewControllerDelegate.h */,
+				5356829818F3670300BAAD62 /* AAPLSplitViewControllerDelegate.m */,
+			);
+			name = SplitView;
+			sourceTree = "<group>";
+		};
+		53874F9A18F36B6900510922 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				5356824918F3656900BAAD62 /* main.m */,
+				5356827B18F3670300BAAD62 /* AAPLAppDelegate.h */,
+				5356827C18F3670300BAAD62 /* AAPLAppDelegate.m */,
+				535682A518F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.h */,
+				535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */,
+				5356824F18F3656900BAAD62 /* Main_iPhone.storyboard */,
+				5356825218F3656900BAAD62 /* Main_iPad.storyboard */,
+			);
+			name = Application;
+			sourceTree = "<group>";
+		};
+		943203FF1978F4B700E24DB3 /* 3rd Party */ = {
+			isa = PBXGroup;
+			children = (
+				943204001978F4C100E24DB3 /* FLEX */,
+			);
+			name = "3rd Party";
+			sourceTree = "<group>";
+		};
+		943204001978F4C100E24DB3 /* FLEX */ = {
+			isa = PBXGroup;
+			children = (
+				944F7424197B458C009AB039 /* Object Explorers */,
+				944F743B197B458C009AB039 /* Utility */,
+				944F7444197B458C009AB039 /* Editing */,
+				944F7468197B458C009AB039 /* Explorer Toolbar */,
+				944F7473197B458C009AB039 /* Global State Explorers */,
+				944F7482197B458C009AB039 /* View Hierarchy */,
+			);
+			name = FLEX;
+			sourceTree = "<group>";
+		};
+		944F7424197B458C009AB039 /* Object Explorers */ = {
+			isa = PBXGroup;
+			children = (
+				944F7425197B458C009AB039 /* FLEXArrayExplorerViewController.h */,
+				944F7426197B458C009AB039 /* FLEXArrayExplorerViewController.m */,
+				944F7427197B458C009AB039 /* FLEXClassExplorerViewController.h */,
+				944F7428197B458C009AB039 /* FLEXClassExplorerViewController.m */,
+				944F7429197B458C009AB039 /* FLEXDefaultsExplorerViewController.h */,
+				944F742A197B458C009AB039 /* FLEXDefaultsExplorerViewController.m */,
+				944F742B197B458C009AB039 /* FLEXDescriptionTableViewCell.h */,
+				944F742C197B458C009AB039 /* FLEXDescriptionTableViewCell.m */,
+				944F742D197B458C009AB039 /* FLEXDictionaryExplorerViewController.h */,
+				944F742E197B458C009AB039 /* FLEXDictionaryExplorerViewController.m */,
+				944F742F197B458C009AB039 /* FLEXImageExplorerViewController.h */,
+				944F7430197B458C009AB039 /* FLEXImageExplorerViewController.m */,
+				944F7431197B458C009AB039 /* FLEXObjectExplorerFactory.h */,
+				944F7432197B458C009AB039 /* FLEXObjectExplorerFactory.m */,
+				944F7433197B458C009AB039 /* FLEXObjectExplorerViewController.h */,
+				944F7434197B458C009AB039 /* FLEXObjectExplorerViewController.m */,
+				944F7435197B458C009AB039 /* FLEXSetExplorerViewController.h */,
+				944F7436197B458C009AB039 /* FLEXSetExplorerViewController.m */,
+				944F7437197B458C009AB039 /* FLEXViewControllerExplorerViewController.h */,
+				944F7438197B458C009AB039 /* FLEXViewControllerExplorerViewController.m */,
+				944F7439197B458C009AB039 /* FLEXViewExplorerViewController.h */,
+				944F743A197B458C009AB039 /* FLEXViewExplorerViewController.m */,
+			);
+			name = "Object Explorers";
+			path = "../Classes/Object Explorers";
+			sourceTree = "<group>";
+		};
+		944F743B197B458C009AB039 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				944F743C197B458C009AB039 /* FLEXHeapEnumerator.h */,
+				944F743D197B458C009AB039 /* FLEXHeapEnumerator.m */,
+				944F743E197B458C009AB039 /* FLEXResources.h */,
+				944F743F197B458C009AB039 /* FLEXResources.m */,
+				944F7440197B458C009AB039 /* FLEXRuntimeUtility.h */,
+				944F7441197B458C009AB039 /* FLEXRuntimeUtility.m */,
+				944F7442197B458C009AB039 /* FLEXUtility.h */,
+				944F7443197B458C009AB039 /* FLEXUtility.m */,
+			);
+			name = Utility;
+			path = ../Classes/Utility;
+			sourceTree = "<group>";
+		};
+		944F7444197B458C009AB039 /* Editing */ = {
+			isa = PBXGroup;
+			children = (
+				944F7445197B458C009AB039 /* Argument Input Views */,
+				944F745C197B458C009AB039 /* FLEXDefaultEditorViewController.h */,
+				944F745D197B458C009AB039 /* FLEXDefaultEditorViewController.m */,
+				944F745E197B458C009AB039 /* FLEXFieldEditorView.h */,
+				944F745F197B458C009AB039 /* FLEXFieldEditorView.m */,
+				944F7460197B458C009AB039 /* FLEXFieldEditorViewController.h */,
+				944F7461197B458C009AB039 /* FLEXFieldEditorViewController.m */,
+				944F7462197B458C009AB039 /* FLEXIvarEditorViewController.h */,
+				944F7463197B458C009AB039 /* FLEXIvarEditorViewController.m */,
+				944F7464197B458C009AB039 /* FLEXMethodCallingViewController.h */,
+				944F7465197B458C009AB039 /* FLEXMethodCallingViewController.m */,
+				944F7466197B458C009AB039 /* FLEXPropertyEditorViewController.h */,
+				944F7467197B458C009AB039 /* FLEXPropertyEditorViewController.m */,
+			);
+			name = Editing;
+			path = ../Classes/Editing;
+			sourceTree = "<group>";
+		};
+		944F7445197B458C009AB039 /* Argument Input Views */ = {
+			isa = PBXGroup;
+			children = (
+				944F7446197B458C009AB039 /* FLEXArgumentInputColorView.h */,
+				944F7447197B458C009AB039 /* FLEXArgumentInputColorView.m */,
+				944F7448197B458C009AB039 /* FLEXArgumentInputFontView.h */,
+				944F7449197B458C009AB039 /* FLEXArgumentInputFontView.m */,
+				944F744A197B458C009AB039 /* FLEXArgumentInputJSONObjectView.h */,
+				944F744B197B458C009AB039 /* FLEXArgumentInputJSONObjectView.m */,
+				944F744C197B458C009AB039 /* FLEXArgumentInputNotSupportedView.h */,
+				944F744D197B458C009AB039 /* FLEXArgumentInputNotSupportedView.m */,
+				944F744E197B458C009AB039 /* FLEXArgumentInputNumberView.h */,
+				944F744F197B458C009AB039 /* FLEXArgumentInputNumberView.m */,
+				944F7450197B458C009AB039 /* FLEXArgumentInputStringView.h */,
+				944F7451197B458C009AB039 /* FLEXArgumentInputStringView.m */,
+				944F7452197B458C009AB039 /* FLEXArgumentInputStructView.h */,
+				944F7453197B458C009AB039 /* FLEXArgumentInputStructView.m */,
+				944F7454197B458C009AB039 /* FLEXArgumentInputSwitchView.h */,
+				944F7455197B458C009AB039 /* FLEXArgumentInputSwitchView.m */,
+				944F7456197B458C009AB039 /* FLEXArgumentInputTextView.h */,
+				944F7457197B458C009AB039 /* FLEXArgumentInputTextView.m */,
+				944F7458197B458C009AB039 /* FLEXArgumentInputView.h */,
+				944F7459197B458C009AB039 /* FLEXArgumentInputView.m */,
+				944F745A197B458C009AB039 /* FLEXArgumentInputViewFactory.h */,
+				944F745B197B458C009AB039 /* FLEXArgumentInputViewFactory.m */,
+			);
+			path = "Argument Input Views";
+			sourceTree = "<group>";
+		};
+		944F7468197B458C009AB039 /* Explorer Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				944F7469197B458C009AB039 /* FLEXExplorerToolbar.h */,
+				944F746A197B458C009AB039 /* FLEXExplorerToolbar.m */,
+				944F746B197B458C009AB039 /* FLEXExplorerViewController.h */,
+				944F746C197B458C009AB039 /* FLEXExplorerViewController.m */,
+				944F746D197B458C009AB039 /* FLEXManager.h */,
+				944F746E197B458C009AB039 /* FLEXManager.m */,
+				944F746F197B458C009AB039 /* FLEXToolbarItem.h */,
+				944F7470197B458C009AB039 /* FLEXToolbarItem.m */,
+				944F7471197B458C009AB039 /* FLEXWindow.h */,
+				944F7472197B458C009AB039 /* FLEXWindow.m */,
+			);
+			name = "Explorer Toolbar";
+			path = "../Classes/Explorer Toolbar";
+			sourceTree = "<group>";
+		};
+		944F7473197B458C009AB039 /* Global State Explorers */ = {
+			isa = PBXGroup;
+			children = (
+				944F7474197B458C009AB039 /* FLEXClassesTableViewController.h */,
+				944F7475197B458C009AB039 /* FLEXClassesTableViewController.m */,
+				944F7476197B458C009AB039 /* FLEXFileBrowserTableViewController.h */,
+				944F7477197B458C009AB039 /* FLEXFileBrowserTableViewController.m */,
+				944F7478197B458C009AB039 /* FLEXGlobalsTableViewController.h */,
+				944F7479197B458C009AB039 /* FLEXGlobalsTableViewController.m */,
+				944F747A197B458C009AB039 /* FLEXInstancesTableViewController.h */,
+				944F747B197B458C009AB039 /* FLEXInstancesTableViewController.m */,
+				944F747C197B458C009AB039 /* FLEXLibrariesTableViewController.h */,
+				944F747D197B458C009AB039 /* FLEXLibrariesTableViewController.m */,
+				944F747E197B458C009AB039 /* FLEXLiveObjectsTableViewController.h */,
+				944F747F197B458C009AB039 /* FLEXLiveObjectsTableViewController.m */,
+				944F7480197B458C009AB039 /* FLEXWebViewController.h */,
+				944F7481197B458C009AB039 /* FLEXWebViewController.m */,
+			);
+			name = "Global State Explorers";
+			path = "../Classes/Global State Explorers";
+			sourceTree = "<group>";
+		};
+		944F7482197B458C009AB039 /* View Hierarchy */ = {
+			isa = PBXGroup;
+			children = (
+				944F7483197B458C009AB039 /* FLEXHierarchyTableViewCell.h */,
+				944F7484197B458C009AB039 /* FLEXHierarchyTableViewCell.m */,
+				944F7485197B458C009AB039 /* FLEXHierarchyTableViewController.h */,
+				944F7486197B458C009AB039 /* FLEXHierarchyTableViewController.m */,
+				944F7487197B458C009AB039 /* FLEXImagePreviewViewController.h */,
+				944F7488197B458C009AB039 /* FLEXImagePreviewViewController.m */,
+			);
+			name = "View Hierarchy";
+			path = "../Classes/View Hierarchy";
+			sourceTree = "<group>";
+		};
+		944F74B8197B46D2009AB039 /* FLEX Integration */ = {
+			isa = PBXGroup;
+			children = (
+				943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */,
+				943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */,
+			);
+			name = "FLEX Integration";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5356823918F3656900BAAD62 /* UICatalog */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5356826F18F3656900BAAD62 /* Build configuration list for PBXNativeTarget "UICatalog" */;
+			buildPhases = (
+				5356823618F3656900BAAD62 /* Sources */,
+				5356823718F3656900BAAD62 /* Frameworks */,
+				5356823818F3656900BAAD62 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = UICatalog;
+			productName = UICatalog;
+			productReference = 5356823A18F3656900BAAD62 /* UICatalog.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5356823218F3656900BAAD62 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = f;
+			};
+			buildConfigurationList = 5356823518F3656900BAAD62 /* Build configuration list for PBXProject "UICatalog" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5356823118F3656900BAAD62;
+			productRefGroup = 5356823B18F3656900BAAD62 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5356823918F3656900BAAD62 /* UICatalog */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5356823818F3656900BAAD62 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5356825418F3656900BAAD62 /* Main_iPad.storyboard in Resources */,
+				53874F9918F36B1800510922 /* Localizable.strings in Resources */,
+				5356825918F3656900BAAD62 /* Images.xcassets in Resources */,
+				3EC6487318FF8A5000024205 /* ReadMe.txt in Resources */,
+				5356825118F3656900BAAD62 /* Main_iPhone.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5356823618F3656900BAAD62 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				944F749B197B458C009AB039 /* FLEXArgumentInputNotSupportedView.m in Sources */,
+				535682AE18F3670300BAAD62 /* AAPLDatePickerController.m in Sources */,
+				535682AB18F3670300BAAD62 /* AAPLButtonViewController.m in Sources */,
+				944F74A2197B458C009AB039 /* FLEXArgumentInputViewFactory.m in Sources */,
+				944F74A1197B458C009AB039 /* FLEXArgumentInputView.m in Sources */,
+				535682B618F3670300BAAD62 /* AAPLSegmentedControlViewController.m in Sources */,
+				944F74AE197B458C009AB039 /* FLEXClassesTableViewController.m in Sources */,
+				944F74B1197B458C009AB039 /* FLEXInstancesTableViewController.m in Sources */,
+				944F7497197B458C009AB039 /* FLEXUtility.m in Sources */,
+				535682B018F3670300BAAD62 /* AAPLDefaultToolbarViewController.m in Sources */,
+				535682BD18F3670300BAAD62 /* AAPLTintedToolbarViewController.m in Sources */,
+				943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */,
+				944F748A197B458C009AB039 /* FLEXClassExplorerViewController.m in Sources */,
+				535682B318F3670300BAAD62 /* AAPLPageControlViewController.m in Sources */,
+				535682BA18F3670300BAAD62 /* AAPLSwitchViewController.m in Sources */,
+				535682AF18F3670300BAAD62 /* AAPLDefaultSearchBarViewController.m in Sources */,
+				944F74B5197B458C009AB039 /* FLEXHierarchyTableViewCell.m in Sources */,
+				944F74AD197B458C009AB039 /* FLEXWindow.m in Sources */,
+				944F749D197B458C009AB039 /* FLEXArgumentInputStringView.m in Sources */,
+				944F74A9197B458C009AB039 /* FLEXExplorerToolbar.m in Sources */,
+				944F74A8197B458C009AB039 /* FLEXPropertyEditorViewController.m in Sources */,
+				944F74B0197B458C009AB039 /* FLEXGlobalsTableViewController.m in Sources */,
+				944F748B197B458C009AB039 /* FLEXDefaultsExplorerViewController.m in Sources */,
+				944F749E197B458C009AB039 /* FLEXArgumentInputStructView.m in Sources */,
+				944F74B3197B458C009AB039 /* FLEXLiveObjectsTableViewController.m in Sources */,
+				944F748E197B458C009AB039 /* FLEXImageExplorerViewController.m in Sources */,
+				944F74B6197B458C009AB039 /* FLEXHierarchyTableViewController.m in Sources */,
+				535682BC18F3670300BAAD62 /* AAPLTextViewController.m in Sources */,
+				944F74B4197B458C009AB039 /* FLEXWebViewController.m in Sources */,
+				944F74A5197B458C009AB039 /* FLEXFieldEditorViewController.m in Sources */,
+				944F7489197B458C009AB039 /* FLEXArrayExplorerViewController.m in Sources */,
+				535682B418F3670300BAAD62 /* AAPLPickerViewController.m in Sources */,
+				535682BE18F3670300BAAD62 /* AAPLWebViewController.m in Sources */,
+				944F7490197B458C009AB039 /* FLEXObjectExplorerViewController.m in Sources */,
+				944F7499197B458C009AB039 /* FLEXArgumentInputFontView.m in Sources */,
+				944F7496197B458C009AB039 /* FLEXRuntimeUtility.m in Sources */,
+				944F7491197B458C009AB039 /* FLEXSetExplorerViewController.m in Sources */,
+				944F74AF197B458C009AB039 /* FLEXFileBrowserTableViewController.m in Sources */,
+				535682BB18F3670300BAAD62 /* AAPLTextFieldViewController.m in Sources */,
+				944F749F197B458C009AB039 /* FLEXArgumentInputSwitchView.m in Sources */,
+				944F74A3197B458C009AB039 /* FLEXDefaultEditorViewController.m in Sources */,
+				944F74AB197B458C009AB039 /* FLEXManager.m in Sources */,
+				944F74B2197B458C009AB039 /* FLEXLibrariesTableViewController.m in Sources */,
+				535682BF18F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m in Sources */,
+				535682B718F3670300BAAD62 /* AAPLSliderViewController.m in Sources */,
+				944F74AC197B458C009AB039 /* FLEXToolbarItem.m in Sources */,
+				944F74B7197B458C009AB039 /* FLEXImagePreviewViewController.m in Sources */,
+				944F7498197B458C009AB039 /* FLEXArgumentInputColorView.m in Sources */,
+				944F74A0197B458C009AB039 /* FLEXArgumentInputTextView.m in Sources */,
+				944F749C197B458C009AB039 /* FLEXArgumentInputNumberView.m in Sources */,
+				944F749A197B458C009AB039 /* FLEXArgumentInputJSONObjectView.m in Sources */,
+				944F7494197B458C009AB039 /* FLEXHeapEnumerator.m in Sources */,
+				535682B918F3670300BAAD62 /* AAPLStepperViewController.m in Sources */,
+				535682AA18F3670300BAAD62 /* AAPLAppDelegate.m in Sources */,
+				535682B518F3670300BAAD62 /* AAPLProgressViewController.m in Sources */,
+				535682AD18F3670300BAAD62 /* AAPLCustomToolbarViewController.m in Sources */,
+				944F748F197B458C009AB039 /* FLEXObjectExplorerFactory.m in Sources */,
+				944F748D197B458C009AB039 /* FLEXDictionaryExplorerViewController.m in Sources */,
+				535682A818F3670300BAAD62 /* AAPLActivityIndicatorViewController.m in Sources */,
+				944F74A4197B458C009AB039 /* FLEXFieldEditorView.m in Sources */,
+				944F74A7197B458C009AB039 /* FLEXMethodCallingViewController.m in Sources */,
+				535682B818F3670300BAAD62 /* AAPLSplitViewControllerDelegate.m in Sources */,
+				535682AC18F3670300BAAD62 /* AAPLCustomSearchBarViewController.m in Sources */,
+				535682A718F3670300BAAD62 /* AAPLActionSheetViewController.m in Sources */,
+				944F74AA197B458C009AB039 /* FLEXExplorerViewController.m in Sources */,
+				944F7492197B458C009AB039 /* FLEXViewControllerExplorerViewController.m in Sources */,
+				5356824A18F3656900BAAD62 /* main.m in Sources */,
+				535682B118F3670300BAAD62 /* AAPLImageViewController.m in Sources */,
+				944F7493197B458C009AB039 /* FLEXViewExplorerViewController.m in Sources */,
+				944F7495197B458C009AB039 /* FLEXResources.m in Sources */,
+				535682A918F3670300BAAD62 /* AAPLAlertViewController.m in Sources */,
+				944F74A6197B458C009AB039 /* FLEXIvarEditorViewController.m in Sources */,
+				944F748C197B458C009AB039 /* FLEXDescriptionTableViewCell.m in Sources */,
+				535682B218F3670300BAAD62 /* AAPLMasterViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5356824F18F3656900BAAD62 /* Main_iPhone.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5356825018F3656900BAAD62 /* Base */,
+			);
+			name = Main_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		5356825218F3656900BAAD62 /* Main_iPad.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5356825318F3656900BAAD62 /* Base */,
+			);
+			name = Main_iPad.storyboard;
+			sourceTree = "<group>";
+		};
+		53874F9718F36B1800510922 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				53874F9818F36B1800510922 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5356826D18F3656900BAAD62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5356826E18F3656900BAAD62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5356827018F3656900BAAD62 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "UICatalog/UICatalog-Prefix.pch";
+				INFOPLIST_FILE = "UICatalog/UICatalog-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		5356827118F3656900BAAD62 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "UICatalog/UICatalog-Prefix.pch";
+				INFOPLIST_FILE = "UICatalog/UICatalog-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5356823518F3656900BAAD62 /* Build configuration list for PBXProject "UICatalog" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5356826D18F3656900BAAD62 /* Debug */,
+				5356826E18F3656900BAAD62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5356826F18F3656900BAAD62 /* Build configuration list for PBXNativeTarget "UICatalog" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5356827018F3656900BAAD62 /* Debug */,
+				5356827118F3656900BAAD62 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5356823218F3656900BAAD62 /* Project object */;
+}
