@@ -1,7 +1,10 @@
 # FLEX
-FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for iOS development.
+FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for iOS development. When presented, FLEX shows a toolbar that lives in a window above your application. From this toolbar, you can view and modify nearly every piece of state in your running application.
 
-## Feature Overview
+![View Hierarchy Exploration](https://dl.dropboxusercontent.com/u/8298593/basic-view-exploration.gif)
+
+
+## Give Yourself Debugging Superpowers
 - Inspect and modify views in the hierarchy.
 - See the properties and ivars on any object.
 - Dynamically modify many properties and ivars.
@@ -9,23 +12,84 @@ FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for
 - Access any live object via a scan of the heap.
 - View the file system within your app's sandbox.
 - Explore all classes in your app and linked systems frameworks (public and private).
-- Quick access to useful singletons such as `[UIApplication sharedApplication]`, the app delegate, the root view controller on the key window, and more.
+- Quickly access useful objects such as `[UIApplication sharedApplication]`, the app delegate, the root view controller on the key window, and more.
 - Dynamically view and modify `NSUserDefaults` values.
 
+Unlike many other debugging tools, FLEX runs entirely inside your app, so you don't need to be connected to LLDB/Xcode or a different remote debugging server. It works well in the simulator and on physical devices.
+
+
 ## Usage
+Short version:
+
+    [[FLEXManager sharedManager] showExplorer];
+
+More complete version:
+
+    #if DEBUG
+    #import "FLEXManager.h"
+    #endif
+
+    ...
+
+    - (void)handleSixFingerQuadrupleTap:(UITapGestureRecognizer *)tapRecognizer
+    {
+    #if DEBUG
+        if (tapRecognizer.state == UIGestureRecognizerStateRecognized) {
+            // This could also live in a handler for a keyboard shortcut, debug menu item, etc.
+            [[FLEXManager sharedManager] showExplorer];
+        }
+    #endif
+    }
+
 
 ## Feature Examples
-### View Hierarchy Exploration
+### Modify Views
+Once a view is selected, you can tap on the info bar below the toolbar to present more details about the view. From there, you can modify properties and call methods.
 
-### Object Exploration
+![View Modification](https://dl.dropboxusercontent.com/u/8298593/advanced-view-editing.gif)
 
 ### All Objects on the Heap
+FLEX queries malloc for all the live allocated memory blocks and searches for ones that look like objects. You can see everything from here.
+
+![Heap Exploration](https://dl.dropboxusercontent.com/u/8298593/heap-browser.gif)
 
 ### File Browser
+View the file system within your app's sandbox. FLEX shows file sizes, image previews, and pretty prints `.json` and `.plist` files. You can copy text and image files to the pasteboard if you want to inspect them outside of your app.
+
+![File Browser](https://dl.dropboxusercontent.com/u/8298593/file-browser.gif)
 
 ### System Library Exploration
+Go digging for all things public and private. To learn more about a class, you can create an instance of it and explore its default state.
+
+![System Libraries Browser](https://dl.dropboxusercontent.com/u/8298593/system-libraries-browser.gif)
 
 ### NSUserDefaults Editing
+FLEX allows you to edit defaults that are any combination of strings, numbers, arrays, and dictionaries. The input is parsed as `JSON`. If other kinds of objects are set for a defaults key (i.e. `NSDate`), you can view them but not edit them.
+
+![NSUserDefaults Editor](https://dl.dropboxusercontent.com/u/8298593/nsuserdefaults-editor.gif)
+
+### Learning from Other Apps
+The code injection is left as an exercise for the reader. :innocent:
+
+![Springboard Lock Screen](https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-1.png) ![Springboard Home Screen](https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-2.png)
+
+
+## Excluding FLEX from Release (App Store) Builds
+FLEX makes it easy to explore the internals of your app, so it is not something you should expose to your users. Fortunately, it is easy to exclude FLEX files from Release builds. In Xcode, navigate to the "Build Settings" tab of your project. Click the plus and select `Add User-Defined Setting`.
+
+![Add User-Defined Setting](https://dl.dropboxusercontent.com/u/8298593/flex-readme-exclude-1.png)
+
+Name the setting `EXCLUDED_SOURCE_FILE_NAMES`. For your `Release` configuration, set the value to `FLEX*`. This will exclude all files with the prefix FLEX from compilation. Leave the value blank for your `Debug` configuration.
+
+![EXCLUDED_SOURCE_FILE_NAMES](https://dl.dropboxusercontent.com/u/8298593/flex-readme-exclude-2.png)
+
+At the places in your code where you integrate FLEX, do a `#if DEBUG` check to ensure the tool is only accessible in your `Debug` builds and to avoid errors in your `Release` builds. For more help with integrating FLEX, see the example project.
+
+
+## Additional Notes
+- When setting fields of type `id` or values in `NSUserDefaults`, FLEX attempts to parse the input string as `JSON`. This allows you to use a combination of strings, numbers, arrays, and dictionaries. If you want to set a string value, it must be wrapped in quotes. For ivars or properties that are explicitly typed as `NSStrings`, quotes are not required.
+- You may want to disable the exception breakpoint while using FLEX. Certain functions that FLEX uses throw exceptions when they get input they can't handle (i.e. `NSGetSizeAndAlignment()`). FLEX catches these to avoid crashing, but your breakpoint will get hit if it is active.
+
 
 ## Thanks & Credits
 FLEX builds on ideas and inspiration from open source tools that came before it. The following resources have been particularly helpful:
@@ -37,14 +101,15 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
  - [ARM64 and You](https://www.mikeash.com/pyblog/friday-qa-2013-09-27-arm64-and-you.html)
 - [RHObjectiveBeagle](https://github.com/heardrwt/RHObjectiveBeagle): a tool for scanning the heap for live objects. It should be noted that the source code of RHObjectiveBeagle was not consulted due to licensing concerns.
 - [heap_find.cpp](https://www.opensource.apple.com/source/lldb/lldb-179.1/examples/darwin/heap_find/heap/heap_find.cpp): an example of enumerating malloc blocks for finding objects on the heap.
-- [Gist](https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396) from @samdmarshall: another example of enumerating malloc blocks.
+- [Gist](https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396) from [@samdmarshall](https://github.com/samdmarshall): another example of enumerating malloc blocks.
 - [Non-pointer isa](http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html): an explanation of changes to the isa field on iOS for ARM64 and mention of the useful `objc_debug_isa_class_mask` variable.
 
+
 ## TODO
-- Search bar filtering in file browser
-- Sorting by file size in file browser
-- File browser: try to parse binary files as plists or keyed archives even if they lack the extension?
-- Demo app
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
-- Layer hierarchy support
+- Network request logging
+- Search bar filtering and sorting by file size in the file browser
+- Improved file type detection and display in the file browser
 - Add new NSUserDefault key/value pairs on the fly
+
+Have a question or suggestion for FLEX? Contact [@ryanolsonk](https://twitter.com/ryanolsonk) on twitter.
