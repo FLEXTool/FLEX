@@ -46,7 +46,11 @@
 */
 
 #import "AAPLMasterViewController.h"
+
+#if DEBUG
+// FLEX should only be compiled and used in debug builds.
 #import "FLEXManager.h"
+#endif
 
 @implementation AAPLMasterViewController
 
@@ -54,12 +58,16 @@
 {
     [super viewDidLoad];
     
+#if DEBUG
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"FLEX" style:UIBarButtonItemStylePlain target:self action:@selector(flexButtonTapped:)];
+#endif
 }
 
 - (void)flexButtonTapped:(id)sender
 {
+#if DEBUG
     [[FLEXManager sharedManager] showExplorer];
+#endif
 }
 
 // When a segue from the AAPLMasterViewController's table view is triggered, we want to ensure that the current detail view controller's
