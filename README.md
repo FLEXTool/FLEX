@@ -21,25 +21,29 @@ Unlike many other debugging tools, FLEX runs entirely inside your app, so you do
 ## Usage
 Short version:
 
-    [[FLEXManager sharedManager] showExplorer];
+```objc
+[[FLEXManager sharedManager] showExplorer];
+```
 
 More complete version:
 
-    #if DEBUG
-    #import "FLEXManager.h"
-    #endif
+```objc
+#if DEBUG
+#import "FLEXManager.h"
+#endif
 
-    ...
+...
 
-    - (void)handleSixFingerQuadrupleTap:(UITapGestureRecognizer *)tapRecognizer
-    {
-    #if DEBUG
-        if (tapRecognizer.state == UIGestureRecognizerStateRecognized) {
-            // This could also live in a handler for a keyboard shortcut, debug menu item, etc.
-            [[FLEXManager sharedManager] showExplorer];
-        }
-    #endif
+- (void)handleSixFingerQuadrupleTap:(UITapGestureRecognizer *)tapRecognizer
+{
+#if DEBUG
+    if (tapRecognizer.state == UIGestureRecognizerStateRecognized) {
+        // This could also live in a handler for a keyboard shortcut, debug menu item, etc.
+        [[FLEXManager sharedManager] showExplorer];
     }
+#endif
+}
+```
 
 
 ## Feature Examples
