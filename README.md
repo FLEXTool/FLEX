@@ -1,7 +1,7 @@
 # FLEX
 FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for iOS development. When presented, FLEX shows a toolbar that lives in a window above your application. From this toolbar, you can view and modify nearly every piece of state in your running application.
 
-![View Hierarchy Exploration](https://dl.dropboxusercontent.com/u/8298593/basic-view-exploration.gif)
+![View Hierarchy Exploration](http://engineering.flipboard.com/assets/flex/basic-view-exploration.gif)
 
 
 ## Give Yourself Debugging Superpowers
@@ -50,42 +50,42 @@ More complete version:
 ### Modify Views
 Once a view is selected, you can tap on the info bar below the toolbar to present more details about the view. From there, you can modify properties and call methods.
 
-![View Modification](https://dl.dropboxusercontent.com/u/8298593/advanced-view-editing.gif)
+![View Modification](http://engineering.flipboard.com/assets/flex/advanced-view-editing.gif)
 
 ### All Objects on the Heap
 FLEX queries malloc for all the live allocated memory blocks and searches for ones that look like objects. You can see everything from here.
 
-![Heap Exploration](https://dl.dropboxusercontent.com/u/8298593/heap-browser.gif)
+![Heap Exploration](http://engineering.flipboard.com/assets/flex/heap-browser.gif)
 
 ### File Browser
 View the file system within your app's sandbox. FLEX shows file sizes, image previews, and pretty prints `.json` and `.plist` files. You can copy text and image files to the pasteboard if you want to inspect them outside of your app.
 
-![File Browser](https://dl.dropboxusercontent.com/u/8298593/file-browser.gif)
+![File Browser](http://engineering.flipboard.com/assets/flex/file-browser.gif)
 
 ### System Library Exploration
 Go digging for all things public and private. To learn more about a class, you can create an instance of it and explore its default state.
 
-![System Libraries Browser](https://dl.dropboxusercontent.com/u/8298593/system-libraries-browser.gif)
+![System Libraries Browser](http://engineering.flipboard.com/assets/flex/system-libraries-browser.gif)
 
 ### NSUserDefaults Editing
 FLEX allows you to edit defaults that are any combination of strings, numbers, arrays, and dictionaries. The input is parsed as `JSON`. If other kinds of objects are set for a defaults key (i.e. `NSDate`), you can view them but not edit them.
 
-![NSUserDefaults Editor](https://dl.dropboxusercontent.com/u/8298593/nsuserdefaults-editor.gif)
+![NSUserDefaults Editor](http://engineering.flipboard.com/assets/flex/nsuserdefaults-editor.gif)
 
 ### Learning from Other Apps
 The code injection is left as an exercise for the reader. :innocent:
 
-![Springboard Lock Screen](https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-1.png) ![Springboard Home Screen](https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-2.png)
+![Springboard Lock Screen](http://engineering.flipboard.com/assets/flex/flex-readme-reverse-1.png) ![Springboard Home Screen](https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-2.png)
 
 
 ## Excluding FLEX from Release (App Store) Builds
 FLEX makes it easy to explore the internals of your app, so it is not something you should expose to your users. Fortunately, it is easy to exclude FLEX files from Release builds. In Xcode, navigate to the "Build Settings" tab of your project. Click the plus and select `Add User-Defined Setting`.
 
-![Add User-Defined Setting](https://dl.dropboxusercontent.com/u/8298593/flex-readme-exclude-1.png)
+![Add User-Defined Setting](http://engineering.flipboard.com/assets/flex/flex-readme-exclude-1.png)
 
 Name the setting `EXCLUDED_SOURCE_FILE_NAMES`. For your `Release` configuration, set the value to `FLEX*`. This will exclude all files with the prefix FLEX from compilation. Leave the value blank for your `Debug` configuration.
 
-![EXCLUDED_SOURCE_FILE_NAMES](https://dl.dropboxusercontent.com/u/8298593/flex-readme-exclude-2.png)
+![EXCLUDED_SOURCE_FILE_NAMES](http://engineering.flipboard.com/assets/flex/flex-readme-exclude-2.png)
 
 At the places in your code where you integrate FLEX, do a `#if DEBUG` check to ensure the tool is only accessible in your `Debug` builds and to avoid errors in your `Release` builds. For more help with integrating FLEX, see the example project.
 
