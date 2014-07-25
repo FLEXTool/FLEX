@@ -54,7 +54,7 @@
     const char **classNames = objc_copyClassNamesForImage([self.binaryImageName UTF8String], &classNamesCount);
     if (classNames) {
         NSMutableArray *classNameStrings = [NSMutableArray array];
-        for (int i = 0; i < classNamesCount; i++) {
+        for (unsigned int i = 0; i < classNamesCount; i++) {
             const char *className = classNames[i];
             NSString *classNameString = [NSString stringWithUTF8String:className];
             [classNameStrings addObject:classNameString];

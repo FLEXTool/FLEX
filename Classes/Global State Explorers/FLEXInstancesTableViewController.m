@@ -102,7 +102,7 @@
     
     id instance = [self.instances objectAtIndex:indexPath.row];
     NSString *title = nil;
-    if ([self.fieldNames count] > indexPath.row) {
+    if ((NSInteger)[self.fieldNames count] > indexPath.row) {
         title = [NSString stringWithFormat:@"%@ %@", NSStringFromClass(object_getClass(instance)), [self.fieldNames objectAtIndex:indexPath.row]];
     } else {
         title = [NSString stringWithFormat:@"%@ %p", NSStringFromClass(object_getClass(instance)), instance];
