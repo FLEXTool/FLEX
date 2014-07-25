@@ -15,14 +15,14 @@ Pod::Spec.new do |spec|
                         DESC
 
   spec.homepage         = "https://github.com/Flipboard/FLEX"
-  spec.screenshots      = [ "https://dl.dropboxusercontent.com/u/8298593/basic-view-exploration.gif",
-                            "https://dl.dropboxusercontent.com/u/8298593/advanced-view-editing.gif",
-                            "https://dl.dropboxusercontent.com/u/8298593/heap-browser.gif",
-                            "https://dl.dropboxusercontent.com/u/8298593/file-browser.gif",
-                            "https://dl.dropboxusercontent.com/u/8298593/nsuserdefaults-editor.gif",
-                            "https://dl.dropboxusercontent.com/u/8298593/system-libraries-browser.gif",
-                            "https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-1.png",
-                            "https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-2.png" ]
+  spec.screenshots      = [ "http://engineering.flipboard.com/assets/flex/basic-view-exploration.gif",
+                            "http://engineering.flipboard.com/assets/flex/advanced-view-editing.gif",
+                            "http://engineering.flipboard.com/assets/flex/heap-browser.gif",
+                            "http://engineering.flipboard.com/assets/flex/file-browser.gif",
+                            "http://engineering.flipboard.com/assets/flex/nsuserdefaults-editor.gif",
+                            "http://engineering.flipboard.com/assets/flex/system-libraries-browser.gif",
+                            "http://engineering.flipboard.com/assets/flex/flex-readme-reverse-1.png",
+                            "http://engineering.flipboard.com/assets/flex/flex-readme-reverse-2.png" ]
 
   spec.license          = { :type => "BSD", :file => "LICENSE" }
   spec.author           = { "Ryan Olson" => "ryanolsonk@gmail.com" }
