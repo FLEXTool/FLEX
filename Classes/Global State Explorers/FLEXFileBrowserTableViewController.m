@@ -50,8 +50,9 @@
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                weakSelf.recursiveSize = @(totalSize);
-                [weakSelf.tableView reloadData];
+              FLEXFileBrowserTableViewController *__strong strongSelf = weakSelf;
+                strongSelf.recursiveSize = @(totalSize);
+                [strongSelf.tableView reloadData];
             });
         });
         
