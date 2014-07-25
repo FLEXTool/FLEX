@@ -75,7 +75,7 @@ FLEX allows you to edit defaults that are any combination of strings, numbers, a
 ### Learning from Other Apps
 The code injection is left as an exercise for the reader. :innocent:
 
-![Springboard Lock Screen](http://engineering.flipboard.com/assets/flex/flex-readme-reverse-1.png) ![Springboard Home Screen](https://dl.dropboxusercontent.com/u/8298593/flex-readme-reverse-2.png)
+![Springboard Lock Screen](http://engineering.flipboard.com/assets/flex/flex-readme-reverse-1.png) ![Springboard Home Screen](http://engineering.flipboard.com/assets/flex/flex-readme-reverse-2.png)
 
 
 ## Excluding FLEX from Release (App Store) Builds
