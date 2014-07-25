@@ -16,7 +16,17 @@
 
 /// We pretend that one of the app's windows is still the key window, even though the explorer window may have become key.
 /// We want to display debug state about the application, not about this tool.
-@property (nonatomic, strong) UIWindow *applicationWindow;
++ (void)setApplicationWindow:(UIWindow *)applicationWindow;
+
+/// Adds an entry at the bottom of the list of Global State items. Call this method before this view controller is displayed.
+/// @param entryName The string to be displayed in the cell.
+/// @param objectFutureBlock When you tap on the row, information about the object returned by this block will be displayed.
+/// Passing a block that returns an object allows you to display information about an object whose actual pointer may change at runtime (e.g. +currentUser)
+/// @note This method must be called from the main thread.
+/// The objectFutureBlock will be invoked from the main thread and may return nil.
+/// @note The passed block will be copied and retain for the duration of the application, you may want to use __weak references.
++ (void)registerGlobalEntryWithName:(NSString *)entryName
+                  objectFutureBlock:(id(^)(void))objectFutureBlock;
 
 @end
 
