@@ -14,37 +14,10 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXLiveObjectsTableViewController.h"
 #import "FLEXFileBrowserTableViewController.h"
-
-typedef NSString *(^FLEXGlobalsTableViewControllerEntryNameFuture)(void);
-typedef UIViewController *(^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
+#import "FLEXGlobalsTableViewControllerEntry.h"
 
 static __weak UIWindow *s_applicationWindow = nil;
 static NSMutableArray *s_globalEntries = nil;
-
-@interface FLEXGlobalsTableViewControllerEntry : NSObject
-
-@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerEntryNameFuture entryNameFuture;
-@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
-
-+ (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
-
-@end
-
-@implementation FLEXGlobalsTableViewControllerEntry
-
-+ (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture
-{
-    NSParameterAssert(nameFuture);
-    NSParameterAssert(viewControllerFuture);
-
-    FLEXGlobalsTableViewControllerEntry *entry = [[self alloc] init];
-    entry->_entryNameFuture = [nameFuture copy];
-    entry->_viewControllerFuture = [viewControllerFuture copy];
-
-    return entry;
-}
-
-@end
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowLiveObjects,
