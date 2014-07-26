@@ -18,7 +18,7 @@
 typedef NSString *(^FLEXGlobalsTableViewControllerEntryNameFuture)(void);
 typedef UIViewController *(^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
 
-static UIWindow *s_applicationWindow = nil;
+static __weak UIWindow *s_applicationWindow = nil;
 static NSMutableArray *s_globalEntries = nil;
 
 @interface FLEXGlobalsTableViewControllerEntry : NSObject
