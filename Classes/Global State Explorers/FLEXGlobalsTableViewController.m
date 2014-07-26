@@ -23,23 +23,23 @@ static NSMutableArray *s_globalEntries = nil;
 
 @interface FLEXGlobalsTableViewControllerEntry : NSObject
 
-@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerEntryNameFuture entryName;
-@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerToPush;
+@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerEntryNameFuture entryNameFuture;
+@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
 
-+ (instancetype)entryWithName:(FLEXGlobalsTableViewControllerEntryNameFuture)name viewControllerToPush:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerToPush;
++ (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
 
 @end
 
 @implementation FLEXGlobalsTableViewControllerEntry
 
-+ (instancetype)entryWithName:(FLEXGlobalsTableViewControllerEntryNameFuture)name viewControllerToPush:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerToPush
++ (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture
 {
-    NSParameterAssert(name);
-    NSParameterAssert(viewControllerToPush);
+    NSParameterAssert(nameFuture);
+    NSParameterAssert(viewControllerFuture);
 
     FLEXGlobalsTableViewControllerEntry *entry = [[self alloc] init];
-    entry->_entryName = [name copy];
-    entry->_viewControllerToPush = [viewControllerToPush copy];
+    entry->_entryNameFuture = [nameFuture copy];
+    entry->_viewControllerFuture = [viewControllerFuture copy];
 
     return entry;
 }
@@ -81,12 +81,12 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     s_globalEntries = [NSMutableArray array];
 
     for (FLEXGlobalsRow defaultRowIndex = 0; defaultRowIndex < FLEXGlobalsRowCount; defaultRowIndex++) {
-        FLEXGlobalsTableViewControllerEntryNameFuture title = nil;
+        FLEXGlobalsTableViewControllerEntryNameFuture titleFuture = nil;
         FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture = nil;
 
         switch (defaultRowIndex) {
             case FLEXGlobalsRowAppClasses:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];;
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -99,7 +99,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
             case FLEXGlobalsRowSystemLibraries: {
                 NSString *titleString = @"📚  System Libraries";
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return titleString;
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -112,7 +112,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
             }
 
             case FLEXGlobalsRowLiveObjects:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return @"💩  Heap Objects";
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -122,7 +122,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowAppDelegate:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return [NSString stringWithFormat:@"👉  %@", [[[UIApplication sharedApplication] delegate] class]];
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -132,7 +132,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowRootViewController:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return [NSString stringWithFormat:@"🌴  %@", [[s_applicationWindow rootViewController] class]];
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -142,7 +142,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowUserDefaults:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return @"🚶  +[NSUserDefaults standardUserDefaults]";
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -152,7 +152,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowApplication:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return @"💾  +[UIApplication sharedApplication]";
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -162,8 +162,8 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowKeyWindow:
-                title = ^NSString *{
-                   return @"🔑  -[UIApplication keyWindow]";
+                titleFuture = ^NSString *{
+                    return @"🔑  -[UIApplication keyWindow]";
                 };
                 viewControllerFuture = ^UIViewController *{
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:s_applicationWindow];
@@ -171,7 +171,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowMainScreen:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return @"💻  +[UIScreen mainScreen]";
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -181,7 +181,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowCurrentDevice:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return @"📱  +[UIDevice currentDevice]";
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -191,7 +191,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
 
             case FLEXGlobalsRowFileBrowser:
-                title = ^NSString *{
+                titleFuture = ^NSString *{
                     return @"📁  File Browser";
                 };
                 viewControllerFuture = ^UIViewController *{
@@ -202,11 +202,10 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
         }
 
-        NSParameterAssert(title);
+        NSParameterAssert(titleFuture);
         NSParameterAssert(viewControllerFuture);
-        
-        [s_globalEntries addObject:[FLEXGlobalsTableViewControllerEntry entryWithName:title
-                                                                 viewControllerToPush:viewControllerFuture]];
+
+        [s_globalEntries addObject:[FLEXGlobalsTableViewControllerEntry entryWithNameFuture:titleFuture viewControllerFuture:viewControllerFuture]];
     }
 }
 
@@ -234,15 +233,13 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
 
     entryName = entryName.copy;
-    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithName:^NSString *{
+    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
         return entryName;
-    }
-                                                                               viewControllerToPush:^UIViewController *
-                                                  {
-                                                      return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
-                                                  }];
+    } viewControllerFuture:^UIViewController *{
+        return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
+    }];
 
-    [s_globalEntries addObject:entry];    
+    [s_globalEntries addObject:entry];
 }
 
 #pragma mark - UIViewController
@@ -272,14 +269,14 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 {
     FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
 
-    return entry.entryName();
+    return entry.entryNameFuture();
 }
 
 - (UIViewController *)viewControllerToPushForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
 
-    return entry.viewControllerToPush();
+    return entry.viewControllerFuture();
 }
 
 #pragma mark - Table View Data Source
