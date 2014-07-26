@@ -7,10 +7,11 @@
 //
 
 #import "FLEXToolbarItem.h"
+#import "FLEXUtility.h"
 
 @interface FLEXToolbarItem ()
 
-@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSAttributedString *attributedTitle;
 @property (nonatomic, strong) UIImage *image;
 
 @end
@@ -21,7 +22,6 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.titleLabel.font = [[self class] titleFont];
         self.backgroundColor = [[self class] defaultBackgroundColor];
         [self setTitleColor:[[self class] defaultTitleColor] forState:UIControlStateNormal];
         [self setTitleColor:[[self class] disabledTitleColor] forState:UIControlStateDisabled];
@@ -32,9 +32,10 @@
 + (instancetype)toolbarItemWithTitle:(NSString *)title image:(UIImage *)image
 {
     FLEXToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeCustom];
-    toolbarItem.title = title;
+    NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:[self titleAttributes]];
+    toolbarItem.attributedTitle = attributedTitle;
     toolbarItem.image = image;
-    [toolbarItem setTitle:title forState:UIControlStateNormal];
+    [toolbarItem setAttributedTitle:attributedTitle forState:UIControlStateNormal];
     [toolbarItem setImage:image forState:UIControlStateNormal];
     return toolbarItem;
 }
@@ -42,9 +43,9 @@
 
 #pragma mark - Display Defaults
 
-+ (UIFont *)titleFont
++ (NSDictionary *)titleAttributes
 {
-    return [UIFont systemFontOfSize:12.0];
+    return @{NSFontAttributeName : [FLEXUtility defaultFontOfSize:12.0]};
 }
 
 + (UIColor *)defaultTitleColor
@@ -110,7 +111,7 @@
 {
     // Bottom aligned and centered.
     CGRect titleRect = CGRectZero;
-    CGSize titleSize = ([self.title sizeWithFont:[[self class] titleFont] constrainedToSize:contentRect.size]);
+    CGSize titleSize = [self.attributedTitle boundingRectWithSize:contentRect.size options:0 context:nil].size;
     titleSize = CGSizeMake(ceil(titleSize.width), ceil(titleSize.height));
     titleRect.size = titleSize;
     titleRect.origin.y = contentRect.origin.y + CGRectGetMaxY(contentRect) - titleSize.height;

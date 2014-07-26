@@ -75,7 +75,7 @@
 {
     CGFloat verticalLayoutGuide = 0;
     if (self.showsTitle) {
-        CGFloat titleHeight = ceil([self.title sizeWithFont:[[self class] titleFont] constrainedToSize:self.bounds.size].height);
+        CGFloat titleHeight = [self.titleLabel sizeThatFits:self.bounds.size].height;
         verticalLayoutGuide = titleHeight + [[self class] titleBottomPadding];
     }
     return verticalLayoutGuide;
@@ -127,7 +127,7 @@
     
     if ([self.title length] > 0) {
         CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
-        height += ceil([self.title sizeWithFont:[[self class] titleFont] constrainedToSize:constrainSize].height);
+        height += ceil([self.titleLabel sizeThatFits:constrainSize].height);
         height += [[self class] titleBottomPadding];
     }
     

@@ -73,7 +73,10 @@
     UIEdgeInsets labelInsets = [self labelInsets];
     labelWidth -= (labelInsets.left + labelInsets.right);
     
-    CGFloat preferredLabelHeight = ceil([text sizeWithFont:[self labelFont] constrainedToSize:CGSizeMake(labelWidth, CGFLOAT_MAX)].height);
+    // Size an attributed string to get around deprecation warnings if the deployment target is >= 7 while still supporting deployment tagets back to 6.0.
+    NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName: [self labelFont]}];
+    CGSize constrainSize = CGSizeMake(labelWidth, CGFLOAT_MAX);
+    CGFloat preferredLabelHeight = ceil([attributedText boundingRectWithSize:constrainSize options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height);
     CGFloat preferredCellHeight = preferredLabelHeight + labelInsets.top + labelInsets.bottom + 1.0;
     
     return preferredCellHeight;

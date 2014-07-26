@@ -157,7 +157,6 @@
 {
     CGFloat horizontalPadding = [[self class] horizontalPadding];
     CGFloat verticalPadding = [[self class] verticalPadding];
-    UIFont *font = [[self class] labelFont];
     CGFloat dividerLineHeight = [[self class] dividerLineHeight];
     
     CGFloat height = 0;
@@ -165,11 +164,11 @@
     CGSize constrainSize = CGSizeMake(availableWidth, CGFLOAT_MAX);
     
     height += verticalPadding;
-    height += ceil([self.targetDescription sizeWithFont:font constrainedToSize:constrainSize].height);
+    height += ceil([self.targetDescriptionLabel sizeThatFits:constrainSize].height);
     height += verticalPadding;
     height += dividerLineHeight;
     height += verticalPadding;
-    height += ceil([self.fieldDescription sizeWithFont:font constrainedToSize:constrainSize].height);
+    height += ceil([self.fieldDescriptionLabel sizeThatFits:constrainSize].height);
     height += verticalPadding;
     height += dividerLineHeight;
     height += verticalPadding;
