@@ -87,7 +87,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         switch (defaultRowIndex) {
             case FLEXGlobalsRowAppClasses:
                 titleFuture = ^NSString *{
-                    return [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];;
+                    return [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];
                 };
                 viewControllerFuture = ^UIViewController *{
                     FLEXClassesTableViewController *classesViewController = [[FLEXClassesTableViewController alloc] init];
