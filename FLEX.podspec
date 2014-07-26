@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name             = "FLEX"
-  spec.version          = "1.0.0"
+  spec.version          = "1.0.1"
   spec.summary          = "A set of in-app debugging and exploration tools for iOS"
   spec.description      = <<-DESC
                         - Inspect and modify views in the hierarchy.
@@ -28,7 +28,7 @@ Pod::Spec.new do |spec|
   spec.author           = { "Ryan Olson" => "ryanolsonk@gmail.com" }
   spec.social_media_url = "https://twitter.com/ryanolsonk"
   spec.platform         = :ios, "6.0"
-  spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "1.0.0" }
+  spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,m}"
   spec.frameworks       = "CoreGraphics"
   spec.requires_arc     = true
