@@ -136,7 +136,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
     UIStatusBarStyle preferredStyle = UIStatusBarStyleDefault;
-    if (viewControllerToAsk != self) {
+    if (viewControllerToAsk && viewControllerToAsk != self) {
         preferredStyle = [viewControllerToAsk preferredStatusBarStyle];
     }
     return preferredStyle;
@@ -146,7 +146,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
     UIStatusBarAnimation preferredAnimation = UIStatusBarAnimationFade;
-    if (viewControllerToAsk != self) {
+    if (viewControllerToAsk && viewControllerToAsk != self) {
         preferredAnimation = [viewControllerToAsk preferredStatusBarUpdateAnimation];
     }
     return preferredAnimation;
@@ -156,7 +156,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
     BOOL prefersHidden = NO;
-    if (viewControllerToAsk != self) {
+    if (viewControllerToAsk && viewControllerToAsk != self) {
         prefersHidden = [viewControllerToAsk prefersStatusBarHidden];
     }
     return prefersHidden;
@@ -169,7 +169,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
     NSUInteger supportedOrientations = [FLEXUtility infoPlistSupportedInterfaceOrientationsMask];
-    if (viewControllerToAsk != self) {
+    if (viewControllerToAsk && viewControllerToAsk != self) {
         supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
     }
     
