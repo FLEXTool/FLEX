@@ -172,6 +172,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (viewControllerToAsk != self) {
         supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
     }
+    
+    // The UIViewController docs state that this method must not return zero.
+    // If we weren't able to get a valid value for the supported interface orientations, default to all supported.
+    if (supportedOrientations == 0) {
+        supportedOrientations = UIInterfaceOrientationMaskAll;
+    }
+    
     return supportedOrientations;
 }
 
