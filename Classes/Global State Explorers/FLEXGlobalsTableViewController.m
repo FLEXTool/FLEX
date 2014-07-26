@@ -47,9 +47,10 @@ static NSMutableArray *s_globalEntries = nil;
 @end
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
-    FLEXGlobalsRowAppClasses,
-    FLEXGlobalsRowSystemLibraries,
     FLEXGlobalsRowLiveObjects,
+    FLEXGlobalsRowFileBrowser,
+    FLEXGlobalsRowSystemLibraries,
+    FLEXGlobalsRowAppClasses,
     FLEXGlobalsRowAppDelegate,
     FLEXGlobalsRowRootViewController,
     FLEXGlobalsRowUserDefaults,
@@ -57,7 +58,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowKeyWindow,
     FLEXGlobalsRowMainScreen,
     FLEXGlobalsRowCurrentDevice,
-    FLEXGlobalsRowFileBrowser,
     FLEXGlobalsRowCount
 };
 
