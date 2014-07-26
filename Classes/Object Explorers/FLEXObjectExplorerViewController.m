@@ -95,6 +95,8 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     // Reload the entire table view rather than just the visible cells because the filtered rows
     // may have changed (i.e. a change in the description row that causes it to get filtered out).
     [self updateTableData];

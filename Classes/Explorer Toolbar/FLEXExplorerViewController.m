@@ -108,6 +108,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
+    
     [self updateButtonStates];
 }
 
