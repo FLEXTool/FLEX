@@ -18,7 +18,7 @@
 
 @implementation FLEXDictionaryExplorerViewController
 
-- (NSArray *)dictionary
+- (NSDictionary *)dictionary
 {
     return [self.object isKindOfClass:[NSDictionary class]] ? self.object : nil;
 }
