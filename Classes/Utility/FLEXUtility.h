@@ -25,7 +25,7 @@
 + (UIFont *)defaultFontOfSize:(CGFloat)size;
 + (UIFont *)defaultTableViewCellLabelFont;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
-+ (NSUInteger)infoPlistSupportedInterfaceOrientationsMask;
++ (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
 + (NSString *)searchBarPlaceholderText;
 + (BOOL)isImagePathExtension:(NSString *)extension;
 

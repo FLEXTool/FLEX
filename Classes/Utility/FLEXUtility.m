@@ -153,12 +153,12 @@
     return [mutableString copy];
 }
 
-+ (NSUInteger)infoPlistSupportedInterfaceOrientationsMask
++ (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask
 {
     NSArray *supportedOrientations = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UISupportedInterfaceOrientations"];
-    NSUInteger supportedOrientationsMask = 0;
+    UIInterfaceOrientationMask supportedOrientationsMask = 0;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"]) {
-        supportedOrientationsMask |= UIInterfaceOrientationPortrait;
+        supportedOrientationsMask |= UIInterfaceOrientationMaskPortrait;
     }
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationMaskLandscapeRight"]) {
         supportedOrientationsMask |= UIInterfaceOrientationMaskLandscapeRight;
@@ -167,7 +167,7 @@
         supportedOrientationsMask |= UIInterfaceOrientationMaskPortraitUpsideDown;
     }
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationLandscapeLeft"]) {
-        supportedOrientationsMask |= UIInterfaceOrientationLandscapeLeft;
+        supportedOrientationsMask |= UIInterfaceOrientationMaskLandscapeLeft;
     }
     return supportedOrientationsMask;
 }
