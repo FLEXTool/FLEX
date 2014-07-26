@@ -251,6 +251,7 @@
 		944F7486197B458C009AB039 /* FLEXHierarchyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXHierarchyTableViewController.m; sourceTree = "<group>"; };
 		944F7487197B458C009AB039 /* FLEXImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXImagePreviewViewController.h; sourceTree = "<group>"; };
 		944F7488197B458C009AB039 /* FLEXImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXImagePreviewViewController.m; sourceTree = "<group>"; };
+		D03647D51984720F007D2A1B /* FLEXManager+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEXManager+Private.h"; sourceTree = "<group>"; };
 		D03647D719847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXGlobalsTableViewControllerEntry.h; sourceTree = "<group>"; };
 		D03647D819847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXGlobalsTableViewControllerEntry.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -522,6 +523,7 @@
 				944F746C197B458C009AB039 /* FLEXExplorerViewController.m */,
 				944F746D197B458C009AB039 /* FLEXManager.h */,
 				944F746E197B458C009AB039 /* FLEXManager.m */,
+				D03647D51984720F007D2A1B /* FLEXManager+Private.h */,
 				944F746F197B458C009AB039 /* FLEXToolbarItem.h */,
 				944F7470197B458C009AB039 /* FLEXToolbarItem.m */,
 				944F7471197B458C009AB039 /* FLEXWindow.h */,

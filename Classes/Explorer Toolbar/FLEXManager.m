@@ -9,11 +9,16 @@
 #import "FLEXManager.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXWindow.h"
+#import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXObjectExplorerFactory.h"
+#import "FLEXObjectExplorerViewController.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
 @property (nonatomic, strong) FLEXWindow *explorerWindow;
 @property (nonatomic, strong) FLEXExplorerViewController *explorerViewController;
+
+@property (nonatomic, readonly, strong) NSMutableArray *userGlobalEntries;
 
 @end
 
@@ -74,6 +79,25 @@
 - (void)explorerViewControllerDidFinish:(FLEXExplorerViewController *)explorerViewController
 {
     [self hideExplorer];
+}
+
+
+#pragma mark - Extensions
+
+- (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock
+{
+    NSParameterAssert(entryName);
+    NSParameterAssert(objectFutureBlock);
+    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
+
+    entryName = entryName.copy;
+    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
+        return entryName;
+    } viewControllerFuture:^UIViewController *{
+        return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
+    }];
+
+    [self.userGlobalEntries addObject:entry];
 }
 
 @end

@@ -15,6 +15,7 @@
 #import "FLEXLiveObjectsTableViewController.h"
 #import "FLEXFileBrowserTableViewController.h"
 #import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXManager+Private.h"
 
 static __weak UIWindow *s_applicationWindow = nil;
 static NSMutableArray *s_globalEntries = nil;
@@ -187,7 +188,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     self = [super initWithStyle:style];
     if (self) {
         self.title = @"🌎  Global State";
-        _entries = [s_globalEntries copy];
+        _entries = [[s_globalEntries copy] arrayByAddingObjectsFromArray:[FLEXManager sharedManager].userGlobalEntries];
     }
     return self;
 }
@@ -197,22 +198,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 + (void)setApplicationWindow:(UIWindow *)applicationWindow
 {
     s_applicationWindow = applicationWindow;
-}
-
-+ (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock
-{
-    NSParameterAssert(entryName);
-    NSParameterAssert(objectFutureBlock);
-    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
-
-    entryName = entryName.copy;
-    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
-        return entryName;
-    } viewControllerFuture:^UIViewController *{
-        return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
-    }];
-
-    [s_globalEntries addObject:entry];
 }
 
 #pragma mark - UIViewController
