@@ -26,15 +26,13 @@ static NSMutableArray *s_globalEntries = nil;
 @property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerEntryNameFuture entryName;
 @property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerToPush;
 
-+ (instancetype)entryWithName:(FLEXGlobalsTableViewControllerEntryNameFuture)name
-         viewControllerToPush:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerToPush;
++ (instancetype)entryWithName:(FLEXGlobalsTableViewControllerEntryNameFuture)name viewControllerToPush:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerToPush;
 
 @end
 
 @implementation FLEXGlobalsTableViewControllerEntry
 
-+ (instancetype)entryWithName:(FLEXGlobalsTableViewControllerEntryNameFuture)name
-         viewControllerToPush:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerToPush
++ (instancetype)entryWithName:(FLEXGlobalsTableViewControllerEntryNameFuture)name viewControllerToPush:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerToPush
 {
     NSParameterAssert(name);
     NSParameterAssert(viewControllerToPush);

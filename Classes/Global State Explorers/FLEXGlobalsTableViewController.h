@@ -25,8 +25,7 @@
 /// @note This method must be called from the main thread.
 /// The objectFutureBlock will be invoked from the main thread and may return nil.
 /// @note The passed block will be copied and retain for the duration of the application, you may want to use __weak references.
-+ (void)registerGlobalEntryWithName:(NSString *)entryName
-                  objectFutureBlock:(id(^)(void))objectFutureBlock;
++ (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id(^)(void))objectFutureBlock;
 
 @end
 
