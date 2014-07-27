@@ -23,7 +23,7 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        self.fontNameInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:FLEXEncodeClass(NSString)];
+        self.fontNameInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:FLEXEncodeClass(FLEXArgumentInputFontsPickerView)];
         self.fontNameInput.backgroundColor = self.backgroundColor;
         self.fontNameInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.fontNameInput.title = @"Font Name:";

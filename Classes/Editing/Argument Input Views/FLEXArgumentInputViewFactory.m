@@ -16,6 +16,7 @@
 #import "FLEXArgumentInputStringView.h"
 #import "FLEXArgumentInputFontView.h"
 #import "FLEXArgumentInputColorView.h"
+#import "FLEXArgumentInputFontsPickerView.h"
 
 @implementation FLEXArgumentInputViewFactory
 
@@ -51,6 +52,8 @@
         argumentInputViewSubclass = [FLEXArgumentInputNumberView class];
     } else if ([FLEXArgumentInputJSONObjectView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
         argumentInputViewSubclass = [FLEXArgumentInputJSONObjectView class];
+    } else if ([FLEXArgumentInputFontsPickerView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
+        argumentInputViewSubclass = [FLEXArgumentInputFontsPickerView class];
     }
     
     return argumentInputViewSubclass;

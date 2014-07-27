@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01985ABC1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01985ABB1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m */; };
 		3EC6487318FF8A5000024205 /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3EC6487218FF8A5000024205 /* ReadMe.txt */; };
 		5356823E18F3656900BAAD62 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356823D18F3656900BAAD62 /* Foundation.framework */; };
 		5356824018F3656900BAAD62 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356823F18F3656900BAAD62 /* CoreGraphics.framework */; };
@@ -92,6 +93,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01985ABA1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputFontsPickerView.h; sourceTree = "<group>"; };
+		01985ABB1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputFontsPickerView.m; sourceTree = "<group>"; };
 		3EC6487218FF8A5000024205 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = SOURCE_ROOT; };
 		5356823A18F3656900BAAD62 /* UICatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UICatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5356823D18F3656900BAAD62 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -495,6 +498,8 @@
 				944F744F197B458C009AB039 /* FLEXArgumentInputNumberView.m */,
 				944F7450197B458C009AB039 /* FLEXArgumentInputStringView.h */,
 				944F7451197B458C009AB039 /* FLEXArgumentInputStringView.m */,
+				01985ABA1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.h */,
+				01985ABB1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m */,
 				944F7452197B458C009AB039 /* FLEXArgumentInputStructView.h */,
 				944F7453197B458C009AB039 /* FLEXArgumentInputStructView.m */,
 				944F7454197B458C009AB039 /* FLEXArgumentInputSwitchView.h */,
@@ -703,6 +708,7 @@
 				535682B818F3670300BAAD62 /* AAPLSplitViewControllerDelegate.m in Sources */,
 				535682AC18F3670300BAAD62 /* AAPLCustomSearchBarViewController.m in Sources */,
 				535682A718F3670300BAAD62 /* AAPLActionSheetViewController.m in Sources */,
+				01985ABC1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m in Sources */,
 				944F74AA197B458C009AB039 /* FLEXExplorerViewController.m in Sources */,
 				944F7492197B458C009AB039 /* FLEXViewControllerExplorerViewController.m in Sources */,
 				5356824A18F3656900BAAD62 /* main.m in Sources */,
