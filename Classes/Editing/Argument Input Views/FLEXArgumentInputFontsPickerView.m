@@ -22,19 +22,9 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        
-        [self createAvailableFonts];
-        
         self.targetSize = FLEXArgumentInputViewSizeSmall;
-        
-        self.inputTextView.inputView = ({
-            UIPickerView *fontsPicker = [UIPickerView new];
-            fontsPicker.dataSource = self;
-            fontsPicker.delegate = self;
-            fontsPicker.showsSelectionIndicator = YES;
-            fontsPicker;
-        });
-        
+        [self createAvailableFonts];
+        self.inputTextView.inputView = [self createFontsPicker];
     }
     return self;
 }
@@ -42,15 +32,12 @@
 - (void)setInputValue:(id)inputValue
 {
     self.inputTextView.text = inputValue;
-
     if ([self.availableFonts indexOfObject:inputValue] == NSNotFound) {
         [self.availableFonts insertObject:inputValue atIndex:0];
     }
-    
     [(UIPickerView*)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue]
                                                inComponent:0
                                                   animated:NO];
-    
 }
 
 - (id)inputValue
@@ -60,18 +47,23 @@
 
 #pragma mark - private
 
+- (UIPickerView*)createFontsPicker
+{
+    UIPickerView *fontsPicker = [UIPickerView new];
+    fontsPicker.dataSource = self;
+    fontsPicker.delegate = self;
+    fontsPicker.showsSelectionIndicator = YES;
+    return fontsPicker;
+}
+
 - (void)createAvailableFonts
 {
     NSMutableArray *unsortedFontsArray = [NSMutableArray array];
-
     for (NSString *eachFontFamily in [UIFont familyNames]) {
-        
         for (NSString *eachFontName in [UIFont fontNamesForFamilyName:eachFontFamily]) {
             [unsortedFontsArray addObject:eachFontName];
         }
-        
     }
-    
     self.availableFonts = [NSMutableArray arrayWithArray:[unsortedFontsArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
 }
 
@@ -84,32 +76,27 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    
     return [self.availableFonts count];
-    
 }
 
 #pragma mark - UIPickerViewDelegate
 
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
-    
+    UILabel *fontLabel;
     if (!view) {
-        view = [UILabel new];
-        [(UILabel*)view setBackgroundColor:[UIColor clearColor]];
-        [(UILabel*)view setTextAlignment:NSTextAlignmentCenter];
+        fontLabel = [UILabel new];
+        fontLabel.backgroundColor = [UIColor clearColor];
+        fontLabel.textAlignment = NSTextAlignmentCenter;
+    } else {
+        fontLabel = (UILabel*)view;
     }
-    
     UIFont *font = [UIFont fontWithName:self.availableFonts[row] size:15.0];
-    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObject:font
-                                                                     forKey:NSFontAttributeName];
+    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
     NSAttributedString *attributesString = [[NSAttributedString alloc] initWithString:self.availableFonts[row] attributes:attributesDictionary];
-    
-    [(UILabel*)view setAttributedText:attributesString];
-    [view sizeToFit];
-    
-    return view;
-    
+    fontLabel.attributedText = attributesString;
+    [fontLabel sizeToFit];
+    return fontLabel;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
