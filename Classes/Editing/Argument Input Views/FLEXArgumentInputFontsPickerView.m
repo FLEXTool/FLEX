@@ -35,9 +35,7 @@
     if ([self.availableFonts indexOfObject:inputValue] == NSNotFound) {
         [self.availableFonts insertObject:inputValue atIndex:0];
     }
-    [(UIPickerView*)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue]
-                                               inComponent:0
-                                                  animated:NO];
+    [(UIPickerView*)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue] inComponent:0 animated:NO];
 }
 
 - (id)inputValue
