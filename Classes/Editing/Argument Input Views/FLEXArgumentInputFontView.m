@@ -9,6 +9,7 @@
 #import "FLEXArgumentInputFontView.h"
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXRuntimeUtility.h"
+#import "FLEXArgumentInputFontsPickerView.h"
 
 @interface FLEXArgumentInputFontView ()
 
@@ -23,7 +24,7 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        self.fontNameInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:FLEXEncodeClass(FLEXArgumentInputFontsPickerView)];
+        self.fontNameInput = [[FLEXArgumentInputFontsPickerView alloc] initWithArgumentTypeEncoding:FLEXEncodeClass(NSString)];
         self.fontNameInput.backgroundColor = self.backgroundColor;
         self.fontNameInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.fontNameInput.title = @"Font Name:";

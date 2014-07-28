@@ -117,13 +117,4 @@
     self.inputTextView.text = self.availableFonts[row];
 }
 
-#pragma mark -
-
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
-    BOOL supported = type && strcmp(type, FLEXEncodeClass(FLEXArgumentInputFontsPickerView)) == 0;
-    supported = supported || (value && [value isKindOfClass:[FLEXArgumentInputFontsPickerView class]]);
-    return supported;
-}
-
 @end
