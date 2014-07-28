@@ -11,7 +11,7 @@
 
 @interface FLEXArgumentInputFontsPickerView ()
 
-@property (nonatomic, strong) NSArray *availableFonts;
+@property (nonatomic, strong) NSMutableArray *availableFonts;
 
 @end
 
@@ -42,9 +42,15 @@
 - (void)setInputValue:(id)inputValue
 {
     self.inputTextView.text = inputValue;
+
+    if ([self.availableFonts indexOfObject:inputValue] == NSNotFound) {
+        [self.availableFonts insertObject:inputValue atIndex:0];
+    }
+    
     [(UIPickerView*)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue]
                                                inComponent:0
                                                   animated:NO];
+    
 }
 
 - (id)inputValue
@@ -53,10 +59,6 @@
 }
 
 #pragma mark - private
-
-- (void)textFieldDone {
-    
-}
 
 - (void)createAvailableFonts
 {
@@ -70,7 +72,7 @@
         
     }
     
-    self.availableFonts = [unsortedFontsArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    self.availableFonts = [NSMutableArray arrayWithArray:[unsortedFontsArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
 }
 
 #pragma mark - UIPickerViewDataSource
@@ -89,13 +91,25 @@
 
 #pragma mark - UIPickerViewDelegate
 
-- (NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
-    UIFont *font = [UIFont fontWithName:self.availableFonts[row] size:14.0];
+    
+    if (!view) {
+        view = [UILabel new];
+        [(UILabel*)view setBackgroundColor:[UIColor clearColor]];
+        [(UILabel*)view setTextAlignment:NSTextAlignmentCenter];
+    }
+    
+    UIFont *font = [UIFont fontWithName:self.availableFonts[row] size:15.0];
     NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObject:font
                                                                      forKey:NSFontAttributeName];
-    NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:self.availableFonts[row] attributes:attributesDictionary];
-    return attrString;
+    NSAttributedString *attributesString = [[NSAttributedString alloc] initWithString:self.availableFonts[row] attributes:attributesDictionary];
+    
+    [(UILabel*)view setAttributedText:attributesString];
+    [view sizeToFit];
+    
+    return view;
+    
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
