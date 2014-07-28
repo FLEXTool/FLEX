@@ -19,9 +19,6 @@
 
 static __weak UIWindow *s_applicationWindow = nil;
 
-/// [FLEXGlobalsTableViewControllerEntry *]
-static NSArray *s_defaultGlobalEntries = nil;
-
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowLiveObjects,
     FLEXGlobalsRowFileBrowser,
@@ -46,14 +43,8 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 @implementation FLEXGlobalsTableViewController
 
-+ (void)initialize
-{
-    if (self == [FLEXGlobalsTableViewController class]) {
-        [self initializeStandardGlobalEntries];
-    }
-}
-
-+ (void)initializeStandardGlobalEntries {
+/// [FLEXGlobalsTableViewControllerEntry *]
++ (NSArray *)defaultGlobalEntries {
     NSMutableArray *defaultGlobalEntries = [NSMutableArray array];
 
     for (FLEXGlobalsRow defaultRowIndex = 0; defaultRowIndex < FLEXGlobalsRowCount; defaultRowIndex++) {
@@ -184,7 +175,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         [defaultGlobalEntries addObject:[FLEXGlobalsTableViewControllerEntry entryWithNameFuture:titleFuture viewControllerFuture:viewControllerFuture]];
     }
 
-    s_defaultGlobalEntries = [defaultGlobalEntries copy];
+  return defaultGlobalEntries;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -192,7 +183,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     self = [super initWithStyle:style];
     if (self) {
         self.title = @"🌎  Global State";
-        _entries = [s_defaultGlobalEntries arrayByAddingObjectsFromArray:[FLEXManager sharedManager].userGlobalEntries];
+        _entries = [[[self class] defaultGlobalEntries] arrayByAddingObjectsFromArray:[FLEXManager sharedManager].userGlobalEntries];
     }
     return self;
 }
