@@ -184,6 +184,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return supportedOrientations;
 }
 
+- (BOOL)shouldAutorotate
+{
+    UIViewController *viewControllerToAsk = [self viewControllerForStatusBarAndOrientationProperties];
+    BOOL shouldAutorotate = YES;
+    if (viewControllerToAsk && viewControllerToAsk != self) {
+        shouldAutorotate = [viewControllerToAsk shouldAutorotate];
+    }
+    return shouldAutorotate;
+}
+
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
