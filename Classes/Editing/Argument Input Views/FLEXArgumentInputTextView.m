@@ -30,9 +30,27 @@
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextView.delegate = self;
+        self.inputTextView.inputAccessoryView = [self createToolBar];
         [self addSubview:self.inputTextView];
     }
     return self;
+}
+
+#pragma mark - private
+
+- (UIToolbar*)createToolBar
+{
+    UIToolbar *toolBar = [UIToolbar new];
+    [toolBar sizeToFit];
+    UIBarButtonItem *spaceItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(textViewDone)];
+    toolBar.items = @[spaceItem, doneItem];
+    return toolBar;
+}
+
+- (void)textViewDone
+{
+    [self.inputTextView resignFirstResponder];
 }
 
 
