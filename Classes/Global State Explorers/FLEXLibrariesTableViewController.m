@@ -52,7 +52,7 @@
     if (imageNames) {
         NSMutableArray *imageNameStrings = [NSMutableArray array];
         NSString *appImageName = [FLEXUtility applicationImageName];
-        for (int i = 0; i < imageNamesCount; i++) {
+        for (unsigned int i = 0; i < imageNamesCount; i++) {
             const char *imageName = imageNames[i];
             NSString *imageNameString = [NSString stringWithUTF8String:imageName];
             // Skip the app's image. We're just showing system libraries and frameworks.

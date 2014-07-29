@@ -218,7 +218,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     unsigned int propertyCount = 0;
     objc_property_t *propertyList = class_copyPropertyList(class, &propertyCount);
     if (propertyList) {
-        for (int i = 0; i < propertyCount; i++) {
+        for (unsigned int i = 0; i < propertyCount; i++) {
             FLEXPropertyBox *propertyBox = [[FLEXPropertyBox alloc] init];
             propertyBox.property = propertyList[i];
             [boxedProperties addObject:propertyBox];
@@ -297,7 +297,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     unsigned int ivarCount = 0;
     Ivar *ivarList = class_copyIvarList(class, &ivarCount);
     if (ivarList) {
-        for (int i = 0; i < ivarCount; i++) {
+        for (unsigned int i = 0; i < ivarCount; i++) {
             FLEXIvarBox *ivarBox = [[FLEXIvarBox alloc] init];
             ivarBox.ivar = ivarList[i];
             [boxedIvars addObject:ivarBox];
@@ -394,7 +394,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     unsigned int methodCount = 0;
     Method *methodList = class_copyMethodList(class, &methodCount);
     if (methodList) {
-        for (int i = 0; i < methodCount; i++) {
+        for (unsigned int i = 0; i < methodCount; i++) {
             FLEXMethodBox *methodBox = [[FLEXMethodBox alloc] init];
             methodBox.method = methodList[i];
             [boxedMethods addObject:methodBox];
