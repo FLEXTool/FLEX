@@ -109,6 +109,10 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
 - [Non-pointer isa](http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html): an explanation of changes to the isa field on iOS for ARM64 and mention of the useful `objc_debug_isa_class_mask` variable.
 
 
+## Contributing
+We welcome pull requests for bug fixes, new features, and improvements to FLEX. Contributors to the main FLEX repository must accept Flipboard's Apache-style [Individual Contributor License Agreement (CLA)](https://docs.google.com/forms/d/1gh9y6_i8xFn6pA15PqFeye19VqasuI9-bGp_e0owy74/viewform) before any changes can be merged.
+
+
 ## TODO
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
 - Network request logging
