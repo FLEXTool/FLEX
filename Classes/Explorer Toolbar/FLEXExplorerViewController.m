@@ -58,6 +58,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// If we're just showing the toolbar, we want the main app's window to remain key so that we don't interfere with input, status bar, etc.
 @property (nonatomic, strong) UIWindow *previousKeyWindow;
 
+/// Similar to the previousKeyWindow property above, we need to track status bar styling if
+/// the app doesn't use view controller based status bar management. When we present a modal,
+/// we want to change the status bar style to UIStausBarStyleDefault. Before changing, we stash
+/// the current style. On dismissal, we return the staus bar to the style that the app was using previously.
+@property (nonatomic, assign) UIStatusBarStyle previousStatusBarStyle;
+
 /// All views that we're KVOing. Used to help us clean up properly.
 @property (nonatomic, strong) NSMutableSet *observedViews;
 
@@ -821,6 +827,15 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
     [[self statusWindow] setWindowLevel:self.view.window.windowLevel + 1.0];
     
+    // If this app doesn't use view controller based status bar management and we're on iOS 7+,
+    // make sure the status bar style is UIStatusBarStyleDefault. We don't actully have to check
+    // for view controller based management because the global methods no-op if that is turned on.
+    // Only for iOS 7+
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) {
+        self.previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    }
+    
     // Show the view controller.
     [self presentViewController:viewController animated:animated completion:completion];
 }
@@ -834,6 +849,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for scroll to top, but below FLEX otherwise for exploration.
     [[self statusWindow] setWindowLevel:UIWindowLevelStatusBar];
+    
+    // Restore the stauts bar style if the app is using global status bar management.
+    // Only for iOS 7+
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) {
+        [[UIApplication sharedApplication] setStatusBarStyle:self.previousStatusBarStyle];
+    }
     
     [self dismissViewControllerAnimated:animated completion:completion];
 }
