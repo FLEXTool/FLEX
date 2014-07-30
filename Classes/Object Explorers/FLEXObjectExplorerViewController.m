@@ -353,7 +353,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (id)valueForIvarAtIndex:(NSInteger)index
 {
     id value = nil;
-    if (![self canHaveInstanceState]) {
+    if ([self canHaveInstanceState]) {
         FLEXIvarBox *ivarBox = [self.filteredIvars objectAtIndex:index];
         value = [FLEXRuntimeUtility valueForIvar:ivarBox.ivar onObject:self.object];
     }
