@@ -41,6 +41,8 @@
         self.explorerWindow = [[FLEXWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         self.explorerWindow.eventDelegate = self;
         
+        _userGlobalEntries = [[NSMutableArray alloc] init];
+        
         self.explorerViewController = [[FLEXExplorerViewController alloc] init];
         self.explorerViewController.delegate = self;
         self.explorerWindow.rootViewController = self.explorerViewController;
