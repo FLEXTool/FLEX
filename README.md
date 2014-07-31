@@ -115,12 +115,11 @@ We welcome pull requests for bug fixes, new features, and improvements to FLEX. 
 
 ## Changes
 
-#### v1.1.0 (in progress)
+#### v1.1.0 2014/7/31
 - Support adding custom entries to the "Globals" menu (@JaviSoto)
 - Warnings cleanup (@JaviSoto)
 - WYSIWYG font picker input view (@DaidoujiChen)
-- Fix status bar styling on iOS 7+ for apps using global status bar management (@ryanolsonk)
-- Forward shouldAutorotate calls to keep FLEX from interfering with rotation (@ryanolsonk)
+- Small bug fixes around status bar styling, rotation, and ivar value display (@ryanolsonk)
 
 #### v1.0.1 2014/07/26
 - Warnings cleanup and small bugfixes with rotation and interface orientations (@ryanolsonk)
