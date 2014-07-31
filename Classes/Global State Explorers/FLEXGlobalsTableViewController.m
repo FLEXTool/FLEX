@@ -14,11 +14,16 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXLiveObjectsTableViewController.h"
 #import "FLEXFileBrowserTableViewController.h"
+#import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXManager+Private.h"
+
+static __weak UIWindow *s_applicationWindow = nil;
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
-    FLEXGlobalsRowAppClasses,
-    FLEXGlobalsRowSystemLibraries,
     FLEXGlobalsRowLiveObjects,
+    FLEXGlobalsRowFileBrowser,
+    FLEXGlobalsRowSystemLibraries,
+    FLEXGlobalsRowAppClasses,
     FLEXGlobalsRowAppDelegate,
     FLEXGlobalsRowRootViewController,
     FLEXGlobalsRowUserDefaults,
@@ -26,170 +31,207 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowKeyWindow,
     FLEXGlobalsRowMainScreen,
     FLEXGlobalsRowCurrentDevice,
-    FLEXGlobalsRowFileBrowser
+    FLEXGlobalsRowCount
 };
 
 @interface FLEXGlobalsTableViewController ()
 
-@property (nonatomic, strong) NSArray *rows;
+/// [FLEXGlobalsTableViewControllerEntry *]
+@property (nonatomic, readonly, copy) NSArray *entries;
 
 @end
 
 @implementation FLEXGlobalsTableViewController
+
+/// [FLEXGlobalsTableViewControllerEntry *]
++ (NSArray *)defaultGlobalEntries
+{
+    NSMutableArray *defaultGlobalEntries = [NSMutableArray array];
+
+    for (FLEXGlobalsRow defaultRowIndex = 0; defaultRowIndex < FLEXGlobalsRowCount; defaultRowIndex++) {
+        FLEXGlobalsTableViewControllerEntryNameFuture titleFuture = nil;
+        FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture = nil;
+
+        switch (defaultRowIndex) {
+            case FLEXGlobalsRowAppClasses:
+                titleFuture = ^NSString *{
+                    return [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];
+                };
+                viewControllerFuture = ^UIViewController *{
+                    FLEXClassesTableViewController *classesViewController = [[FLEXClassesTableViewController alloc] init];
+                    classesViewController.binaryImageName = [FLEXUtility applicationImageName];
+
+                    return classesViewController;
+                };
+                break;
+
+            case FLEXGlobalsRowSystemLibraries: {
+                NSString *titleString = @"📚  System Libraries";
+                titleFuture = ^NSString *{
+                    return titleString;
+                };
+                viewControllerFuture = ^UIViewController *{
+                    FLEXLibrariesTableViewController *librariesViewController = [[FLEXLibrariesTableViewController alloc] init];
+                    librariesViewController.title = titleString;
+
+                    return librariesViewController;
+                };
+                break;
+            }
+
+            case FLEXGlobalsRowLiveObjects:
+                titleFuture = ^NSString *{
+                    return @"💩  Heap Objects";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    return [[FLEXLiveObjectsTableViewController alloc] init];
+                };
+
+                break;
+
+            case FLEXGlobalsRowAppDelegate:
+                titleFuture = ^NSString *{
+                    return [NSString stringWithFormat:@"👉  %@", [[[UIApplication sharedApplication] delegate] class]];
+                };
+                viewControllerFuture = ^UIViewController *{
+                    id <UIApplicationDelegate> appDelegate = [[UIApplication sharedApplication] delegate];
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:appDelegate];
+                };
+                break;
+
+            case FLEXGlobalsRowRootViewController:
+                titleFuture = ^NSString *{
+                    return [NSString stringWithFormat:@"🌴  %@", [[s_applicationWindow rootViewController] class]];
+                };
+                viewControllerFuture = ^UIViewController *{
+                    UIViewController *rootViewController = [s_applicationWindow rootViewController];
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:rootViewController];
+                };
+                break;
+
+            case FLEXGlobalsRowUserDefaults:
+                titleFuture = ^NSString *{
+                    return @"🚶  +[NSUserDefaults standardUserDefaults]";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:standardUserDefaults];
+                };
+                break;
+
+            case FLEXGlobalsRowApplication:
+                titleFuture = ^NSString *{
+                    return @"💾  +[UIApplication sharedApplication]";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    UIApplication *sharedApplication = [UIApplication sharedApplication];
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:sharedApplication];
+                };
+                break;
+
+            case FLEXGlobalsRowKeyWindow:
+                titleFuture = ^NSString *{
+                    return @"🔑  -[UIApplication keyWindow]";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:s_applicationWindow];
+                };
+                break;
+
+            case FLEXGlobalsRowMainScreen:
+                titleFuture = ^NSString *{
+                    return @"💻  +[UIScreen mainScreen]";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    UIScreen *mainScreen = [UIScreen mainScreen];
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:mainScreen];
+                };
+                break;
+
+            case FLEXGlobalsRowCurrentDevice:
+                titleFuture = ^NSString *{
+                    return @"📱  +[UIDevice currentDevice]";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    UIDevice *currentDevice = [UIDevice currentDevice];
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:currentDevice];
+                };
+                break;
+
+            case FLEXGlobalsRowFileBrowser:
+                titleFuture = ^NSString *{
+                    return @"📁  File Browser";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    return [[FLEXFileBrowserTableViewController alloc] init];
+                };
+                break;
+            case FLEXGlobalsRowCount:
+                break;
+        }
+
+        NSParameterAssert(titleFuture);
+        NSParameterAssert(viewControllerFuture);
+
+        [defaultGlobalEntries addObject:[FLEXGlobalsTableViewControllerEntry entryWithNameFuture:titleFuture viewControllerFuture:viewControllerFuture]];
+    }
+
+    return defaultGlobalEntries;
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
         self.title = @"🌎  Global State";
+        _entries = [[[self class] defaultGlobalEntries] arrayByAddingObjectsFromArray:[FLEXManager sharedManager].userGlobalEntries];
     }
     return self;
 }
 
+#pragma mark - Public
+
++ (void)setApplicationWindow:(UIWindow *)applicationWindow
+{
+    s_applicationWindow = applicationWindow;
+}
+
+#pragma mark - UIViewController
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.rows = @[@(FLEXGlobalsRowLiveObjects),
-                  @(FLEXGlobalsRowFileBrowser),
-                  @(FLEXGlobalsRowSystemLibraries),
-                  @(FLEXGlobalsRowAppClasses),
-                  @(FLEXGlobalsRowAppDelegate),
-                  @(FLEXGlobalsRowRootViewController),
-                  @(FLEXGlobalsRowUserDefaults),
-                  @(FLEXGlobalsRowApplication),
-                  @(FLEXGlobalsRowKeyWindow),
-                  @(FLEXGlobalsRowMainScreen),
-                  @(FLEXGlobalsRowCurrentDevice)];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed:)];
 }
+
+#pragma mark -
 
 - (void)donePressed:(id)sender
 {
     [self.delegate globalsViewControllerDidFinish:self];
 }
 
-
 #pragma mark - Table Data Helpers
 
-- (FLEXGlobalsRow)rowTypeAtIndexPath:(NSIndexPath *)indexPath
+- (FLEXGlobalsTableViewControllerEntry *)globalEntryAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [[self.rows objectAtIndex:indexPath.row] unsignedIntegerValue];
+    return self.entries[indexPath.row];
 }
 
-- (NSString *)titleForRowType:(FLEXGlobalsRow)rowType
+- (NSString *)titleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *title = nil;
-    switch (rowType) {
-        case FLEXGlobalsRowAppClasses:
-            title = [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];
-            break;
-            
-        case FLEXGlobalsRowSystemLibraries:
-            title = @"📚  System Libraries";
-            break;
-        
-        case FLEXGlobalsRowLiveObjects:
-            title = @"💩  Heap Objects";
-            break;
-            
-        case FLEXGlobalsRowAppDelegate:
-            title = [NSString stringWithFormat:@"👉  %@", [[[UIApplication sharedApplication] delegate] class]];
-            break;
-            
-        case FLEXGlobalsRowRootViewController:
-            title = [NSString stringWithFormat:@"🌴  %@", [[self.applicationWindow rootViewController] class]];
-            break;
-            
-        case FLEXGlobalsRowUserDefaults:
-            title = @"🚶  +[NSUserDefaults standardUserDefaults]";
-            break;
-            
-        case FLEXGlobalsRowApplication:
-            title = @"💾  +[UIApplication sharedApplication]";
-            break;
-            
-        case FLEXGlobalsRowKeyWindow:
-            title = @"🔑  -[UIApplication keyWindow]";
-            break;
-            
-        case FLEXGlobalsRowMainScreen:
-            title = @"💻  +[UIScreen mainScreen]";
-            break;
-            
-        case FLEXGlobalsRowCurrentDevice:
-            title = @"📱  +[UIDevice currentDevice]";
-            break;
-            
-        case FLEXGlobalsRowFileBrowser:
-            title = @"📁  File Browser";
-            break;
-    }
-    return title;
+    FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
+
+    return entry.entryNameFuture();
 }
 
-- (UIViewController *)drillDownViewControllerForRowType:(FLEXGlobalsRow)rowType
+- (UIViewController *)viewControllerToPushForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIViewController *viewController = nil;
-    switch (rowType) {
-        case FLEXGlobalsRowAppClasses: {
-            FLEXClassesTableViewController *classesViewController = [[FLEXClassesTableViewController alloc] init];
-            classesViewController.binaryImageName = [FLEXUtility applicationImageName];
-            viewController = classesViewController;
-        } break;
-            
-        case FLEXGlobalsRowSystemLibraries: {
-            FLEXLibrariesTableViewController *librariesViewController = [[FLEXLibrariesTableViewController alloc] init];
-            librariesViewController.title = [self titleForRowType:FLEXGlobalsRowSystemLibraries];
-            viewController = librariesViewController;
-        } break;
-            
-        case FLEXGlobalsRowLiveObjects: {
-            viewController = [[FLEXLiveObjectsTableViewController alloc] init];
-        } break;
-            
-        case FLEXGlobalsRowAppDelegate: {
-            id <UIApplicationDelegate> appDelegate = [[UIApplication sharedApplication] delegate];
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:appDelegate];
-        } break;
-            
-        case FLEXGlobalsRowRootViewController: {
-            UIViewController *rootViewController = [self.applicationWindow rootViewController];
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:rootViewController];
-        } break;
-            
-        case FLEXGlobalsRowUserDefaults: {
-            NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:standardUserDefaults];
-        } break;
-            
-        case FLEXGlobalsRowApplication: {
-            UIApplication *sharedApplication = [UIApplication sharedApplication];
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:sharedApplication];
-        } break;
-            
-        case FLEXGlobalsRowKeyWindow: {
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.applicationWindow];
-        } break;
-            
-        case FLEXGlobalsRowMainScreen: {
-            UIScreen *mainScreen = [UIScreen mainScreen];
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:mainScreen];
-        } break;
-            
-        case FLEXGlobalsRowCurrentDevice: {
-            UIDevice *currentDevice = [UIDevice currentDevice];
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentDevice];
-        } break;
-            
-        case FLEXGlobalsRowFileBrowser: {
-            viewController = [[FLEXFileBrowserTableViewController alloc] init];
-        }
-    }
-    return viewController;
-}
+    FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
 
+    return entry.viewControllerFuture();
+}
 
 #pragma mark - Table View Data Source
 
@@ -200,7 +242,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.rows count];
+    return [self.entries count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -212,8 +254,8 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
     }
-    FLEXGlobalsRow rowType = [self rowTypeAtIndexPath:indexPath];
-    cell.textLabel.text = [self titleForRowType:rowType];
+
+    cell.textLabel.text = [self titleForRowAtIndexPath:indexPath];
     
     return cell;
 }
@@ -223,9 +265,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXGlobalsRow rowType = [self rowTypeAtIndexPath:indexPath];
-    UIViewController *drillDownViewController = [self drillDownViewControllerForRowType:rowType];
-    [self.navigationController pushViewController:drillDownViewController animated:YES];
+    UIViewController *viewControllerToPush = [self viewControllerToPushForRowAtIndexPath:indexPath];
+
+    [self.navigationController pushViewController:viewControllerToPush animated:YES];
 }
 
 @end

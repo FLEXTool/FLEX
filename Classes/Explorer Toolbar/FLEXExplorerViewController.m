@@ -471,7 +471,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
     globalsViewController.delegate = self;
-    globalsViewController.applicationWindow = [[UIApplication sharedApplication] keyWindow];
+    [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:globalsViewController];
     [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
 }
