@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0149BFE2198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0149BFE1198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m */; };
 		01985ABC1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01985ABB1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m */; };
 		3EC6487318FF8A5000024205 /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3EC6487218FF8A5000024205 /* ReadMe.txt */; };
 		5356823E18F3656900BAAD62 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356823D18F3656900BAAD62 /* Foundation.framework */; };
@@ -94,6 +95,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0149BFE0198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFileBrowserSearchOperation.h; sourceTree = "<group>"; };
+		0149BFE1198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFileBrowserSearchOperation.m; sourceTree = "<group>"; };
 		01985ABA1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputFontsPickerView.h; sourceTree = "<group>"; };
 		01985ABB1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputFontsPickerView.m; sourceTree = "<group>"; };
 		3EC6487218FF8A5000024205 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = SOURCE_ROOT; };
@@ -545,6 +548,8 @@
 				944F7475197B458C009AB039 /* FLEXClassesTableViewController.m */,
 				944F7476197B458C009AB039 /* FLEXFileBrowserTableViewController.h */,
 				944F7477197B458C009AB039 /* FLEXFileBrowserTableViewController.m */,
+				0149BFE0198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.h */,
+				0149BFE1198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m */,
 				944F7478197B458C009AB039 /* FLEXGlobalsTableViewController.h */,
 				944F7479197B458C009AB039 /* FLEXGlobalsTableViewController.m */,
 				944F747A197B458C009AB039 /* FLEXInstancesTableViewController.h */,
@@ -734,6 +739,7 @@
 				535682A918F3670300BAAD62 /* AAPLAlertViewController.m in Sources */,
 				944F74A6197B458C009AB039 /* FLEXIvarEditorViewController.m in Sources */,
 				944F748C197B458C009AB039 /* FLEXDescriptionTableViewCell.m in Sources */,
+				0149BFE2198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m in Sources */,
 				535682B218F3670300BAAD62 /* AAPLMasterViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
