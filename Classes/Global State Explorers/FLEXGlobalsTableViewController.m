@@ -44,7 +44,8 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 @implementation FLEXGlobalsTableViewController
 
 /// [FLEXGlobalsTableViewControllerEntry *]
-+ (NSArray *)defaultGlobalEntries {
++ (NSArray *)defaultGlobalEntries
+{
     NSMutableArray *defaultGlobalEntries = [NSMutableArray array];
 
     for (FLEXGlobalsRow defaultRowIndex = 0; defaultRowIndex < FLEXGlobalsRowCount; defaultRowIndex++) {
@@ -175,7 +176,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         [defaultGlobalEntries addObject:[FLEXGlobalsTableViewControllerEntry entryWithNameFuture:titleFuture viewControllerFuture:viewControllerFuture]];
     }
 
-  return defaultGlobalEntries;
+    return defaultGlobalEntries;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
