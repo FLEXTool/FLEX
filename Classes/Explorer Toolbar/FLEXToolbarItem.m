@@ -115,7 +115,7 @@
     titleSize = CGSizeMake(ceil(titleSize.width), ceil(titleSize.height));
     titleRect.size = titleSize;
     titleRect.origin.y = contentRect.origin.y + CGRectGetMaxY(contentRect) - titleSize.height;
-    titleRect.origin.x = contentRect.origin.x + floor((contentRect.size.width - titleSize.width) / 2.0);
+    titleRect.origin.x = contentRect.origin.x + FLEXFloor((contentRect.size.width - titleSize.width) / 2.0);
     return titleRect;
 }
 
@@ -124,8 +124,8 @@
     CGSize imageSize = self.image.size;
     CGRect titleRect = [self titleRectForContentRect:contentRect];
     CGFloat availableHeight = contentRect.size.height - titleRect.size.height - [[self class] topMargin];
-    CGFloat originY = [[self class] topMargin] + floor((availableHeight - imageSize.height) / 2.0);
-    CGFloat originX = floor((contentRect.size.width - imageSize.width) / 2.0);
+    CGFloat originY = [[self class] topMargin] + FLEXFloor((availableHeight - imageSize.height) / 2.0);
+    CGFloat originX = FLEXFloor((contentRect.size.width - imageSize.width) / 2.0);
     CGRect imageRect = CGRectMake(originX, originY, imageSize.width, imageSize.height);
     return imageRect;
 }

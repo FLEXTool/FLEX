@@ -735,8 +735,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     CGPoint translation = [movePanGR translationInView:self.selectedView.superview];
     CGRect newSelectedViewFrame = self.selectedViewFrameBeforeDragging;
-    newSelectedViewFrame.origin.x = floor(newSelectedViewFrame.origin.x + translation.x);
-    newSelectedViewFrame.origin.y = floor(newSelectedViewFrame.origin.y + translation.y);
+    newSelectedViewFrame.origin.x = FLEXFloor(newSelectedViewFrame.origin.x + translation.x);
+    newSelectedViewFrame.origin.y = FLEXFloor(newSelectedViewFrame.origin.y + translation.y);
     self.selectedView.frame = newSelectedViewFrame;
 }
 

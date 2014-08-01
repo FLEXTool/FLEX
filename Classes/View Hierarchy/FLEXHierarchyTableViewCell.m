@@ -77,7 +77,7 @@
     
     CGRect circleFrame = self.colorCircleImageView.frame;
     circleFrame.origin.x = CGRectGetMaxX(depthIndicatorFrame);
-    circleFrame.origin.y = self.textLabel.frame.origin.y + floor((self.textLabel.frame.size.height - circleFrame.size.height) / 2.0);
+    circleFrame.origin.y = self.textLabel.frame.origin.y + FLEXFloor((self.textLabel.frame.size.height - circleFrame.size.height) / 2.0);
     self.colorCircleImageView.frame = circleFrame;
     
     CGRect textLabelFrame = self.textLabel.frame;

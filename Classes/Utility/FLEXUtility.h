@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#define FLEXFloor(x) (floor([[UIScreen mainScreen] scale] * (x)) / [[UIScreen mainScreen] scale])
+
 @interface FLEXUtility : NSObject
 
 + (UIColor *)consistentRandomColorForObject:(id)object;

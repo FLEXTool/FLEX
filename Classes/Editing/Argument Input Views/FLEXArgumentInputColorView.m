@@ -69,7 +69,7 @@
     
     [self.valueLabel sizeToFit];
     CGFloat valueLabelOriginX = CGRectGetMaxX(self.slider.frame);
-    CGFloat valueLabelOriginY = floor((self.slider.frame.size.height - self.valueLabel.frame.size.height) / 2.0);
+    CGFloat valueLabelOriginY = FLEXFloor((self.slider.frame.size.height - self.valueLabel.frame.size.height) / 2.0);
     self.valueLabel.frame = CGRectMake(valueLabelOriginX, valueLabelOriginY, kValueLabelWidth, self.valueLabel.frame.size.height);
 }
 
