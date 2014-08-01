@@ -50,14 +50,22 @@
     if (!_explorerWindow) {
         _explorerWindow = [[FLEXWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         _explorerWindow.eventDelegate = self;
-        
-        self.explorerViewController = [[FLEXExplorerViewController alloc] init];
-        self.explorerViewController.delegate = self;
+
         _explorerWindow.rootViewController = self.explorerViewController;
         [_explorerWindow addSubview:self.explorerViewController.view];
     }
     
     return _explorerWindow;
+}
+
+- (FLEXExplorerViewController *)explorerViewController
+{
+    if (!_explorerViewController) {
+        _explorerViewController = [[FLEXExplorerViewController alloc] init];
+        _explorerViewController.delegate = self;
+    }
+
+    return _explorerViewController;
 }
 
 - (void)showExplorer
