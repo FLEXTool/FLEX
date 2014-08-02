@@ -38,17 +38,34 @@
 {
     self = [super init];
     if (self) {
-        self.explorerWindow = [[FLEXWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        self.explorerWindow.eventDelegate = self;
-        
         _userGlobalEntries = [[NSMutableArray alloc] init];
-        
-        self.explorerViewController = [[FLEXExplorerViewController alloc] init];
-        self.explorerViewController.delegate = self;
-        self.explorerWindow.rootViewController = self.explorerViewController;
-        [self.explorerWindow addSubview:self.explorerViewController.view];
     }
     return self;
+}
+
+- (FLEXWindow *)explorerWindow
+{
+    NSAssert([NSThread isMainThread], @"You must use %@ from the main thread only.", NSStringFromClass([self class]));
+    
+    if (!_explorerWindow) {
+        _explorerWindow = [[FLEXWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        _explorerWindow.eventDelegate = self;
+
+        _explorerWindow.rootViewController = self.explorerViewController;
+        [_explorerWindow addSubview:self.explorerViewController.view];
+    }
+    
+    return _explorerWindow;
+}
+
+- (FLEXExplorerViewController *)explorerViewController
+{
+    if (!_explorerViewController) {
+        _explorerViewController = [[FLEXExplorerViewController alloc] init];
+        _explorerViewController.delegate = self;
+    }
+
+    return _explorerViewController;
 }
 
 - (void)showExplorer
