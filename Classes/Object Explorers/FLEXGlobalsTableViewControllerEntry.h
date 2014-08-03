@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 typedef NSString *(^FLEXGlobalsTableViewControllerEntryNameFuture)(void);
 typedef UIViewController *(^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
