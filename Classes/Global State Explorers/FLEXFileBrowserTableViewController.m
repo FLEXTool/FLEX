@@ -149,15 +149,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *subpath;
-    NSString *fullPath;
-    
+    NSString *fullPath = nil;
     if (tableView == self.tableView) {
-        subpath = [self.childPaths objectAtIndex:indexPath.row];
+        NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
         fullPath = [self.searchPaths objectAtIndex:indexPath.row];
-        subpath = [fullPath lastPathComponent];
     }
     
     NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:NULL];
