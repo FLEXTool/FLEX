@@ -126,8 +126,8 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    NSNumber *currentSize;
-    NSArray *currentPaths;
+    NSNumber *currentSize = nil;
+    NSArray *currentPaths = nil;
     
     if (tableView == self.tableView) {
         currentSize = self.recursiveSize;
@@ -197,8 +197,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *subpath;
-    NSString *fullPath;
+    NSString *subpath = nil;
+    NSString *fullPath = nil;
     
     if (tableView == self.tableView) {
         subpath = [self.childPaths objectAtIndex:indexPath.row];
