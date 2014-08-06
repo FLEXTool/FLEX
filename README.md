@@ -115,6 +115,9 @@ We welcome pull requests for bug fixes, new features, and improvements to FLEX. 
 
 ## Changes
 
+#### v1.2.0 (in progress)
+- Search bar filtering and sorting by file size in the file browser (@DaidoujiChen)
+
 #### v1.1.0 2014/7/31
 - Support adding custom entries to the "Globals" menu (@JaviSoto)
 - Warnings cleanup (@JaviSoto)
@@ -128,7 +131,6 @@ We welcome pull requests for bug fixes, new features, and improvements to FLEX. 
 ## TODO
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
 - Network request logging
-- Search bar filtering and sorting by file size in the file browser
 - Improved file type detection and display in the file browser
 - Add new NSUserDefault key/value pairs on the fly
 
