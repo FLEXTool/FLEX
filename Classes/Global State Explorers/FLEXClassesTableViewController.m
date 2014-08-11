@@ -87,6 +87,11 @@
     [self.tableView reloadData];
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     // Dismiss the keyboard when interacting with filtered results.
