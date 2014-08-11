@@ -57,28 +57,28 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     // While it might be a little cleaner to populate an NSMutableDictionary with class name string keys to NSNumber counts,
     // we choose the CF/primitives approach because it lets us enumerate the objects in the heap without allocating any memory during enumeration.
     // The alternative of creating one NSString/NSNumber per object on the heap ends up polluting the count of live objects quite a bit.
-    unsigned int count = 0;
-    Class *classes = objc_copyClassList(&count);
-    CFMutableDictionaryRef mutableCountsForClasses = CFDictionaryCreateMutable(NULL, count, NULL, NULL);
-    for (unsigned int i = 0; i < count; i++) {
+    unsigned int classCount = 0;
+    Class *classes = objc_copyClassList(&classCount);
+    CFMutableDictionaryRef mutableCountsForClasses = CFDictionaryCreateMutable(NULL, classCount, NULL, NULL);
+    for (unsigned int i = 0; i < classCount; i++) {
         CFDictionarySetValue(mutableCountsForClasses, (__bridge const void *)classes[i], (const void *)0);
     }
     
     // Enumerate all objects on the heap to build the counts of instances for each class.
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
-        NSUInteger count = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)actualClass);
-        count++;
-        CFDictionarySetValue(mutableCountsForClasses, (__bridge const void *)actualClass, (const void *)count);
+        NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)actualClass);
+        instanceCount++;
+        CFDictionarySetValue(mutableCountsForClasses, (__bridge const void *)actualClass, (const void *)instanceCount);
     }];
     
     // Convert our CF primitive dictionary into a nicer mapping of class name strings to counts that we will use as the table's model.
     NSMutableDictionary *mutableCountsForClassNames = [NSMutableDictionary dictionary];
-    for (unsigned int i = 0; i < count; i++) {
+    for (unsigned int i = 0; i < classCount; i++) {
         Class class = classes[i];
-        NSUInteger count = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));
-        if (count > 0) {
+        NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));
+        if (instanceCount > 0) {
             NSString *className = @(class_getName(class));
-            [mutableCountsForClassNames setObject:@(count) forKey:className];
+            [mutableCountsForClassNames setObject:@(instanceCount) forKey:className];
         }
     }
     free(classes);
