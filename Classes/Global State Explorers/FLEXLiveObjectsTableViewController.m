@@ -125,6 +125,11 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     [self updateTableDataForSearchFilter];
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
+
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
 {
     [self updateTableDataForSearchFilter];

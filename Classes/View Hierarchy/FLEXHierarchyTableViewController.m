@@ -138,6 +138,11 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     [self trySelectCellForSelectedViewWithScrollPosition:UITableViewScrollPositionNone];
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
+
 
 #pragma mark - Table View Data Source
 

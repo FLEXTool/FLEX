@@ -121,6 +121,11 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     self.filterText = searchText;
 }
 
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+}
+
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
 {
     if (selectedScope == kFLEXObjectExplorerScopeIncludeInheritanceIndex) {
@@ -129,6 +134,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         self.includeInheritance = NO;
     }
 }
+
 
 #pragma mark - Setter overrides
 
