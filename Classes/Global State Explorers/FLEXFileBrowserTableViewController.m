@@ -247,11 +247,19 @@
             drillInViewController.title = [subpath lastPathComponent];
             [self.navigationController pushViewController:drillInViewController animated:YES];
         } else {
+            [self openFileController:fullPath];
             [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         }
     } else {
         [[[UIAlertView alloc] initWithTitle:@"File Removed" message:@"The file at the specified path no longer exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
     }
+}
+
+- (void)openFileController:(NSString *)fullPath {
+    UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
+    controller.URL = [[NSURL alloc] initFileURLWithPath:fullPath];
+  
+    [controller presentOptionsMenuFromRect:self.view.bounds inView:self.view animated:YES];
 }
 
 @end
