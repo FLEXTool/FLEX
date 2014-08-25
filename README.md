@@ -78,6 +78,16 @@ The code injection is left as an exercise for the reader. :innocent:
 ![Springboard Lock Screen](http://engineering.flipboard.com/assets/flex/flex-readme-reverse-1.png) ![Springboard Home Screen](http://engineering.flipboard.com/assets/flex/flex-readme-reverse-2.png)
 
 
+## Installation
+FLEX is available on [Cocoapods](http://cocoapods.org/). Simply add the following line to your podfile:
+
+```ruby
+pod 'FLEX', '~> 1.1'
+```
+
+Alternatively, you can manually add the files in `Classes/` to your Xcode project. FLEX requires iOS 6 or higher.
+
+
 ## Excluding FLEX from Release (App Store) Builds
 FLEX makes it easy to explore the internals of your app, so it is not something you should expose to your users. Fortunately, it is easy to exclude FLEX files from Release builds. In Xcode, navigate to the "Build Settings" tab of your project. Click the plus and select `Add User-Defined Setting`.
 
