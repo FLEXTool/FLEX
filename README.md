@@ -123,21 +123,6 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
 We welcome pull requests for bug fixes, new features, and improvements to FLEX. Contributors to the main FLEX repository must accept Flipboard's Apache-style [Individual Contributor License Agreement (CLA)](https://docs.google.com/forms/d/1gh9y6_i8xFn6pA15PqFeye19VqasuI9-bGp_e0owy74/viewform) before any changes can be merged.
 
 
-## Changes
-
-#### v1.2.0 (in progress)
-- Search bar filtering and sorting by file size in the file browser (@DaidoujiChen)
-
-#### v1.1.0 2014/7/31
-- Support adding custom entries to the "Globals" menu (@JaviSoto)
-- Warnings cleanup (@JaviSoto)
-- WYSIWYG font picker input view (@DaidoujiChen)
-- Small bug fixes around status bar styling, rotation, and ivar value display (@ryanolsonk)
-
-#### v1.0.1 2014/07/26
-- Warnings cleanup and small bugfixes with rotation and interface orientations (@ryanolsonk)
-
-
 ## TODO
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
 - Network request logging
