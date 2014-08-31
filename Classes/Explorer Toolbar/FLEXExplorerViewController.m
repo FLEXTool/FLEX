@@ -147,11 +147,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (viewControllerToAsk && viewControllerToAsk != self) {
         // We might need to foward to a child
         UIViewController *childViewControllerToAsk = [viewControllerToAsk childViewControllerForStatusBarStyle];
-        if (childViewControllerToAsk) {
-            preferredStyle = [childViewControllerToAsk preferredStatusBarStyle];
-        } else {
-            preferredStyle = [viewControllerToAsk preferredStatusBarStyle];
+        while (childViewControllerToAsk && childViewControllerToAsk != viewControllerToAsk) {
+            viewControllerToAsk = childViewControllerToAsk;
+            childViewControllerToAsk = [viewControllerToAsk childViewControllerForStatusBarStyle];
         }
+        
+        preferredStyle = [viewControllerToAsk preferredStatusBarStyle];
     }
     return preferredStyle;
 }
@@ -173,11 +174,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (viewControllerToAsk && viewControllerToAsk != self) {
         // Again, we might need to forward to a child
         UIViewController *childViewControllerToAsk = [viewControllerToAsk childViewControllerForStatusBarHidden];
-        if (childViewControllerToAsk) {
-            prefersHidden = [childViewControllerToAsk prefersStatusBarHidden];
-        } else {
-            prefersHidden = [viewControllerToAsk prefersStatusBarHidden];
+        while (childViewControllerToAsk && childViewControllerToAsk != viewControllerToAsk) {
+            viewControllerToAsk = childViewControllerToAsk;
+            childViewControllerToAsk = [viewControllerToAsk childViewControllerForStatusBarHidden];
         }
+        
+        prefersHidden = [viewControllerToAsk prefersStatusBarHidden];
     }
     return prefersHidden;
 }
