@@ -50,9 +50,7 @@
     if (!_explorerWindow) {
         _explorerWindow = [[FLEXWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         _explorerWindow.eventDelegate = self;
-
         _explorerWindow.rootViewController = self.explorerViewController;
-        [_explorerWindow addSubview:self.explorerViewController.view];
     }
     
     return _explorerWindow;
