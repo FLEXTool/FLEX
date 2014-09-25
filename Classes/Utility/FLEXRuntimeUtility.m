@@ -317,7 +317,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 // Bridging UIColor to CGColorRef
                 CGColorRef colorRef = [argumentObject CGColor];
                 [invocation setArgument:&colorRef atIndex:argumentIndex];
-            } else if ([argumentObject isKindOfClass:[NSValue class]]){
+            } else if ([argumentObject isKindOfClass:[NSValue class]]) {
                 // Primitive boxed in NSValue
                 NSValue *argumentValue = (NSValue *)argumentObject;
                 
