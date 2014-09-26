@@ -51,6 +51,14 @@
     return self;
 }
 
+- (void)dealloc
+{
+    // UIWebView's delegate is assign so we need to clear it manually.
+    if (_webView.delegate == self) {
+        _webView.delegate = nil;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
