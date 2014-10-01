@@ -594,7 +594,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     // Only if we're in selection mode
     if (self.currentMode == FLEXExplorerModeSelect && tapGR.state == UIGestureRecognizerStateRecognized) {
-        [self updateOutlineViewsForSelectionPoint:[tapGR locationInView:nil]];
+    	UIView *view = nil;
+        if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
+            // In iOS 8 `locationInView:` doesn't seem to take the device orientation into account if `nil` is passed as a view. Instead, passing the root view works.
+            view = self.view.window.rootViewController.view;
+        }
+        [self updateOutlineViewsForSelectionPoint:[tapGR locationInView:view]];
     }
 }
 
