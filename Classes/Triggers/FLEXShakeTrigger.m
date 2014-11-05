@@ -34,13 +34,13 @@ NSString* const FLEXShakeMotionNotification = @"kFLEXShakeMotionNotification";
 
 - (void)shakeMotion:(id)sender
 {
-    if (self.shakeDate && fabs([self.shakeDate timeIntervalSinceNow]) < 3.0)
+    if (self.shakeDate && fabs([self.shakeDate timeIntervalSinceNow]) > 1.0 && fabs([self.shakeDate timeIntervalSinceNow]) < 5.0)
     {
         [self trigger:sender];
         
         self.shakeDate = nil;
     }
-    else
+    else if (!self.shakeDate || fabs([self.shakeDate timeIntervalSinceNow]) > 5.0)
     {
         self.shakeDate = [NSDate date];
     }
