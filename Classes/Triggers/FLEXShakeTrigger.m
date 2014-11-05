@@ -12,6 +12,12 @@
 
 NSString* const FLEXShakeMotionNotification = @"kFLEXShakeMotionNotification";
 
+@interface FLEXShakeTrigger ()
+
+@property (nonatomic, strong) NSDate* shakeDate;
+
+@end
+
 @implementation FLEXShakeTrigger
 
 - (instancetype)init
@@ -20,10 +26,24 @@ NSString* const FLEXShakeMotionNotification = @"kFLEXShakeMotionNotification";
     
     if (self)
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(trigger:) name:FLEXShakeMotionNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shakeMotion:) name:FLEXShakeMotionNotification object:nil];
     }
     
     return self;
+}
+
+- (void)shakeMotion:(id)sender
+{
+    if (self.shakeDate && fabs([self.shakeDate timeIntervalSinceNow]) < 3.0)
+    {
+        [self trigger:sender];
+        
+        self.shakeDate = nil;
+    }
+    else
+    {
+        self.shakeDate = [NSDate date];
+    }
 }
 
 - (void)dealloc

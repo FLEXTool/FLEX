@@ -23,7 +23,7 @@
     if (!_recognizer)
     {
         _recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(trigger:)];
-        _recognizer.numberOfTouchesRequired = 3;
+        _recognizer.numberOfTouchesRequired = 4;
         _recognizer.minimumPressDuration = 2.0;
     }
     
