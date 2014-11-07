@@ -6,8 +6,12 @@
 //  Copyright (c) 2014 f. All rights reserved.
 //
 
+#import "FLEXNetworkInformationCollector.h"
+
 #import "FLEXTapTrigger.h"
 #import "FLEXShakeTrigger.h"
+
+#import "FLEXInformationManager.h"
 
 #import "FLEXTriggerManager.h"
 
@@ -82,10 +86,25 @@
     [trigger integrate];
 }
 
+/**
+ *  This is called when application finishes launching
+ */
 - (void)activate
 {
+    //
+    // Activate triggers
+    //
+    
     [self addTrigger:[[FLEXShakeTrigger alloc] init]];
     [self addTrigger:[[FLEXTapTrigger alloc] init]];
+    
+    //
+    // Activate information manager
+    //
+    
+    [[FLEXInformationManager sharedManager] setupCollectors];
+    
+    [FLEXNetworkInformationCollector injectIntoAllNSURLConnectionDelegateClasses];
 }
 
 @end

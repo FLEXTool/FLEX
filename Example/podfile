@@ -1,0 +1,7 @@
+platform :ios, '7.0'
+
+source 'https://github.com/CocoaPods/Specs.git'
+
+pod 'Haystack'
+pod 'JSONModel'
+pod 'KZBootstrap', :git => 'https://github.com/Legoless/KZBootstrap.git'

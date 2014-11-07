@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		0149BFE2198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0149BFE1198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m */; };
 		01985ABC1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01985ABB1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m */; };
+		384517B21A0BB8E200399757 /* FLEXNetworkResourceTiming.m in Sources */ = {isa = PBXBuildFile; fileRef = 384517B11A0BB8E200399757 /* FLEXNetworkResourceTiming.m */; };
+		384517B51A0BB8FF00399757 /* FLEXNetworkRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 384517B41A0BB8FF00399757 /* FLEXNetworkRequest.m */; };
+		384517B81A0BB91800399757 /* FLEXNetworkResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 384517B71A0BB91800399757 /* FLEXNetworkResponse.m */; };
+		384517C71A0BB9A300399757 /* FLEXNetworkInitiator.m in Sources */ = {isa = PBXBuildFile; fileRef = 384517C61A0BB9A300399757 /* FLEXNetworkInitiator.m */; };
+		384517CA1A0BC2A500399757 /* FLEXNetworkConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 384517C91A0BC2A500399757 /* FLEXNetworkConnection.m */; };
+		384B27B71A0CE87800601515 /* FLEXNetworkTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 384B27B61A0CE87800601515 /* FLEXNetworkTableViewController.m */; };
+		384B27BA1A0CEB8F00601515 /* FLEXInfoTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 384B27B91A0CEB8F00601515 /* FLEXInfoTableViewController.m */; };
 		387191C31A0A285F004A1E7F /* FLEXTrigger.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191C21A0A285F004A1E7F /* FLEXTrigger.m */; };
 		387191C61A0A2877004A1E7F /* FLEXTriggerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191C51A0A2877004A1E7F /* FLEXTriggerManager.m */; };
 		387191C91A0A290A004A1E7F /* FLEXTapTrigger.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191C81A0A290A004A1E7F /* FLEXTapTrigger.m */; };
@@ -16,6 +23,13 @@
 		387191CF1A0A2B9E004A1E7F /* FLEXTrigger+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191CE1A0A2B9E004A1E7F /* FLEXTrigger+Private.m */; };
 		387191D51A0A33AB004A1E7F /* NSObject+Swizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191D41A0A33AB004A1E7F /* NSObject+Swizzle.m */; };
 		387191D81A0A345A004A1E7F /* UIApplication+ShakeMotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191D71A0A345A004A1E7F /* UIApplication+ShakeMotion.m */; };
+		387191E11A0A7B8F004A1E7F /* FLEXInformationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191E01A0A7B8F004A1E7F /* FLEXInformationManager.m */; };
+		387191E41A0A7BB8004A1E7F /* FLEXInformationCollector.m in Sources */ = {isa = PBXBuildFile; fileRef = 387191E31A0A7BB8004A1E7F /* FLEXInformationCollector.m */; };
+		38DE4A291A0B704100EB447A /* FLEXNetworkInformationCollector.m in Sources */ = {isa = PBXBuildFile; fileRef = 38DE4A281A0B704100EB447A /* FLEXNetworkInformationCollector.m */; };
+		38DE4A441A0B781400EB447A /* NSDate+PDDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 38DE4A431A0B781400EB447A /* NSDate+PDDebugger.m */; };
+		38DE4A471A0B783600EB447A /* NSData+PDDebugger.m in Sources */ = {isa = PBXBuildFile; fileRef = 38DE4A461A0B783600EB447A /* NSData+PDDebugger.m */; };
+		38DE4A491A0B78BC00EB447A /* Launch.xib in Resources */ = {isa = PBXBuildFile; fileRef = 38DE4A481A0B78BC00EB447A /* Launch.xib */; };
+		38DE4A4C1A0B7DB000EB447A /* AAPLNetworkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 38DE4A4B1A0B7DB000EB447A /* AAPLNetworkViewController.m */; };
 		3EC6487318FF8A5000024205 /* ReadMe.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3EC6487218FF8A5000024205 /* ReadMe.txt */; };
 		5356823E18F3656900BAAD62 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356823D18F3656900BAAD62 /* Foundation.framework */; };
 		5356824018F3656900BAAD62 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5356823F18F3656900BAAD62 /* CoreGraphics.framework */; };
@@ -98,6 +112,7 @@
 		944F74B5197B458C009AB039 /* FLEXHierarchyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7484197B458C009AB039 /* FLEXHierarchyTableViewCell.m */; };
 		944F74B6197B458C009AB039 /* FLEXHierarchyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7486197B458C009AB039 /* FLEXHierarchyTableViewController.m */; };
 		944F74B7197B458C009AB039 /* FLEXImagePreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7488197B458C009AB039 /* FLEXImagePreviewViewController.m */; };
+		C880721E1307571D224A9E73 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC22ABC4E8D617E74145AB1C /* libPods.a */; };
 		D03647D919847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = D03647D819847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +121,21 @@
 		0149BFE1198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFileBrowserSearchOperation.m; sourceTree = "<group>"; };
 		01985ABA1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputFontsPickerView.h; sourceTree = "<group>"; };
 		01985ABB1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputFontsPickerView.m; sourceTree = "<group>"; };
+		0C6C81861F8DC133E5D85165 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		384517B01A0BB8E200399757 /* FLEXNetworkResourceTiming.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkResourceTiming.h; sourceTree = "<group>"; };
+		384517B11A0BB8E200399757 /* FLEXNetworkResourceTiming.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkResourceTiming.m; sourceTree = "<group>"; };
+		384517B31A0BB8FF00399757 /* FLEXNetworkRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkRequest.h; sourceTree = "<group>"; };
+		384517B41A0BB8FF00399757 /* FLEXNetworkRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkRequest.m; sourceTree = "<group>"; };
+		384517B61A0BB91800399757 /* FLEXNetworkResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkResponse.h; sourceTree = "<group>"; };
+		384517B71A0BB91800399757 /* FLEXNetworkResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkResponse.m; sourceTree = "<group>"; };
+		384517C51A0BB9A300399757 /* FLEXNetworkInitiator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkInitiator.h; sourceTree = "<group>"; };
+		384517C61A0BB9A300399757 /* FLEXNetworkInitiator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkInitiator.m; sourceTree = "<group>"; };
+		384517C81A0BC2A500399757 /* FLEXNetworkConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkConnection.h; sourceTree = "<group>"; };
+		384517C91A0BC2A500399757 /* FLEXNetworkConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkConnection.m; sourceTree = "<group>"; };
+		384B27B51A0CE87800601515 /* FLEXNetworkTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkTableViewController.h; sourceTree = "<group>"; };
+		384B27B61A0CE87800601515 /* FLEXNetworkTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkTableViewController.m; sourceTree = "<group>"; };
+		384B27B81A0CEB8F00601515 /* FLEXInfoTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXInfoTableViewController.h; sourceTree = "<group>"; };
+		384B27B91A0CEB8F00601515 /* FLEXInfoTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXInfoTableViewController.m; sourceTree = "<group>"; };
 		387191C11A0A285F004A1E7F /* FLEXTrigger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXTrigger.h; sourceTree = "<group>"; };
 		387191C21A0A285F004A1E7F /* FLEXTrigger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTrigger.m; sourceTree = "<group>"; };
 		387191C41A0A2877004A1E7F /* FLEXTriggerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXTriggerManager.h; sourceTree = "<group>"; };
@@ -120,6 +150,19 @@
 		387191D41A0A33AB004A1E7F /* NSObject+Swizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Swizzle.m"; sourceTree = "<group>"; };
 		387191D61A0A345A004A1E7F /* UIApplication+ShakeMotion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication+ShakeMotion.h"; sourceTree = "<group>"; };
 		387191D71A0A345A004A1E7F /* UIApplication+ShakeMotion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+ShakeMotion.m"; sourceTree = "<group>"; };
+		387191DF1A0A7B8F004A1E7F /* FLEXInformationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXInformationManager.h; sourceTree = "<group>"; };
+		387191E01A0A7B8F004A1E7F /* FLEXInformationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXInformationManager.m; sourceTree = "<group>"; };
+		387191E21A0A7BB8004A1E7F /* FLEXInformationCollector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXInformationCollector.h; sourceTree = "<group>"; };
+		387191E31A0A7BB8004A1E7F /* FLEXInformationCollector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXInformationCollector.m; sourceTree = "<group>"; };
+		38DE4A271A0B704100EB447A /* FLEXNetworkInformationCollector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkInformationCollector.h; sourceTree = "<group>"; };
+		38DE4A281A0B704100EB447A /* FLEXNetworkInformationCollector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkInformationCollector.m; sourceTree = "<group>"; };
+		38DE4A421A0B781400EB447A /* NSDate+PDDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+PDDebugger.h"; sourceTree = "<group>"; };
+		38DE4A431A0B781400EB447A /* NSDate+PDDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+PDDebugger.m"; sourceTree = "<group>"; };
+		38DE4A451A0B783600EB447A /* NSData+PDDebugger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+PDDebugger.h"; sourceTree = "<group>"; };
+		38DE4A461A0B783600EB447A /* NSData+PDDebugger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+PDDebugger.m"; sourceTree = "<group>"; };
+		38DE4A481A0B78BC00EB447A /* Launch.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Launch.xib; sourceTree = "<group>"; };
+		38DE4A4A1A0B7DB000EB447A /* AAPLNetworkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLNetworkViewController.h; sourceTree = "<group>"; };
+		38DE4A4B1A0B7DB000EB447A /* AAPLNetworkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLNetworkViewController.m; sourceTree = "<group>"; };
 		3EC6487218FF8A5000024205 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = SOURCE_ROOT; };
 		5356823A18F3656900BAAD62 /* UICatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UICatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5356823D18F3656900BAAD62 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -182,6 +225,7 @@
 		535682A518F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AAPLApplicationSpecific.h"; sourceTree = "<group>"; };
 		535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AAPLApplicationSpecific.m"; sourceTree = "<group>"; };
 		53874F9818F36B1800510922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8EFDBC5D9C946F8E17E67DBC /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
 		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
 		944F7425197B458C009AB039 /* FLEXArrayExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArrayExplorerViewController.h; sourceTree = "<group>"; };
@@ -281,6 +325,7 @@
 		D03647D51984720F007D2A1B /* FLEXManager+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEXManager+Private.h"; sourceTree = "<group>"; };
 		D03647D719847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXGlobalsTableViewControllerEntry.h; sourceTree = "<group>"; };
 		D03647D819847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXGlobalsTableViewControllerEntry.m; sourceTree = "<group>"; };
+		DC22ABC4E8D617E74145AB1C /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -291,12 +336,34 @@
 				5356824018F3656900BAAD62 /* CoreGraphics.framework in Frameworks */,
 				5356824218F3656900BAAD62 /* UIKit.framework in Frameworks */,
 				5356823E18F3656900BAAD62 /* Foundation.framework in Frameworks */,
+				C880721E1307571D224A9E73 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1E2679A2AA9B3597F69D99F4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0C6C81861F8DC133E5D85165 /* Pods.debug.xcconfig */,
+				8EFDBC5D9C946F8E17E67DBC /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		384B27BB1A0CF09D00601515 /* Information */ = {
+			isa = PBXGroup;
+			children = (
+				384B27B51A0CE87800601515 /* FLEXNetworkTableViewController.h */,
+				384B27B61A0CE87800601515 /* FLEXNetworkTableViewController.m */,
+				384B27B81A0CEB8F00601515 /* FLEXInfoTableViewController.h */,
+				384B27B91A0CEB8F00601515 /* FLEXInfoTableViewController.m */,
+			);
+			name = Information;
+			path = ../Classes/Information;
+			sourceTree = "<group>";
+		};
 		387191C01A0A2828004A1E7F /* Triggers */ = {
 			isa = PBXGroup;
 			children = (
@@ -317,6 +384,62 @@
 			path = ../Classes/Triggers;
 			sourceTree = "<group>";
 		};
+		387191DD1A0A7973004A1E7F /* Environment */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Environment;
+			path = ../Classes/Environment;
+			sourceTree = "<group>";
+		};
+		387191DE1A0A7A97004A1E7F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				387191DF1A0A7B8F004A1E7F /* FLEXInformationManager.h */,
+				387191E01A0A7B8F004A1E7F /* FLEXInformationManager.m */,
+				387191E21A0A7BB8004A1E7F /* FLEXInformationCollector.h */,
+				387191E31A0A7BB8004A1E7F /* FLEXInformationCollector.m */,
+			);
+			name = Model;
+			path = ../Classes/Model;
+			sourceTree = "<group>";
+		};
+		387191E51A0A7BC0004A1E7F /* Collection */ = {
+			isa = PBXGroup;
+			children = (
+				38DE4A261A0B6E6600EB447A /* Network */,
+				38DE4A251A0B6D2600EB447A /* Global */,
+			);
+			name = Collection;
+			path = ../Classes/Collection;
+			sourceTree = "<group>";
+		};
+		38DE4A251A0B6D2600EB447A /* Global */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Global;
+			sourceTree = "<group>";
+		};
+		38DE4A261A0B6E6600EB447A /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				38DE4A271A0B704100EB447A /* FLEXNetworkInformationCollector.h */,
+				38DE4A281A0B704100EB447A /* FLEXNetworkInformationCollector.m */,
+				384517B01A0BB8E200399757 /* FLEXNetworkResourceTiming.h */,
+				384517B11A0BB8E200399757 /* FLEXNetworkResourceTiming.m */,
+				384517B31A0BB8FF00399757 /* FLEXNetworkRequest.h */,
+				384517B41A0BB8FF00399757 /* FLEXNetworkRequest.m */,
+				384517B61A0BB91800399757 /* FLEXNetworkResponse.h */,
+				384517B71A0BB91800399757 /* FLEXNetworkResponse.m */,
+				384517C51A0BB9A300399757 /* FLEXNetworkInitiator.h */,
+				384517C61A0BB9A300399757 /* FLEXNetworkInitiator.m */,
+				384517C81A0BC2A500399757 /* FLEXNetworkConnection.h */,
+				384517C91A0BC2A500399757 /* FLEXNetworkConnection.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		5356823118F3656900BAAD62 = {
 			isa = PBXGroup;
 			children = (
@@ -325,6 +448,7 @@
 				943203FF1978F4B700E24DB3 /* 3rd Party */,
 				5356823C18F3656900BAAD62 /* Frameworks */,
 				5356823B18F3656900BAAD62 /* Products */,
+				1E2679A2AA9B3597F69D99F4 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -342,6 +466,7 @@
 				5356823D18F3656900BAAD62 /* Foundation.framework */,
 				5356823F18F3656900BAAD62 /* CoreGraphics.framework */,
 				5356824118F3656900BAAD62 /* UIKit.framework */,
+				DC22ABC4E8D617E74145AB1C /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -413,6 +538,8 @@
 				5356828218F3670300BAAD62 /* AAPLCustomToolbarViewController.m */,
 				535682A118F3670300BAAD62 /* AAPLTintedToolbarViewController.h */,
 				535682A218F3670300BAAD62 /* AAPLTintedToolbarViewController.m */,
+				38DE4A4A1A0B7DB000EB447A /* AAPLNetworkViewController.h */,
+				38DE4A4B1A0B7DB000EB447A /* AAPLNetworkViewController.m */,
 				535682C118F3690500BAAD62 /* SplitView */,
 			);
 			name = "View Controllers";
@@ -439,6 +566,7 @@
 				535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */,
 				5356824F18F3656900BAAD62 /* Main_iPhone.storyboard */,
 				5356825218F3656900BAAD62 /* Main_iPad.storyboard */,
+				38DE4A481A0B78BC00EB447A /* Launch.xib */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -454,6 +582,10 @@
 		943204001978F4C100E24DB3 /* FLEX */ = {
 			isa = PBXGroup;
 			children = (
+				384B27BB1A0CF09D00601515 /* Information */,
+				387191E51A0A7BC0004A1E7F /* Collection */,
+				387191DE1A0A7A97004A1E7F /* Model */,
+				387191DD1A0A7973004A1E7F /* Environment */,
 				944F7424197B458C009AB039 /* Object Explorers */,
 				944F743B197B458C009AB039 /* Utility */,
 				944F7444197B458C009AB039 /* Editing */,
@@ -499,6 +631,10 @@
 		944F743B197B458C009AB039 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				38DE4A421A0B781400EB447A /* NSDate+PDDebugger.h */,
+				38DE4A431A0B781400EB447A /* NSDate+PDDebugger.m */,
+				38DE4A451A0B783600EB447A /* NSData+PDDebugger.h */,
+				38DE4A461A0B783600EB447A /* NSData+PDDebugger.m */,
 				387191D31A0A33AB004A1E7F /* NSObject+Swizzle.h */,
 				387191D41A0A33AB004A1E7F /* NSObject+Swizzle.m */,
 				944F743C197B458C009AB039 /* FLEXHeapEnumerator.h */,
@@ -648,9 +784,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5356826F18F3656900BAAD62 /* Build configuration list for PBXNativeTarget "UICatalog" */;
 			buildPhases = (
+				BD83EAE31FB81BB18CA36F83 /* Check Pods Manifest.lock */,
 				5356823618F3656900BAAD62 /* Sources */,
 				5356823718F3656900BAAD62 /* Frameworks */,
 				5356823818F3656900BAAD62 /* Resources */,
+				B744C97DDA70691A6A3D9F72 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -697,11 +835,45 @@
 				53874F9918F36B1800510922 /* Localizable.strings in Resources */,
 				5356825918F3656900BAAD62 /* Images.xcassets in Resources */,
 				3EC6487318FF8A5000024205 /* ReadMe.txt in Resources */,
+				38DE4A491A0B78BC00EB447A /* Launch.xib in Resources */,
 				5356825118F3656900BAAD62 /* Main_iPhone.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B744C97DDA70691A6A3D9F72 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BD83EAE31FB81BB18CA36F83 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5356823618F3656900BAAD62 /* Sources */ = {
@@ -719,6 +891,7 @@
 				944F7497197B458C009AB039 /* FLEXUtility.m in Sources */,
 				387191C61A0A2877004A1E7F /* FLEXTriggerManager.m in Sources */,
 				535682B018F3670300BAAD62 /* AAPLDefaultToolbarViewController.m in Sources */,
+				387191E11A0A7B8F004A1E7F /* FLEXInformationManager.m in Sources */,
 				535682BD18F3670300BAAD62 /* AAPLTintedToolbarViewController.m in Sources */,
 				943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */,
 				944F748A197B458C009AB039 /* FLEXClassExplorerViewController.m in Sources */,
@@ -732,6 +905,7 @@
 				944F74A8197B458C009AB039 /* FLEXPropertyEditorViewController.m in Sources */,
 				944F74B0197B458C009AB039 /* FLEXGlobalsTableViewController.m in Sources */,
 				944F748B197B458C009AB039 /* FLEXDefaultsExplorerViewController.m in Sources */,
+				38DE4A4C1A0B7DB000EB447A /* AAPLNetworkViewController.m in Sources */,
 				944F749E197B458C009AB039 /* FLEXArgumentInputStructView.m in Sources */,
 				944F74B3197B458C009AB039 /* FLEXLiveObjectsTableViewController.m in Sources */,
 				944F748E197B458C009AB039 /* FLEXImageExplorerViewController.m in Sources */,
@@ -753,15 +927,19 @@
 				387191CC1A0A2917004A1E7F /* FLEXShakeTrigger.m in Sources */,
 				944F749F197B458C009AB039 /* FLEXArgumentInputSwitchView.m in Sources */,
 				944F74A3197B458C009AB039 /* FLEXDefaultEditorViewController.m in Sources */,
+				384517B21A0BB8E200399757 /* FLEXNetworkResourceTiming.m in Sources */,
 				944F74AB197B458C009AB039 /* FLEXManager.m in Sources */,
 				944F74B2197B458C009AB039 /* FLEXLibrariesTableViewController.m in Sources */,
 				535682BF18F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m in Sources */,
 				535682B718F3670300BAAD62 /* AAPLSliderViewController.m in Sources */,
 				944F74AC197B458C009AB039 /* FLEXToolbarItem.m in Sources */,
 				944F74B7197B458C009AB039 /* FLEXImagePreviewViewController.m in Sources */,
+				384B27B71A0CE87800601515 /* FLEXNetworkTableViewController.m in Sources */,
+				384517B81A0BB91800399757 /* FLEXNetworkResponse.m in Sources */,
 				944F7498197B458C009AB039 /* FLEXArgumentInputColorView.m in Sources */,
 				944F74A0197B458C009AB039 /* FLEXArgumentInputTextView.m in Sources */,
 				387191D81A0A345A004A1E7F /* UIApplication+ShakeMotion.m in Sources */,
+				387191E41A0A7BB8004A1E7F /* FLEXInformationCollector.m in Sources */,
 				944F749C197B458C009AB039 /* FLEXArgumentInputNumberView.m in Sources */,
 				944F749A197B458C009AB039 /* FLEXArgumentInputJSONObjectView.m in Sources */,
 				944F7494197B458C009AB039 /* FLEXHeapEnumerator.m in Sources */,
@@ -779,13 +957,20 @@
 				D03647D919847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m in Sources */,
 				535682AC18F3670300BAAD62 /* AAPLCustomSearchBarViewController.m in Sources */,
 				535682A718F3670300BAAD62 /* AAPLActionSheetViewController.m in Sources */,
+				384517B51A0BB8FF00399757 /* FLEXNetworkRequest.m in Sources */,
+				38DE4A471A0B783600EB447A /* NSData+PDDebugger.m in Sources */,
 				387191C91A0A290A004A1E7F /* FLEXTapTrigger.m in Sources */,
 				01985ABC1984DE9500A65332 /* FLEXArgumentInputFontsPickerView.m in Sources */,
+				384517CA1A0BC2A500399757 /* FLEXNetworkConnection.m in Sources */,
+				38DE4A291A0B704100EB447A /* FLEXNetworkInformationCollector.m in Sources */,
 				944F74AA197B458C009AB039 /* FLEXExplorerViewController.m in Sources */,
 				944F7492197B458C009AB039 /* FLEXViewControllerExplorerViewController.m in Sources */,
 				5356824A18F3656900BAAD62 /* main.m in Sources */,
 				535682B118F3670300BAAD62 /* AAPLImageViewController.m in Sources */,
+				384517C71A0BB9A300399757 /* FLEXNetworkInitiator.m in Sources */,
 				944F7493197B458C009AB039 /* FLEXViewExplorerViewController.m in Sources */,
+				38DE4A441A0B781400EB447A /* NSDate+PDDebugger.m in Sources */,
+				384B27BA1A0CEB8F00601515 /* FLEXInfoTableViewController.m in Sources */,
 				944F7495197B458C009AB039 /* FLEXResources.m in Sources */,
 				535682A918F3670300BAAD62 /* AAPLAlertViewController.m in Sources */,
 				944F74A6197B458C009AB039 /* FLEXIvarEditorViewController.m in Sources */,
@@ -899,6 +1084,7 @@
 		};
 		5356827018F3656900BAAD62 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C6C81861F8DC133E5D85165 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -913,6 +1099,7 @@
 		};
 		5356827118F3656900BAAD62 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8EFDBC5D9C946F8E17E67DBC /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

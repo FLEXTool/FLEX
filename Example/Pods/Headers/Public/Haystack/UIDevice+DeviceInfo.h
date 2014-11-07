@@ -1,0 +1,1 @@
+../../../Haystack/SDK/UIDevice+DeviceInfo/UIDevice+DeviceInfo.h

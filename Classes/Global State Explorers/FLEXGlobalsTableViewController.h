@@ -18,6 +18,13 @@
 /// We want to display debug state about the application, not about this tool.
 + (void)setApplicationWindow:(UIWindow *)applicationWindow;
 
+/**
+ *  Exposing global entries, since we will take a few of them out in certain cases
+ *
+ *  @return Array of FLEXGlobalsTableViewControllerEntry objects
+ */
++ (NSArray *)defaultGlobalEntries;
+
 @end
 
 @protocol FLEXGlobalsTableViewControllerDelegate <NSObject>

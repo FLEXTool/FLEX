@@ -11,7 +11,7 @@
 #import "FLEXToolbarItem.h"
 #import "FLEXUtility.h"
 #import "FLEXHierarchyTableViewController.h"
-#import "FLEXGlobalsTableViewController.h"
+#import "FLEXInfoTableViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 
@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
-@interface FLEXExplorerViewController () <FLEXHierarchyTableViewControllerDelegate, FLEXGlobalsTableViewControllerDelegate>
+@interface FLEXExplorerViewController () <FLEXHierarchyTableViewControllerDelegate, FLEXViewControllerDelegate>
 
 @property (nonatomic, strong) FLEXExplorerToolbar *explorerToolbar;
 
@@ -483,9 +483,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)globalsButtonTapped:(FLEXToolbarItem *)sender
 {
-    FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
+    FLEXInfoTableViewController *globalsViewController = [[FLEXInfoTableViewController alloc] init];
     globalsViewController.delegate = self;
-    [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
+    [FLEXInfoTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:globalsViewController];
     [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
 }
@@ -816,9 +816,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 
-#pragma mark - FLEXGlobalsViewControllerDelegate
+#pragma mark - FLEXViewControllerDelegate
 
-- (void)globalsViewControllerDidFinish:(FLEXGlobalsTableViewController *)globalsViewController
+- (void)viewControllerDidFinish:(UIViewController *)viewController
 {
     [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
 }
