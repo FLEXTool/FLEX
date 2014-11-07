@@ -47,7 +47,7 @@
         [self.dragHandle addSubview:self.dragHandleImageView];
         
         UIImage *globalsIcon = [FLEXResources globeIcon];
-        self.globalsItem = [FLEXToolbarItem toolbarItemWithTitle:@"globals" image:globalsIcon];
+        self.globalsItem = [FLEXToolbarItem toolbarItemWithTitle:@"info" image:globalsIcon];
         [self addSubview:self.globalsItem];
         [toolbarItems addObject:self.globalsItem];
         
