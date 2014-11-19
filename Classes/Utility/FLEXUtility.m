@@ -90,7 +90,7 @@
 
 + (NSString *)applicationImageName
 {
-    return [[[NSProcessInfo processInfo] arguments] objectAtIndex:0];
+    return [[NSBundle mainBundle] executablePath];
 }
 
 + (NSString *)applicationName
