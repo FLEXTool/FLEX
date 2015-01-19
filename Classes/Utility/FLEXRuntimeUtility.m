@@ -148,6 +148,10 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             BOOL boolValue = NO;
             [value getValue:&boolValue];
             description = boolValue ? @"YES" : @"NO";
+        } else if (strcmp(type, @encode(SEL)) == 0) {
+            SEL selector = NULL;
+            [value getValue:&selector];
+            description = NSStringFromSelector(selector);
         }
     }
     
