@@ -183,7 +183,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 {
     self = [super initWithStyle:style];
     if (self) {
-        self.title = @"🌎  Global State";
+        self.title = @"💪  FLEX";
         _entries = [[[self class] defaultGlobalEntries] arrayByAddingObjectsFromArray:[FLEXManager sharedManager].userGlobalEntries];
     }
     return self;
