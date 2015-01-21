@@ -708,6 +708,21 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     return canDrillIn;
 }
 
+- (BOOL)canCopyRow:(NSInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
+{
+    BOOL canCopy = NO;
+    
+    switch (section) {
+        case FLEXObjectExplorerSectionDescription:
+            canCopy = YES;
+            break;
+            
+        default:
+            break;
+    }
+    return canCopy;
+}
+
 - (NSString *)titleForExplorerSection:(FLEXObjectExplorerSection)section
 {
     NSString *title = nil;
@@ -895,6 +910,49 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         [self.navigationController pushViewController:detailViewController animated:YES];
     } else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    }
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
+    BOOL canCopy = [self canCopyRow:indexPath.row inExplorerSection:explorerSection];
+    return canCopy;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    BOOL canPerformAction = NO;
+    
+    if (action == @selector(copy:)) {
+        FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
+        BOOL canCopy = [self canCopyRow:indexPath.row inExplorerSection:explorerSection];
+        canPerformAction = canCopy;
+    }
+    
+    return canPerformAction;
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    if (action == @selector(copy:)) {
+        FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
+        NSString *stringToCopy = @"";
+        
+        NSString *title = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
+        if ([title length] > 0) {
+            stringToCopy = [stringToCopy stringByAppendingString:title];
+        }
+        
+        NSString *subtitle = [self subtitleForRow:indexPath.row inExplorerSection:explorerSection];
+        if ([subtitle length] > 0) {
+            if ([stringToCopy length] > 0) {
+                stringToCopy = [stringToCopy stringByAppendingString:@"\n\n"];
+            }
+            stringToCopy = [stringToCopy stringByAppendingString:subtitle];
+        }
+        
+        [[UIPasteboard generalPasteboard] setString:stringToCopy];
     }
 }
 
