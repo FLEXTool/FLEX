@@ -141,6 +141,33 @@
     return [FLEXSystemLogTableViewCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
 }
 
+#pragma mark - Copy on long press
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    return action == @selector(copy:);
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    if (action == @selector(copy:)) {
+        FLEXSystemLogMessage *logMessage = nil;
+        if (tableView == self.tableView) {
+            logMessage = [self.logMessages objectAtIndex:indexPath.row];
+        } else if (tableView == self.searchDisplayController.searchResultsTableView) {
+            logMessage = [self.filteredLogMessages objectAtIndex:indexPath.row];
+        }
+
+        NSString *stringToCopy = [FLEXSystemLogTableViewCell displayedTextForLogMessage:logMessage] ?: @"";
+        [[UIPasteboard generalPasteboard] setString:stringToCopy];
+    }
+}
+
 #pragma mark - Search display delegate
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
