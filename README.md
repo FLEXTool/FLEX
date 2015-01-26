@@ -9,6 +9,7 @@ FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for
 - See the properties and ivars on any object.
 - Dynamically modify many properties and ivars.
 - Dynamically call instance and class methods.
+- View system log messages (e.g. from `NSLog`).
 - Access any live object via a scan of the heap.
 - View the file system within your app's sandbox.
 - Explore all classes in your app and linked systems frameworks (public and private).
