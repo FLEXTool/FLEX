@@ -47,5 +47,28 @@
 
 #import "AAPLAppDelegate.h"
 
+@interface AAPLAppDelegate ()
+
+@property (nonatomic, strong) NSTimer *repeatingLogExampleTimer;
+
+@end
+
 @implementation AAPLAppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
+    return YES;
+}
+
+- (void)sendExampleLogMessage
+{
+    // To show off the system log viewer, send 20 example log messages at 1 second intervals.
+    static NSInteger count = 0;
+    NSLog(@"Example log %ld", (long)count++);
+    if (count > 20) {
+        [self.repeatingLogExampleTimer invalidate];
+    }
+}
+
 @end
