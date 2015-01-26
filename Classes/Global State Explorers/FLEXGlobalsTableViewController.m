@@ -16,10 +16,12 @@
 #import "FLEXFileBrowserTableViewController.h"
 #import "FLEXGlobalsTableViewControllerEntry.h"
 #import "FLEXManager+Private.h"
+#import "FLEXSystemLogTableViewController.h"
 
 static __weak UIWindow *s_applicationWindow = nil;
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
+    FLEXGlobalsRowSystemLog,
     FLEXGlobalsRowLiveObjects,
     FLEXGlobalsRowFileBrowser,
     FLEXGlobalsRowSystemLibraries,
@@ -166,6 +168,16 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [[FLEXFileBrowserTableViewController alloc] init];
                 };
                 break;
+
+            case FLEXGlobalsRowSystemLog:
+                titleFuture = ^{
+                    return @"⚠️  System Log";
+                };
+                viewControllerFuture = ^{
+                    return [[FLEXSystemLogTableViewController alloc] init];
+                };
+                break;
+
             case FLEXGlobalsRowCount:
                 break;
         }
@@ -183,7 +195,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 {
     self = [super initWithStyle:style];
     if (self) {
-        self.title = @"🌎  Global State";
+        self.title = @"💪  FLEX";
         _entries = [[[self class] defaultGlobalEntries] arrayByAddingObjectsFromArray:[FLEXManager sharedManager].userGlobalEntries];
     }
     return self;
