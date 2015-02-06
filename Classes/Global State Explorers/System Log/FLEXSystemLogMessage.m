@@ -49,7 +49,7 @@
 
 - (NSUInteger)hash
 {
-    return self.messageID;
+    return (NSUInteger)self.messageID;
 }
 
 @end
