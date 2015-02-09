@@ -11,10 +11,13 @@
 #import "FLEXNetworkTransactionTableViewCell.h"
 #import "FLEXNetworkRecorder.h"
 
-@interface FLEXNetworkHistoryTableViewController ()
+@interface FLEXNetworkHistoryTableViewController () <UISearchDisplayDelegate>
 
 /// Backing model
 @property (nonatomic, copy) NSArray *networkTransactions;
+@property (nonatomic, copy) NSArray *filteredNetworkTransactions;
+
+@property (nonatomic, strong) UISearchDisplayController *searchController;
 
 @end
 
@@ -43,6 +46,17 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = [FLEXNetworkTransactionTableViewCell preferredCellHeight];
 
+    UISearchBar *searchBar = [[UISearchBar alloc] init];
+    [searchBar sizeToFit];
+    self.searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+    self.searchController.delegate = self;
+    self.searchController.searchResultsDataSource = self;
+    self.searchController.searchResultsDelegate = self;
+    [self.searchController.searchResultsTableView registerClass:[FLEXNetworkTransactionTableViewCell class] forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier];
+    self.searchController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.searchController.searchResultsTableView.rowHeight = [FLEXNetworkTransactionTableViewCell preferredCellHeight];
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+
     [self updateTransactions];
 }
 
@@ -69,13 +83,25 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.networkTransactions count];
+    NSInteger numberOfRows = 0;
+    if (tableView == self.tableView) {
+        numberOfRows = [self.networkTransactions count];
+    } else if (tableView == self.searchController.searchResultsTableView) {
+        numberOfRows = [self.filteredNetworkTransactions count];
+    }
+    return numberOfRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXNetworkTransactionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
-    cell.transaction = [self.networkTransactions objectAtIndex:indexPath.row];
+    FLEXNetworkTransaction *transaction = nil;
+    if (tableView == self.tableView) {
+        transaction = [self.networkTransactions objectAtIndex:indexPath.row];
+    } else if (tableView == self.searchController.searchResultsTableView) {
+        transaction = [self.filteredNetworkTransactions objectAtIndex:indexPath.row];
+    }
+    cell.transaction = transaction;
 
     if (indexPath.row % 2 == 0) {
         cell.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
@@ -84,6 +110,26 @@
     }
 
     return cell;
+}
+
+#pragma mark - Search display delegate
+
+- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSArray *filteredNetworkTransactions = [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary *bindings) {
+            return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
+        }]];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.searchDisplayController.searchBar.text isEqual:searchString]) {
+                self.filteredNetworkTransactions = filteredNetworkTransactions;
+                [self.searchDisplayController.searchResultsTableView reloadData];
+            }
+        });
+    });
+
+    // Reload done after the data is filtered asynchronously
+    return NO;
 }
 
 @end
