@@ -9,6 +9,10 @@
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkTransaction.h"
 
+NSString *const kFLEXNetworkRecorderNewTransactionNotification = @"kFLEXNetworkRecorderNewTransactionNotification";
+NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification = @"kFLEXNetworkRecorderTransactionUpdatedNotification";
+NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
+
 @interface FLEXNetworkRecorder ()
 
 @property (nonatomic, strong) NSCache *responseCache;
@@ -66,6 +70,9 @@
 
     [self.orderedTransactions addObject:transaction];
     [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
+
+    NSDictionary *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
+    [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkRecorderNewTransactionNotification object:self userInfo:userInfo];
 }
 
 - (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response
@@ -74,12 +81,16 @@
     transaction.response = response;
     transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
     transaction.latency = -[transaction.startTime timeIntervalSinceNow];
+
+    [self postUpdateNotificationForTransaction:transaction];
 }
 
 - (void)recordDataReceivedWithRequestId:(NSString *)requestId dataLength:(int64_t)dataLength
 {
     FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
     transaction.receivedDataLength += dataLength;
+
+    [self postUpdateNotificationForTransaction:transaction];
 }
 
 - (void)recordLoadingFinishedWithRequestId:(NSString *)requestId responseBody:(NSData *)responseBody
@@ -89,6 +100,8 @@
     transaction.duration = -[transaction.startTime timeIntervalSinceNow];
 
     [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
+
+    [self postUpdateNotificationForTransaction:transaction];
 }
 
 - (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error
@@ -97,6 +110,14 @@
     transaction.transactionState = FLEXNetworkTransactionStateFailed;
     transaction.duration = [transaction.startTime timeIntervalSinceNow];
     transaction.error = error;
+
+    [self postUpdateNotificationForTransaction:transaction];
+}
+
+- (void)postUpdateNotificationForTransaction:(FLEXNetworkTransaction *)transaction
+{
+    NSDictionary *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
+    [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkRecorderTransactionUpdatedNotification object:self userInfo:userInfo];
 }
 
 @end

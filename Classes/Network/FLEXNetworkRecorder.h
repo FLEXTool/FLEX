@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+// Notifications posted when the record is updated
+extern NSString *const kFLEXNetworkRecorderNewTransactionNotification;
+extern NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification;
+extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
+
 @class FLEXNetworkTransaction;
 
 @interface FLEXNetworkRecorder : NSObject
