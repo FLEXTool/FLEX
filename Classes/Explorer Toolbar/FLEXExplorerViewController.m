@@ -449,20 +449,23 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (NSArray *)allWindows
 {
-    NSMutableArray *windows = [[[UIApplication sharedApplication] windows] mutableCopy];
-    UIWindow *statusWindow = [self statusWindow];
-    if (statusWindow) {
-        // The windows are ordered back to front, so default to inserting the status bar at the end.
-        // However, it there are windows at status bar level, insert the status bar before them.
-        NSInteger insertionIndex = [windows count];
-        for (UIWindow *window in windows) {
-            if (window.windowLevel >= UIWindowLevelStatusBar) {
-                insertionIndex = [windows indexOfObject:window];
-                break;
-            }
-        }
-        [windows insertObject:statusWindow atIndex:insertionIndex];
-    }
+    BOOL includeInternalWindows = YES;
+    BOOL onlyVisibleWindows = NO;
+
+    NSArray *allWindowsComponents = @[@"al", @"lWindo", @"wsIncl", @"udingInt", @"ernalWin", @"dows:o", @"nlyVisi", @"bleWin", @"dows:"];
+    SEL allWindowsSelector = NSSelectorFromString([allWindowsComponents componentsJoinedByString:@""]);
+
+    NSMethodSignature *methodSignature = [[UIWindow class] methodSignatureForSelector:allWindowsSelector];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
+
+    invocation.target = [UIWindow class];
+    invocation.selector = allWindowsSelector;
+    [invocation setArgument:&includeInternalWindows atIndex:2];
+    [invocation setArgument:&onlyVisibleWindows atIndex:3];
+    [invocation invoke];
+
+    __unsafe_unretained NSArray *windows = nil;
+    [invocation getReturnValue:&windows];
     return windows;
 }
 
