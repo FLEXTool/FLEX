@@ -12,6 +12,7 @@
 #import "FLEXGlobalsTableViewControllerEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
+#import <objc/runtime.h>
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -103,6 +104,13 @@
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock
 {
+    [self registerGlobalEntryWithName:entryName objectFutureBlock:objectFutureBlock forceObjectExplorer:YES];
+}
+
+- (void)registerGlobalEntryWithName:(NSString *)entryName
+                  objectFutureBlock:(id (^)(void))objectFutureBlock
+                forceObjectExplorer:(BOOL)forceObjectExplorer
+{
     NSParameterAssert(entryName);
     NSParameterAssert(objectFutureBlock);
     NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
@@ -111,7 +119,16 @@
     FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
         return entryName;
     } viewControllerFuture:^UIViewController *{
-        return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
+        id object = objectFutureBlock();
+
+        if([object_getClass(object) isSubclassOfClass:[UIViewController class]] && forceObjectExplorer == NO)
+        {
+            return object;
+        }
+        else
+        {
+            return [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
+        }
     }];
 
     [self.userGlobalEntries addObject:entry];
