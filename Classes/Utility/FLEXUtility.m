@@ -8,6 +8,7 @@
 
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
+#import <ImageIO/ImageIO.h>
 
 @implementation FLEXUtility
 
@@ -181,6 +182,25 @@
 {
     // https://developer.apple.com/library/ios/documentation/uikit/reference/UIImage_Class/Reference/Reference.html#//apple_ref/doc/uid/TP40006890-CH3-SW3
     return [@[@"jpg", @"jpeg", @"png", @"gif", @"tiff", @"tif"] containsObject:extension];
+}
+
++ (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data
+{
+    UIImage *thumbnail = nil;
+    CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)data, 0);
+    if (imageSource) {
+        NSDictionary *options = @{ (__bridge id)kCGImageSourceCreateThumbnailWithTransform : @YES,
+                                   (__bridge id)kCGImageSourceCreateThumbnailFromImageAlways : @YES,
+                                   (__bridge id)kCGImageSourceThumbnailMaxPixelSize : @(dimension) };
+
+        CGImageRef scaledImageRef = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, (__bridge CFDictionaryRef)options);
+        if (scaledImageRef) {
+            thumbnail = [UIImage imageWithCGImage:scaledImageRef];
+            CFRelease(scaledImageRef);
+        }
+        CFRelease(imageSource);
+    }
+    return thumbnail;
 }
 
 @end

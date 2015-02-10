@@ -30,5 +30,6 @@
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
 + (NSString *)searchBarPlaceholderText;
 + (BOOL)isImagePathExtension:(NSString *)extension;
++ (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
 
 @end
