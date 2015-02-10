@@ -8,6 +8,7 @@
 
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkTransaction.h"
+#import "FLEXUtility.h"
 
 NSString *const kFLEXNetworkRecorderNewTransactionNotification = @"kFLEXNetworkRecorderNewTransactionNotification";
 NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification = @"kFLEXNetworkRecorderTransactionUpdatedNotification";
@@ -102,6 +103,15 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
     [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
 
     [self postUpdateNotificationForTransaction:transaction];
+
+    if ([transaction.response.MIMEType hasPrefix:@"image/"]) {
+        // Thumbnail image previews on a background queue
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSInteger maxPixelDimension = [[UIScreen mainScreen] scale] * 32.0;
+            transaction.responseThumbnail = [FLEXUtility thumbnailedImageWithMaxPixelDimension:maxPixelDimension fromImageData:responseBody];
+            [self postUpdateNotificationForTransaction:transaction];
+        });
+    }
 }
 
 - (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error
