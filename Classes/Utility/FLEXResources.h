@@ -19,4 +19,8 @@
 + (UIImage *)moveIcon;
 + (UIImage *)selectIcon;
 
++ (UIImage *)jsonIcon;
++ (UIImage *)textPlainIcon;
++ (UIImage *)htmlIcon;
+
 @end
