@@ -19,6 +19,7 @@
 #import <objc/message.h>
 #import <dispatch/queue.h>
 
+NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNetworkObserverEnabledStateChangedNotification";
 
 @interface FLEXInternalRequestState : NSObject
 
@@ -83,6 +84,19 @@
         [self injectIntoAllNSURLConnectionDelegateClasses];
     }
     [[self sharedObserver] setEnabled:enabled];
+}
+
++ (BOOL)isEnabled
+{
+    return [[self sharedObserver] isEnabled];
+}
+
+- (void)setEnabled:(BOOL)enabled
+{
+    if (_enabled != enabled) {
+        _enabled = enabled;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkObserverEnabledStateChangedNotification object:self];
+    }
 }
 
 #pragma mark - Statics

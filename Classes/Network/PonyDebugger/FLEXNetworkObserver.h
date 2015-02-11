@@ -12,6 +12,8 @@
 //  which Square, Inc. licenses this file to you.
 //
 
+extern NSString *const kFLEXNetworkObserverEnabledStateChangedNotification;
+
 @class FLEXNetworkRecorder;
 
 /// This class swizzles NSURLConnection and NSURLSession delegate methods to observe events in the URL loading system.
@@ -21,5 +23,6 @@
 /// Swizzling occurs when the observer is enabled for the first time.
 /// This reduces the impact of FLEX if network debugging is not desired.
 + (void)setEnabled:(BOOL)enabled;
++ (BOOL)isEnabled;
 
 @end
