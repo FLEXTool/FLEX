@@ -203,4 +203,19 @@
     return thumbnail;
 }
 
++ (NSString *)stringFromRequestDuration:(NSTimeInterval)duration
+{
+    NSString *string = @"0s";
+    if (duration > 0.0) {
+        if (duration < 1.0) {
+            string = [NSString stringWithFormat:@"%dms", (int)(duration * 1000)];
+        } else if (duration < 10.0) {
+            string = [NSString stringWithFormat:@"%.2fs", duration];
+        } else {
+            string = [NSString stringWithFormat:@"%.1fs", duration];
+        }
+    }
+    return string;
+}
+
 @end

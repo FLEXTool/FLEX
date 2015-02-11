@@ -31,5 +31,6 @@
 + (NSString *)searchBarPlaceholderText;
 + (BOOL)isImagePathExtension:(NSString *)extension;
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
++ (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 
 @end
