@@ -12,6 +12,7 @@
 #import "FLEXGlobalsTableViewControllerEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
+#import "FLEXNetworkObserver.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -79,6 +80,16 @@
 - (BOOL)isHidden
 {
     return self.explorerWindow.isHidden;
+}
+
+- (BOOL)isNetworkDebuggingEnabled
+{
+    return [FLEXNetworkObserver isEnabled];
+}
+
+- (void)setNetworkDebuggingEnabled:(BOOL)networkDebuggingEnabled
+{
+    [FLEXNetworkObserver setEnabled:networkDebuggingEnabled];
 }
 
 
