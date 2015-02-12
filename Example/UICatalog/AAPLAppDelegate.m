@@ -46,10 +46,12 @@
 */
 
 #import "AAPLAppDelegate.h"
+#import "FLEXManager.h"
 
-@interface AAPLAppDelegate ()
+@interface AAPLAppDelegate () <NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic, strong) NSTimer *repeatingLogExampleTimer;
+@property (nonatomic, strong) NSMutableArray *connections;
 
 @end
 
@@ -57,6 +59,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[FLEXManager sharedManager] setNetworkDebuggingEnabled:YES];
+    [self sendExampleNetworkRequests];
     self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
     return YES;
 }
@@ -69,6 +73,45 @@
     if (count > 20) {
         [self.repeatingLogExampleTimer invalidate];
     }
+}
+
+#pragma mark - Networking Example
+
+- (void)sendExampleNetworkRequests
+{
+    NSArray *requestURLStrings = @[ @"http://cdn.flipboard.com/serviceIcons/v2/social-icon-flipboard-96.png",
+                                    @"http://lorempixel.com/400/400/",
+                                    @"http://google.com",
+                                    @"http://search.cocoapods.org/api/pods?query=FLEX&amount=1",
+                                    @"https://api.github.com/users/Flipboard/repos",
+                                    @"http://lorempixel.com/320/480/",
+                                    @"http://info.cern.ch/hypertext/WWW/TheProject.html",
+                                    @"https://api.github.com/emojis",
+                                    @"http://lorempixel.com/1024/1024/",
+                                    @"https://api.github.com/repos/Flipboard/FLEX/issues",
+                                    @"https://cloud.githubusercontent.com/assets/516562/3971767/e4e21f58-27d6-11e4-9b07-4d1fe82b80ca.png",
+                                    @"http://hipsterjesus.com/api?paras=1&type=hipster-centric&html=false",
+                                    @"http://lorempixel.com/750/1334/" ];
+
+    NSTimeInterval delayTime = 0.0;
+    self.connections = [NSMutableArray array];
+    for (NSString *urlString in requestURLStrings) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+            [self.connections addObject:[[NSURLConnection alloc] initWithRequest:request delegate:self]];
+        });
+        delayTime += 5.0;
+    }
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    [self.connections removeObject:connection];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [self.connections removeObject:connection];
 }
 
 @end
