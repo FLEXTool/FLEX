@@ -9,7 +9,7 @@
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
-#import "FLEXDescriptionTableViewCell.h"
+#import "FLEXMultilineTableViewCell.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXPropertyEditorViewController.h"
 #import "FLEXIvarEditorViewController.h"
@@ -860,11 +860,12 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
     
     BOOL useDescriptionCell = explorerSection == FLEXObjectExplorerSectionDescription;
-    NSString *cellIdentifier = useDescriptionCell ? @"descriptionCell" : @"cell";
+    NSString *cellIdentifier = useDescriptionCell ? kFLEXMultilineTableViewCellIdentifier : @"cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         if (useDescriptionCell) {
-            cell = [[FLEXDescriptionTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+            cell = [[FLEXMultilineTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+            cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         } else {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
             UIFont *cellFont = [FLEXUtility defaultTableViewCellLabelFont];
@@ -887,7 +888,8 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     CGFloat height = self.tableView.rowHeight;
     if (explorerSection == FLEXObjectExplorerSectionDescription) {
         NSString *text = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
-        CGFloat preferredHeight = [FLEXDescriptionTableViewCell preferredHeightWithText:text inTableViewWidth:self.tableView.frame.size.width];
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSFontAttributeName : [FLEXUtility defaultTableViewCellLabelFont] }];
+        CGFloat preferredHeight = [FLEXMultilineTableViewCell preferredHeightWithAttributedText:attributedText inTableViewWidth:self.tableView.frame.size.width style:tableView.style showsAccessory:NO];
         height = MAX(height, preferredHeight);
     }
     return height;
