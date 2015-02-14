@@ -16,12 +16,18 @@
 #import "FLEXArgumentInputStringView.h"
 #import "FLEXArgumentInputFontView.h"
 #import "FLEXArgumentInputColorView.h"
+#import "FLEXArgumentInputDateView.h"
 
 @implementation FLEXArgumentInputViewFactory
 
 + (FLEXArgumentInputView *)argumentInputViewForTypeEncoding:(const char *)typeEncoding
 {
-    Class subclass = [self argumentInputViewSubclassForTypeEncoding:typeEncoding currentValue:nil];
+    return [self argumentInputViewForTypeEncoding:typeEncoding currentValue:nil];
+}
+
++ (FLEXArgumentInputView *)argumentInputViewForTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue
+{
+    Class subclass = [self argumentInputViewSubclassForTypeEncoding:typeEncoding currentValue:currentValue];
     if (!subclass) {
         // Fall back to a FLEXArgumentInputNotSupportedView if we can't find a subclass that fits the type encoding.
         // The unsupported view shows "nil" and does not allow user input.
@@ -47,6 +53,8 @@
         argumentInputViewSubclass = [FLEXArgumentInputStructView class];
     } else if ([FLEXArgumentInputSwitchView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
         argumentInputViewSubclass = [FLEXArgumentInputSwitchView class];
+    } else if ([FLEXArgumentInputDateView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
+        argumentInputViewSubclass = [FLEXArgumentInputDateView class];
     } else if ([FLEXArgumentInputNumberView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
         argumentInputViewSubclass = [FLEXArgumentInputNumberView class];
     } else if ([FLEXArgumentInputJSONObjectView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {

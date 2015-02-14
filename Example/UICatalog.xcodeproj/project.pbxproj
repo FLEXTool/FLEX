@@ -43,6 +43,7 @@
 		535682BE18F3670300BAAD62 /* AAPLWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A418F3670300BAAD62 /* AAPLWebViewController.m */; };
 		535682BF18F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */; };
 		53874F9918F36B1800510922 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53874F9718F36B1800510922 /* Localizable.strings */; };
+		650855EB1A9007D5006109A1 /* FLEXArgumentInputDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 650855EA1A9007D5006109A1 /* FLEXArgumentInputDateView.m */; };
 		943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */; };
 		944F7489197B458C009AB039 /* FLEXArrayExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7426197B458C009AB039 /* FLEXArrayExplorerViewController.m */; };
 		944F748A197B458C009AB039 /* FLEXClassExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7428197B458C009AB039 /* FLEXClassExplorerViewController.m */; };
@@ -165,6 +166,8 @@
 		535682A518F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+AAPLApplicationSpecific.h"; sourceTree = "<group>"; };
 		535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AAPLApplicationSpecific.m"; sourceTree = "<group>"; };
 		53874F9818F36B1800510922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		650855E91A9007D5006109A1 /* FLEXArgumentInputDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputDateView.h; sourceTree = "<group>"; };
+		650855EA1A9007D5006109A1 /* FLEXArgumentInputDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputDateView.m; sourceTree = "<group>"; };
 		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
 		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
 		944F7425197B458C009AB039 /* FLEXArrayExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArrayExplorerViewController.h; sourceTree = "<group>"; };
@@ -510,6 +513,8 @@
 			children = (
 				944F7446197B458C009AB039 /* FLEXArgumentInputColorView.h */,
 				944F7447197B458C009AB039 /* FLEXArgumentInputColorView.m */,
+				650855E91A9007D5006109A1 /* FLEXArgumentInputDateView.h */,
+				650855EA1A9007D5006109A1 /* FLEXArgumentInputDateView.m */,
 				944F7448197B458C009AB039 /* FLEXArgumentInputFontView.h */,
 				944F7449197B458C009AB039 /* FLEXArgumentInputFontView.m */,
 				944F744A197B458C009AB039 /* FLEXArgumentInputJSONObjectView.h */,
@@ -743,6 +748,7 @@
 				535682B718F3670300BAAD62 /* AAPLSliderViewController.m in Sources */,
 				944F74AC197B458C009AB039 /* FLEXToolbarItem.m in Sources */,
 				944F74B7197B458C009AB039 /* FLEXImagePreviewViewController.m in Sources */,
+				650855EB1A9007D5006109A1 /* FLEXArgumentInputDateView.m in Sources */,
 				944F7498197B458C009AB039 /* FLEXArgumentInputColorView.m in Sources */,
 				944F74A0197B458C009AB039 /* FLEXArgumentInputTextView.m in Sources */,
 				944F749C197B458C009AB039 /* FLEXArgumentInputNumberView.m in Sources */,
