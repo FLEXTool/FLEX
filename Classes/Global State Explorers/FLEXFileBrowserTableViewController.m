@@ -7,20 +7,26 @@
 //
 
 #import "FLEXFileBrowserTableViewController.h"
+#import "FLEXFileBrowserFileOperationController.h"
 #import "FLEXUtility.h"
 #import "FLEXWebViewController.h"
 #import "FLEXImagePreviewViewController.h"
 
-@interface FLEXFileBrowserTableViewController ()
+@interface FLEXFileBrowserTableViewCell : UITableViewCell
+@end
+
+@interface FLEXFileBrowserTableViewController () <FLEXFileBrowserFileOperationControllerDelegate>
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, copy) NSArray *childPaths;
+@property (nonatomic, copy) NSString *searchString;
 @property (nonatomic, strong) NSArray *searchPaths;
 @property (nonatomic, strong) NSNumber *recursiveSize;
 @property (nonatomic, strong) NSNumber *searchPathsSize;
 @property (nonatomic, strong) UISearchDisplayController *searchController;
 @property (nonatomic) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) UIDocumentInteractionController *documentController;
+@property (nonatomic, strong) id<FLEXFileBrowserFileOperationController> fileOperationController;
 
 @end
 
@@ -71,10 +77,21 @@
                 [strongSelf.tableView reloadData];
             });
         });
-        
-        self.childPaths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
+
+        [self reloadChildPaths];
     }
     return self;
+}
+
+#pragma mark - UIViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    UIMenuItem *renameMenuItem = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
+    UIMenuItem *deleteMenuItem = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
+    [UIMenuController sharedMenuController].menuItems = @[renameMenuItem, deleteMenuItem];
 }
 
 #pragma mark - FLEXFileBrowserSearchOperationDelegate
@@ -90,14 +107,8 @@
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
-    self.searchPaths = nil;
-    self.searchPathsSize = nil;
-    
-    //clear pre search request and start a new one
-    [self.operationQueue cancelAllOperations];
-    FLEXFileBrowserSearchOperation *newOperation = [[FLEXFileBrowserSearchOperation alloc] initWithPath:self.path searchString:searchString];
-    newOperation.delegate = self;
-    [self.operationQueue addOperation:newOperation];
+    self.searchString = searchString;
+    [self reloadSearchPaths];
 
     return YES;
 }
@@ -106,6 +117,8 @@
 {
     //confirm to clear all operations
     [self.operationQueue cancelAllOperations];
+    [self reloadChildPaths];
+    [self.tableView reloadData];
 }
 
 
@@ -178,7 +191,7 @@
     NSString *cellIdentifier = showImagePreview ? imageCellIdentifier : textCellIdentifier;
     
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+        cell = [[FLEXFileBrowserTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         cell.detailTextLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         cell.detailTextLabel.textColor = [UIColor grayColor];
@@ -253,7 +266,29 @@
         }
     } else {
         [[[UIAlertView alloc] initWithTitle:@"File Removed" message:@"The file at the specified path no longer exists." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+        [self reloadDisplayedPaths];
     }
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    return action == @selector(fileBrowserDelete:) || action == @selector(fileBrowserRename:);
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    // Empty, but has to exist for the menu to show
+}
+
+#pragma mark - FLEXFileBrowserFileOperationControllerDelegate
+
+- (void)fileOperationControllerDidDismiss:(id<FLEXFileBrowserFileOperationController>)controller {
+    [self reloadDisplayedPaths];
 }
 
 - (void)openFileController:(NSString *)fullPath
@@ -263,6 +298,84 @@
   
     [controller presentOptionsMenuFromRect:self.view.bounds inView:self.view animated:YES];
     self.documentController = controller;
+}
+
+- (void)fileBrowserRename:(UITableViewCell *)sender
+{
+    NSString *fullPath = nil;
+
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+    if (indexPath) {
+        NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
+        fullPath = [self.path stringByAppendingPathComponent:subpath];
+    } else {
+        indexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:sender];
+        fullPath = [self.searchPaths objectAtIndex:indexPath.row];
+    }
+
+    self.fileOperationController = [[FLEXFileBrowserFileRenameOperationController alloc] initWithPath:fullPath];
+    self.fileOperationController.delegate = self;
+    [self.fileOperationController show];
+}
+
+- (void)fileBrowserDelete:(UITableViewCell *)sender
+{
+    NSString *fullPath = nil;
+
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+    if (indexPath) {
+        NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
+        fullPath = [self.path stringByAppendingPathComponent:subpath];
+    } else {
+        indexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:sender];
+        fullPath = [self.searchPaths objectAtIndex:indexPath.row];
+    }
+
+    self.fileOperationController = [[FLEXFileBrowserFileDeleteOperationController alloc] initWithPath:fullPath];
+    self.fileOperationController.delegate = self;
+    [self.fileOperationController show];
+}
+
+- (void)reloadDisplayedPaths {
+    if (self.searchDisplayController.isActive) {
+        [self reloadSearchPaths];
+        [self.searchDisplayController.searchResultsTableView reloadData];
+    } else {
+        [self reloadChildPaths];
+        [self.tableView reloadData];
+    }
+}
+
+- (void)reloadChildPaths {
+    self.childPaths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
+}
+
+- (void)reloadSearchPaths {
+    self.searchPaths = nil;
+    self.searchPathsSize = nil;
+
+    //clear pre search request and start a new one
+    [self.operationQueue cancelAllOperations];
+    FLEXFileBrowserSearchOperation *newOperation = [[FLEXFileBrowserSearchOperation alloc] initWithPath:self.path searchString:self.searchString];
+    newOperation.delegate = self;
+    [self.operationQueue addOperation:newOperation];
+}
+
+@end
+
+
+@implementation FLEXFileBrowserTableViewCell
+
+- (void)fileBrowserRename:(UIMenuController *)sender
+{
+    id target = [self.nextResponder targetForAction:_cmd withSender:sender];
+    [[UIApplication sharedApplication] sendAction:_cmd to:target from:self forEvent:nil];
+}
+
+- (void)fileBrowserDelete:(UIMenuController *)sender
+{
+    id target = [self.nextResponder targetForAction:_cmd withSender:sender];
+    [[UIApplication sharedApplication] sendAction:_cmd to:target from:self forEvent:nil];
 }
 
 @end
