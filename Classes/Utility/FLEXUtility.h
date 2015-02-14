@@ -32,5 +32,8 @@
 + (BOOL)isImagePathExtension:(NSString *)extension;
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
++ (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
++ (NSDictionary *)queryDictionaryFromURL:(NSURL *)url;
++ (NSString *)prettyJSONStringFromData:(NSData *)data;
 
 @end

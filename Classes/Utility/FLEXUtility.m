@@ -218,4 +218,46 @@
     return string;
 }
 
++ (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response
+{
+    NSString *httpResponseString = nil;
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        NSString *statusCodeDescription = nil;
+        if (httpResponse.statusCode == 200) {
+            // Prefer OK to the default "no error"
+            statusCodeDescription = @"OK";
+        } else {
+            statusCodeDescription = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
+        }
+        httpResponseString = [NSString stringWithFormat:@"%ld %@", (long)httpResponse.statusCode, statusCodeDescription];
+    }
+    return httpResponseString;
+}
+
++ (NSDictionary *)queryDictionaryFromURL:(NSURL *)url
+{
+    NSMutableDictionary *queryDictionary = [NSMutableDictionary dictionary];
+
+    // [a=1, b=2, c=3]
+    NSArray *queryComponents = [url.query componentsSeparatedByString:@"&"];
+    for (NSString *keyValueString in queryComponents) {
+        // [a, 1]
+        NSArray *components = [keyValueString componentsSeparatedByString:@"="];
+        if ([components count] == 2) {
+            NSString *key = [[components firstObject] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *value = [[components lastObject] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            [queryDictionary setObject:value forKey:key];
+        }
+    }
+
+    return queryDictionary;
+}
+
++ (NSString *)prettyJSONStringFromData:(NSData *)data
+{
+    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    return [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL] encoding:NSUTF8StringEncoding];
+}
+
 @end
