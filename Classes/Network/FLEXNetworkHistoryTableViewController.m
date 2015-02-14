@@ -95,13 +95,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXNetworkTransactionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
-    FLEXNetworkTransaction *transaction = nil;
-    if (tableView == self.tableView) {
-        transaction = [self.networkTransactions objectAtIndex:indexPath.row];
-    } else if (tableView == self.searchController.searchResultsTableView) {
-        transaction = [self.filteredNetworkTransactions objectAtIndex:indexPath.row];
-    }
-    cell.transaction = transaction;
+    cell.transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
 
     if (indexPath.row % 2 == 0) {
         cell.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
@@ -110,6 +104,17 @@
     }
 
     return cell;
+}
+
+- (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
+{
+    FLEXNetworkTransaction *transaction = nil;
+    if (tableView == self.tableView) {
+        transaction = [self.networkTransactions objectAtIndex:indexPath.row];
+    } else if (tableView == self.searchController.searchResultsTableView) {
+        transaction = [self.filteredNetworkTransactions objectAtIndex:indexPath.row];
+    }
+    return transaction;
 }
 
 #pragma mark - Search display delegate
