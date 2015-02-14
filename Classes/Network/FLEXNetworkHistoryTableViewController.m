@@ -10,6 +10,7 @@
 #import "FLEXNetworkTransaction.h"
 #import "FLEXNetworkTransactionTableViewCell.h"
 #import "FLEXNetworkRecorder.h"
+#import "FLEXNetworkTransactionDetailTableViewController.h"
 
 @interface FLEXNetworkHistoryTableViewController () <UISearchDisplayDelegate>
 
@@ -104,6 +105,13 @@
     }
 
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    FLEXNetworkTransactionDetailTableViewController *detailViewController = [[FLEXNetworkTransactionDetailTableViewController alloc] init];
+    detailViewController.transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
+    [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
