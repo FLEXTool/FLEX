@@ -133,17 +133,9 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     }
 
     if (self.transaction.transactionState == FLEXNetworkTransactionStateFinished || self.transaction.transactionState == FLEXNetworkTransactionStateFailed) {
-        if ([self.transaction.response isKindOfClass:[NSHTTPURLResponse class]]) {
-            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)self.transaction.response;
-            NSString *statusCodeDescription = nil;
-            if (httpResponse.statusCode == 200) {
-                // Prefer OK to the default "no error"
-                statusCodeDescription = @"OK";
-            } else {
-                statusCodeDescription = [NSHTTPURLResponse localizedStringForStatusCode:httpResponse.statusCode];
-            }
-            NSString *httpResponseString = [NSString stringWithFormat:@"%ld %@", (long)httpResponse.statusCode, statusCodeDescription];
-            [detailComponents addObject:httpResponseString];
+        NSString *statusCodeString = [FLEXUtility statusCodeStringFromURLResponse:self.transaction.response];
+        if ([statusCodeString length] > 0) {
+            [detailComponents addObject:statusCodeString];
         }
 
         if (self.transaction.receivedDataLength > 0) {

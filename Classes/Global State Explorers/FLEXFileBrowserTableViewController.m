@@ -237,9 +237,7 @@
             if ([[subpath pathExtension] isEqual:@"archive"]) {
                 prettyString = [[NSKeyedUnarchiver unarchiveObjectWithFile:fullPath] description];
             } else if ([[subpath pathExtension] isEqualToString:@"json"]) {
-                NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
-                id jsonObject = [NSJSONSerialization JSONObjectWithData:fileData options:0 error:NULL];
-                prettyString = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL] encoding:NSUTF8StringEncoding];
+                prettyString = [FLEXUtility prettyJSONStringFromData:[NSData dataWithContentsOfFile:fullPath]];
             } else if ([[subpath pathExtension] isEqualToString:@"plist"]) {
                 NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
                 prettyString = [[NSPropertyListSerialization propertyListWithData:fileData options:0 format:NULL error:NULL] description];
