@@ -69,8 +69,25 @@
 
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
 {
+    NSInteger existingRowCount = [self.networkTransactions count];
     [self updateTransactions];
-    [self.tableView reloadData];
+    NSInteger newRowCount = [self.networkTransactions count];
+    NSInteger addedRowCount = newRowCount - existingRowCount;
+
+    if (self.tableView.contentOffset.y <= 0.0 && addedRowCount > 0) {
+        // Insert animation if we're at the top.
+        NSMutableArray *indexPathsToReload = [NSMutableArray array];
+        for (NSInteger row = 0; row < addedRowCount; row++) {
+            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
+        }
+        [self.tableView insertRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+    } else {
+        // Maintain the user's position if they've scrolled down.
+        CGSize existingContentSize = self.tableView.contentSize;
+        [self.tableView reloadData];
+        CGFloat contentHeightChange = self.tableView.contentSize.height - existingContentSize.height;
+        self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + contentHeightChange);
+    }
 
     if (self.searchController.isActive) {
         [self updateSearchResultsWithSearchString:self.searchController.searchBar.text];
@@ -115,7 +132,9 @@
     FLEXNetworkTransactionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
     cell.transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
 
-    if (indexPath.row % 2 == 0) {
+    // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
+    NSInteger totalRows = [tableView numberOfRowsInSection:indexPath.section];
+    if ((totalRows - indexPath.row) % 2 == 0) {
         cell.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
     } else {
         cell.backgroundColor = [UIColor whiteColor];
