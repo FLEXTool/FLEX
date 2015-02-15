@@ -68,10 +68,13 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
 
 - (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
+    if (redirectResponse) {
+        [self recordResponseReceivedWithRequestId:requestId response:redirectResponse];
+        [self recordLoadingFinishedWithRequestId:requestId responseBody:nil];
+    }
+
     // Use a barrier here because we mutate collections that are not thread safe.
     dispatch_barrier_async(self.queue, ^{
-        // FIXME (RKO): What to do with the redirect response?
-
         FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
         transaction.requestId = requestId;
         transaction.request = request;
