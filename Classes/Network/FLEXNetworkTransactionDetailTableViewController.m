@@ -50,7 +50,11 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 - (instancetype)initWithStyle:(UITableViewStyle)style
 {
     // Force grouped style
-    return [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    if (self) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
+    }
+    return self;
 }
 
 - (void)viewDidLoad
@@ -99,6 +103,14 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     }
 
     self.sections = sections;
+}
+
+- (void)handleTransactionUpdatedNotification:(NSNotification *)notification
+{
+    FLEXNetworkTransaction *transaction = [[notification userInfo] objectForKey:kFLEXNetworkRecorderUserInfoTransactionKey];
+    if (transaction == self.transaction) {
+        [self rebuildTableSections];
+    }
 }
 
 #pragma mark - Table view data source
