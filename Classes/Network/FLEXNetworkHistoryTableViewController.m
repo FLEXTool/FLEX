@@ -29,6 +29,7 @@
     self = [super initWithStyle:style];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNewTransactionRecordedNotification:) name:kFLEXNetworkRecorderNewTransactionNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
         self.title = @"📡  Network";
     }
     return self;
@@ -73,6 +74,21 @@
 
     if (self.searchController.isActive) {
         [self updateSearchResultsWithSearchString:self.searchController.searchBar.text];
+    }
+}
+
+- (void)handleTransactionUpdatedNotification:(NSNotification *)notification
+{
+    FLEXNetworkTransaction *transaction = [notification.userInfo objectForKey:kFLEXNetworkRecorderUserInfoTransactionKey];
+    UITableView *activeTableView = self.searchController.isActive ? self.searchController.searchResultsTableView : self.tableView;
+    for (FLEXNetworkTransactionTableViewCell *cell in [activeTableView visibleCells]) {
+        if ([cell.transaction isEqual:transaction]) {
+            NSIndexPath *indexPath = [activeTableView indexPathForCell:cell];
+            if (indexPath) {
+                [activeTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            }
+            break;
+        }
     }
 }
 
