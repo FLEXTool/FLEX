@@ -244,6 +244,26 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     responseSizeRow.detailText = [NSByteCountFormatter stringFromByteCount:transaction.receivedDataLength countStyle:NSByteCountFormatterCountStyleBinary];
     [rows addObject:responseSizeRow];
 
+    NSDateFormatter *startTimeFormatter = [[NSDateFormatter alloc] init];
+    startTimeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+
+    FLEXNetworkDetailRow *localStartTimeRow = [[FLEXNetworkDetailRow alloc] init];
+    localStartTimeRow.title = [NSString stringWithFormat:@"Start Time (%@)", [[NSTimeZone localTimeZone] abbreviationForDate:transaction.startTime]];
+    localStartTimeRow.detailText = [startTimeFormatter stringFromDate:transaction.startTime];
+    [rows addObject:localStartTimeRow];
+
+    startTimeFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+
+    FLEXNetworkDetailRow *utcStartTimeRow = [[FLEXNetworkDetailRow alloc] init];
+    utcStartTimeRow.title = @"Start Time (UTC)";
+    utcStartTimeRow.detailText = [startTimeFormatter stringFromDate:transaction.startTime];
+    [rows addObject:utcStartTimeRow];
+
+    FLEXNetworkDetailRow *unixStartTime = [[FLEXNetworkDetailRow alloc] init];
+    unixStartTime.title = @"Unix Start Time";
+    unixStartTime.detailText = [NSString stringWithFormat:@"%f", [transaction.startTime timeIntervalSince1970]];
+    [rows addObject:unixStartTime];
+
     FLEXNetworkDetailRow *durationRow = [[FLEXNetworkDetailRow alloc] init];
     durationRow.title = @"Total Duration";
     durationRow.detailText = [FLEXUtility stringFromRequestDuration:transaction.duration];
