@@ -22,7 +22,7 @@ extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
 
 // Accessing recorded network activity
 
-/// Array of FLEXNetworkTransaction objects ordered by start time with the oldest first.
+/// Array of FLEXNetworkTransaction objects ordered by start time with the newest first.
 - (NSArray *)networkTransactions;
 
 /// The full response data IFF it hasn't been purged due to memory pressure.

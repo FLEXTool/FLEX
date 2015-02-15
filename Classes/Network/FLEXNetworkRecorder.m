@@ -78,7 +78,7 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
         transaction.startTime = [NSDate date];
         transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
 
-        [self.orderedTransactions addObject:transaction];
+        [self.orderedTransactions insertObject:transaction atIndex:0];
         [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
 
         [self postNewTransactionNotificationWithTransaction:transaction];
