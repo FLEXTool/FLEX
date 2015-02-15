@@ -90,6 +90,7 @@
         // For clicked links, push another web view controller onto the navigation stack so that hitting the back button works as expected.
         // Don't allow the current web view do handle the navigation.
         FLEXWebViewController *webVC = [[[self class] alloc] initWithURL:[request URL]];
+        webVC.title = [[request URL] absoluteString];
         [self.navigationController pushViewController:webVC animated:YES];
     }
     return shouldStart;
