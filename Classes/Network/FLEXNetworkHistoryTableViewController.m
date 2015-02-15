@@ -68,11 +68,8 @@
 
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
 {
-    // Note that these notifications may be posted from a background thread.
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateTransactions];
-        [self.tableView reloadData];
-    });
+    [self updateTransactions];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source

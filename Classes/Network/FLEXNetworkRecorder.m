@@ -73,8 +73,7 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
     [self.orderedTransactions addObject:transaction];
     [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
 
-    NSDictionary *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
-    [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkRecorderNewTransactionNotification object:self userInfo:userInfo];
+    [self postNewTransactionNotificationWithTransaction:transaction];
 }
 
 - (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response
@@ -132,10 +131,20 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
     [self postUpdateNotificationForTransaction:transaction];
 }
 
+- (void)postNewTransactionNotificationWithTransaction:(FLEXNetworkTransaction *)transaction
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
+        [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkRecorderNewTransactionNotification object:self userInfo:userInfo];
+    });
+}
+
 - (void)postUpdateNotificationForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    NSDictionary *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
-    [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkRecorderTransactionUpdatedNotification object:self userInfo:userInfo];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSDictionary *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
+        [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkRecorderTransactionUpdatedNotification object:self userInfo:userInfo];
+    });
 }
 
 @end
