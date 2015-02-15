@@ -70,6 +70,10 @@
 {
     [self updateTransactions];
     [self.tableView reloadData];
+
+    if (self.searchController.isActive) {
+        [self updateSearchResultsWithSearchString:self.searchController.searchBar.text];
+    }
 }
 
 #pragma mark - Table view data source
@@ -126,6 +130,14 @@
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
+    [self updateSearchResultsWithSearchString:searchString];
+
+    // Reload done after the data is filtered asynchronously
+    return NO;
+}
+
+- (void)updateSearchResultsWithSearchString:(NSString *)searchString
+{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSArray *filteredNetworkTransactions = [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary *bindings) {
             return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
@@ -137,9 +149,6 @@
             }
         });
     });
-
-    // Reload done after the data is filtered asynchronously
-    return NO;
 }
 
 @end
