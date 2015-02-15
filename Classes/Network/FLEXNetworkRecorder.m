@@ -114,7 +114,9 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
 
-        [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
+        if ([responseBody length] > 0) {
+            [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
+        }
 
         NSString *mimeType = transaction.response.MIMEType;
         if ([mimeType hasPrefix:@"image/"]) {
