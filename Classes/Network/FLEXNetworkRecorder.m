@@ -20,6 +20,7 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
 @property (nonatomic, strong) NSCache *responseCache;
 @property (nonatomic, strong) NSMutableArray *orderedTransactions;
 @property (nonatomic, strong) NSMutableDictionary *networkTransactionsForRequestIdentifiers;
+@property (nonatomic, strong) dispatch_queue_t queue;
 
 @end
 
@@ -32,6 +33,7 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
         self.responseCache = [[NSCache alloc] init];
         self.orderedTransactions = [NSMutableArray array];
         self.networkTransactionsForRequestIdentifiers = [NSMutableDictionary dictionary];
+        self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_CONCURRENT);
     }
     return self;
 }
@@ -50,7 +52,11 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
 
 - (NSArray *)networkTransactions
 {
-    return [self.orderedTransactions copy];
+    __block NSArray *transactions = nil;
+    dispatch_sync(self.queue, ^{
+        transactions = [self.orderedTransactions copy];
+    });
+    return transactions;
 }
 
 - (NSData *)cachedResponseBodyForTransaction:(FLEXNetworkTransaction *)transaction
@@ -62,73 +68,84 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
 
 - (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
-    // FIXME (RKO): What to do with the redirect response?
+    // Use a barrier here because we mutate collections that are not thread safe.
+    dispatch_barrier_async(self.queue, ^{
+        // FIXME (RKO): What to do with the redirect response?
 
-    FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
-    transaction.requestId = requestId;
-    transaction.request = request;
-    transaction.startTime = [NSDate date];
-    transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
+        FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
+        transaction.requestId = requestId;
+        transaction.request = request;
+        transaction.startTime = [NSDate date];
+        transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
 
-    [self.orderedTransactions addObject:transaction];
-    [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
+        [self.orderedTransactions addObject:transaction];
+        [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
 
-    [self postNewTransactionNotificationWithTransaction:transaction];
+        [self postNewTransactionNotificationWithTransaction:transaction];
+    });
 }
 
 - (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response
 {
-    FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-    transaction.response = response;
-    transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
-    transaction.latency = -[transaction.startTime timeIntervalSinceNow];
+    dispatch_async(self.queue, ^{
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        transaction.response = response;
+        transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
+        transaction.latency = -[transaction.startTime timeIntervalSinceNow];
 
-    [self postUpdateNotificationForTransaction:transaction];
+        [self postUpdateNotificationForTransaction:transaction];
+    });
 }
 
 - (void)recordDataReceivedWithRequestId:(NSString *)requestId dataLength:(int64_t)dataLength
 {
-    FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-    transaction.receivedDataLength += dataLength;
+    dispatch_async(self.queue, ^{
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        transaction.receivedDataLength += dataLength;
 
-    [self postUpdateNotificationForTransaction:transaction];
+        [self postUpdateNotificationForTransaction:transaction];
+    });
 }
 
 - (void)recordLoadingFinishedWithRequestId:(NSString *)requestId responseBody:(NSData *)responseBody
 {
-    FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-    transaction.transactionState = FLEXNetworkTransactionStateFinished;
-    transaction.duration = -[transaction.startTime timeIntervalSinceNow];
+    dispatch_async(self.queue, ^{
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        transaction.transactionState = FLEXNetworkTransactionStateFinished;
+        transaction.duration = -[transaction.startTime timeIntervalSinceNow];
 
-    [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
+        [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
 
-    NSString *mimeType = transaction.response.MIMEType;
-    if ([mimeType hasPrefix:@"image/"]) {
-        // Thumbnail image previews on a background queue
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSInteger maxPixelDimension = [[UIScreen mainScreen] scale] * 32.0;
-            transaction.responseThumbnail = [FLEXUtility thumbnailedImageWithMaxPixelDimension:maxPixelDimension fromImageData:responseBody];
-            [self postUpdateNotificationForTransaction:transaction];
-        });
-    } else if ([mimeType isEqual:@"application/json"]) {
-        transaction.responseThumbnail = [FLEXResources jsonIcon];
-    } else if ([mimeType isEqual:@"text/plain"]){
-        transaction.responseThumbnail = [FLEXResources textPlainIcon];
-    } else if ([mimeType isEqual:@"text/html"]) {
-        transaction.responseThumbnail = [FLEXResources htmlIcon];
-    }
-
-    [self postUpdateNotificationForTransaction:transaction];
+        NSString *mimeType = transaction.response.MIMEType;
+        if ([mimeType hasPrefix:@"image/"]) {
+            // Thumbnail image previews on a separate background queue
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSInteger maxPixelDimension = [[UIScreen mainScreen] scale] * 32.0;
+                transaction.responseThumbnail = [FLEXUtility thumbnailedImageWithMaxPixelDimension:maxPixelDimension fromImageData:responseBody];
+                [self postUpdateNotificationForTransaction:transaction];
+            });
+        } else if ([mimeType isEqual:@"application/json"]) {
+            transaction.responseThumbnail = [FLEXResources jsonIcon];
+        } else if ([mimeType isEqual:@"text/plain"]){
+            transaction.responseThumbnail = [FLEXResources textPlainIcon];
+        } else if ([mimeType isEqual:@"text/html"]) {
+            transaction.responseThumbnail = [FLEXResources htmlIcon];
+        }
+        
+        [self postUpdateNotificationForTransaction:transaction];
+    });
 }
 
 - (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error
 {
-    FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-    transaction.transactionState = FLEXNetworkTransactionStateFailed;
-    transaction.duration = [transaction.startTime timeIntervalSinceNow];
-    transaction.error = error;
+    dispatch_async(self.queue, ^{
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        transaction.transactionState = FLEXNetworkTransactionStateFailed;
+        transaction.duration = [transaction.startTime timeIntervalSinceNow];
+        transaction.error = error;
 
-    [self postUpdateNotificationForTransaction:transaction];
+        [self postUpdateNotificationForTransaction:transaction];
+    });
 }
 
 - (void)postNewTransactionNotificationWithTransaction:(FLEXNetworkTransaction *)transaction
