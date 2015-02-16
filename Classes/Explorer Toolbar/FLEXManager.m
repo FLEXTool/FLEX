@@ -13,6 +13,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXNetworkObserver.h"
+#import "FLEXNetworkRecorder.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -92,6 +93,15 @@
     [FLEXNetworkObserver setEnabled:networkDebuggingEnabled];
 }
 
+- (NSUInteger)networkResponseCacheByteLimit
+{
+    return [[FLEXNetworkRecorder defaultRecorder] responseCacheByteLimit];
+}
+
+- (void)setNetworkResponseCacheByteLimit:(NSUInteger)networkResponseCacheByteLimit
+{
+    [[FLEXNetworkRecorder defaultRecorder] setResponseCacheByteLimit:networkResponseCacheByteLimit];
+}
 
 #pragma mark - FLEXWindowEventDelegate
 

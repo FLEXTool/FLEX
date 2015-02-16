@@ -22,6 +22,10 @@
 /// Full responses are kept temporarily in a size limited cache and may be pruged under memory pressure.
 @property (nonatomic, assign, getter=isNetworkDebuggingEnabled) BOOL networkDebuggingEnabled;
 
+/// Defaults to 50 MB if never set. Values set here are presisted across launches of the app.
+/// The response cache uses an NSCache, so it may purge prior to hitting the limit when the app is under memory pressure.
+@property (nonatomic, assign) NSUInteger networkResponseCacheByteLimit;
+
 #pragma mark - Extensions
 
 /// Adds an entry at the bottom of the list of Global State items. Call this method before this view controller is displayed.
