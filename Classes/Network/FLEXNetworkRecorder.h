@@ -20,6 +20,9 @@ extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
 /// In general, it only makes sense to have one recorder for the entire application.
 + (instancetype)defaultRecorder;
 
+/// Defaults to 50 MB if never set. Values set here are presisted across launches of the app.
+@property (nonatomic, assign) NSUInteger responseCacheByteLimit;
+
 // Accessing recorded network activity
 
 /// Array of FLEXNetworkTransaction objects ordered by start time with the newest first.

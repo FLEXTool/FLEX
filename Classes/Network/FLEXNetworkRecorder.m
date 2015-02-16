@@ -15,6 +15,8 @@ NSString *const kFLEXNetworkRecorderNewTransactionNotification = @"kFLEXNetworkR
 NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification = @"kFLEXNetworkRecorderTransactionUpdatedNotification";
 NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
 
+NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.responseCacheLimit";
+
 @interface FLEXNetworkRecorder ()
 
 @property (nonatomic, strong) NSCache *responseCache;
@@ -31,6 +33,13 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
     self = [super init];
     if (self) {
         self.responseCache = [[NSCache alloc] init];
+        NSUInteger responseCacheLimit = [[[NSUserDefaults standardUserDefaults] objectForKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey] unsignedIntegerValue];
+        if (responseCacheLimit) {
+            [self.responseCache setTotalCostLimit:responseCacheLimit];
+        } else {
+            // Default to 50 MB max. The cache will purge earlier if there is memory pressure.
+            [self.responseCache setTotalCostLimit:50 * 1024 * 1024];
+        }
         self.orderedTransactions = [NSMutableArray array];
         self.networkTransactionsForRequestIdentifiers = [NSMutableDictionary dictionary];
         self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_CONCURRENT);
@@ -49,6 +58,17 @@ NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
 }
 
 #pragma mark - Public Data Access
+
+- (NSUInteger)responseCacheByteLimit
+{
+    return [self.responseCache totalCostLimit];
+}
+
+- (void)setResponseCacheByteLimit:(NSUInteger)responseCacheByteLimit
+{
+    [self.responseCache setTotalCostLimit:responseCacheByteLimit];
+    [[NSUserDefaults standardUserDefaults] setObject:@(responseCacheByteLimit) forKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey];
+}
 
 - (NSArray *)networkTransactions
 {
