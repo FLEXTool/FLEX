@@ -35,6 +35,7 @@ extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
 // Recording network activity
 
 /// Call when app is about to send HTTP request.
+/// This method must be called for each recorded reqeust. Prior to this call, no information will be recorded for the request.
 - (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse;
 
 /// Call when HTTP response is available.

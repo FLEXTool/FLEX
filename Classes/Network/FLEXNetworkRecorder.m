@@ -112,6 +112,9 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 {
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            return;
+        }
         transaction.response = response;
         transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
         transaction.latency = -[transaction.startTime timeIntervalSinceNow];
@@ -124,6 +127,9 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 {
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            return;
+        }
         transaction.receivedDataLength += dataLength;
 
         [self postUpdateNotificationForTransaction:transaction];
@@ -134,6 +140,9 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 {
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            return;
+        }
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
 
@@ -165,6 +174,9 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 {
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            return;
+        }
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
         transaction.duration = [transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
