@@ -214,6 +214,11 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
             for (NSInteger classIndex = 0; classIndex < numClasses; ++classIndex) {
                 Class class = classes[classIndex];
 
+                // We're not interested in swizzling CLTilesManagerClient, and sending any message to the class fires +initialize causing sandbox violations.
+                if (strcmp(class_getName(class), [[@[@"C", @"LT", @"ilesM", @"anage", @"rClient"] componentsJoinedByString:@""] UTF8String]) == 0) {
+                    continue;
+                }
+
                 if (class_getClassMethod(class, @selector(isSubclassOfClass:)) == NULL) {
                     continue;
                 }
