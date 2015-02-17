@@ -41,10 +41,11 @@
     [super viewDidLoad];
     
     self.fieldEditorView.fieldDescription = self.key;
-    
-    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(id)];
+
+    id currentValue = [self.defaults objectForKey:self.key];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(id) currentValue:currentValue];
     inputView.backgroundColor = self.view.backgroundColor;
-    inputView.inputValue = [self.defaults objectForKey:self.key];
+    inputView.inputValue = currentValue;
     self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
