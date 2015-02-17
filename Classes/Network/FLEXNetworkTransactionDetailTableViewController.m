@@ -233,6 +233,13 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     }
     [rows addObject:responseBodyRow];
 
+    if (transaction.error) {
+        FLEXNetworkDetailRow *errorRow = [[FLEXNetworkDetailRow alloc] init];
+        errorRow.title = @"Error";
+        errorRow.detailText = transaction.error.localizedDescription;
+        [rows addObject:errorRow];
+    }
+
     FLEXNetworkDetailRow *requestMethodRow = [[FLEXNetworkDetailRow alloc] init];
     requestMethodRow.title = @"Request Method";
     requestMethodRow.detailText = transaction.request.HTTPMethod;
