@@ -357,6 +357,9 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     } else if ([mimeType hasPrefix:@"text/"]) {
         NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         detailViewController = [[FLEXWebViewController alloc] initWithText:text];
+    } else if ([mimeType isEqual:@"application/x-plist"]) {
+        id propertyList = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL];
+        detailViewController = [[FLEXWebViewController alloc] initWithText:[propertyList description]];
     }
     detailViewController.title = @"Response";
     return detailViewController;
