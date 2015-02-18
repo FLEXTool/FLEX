@@ -283,6 +283,8 @@
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
     // Empty, but has to exist for the menu to show
+    // The table view only calls this method for actions in the UIResponderStandardEditActions informal protocol.
+    // Since our actions are outside of that protocol, we need to manually handle the action forwarding from the cells.
 }
 
 #pragma mark - FLEXFileBrowserFileOperationControllerDelegate
