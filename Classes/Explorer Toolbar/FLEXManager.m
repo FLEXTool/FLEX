@@ -129,7 +129,7 @@
     } viewControllerFuture:^UIViewController *{
         UIViewController *viewController = viewControllerFutureBlock();
         NSCAssert(viewController, @"'%@' entry returned nil viewController. viewControllerFutureBlock should never return nil.", entryName);
-        return viewControllerFutureBlock();
+        return viewController;
     }];
 
     [self.userGlobalEntries addObject:entry];
