@@ -11,10 +11,6 @@
 #import "FLEXManager.h"
 #endif
 
-@interface AAPLCatalogTableTableViewController ()
-- (void)registerViewControllerBasedOption;
-@end
-
 @implementation AAPLCatalogTableTableViewController
 
 - (void)viewDidLoad
