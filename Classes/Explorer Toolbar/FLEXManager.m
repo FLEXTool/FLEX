@@ -12,7 +12,6 @@
 #import "FLEXGlobalsTableViewControllerEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
-#import <objc/runtime.h>
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
