@@ -289,7 +289,8 @@
 
 #pragma mark - FLEXFileBrowserFileOperationControllerDelegate
 
-- (void)fileOperationControllerDidDismiss:(id<FLEXFileBrowserFileOperationController>)controller {
+- (void)fileOperationControllerDidDismiss:(id<FLEXFileBrowserFileOperationController>)controller
+{
     [self reloadDisplayedPaths];
 }
 
@@ -297,7 +298,7 @@
 {
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
     controller.URL = [[NSURL alloc] initFileURLWithPath:fullPath];
-  
+
     [controller presentOptionsMenuFromRect:self.view.bounds inView:self.view animated:YES];
     self.documentController = controller;
 }
@@ -338,7 +339,8 @@
     [self.fileOperationController show];
 }
 
-- (void)reloadDisplayedPaths {
+- (void)reloadDisplayedPaths
+{
     if (self.searchDisplayController.isActive) {
         [self reloadSearchPaths];
         [self.searchDisplayController.searchResultsTableView reloadData];
@@ -348,11 +350,13 @@
     }
 }
 
-- (void)reloadChildPaths {
+- (void)reloadChildPaths
+{
     self.childPaths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
 }
 
-- (void)reloadSearchPaths {
+- (void)reloadSearchPaths
+{
     self.searchPaths = nil;
     self.searchPathsSize = nil;
 
