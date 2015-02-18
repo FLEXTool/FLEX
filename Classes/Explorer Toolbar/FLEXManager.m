@@ -117,4 +117,22 @@
     [self.userGlobalEntries addObject:entry];
 }
 
+- (void)registerGlobalEntryWithName:(NSString *)entryName viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock
+{
+    NSParameterAssert(entryName);
+    NSParameterAssert(viewControllerFutureBlock);
+    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
+
+    entryName = entryName.copy;
+    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
+        return entryName;
+    } viewControllerFuture:^UIViewController *{
+        UIViewController *viewController = viewControllerFutureBlock();
+        NSCAssert(viewController, @"'%@' entry returned nil viewController. viewControllerFutureBlock should never return nil.", entryName);
+        return viewControllerFutureBlock();
+    }];
+
+    [self.userGlobalEntries addObject:entry];
+}
+
 @end
