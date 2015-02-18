@@ -44,6 +44,7 @@
 		535682BF18F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */; };
 		53874F9918F36B1800510922 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53874F9718F36B1800510922 /* Localizable.strings */; };
 		650855EB1A9007D5006109A1 /* FLEXArgumentInputDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 650855EA1A9007D5006109A1 /* FLEXArgumentInputDateView.m */; };
+		65F8DC6C1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F8DC6B1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m */; };
 		943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */; };
 		944F7489197B458C009AB039 /* FLEXArrayExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7426197B458C009AB039 /* FLEXArrayExplorerViewController.m */; };
 		944F748A197B458C009AB039 /* FLEXClassExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7428197B458C009AB039 /* FLEXClassExplorerViewController.m */; };
@@ -168,6 +169,8 @@
 		53874F9818F36B1800510922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		650855E91A9007D5006109A1 /* FLEXArgumentInputDateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputDateView.h; sourceTree = "<group>"; };
 		650855EA1A9007D5006109A1 /* FLEXArgumentInputDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputDateView.m; sourceTree = "<group>"; };
+		65F8DC6A1A8F11020076F87B /* FLEXFileBrowserFileOperationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFileBrowserFileOperationController.h; sourceTree = "<group>"; };
+		65F8DC6B1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFileBrowserFileOperationController.m; sourceTree = "<group>"; };
 		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
 		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
 		944F7425197B458C009AB039 /* FLEXArrayExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArrayExplorerViewController.h; sourceTree = "<group>"; };
@@ -568,6 +571,8 @@
 				944F7475197B458C009AB039 /* FLEXClassesTableViewController.m */,
 				944F7476197B458C009AB039 /* FLEXFileBrowserTableViewController.h */,
 				944F7477197B458C009AB039 /* FLEXFileBrowserTableViewController.m */,
+				65F8DC6A1A8F11020076F87B /* FLEXFileBrowserFileOperationController.h */,
+				65F8DC6B1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m */,
 				0149BFE0198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.h */,
 				0149BFE1198FAFC700B90A1B /* FLEXFileBrowserSearchOperation.m */,
 				944F7478197B458C009AB039 /* FLEXGlobalsTableViewController.h */,
@@ -726,6 +731,7 @@
 				944F74B3197B458C009AB039 /* FLEXLiveObjectsTableViewController.m in Sources */,
 				944F748E197B458C009AB039 /* FLEXImageExplorerViewController.m in Sources */,
 				944F74B6197B458C009AB039 /* FLEXHierarchyTableViewController.m in Sources */,
+				65F8DC6C1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m in Sources */,
 				535682BC18F3670300BAAD62 /* AAPLTextViewController.m in Sources */,
 				944F74B4197B458C009AB039 /* FLEXWebViewController.m in Sources */,
 				944F74A5197B458C009AB039 /* FLEXFieldEditorViewController.m in Sources */,
