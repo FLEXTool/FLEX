@@ -64,7 +64,7 @@
 
 
     // return it in viewControllerFutureBlock
-    [[FLEXManager sharedManager] registerGlobalEntryWithName:@"Custom superpowers"
+    [[FLEXManager sharedManager] registerGlobalEntryWithName:@"🛃  Custom superpowers"
                                    viewControllerFutureBlock:^id{
                                        return viewController;
                                    }];
