@@ -104,13 +104,6 @@
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock
 {
-    [self registerGlobalEntryWithName:entryName objectFutureBlock:objectFutureBlock forceObjectExplorer:YES];
-}
-
-- (void)registerGlobalEntryWithName:(NSString *)entryName
-                  objectFutureBlock:(id (^)(void))objectFutureBlock
-                forceObjectExplorer:(BOOL)forceObjectExplorer
-{
     NSParameterAssert(entryName);
     NSParameterAssert(objectFutureBlock);
     NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
@@ -119,16 +112,25 @@
     FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
         return entryName;
     } viewControllerFuture:^UIViewController *{
-        id object = objectFutureBlock();
+        return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
+    }];
 
-        if([object_getClass(object) isSubclassOfClass:[UIViewController class]] && forceObjectExplorer == NO)
-        {
-            return object;
-        }
-        else
-        {
-            return [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
-        }
+    [self.userGlobalEntries addObject:entry];
+}
+
+- (void)registerGlobalEntryWithName:(NSString *)entryName viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock
+{
+    NSParameterAssert(entryName);
+    NSParameterAssert(viewControllerFutureBlock);
+    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
+
+    entryName = entryName.copy;
+    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
+        return entryName;
+    } viewControllerFuture:^UIViewController *{
+        UIViewController *viewController = viewControllerFutureBlock();
+        NSCAssert(viewController, @"'%@' entry returned nil viewController. viewControllerFutureBlock should never return nil.", entryName);
+        return viewControllerFutureBlock();
     }];
 
     [self.userGlobalEntries addObject:entry];

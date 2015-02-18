@@ -63,12 +63,11 @@
 
 
 
-    // return it in objectFutureBlock
+    // return it in viewControllerFutureBlock
     [[FLEXManager sharedManager] registerGlobalEntryWithName:@"Custom superpowers"
-                                           objectFutureBlock:^id{
-                                               return viewController;
-                                           }
-                                         forceObjectExplorer:NO];
+                                   viewControllerFutureBlock:^id{
+                                       return viewController;
+                                   }];
 }
 
 @end

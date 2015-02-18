@@ -23,18 +23,18 @@
 /// @param entryName The string to be displayed in the cell.
 /// @param objectFutureBlock When you tap on the row, information about the object returned by this block will be displayed.
 /// Passing a block that returns an object allows you to display information about an object whose actual pointer may change at runtime (e.g. +currentUser)
-/// @param forceObjectExplorer Specifies how to interpret object returned from objectFutureBlock. If YES it will create object/class inspector view controller
-/// for any supplied object, while NO will cause any passed UIViewController subclasses to be pushed into manager's navigation view controller.
 /// @note This method must be called from the main thread.
 /// The objectFutureBlock will be invoked from the main thread and may return nil.
 /// @note The passed block will be copied and retain for the duration of the application, you may want to use __weak references.
-- (void)registerGlobalEntryWithName:(NSString *)entryName
-                  objectFutureBlock:(id (^)(void))objectFutureBlock
-                forceObjectExplorer:(BOOL)forceObjectExplorer;
+- (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock;
 
-/**
- *  The same as -registerGlobalEntryWithName:objectFutureBlock:forceObjectExplorer: passing YES for forceObjectExplorer.
- */
-- (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id(^)(void))objectFutureBlock;
+/// Adds an entry at the bottom of the list of Global State items. Call this method before this view controller is displayed.
+/// @param entryName The string to be displayed in the cell.
+/// @param viewControllerFutureBlock When you tap on the row, view controller returned by this block will be pushed on the navigation controller stack.
+/// @note This method must be called from the main thread.
+/// The viewControllerFutureBlock will be invoked from the main thread and may not return nil.
+/// @note The passed block will be copied and retain for the duration of the application, you may want to use __weak references.
+- (void)registerGlobalEntryWithName:(NSString *)entryName
+          viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock;
 
 @end
