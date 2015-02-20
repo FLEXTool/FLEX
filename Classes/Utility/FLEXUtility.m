@@ -247,7 +247,18 @@
         NSArray *components = [keyValueString componentsSeparatedByString:@"="];
         if ([components count] == 2) {
             NSString *key = [[components firstObject] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            NSString *value = [[components lastObject] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            id value = [[components lastObject] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+            // Handle multiple entries under the same key as an array
+            id existingEntry = [queryDictionary objectForKey:key];
+            if (existingEntry) {
+                if ([existingEntry isKindOfClass:[NSArray class]]) {
+                    value = [existingEntry arrayByAddingObject:value];
+                } else {
+                    value = @[existingEntry, value];
+                }
+            }
+            
             [queryDictionary setObject:value forKey:key];
         }
     }
