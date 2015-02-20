@@ -48,7 +48,7 @@
 #import "AAPLAppDelegate.h"
 #import "FLEXManager.h"
 
-@interface AAPLAppDelegate () <NSURLConnectionDataDelegate, NSURLConnectionDelegate>
+@interface AAPLAppDelegate () <NSURLConnectionDataDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, strong) NSTimer *repeatingLogExampleTimer;
 @property (nonatomic, strong) NSMutableArray *connections;
@@ -79,6 +79,10 @@
 
 - (void)sendExampleNetworkRequests
 {
+    NSURLSession *mySession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+    NSURLSessionDataTask *dataTask = [mySession dataTaskWithURL:[NSURL URLWithString:@"https://flipboard.com/"]];
+    [dataTask resume];
+
     NSArray *requestURLStrings = @[ @"http://cdn.flipboard.com/serviceIcons/v2/social-icon-flipboard-96.png",
                                     @"http://lorempixel.com/400/400/",
                                     @"http://google.com",
@@ -93,7 +97,7 @@
                                     @"http://hipsterjesus.com/api?paras=1&type=hipster-centric&html=false",
                                     @"http://lorempixel.com/750/1334/" ];
 
-    NSTimeInterval delayTime = 0.0;
+    NSTimeInterval delayTime = 5.0;
     self.connections = [NSMutableArray array];
     for (NSString *urlString in requestURLStrings) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -102,6 +106,11 @@
         });
         delayTime += 5.0;
     }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
+{
+    completionHandler(NSURLSessionResponseAllow);
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
