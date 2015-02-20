@@ -16,7 +16,9 @@
 
 /// Backing model
 @property (nonatomic, copy) NSArray *networkTransactions;
+@property (nonatomic, assign) long long bytesReceived;
 @property (nonatomic, copy) NSArray *filteredNetworkTransactions;
+@property (nonatomic, assign) long long filteredBytesReceived;
 
 @property (nonatomic, strong) UISearchDisplayController *searchController;
 
@@ -67,6 +69,68 @@
     self.networkTransactions = [[FLEXNetworkRecorder defaultRecorder] networkTransactions];
 }
 
+- (void)setNetworkTransactions:(NSArray *)networkTransactions
+{
+    if (![_networkTransactions isEqual:networkTransactions]) {
+        _networkTransactions = networkTransactions;
+        [self updateBytesReceived];
+    }
+}
+
+- (void)updateBytesReceived
+{
+    long long bytesReceived = 0;
+    for (FLEXNetworkTransaction *transaction in self.networkTransactions) {
+        bytesReceived += transaction.receivedDataLength;
+    }
+    self.bytesReceived = bytesReceived;
+    [self updateFirstSectionHeaderInTableView:self.tableView];
+}
+
+- (void)setFilteredNetworkTransactions:(NSArray *)filteredNetworkTransactions
+{
+    if (![_filteredNetworkTransactions isEqual:filteredNetworkTransactions]) {
+        _filteredNetworkTransactions = filteredNetworkTransactions;
+        [self updateFilteredBytesReceived];
+    }
+}
+
+- (void)updateFilteredBytesReceived
+{
+    long long filteredBytesReceived = 0;
+    for (FLEXNetworkTransaction *transaction in self.filteredNetworkTransactions) {
+        filteredBytesReceived += transaction.receivedDataLength;
+    }
+    self.filteredBytesReceived = filteredBytesReceived;
+    [self updateFirstSectionHeaderInTableView:self.searchController.searchResultsTableView];
+}
+
+- (void)updateFirstSectionHeaderInTableView:(UITableView *)tableView
+{
+    UIView *view = [tableView headerViewForSection:0];
+    if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
+        UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
+        headerView.textLabel.text = [self headerTextForTableView:tableView];
+        [headerView setNeedsLayout];
+    }
+}
+
+- (NSString *)headerTextForTableView:(UITableView *)tableView
+{
+    long long bytesReceived = 0;
+    NSInteger totalRequests = 0;
+    if (tableView == self.tableView) {
+        bytesReceived = self.bytesReceived;
+        totalRequests = [self.networkTransactions count];
+    } else if (tableView == self.searchController.searchResultsTableView) {
+        bytesReceived = self.filteredBytesReceived;
+        totalRequests = [self.filteredNetworkTransactions count];
+    }
+    NSString *byteCountText = [NSByteCountFormatter stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary];
+    NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
+    return [NSString stringWithFormat:@"%ld %@ (%@ received)", (long)totalRequests, requestsText, byteCountText];
+}
+
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
 {
     NSInteger existingRowCount = [self.networkTransactions count];
@@ -96,16 +160,27 @@
 
 - (void)handleTransactionUpdatedNotification:(NSNotification *)notification
 {
+    [self updateBytesReceived];
+    [self updateFilteredBytesReceived];
+
     FLEXNetworkTransaction *transaction = [notification.userInfo objectForKey:kFLEXNetworkRecorderUserInfoTransactionKey];
-    UITableView *activeTableView = self.searchController.isActive ? self.searchController.searchResultsTableView : self.tableView;
-    for (FLEXNetworkTransactionTableViewCell *cell in [activeTableView visibleCells]) {
-        if ([cell.transaction isEqual:transaction]) {
-            NSIndexPath *indexPath = [activeTableView indexPathForCell:cell];
-            if (indexPath) {
-                [activeTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+    NSArray *tableViews = @[self.tableView];
+    if (self.searchController.searchResultsTableView) {
+        tableViews = [tableViews arrayByAddingObject:self.searchController.searchResultsTableView];
+    }
+
+    // Update both the main table view and search table view if needed.
+    for (UITableView *tableView in tableViews) {
+        for (FLEXNetworkTransactionTableViewCell *cell in [tableView visibleCells]) {
+            if ([cell.transaction isEqual:transaction]) {
+                NSIndexPath *indexPath = [tableView indexPathForCell:cell];
+                if (indexPath) {
+                    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+                }
+                break;
             }
-            break;
         }
+        [self updateFirstSectionHeaderInTableView:tableView];
     }
 }
 
@@ -125,6 +200,21 @@
         numberOfRows = [self.filteredNetworkTransactions count];
     }
     return numberOfRows;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [self headerTextForTableView:tableView];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
+        UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
+        headerView.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+        headerView.textLabel.textColor = [UIColor whiteColor];
+        headerView.contentView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:1.0];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
