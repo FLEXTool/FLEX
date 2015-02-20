@@ -46,7 +46,10 @@
 */
 
 #import "AAPLAppDelegate.h"
+
+#if DEBUG
 #import "FLEXManager.h"
+#endif
 
 @interface AAPLAppDelegate () <NSURLConnectionDataDelegate, NSURLSessionDataDelegate>
 
@@ -59,9 +62,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+#if DEBUG
     [[FLEXManager sharedManager] setNetworkDebuggingEnabled:YES];
     [self sendExampleNetworkRequests];
     self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
+#endif
     return YES;
 }
 
