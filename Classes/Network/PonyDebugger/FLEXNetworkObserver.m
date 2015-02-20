@@ -35,25 +35,25 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
 
 @interface FLEXNetworkObserver (NSURLConnectionHelpers)
 
-- (void)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response;
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
+- (void)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response delegate:(id <NSURLConnectionDelegate>)delegate;
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response delegate:(id <NSURLConnectionDelegate>)delegate;
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data delegate:(id <NSURLConnectionDelegate>)delegate;
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection delegate:(id <NSURLConnectionDelegate>)delegate;
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error delegate:(id <NSURLConnectionDelegate>)delegate;
 
 @end
 
 
 @interface FLEXNetworkObserver (NSURLSessionTaskHelpers)
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler;
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler;
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data;
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error;
-- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite;
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data;
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler delegate:(id <NSURLSessionDelegate>)delegate;
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler delegate:(id <NSURLSessionDelegate>)delegate;
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data delegate:(id <NSURLSessionDelegate>)delegate;
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error delegate:(id <NSURLSessionDelegate>)delegate;
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite delegate:(id <NSURLSessionDelegate>)delegate;
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data delegate:(id <NSURLSessionDelegate>)delegate;
 
 @end
 
@@ -270,7 +270,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef NSURLRequest *(^NSURLConnectionWillSendRequestBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response);
     
     NSURLConnectionWillSendRequestBlock undefinedBlock = ^NSURLRequest *(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
-        [[FLEXNetworkObserver sharedObserver] connection:connection willSendRequest:request redirectResponse:response];
+        [[FLEXNetworkObserver sharedObserver] connection:connection willSendRequest:request redirectResponse:response delegate:slf];
         return request;
     };
     
@@ -298,7 +298,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLConnectionDidReceiveResponseBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response);
     
     NSURLConnectionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
-        [[FLEXNetworkObserver sharedObserver] connection:connection didReceiveResponse:response];
+        [[FLEXNetworkObserver sharedObserver] connection:connection didReceiveResponse:response delegate:slf];
     };
     
     NSURLConnectionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
@@ -324,7 +324,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLConnectionDidReceiveDataBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSData *data);
     
     NSURLConnectionDidReceiveDataBlock undefinedBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSData *data) {
-        [[FLEXNetworkObserver sharedObserver] connection:connection didReceiveData:data];
+        [[FLEXNetworkObserver sharedObserver] connection:connection didReceiveData:data delegate:slf];
     };
     
     NSURLConnectionDidReceiveDataBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSData *data) {
@@ -350,7 +350,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLConnectionDidFinishLoadingBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection);
     
     NSURLConnectionDidFinishLoadingBlock undefinedBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection) {
-        [[FLEXNetworkObserver sharedObserver] connectionDidFinishLoading:connection];
+        [[FLEXNetworkObserver sharedObserver] connectionDidFinishLoading:connection delegate:slf];
     };
     
     NSURLConnectionDidFinishLoadingBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection) {
@@ -372,7 +372,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLConnectionDidFailWithErrorBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSError *error);
     
     NSURLConnectionDidFailWithErrorBlock undefinedBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSError *error) {
-        [[FLEXNetworkObserver sharedObserver] connection:connection didFailWithError:error];
+        [[FLEXNetworkObserver sharedObserver] connection:connection didFailWithError:error delegate:slf];
     };
     
     NSURLConnectionDidFailWithErrorBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSError *error) {
@@ -395,7 +395,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLSessionWillPerformHTTPRedirectionBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *));
     
     NSURLSessionWillPerformHTTPRedirectionBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        [[FLEXNetworkObserver sharedObserver] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler delegate:slf];
     };
 
     NSURLSessionWillPerformHTTPRedirectionBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
@@ -419,7 +419,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLSessionDidReceiveDataBlock)(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data);
     
     NSURLSessionDidReceiveDataBlock undefinedBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
-        [[FLEXNetworkObserver sharedObserver] URLSession:session dataTask:dataTask didReceiveData:data];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session dataTask:dataTask didReceiveData:data delegate:slf];
     };
     
     NSURLSessionDidReceiveDataBlock implementationBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
@@ -443,7 +443,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLSessionDidReceiveResponseBlock)(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition));
     
     NSURLSessionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
-        [[FLEXNetworkObserver sharedObserver] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler delegate:slf];
     };
     
     NSURLSessionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
@@ -466,7 +466,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error);
 
     NSURLSessionTaskDidCompleteWithErrorBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
-        [[FLEXNetworkObserver sharedObserver] URLSession:session task:task didCompleteWithError:error];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session task:task didCompleteWithError:error delegate:slf];
     };
 
     NSURLSessionTaskDidCompleteWithErrorBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSError *error) {
@@ -516,7 +516,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
 
     NSURLSessionDownloadTaskDidFinishDownloadingBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
         NSData *data = [NSData dataWithContentsOfFile:location.relativePath];
-        [[FLEXNetworkObserver sharedObserver] URLSession:session task:task didFinishDownloadingToURL:location data:data];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session task:task didFinishDownloadingToURL:location data:data delegate:slf];
     };
 
     NSURLSessionDownloadTaskDidFinishDownloadingBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, NSURL *location) {
@@ -538,7 +538,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLSessionDownloadTaskDidWriteDataBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite);
 
     NSURLSessionDownloadTaskDidWriteDataBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
-        [[FLEXNetworkObserver sharedObserver] URLSession:session downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session downloadTask:task didWriteData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite delegate:slf];
     };
 
     NSURLSessionDownloadTaskDidWriteDataBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionDownloadTask *task, int64_t bytesWritten, int64_t totalBytesWritten, int64_t totalBytesExpectedToWrite) {
@@ -689,7 +689,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
 
 @implementation FLEXNetworkObserver (NSURLConnectionHelpers)
 
-- (void)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response
+- (void)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
         [self setRequest:request forConnection:connection];
@@ -698,7 +698,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
         
@@ -729,7 +729,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data delegate:(id<NSURLConnectionDelegate>)delegate
 {
     // Just to be safe since we're doing this async
     data = [data copy];
@@ -744,7 +744,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
         NSString *requestID = [self requestIDForConnection:connection];
@@ -757,7 +757,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
         [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:[self requestIDForConnection:connection] error:error];
@@ -771,7 +771,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
 
 @implementation FLEXNetworkObserver (NSURLSessionTaskHelpers)
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
         [self setRequest:request forTask:task];
@@ -779,7 +779,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler delegate:(id<NSURLSessionDelegate>)delegate
 {
     if ([response respondsToSelector:@selector(copyWithZone:)]) {
 
@@ -807,7 +807,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data delegate:(id<NSURLSessionDelegate>)delegate
 {
     // Just to be safe since we're doing this async
     data = [data copy];
@@ -822,7 +822,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
         NSString *requestID = [self requestIDForTask:task];
@@ -868,7 +868,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
         NSString *requestID = [self requestIDForTask:downloadTask];
