@@ -132,16 +132,6 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     return NSSelectorFromString([NSString stringWithFormat:@"_flex_swizzle_%x_%@", arc4random(), NSStringFromSelector(selector)]);
 }
 
-+ (void)domainControllerSwizzleGuardForSwizzledObject:(NSObject *)object selector:(SEL)selector implementationBlock:(void (^)(void))implementationBlock
-{
-    void *key = (__bridge void *)[[NSString alloc] initWithFormat:@"FLEXSelectorGuardKeyForSelector:%@", NSStringFromSelector(selector)];
-    if (!objc_getAssociatedObject(object, key)) {
-        objc_setAssociatedObject(object, key, [NSNumber numberWithBool:YES], OBJC_ASSOCIATION_ASSIGN);
-        implementationBlock();
-        objc_setAssociatedObject(object, key, nil, OBJC_ASSOCIATION_ASSIGN);
-    }
-}
-
 + (BOOL)instanceRespondsButDoesNotImplementSelector:(SEL)selector class:(Class)cls
 {
     if ([cls instancesRespondToSelector:selector]) {
@@ -280,10 +270,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef NSURLRequest *(^NSURLConnectionWillSendRequestBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response);
     
     NSURLConnectionWillSendRequestBlock undefinedBlock = ^NSURLRequest *(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLRequest *request, NSURLResponse *response) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[FLEXNetworkObserver sharedObserver] connection:connection willSendRequest:request redirectResponse:response];
-        }];
-        
+        [[FLEXNetworkObserver sharedObserver] connection:connection willSendRequest:request redirectResponse:response];
         return request;
     };
     
@@ -311,9 +298,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLConnectionDidReceiveResponseBlock)(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response);
     
     NSURLConnectionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[FLEXNetworkObserver sharedObserver] connection:connection didReceiveResponse:response];
-        }];
+        [[FLEXNetworkObserver sharedObserver] connection:connection didReceiveResponse:response];
     };
     
     NSURLConnectionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDelegate> slf, NSURLConnection *connection, NSURLResponse *response) {
@@ -410,9 +395,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLSessionWillPerformHTTPRedirectionBlock)(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *));
     
     NSURLSessionWillPerformHTTPRedirectionBlock undefinedBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[FLEXNetworkObserver sharedObserver] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
-        }];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session task:task willPerformHTTPRedirection:response newRequest:newRequest completionHandler:completionHandler];
     };
 
     NSURLSessionWillPerformHTTPRedirectionBlock implementationBlock = ^(id <NSURLSessionTaskDelegate> slf, NSURLSession *session, NSURLSessionTask *task, NSHTTPURLResponse *response, NSURLRequest *newRequest, void(^completionHandler)(NSURLRequest *)) {
@@ -460,9 +443,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     typedef void (^NSURLSessionDidReceiveResponseBlock)(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition));
     
     NSURLSessionDidReceiveResponseBlock undefinedBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
-        [self domainControllerSwizzleGuardForSwizzledObject:slf selector:selector implementationBlock:^{
-            [[FLEXNetworkObserver sharedObserver] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
-        }];
+        [[FLEXNetworkObserver sharedObserver] URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
     };
     
     NSURLSessionDidReceiveResponseBlock implementationBlock = ^(id <NSURLConnectionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLResponse *response, void(^completionHandler)(NSURLSessionResponseDisposition disposition)) {
