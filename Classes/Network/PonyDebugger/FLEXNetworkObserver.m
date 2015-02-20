@@ -746,7 +746,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     [self performBlock:^{
         [self setRequest:request forConnection:connection];
         NSString *requestId = [self requestIDForConnection:connection];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestId request:request redirectResponse:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestId request:request redirectResponse:response requestMechanism:[NSString stringWithFormat:@"NSURLConnection (%@)", [delegate class]]];
     }];
 }
 
@@ -762,7 +762,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
             if (!request && [connection respondsToSelector:@selector(currentRequest)]) {
                 request = connection.currentRequest;
                 [self setRequest:request forConnection:connection];
-                [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForConnection:connection] request:request redirectResponse:nil];
+                [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForConnection:connection] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]]];
             }
             
             NSMutableData *dataAccumulator = nil;
@@ -827,7 +827,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
 {
     [self performBlock:^{
         [self setRequest:request forTask:task];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:task] request:request redirectResponse:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:task] request:request redirectResponse:response requestMechanism:[NSString stringWithFormat:@"NSURLSessionTask (delegate: %@)", [delegate class]]];
     }];
 }
 
@@ -842,7 +842,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
             request = dataTask.currentRequest;
             [self setRequest:request forTask:dataTask];
 
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]]];
         }
 
         NSMutableData *dataAccumulator = nil;
@@ -891,7 +891,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
     }];
 }
 
-- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
         // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
@@ -903,7 +903,7 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
             [self setRequest:request forTask:downloadTask];
             NSString *requestID = [self requestIDForTask:downloadTask];
 
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]]];
 
             NSMutableData *dataAccumulator = nil;
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger) totalBytesExpectedToWrite];

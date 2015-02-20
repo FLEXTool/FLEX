@@ -86,7 +86,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 #pragma mark - Network Events
 
-- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
+- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse requestMechanism:(NSString *)mechanism
 {
     if (redirectResponse) {
         [self recordResponseReceivedWithRequestId:requestId response:redirectResponse];
@@ -100,6 +100,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         transaction.request = request;
         transaction.startTime = [NSDate date];
         transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
+        transaction.requestMechanism = mechanism;
 
         [self.orderedTransactions insertObject:transaction atIndex:0];
         [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];

@@ -253,6 +253,11 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         [rows addObject:statusCodeRow];
     }
 
+    FLEXNetworkDetailRow *mechanismRow = [[FLEXNetworkDetailRow alloc] init];
+    mechanismRow.title = @"Mechanism";
+    mechanismRow.detailText = transaction.requestMechanism;
+    [rows addObject:mechanismRow];
+
     FLEXNetworkDetailRow *mimeTypeRow = [[FLEXNetworkDetailRow alloc] init];
     mimeTypeRow.title = @"MIME Type";
     mimeTypeRow.detailText = transaction.response.MIMEType;
