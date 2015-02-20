@@ -355,16 +355,20 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     UIViewController *detailViewController = nil;
     if ([mimeType isEqual:@"application/json"]) {
         NSString *prettyJSON = [FLEXUtility prettyJSONStringFromData:data];
-        detailViewController = [[FLEXWebViewController alloc] initWithText:prettyJSON];
+        if ([prettyJSON length] > 0) {
+            detailViewController = [[FLEXWebViewController alloc] initWithText:prettyJSON];
+        }
     } else if ([mimeType hasPrefix:@"image/"]) {
         UIImage *image = [UIImage imageWithData:data];
         detailViewController = [[FLEXImagePreviewViewController alloc] initWithImage:image];
-    } else if ([mimeType hasPrefix:@"text/"]) {
-        NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        detailViewController = [[FLEXWebViewController alloc] initWithText:text];
     } else if ([mimeType isEqual:@"application/x-plist"]) {
         id propertyList = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL];
         detailViewController = [[FLEXWebViewController alloc] initWithText:[propertyList description]];
+    } else {
+        NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if ([text length] > 0) {
+            detailViewController = [[FLEXWebViewController alloc] initWithText:text];
+        }
     }
     detailViewController.title = @"Response";
     return detailViewController;
