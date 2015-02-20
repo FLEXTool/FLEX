@@ -274,7 +274,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        cell.textLabel.font = [FLEXUtility defaultFontOfSize:14.0];
     }
 
     cell.textLabel.text = [self titleForRowAtIndexPath:indexPath];
