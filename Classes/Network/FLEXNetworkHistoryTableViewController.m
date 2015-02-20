@@ -11,6 +11,7 @@
 #import "FLEXNetworkTransactionTableViewCell.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkTransactionDetailTableViewController.h"
+#import "FLEXNetworkObserver.h"
 
 @interface FLEXNetworkHistoryTableViewController () <UISearchDisplayDelegate>
 
@@ -117,18 +118,24 @@
 
 - (NSString *)headerTextForTableView:(UITableView *)tableView
 {
-    long long bytesReceived = 0;
-    NSInteger totalRequests = 0;
-    if (tableView == self.tableView) {
-        bytesReceived = self.bytesReceived;
-        totalRequests = [self.networkTransactions count];
-    } else if (tableView == self.searchController.searchResultsTableView) {
-        bytesReceived = self.filteredBytesReceived;
-        totalRequests = [self.filteredNetworkTransactions count];
+    NSString *headerText = nil;
+    if ([FLEXNetworkObserver isEnabled]) {
+        long long bytesReceived = 0;
+        NSInteger totalRequests = 0;
+        if (tableView == self.tableView) {
+            bytesReceived = self.bytesReceived;
+            totalRequests = [self.networkTransactions count];
+        } else if (tableView == self.searchController.searchResultsTableView) {
+            bytesReceived = self.filteredBytesReceived;
+            totalRequests = [self.filteredNetworkTransactions count];
+        }
+        NSString *byteCountText = [NSByteCountFormatter stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary];
+        NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
+        headerText = [NSString stringWithFormat:@"%ld %@ (%@ received)", (long)totalRequests, requestsText, byteCountText];
+    } else {
+        headerText = @"⚠️  Sniffing Disabled (Enable in Settings)";
     }
-    NSString *byteCountText = [NSByteCountFormatter stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary];
-    NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
-    return [NSString stringWithFormat:@"%ld %@ (%@ received)", (long)totalRequests, requestsText, byteCountText];
+    return headerText;
 }
 
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
