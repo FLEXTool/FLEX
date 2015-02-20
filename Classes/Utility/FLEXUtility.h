@@ -35,5 +35,6 @@
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
 + (NSDictionary *)dictionaryFromQuery:(NSString *)query;
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
++ (NSData *)deflatedDataFromCompressedData:(NSData *)compressedData;
 
 @end

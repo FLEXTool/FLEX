@@ -9,6 +9,7 @@
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
 #import <ImageIO/ImageIO.h>
+#import <zlib.h>
 
 @implementation FLEXUtility
 
@@ -268,6 +269,41 @@
     }
 
     return prettyString;
+}
+
++ (NSData *)deflatedDataFromCompressedData:(NSData *)compressedData
+{
+    NSData *deflatedData = nil;
+    NSUInteger compressedDataLength = [compressedData length];
+    if (compressedDataLength > 0) {
+        z_stream stream;
+        stream.zalloc = Z_NULL;
+        stream.zfree = Z_NULL;
+        stream.avail_in = (uInt)compressedDataLength;
+        stream.next_in = (void *)[compressedData bytes];
+        stream.total_out = 0;
+        stream.avail_out = 0;
+
+        NSMutableData *mutableData = [NSMutableData dataWithLength:compressedDataLength * 1.5];
+        if (inflateInit2(&stream, 15 + 32) == Z_OK) {
+            int status = Z_OK;
+            while (status == Z_OK) {
+                if (stream.total_out >= [mutableData length]) {
+                    mutableData.length += compressedDataLength / 2;
+                }
+                stream.next_out = (uint8_t *)[mutableData mutableBytes] + stream.total_out;
+                stream.avail_out = (uInt)([mutableData length] - stream.total_out);
+                status = inflate(&stream, Z_SYNC_FLUSH);
+            }
+            if (inflateEnd(&stream) == Z_OK) {
+                if (status == Z_STREAM_END) {
+                    mutableData.length = stream.total_out;
+                    deflatedData = [mutableData copy];
+                }
+            }
+        }
+    }
+    return deflatedData;
 }
 
 @end

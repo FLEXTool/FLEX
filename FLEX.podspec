@@ -31,5 +31,6 @@ Pod::Spec.new do |spec|
   spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,m}"
   spec.frameworks       = "CoreGraphics"
+  spec.libraries        = "z"
   spec.requires_arc     = true
 end
