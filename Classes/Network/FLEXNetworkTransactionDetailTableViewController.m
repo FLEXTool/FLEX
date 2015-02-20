@@ -316,7 +316,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (FLEXNetworkDetailSection *)queryParametersSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    NSDictionary *queryDictionary = [FLEXUtility queryDictionaryFromURL:transaction.request.URL];
+    NSDictionary *queryDictionary = [FLEXUtility dictionaryFromQuery:transaction.request.URL.query];
     FLEXNetworkDetailSection *querySection = [[FLEXNetworkDetailSection alloc] init];
     querySection.title = @"Query Parameters";
     querySection.rows = [self networkDetailRowsFromDictionary:queryDictionary];

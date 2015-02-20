@@ -235,12 +235,12 @@
     return httpResponseString;
 }
 
-+ (NSDictionary *)queryDictionaryFromURL:(NSURL *)url
++ (NSDictionary *)dictionaryFromQuery:(NSString *)query
 {
     NSMutableDictionary *queryDictionary = [NSMutableDictionary dictionary];
 
     // [a=1, b=2, c=3]
-    NSArray *queryComponents = [url.query componentsSeparatedByString:@"&"];
+    NSArray *queryComponents = [query componentsSeparatedByString:@"&"];
     for (NSString *keyValueString in queryComponents) {
         // [a, 1]
         NSArray *components = [keyValueString componentsSeparatedByString:@"="];
