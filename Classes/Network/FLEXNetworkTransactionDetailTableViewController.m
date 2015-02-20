@@ -97,6 +97,10 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     if ([queryParametersSection.rows count] > 0) {
         [sections addObject:queryParametersSection];
     }
+    FLEXNetworkDetailSection *postBodySection = [[self class] postBodySectionForTransaction:self.transaction];
+    if ([postBodySection.rows count] > 0) {
+        [sections addObject:postBodySection];
+    }
     FLEXNetworkDetailSection *responseHeadersSection = [[self class] responseHeadersSectionForTransaction:self.transaction];
     if ([responseHeadersSection.rows count] > 0) {
         [sections addObject:responseHeadersSection];
@@ -222,6 +226,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
             NSData *strongResponseData = weakResponseData;
             if (strongResponseData) {
                 responseBodyDetailViewController = [self detailViewControllerForMIMEType:transaction.response.MIMEType data:strongResponseData];
+                responseBodyDetailViewController.title = @"Response";
             } else {
                 // FIXME (RKO): Show an alert explaining that the data was purged?
             }
@@ -244,6 +249,24 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     requestMethodRow.title = @"Request Method";
     requestMethodRow.detailText = transaction.request.HTTPMethod;
     [rows addObject:requestMethodRow];
+
+    if ([transaction.request.HTTPBody length] > 0) {
+        FLEXNetworkDetailRow *postBodySizeRow = [[FLEXNetworkDetailRow alloc] init];
+        postBodySizeRow.title = @"POST Body Size";
+        postBodySizeRow.detailText = [NSByteCountFormatter stringFromByteCount:[transaction.request.HTTPBody length] countStyle:NSByteCountFormatterCountStyleBinary];
+        [rows addObject:postBodySizeRow];
+
+        FLEXNetworkDetailRow *postBodyRow = [[FLEXNetworkDetailRow alloc] init];
+        postBodyRow.title = @"POST Body";
+        postBodyRow.detailText = @"tap to view";
+        postBodyRow.selectionFuture = ^{
+            NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
+            UIViewController *detailViewController = [self detailViewControllerForMIMEType:contentType data:[self postBodyDataForTransaction:transaction]];
+            detailViewController.title = @"POST Body";
+            return detailViewController;
+        };
+        [rows addObject:postBodyRow];
+    }
 
     NSString *statusCodeString = [FLEXUtility statusCodeStringFromURLResponse:transaction.response];
     if ([statusCodeString length] > 0) {
@@ -314,6 +337,20 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     return requestHeadersSection;
 }
 
++ (FLEXNetworkDetailSection *)postBodySectionForTransaction:(FLEXNetworkTransaction *)transaction
+{
+    FLEXNetworkDetailSection *postBodySection = [[FLEXNetworkDetailSection alloc] init];
+    postBodySection.title = @"POST Parameters";
+    if ([transaction.request.HTTPBody length] > 0) {
+        NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
+        if ([contentType hasPrefix:@"application/x-www-form-urlencoded"]) {
+            NSString *bodyString = [[NSString alloc] initWithData:[self postBodyDataForTransaction:transaction] encoding:NSUTF8StringEncoding];
+            postBodySection.rows = [self networkDetailRowsFromDictionary:[FLEXUtility dictionaryFromQuery:bodyString]];
+        }
+    }
+    return postBodySection;
+}
+
 + (FLEXNetworkDetailSection *)queryParametersSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
     NSDictionary *queryDictionary = [FLEXUtility dictionaryFromQuery:transaction.request.URL.query];
@@ -343,7 +380,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         NSString *value = [dictionary objectForKey:key];
         FLEXNetworkDetailRow *row = [[FLEXNetworkDetailRow alloc] init];
         row.title = key;
-        row.detailText = value;
+        row.detailText = [value description];
         [rows addObject:row];
     }
     return [rows copy];
@@ -370,8 +407,19 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
             detailViewController = [[FLEXWebViewController alloc] initWithText:text];
         }
     }
-    detailViewController.title = @"Response";
     return detailViewController;
+}
+
++ (NSData *)postBodyDataForTransaction:(FLEXNetworkTransaction *)transaction
+{
+    NSData *bodyData = transaction.request.HTTPBody;
+    if ([bodyData length] > 0) {
+        NSString *contentEncoding = [transaction.request valueForHTTPHeaderField:@"Content-Encoding"];
+        if ([contentEncoding rangeOfString:@"deflate" options:NSCaseInsensitiveSearch].length > 0) {
+            bodyData = [FLEXUtility deflatedDataFromCompressedData:bodyData];
+        }
+    }
+    return bodyData;
 }
 
 @end
