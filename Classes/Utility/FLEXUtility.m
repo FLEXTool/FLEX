@@ -282,7 +282,7 @@
     return prettyString;
 }
 
-+ (NSData *)deflatedDataFromCompressedData:(NSData *)compressedData
++ (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData
 {
     NSData *deflatedData = nil;
     NSUInteger compressedDataLength = [compressedData length];
