@@ -415,7 +415,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     NSData *bodyData = transaction.request.HTTPBody;
     if ([bodyData length] > 0) {
         NSString *contentEncoding = [transaction.request valueForHTTPHeaderField:@"Content-Encoding"];
-        if ([contentEncoding rangeOfString:@"deflate" options:NSCaseInsensitiveSearch].length > 0) {
+        if ([contentEncoding rangeOfString:@"deflate" options:NSCaseInsensitiveSearch].length > 0 || [contentEncoding rangeOfString:@"gzip" options:NSCaseInsensitiveSearch].length > 0) {
             bodyData = [FLEXUtility inflatedDataFromCompressedData:bodyData];
         }
     }
