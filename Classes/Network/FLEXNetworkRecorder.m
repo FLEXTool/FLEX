@@ -147,7 +147,15 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
 
-        if ([responseBody length] > 0) {
+        BOOL shouldCache = [responseBody length] > 0;
+        if (!self.shouldCacheMediaResponses) {
+            NSArray *ignoredMIMETypePrefixes = @[ @"audio", @"image", @"video" ];
+            for (NSString *ignoredPrefix in ignoredMIMETypePrefixes) {
+                shouldCache = shouldCache && ![transaction.response.MIMEType hasPrefix:ignoredPrefix];
+            }
+        }
+        
+        if (shouldCache) {
             [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
         }
 
