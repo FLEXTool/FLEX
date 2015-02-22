@@ -98,6 +98,9 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 {
     NSURL *url = self.transaction.request.URL;
     NSString *name = [url lastPathComponent];
+    if ([name length] == 0) {
+        name = @"/";
+    }
     NSString *query = [url query];
     if (query) {
         name = [name stringByAppendingFormat:@"?%@", query];
