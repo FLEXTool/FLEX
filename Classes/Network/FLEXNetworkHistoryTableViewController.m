@@ -12,6 +12,7 @@
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkTransactionDetailTableViewController.h"
 #import "FLEXNetworkObserver.h"
+#import "FLEXNetworkSettingsTableViewController.h"
 
 @interface FLEXNetworkHistoryTableViewController () <UISearchDisplayDelegate>
 
@@ -36,6 +37,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionsClearedNotification:) name:kFLEXNetworkRecorderTransactionsClearedNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetworkObserverEnabledStateChangedNotification:) name:kFLEXNetworkObserverEnabledStateChangedNotification object:nil];
         self.title = @"📡  Network";
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(settingsButtonTapped:)];
     }
     return self;
 }
@@ -65,6 +67,20 @@
     self.tableView.tableHeaderView = self.searchController.searchBar;
 
     [self updateTransactions];
+}
+
+- (void)settingsButtonTapped:(id)sender
+{
+    FLEXNetworkSettingsTableViewController *settingsViewController = [[FLEXNetworkSettingsTableViewController alloc] init];
+    settingsViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(settingsViewControllerDoneTapped:)];
+    settingsViewController.title = @"Network Debugging Settings";
+    UINavigationController *wrapperNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+    [self presentViewController:wrapperNavigationController animated:YES completion:nil];
+}
+
+- (void)settingsViewControllerDoneTapped:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)updateTransactions
