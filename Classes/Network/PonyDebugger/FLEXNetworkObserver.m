@@ -832,26 +832,28 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler delegate:(id<NSURLSessionDelegate>)delegate
 {
-    // willSendRequest does not exist in NSURLSession. Here's a workaround.
-    NSURLRequest *request = [self requestForTask:dataTask];
-    if (!request) {
-        request = dataTask.currentRequest;
-        [self setRequest:request forTask:dataTask];
+    [self performBlock:^{
+        // willSendRequest does not exist in NSURLSession. Here's a workaround.
+        NSURLRequest *request = [self requestForTask:dataTask];
+        if (!request) {
+            request = dataTask.currentRequest;
+            [self setRequest:request forTask:dataTask];
 
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]]];
-    }
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]]];
+        }
 
-    NSMutableData *dataAccumulator = nil;
-    if (response.expectedContentLength < 0) {
-        dataAccumulator = [[NSMutableData alloc] init];
-    } else {
-        dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
-    }
+        NSMutableData *dataAccumulator = nil;
+        if (response.expectedContentLength < 0) {
+            dataAccumulator = [[NSMutableData alloc] init];
+        } else {
+            dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
+        }
 
-    [self setAccumulatedData:dataAccumulator forTask:dataTask];
+        [self setAccumulatedData:dataAccumulator forTask:dataTask];
 
-    NSString *requestID = [self requestIDForTask:dataTask];
-    [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
+        NSString *requestID = [self requestIDForTask:dataTask];
+        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
+    }];
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data delegate:(id<NSURLSessionDelegate>)delegate
