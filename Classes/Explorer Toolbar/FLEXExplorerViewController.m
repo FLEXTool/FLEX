@@ -851,11 +851,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // If this app doesn't use view controller based status bar management and we're on iOS 7+,
     // make sure the status bar style is UIStatusBarStyleDefault. We don't actully have to check
     // for view controller based management because the global methods no-op if that is turned on.
-    // Only for iOS 7+
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) {
-        self.previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    }
+    self.previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
     // Show the view controller.
     [self presentViewController:viewController animated:animated completion:completion];
@@ -872,10 +869,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [[self statusWindow] setWindowLevel:UIWindowLevelStatusBar];
     
     // Restore the stauts bar style if the app is using global status bar management.
-    // Only for iOS 7+
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) {
-        [[UIApplication sharedApplication] setStatusBarStyle:self.previousStatusBarStyle];
-    }
+    [[UIApplication sharedApplication] setStatusBarStyle:self.previousStatusBarStyle];
     
     [self dismissViewControllerAnimated:animated completion:completion];
 }

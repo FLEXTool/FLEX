@@ -163,12 +163,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     if (!CGRectIsEmpty(view.bounds)) {
         CGSize viewSize = view.bounds.size;
         UIGraphicsBeginImageContextWithOptions(viewSize, NO, 0.0);
-        if ([view respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)]) {
-            [view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
-        } else {
-            CGContextRef imageContext = UIGraphicsGetCurrentContext();
-            [view.layer renderInContext:imageContext];
-        }
+        [view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
         UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         imagePreviewViewController = [[FLEXImagePreviewViewController alloc] initWithImage:previewImage];
