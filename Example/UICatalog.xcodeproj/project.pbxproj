@@ -105,6 +105,7 @@
 		94C681F31A3E941800E1936D /* FLEXLayerExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94C681F21A3E941800E1936D /* FLEXLayerExplorerViewController.m */; };
 		94CB48391A8EC6000054A905 /* FLEXMultilineTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CB48381A8EC6000054A905 /* FLEXMultilineTableViewCell.m */; };
 		94CB4D431A97183E0054A905 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 94CB4D421A97183E0054A905 /* libz.dylib */; };
+		94CB4D4F1A9829F80054A905 /* FLEXNetworkSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94CB4D4E1A9829F80054A905 /* FLEXNetworkSettingsTableViewController.m */; };
 		D03647D919847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = D03647D819847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m */; };
 /* End PBXBuildFile section */
 
@@ -297,6 +298,8 @@
 		94CB48371A8EC6000054A905 /* FLEXMultilineTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXMultilineTableViewCell.h; sourceTree = "<group>"; };
 		94CB48381A8EC6000054A905 /* FLEXMultilineTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMultilineTableViewCell.m; sourceTree = "<group>"; };
 		94CB4D421A97183E0054A905 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		94CB4D4D1A9829F80054A905 /* FLEXNetworkSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkSettingsTableViewController.h; sourceTree = "<group>"; };
+		94CB4D4E1A9829F80054A905 /* FLEXNetworkSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkSettingsTableViewController.m; sourceTree = "<group>"; };
 		D03647D51984720F007D2A1B /* FLEXManager+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEXManager+Private.h"; sourceTree = "<group>"; };
 		D03647D719847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXGlobalsTableViewControllerEntry.h; sourceTree = "<group>"; };
 		D03647D819847248007D2A1B /* FLEXGlobalsTableViewControllerEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXGlobalsTableViewControllerEntry.m; sourceTree = "<group>"; };
@@ -449,6 +452,8 @@
 			children = (
 				9421B87F1A8BBCB200BA3E46 /* FLEXNetworkHistoryTableViewController.h */,
 				9421B8801A8BBCB200BA3E46 /* FLEXNetworkHistoryTableViewController.m */,
+				94CB4D4D1A9829F80054A905 /* FLEXNetworkSettingsTableViewController.h */,
+				94CB4D4E1A9829F80054A905 /* FLEXNetworkSettingsTableViewController.m */,
 				9421B8811A8BBCB200BA3E46 /* FLEXNetworkRecorder.h */,
 				9421B8821A8BBCB200BA3E46 /* FLEXNetworkRecorder.m */,
 				9421B8831A8BBCB200BA3E46 /* FLEXNetworkTransaction.h */,
@@ -786,6 +791,7 @@
 				944F74B0197B458C009AB039 /* FLEXGlobalsTableViewController.m in Sources */,
 				944F748B197B458C009AB039 /* FLEXDefaultsExplorerViewController.m in Sources */,
 				944F749E197B458C009AB039 /* FLEXArgumentInputStructView.m in Sources */,
+				94CB4D4F1A9829F80054A905 /* FLEXNetworkSettingsTableViewController.m in Sources */,
 				944F74B3197B458C009AB039 /* FLEXLiveObjectsTableViewController.m in Sources */,
 				944F748E197B458C009AB039 /* FLEXImageExplorerViewController.m in Sources */,
 				944F74B6197B458C009AB039 /* FLEXHierarchyTableViewController.m in Sources */,
