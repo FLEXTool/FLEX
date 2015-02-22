@@ -43,7 +43,9 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         }
         self.orderedTransactions = [NSMutableArray array];
         self.networkTransactionsForRequestIdentifiers = [NSMutableDictionary dictionary];
-        self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_CONCURRENT);
+
+        // Serial queue used because we use mutable objects that are not thread safe
+        self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_SERIAL);
     }
     return self;
 }
@@ -87,7 +89,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)clearRecordedActivity
 {
-    dispatch_barrier_async(self.queue, ^{
+    dispatch_async(self.queue, ^{
         [self.responseCache removeAllObjects];
         [self.orderedTransactions removeAllObjects];
         [self.networkTransactionsForRequestIdentifiers removeAllObjects];
@@ -102,33 +104,23 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse requestMechanism:(NSString *)mechanism
 {
     if (redirectResponse) {
-        [self recordResponseReceivedWithRequestId:requestId response:redirectResponse];
-        [self recordLoadingFinishedWithRequestId:requestId responseBody:nil];
+        [self recordResponseReceivedWithRequestId:requestId request:request response:redirectResponse];
+        [self recordLoadingFinishedWithRequestId:requestId request:request responseBody:nil];
     }
 
-    // Use a barrier here because we mutate collections that are not thread safe.
-    dispatch_barrier_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
-        transaction.requestId = requestId;
-        transaction.request = request;
-        transaction.startTime = [NSDate date];
+    dispatch_async(self.queue, ^{
+        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
         transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
         transaction.requestMechanism = mechanism;
-
-        [self.orderedTransactions insertObject:transaction atIndex:0];
-        [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
 
         [self postNewTransactionNotificationWithTransaction:transaction];
     });
 }
 
-- (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response
+- (void)recordResponseReceivedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request response:(NSURLResponse *)response
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-        if (!transaction) {
-            return;
-        }
+        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
         transaction.response = response;
         transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
         transaction.latency = -[transaction.startTime timeIntervalSinceNow];
@@ -137,26 +129,20 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordDataReceivedWithRequestId:(NSString *)requestId dataLength:(int64_t)dataLength
+- (void)recordDataReceivedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request dataLength:(int64_t)dataLength
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-        if (!transaction) {
-            return;
-        }
+        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
         transaction.receivedDataLength += dataLength;
 
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
 
-- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId responseBody:(NSData *)responseBody
+- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request responseBody:(NSData *)responseBody
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-        if (!transaction) {
-            return;
-        }
+        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
 
@@ -192,19 +178,35 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error
+- (void)recordLoadingFailedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request error:(NSError *)error
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-        if (!transaction) {
-            return;
-        }
+        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
         transaction.duration = [transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
 
         [self postUpdateNotificationForTransaction:transaction];
     });
+}
+
+/// Should only be called on the serial queue used in this class
+- (FLEXNetworkTransaction *)addOrRetrieveTransactionForRequestId:(NSString *)requestId request:(NSURLRequest *)request
+{
+    FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+    if (!transaction) {
+        transaction = [[FLEXNetworkTransaction alloc] init];
+        transaction.requestId = requestId;
+        transaction.request = request;
+        transaction.startTime = [NSDate date];
+
+        [self.orderedTransactions insertObject:transaction atIndex:0];
+        [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
+    }
+    if (request) {
+        transaction.request = request;
+    }
+    return transaction;
 }
 
 - (void)postNewTransactionNotificationWithTransaction:(FLEXNetworkTransaction *)transaction

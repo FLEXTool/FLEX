@@ -46,15 +46,15 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 - (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse requestMechanism:(NSString *)mechanism;
 
 /// Call when HTTP response is available.
-- (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response;
+- (void)recordResponseReceivedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request response:(NSURLResponse *)response;
 
 /// Call when data chunk is received over the network.
-- (void)recordDataReceivedWithRequestId:(NSString *)requestId dataLength:(int64_t)dataLength;
+- (void)recordDataReceivedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request dataLength:(int64_t)dataLength;
 
 /// Call when HTTP request has finished loading.
-- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId responseBody:(NSData *)responseBody;
+- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request responseBody:(NSData *)responseBody;
 
 /// Call when HTTP request has failed to load.
-- (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error;
+- (void)recordLoadingFailedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request error:(NSError *)error;
 
 @end

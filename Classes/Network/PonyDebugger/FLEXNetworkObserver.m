@@ -789,7 +789,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
             [self setAccumulatedData:dataAccumulator forConnection:connection];
             
             NSString *requestID = [self requestIDForConnection:connection];
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
+            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:connection.currentRequest response:response];
         }
         
     }];
@@ -806,7 +806,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
         
         NSString *requestID = [self requestIDForConnection:connection];
         
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:connection.currentRequest dataLength:data.length];
     }];
 }
 
@@ -817,7 +817,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
         NSData *accumulatedData = [self accumulatedDataForConnection:connection];
         
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:accumulatedData];
+        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID request:connection.currentRequest responseBody:accumulatedData];
         
         [self connectionFinished:connection];
     }];
@@ -826,7 +826,8 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:[self requestIDForConnection:connection] error:error];
+        NSString *requestID = [self requestIDForConnection:connection];
+        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID request:connection.currentRequest error:error];
         
         [self connectionFinished:connection];
     }];
@@ -869,7 +870,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
         [self setAccumulatedData:dataAccumulator forTask:dataTask];
 
         NSString *requestID = [self requestIDForTask:dataTask];
-        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
     }
 }
 
@@ -884,7 +885,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
         NSString *requestID = [self requestIDForTask:dataTask];
 
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:dataTask.currentRequest dataLength:data.length];
     }];
 }
 
@@ -896,9 +897,9 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
         NSData *accumulatedData = [self accumulatedDataForTask:task];
 
         if (error) {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:[self requestIDForTask:task] error:error];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID request:task.currentRequest error:error];
         } else {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:accumulatedData];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID request:task.currentRequest responseBody:accumulatedData];
         }
 
         [self taskFinished:task];
@@ -923,12 +924,12 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger) totalBytesExpectedToWrite];
             [self setAccumulatedData:dataAccumulator forTask:downloadTask];
 
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:downloadTask.response];
+            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:request response:downloadTask.response];
         }
 
         NSString *requestID = [self requestIDForTask:downloadTask];
 
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:bytesWritten];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:downloadTask.currentRequest dataLength:bytesWritten];
     }];
 }
 
@@ -936,7 +937,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 {
     [self performBlock:^{
         NSString *requestID = [self requestIDForTask:downloadTask];
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:data];
+        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID request:downloadTask.currentRequest responseBody:data];
 
         [self taskFinished:downloadTask];
     }];
