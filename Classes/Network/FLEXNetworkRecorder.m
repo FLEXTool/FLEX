@@ -172,6 +172,20 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
             transaction.responseThumbnail = [FLEXResources textPlainIcon];
         } else if ([mimeType isEqual:@"text/html"]) {
             transaction.responseThumbnail = [FLEXResources htmlIcon];
+        } else if ([mimeType isEqual:@"application/x-plist"]) {
+            transaction.responseThumbnail = [FLEXResources plistIcon];
+        } else if ([mimeType isEqual:@"application/octet-stream"] || [mimeType isEqual:@"application/binary"]) {
+            transaction.responseThumbnail = [FLEXResources binaryIcon];
+        } else if ([mimeType rangeOfString:@"javascript"].length > 0) {
+            transaction.responseThumbnail = [FLEXResources jsIcon];
+        } else if ([mimeType rangeOfString:@"xml"].length > 0) {
+            transaction.responseThumbnail = [FLEXResources xmlIcon];
+        } else if ([mimeType hasPrefix:@"audio"]) {
+            transaction.responseThumbnail = [FLEXResources audioIcon];
+        } else if ([mimeType hasPrefix:@"video"]) {
+            transaction.responseThumbnail = [FLEXResources videoIcon];
+        } else if ([mimeType hasPrefix:@"text"]) {
+            transaction.responseThumbnail = [FLEXResources textIcon];
         }
         
         [self postUpdateNotificationForTransaction:transaction];

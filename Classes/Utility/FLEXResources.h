@@ -22,5 +22,12 @@
 + (UIImage *)jsonIcon;
 + (UIImage *)textPlainIcon;
 + (UIImage *)htmlIcon;
++ (UIImage *)audioIcon;
++ (UIImage *)jsIcon;
++ (UIImage *)plistIcon;
++ (UIImage *)textIcon;
++ (UIImage *)videoIcon;
++ (UIImage *)xmlIcon;
++ (UIImage *)binaryIcon;
 
 @end
