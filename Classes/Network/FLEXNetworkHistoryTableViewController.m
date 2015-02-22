@@ -134,7 +134,7 @@
         NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
         headerText = [NSString stringWithFormat:@"%ld %@ (%@ received)", (long)totalRequests, requestsText, byteCountText];
     } else {
-        headerText = @"⚠️  Sniffing Disabled (Enable in Settings)";
+        headerText = @"⚠️  Debugging Disabled (Enable in Settings)";
     }
     return headerText;
 }
