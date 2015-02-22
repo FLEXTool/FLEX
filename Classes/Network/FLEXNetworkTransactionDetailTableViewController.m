@@ -226,15 +226,20 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
             NSData *strongResponseData = weakResponseData;
             if (strongResponseData) {
                 responseBodyDetailViewController = [self detailViewControllerForMIMEType:transaction.response.MIMEType data:strongResponseData];
+                if (!responseBodyDetailViewController) {
+                    NSString *alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for the response MIME type: %@", transaction.response.MIMEType];
+                    [[[UIAlertView alloc] initWithTitle:@"Can't View Response" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                }
                 responseBodyDetailViewController.title = @"Response";
             } else {
-                // FIXME (RKO): Show an alert explaining that the data was purged?
+                NSString *alertMessage = @"The response has been purged from the cache";
+                [[[UIAlertView alloc] initWithTitle:@"Can't View Response" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
             }
             return responseBodyDetailViewController;
         };
     } else {
         BOOL emptyResponse = transaction.receivedDataLength == 0;
-        responseBodyRow.detailText = emptyResponse ? @"empty" : @"purged from cache";
+        responseBodyRow.detailText = emptyResponse ? @"empty" : @"not in cache";
     }
     [rows addObject:responseBodyRow];
 
