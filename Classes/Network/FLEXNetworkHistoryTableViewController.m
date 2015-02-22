@@ -22,6 +22,8 @@
 @property (nonatomic, copy) NSArray *filteredNetworkTransactions;
 @property (nonatomic, assign) long long filteredBytesReceived;
 
+@property (nonatomic, assign) BOOL rowInsertInProgress;
+
 @property (nonatomic, strong) UISearchDisplayController *searchController;
 
 @end
@@ -161,28 +163,51 @@
 
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
 {
+    [self tryUpdateTransactions];
+}
+
+- (void)tryUpdateTransactions
+{
+    // Let the previous row insert animation finish before starting a new one to avoid stomping.
+    // We'll try calling the method again when the insertion completes, and we properly no-op if there haven't been changes.
+    if (self.rowInsertInProgress) {
+        return;
+    }
+
     NSInteger existingRowCount = [self.networkTransactions count];
     [self updateTransactions];
     NSInteger newRowCount = [self.networkTransactions count];
     NSInteger addedRowCount = newRowCount - existingRowCount;
 
-    if (self.tableView.contentOffset.y <= 0.0 && addedRowCount > 0) {
+    if (addedRowCount != 0) {
         // Insert animation if we're at the top.
-        NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        for (NSInteger row = 0; row < addedRowCount; row++) {
-            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
-        }
-        [self.tableView insertRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
-    } else {
-        // Maintain the user's position if they've scrolled down.
-        CGSize existingContentSize = self.tableView.contentSize;
-        [self.tableView reloadData];
-        CGFloat contentHeightChange = self.tableView.contentSize.height - existingContentSize.height;
-        self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + contentHeightChange);
-    }
+        if (self.tableView.contentOffset.y <= 0.0 && addedRowCount > 0) {
+            [CATransaction begin];
+            
+            self.rowInsertInProgress = YES;
+            [CATransaction setCompletionBlock:^{
+                self.rowInsertInProgress = NO;
+                [self tryUpdateTransactions];
+            }];
 
-    if (self.searchController.isActive) {
-        [self updateSearchResultsWithSearchString:self.searchController.searchBar.text];
+            NSMutableArray *indexPathsToReload = [NSMutableArray array];
+            for (NSInteger row = 0; row < addedRowCount; row++) {
+                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
+            }
+            [self.tableView insertRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+
+            [CATransaction commit];
+        } else {
+            // Maintain the user's position if they've scrolled down.
+            CGSize existingContentSize = self.tableView.contentSize;
+            [self.tableView reloadData];
+            CGFloat contentHeightChange = self.tableView.contentSize.height - existingContentSize.height;
+            self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + contentHeightChange);
+        }
+
+        if (self.searchController.isActive) {
+            [self updateSearchResultsWithSearchString:self.searchController.searchBar.text];
+        }
     }
 }
 
