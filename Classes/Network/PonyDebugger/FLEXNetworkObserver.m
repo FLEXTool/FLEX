@@ -749,7 +749,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
     [self performBlock:^{
         [self setRequest:request forConnection:connection];
         NSString *requestId = [self requestIDForConnection:connection];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestId request:request redirectResponse:response requestMechanism:[NSString stringWithFormat:@"NSURLConnection (%@)", [delegate class]]];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestId request:request redirectResponse:response requestMechanism:[NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]]];
     }];
 }
 
