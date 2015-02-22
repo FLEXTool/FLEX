@@ -236,25 +236,14 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
             for (NSInteger classIndex = 0; classIndex < numClasses; ++classIndex) {
                 Class class = classes[classIndex];
 
-                // We're not interested in swizzling CLTilesManagerClient, and sending any message to the class fires +initialize causing sandbox violations.
-                if (strcmp(class_getName(class), [[@[@"C", @"LT", @"ilesM", @"anage", @"rClient"] componentsJoinedByString:@""] UTF8String]) == 0) {
+                if (class == [FLEXNetworkObserver class]) {
                     continue;
                 }
 
-                if (class_getClassMethod(class, @selector(isSubclassOfClass:)) == NULL) {
-                    continue;
-                }
-
-                if (![class isSubclassOfClass:[NSObject class]]) {
-                    continue;
-                }
-
-                if ([class isSubclassOfClass:[FLEXNetworkObserver class]]) {
-                    continue;
-                }
-
+                // Use the runtime API rather than the methods on NSObject to avoid sending messages to
+                // classes we're not interested in swizzling. Otherwise we hit +initialize on all classes.
                 for (int selectorIndex = 0; selectorIndex < numSelectors; ++selectorIndex) {
-                    if ([class instancesRespondToSelector:selectors[selectorIndex]]) {
+                    if (class_getInstanceMethod(class, selectors[selectorIndex])) {
                         [self injectIntoDelegateClass:class];
                         break;
                     }
