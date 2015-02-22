@@ -215,6 +215,8 @@
 - (void)handleTransactionsClearedNotification:(NSNotification *)notification
 {
     [self updateTransactions];
+    [self.tableView reloadData];
+    [self.searchController.searchResultsTableView reloadData];
 }
 
 - (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification
