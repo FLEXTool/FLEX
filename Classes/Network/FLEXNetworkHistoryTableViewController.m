@@ -75,6 +75,7 @@
     if (![_networkTransactions isEqual:networkTransactions]) {
         _networkTransactions = networkTransactions;
         [self updateBytesReceived];
+        [self updateFilteredBytesReceived];
     }
 }
 
