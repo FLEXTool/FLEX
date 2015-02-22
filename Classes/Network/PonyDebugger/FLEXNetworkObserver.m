@@ -20,6 +20,7 @@
 #import <dispatch/queue.h>
 
 NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNetworkObserverEnabledStateChangedNotification";
+static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
 
 @interface FLEXInternalRequestState : NSObject
 
@@ -97,6 +98,26 @@ NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNet
         _enabled = enabled;
         [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkObserverEnabledStateChangedNotification object:self];
     }
+}
+
++ (void)setShouldEnableOnLaunch:(BOOL)shouldEnableOnLaunch
+{
+    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kFLEXNetworkObserverEnableOnLaunchDefaultsKey];
+}
+
++ (BOOL)shouldEnableOnLaunch
+{
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:kFLEXNetworkObserverEnableOnLaunchDefaultsKey] boolValue];
+}
+
++ (void)load
+{
+    // We don't want to do the swizzling from +load because not all the classes may be loaded at this point.
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self shouldEnableOnLaunch]) {
+            [self setEnabled:YES];
+        }
+    });
 }
 
 #pragma mark - Statics
