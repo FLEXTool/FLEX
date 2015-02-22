@@ -58,13 +58,6 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
 @end
 
-
-@interface NSData (FLEXNetworkHelpers)
-
-+ (NSData *)emptyDataOfLength:(NSUInteger)length;
-
-@end
-
 @interface FLEXNetworkObserver ()
 
 @property (nonatomic, assign, getter=isEnabled) BOOL enabled;
@@ -933,8 +926,6 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
             [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:downloadTask.response];
         }
 
-        [self addAccumulatedData:[NSData emptyDataOfLength:(NSUInteger) bytesWritten] forTask:downloadTask];
-
         NSString *requestID = [self requestIDForTask:downloadTask];
 
         [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:bytesWritten];
@@ -949,21 +940,6 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
         [self taskFinished:downloadTask];
     }];
-}
-
-@end
-
-
-@implementation NSData (FLEXNetworkHelpers)
-
-+ (NSData *)emptyDataOfLength:(NSUInteger)length
-{
-    NSMutableData *theData = [NSMutableData dataWithCapacity:length];
-    for (unsigned int i = 0 ; i < length/4 ; ++i) {
-        u_int32_t randomBits = 0;
-        [theData appendBytes:(void*)&randomBits length:4];
-    }
-    return theData;
 }
 
 @end
