@@ -34,6 +34,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNewTransactionRecordedNotification:) name:kFLEXNetworkRecorderNewTransactionNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionsClearedNotification:) name:kFLEXNetworkRecorderTransactionsClearedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetworkObserverEnabledStateChangedNotification:) name:kFLEXNetworkObserverEnabledStateChangedNotification object:nil];
         self.title = @"📡  Network";
     }
     return self;
@@ -140,6 +141,8 @@
     return headerText;
 }
 
+#pragma mark - Notification Handlers
+
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
 {
     NSInteger existingRowCount = [self.networkTransactions count];
@@ -196,6 +199,12 @@
 - (void)handleTransactionsClearedNotification:(NSNotification *)notification
 {
     [self updateTransactions];
+}
+
+- (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification
+{
+    // Update the header, which displays a warning when network debugging is disabled
+    [self updateFirstSectionHeaderInTableView:self.tableView];
 }
 
 #pragma mark - Table view data source
