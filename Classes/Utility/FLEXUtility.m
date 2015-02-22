@@ -282,9 +282,12 @@
     return prettyString;
 }
 
+// Thanks to the following links for help with this method
+// http://www.cocoanetics.com/2012/02/decompressing-files-into-memory/
+// https://github.com/nicklockwood/GZIP
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData
 {
-    NSData *deflatedData = nil;
+    NSData *inflatedData = nil;
     NSUInteger compressedDataLength = [compressedData length];
     if (compressedDataLength > 0) {
         z_stream stream;
@@ -309,12 +312,12 @@
             if (inflateEnd(&stream) == Z_OK) {
                 if (status == Z_STREAM_END) {
                     mutableData.length = stream.total_out;
-                    deflatedData = [mutableData copy];
+                    inflatedData = [mutableData copy];
                 }
             }
         }
     }
-    return deflatedData;
+    return inflatedData;
 }
 
 @end
