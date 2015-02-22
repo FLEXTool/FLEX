@@ -14,7 +14,10 @@
 
 @interface FLEXSystemLogTableViewController () <UISearchDisplayDelegate>
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 @property (nonatomic, strong) UISearchDisplayController *searchController;
+#pragma clang diagnostic pop
 @property (nonatomic, copy) NSArray *logMessages;
 @property (nonatomic, copy) NSArray *filteredLogMessages;
 @property (nonatomic, strong) NSTimer *logUpdateTimer;
@@ -34,7 +37,10 @@
 
     UISearchBar *searchBar = [[UISearchBar alloc] init];
     [searchBar sizeToFit];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     self.searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+#pragma clang diagnostic pop
     self.searchController.delegate = self;
     self.searchController.searchResultsDataSource = self;
     self.searchController.searchResultsDelegate = self;
@@ -105,7 +111,7 @@
     NSInteger numberOfRows = 0;
     if (tableView == self.tableView) {
         numberOfRows = [self.logMessages count];
-    } else if (tableView == self.searchDisplayController.searchResultsTableView) {
+    } else if (tableView == self.searchController.searchResultsTableView) {
         numberOfRows = [self.filteredLogMessages count];
     }
     return numberOfRows;
@@ -117,9 +123,9 @@
     if (tableView == self.tableView) {
         cell.logMessage = [self.logMessages objectAtIndex:indexPath.row];
         cell.highlightedText = nil;
-    } else if (tableView == self.searchDisplayController.searchResultsTableView) {
+    } else if (tableView == self.searchController.searchResultsTableView) {
         cell.logMessage = [self.filteredLogMessages objectAtIndex:indexPath.row];
-        cell.highlightedText = self.searchDisplayController.searchBar.text;
+        cell.highlightedText = self.searchController.searchBar.text;
     }
     if (indexPath.row % 2 == 0) {
         cell.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
@@ -135,7 +141,7 @@
     FLEXSystemLogMessage *logMessage = nil;
     if (tableView == self.tableView) {
         logMessage = [self.logMessages objectAtIndex:indexPath.row];
-    } else if (tableView == self.searchDisplayController.searchResultsTableView) {
+    } else if (tableView == self.searchController.searchResultsTableView) {
         logMessage = [self.filteredLogMessages objectAtIndex:indexPath.row];
     }
     return [FLEXSystemLogTableViewCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
@@ -159,7 +165,7 @@
         FLEXSystemLogMessage *logMessage = nil;
         if (tableView == self.tableView) {
             logMessage = [self.logMessages objectAtIndex:indexPath.row];
-        } else if (tableView == self.searchDisplayController.searchResultsTableView) {
+        } else if (tableView == self.searchController.searchResultsTableView) {
             logMessage = [self.filteredLogMessages objectAtIndex:indexPath.row];
         }
 

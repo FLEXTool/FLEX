@@ -23,7 +23,10 @@
 @property (nonatomic, strong) NSArray *searchPaths;
 @property (nonatomic, strong) NSNumber *recursiveSize;
 @property (nonatomic, strong) NSNumber *searchPathsSize;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 @property (nonatomic, strong) UISearchDisplayController *searchController;
+#pragma clang diagnostic pop
 @property (nonatomic) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) UIDocumentInteractionController *documentController;
 @property (nonatomic, strong) id<FLEXFileBrowserFileOperationController> fileOperationController;
@@ -48,7 +51,10 @@
         //add search controller
         UISearchBar *searchBar = [UISearchBar new];
         [searchBar sizeToFit];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         self.searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+#pragma clang diagnostic pop
         self.searchController.delegate = self;
         self.searchController.searchResultsDataSource = self;
         self.searchController.searchResultsDelegate = self;
