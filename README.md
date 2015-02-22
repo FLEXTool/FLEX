@@ -9,6 +9,7 @@ FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for
 - See the properties and ivars on any object.
 - Dynamically modify many properties and ivars.
 - Dynamically call instance and class methods.
+- Observe detailed network request history with timing, headers, and full responses.
 - View system log messages (e.g. from `NSLog`).
 - Access any live object via a scan of the heap.
 - View the file system within your app's sandbox.
@@ -118,6 +119,8 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
 - [heap_find.cpp](https://www.opensource.apple.com/source/lldb/lldb-179.1/examples/darwin/heap_find/heap/heap_find.cpp): an example of enumerating malloc blocks for finding objects on the heap.
 - [Gist](https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396) from [@samdmarshall](https://github.com/samdmarshall): another example of enumerating malloc blocks.
 - [Non-pointer isa](http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html): an explanation of changes to the isa field on iOS for ARM64 and mention of the useful `objc_debug_isa_class_mask` variable.
+- [GZIP](https://github.com/nicklockwood/GZIP): A library for compressing/decompressing data on iOS using libz.
+
 
 
 ## Contributing
