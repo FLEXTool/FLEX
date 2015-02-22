@@ -88,6 +88,9 @@
     NSURLSessionDataTask *dataTask = [mySession dataTaskWithURL:[NSURL URLWithString:@"https://flipboard.com/"]];
     [dataTask resume];
 
+    NSURLSessionDownloadTask *downloadTask = [mySession downloadTaskWithURL:[NSURL URLWithString:@"https://assets-cdn.github.com/images/icons/emoji/unicode/1f44d.png?v5"]];
+    [downloadTask resume];
+
     NSArray *requestURLStrings = @[ @"http://cdn.flipboard.com/serviceIcons/v2/social-icon-flipboard-96.png",
                                     @"http://lorempixel.com/400/400/",
                                     @"http://google.com",
