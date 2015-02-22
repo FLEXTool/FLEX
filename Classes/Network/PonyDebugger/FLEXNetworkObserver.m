@@ -52,6 +52,8 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler delegate:(id <NSURLSessionDelegate>)delegate;
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler delegate:(id <NSURLSessionDelegate>)delegate;
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data delegate:(id <NSURLSessionDelegate>)delegate;
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSURLSessionDelegate>)delegate;
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error delegate:(id <NSURLSessionDelegate>)delegate;
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite delegate:(id <NSURLSessionDelegate>)delegate;
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data delegate:(id <NSURLSessionDelegate>)delegate;
@@ -271,6 +273,9 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
     [self injectTaskDidCompleteWithErrorIntoDelegateClass:cls];
     [self injectRespondsToSelectorIntoDelegateClass:cls];
 
+    // Data tasks
+    [self injectDataTaskDidBecomeDownloadTaskIntoDelegateClass:cls];
+
     // Download tasks
     [self injectDownloadTaskDidWriteDataIntoDelegateClass:cls];
     [self injectDownloadTaskDidFinishDownloadingIntoDelegateClass:cls];
@@ -472,6 +477,32 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
     
     [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
 
+}
+
++ (void)injectDataTaskDidBecomeDownloadTaskIntoDelegateClass:(Class)cls
+{
+    SEL selector = @selector(URLSession:dataTask:didBecomeDownloadTask:);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+    Protocol *protocol = @protocol(NSURLSessionDataDelegate);
+
+    struct objc_method_description methodDescription = protocol_getMethodDescription(protocol, selector, NO, YES);
+
+    typedef void (^NSURLSessionDidBecomeDownloadTaskBlock)(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLSessionDownloadTask *downloadTask);
+
+    NSURLSessionDidBecomeDownloadTaskBlock undefinedBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLSessionDownloadTask *downloadTask) {
+        [[FLEXNetworkObserver sharedObserver] URLSession:session dataTask:dataTask didBecomeDownloadTask:downloadTask delegate:slf];
+    };
+
+    NSURLSessionDidBecomeDownloadTaskBlock implementationBlock = ^(id <NSURLSessionDataDelegate> slf, NSURLSession *session, NSURLSessionDataTask *dataTask, NSURLSessionDownloadTask *downloadTask) {
+        [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
+            undefinedBlock(slf, session, dataTask, downloadTask);
+        } originalImplementationBlock:^{
+            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, session, dataTask, downloadTask);
+        }];
+    };
+
+    [self replaceImplementationOfSelector:selector withSelector:swizzledSelector forClass:cls withMethodDescription:methodDescription implementationBlock:implementationBlock undefinedBlock:undefinedBlock];
 }
 
 + (void)injectTaskDidReceiveResponseIntoDelegateClass:(Class)cls
@@ -699,6 +730,12 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
     return state;
 }
 
+- (void)setRequestState:(FLEXInternalRequestState *)state forTask:(NSURLSessionTask *)task
+{
+    NSValue *key = [NSValue valueWithNonretainedObject:task];
+    [_connectionStates setObject:state forKey:key];
+}
+
 - (NSString *)requestIDForTask:(NSURLSessionTask *)task
 {
     return [self requestStateForTask:task].requestID;
@@ -853,6 +890,16 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
         NSString *requestID = [self requestIDForTask:dataTask];
         [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
+    }];
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSURLSessionDelegate>)delegate
+{
+    [self performBlock:^{
+        // Update our internal accounting to reflect the task swap.
+        FLEXInternalRequestState *state = [self requestStateForTask:dataTask];
+        [self setRequestState:state forTask:downloadTask];
+        [self taskFinished:dataTask];
     }];
 }
 
