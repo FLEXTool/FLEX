@@ -767,31 +767,26 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
-        
-        if ([response respondsToSelector:@selector(copyWithZone:)]) {
-            
-            // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
-            // and behavior.
-            NSURLRequest *request = [self requestForConnection:connection];
-            if (!request && [connection respondsToSelector:@selector(currentRequest)]) {
-                request = connection.currentRequest;
-                [self setRequest:request forConnection:connection];
-                [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForConnection:connection] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]]];
-            }
-            
-            NSMutableData *dataAccumulator = nil;
-            if (response.expectedContentLength < 0) {
-                dataAccumulator = [[NSMutableData alloc] init];
-            } else {
-                dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
-            }
-            
-            [self setAccumulatedData:dataAccumulator forConnection:connection];
-            
-            NSString *requestID = [self requestIDForConnection:connection];
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:connection.currentRequest response:response];
+        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
+        // and behavior.
+        NSURLRequest *request = [self requestForConnection:connection];
+        if (!request) {
+            request = connection.currentRequest;
+            [self setRequest:request forConnection:connection];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForConnection:connection] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]]];
         }
-        
+
+        NSMutableData *dataAccumulator = nil;
+        if (response.expectedContentLength < 0) {
+            dataAccumulator = [[NSMutableData alloc] init];
+        } else {
+            dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
+        }
+
+        [self setAccumulatedData:dataAccumulator forConnection:connection];
+
+        NSString *requestID = [self requestIDForConnection:connection];
+        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:connection.currentRequest response:response];
     }];
 }
 
@@ -848,30 +843,26 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler delegate:(id<NSURLSessionDelegate>)delegate
 {
-    if ([response respondsToSelector:@selector(copyWithZone:)]) {
+    // willSendRequest does not exist in NSURLSession. Here's a workaround.
+    NSURLRequest *request = [self requestForTask:dataTask];
+    if (!request) {
+        request = dataTask.currentRequest;
+        [self setRequest:request forTask:dataTask];
 
-        // willSendRequest does not exist in NSURLSession. Here's a workaround.
-        NSURLRequest *request = [self requestForTask:dataTask];
-        if (!request && [dataTask respondsToSelector:@selector(currentRequest)]) {
-
-            request = dataTask.currentRequest;
-            [self setRequest:request forTask:dataTask];
-
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]]];
-        }
-
-        NSMutableData *dataAccumulator = nil;
-        if (response.expectedContentLength < 0) {
-            dataAccumulator = [[NSMutableData alloc] init];
-        } else {
-            dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
-        }
-
-        [self setAccumulatedData:dataAccumulator forTask:dataTask];
-
-        NSString *requestID = [self requestIDForTask:dataTask];
-        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]]];
     }
+
+    NSMutableData *dataAccumulator = nil;
+    if (response.expectedContentLength < 0) {
+        dataAccumulator = [[NSMutableData alloc] init];
+    } else {
+        dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
+    }
+
+    [self setAccumulatedData:dataAccumulator forTask:dataTask];
+
+    NSString *requestID = [self requestIDForTask:dataTask];
+    [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data delegate:(id<NSURLSessionDelegate>)delegate
@@ -912,8 +903,7 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
         // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
         // and behavior.
         NSURLRequest *request = [self requestForTask:downloadTask];
-        if (!request && [downloadTask respondsToSelector:@selector(currentRequest)]) {
-
+        if (!request) {
             request = downloadTask.currentRequest;
             [self setRequest:request forTask:downloadTask];
             NSString *requestID = [self requestIDForTask:downloadTask];
