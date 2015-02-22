@@ -914,11 +914,9 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data delegate:(id<NSURLSessionDelegate>)delegate
 {
+    data = [data copy];
     [self performBlock:^{
-        NSString *requestID = [self requestIDForTask:downloadTask];
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID request:downloadTask.currentRequest responseBody:data];
-
-        [self taskFinished:downloadTask];
+        [self addAccumulatedData:data forTask:downloadTask];
     }];
 }
 
