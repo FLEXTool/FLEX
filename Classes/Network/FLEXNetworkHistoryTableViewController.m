@@ -33,6 +33,7 @@
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNewTransactionRecordedNotification:) name:kFLEXNetworkRecorderNewTransactionNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionsClearedNotification:) name:kFLEXNetworkRecorderTransactionsClearedNotification object:nil];
         self.title = @"📡  Network";
     }
     return self;
@@ -190,6 +191,11 @@
         }
         [self updateFirstSectionHeaderInTableView:tableView];
     }
+}
+
+- (void)handleTransactionsClearedNotification:(NSNotification *)notification
+{
+    [self updateTransactions];
 }
 
 #pragma mark - Table view data source
