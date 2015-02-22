@@ -14,6 +14,7 @@
 NSString *const kFLEXNetworkRecorderNewTransactionNotification = @"kFLEXNetworkRecorderNewTransactionNotification";
 NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification = @"kFLEXNetworkRecorderTransactionUpdatedNotification";
 NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
+NSString *const kFLEXNetworkRecorderTransactionsClearedNotification = @"kFLEXNetworkRecorderTransactionsClearedNotification";
 
 NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.responseCacheLimit";
 
@@ -82,6 +83,18 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (NSData *)cachedResponseBodyForTransaction:(FLEXNetworkTransaction *)transaction
 {
     return [self.responseCache objectForKey:transaction.requestId];
+}
+
+- (void)clearRecordedActivity
+{
+    dispatch_barrier_async(self.queue, ^{
+        [self.responseCache removeAllObjects];
+        [self.orderedTransactions removeAllObjects];
+        [self.networkTransactionsForRequestIdentifiers removeAllObjects];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkRecorderTransactionsClearedNotification object:self];
+        });
+    });
 }
 
 #pragma mark - Network Events

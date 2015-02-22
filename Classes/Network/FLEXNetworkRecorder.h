@@ -12,6 +12,7 @@
 extern NSString *const kFLEXNetworkRecorderNewTransactionNotification;
 extern NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification;
 extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
+extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 
 @class FLEXNetworkTransaction;
 
@@ -33,6 +34,9 @@ extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
 
 /// The full response data IFF it hasn't been purged due to memory pressure.
 - (NSData *)cachedResponseBodyForTransaction:(FLEXNetworkTransaction *)transaction;
+
+/// Dumps all network transactions and cached response bodies.
+- (void)clearRecordedActivity;
 
 
 // Recording network activity
