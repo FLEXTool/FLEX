@@ -209,6 +209,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     return transaction;
 }
 
+#pragma mark Notification Posting
+
 - (void)postNewTransactionNotificationWithTransaction:(FLEXNetworkTransaction *)transaction
 {
     dispatch_async(dispatch_get_main_queue(), ^{
