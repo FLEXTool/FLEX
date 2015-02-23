@@ -995,24 +995,13 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
-        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
-        // and behavior.
-        NSURLRequest *request = [self requestForTask:downloadTask];
-        if (!request) {
-            request = downloadTask.currentRequest;
-            [self setRequest:request forTask:downloadTask];
-            NSString *requestID = [self requestIDForTask:downloadTask];
-
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil];
-
-            NSMutableData *dataAccumulator = nil;
-            dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger) totalBytesExpectedToWrite];
+        NSString *requestID = [self requestIDForTask:downloadTask];
+        if (![[self requestStateForTask:downloadTask] dataAccumulator]) {
+            NSMutableData *dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)totalBytesExpectedToWrite];
             [self setAccumulatedData:dataAccumulator forTask:downloadTask];
-
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:request response:downloadTask.response];
+            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:downloadTask.currentRequest response:downloadTask.response];
         }
 
-        NSString *requestID = [self requestIDForTask:downloadTask];
         NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]];
         [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
         [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:downloadTask.currentRequest dataLength:bytesWritten];
