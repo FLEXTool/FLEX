@@ -60,6 +60,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite delegate:(id <NSURLSessionDelegate>)delegate;
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data delegate:(id <NSURLSessionDelegate>)delegate;
 
+- (void)URLSessionTaskWillResume:(NSURLSessionTask *)task;
+
 @end
 
 @interface FLEXNetworkObserver ()
@@ -258,6 +260,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         }
 
         [self injectIntoNSURLConnectionCancel];
+        [self injectIntoNSURLSessionTaskResume];
     });
 }
 
@@ -301,6 +304,24 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalCancel));
     Method newCancel = class_getInstanceMethod(class, swizzledSelector);
     method_exchangeImplementations(originalCancel, newCancel);
+}
+
++ (void)injectIntoNSURLSessionTaskResume
+{
+    Class class = [NSURLSessionTask class];
+    SEL selector = @selector(resume);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    Method originalResume = class_getInstanceMethod(class, selector);
+
+    void (^swizzleBlock)(NSURLSessionTask *) = ^(NSURLSessionTask *slf) {
+        [[FLEXNetworkObserver sharedObserver] URLSessionTaskWillResume:slf];
+        ((void(*)(id, SEL))objc_msgSend)(slf, swizzledSelector);
+    };
+
+    IMP implementation = imp_implementationWithBlock(swizzleBlock);
+    class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalResume));
+    Method newResume = class_getInstanceMethod(class, swizzledSelector);
+    method_exchangeImplementations(originalResume, newResume);
 }
 
 + (void)injectWillSendRequestIntoDelegateClass:(Class)cls
@@ -1003,6 +1024,22 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     data = [data copy];
     [self performBlock:^{
         [self addAccumulatedData:data forTask:downloadTask];
+    }];
+}
+
+- (void)URLSessionTaskWillResume:(NSURLSessionTask *)task
+{
+    // Since resume can be called multiple times on the same task, only treat the first resume as
+    // the equivalent to connection:willSendRequest:...
+    [self performBlock:^{
+        NSURLRequest *request = [self requestForTask:task];
+        if (!request) {
+            request = task.currentRequest;
+            [self setRequest:request forTask:task];
+            NSString *requestID = [self requestIDForTask:task];
+
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil];
+        }
     }];
 }
 
