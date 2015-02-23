@@ -44,6 +44,8 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection delegate:(id <NSURLConnectionDelegate>)delegate;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error delegate:(id <NSURLConnectionDelegate>)delegate;
 
+- (void)connectionWillCancel:(NSURLConnection *)connection;
+
 @end
 
 
@@ -254,6 +256,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
             
             free(classes);
         }
+
+        [self injectIntoNSURLConnectionCancel];
     });
 }
 
@@ -279,6 +283,24 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     // Download tasks
     [self injectDownloadTaskDidWriteDataIntoDelegateClass:cls];
     [self injectDownloadTaskDidFinishDownloadingIntoDelegateClass:cls];
+}
+
++ (void)injectIntoNSURLConnectionCancel
+{
+    Class class = [NSURLConnection class];
+    SEL selector = @selector(cancel);
+    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    Method originalCancel = class_getInstanceMethod(class, selector);
+
+    void (^swizzleBlock)(NSURLConnection *) = ^(NSURLConnection *slf) {
+        [[FLEXNetworkObserver sharedObserver] connectionWillCancel:slf];
+        ((void(*)(id, SEL))objc_msgSend)(slf, swizzledSelector);
+    };
+
+    IMP implementation = imp_implementationWithBlock(swizzleBlock);
+    class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalCancel));
+    Method newCancel = class_getInstanceMethod(class, swizzledSelector);
+    method_exchangeImplementations(originalCancel, newCancel);
 }
 
 + (void)injectWillSendRequestIntoDelegateClass:(Class)cls
@@ -853,6 +875,16 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID request:connection.currentRequest error:error];
         
         [self connectionFinished:connection];
+    }];
+}
+
+- (void)connectionWillCancel:(NSURLConnection *)connection
+{
+    [self performBlock:^{
+        // Mimic the behavior of NSURLSession which is to create an error on cancellation.
+        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"cancelled" };
+        NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
+        [self connection:connection didFailWithError:error delegate:nil];
     }];
 }
 
