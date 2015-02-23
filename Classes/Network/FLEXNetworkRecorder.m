@@ -196,7 +196,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
-        transaction.duration = [transaction.startTime timeIntervalSinceNow];
+        transaction.duration = -[transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
 
         [self postUpdateNotificationForTransaction:transaction];
