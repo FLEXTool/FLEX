@@ -42,8 +42,7 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 // Recording network activity
 
 /// Call when app is about to send HTTP request.
-/// This method must be called for each recorded reqeust. Prior to this call, no information will be recorded for the request.
-- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse requestMechanism:(NSString *)mechanism;
+- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse;
 
 /// Call when HTTP response is available.
 - (void)recordResponseReceivedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request response:(NSURLResponse *)response;
@@ -56,5 +55,9 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 
 /// Call when HTTP request has failed to load.
 - (void)recordLoadingFailedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request error:(NSError *)error;
+
+/// Call to set the request mechanism anytime after recordRequestWillBeSent... has been called.
+/// This string can be set to anything useful about the API used to make the request.
+- (void)recordMechanism:(NSString *)mechanism forRequestId:(NSString *)requestId;
 
 @end

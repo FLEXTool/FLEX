@@ -101,7 +101,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 #pragma mark - Network Events
 
-- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse requestMechanism:(NSString *)mechanism
+- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
     if (redirectResponse) {
         [self recordResponseReceivedWithRequestId:requestId request:request response:redirectResponse];
@@ -111,7 +111,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
         transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
-        transaction.requestMechanism = mechanism;
 
         [self postNewTransactionNotificationWithTransaction:transaction];
     });
@@ -199,6 +198,16 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
         transaction.duration = [transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
+
+        [self postUpdateNotificationForTransaction:transaction];
+    });
+}
+
+- (void)recordMechanism:(NSString *)mechanism forRequestId:(NSString *)requestId
+{
+    dispatch_async(self.queue, ^{
+        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:nil];
+        transaction.requestMechanism = mechanism;
 
         [self postUpdateNotificationForTransaction:transaction];
     });

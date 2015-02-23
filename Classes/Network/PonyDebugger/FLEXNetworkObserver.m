@@ -786,7 +786,9 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     [self performBlock:^{
         [self setRequest:request forConnection:connection];
         NSString *requestId = [self requestIDForConnection:connection];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestId request:request redirectResponse:response requestMechanism:[NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]]];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestId request:request redirectResponse:response];
+        NSString *mechanism = [NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]];
+        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestId:requestId];
     }];
 }
 
@@ -799,7 +801,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         if (!request) {
             request = connection.currentRequest;
             [self setRequest:request forConnection:connection];
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForConnection:connection] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]]];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForConnection:connection] request:request redirectResponse:nil];
         }
 
         NSMutableData *dataAccumulator = nil;
@@ -863,7 +865,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 {
     [self performBlock:^{
         [self setRequest:request forTask:task];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:task] request:request redirectResponse:response requestMechanism:[NSString stringWithFormat:@"NSURLSessionTask (delegate: %@)", [delegate class]]];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:task] request:request redirectResponse:response];
     }];
 }
 
@@ -876,7 +878,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
             request = dataTask.currentRequest;
             [self setRequest:request forTask:dataTask];
 
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]]];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil];
         }
 
         NSMutableData *dataAccumulator = nil;
@@ -889,6 +891,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         [self setAccumulatedData:dataAccumulator forTask:dataTask];
 
         NSString *requestID = [self requestIDForTask:dataTask];
+        NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]];
+        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
         [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
     }];
 }
@@ -946,7 +950,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
             [self setRequest:request forTask:downloadTask];
             NSString *requestID = [self requestIDForTask:downloadTask];
 
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil requestMechanism:[NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]]];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil];
 
             NSMutableData *dataAccumulator = nil;
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger) totalBytesExpectedToWrite];
@@ -956,7 +960,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         }
 
         NSString *requestID = [self requestIDForTask:downloadTask];
-
+        NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]];
+        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
         [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:downloadTask.currentRequest dataLength:bytesWritten];
     }];
 }
