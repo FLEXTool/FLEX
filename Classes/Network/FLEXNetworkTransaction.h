@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkTransactionState) {
 
 @interface FLEXNetworkTransaction : NSObject
 
-@property (nonatomic, copy) NSString *requestId;
+@property (nonatomic, copy) NSString *requestID;
 
 @property (nonatomic, strong) NSURLRequest *request;
 @property (nonatomic, strong) NSURLResponse *response;

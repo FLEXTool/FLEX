@@ -751,9 +751,9 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
         FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
         requestState.request = request;
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:response];
         NSString *mechanism = [NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]];
-        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestId:requestID];
+        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
     }];
 }
 
@@ -771,7 +771,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         }
         requestState.dataAccumulator = dataAccumulator;
 
-        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:response];
     }];
 }
 
@@ -783,7 +783,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
         FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
         [requestState.dataAccumulator appendData:data];
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:data.length];
     }];
 }
 
@@ -792,7 +792,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
     [self performBlock:^{
         NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
         FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:requestState.dataAccumulator];
+        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:requestState.dataAccumulator];
         [self removeRequestStateForRequestID:requestID];
     }];
 }
@@ -806,7 +806,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         // Cancellations can occur prior to the willSendRequest:... NSURLConnection delegate call.
         // These are pretty common and clutter up the logs. Only record the failure if the recorder already knows about the request through willSendRequest:...
         if (requestState.request) {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:error];
         }
         
         [self removeRequestStateForRequestID:requestID];
@@ -832,7 +832,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 {
     [self performBlock:^{
         NSString *requestID = [[self class] requestIDForConnectionOrTask:task];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:response];
     }];
 }
 
@@ -851,9 +851,9 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         requestState.dataAccumulator = dataAccumulator;
 
         NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]];
-        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
+        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestID:requestID];
 
-        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:response];
     }];
 }
 
@@ -877,7 +877,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 
         [requestState.dataAccumulator appendData:data];
 
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:data.length];
     }];
 }
 
@@ -888,9 +888,9 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
         if (error) {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:error];
         } else {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:requestState.dataAccumulator];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:requestState.dataAccumulator];
         }
 
         [self removeRequestStateForRequestID:requestID];
@@ -905,13 +905,13 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 
         if (!requestState.dataAccumulator) {
             requestState.dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)totalBytesExpectedToWrite];
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:downloadTask.response];
+            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:downloadTask.response];
 
             NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]];
-            [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
+            [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestID:requestID];
         }
 
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:bytesWritten];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:bytesWritten];
     }];
 }
 
@@ -935,7 +935,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         if (!requestState.request) {
             requestState.request = task.currentRequest;
 
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:task.currentRequest redirectResponse:nil];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:task.currentRequest redirectResponse:nil];
         }
     }];
 }

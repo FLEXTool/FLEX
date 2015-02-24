@@ -42,22 +42,22 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 // Recording network activity
 
 /// Call when app is about to send HTTP request.
-- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse;
+- (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse;
 
 /// Call when HTTP response is available.
-- (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response;
+- (void)recordResponseReceivedWithRequestID:(NSString *)requestID response:(NSURLResponse *)response;
 
 /// Call when data chunk is received over the network.
-- (void)recordDataReceivedWithRequestId:(NSString *)requestId dataLength:(int64_t)dataLength;
+- (void)recordDataReceivedWithRequestID:(NSString *)requestID dataLength:(int64_t)dataLength;
 
 /// Call when HTTP request has finished loading.
-- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId responseBody:(NSData *)responseBody;
+- (void)recordLoadingFinishedWithRequestID:(NSString *)requestID responseBody:(NSData *)responseBody;
 
 /// Call when HTTP request has failed to load.
-- (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error;
+- (void)recordLoadingFailedWithRequestID:(NSString *)requestID error:(NSError *)error;
 
 /// Call to set the request mechanism anytime after recordRequestWillBeSent... has been called.
 /// This string can be set to anything useful about the API used to make the request.
-- (void)recordMechanism:(NSString *)mechanism forRequestId:(NSString *)requestId;
+- (void)recordMechanism:(NSString *)mechanism forRequestID:(NSString *)requestID;
 
 @end

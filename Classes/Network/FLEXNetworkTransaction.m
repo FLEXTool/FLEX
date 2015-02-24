@@ -14,7 +14,7 @@
 {
     NSString *description = [super description];
 
-    description = [description stringByAppendingFormat:@" id = %@;", self.requestId];
+    description = [description stringByAppendingFormat:@" id = %@;", self.requestID];
     description = [description stringByAppendingFormat:@" url = %@;", self.request.URL];
     description = [description stringByAppendingFormat:@" duration = %f;", self.duration];
     description = [description stringByAppendingFormat:@" receivedDataLength = %lld", self.receivedDataLength];

@@ -84,7 +84,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (NSData *)cachedResponseBodyForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    return [self.responseCache objectForKey:transaction.requestId];
+    return [self.responseCache objectForKey:transaction.requestID];
 }
 
 - (void)clearRecordedActivity
@@ -101,33 +101,33 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 #pragma mark - Network Events
 
-- (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
+- (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
     if (redirectResponse) {
-        [self recordResponseReceivedWithRequestId:requestId response:redirectResponse];
-        [self recordLoadingFinishedWithRequestId:requestId responseBody:nil];
+        [self recordResponseReceivedWithRequestID:requestID response:redirectResponse];
+        [self recordLoadingFinishedWithRequestID:requestID responseBody:nil];
     }
 
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
-        transaction.requestId = requestId;
+        transaction.requestID = requestID;
         transaction.request = request;
         transaction.startTime = [NSDate date];
 
         [self.orderedTransactions insertObject:transaction atIndex:0];
-        [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
+        [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestID];
         transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
 
         [self postNewTransactionNotificationWithTransaction:transaction];
     });
 }
 
-- (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response
+- (void)recordResponseReceivedWithRequestID:(NSString *)requestID response:(NSURLResponse *)response
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; reponseReceived; id: %@", requestId);
+            NSLog(@"Unknown transaction; reponseReceived; id: %@", requestID);
             return;
         }
         transaction.response = response;
@@ -138,12 +138,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordDataReceivedWithRequestId:(NSString *)requestId dataLength:(int64_t)dataLength
+- (void)recordDataReceivedWithRequestID:(NSString *)requestID dataLength:(int64_t)dataLength
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; dataReceived; id: %@", requestId);
+            NSLog(@"Unknown transaction; dataReceived; id: %@", requestID);
             return;
         }
         transaction.receivedDataLength += dataLength;
@@ -152,12 +152,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId responseBody:(NSData *)responseBody
+- (void)recordLoadingFinishedWithRequestID:(NSString *)requestID responseBody:(NSData *)responseBody
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; loadingFinished; id: %@", requestId);
+            NSLog(@"Unknown transaction; loadingFinished; id: %@", requestID);
             return;
         }
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
@@ -172,7 +172,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         }
         
         if (shouldCache) {
-            [self.responseCache setObject:responseBody forKey:requestId cost:[responseBody length]];
+            [self.responseCache setObject:responseBody forKey:requestID cost:[responseBody length]];
         }
 
         NSString *mimeType = transaction.response.MIMEType;
@@ -209,12 +209,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error
+- (void)recordLoadingFailedWithRequestID:(NSString *)requestID error:(NSError *)error
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; loadingFailed; id: %@", requestId);
+            NSLog(@"Unknown transaction; loadingFailed; id: %@", requestID);
             return;
         }
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
@@ -225,12 +225,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordMechanism:(NSString *)mechanism forRequestId:(NSString *)requestId
+- (void)recordMechanism:(NSString *)mechanism forRequestID:(NSString *)requestID
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; recordMechanism; id: %@", requestId);
+            NSLog(@"Unknown transaction; recordMechanism; id: %@", requestID);
             return;
         }
         transaction.requestMechanism = mechanism;
