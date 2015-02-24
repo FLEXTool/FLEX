@@ -342,6 +342,12 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     Class class = [NSURLSessionTask class];
     SEL selector = @selector(resume);
     SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+    if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
+        // Dummy NSURLSessionTask to get the actual class, needed for iOS 7 (__NSCFURLSessionTask)
+        class = [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"about:blank"]] superclass];
+    }
+
     Method originalResume = class_getInstanceMethod(class, selector);
 
     void (^swizzleBlock)(NSURLSessionTask *) = ^(NSURLSessionTask *slf) {
@@ -441,6 +447,12 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         SEL selector = selectors[selectorIndex];
         SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
 
+        if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
+            // iOS 7 does not implement these methods on NSURLSession. We actually want to
+            // swizzle __NSCFURLSession, which we can get from the class of the shared session
+            class = [[NSURLSession sharedSession] class];
+        }
+
         NSURLSessionTask *(^asyncDataOrDownloadSwizzleBlock)(Class, id, NSURLSessionAsyncCompletion) = ^NSURLSessionTask *(Class slf, id argument, NSURLSessionAsyncCompletion completion) {
             NSString *requestID = [self nextRequestID];
             NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
@@ -470,6 +482,12 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     for (int selectorIndex = 0; selectorIndex < numSelectors; selectorIndex++) {
         SEL selector = selectors[selectorIndex];
         SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+        if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
+            // iOS 7 does not implement these methods on NSURLSession. We actually want to
+            // swizzle __NSCFURLSession, which we can get from the class of the shared session
+            class = [[NSURLSession sharedSession] class];
+        }
 
         NSURLSessionUploadTask *(^asyncUploadTaskSwizzleBlock)(Class, NSURLRequest *, id, NSURLSessionAsyncCompletion) = ^NSURLSessionUploadTask *(Class slf, NSURLRequest *request, id argument, NSURLSessionAsyncCompletion completion) {
             NSString *requestID = [self nextRequestID];
