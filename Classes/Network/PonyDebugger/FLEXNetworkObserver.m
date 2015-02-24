@@ -370,25 +370,29 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     typedef void (^NSURLConnectionAsyncCompletion)(NSURLResponse* response, NSData* data, NSError* connectionError);
 
     void (^asyncSwizzleBlock)(Class, NSURLRequest *, NSOperationQueue *, NSURLConnectionAsyncCompletion) = ^(Class slf, NSURLRequest *request, NSOperationQueue *queue, NSURLConnectionAsyncCompletion completion) {
-        NSString *requestID = [self nextRequestID];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
-        NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
-        NSURLConnectionAsyncCompletion completionWrapper = ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:response];
-            [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
-            if (connectionError) {
-                [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:connectionError];
-            } else {
-                [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
-            }
+        if ([FLEXNetworkObserver isEnabled]) {
+            NSString *requestID = [self nextRequestID];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
+            NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+            [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
+            NSURLConnectionAsyncCompletion completionWrapper = ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:response];
+                [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
+                if (connectionError) {
+                    [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:connectionError];
+                } else {
+                    [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
+                }
 
-            // Call through to the original completion handler
-            if (completion) {
-                completion(response, data, connectionError);
-            }
-        };
-        ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, queue, completionWrapper);
+                // Call through to the original completion handler
+                if (completion) {
+                    completion(response, data, connectionError);
+                }
+            };
+            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, queue, completionWrapper);
+        } else {
+            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, queue, completion);
+        }
     };
 
     [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:asyncSwizzleBlock swizzledSelector:swizzledSelector];
@@ -401,26 +405,32 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
 
     NSData *(^syncSwizzleBlock)(Class, NSURLRequest *, NSURLResponse **, NSError **) = ^NSData *(Class slf, NSURLRequest *request, NSURLResponse **response, NSError **error) {
-        NSString *requestID = [self nextRequestID];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
-        NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
-        NSError *temporaryError = nil;
-        NSURLResponse *temporaryResponse = nil;
-        NSData *data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(slf, swizzledSelector, request, &temporaryResponse, &temporaryError);
-        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:temporaryResponse];
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
-        if (temporaryError) {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:temporaryError];
+        NSData *data = nil;
+        if ([FLEXNetworkObserver isEnabled]) {
+            NSString *requestID = [self nextRequestID];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
+            NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+            [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
+            NSError *temporaryError = nil;
+            NSURLResponse *temporaryResponse = nil;
+            data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(slf, swizzledSelector, request, &temporaryResponse, &temporaryError);
+            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:temporaryResponse];
+            [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
+            if (temporaryError) {
+                [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:temporaryError];
+            } else {
+                [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
+            }
+            if (error) {
+                *error = temporaryError;
+            }
+            if (response) {
+                *response = temporaryResponse;
+            }
         } else {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
+            data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(slf, swizzledSelector, request, response, error);
         }
-        if (error) {
-            *error = temporaryError;
-        }
-        if (response) {
-            *response = temporaryResponse;
-        }
+
         return data;
     };
 
@@ -454,11 +464,16 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         }
 
         NSURLSessionTask *(^asyncDataOrDownloadSwizzleBlock)(Class, id, NSURLSessionAsyncCompletion) = ^NSURLSessionTask *(Class slf, id argument, NSURLSessionAsyncCompletion completion) {
-            NSString *requestID = [self nextRequestID];
-            NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-            NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
-            NSURLSessionTask *task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completionWrapper);
-            [self setRequestID:requestID forConnectionOrTask:task];
+            NSURLSessionTask *task = nil;
+            if ([FLEXNetworkObserver isEnabled]) {
+                NSString *requestID = [self nextRequestID];
+                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
+                task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completionWrapper);
+                [self setRequestID:requestID forConnectionOrTask:task];
+            } else {
+                task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completion);
+            }
             return task;
         };
 
@@ -490,11 +505,16 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         }
 
         NSURLSessionUploadTask *(^asyncUploadTaskSwizzleBlock)(Class, NSURLRequest *, id, NSURLSessionAsyncCompletion) = ^NSURLSessionUploadTask *(Class slf, NSURLRequest *request, id argument, NSURLSessionAsyncCompletion completion) {
-            NSString *requestID = [self nextRequestID];
-            NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-            NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
-            NSURLSessionUploadTask *task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completionWrapper);
-            [self setRequestID:requestID forConnectionOrTask:task];
+            NSURLSessionUploadTask *task = nil;
+            if ([FLEXNetworkObserver isEnabled]) {
+                NSString *requestID = [self nextRequestID];
+                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
+                task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completionWrapper);
+                [self setRequestID:requestID forConnectionOrTask:task];
+            } else {
+                task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completion);
+            }
             return task;
         };
 
