@@ -133,16 +133,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 + (NSString *)nextRequestID
 {
-    static NSInteger sequenceNumber = 0;
-    static NSString *seed = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        CFUUIDRef uuid = CFUUIDCreate(CFAllocatorGetDefault());
-        seed = (__bridge NSString *)CFUUIDCreateString(CFAllocatorGetDefault(), uuid);
-        CFRelease(uuid);
-    });
-    
-    return [[NSString alloc] initWithFormat:@"%@-%ld", seed, (long)(++sequenceNumber)];
+    return [[NSUUID UUID] UUIDString];
 }
 
 #pragma mark Delegate Injection Convenience Methods
