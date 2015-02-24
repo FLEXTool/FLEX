@@ -11,7 +11,7 @@
 #import "FLEXNetworkRecorder.h"
 #import "FLEXUtility.h"
 
-@interface FLEXNetworkSettingsTableViewController ()
+@interface FLEXNetworkSettingsTableViewController () <UIActionSheetDelegate>
 
 @property (nonatomic, copy) NSArray *cells;
 
@@ -82,7 +82,8 @@
 
 - (void)clearRequestsTapped:(UIButton *)sender
 {
-    [[FLEXNetworkRecorder defaultRecorder] clearRecordedActivity];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Clear Recorded Requests" otherButtonTitles:nil];
+    [actionSheet showInView:self.view];
 }
 
 #pragma mark - Table view data source
@@ -100,6 +101,15 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     return [self.cells objectAtIndex:indexPath.row];
+}
+
+#pragma mark - UIActionSheetDelegate
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+        [[FLEXNetworkRecorder defaultRecorder] clearRecordedActivity];
+    }
 }
 
 #pragma mark - Helpers
