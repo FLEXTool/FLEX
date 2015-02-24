@@ -104,22 +104,32 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)recordRequestWillBeSentWithRequestId:(NSString *)requestId request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
     if (redirectResponse) {
-        [self recordResponseReceivedWithRequestId:requestId request:request response:redirectResponse];
-        [self recordLoadingFinishedWithRequestId:requestId request:request responseBody:nil];
+        [self recordResponseReceivedWithRequestId:requestId response:redirectResponse];
+        [self recordLoadingFinishedWithRequestId:requestId responseBody:nil];
     }
 
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
+        FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
+        transaction.requestId = requestId;
+        transaction.request = request;
+        transaction.startTime = [NSDate date];
+
+        [self.orderedTransactions insertObject:transaction atIndex:0];
+        [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
         transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
 
         [self postNewTransactionNotificationWithTransaction:transaction];
     });
 }
 
-- (void)recordResponseReceivedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request response:(NSURLResponse *)response
+- (void)recordResponseReceivedWithRequestId:(NSString *)requestId response:(NSURLResponse *)response
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            NSLog(@"Unknown transaction; reponseReceived; id: %@", requestId);
+            return;
+        }
         transaction.response = response;
         transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
         transaction.latency = -[transaction.startTime timeIntervalSinceNow];
@@ -128,20 +138,28 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordDataReceivedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request dataLength:(int64_t)dataLength
+- (void)recordDataReceivedWithRequestId:(NSString *)requestId dataLength:(int64_t)dataLength
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            NSLog(@"Unknown transaction; dataReceived; id: %@", requestId);
+            return;
+        }
         transaction.receivedDataLength += dataLength;
 
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
 
-- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request responseBody:(NSData *)responseBody
+- (void)recordLoadingFinishedWithRequestId:(NSString *)requestId responseBody:(NSData *)responseBody
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            NSLog(@"Unknown transaction; loadingFinished; id: %@", requestId);
+            return;
+        }
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
 
@@ -191,10 +209,14 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)recordLoadingFailedWithRequestId:(NSString *)requestId request:(NSURLRequest *)request error:(NSError *)error
+- (void)recordLoadingFailedWithRequestId:(NSString *)requestId error:(NSError *)error
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:request];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            NSLog(@"Unknown transaction; loadingFailed; id: %@", requestId);
+            return;
+        }
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
@@ -206,30 +228,15 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)recordMechanism:(NSString *)mechanism forRequestId:(NSString *)requestId
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self addOrRetrieveTransactionForRequestId:requestId request:nil];
+        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
+        if (!transaction) {
+            NSLog(@"Unknown transaction; recordMechanism; id: %@", requestId);
+            return;
+        }
         transaction.requestMechanism = mechanism;
 
         [self postUpdateNotificationForTransaction:transaction];
     });
-}
-
-/// Should only be called on the serial queue used in this class
-- (FLEXNetworkTransaction *)addOrRetrieveTransactionForRequestId:(NSString *)requestId request:(NSURLRequest *)request
-{
-    FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestId];
-    if (!transaction) {
-        transaction = [[FLEXNetworkTransaction alloc] init];
-        transaction.requestId = requestId;
-        transaction.request = request;
-        transaction.startTime = [NSDate date];
-
-        [self.orderedTransactions insertObject:transaction atIndex:0];
-        [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestId];
-    }
-    if (request) {
-        transaction.request = request;
-    }
-    return transaction;
 }
 
 #pragma mark Notification Posting

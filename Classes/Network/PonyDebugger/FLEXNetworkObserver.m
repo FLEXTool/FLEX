@@ -857,7 +857,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         [self setAccumulatedData:dataAccumulator forConnection:connection];
 
         NSString *requestID = [self requestIDForConnection:connection];
-        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:connection.currentRequest response:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
     }];
 }
 
@@ -872,7 +872,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         
         NSString *requestID = [self requestIDForConnection:connection];
         
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:connection.currentRequest dataLength:data.length];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
     }];
 }
 
@@ -883,7 +883,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
         NSData *accumulatedData = [self accumulatedDataForConnection:connection];
         
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID request:connection.currentRequest responseBody:accumulatedData];
+        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:accumulatedData];
         
         [self connectionFinished:connection];
     }];
@@ -893,7 +893,16 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 {
     [self performBlock:^{
         NSString *requestID = [self requestIDForConnection:connection];
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID request:connection.currentRequest error:error];
+
+        // Errors can occur prior to the willSendRequest:... delegate call. In those cases, let the recorder know about the request before logging the failure.
+        NSURLRequest *request = [self requestForConnection:connection];
+        if (!request) {
+            request = connection.currentRequest;
+            [self setRequest:request forConnection:connection];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil];
+        }
+
+        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
         
         [self connectionFinished:connection];
     }];
@@ -946,7 +955,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         NSString *requestID = [self requestIDForTask:dataTask];
         NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]];
         [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
-        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:dataTask.currentRequest response:response];
+        [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
     }];
 }
 
@@ -971,7 +980,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
         NSString *requestID = [self requestIDForTask:dataTask];
 
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:dataTask.currentRequest dataLength:data.length];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
     }];
 }
 
@@ -983,9 +992,9 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         NSData *accumulatedData = [self accumulatedDataForTask:task];
 
         if (error) {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID request:task.currentRequest error:error];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
         } else {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID request:task.currentRequest responseBody:accumulatedData];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:accumulatedData];
         }
 
         [self taskFinished:task];
@@ -999,12 +1008,12 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         if (![[self requestStateForTask:downloadTask] dataAccumulator]) {
             NSMutableData *dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)totalBytesExpectedToWrite];
             [self setAccumulatedData:dataAccumulator forTask:downloadTask];
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID request:downloadTask.currentRequest response:downloadTask.response];
+            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:downloadTask.response];
         }
 
         NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]];
         [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
-        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID request:downloadTask.currentRequest dataLength:bytesWritten];
+        [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:bytesWritten];
     }];
 }
 
