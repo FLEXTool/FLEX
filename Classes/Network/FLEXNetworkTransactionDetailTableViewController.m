@@ -227,7 +227,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
             if (strongResponseData) {
                 responseBodyDetailViewController = [self detailViewControllerForMIMEType:transaction.response.MIMEType data:strongResponseData];
                 if (!responseBodyDetailViewController) {
-                    NSString *alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for the response MIME type: %@", transaction.response.MIMEType];
+                    NSString *alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for responses with MIME type: %@", transaction.response.MIMEType];
                     [[[UIAlertView alloc] initWithTitle:@"Can't View Response" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
                 }
                 responseBodyDetailViewController.title = @"Response";
@@ -257,12 +257,12 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
     if ([transaction.request.HTTPBody length] > 0) {
         FLEXNetworkDetailRow *postBodySizeRow = [[FLEXNetworkDetailRow alloc] init];
-        postBodySizeRow.title = @"POST Body Size";
+        postBodySizeRow.title = @"Request Body Size";
         postBodySizeRow.detailText = [NSByteCountFormatter stringFromByteCount:[transaction.request.HTTPBody length] countStyle:NSByteCountFormatterCountStyleBinary];
         [rows addObject:postBodySizeRow];
 
         FLEXNetworkDetailRow *postBodyRow = [[FLEXNetworkDetailRow alloc] init];
-        postBodyRow.title = @"POST Body";
+        postBodyRow.title = @"Request Body";
         postBodyRow.detailText = @"tap to view";
         postBodyRow.selectionFuture = ^{
             NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
@@ -345,7 +345,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 + (FLEXNetworkDetailSection *)postBodySectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
     FLEXNetworkDetailSection *postBodySection = [[FLEXNetworkDetailSection alloc] init];
-    postBodySection.title = @"POST Parameters";
+    postBodySection.title = @"Request Body Parameters";
     if ([transaction.request.HTTPBody length] > 0) {
         NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
         if ([contentType hasPrefix:@"application/x-www-form-urlencoded"]) {
