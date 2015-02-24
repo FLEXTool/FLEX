@@ -54,6 +54,11 @@ Once a view is selected, you can tap on the info bar below the toolbar to presen
 
 ![View Modification](http://engineering.flipboard.com/assets/flex/advanced-view-editing.gif)
 
+### Network History
+When enabled, network debugging allows you to view all requests made using NSURLConnection or NSURLSession. Settings allow you to adjust what kind of response bodies get cached and the maximum size limit of the response cache. You can choose to have network debugging enabled automatically on app launch. This setting is persisted accross launches.
+
+![Network History](http://engineering.flipboard.com/assets/flex/network-history.gif)
+
 ### All Objects on the Heap
 FLEX queries malloc for all the live allocated memory blocks and searches for ones that look like objects. You can see everything from here.
 
@@ -129,7 +134,6 @@ We welcome pull requests for bug fixes, new features, and improvements to FLEX. 
 
 ## TODO
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
-- Network request logging
 - Improved file type detection and display in the file browser
 - Add new NSUserDefault key/value pairs on the fly
 
