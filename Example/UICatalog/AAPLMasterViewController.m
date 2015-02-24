@@ -74,7 +74,10 @@
 // "More" bar button item is correctly transferred to the destination detail view controller's navigation item. We are only concerned about
 // this change when the application is in portrait mode since this is the only time that the "More" bar button item will be visible.
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+#pragma clang diagnostic pop
         UINavigationController *newDetailViewController = [segue destinationViewController];
         UINavigationController *oldDetailViewController = [self.splitViewController.viewControllers lastObject];
         

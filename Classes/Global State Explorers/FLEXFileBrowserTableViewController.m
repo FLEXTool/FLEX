@@ -23,7 +23,10 @@
 @property (nonatomic, strong) NSArray *searchPaths;
 @property (nonatomic, strong) NSNumber *recursiveSize;
 @property (nonatomic, strong) NSNumber *searchPathsSize;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 @property (nonatomic, strong) UISearchDisplayController *searchController;
+#pragma clang diagnostic pop
 @property (nonatomic) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) UIDocumentInteractionController *documentController;
 @property (nonatomic, strong) id<FLEXFileBrowserFileOperationController> fileOperationController;
@@ -48,7 +51,10 @@
         //add search controller
         UISearchBar *searchBar = [UISearchBar new];
         [searchBar sizeToFit];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         self.searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+#pragma clang diagnostic pop
         self.searchController.delegate = self;
         self.searchController.searchResultsDataSource = self;
         self.searchController.searchResultsDelegate = self;
@@ -237,9 +243,7 @@
             if ([[subpath pathExtension] isEqual:@"archive"]) {
                 prettyString = [[NSKeyedUnarchiver unarchiveObjectWithFile:fullPath] description];
             } else if ([[subpath pathExtension] isEqualToString:@"json"]) {
-                NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
-                id jsonObject = [NSJSONSerialization JSONObjectWithData:fileData options:0 error:NULL];
-                prettyString = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL] encoding:NSUTF8StringEncoding];
+                prettyString = [FLEXUtility prettyJSONStringFromData:[NSData dataWithContentsOfFile:fullPath]];
             } else if ([[subpath pathExtension] isEqualToString:@"plist"]) {
                 NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
                 prettyString = [[NSPropertyListSerialization propertyListWithData:fileData options:0 format:NULL error:NULL] description];

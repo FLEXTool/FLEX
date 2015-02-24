@@ -9,6 +9,7 @@ FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for
 - See the properties and ivars on any object.
 - Dynamically modify many properties and ivars.
 - Dynamically call instance and class methods.
+- Observe detailed network request history with timing, headers, and full responses.
 - View system log messages (e.g. from `NSLog`).
 - Access any live object via a scan of the heap.
 - View the file system within your app's sandbox.
@@ -52,6 +53,11 @@ More complete version:
 Once a view is selected, you can tap on the info bar below the toolbar to present more details about the view. From there, you can modify properties and call methods.
 
 ![View Modification](http://engineering.flipboard.com/assets/flex/advanced-view-editing.gif)
+
+### Network History
+When enabled, network debugging allows you to view all requests made using NSURLConnection or NSURLSession. Settings allow you to adjust what kind of response bodies get cached and the maximum size limit of the response cache. You can choose to have network debugging enabled automatically on app launch. This setting is persisted accross launches.
+
+![Network History](http://engineering.flipboard.com/assets/flex/network-history.gif)
 
 ### All Objects on the Heap
 FLEX queries malloc for all the live allocated memory blocks and searches for ones that look like objects. You can see everything from here.
@@ -118,6 +124,8 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
 - [heap_find.cpp](https://www.opensource.apple.com/source/lldb/lldb-179.1/examples/darwin/heap_find/heap/heap_find.cpp): an example of enumerating malloc blocks for finding objects on the heap.
 - [Gist](https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396) from [@samdmarshall](https://github.com/samdmarshall): another example of enumerating malloc blocks.
 - [Non-pointer isa](http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html): an explanation of changes to the isa field on iOS for ARM64 and mention of the useful `objc_debug_isa_class_mask` variable.
+- [GZIP](https://github.com/nicklockwood/GZIP): A library for compressing/decompressing data on iOS using libz.
+
 
 
 ## Contributing
@@ -126,7 +134,6 @@ We welcome pull requests for bug fixes, new features, and improvements to FLEX. 
 
 ## TODO
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
-- Network request logging
 - Improved file type detection and display in the file browser
 - Add new NSUserDefault key/value pairs on the fly
 

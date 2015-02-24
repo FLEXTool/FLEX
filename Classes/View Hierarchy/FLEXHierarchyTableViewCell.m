@@ -37,13 +37,7 @@
         
         self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
         self.detailTextLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
-        
-        if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1) {
-            // Supported starting with iOS 7
-            self.accessoryType = UITableViewCellAccessoryDetailButton;
-        } else {
-            self.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-        }
+        self.accessoryType = UITableViewCellAccessoryDetailButton;
     }
     return self;
 }

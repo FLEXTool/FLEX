@@ -12,6 +12,8 @@
 #import "FLEXGlobalsTableViewControllerEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
+#import "FLEXNetworkObserver.h"
+#import "FLEXNetworkRecorder.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -81,6 +83,25 @@
     return self.explorerWindow.isHidden;
 }
 
+- (BOOL)isNetworkDebuggingEnabled
+{
+    return [FLEXNetworkObserver isEnabled];
+}
+
+- (void)setNetworkDebuggingEnabled:(BOOL)networkDebuggingEnabled
+{
+    [FLEXNetworkObserver setEnabled:networkDebuggingEnabled];
+}
+
+- (NSUInteger)networkResponseCacheByteLimit
+{
+    return [[FLEXNetworkRecorder defaultRecorder] responseCacheByteLimit];
+}
+
+- (void)setNetworkResponseCacheByteLimit:(NSUInteger)networkResponseCacheByteLimit
+{
+    [[FLEXNetworkRecorder defaultRecorder] setResponseCacheByteLimit:networkResponseCacheByteLimit];
+}
 
 #pragma mark - FLEXWindowEventDelegate
 

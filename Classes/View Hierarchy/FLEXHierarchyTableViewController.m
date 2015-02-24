@@ -56,9 +56,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     self.tableView.rowHeight = 50.0;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     // Separator inset clashes with persistent cell selection.
-    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.tableView setSeparatorInset:UIEdgeInsetsZero];
-    }
+    [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     
     self.searchBar = [[UISearchBar alloc] init];
     self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
