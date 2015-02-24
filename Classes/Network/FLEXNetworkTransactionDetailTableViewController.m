@@ -267,7 +267,12 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         postBodyRow.selectionFuture = ^{
             NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
             UIViewController *detailViewController = [self detailViewControllerForMIMEType:contentType data:[self postBodyDataForTransaction:transaction]];
-            detailViewController.title = @"POST Body";
+            if (detailViewController) {
+                detailViewController.title = @"Request Body";
+            } else {
+                NSString *alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for request body data with MIME type: %@", [transaction.request valueForHTTPHeaderField:@"Content-Type"]];
+                [[[UIAlertView alloc] initWithTitle:@"Can't View Body Data" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+            }
             return detailViewController;
         };
         [rows addObject:postBodyRow];
