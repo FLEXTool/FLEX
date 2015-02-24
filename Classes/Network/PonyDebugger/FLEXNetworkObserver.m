@@ -225,9 +225,16 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         // Swizzle any classes that implement one of these selectors.
         const SEL selectors[] = {
             @selector(connectionDidFinishLoading:),
+            @selector(connection:willSendRequest:redirectResponse:),
             @selector(connection:didReceiveResponse:),
+            @selector(connection:didReceiveData:),
+            @selector(connection:didFailWithError:),
+            @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:),
+            @selector(URLSession:dataTask:didReceiveData:),
             @selector(URLSession:dataTask:didReceiveResponse:completionHandler:),
             @selector(URLSession:task:didCompleteWithError:),
+            @selector(URLSession:dataTask:didBecomeDownloadTask:delegate:),
+            @selector(URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:),
             @selector(URLSession:downloadTask:didFinishDownloadingToURL:)
         };
 
@@ -248,12 +255,23 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
                 // Use the runtime API rather than the methods on NSObject to avoid sending messages to
                 // classes we're not interested in swizzling. Otherwise we hit +initialize on all classes.
-                for (int selectorIndex = 0; selectorIndex < numSelectors; ++selectorIndex) {
-                    if (class_getInstanceMethod(class, selectors[selectorIndex])) {
-                        [self injectIntoDelegateClass:class];
+                // NOTE: calling class_getInstanceMethod() DOES send +initialize to the class. That's why we iterate through the method list.
+                unsigned int methodCount = 0;
+                Method *methods = class_copyMethodList(class, &methodCount);
+                BOOL matchingSelectorFound = NO;
+                for (unsigned int methodIndex = 0; methodIndex < methodCount; methodIndex++) {
+                    for (int selectorIndex = 0; selectorIndex < numSelectors; ++selectorIndex) {
+                        if (method_getName(methods[methodIndex]) == selectors[selectorIndex]) {
+                            [self injectIntoDelegateClass:class];
+                            matchingSelectorFound = YES;
+                            break;
+                        }
+                    }
+                    if (matchingSelectorFound) {
                         break;
                     }
                 }
+                free(methods);
             }
             
             free(classes);
