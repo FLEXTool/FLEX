@@ -912,15 +912,11 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     [self performBlock:^{
         NSString *requestID = [self requestIDForConnection:connection];
 
-        // Errors can occur prior to the willSendRequest:... delegate call. In those cases, let the recorder know about the request before logging the failure.
-        NSURLRequest *request = [self requestForConnection:connection];
-        if (!request) {
-            request = connection.currentRequest;
-            [self setRequest:request forConnection:connection];
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil];
+        // Cancellations can occur prior to the willSendRequest:... NSURLConnection delegate call.
+        // These are pretty common and clutter up the logs. Only record the failure if the recorder already knows about the request through willSendRequest:...
+        if ([self requestForConnection:connection]) {
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
         }
-
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
         
         [self connectionFinished:connection];
     }];
