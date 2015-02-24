@@ -214,42 +214,6 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     };
     [rows addObject:requestURLRow];
 
-    FLEXNetworkDetailRow *responseBodyRow = [[FLEXNetworkDetailRow alloc] init];
-    responseBodyRow.title = @"Response Body";
-    NSData *responseData = [[FLEXNetworkRecorder defaultRecorder] cachedResponseBodyForTransaction:transaction];
-    if ([responseData length] > 0) {
-        responseBodyRow.detailText = @"tap to view";
-        // Avoid a long lived strong reference to the response data in case we need to purge it from the cache.
-        __weak NSData *weakResponseData = responseData;
-        responseBodyRow.selectionFuture = ^{
-            UIViewController *responseBodyDetailViewController = nil;
-            NSData *strongResponseData = weakResponseData;
-            if (strongResponseData) {
-                responseBodyDetailViewController = [self detailViewControllerForMIMEType:transaction.response.MIMEType data:strongResponseData];
-                if (!responseBodyDetailViewController) {
-                    NSString *alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for responses with MIME type: %@", transaction.response.MIMEType];
-                    [[[UIAlertView alloc] initWithTitle:@"Can't View Response" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-                }
-                responseBodyDetailViewController.title = @"Response";
-            } else {
-                NSString *alertMessage = @"The response has been purged from the cache";
-                [[[UIAlertView alloc] initWithTitle:@"Can't View Response" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-            }
-            return responseBodyDetailViewController;
-        };
-    } else {
-        BOOL emptyResponse = transaction.receivedDataLength == 0;
-        responseBodyRow.detailText = emptyResponse ? @"empty" : @"not in cache";
-    }
-    [rows addObject:responseBodyRow];
-
-    if (transaction.error) {
-        FLEXNetworkDetailRow *errorRow = [[FLEXNetworkDetailRow alloc] init];
-        errorRow.title = @"Error";
-        errorRow.detailText = transaction.error.localizedDescription;
-        [rows addObject:errorRow];
-    }
-
     FLEXNetworkDetailRow *requestMethodRow = [[FLEXNetworkDetailRow alloc] init];
     requestMethodRow.title = @"Request Method";
     requestMethodRow.detailText = transaction.request.HTTPMethod;
@@ -286,20 +250,56 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         [rows addObject:statusCodeRow];
     }
 
-    FLEXNetworkDetailRow *mechanismRow = [[FLEXNetworkDetailRow alloc] init];
-    mechanismRow.title = @"Mechanism";
-    mechanismRow.detailText = transaction.requestMechanism;
-    [rows addObject:mechanismRow];
+    if (transaction.error) {
+        FLEXNetworkDetailRow *errorRow = [[FLEXNetworkDetailRow alloc] init];
+        errorRow.title = @"Error";
+        errorRow.detailText = transaction.error.localizedDescription;
+        [rows addObject:errorRow];
+    }
+
+    FLEXNetworkDetailRow *responseBodyRow = [[FLEXNetworkDetailRow alloc] init];
+    responseBodyRow.title = @"Response Body";
+    NSData *responseData = [[FLEXNetworkRecorder defaultRecorder] cachedResponseBodyForTransaction:transaction];
+    if ([responseData length] > 0) {
+        responseBodyRow.detailText = @"tap to view";
+        // Avoid a long lived strong reference to the response data in case we need to purge it from the cache.
+        __weak NSData *weakResponseData = responseData;
+        responseBodyRow.selectionFuture = ^{
+            UIViewController *responseBodyDetailViewController = nil;
+            NSData *strongResponseData = weakResponseData;
+            if (strongResponseData) {
+                responseBodyDetailViewController = [self detailViewControllerForMIMEType:transaction.response.MIMEType data:strongResponseData];
+                if (!responseBodyDetailViewController) {
+                    NSString *alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for responses with MIME type: %@", transaction.response.MIMEType];
+                    [[[UIAlertView alloc] initWithTitle:@"Can't View Response" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+                }
+                responseBodyDetailViewController.title = @"Response";
+            } else {
+                NSString *alertMessage = @"The response has been purged from the cache";
+                [[[UIAlertView alloc] initWithTitle:@"Can't View Response" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+            }
+            return responseBodyDetailViewController;
+        };
+    } else {
+        BOOL emptyResponse = transaction.receivedDataLength == 0;
+        responseBodyRow.detailText = emptyResponse ? @"empty" : @"not in cache";
+    }
+    [rows addObject:responseBodyRow];
+
+    FLEXNetworkDetailRow *responseSizeRow = [[FLEXNetworkDetailRow alloc] init];
+    responseSizeRow.title = @"Response Size";
+    responseSizeRow.detailText = [NSByteCountFormatter stringFromByteCount:transaction.receivedDataLength countStyle:NSByteCountFormatterCountStyleBinary];
+    [rows addObject:responseSizeRow];
 
     FLEXNetworkDetailRow *mimeTypeRow = [[FLEXNetworkDetailRow alloc] init];
     mimeTypeRow.title = @"MIME Type";
     mimeTypeRow.detailText = transaction.response.MIMEType;
     [rows addObject:mimeTypeRow];
 
-    FLEXNetworkDetailRow *responseSizeRow = [[FLEXNetworkDetailRow alloc] init];
-    responseSizeRow.title = @"Response Size";
-    responseSizeRow.detailText = [NSByteCountFormatter stringFromByteCount:transaction.receivedDataLength countStyle:NSByteCountFormatterCountStyleBinary];
-    [rows addObject:responseSizeRow];
+    FLEXNetworkDetailRow *mechanismRow = [[FLEXNetworkDetailRow alloc] init];
+    mechanismRow.title = @"Mechanism";
+    mechanismRow.detailText = transaction.requestMechanism;
+    [rows addObject:mechanismRow];
 
     NSDateFormatter *startTimeFormatter = [[NSDateFormatter alloc] init];
     startTimeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
