@@ -26,7 +26,6 @@ static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.fle
 
 @property (nonatomic, copy) NSURLRequest *request;
 @property (nonatomic, strong) NSMutableData *dataAccumulator;
-@property (nonatomic, copy) NSString *requestID;
 
 @end
 
@@ -67,7 +66,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 @interface FLEXNetworkObserver ()
 
 @property (nonatomic, assign, getter=isEnabled) BOOL enabled;
-@property (nonatomic, strong) NSMutableDictionary *connectionStates;
+@property (nonatomic, strong) NSMutableDictionary *requestStatesForRequestIDs;
 @property (nonatomic, strong) dispatch_queue_t queue;
 
 @end
@@ -688,18 +687,32 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 }
 
+static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
+
++ (NSString *)requestIDForConnectionOrTask:(id)connectionOrTask
+{
+    NSString *requestID = objc_getAssociatedObject(connectionOrTask, kFLEXRequestIDKey);
+    if (!requestID) {
+        requestID = [self nextRequestID];
+        [self setRequestID:requestID forConnectionOrTask:connectionOrTask];
+    }
+    return requestID;
+}
+
++ (void)setRequestID:(NSString *)requestID forConnectionOrTask:(id)connectionOrTask
+{
+    objc_setAssociatedObject(connectionOrTask, kFLEXRequestIDKey, requestID, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 #pragma mark - Initialization
 
 - (id)init
 {
     self = [super init];
-    if (!self) {
-        return nil;
+    if (self) {
+        self.requestStatesForRequestIDs = [[NSMutableDictionary alloc] init];
+        self.queue = dispatch_queue_create("com.flex.FLEXNetworkObserver", DISPATCH_QUEUE_SERIAL);
     }
-
-    _connectionStates = [[NSMutableDictionary alloc] init];
-    _queue = dispatch_queue_create("com.flex.FLEXNetworkObserver", DISPATCH_QUEUE_SERIAL);
-    
     return self;
 }
 
@@ -712,120 +725,19 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     }
 }
 
-#pragma mark - Private Methods (Connections)
-
-- (FLEXInternalRequestState *)requestStateForConnection:(NSURLConnection *)connection
+- (FLEXInternalRequestState *)requestStateForRequestID:(NSString *)requestID
 {
-    NSValue *key = [NSValue valueWithNonretainedObject:connection];
-    FLEXInternalRequestState *state = [_connectionStates objectForKey:key];
-    if (!state) {
-        state = [[FLEXInternalRequestState alloc] init];
-        state.requestID = [[self class] nextRequestID];
-        [_connectionStates setObject:state forKey:key];
+    FLEXInternalRequestState *requestState = [self.requestStatesForRequestIDs objectForKey:requestID];
+    if (!requestState) {
+        requestState = [[FLEXInternalRequestState alloc] init];
+        [self.requestStatesForRequestIDs setObject:requestState forKey:requestID];
     }
-
-    return state;
+    return requestState;
 }
 
-- (NSString *)requestIDForConnection:(NSURLConnection *)connection
+- (void)removeRequestStateForRequestID:(NSString *)requestID
 {
-    return [self requestStateForConnection:connection].requestID;
-}
-
-- (void)setRequest:(NSURLRequest *)request forConnection:(NSURLConnection *)connection
-{
-    [self requestStateForConnection:connection].request = request;
-}
-
-- (NSURLRequest *)requestForConnection:(NSURLConnection *)connection
-{
-    return [self requestStateForConnection:connection].request;
-}
-
-- (void)setAccumulatedData:(NSMutableData *)data forConnection:(NSURLConnection *)connection
-{
-    FLEXInternalRequestState *requestState = [self requestStateForConnection:connection];
-    requestState.dataAccumulator = data;
-}
-
-- (void)addAccumulatedData:(NSData *)data forConnection:(NSURLConnection *)connection
-{
-    NSMutableData *dataAccumulator = [self requestStateForConnection:connection].dataAccumulator;
-    
-    [dataAccumulator appendData:data];
-}
-
-- (NSData *)accumulatedDataForConnection:(NSURLConnection *)connection
-{
-    return [self requestStateForConnection:connection].dataAccumulator;
-}
-
-// This removes storing the accumulated request/response from the dictionary so we can release connection
-- (void)connectionFinished:(NSURLConnection *)connection
-{
-    NSValue *key = [NSValue valueWithNonretainedObject:connection];
-    [_connectionStates removeObjectForKey:key];
-}
-
-#pragma mark - Private Methods (Tasks)
-
-- (FLEXInternalRequestState *)requestStateForTask:(NSURLSessionTask *)task
-{
-    NSValue *key = [NSValue valueWithNonretainedObject:task];
-    FLEXInternalRequestState *state = [_connectionStates objectForKey:key];
-    if (!state) {
-        state = [[FLEXInternalRequestState alloc] init];
-        state.requestID = [[self class] nextRequestID];
-        [_connectionStates setObject:state forKey:key];
-    }
-
-    return state;
-}
-
-- (void)setRequestState:(FLEXInternalRequestState *)state forTask:(NSURLSessionTask *)task
-{
-    NSValue *key = [NSValue valueWithNonretainedObject:task];
-    [_connectionStates setObject:state forKey:key];
-}
-
-- (NSString *)requestIDForTask:(NSURLSessionTask *)task
-{
-    return [self requestStateForTask:task].requestID;
-}
-
-- (void)setRequest:(NSURLRequest *)request forTask:(NSURLSessionTask *)task
-{
-    [self requestStateForTask:task].request = request;
-}
-
-- (NSURLRequest *)requestForTask:(NSURLSessionTask *)task
-{
-    return [self requestStateForTask:task].request;
-}
-
-- (void)setAccumulatedData:(NSMutableData *)data forTask:(NSURLSessionTask *)task
-{
-    FLEXInternalRequestState *requestState = [self requestStateForTask:task];
-    requestState.dataAccumulator = data;
-}
-
-- (void)addAccumulatedData:(NSData *)data forTask:(NSURLSessionTask *)task
-{
-    NSMutableData *dataAccumulator = [self requestStateForTask:task].dataAccumulator;
-
-    [dataAccumulator appendData:data];
-}
-
-- (NSData *)accumulatedDataForTask:(NSURLSessionTask *)task
-{
-    return [self requestStateForTask:task].dataAccumulator;
-}
-
-// This removes storing the accumulated request/response from the dictionary so we can release task
-- (void)taskFinished:(NSURLSessionTask *)task
-{
-    NSValue *key = [NSValue valueWithNonretainedObject:task];
-    [_connectionStates removeObjectForKey:key];
+    [self.requestStatesForRequestIDs removeObjectForKey:requestID];
 }
 
 @end
@@ -836,25 +748,20 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 - (void)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
-        [self setRequest:request forConnection:connection];
-        NSString *requestId = [self requestIDForConnection:connection];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestId request:request redirectResponse:response];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
+        requestState.request = request;
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:response];
         NSString *mechanism = [NSString stringWithFormat:@"NSURLConnection (delegate: %@)", [delegate class]];
-        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestId:requestId];
+        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestId:requestID];
     }];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
-        // If the request wasn't generated yet, then willSendRequest was not called. This appears to be an inconsistency in documentation
-        // and behavior.
-        NSURLRequest *request = [self requestForConnection:connection];
-        if (!request) {
-            request = connection.currentRequest;
-            [self setRequest:request forConnection:connection];
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForConnection:connection] request:request redirectResponse:nil];
-        }
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
         NSMutableData *dataAccumulator = nil;
         if (response.expectedContentLength < 0) {
@@ -862,10 +769,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         } else {
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
         }
+        requestState.dataAccumulator = dataAccumulator;
 
-        [self setAccumulatedData:dataAccumulator forConnection:connection];
-
-        NSString *requestID = [self requestIDForConnection:connection];
         [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
     }];
 }
@@ -875,12 +780,9 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     // Just to be safe since we're doing this async
     data = [data copy];
     [self performBlock:^{
-        [self addAccumulatedData:data forConnection:connection];
-
-        if ([self accumulatedDataForConnection:connection] == nil) return;
-        
-        NSString *requestID = [self requestIDForConnection:connection];
-        
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
+        [requestState.dataAccumulator appendData:data];
         [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
     }];
 }
@@ -888,28 +790,26 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
-        NSString *requestID = [self requestIDForConnection:connection];
-
-        NSData *accumulatedData = [self accumulatedDataForConnection:connection];
-        
-        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:accumulatedData];
-        
-        [self connectionFinished:connection];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
+        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:requestState.dataAccumulator];
+        [self removeRequestStateForRequestID:requestID];
     }];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error delegate:(id<NSURLConnectionDelegate>)delegate
 {
     [self performBlock:^{
-        NSString *requestID = [self requestIDForConnection:connection];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:connection];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
         // Cancellations can occur prior to the willSendRequest:... NSURLConnection delegate call.
         // These are pretty common and clutter up the logs. Only record the failure if the recorder already knows about the request through willSendRequest:...
-        if ([self requestForConnection:connection]) {
+        if (requestState.request) {
             [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
         }
         
-        [self connectionFinished:connection];
+        [self removeRequestStateForRequestID:requestID];
     }];
 }
 
@@ -931,22 +831,16 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
-        [self setRequest:request forTask:task];
-        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:task] request:request redirectResponse:response];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:task];
+        [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:response];
     }];
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
-        // willSendRequest does not exist in NSURLSession. Here's a workaround.
-        NSURLRequest *request = [self requestForTask:dataTask];
-        if (!request) {
-            request = dataTask.currentRequest;
-            [self setRequest:request forTask:dataTask];
-
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:[self requestIDForTask:dataTask] request:request redirectResponse:nil];
-        }
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:dataTask];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
         NSMutableData *dataAccumulator = nil;
         if (response.expectedContentLength < 0) {
@@ -954,12 +848,11 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         } else {
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
         }
+        requestState.dataAccumulator = dataAccumulator;
 
-        [self setAccumulatedData:dataAccumulator forTask:dataTask];
-
-        NSString *requestID = [self requestIDForTask:dataTask];
         NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDataTask (delegate: %@)", [delegate class]];
         [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
+
         [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:response];
     }];
 }
@@ -967,10 +860,10 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
-        // Update our internal accounting to reflect the task swap.
-        FLEXInternalRequestState *state = [self requestStateForTask:dataTask];
-        [self setRequestState:state forTask:downloadTask];
-        [self taskFinished:dataTask];
+        // By setting the request ID of the download task to match the data task,
+        // it can pick up where the data task left off.
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:dataTask];
+        [[self class] setRequestID:requestID forConnectionOrTask:downloadTask];
     }];
 }
 
@@ -979,11 +872,10 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     // Just to be safe since we're doing this async
     data = [data copy];
     [self performBlock:^{
-        [self addAccumulatedData:data forTask:dataTask];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:dataTask];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
-        if ([self accumulatedDataForTask:dataTask] == nil) return;
-
-        NSString *requestID = [self requestIDForTask:dataTask];
+        [requestState.dataAccumulator appendData:data];
 
         [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:data.length];
     }];
@@ -992,32 +884,33 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
-        NSString *requestID = [self requestIDForTask:task];
-
-        NSData *accumulatedData = [self accumulatedDataForTask:task];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:task];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
         if (error) {
             [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestId:requestID error:error];
         } else {
-            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:accumulatedData];
+            [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestId:requestID responseBody:requestState.dataAccumulator];
         }
 
-        [self taskFinished:task];
+        [self removeRequestStateForRequestID:requestID];
     }];
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite delegate:(id<NSURLSessionDelegate>)delegate
 {
     [self performBlock:^{
-        NSString *requestID = [self requestIDForTask:downloadTask];
-        if (![[self requestStateForTask:downloadTask] dataAccumulator]) {
-            NSMutableData *dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)totalBytesExpectedToWrite];
-            [self setAccumulatedData:dataAccumulator forTask:downloadTask];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:downloadTask];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
+
+        if (!requestState.dataAccumulator) {
+            requestState.dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)totalBytesExpectedToWrite];
             [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestId:requestID response:downloadTask.response];
+
+            NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]];
+            [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
         }
 
-        NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]];
-        [[FLEXNetworkRecorder defaultRecorder] recordMechanism:requestMechanism forRequestId:requestID];
         [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestId:requestID dataLength:bytesWritten];
     }];
 }
@@ -1026,7 +919,9 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 {
     data = [data copy];
     [self performBlock:^{
-        [self addAccumulatedData:data forTask:downloadTask];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:downloadTask];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
+        [requestState.dataAccumulator appendData:data];
     }];
 }
 
@@ -1035,13 +930,12 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     // Since resume can be called multiple times on the same task, only treat the first resume as
     // the equivalent to connection:willSendRequest:...
     [self performBlock:^{
-        NSURLRequest *request = [self requestForTask:task];
-        if (!request) {
-            request = task.currentRequest;
-            [self setRequest:request forTask:task];
-            NSString *requestID = [self requestIDForTask:task];
+        NSString *requestID = [[self class] requestIDForConnectionOrTask:task];
+        FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
+        if (!requestState.request) {
+            requestState.request = task.currentRequest;
 
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:request redirectResponse:nil];
+            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestId:requestID request:task.currentRequest redirectResponse:nil];
         }
     }];
 }
