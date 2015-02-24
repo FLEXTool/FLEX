@@ -127,7 +127,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; reponseReceived; id: %@", requestID);
             return;
         }
         transaction.response = response;
@@ -143,7 +142,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; dataReceived; id: %@", requestID);
             return;
         }
         transaction.receivedDataLength += dataLength;
@@ -157,7 +155,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; loadingFinished; id: %@", requestID);
             return;
         }
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
@@ -214,7 +211,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; loadingFailed; id: %@", requestID);
             return;
         }
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
@@ -230,7 +226,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
-            NSLog(@"Unknown transaction; recordMechanism; id: %@", requestID);
             return;
         }
         transaction.requestMechanism = mechanism;
