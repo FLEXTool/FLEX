@@ -321,205 +321,223 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 + (void)injectIntoNSURLConnectionCancel
 {
-    Class class = [NSURLConnection class];
-    SEL selector = @selector(cancel);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-    Method originalCancel = class_getInstanceMethod(class, selector);
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [NSURLConnection class];
+        SEL selector = @selector(cancel);
+        SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+        Method originalCancel = class_getInstanceMethod(class, selector);
 
-    void (^swizzleBlock)(NSURLConnection *) = ^(NSURLConnection *slf) {
-        [[FLEXNetworkObserver sharedObserver] connectionWillCancel:slf];
-        ((void(*)(id, SEL))objc_msgSend)(slf, swizzledSelector);
-    };
+        void (^swizzleBlock)(NSURLConnection *) = ^(NSURLConnection *slf) {
+            [[FLEXNetworkObserver sharedObserver] connectionWillCancel:slf];
+            ((void(*)(id, SEL))objc_msgSend)(slf, swizzledSelector);
+        };
 
-    IMP implementation = imp_implementationWithBlock(swizzleBlock);
-    class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalCancel));
-    Method newCancel = class_getInstanceMethod(class, swizzledSelector);
-    method_exchangeImplementations(originalCancel, newCancel);
+        IMP implementation = imp_implementationWithBlock(swizzleBlock);
+        class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalCancel));
+        Method newCancel = class_getInstanceMethod(class, swizzledSelector);
+        method_exchangeImplementations(originalCancel, newCancel);
+    });
 }
 
 + (void)injectIntoNSURLSessionTaskResume
 {
-    Class class = [NSURLSessionTask class];
-    SEL selector = @selector(resume);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [NSURLSessionTask class];
+        SEL selector = @selector(resume);
+        SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
 
-    if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
-        // Dummy NSURLSessionTask to get the actual class, needed for iOS 7 (__NSCFURLSessionTask)
-        class = [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"about:blank"]] superclass];
-    }
+        if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
+            // Dummy NSURLSessionTask to get the actual class, needed for iOS 7 (__NSCFURLSessionTask)
+            class = [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"about:blank"]] superclass];
+        }
 
-    Method originalResume = class_getInstanceMethod(class, selector);
+        Method originalResume = class_getInstanceMethod(class, selector);
 
-    void (^swizzleBlock)(NSURLSessionTask *) = ^(NSURLSessionTask *slf) {
-        [[FLEXNetworkObserver sharedObserver] URLSessionTaskWillResume:slf];
-        ((void(*)(id, SEL))objc_msgSend)(slf, swizzledSelector);
-    };
+        void (^swizzleBlock)(NSURLSessionTask *) = ^(NSURLSessionTask *slf) {
+            [[FLEXNetworkObserver sharedObserver] URLSessionTaskWillResume:slf];
+            ((void(*)(id, SEL))objc_msgSend)(slf, swizzledSelector);
+        };
 
-    IMP implementation = imp_implementationWithBlock(swizzleBlock);
-    class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalResume));
-    Method newResume = class_getInstanceMethod(class, swizzledSelector);
-    method_exchangeImplementations(originalResume, newResume);
+        IMP implementation = imp_implementationWithBlock(swizzleBlock);
+        class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalResume));
+        Method newResume = class_getInstanceMethod(class, swizzledSelector);
+        method_exchangeImplementations(originalResume, newResume);
+    });
 }
 
 + (void)injectIntoNSURLConnectionAsynchronousClassMethod
 {
-    Class class = objc_getMetaClass(class_getName([NSURLConnection class]));
-    SEL selector = @selector(sendAsynchronousRequest:queue:completionHandler:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = objc_getMetaClass(class_getName([NSURLConnection class]));
+        SEL selector = @selector(sendAsynchronousRequest:queue:completionHandler:);
+        SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
 
-    typedef void (^NSURLConnectionAsyncCompletion)(NSURLResponse* response, NSData* data, NSError* connectionError);
+        typedef void (^NSURLConnectionAsyncCompletion)(NSURLResponse* response, NSData* data, NSError* connectionError);
 
-    void (^asyncSwizzleBlock)(Class, NSURLRequest *, NSOperationQueue *, NSURLConnectionAsyncCompletion) = ^(Class slf, NSURLRequest *request, NSOperationQueue *queue, NSURLConnectionAsyncCompletion completion) {
-        if ([FLEXNetworkObserver isEnabled]) {
-            NSString *requestID = [self nextRequestID];
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
-            NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-            [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
-            NSURLConnectionAsyncCompletion completionWrapper = ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:response];
-                [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
-                if (connectionError) {
-                    [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:connectionError];
-                } else {
-                    [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
-                }
+        void (^asyncSwizzleBlock)(Class, NSURLRequest *, NSOperationQueue *, NSURLConnectionAsyncCompletion) = ^(Class slf, NSURLRequest *request, NSOperationQueue *queue, NSURLConnectionAsyncCompletion completion) {
+            if ([FLEXNetworkObserver isEnabled]) {
+                NSString *requestID = [self nextRequestID];
+                [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
+                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
+                NSURLConnectionAsyncCompletion completionWrapper = ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                    [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:response];
+                    [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
+                    if (connectionError) {
+                        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:connectionError];
+                    } else {
+                        [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
+                    }
 
-                // Call through to the original completion handler
-                if (completion) {
-                    completion(response, data, connectionError);
-                }
-            };
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, queue, completionWrapper);
-        } else {
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, queue, completion);
-        }
-    };
-
-    [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:asyncSwizzleBlock swizzledSelector:swizzledSelector];
+                    // Call through to the original completion handler
+                    if (completion) {
+                        completion(response, data, connectionError);
+                    }
+                };
+                ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, queue, completionWrapper);
+            } else {
+                ((void(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, queue, completion);
+            }
+        };
+        
+        [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:asyncSwizzleBlock swizzledSelector:swizzledSelector];
+    });
 }
 
 + (void)injectIntoNSURLConnectionSynchronousClassMethod
 {
-    Class class = objc_getMetaClass(class_getName([NSURLConnection class]));
-    SEL selector = @selector(sendSynchronousRequest:returningResponse:error:);
-    SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = objc_getMetaClass(class_getName([NSURLConnection class]));
+        SEL selector = @selector(sendSynchronousRequest:returningResponse:error:);
+        SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
 
-    NSData *(^syncSwizzleBlock)(Class, NSURLRequest *, NSURLResponse **, NSError **) = ^NSData *(Class slf, NSURLRequest *request, NSURLResponse **response, NSError **error) {
-        NSData *data = nil;
-        if ([FLEXNetworkObserver isEnabled]) {
-            NSString *requestID = [self nextRequestID];
-            [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
-            NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-            [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
-            NSError *temporaryError = nil;
-            NSURLResponse *temporaryResponse = nil;
-            data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(slf, swizzledSelector, request, &temporaryResponse, &temporaryError);
-            [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:temporaryResponse];
-            [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
-            if (temporaryError) {
-                [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:temporaryError];
+        NSData *(^syncSwizzleBlock)(Class, NSURLRequest *, NSURLResponse **, NSError **) = ^NSData *(Class slf, NSURLRequest *request, NSURLResponse **response, NSError **error) {
+            NSData *data = nil;
+            if ([FLEXNetworkObserver isEnabled]) {
+                NSString *requestID = [self nextRequestID];
+                [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
+                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
+                NSError *temporaryError = nil;
+                NSURLResponse *temporaryResponse = nil;
+                data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(slf, swizzledSelector, request, &temporaryResponse, &temporaryError);
+                [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:temporaryResponse];
+                [[FLEXNetworkRecorder defaultRecorder] recordDataReceivedWithRequestID:requestID dataLength:[data length]];
+                if (temporaryError) {
+                    [[FLEXNetworkRecorder defaultRecorder] recordLoadingFailedWithRequestID:requestID error:temporaryError];
+                } else {
+                    [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
+                }
+                if (error) {
+                    *error = temporaryError;
+                }
+                if (response) {
+                    *response = temporaryResponse;
+                }
             } else {
-                [[FLEXNetworkRecorder defaultRecorder] recordLoadingFinishedWithRequestID:requestID responseBody:data];
+                data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(slf, swizzledSelector, request, response, error);
             }
-            if (error) {
-                *error = temporaryError;
-            }
-            if (response) {
-                *response = temporaryResponse;
-            }
-        } else {
-            data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(slf, swizzledSelector, request, response, error);
-        }
 
-        return data;
-    };
-
-    [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:syncSwizzleBlock swizzledSelector:swizzledSelector];
+            return data;
+        };
+        
+        [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:syncSwizzleBlock swizzledSelector:swizzledSelector];
+    });
 }
 
 + (void)injectIntoNSURLSessionAsyncDataAndDownloadTaskMethods
 {
-    Class class = [NSURLSession class];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [NSURLSession class];
 
-    // The method signatures here are close enough that we can use the same logic to inject into all of them.
-    const SEL selectors[] = {
-        @selector(dataTaskWithHTTPGetRequest:completionHandler:),
-        @selector(dataTaskWithRequest:completionHandler:),
-        @selector(dataTaskWithURL:completionHandler:),
-        @selector(downloadTaskWithRequest:completionHandler:),
-        @selector(downloadTaskWithResumeData:completionHandler:),
-        @selector(downloadTaskWithURL:completionHandler:)
-    };
-
-    const int numSelectors = sizeof(selectors) / sizeof(SEL);
-
-    for (int selectorIndex = 0; selectorIndex < numSelectors; selectorIndex++) {
-        SEL selector = selectors[selectorIndex];
-        SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-
-        if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
-            // iOS 7 does not implement these methods on NSURLSession. We actually want to
-            // swizzle __NSCFURLSession, which we can get from the class of the shared session
-            class = [[NSURLSession sharedSession] class];
-        }
-
-        NSURLSessionTask *(^asyncDataOrDownloadSwizzleBlock)(Class, id, NSURLSessionAsyncCompletion) = ^NSURLSessionTask *(Class slf, id argument, NSURLSessionAsyncCompletion completion) {
-            NSURLSessionTask *task = nil;
-            if ([FLEXNetworkObserver isEnabled]) {
-                NSString *requestID = [self nextRequestID];
-                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-                NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
-                task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completionWrapper);
-                [self setRequestID:requestID forConnectionOrTask:task];
-            } else {
-                task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completion);
-            }
-            return task;
+        // The method signatures here are close enough that we can use the same logic to inject into all of them.
+        const SEL selectors[] = {
+            @selector(dataTaskWithHTTPGetRequest:completionHandler:),
+            @selector(dataTaskWithRequest:completionHandler:),
+            @selector(dataTaskWithURL:completionHandler:),
+            @selector(downloadTaskWithRequest:completionHandler:),
+            @selector(downloadTaskWithResumeData:completionHandler:),
+            @selector(downloadTaskWithURL:completionHandler:)
         };
 
-        [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:asyncDataOrDownloadSwizzleBlock swizzledSelector:swizzledSelector];
-    }
+        const int numSelectors = sizeof(selectors) / sizeof(SEL);
+
+        for (int selectorIndex = 0; selectorIndex < numSelectors; selectorIndex++) {
+            SEL selector = selectors[selectorIndex];
+            SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+            if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
+                // iOS 7 does not implement these methods on NSURLSession. We actually want to
+                // swizzle __NSCFURLSession, which we can get from the class of the shared session
+                class = [[NSURLSession sharedSession] class];
+            }
+
+            NSURLSessionTask *(^asyncDataOrDownloadSwizzleBlock)(Class, id, NSURLSessionAsyncCompletion) = ^NSURLSessionTask *(Class slf, id argument, NSURLSessionAsyncCompletion completion) {
+                NSURLSessionTask *task = nil;
+                if ([FLEXNetworkObserver isEnabled]) {
+                    NSString *requestID = [self nextRequestID];
+                    NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                    NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
+                    task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completionWrapper);
+                    [self setRequestID:requestID forConnectionOrTask:task];
+                } else {
+                    task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completion);
+                }
+                return task;
+            };
+            
+            [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:asyncDataOrDownloadSwizzleBlock swizzledSelector:swizzledSelector];
+        }
+    });
 }
 
 + (void)injectIntoNSURLSessionAsyncUploadTaskMethods
 {
-    Class class = [NSURLSession class];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [NSURLSession class];
 
-    // The method signatures here are close enough that we can use the same logic to inject into both of them.
-    // Note that they have 3 arguments, so we can't easily combine with the data and download method above.
-    const SEL selectors[] = {
-        @selector(uploadTaskWithRequest:fromData:completionHandler:),
-        @selector(uploadTaskWithRequest:fromFile:completionHandler:)
-    };
-
-    const int numSelectors = sizeof(selectors) / sizeof(SEL);
-
-    for (int selectorIndex = 0; selectorIndex < numSelectors; selectorIndex++) {
-        SEL selector = selectors[selectorIndex];
-        SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-
-        if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
-            // iOS 7 does not implement these methods on NSURLSession. We actually want to
-            // swizzle __NSCFURLSession, which we can get from the class of the shared session
-            class = [[NSURLSession sharedSession] class];
-        }
-
-        NSURLSessionUploadTask *(^asyncUploadTaskSwizzleBlock)(Class, NSURLRequest *, id, NSURLSessionAsyncCompletion) = ^NSURLSessionUploadTask *(Class slf, NSURLRequest *request, id argument, NSURLSessionAsyncCompletion completion) {
-            NSURLSessionUploadTask *task = nil;
-            if ([FLEXNetworkObserver isEnabled]) {
-                NSString *requestID = [self nextRequestID];
-                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
-                NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
-                task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completionWrapper);
-                [self setRequestID:requestID forConnectionOrTask:task];
-            } else {
-                task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completion);
-            }
-            return task;
+        // The method signatures here are close enough that we can use the same logic to inject into both of them.
+        // Note that they have 3 arguments, so we can't easily combine with the data and download method above.
+        const SEL selectors[] = {
+            @selector(uploadTaskWithRequest:fromData:completionHandler:),
+            @selector(uploadTaskWithRequest:fromFile:completionHandler:)
         };
 
-        [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:asyncUploadTaskSwizzleBlock swizzledSelector:swizzledSelector];
-    }
+        const int numSelectors = sizeof(selectors) / sizeof(SEL);
+
+        for (int selectorIndex = 0; selectorIndex < numSelectors; selectorIndex++) {
+            SEL selector = selectors[selectorIndex];
+            SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
+
+            if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
+                // iOS 7 does not implement these methods on NSURLSession. We actually want to
+                // swizzle __NSCFURLSession, which we can get from the class of the shared session
+                class = [[NSURLSession sharedSession] class];
+            }
+
+            NSURLSessionUploadTask *(^asyncUploadTaskSwizzleBlock)(Class, NSURLRequest *, id, NSURLSessionAsyncCompletion) = ^NSURLSessionUploadTask *(Class slf, NSURLRequest *request, id argument, NSURLSessionAsyncCompletion completion) {
+                NSURLSessionUploadTask *task = nil;
+                if ([FLEXNetworkObserver isEnabled]) {
+                    NSString *requestID = [self nextRequestID];
+                    NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                    NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
+                    task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completionWrapper);
+                    [self setRequestID:requestID forConnectionOrTask:task];
+                } else {
+                    task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completion);
+                }
+                return task;
+            };
+            
+            [self replaceImplementationOfKnownSelector:selector onClass:class withBlock:asyncUploadTaskSwizzleBlock swizzledSelector:swizzledSelector];
+        }
+    });
 }
 
 + (NSString *)mechansimFromClassMethod:(SEL)selector onClass:(Class)class
