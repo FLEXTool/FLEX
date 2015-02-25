@@ -565,7 +565,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
         // Call through to the original completion handler
         if (completion) {
-            completion(data, response, error);
+            completion(fileURLOrData, response, error);
         }
     };
     return completionWrapper;
