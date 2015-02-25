@@ -309,6 +309,27 @@
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
+#pragma mark - Menu Actions
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    return action == @selector(copy:);
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    if (action == @selector(copy:)) {
+        FLEXNetworkTransaction *transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
+        NSString *requestURLString = transaction.request.URL.absoluteString ?: @"";
+        [[UIPasteboard generalPasteboard] setString:requestURLString];
+    }
+}
+
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
 {
     FLEXNetworkTransaction *transaction = nil;
