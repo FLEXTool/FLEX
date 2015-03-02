@@ -278,8 +278,13 @@
     } else {
         prettyString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }
-
+    
     return prettyString;
+}
+
++ (BOOL)isValidJSONData:(NSData *)data
+{
+    return [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL] ? YES : NO;
 }
 
 // Thanks to the following links for help with this method

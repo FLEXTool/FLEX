@@ -400,7 +400,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 {
     // FIXME (RKO): Don't rely on UTF8 string encoding
     UIViewController *detailViewController = nil;
-    if ([mimeType isEqual:@"application/json"] || [mimeType isEqual:@"application/javascript"] || [mimeType isEqual:@"text/javascript"]) {
+    if ([FLEXUtility isValidJSONData:data]) {
         NSString *prettyJSON = [FLEXUtility prettyJSONStringFromData:data];
         if ([prettyJSON length] > 0) {
             detailViewController = [[FLEXWebViewController alloc] initWithText:prettyJSON];
