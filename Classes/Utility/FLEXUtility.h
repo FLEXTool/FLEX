@@ -35,6 +35,7 @@
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
 + (NSDictionary *)dictionaryFromQuery:(NSString *)query;
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
++ (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
 
 @end
