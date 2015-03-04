@@ -179,6 +179,26 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     return [sectionModel.rows objectAtIndex:indexPath.row];
 }
 
+#pragma mark - Cell Copying
+
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    return action == @selector(copy:);
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+    if (action == @selector(copy:)) {
+        FLEXNetworkDetailRow *row = [self rowModelAtIndexPath:indexPath];
+        [[UIPasteboard generalPasteboard] setString:row.detailText];
+    }
+}
+
 #pragma mark - View Configuration
 
 + (NSAttributedString *)attributedTextForRow:(FLEXNetworkDetailRow *)row
