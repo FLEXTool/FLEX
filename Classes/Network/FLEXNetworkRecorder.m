@@ -173,7 +173,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         }
 
         NSString *mimeType = transaction.response.MIMEType;
-        if ([mimeType hasPrefix:@"image/"]) {
+        if ([mimeType hasPrefix:@"image/"] && [responseBody length] > 0) {
             // Thumbnail image previews on a separate background queue
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSInteger maxPixelDimension = [[UIScreen mainScreen] scale] * 32.0;
