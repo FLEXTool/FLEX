@@ -89,7 +89,7 @@ The code injection is left as an exercise for the reader. :innocent:
 FLEX is available on [Cocoapods](http://cocoapods.org/). Simply add the following line to your podfile:
 
 ```ruby
-pod 'FLEX', '~> 1.1'
+pod 'FLEX', '~> 2.0'
 ```
 
 Alternatively, you can manually add the files in `Classes/` to your Xcode project. FLEX requires iOS 6 or higher.
