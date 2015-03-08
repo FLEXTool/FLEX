@@ -103,6 +103,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
+    NSDate *startDate = [NSDate date];
+
     if (redirectResponse) {
         [self recordResponseReceivedWithRequestID:requestID response:redirectResponse];
         [self recordLoadingFinishedWithRequestID:requestID responseBody:nil];
@@ -112,7 +114,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
         transaction.requestID = requestID;
         transaction.request = request;
-        transaction.startTime = [NSDate date];
+        transaction.startTime = startDate;
 
         [self.orderedTransactions insertObject:transaction atIndex:0];
         [self.networkTransactionsForRequestIdentifiers setObject:transaction forKey:requestID];
@@ -124,6 +126,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordResponseReceivedWithRequestID:(NSString *)requestID response:(NSURLResponse *)response
 {
+    NSDate *responseDate = [NSDate date];
+
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
@@ -131,7 +135,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         }
         transaction.response = response;
         transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
-        transaction.latency = -[transaction.startTime timeIntervalSinceNow];
+        transaction.latency = -[transaction.startTime timeIntervalSinceDate:responseDate];
 
         [self postUpdateNotificationForTransaction:transaction];
     });
@@ -152,13 +156,15 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordLoadingFinishedWithRequestID:(NSString *)requestID responseBody:(NSData *)responseBody
 {
+    NSDate *finishedDate = [NSDate date];
+
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
         if (!transaction) {
             return;
         }
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
-        transaction.duration = -[transaction.startTime timeIntervalSinceNow];
+        transaction.duration = -[transaction.startTime timeIntervalSinceDate:finishedDate];
 
         BOOL shouldCache = [responseBody length] > 0;
         if (!self.shouldCacheMediaResponses) {
