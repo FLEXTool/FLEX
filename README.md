@@ -92,7 +92,7 @@ FLEX is available on [Cocoapods](http://cocoapods.org/). Simply add the followin
 pod 'FLEX', '~> 2.0'
 ```
 
-Alternatively, you can manually add the files in `Classes/` to your Xcode project. FLEX requires iOS 6 or higher.
+Alternatively, you can manually add the files in `Classes/` to your Xcode project. FLEX requires iOS 7 or higher.
 
 
 ## Excluding FLEX from Release (App Store) Builds
