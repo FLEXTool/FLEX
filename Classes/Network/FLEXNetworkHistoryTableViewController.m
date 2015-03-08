@@ -229,10 +229,10 @@
     for (UITableView *tableView in tableViews) {
         for (FLEXNetworkTransactionTableViewCell *cell in [tableView visibleCells]) {
             if ([cell.transaction isEqual:transaction]) {
-                NSIndexPath *indexPath = [tableView indexPathForCell:cell];
-                if (indexPath) {
-                    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                }
+                // Using -[UITableView reloadRowsAtIndexPaths:withRowAnimation:] is overkill here and kicks off a lot of
+                // work that can make the table view somewhat unresponseive when lots of updates are streaming in.
+                // We just need to tell the cell that it needs to re-layout.
+                [cell setNeedsLayout];
                 break;
             }
         }
