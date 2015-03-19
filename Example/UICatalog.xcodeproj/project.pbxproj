@@ -287,12 +287,12 @@
 		944F7486197B458C009AB039 /* FLEXHierarchyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXHierarchyTableViewController.m; sourceTree = "<group>"; };
 		944F7487197B458C009AB039 /* FLEXImagePreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXImagePreviewViewController.h; sourceTree = "<group>"; };
 		944F7488197B458C009AB039 /* FLEXImagePreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXImagePreviewViewController.m; sourceTree = "<group>"; };
-		946C6EC71A7598D3006545C2 /* FLEXSystemLogTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FLEXSystemLogTableViewCell.h; path = "System Log/FLEXSystemLogTableViewCell.h"; sourceTree = "<group>"; };
-		946C6EC81A7598D3006545C2 /* FLEXSystemLogTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXSystemLogTableViewCell.m; path = "System Log/FLEXSystemLogTableViewCell.m"; sourceTree = "<group>"; };
-		946C6ECA1A759928006545C2 /* FLEXSystemLogTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXSystemLogTableViewController.m; path = "System Log/FLEXSystemLogTableViewController.m"; sourceTree = "<group>"; };
-		946C6ECB1A759928006545C2 /* FLEXSystemLogTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FLEXSystemLogTableViewController.h; path = "System Log/FLEXSystemLogTableViewController.h"; sourceTree = "<group>"; };
-		946C6ECD1A7599C4006545C2 /* FLEXSystemLogMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FLEXSystemLogMessage.h; path = "System Log/FLEXSystemLogMessage.h"; sourceTree = "<group>"; };
-		946C6ECE1A7599C4006545C2 /* FLEXSystemLogMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXSystemLogMessage.m; path = "System Log/FLEXSystemLogMessage.m"; sourceTree = "<group>"; };
+		946C6EC71A7598D3006545C2 /* FLEXSystemLogTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FLEXSystemLogTableViewCell.h; path = "FLEXSystemLogTableViewCell.h"; sourceTree = "<group>"; };
+		946C6EC81A7598D3006545C2 /* FLEXSystemLogTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXSystemLogTableViewCell.m; path = "FLEXSystemLogTableViewCell.m"; sourceTree = "<group>"; };
+		946C6ECA1A759928006545C2 /* FLEXSystemLogTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXSystemLogTableViewController.m; path = "FLEXSystemLogTableViewController.m"; sourceTree = "<group>"; };
+		946C6ECB1A759928006545C2 /* FLEXSystemLogTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FLEXSystemLogTableViewController.h; path = "FLEXSystemLogTableViewController.h"; sourceTree = "<group>"; };
+		946C6ECD1A7599C4006545C2 /* FLEXSystemLogMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FLEXSystemLogMessage.h; path = "FLEXSystemLogMessage.h"; sourceTree = "<group>"; };
+		946C6ECE1A7599C4006545C2 /* FLEXSystemLogMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXSystemLogMessage.m; path = "FLEXSystemLogMessage.m"; sourceTree = "<group>"; };
 		94C681F11A3E941800E1936D /* FLEXLayerExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXLayerExplorerViewController.h; sourceTree = "<group>"; };
 		94C681F21A3E941800E1936D /* FLEXLayerExplorerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXLayerExplorerViewController.m; sourceTree = "<group>"; };
 		94CB48371A8EC6000054A905 /* FLEXMultilineTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXMultilineTableViewCell.h; sourceTree = "<group>"; };
@@ -528,7 +528,7 @@
 				D03647D619847235007D2A1B /* Private */,
 			);
 			name = "Object Explorers";
-			path = "../Classes/Object Explorers";
+			path = ../Classes/ObjectExplorers;
 			sourceTree = "<group>";
 		};
 		944F743B197B458C009AB039 /* Utility */ = {
@@ -600,7 +600,8 @@
 				944F745A197B458C009AB039 /* FLEXArgumentInputViewFactory.h */,
 				944F745B197B458C009AB039 /* FLEXArgumentInputViewFactory.m */,
 			);
-			path = "Argument Input Views";
+			name = "Argument Input Views";
+			path = ArgumentInputViews;
 			sourceTree = "<group>";
 		};
 		944F7468197B458C009AB039 /* Explorer Toolbar */ = {
@@ -619,13 +620,13 @@
 				944F7472197B458C009AB039 /* FLEXWindow.m */,
 			);
 			name = "Explorer Toolbar";
-			path = "../Classes/Explorer Toolbar";
+			path = ../Classes/ExplorerToolbar;
 			sourceTree = "<group>";
 		};
 		944F7473197B458C009AB039 /* Global State Explorers */ = {
 			isa = PBXGroup;
 			children = (
-				946C6EC61A75986C006545C2 /* System Log */,
+				946C6EC61A75986C006545C2 /* SystemLog */,
 				944F7474197B458C009AB039 /* FLEXClassesTableViewController.h */,
 				944F7475197B458C009AB039 /* FLEXClassesTableViewController.m */,
 				944F7476197B458C009AB039 /* FLEXFileBrowserTableViewController.h */,
@@ -646,7 +647,7 @@
 				944F7481197B458C009AB039 /* FLEXWebViewController.m */,
 			);
 			name = "Global State Explorers";
-			path = "../Classes/Global State Explorers";
+			path = ../Classes/GlobalStateExplorers;
 			sourceTree = "<group>";
 		};
 		944F7482197B458C009AB039 /* View Hierarchy */ = {
@@ -660,7 +661,7 @@
 				944F7488197B458C009AB039 /* FLEXImagePreviewViewController.m */,
 			);
 			name = "View Hierarchy";
-			path = "../Classes/View Hierarchy";
+			path = ../Classes/ViewHierarchy;
 			sourceTree = "<group>";
 		};
 		944F74B8197B46D2009AB039 /* FLEX Integration */ = {
@@ -672,7 +673,7 @@
 			name = "FLEX Integration";
 			sourceTree = "<group>";
 		};
-		946C6EC61A75986C006545C2 /* System Log */ = {
+		946C6EC61A75986C006545C2 /* SystemLog */ = {
 			isa = PBXGroup;
 			children = (
 				946C6ECB1A759928006545C2 /* FLEXSystemLogTableViewController.h */,
@@ -683,6 +684,7 @@
 				946C6EC81A7598D3006545C2 /* FLEXSystemLogTableViewCell.m */,
 			);
 			name = "System Log";
+			path = SystemLog;
 			sourceTree = "<group>";
 		};
 		D03647D619847235007D2A1B /* Private */ = {
