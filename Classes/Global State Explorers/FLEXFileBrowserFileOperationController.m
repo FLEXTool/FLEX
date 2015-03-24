@@ -7,6 +7,7 @@
 //
 
 #import "FLEXFileBrowserFileOperationController.h"
+#import <UIKit/UIKit.h>
 
 @interface FLEXFileBrowserFileDeleteOperationController () <UIAlertViewDelegate>
 
