@@ -12,6 +12,8 @@
 //  which Square, Inc. licenses this file to you.
 //
 
+#import <Foundation/Foundation.h>
+
 extern NSString *const kFLEXNetworkObserverEnabledStateChangedNotification;
 
 /// This class swizzles NSURLConnection and NSURLSession delegate methods to observe events in the URL loading system.
