@@ -583,7 +583,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     if (encodingCString[0] == '@') {
         NSString *class = [encodingString substringFromIndex:1];
         class = [class stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-        if ([class length] == 0) {
+        if ([class length] == 0 || [class isEqual:@"?"]) {
             class = @"id";
         } else {
             class = [class stringByAppendingString:@" *"];
