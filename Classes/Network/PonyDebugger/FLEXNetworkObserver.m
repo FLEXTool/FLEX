@@ -102,7 +102,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 + (void)setShouldEnableOnLaunch:(BOOL)shouldEnableOnLaunch
 {
-    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kFLEXNetworkObserverEnableOnLaunchDefaultsKey];
+    [[NSUserDefaults standardUserDefaults] setBool:shouldEnableOnLaunch forKey:kFLEXNetworkObserverEnableOnLaunchDefaultsKey];
 }
 
 + (BOOL)shouldEnableOnLaunch
