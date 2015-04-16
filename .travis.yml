@@ -1,3 +1,4 @@
 language: objective-c
 xcode_project: Example/UICatalog.xcodeproj
 xcode_scheme: UICatalog
+xcode_sdk: iphonesimulator
