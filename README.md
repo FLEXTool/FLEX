@@ -92,16 +92,17 @@ The code injection is left as an exercise for the reader. :innocent:
 
 
 ## Installation
-FLEX is available on [Cocoapods](http://cocoapods.org/). Simply add the following line to your podfile:
+FLEX is available on [Cocoapods](http://cocoapods.org/?q=FLEX). Simply add the following line to your podfile:
 
 ```ruby
-pod 'FLEX', '~> 2.0'
+pod 'FLEX', '~> 2.0', :configurations => ['Debug']
 ```
 
 Alternatively, you can manually add the files in `Classes/` to your Xcode project. FLEX requires iOS 7 or higher.
 
 
 ## Excluding FLEX from Release (App Store) Builds
+*Note: CocoaPods handles this automatically if you only specify the Debug configuration for FLEX in your Podfile.*
 FLEX makes it easy to explore the internals of your app, so it is not something you should expose to your users. Fortunately, it is easy to exclude FLEX files from Release builds. In Xcode, navigate to the "Build Settings" tab of your project. Click the plus and select `Add User-Defined Setting`.
 
 ![Add User-Defined Setting](http://engineering.flipboard.com/assets/flex/flex-readme-exclude-1.png)
