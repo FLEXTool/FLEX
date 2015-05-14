@@ -15,6 +15,7 @@
 @property (nonatomic, weak) id <FLEXExplorerViewControllerDelegate> delegate;
 
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates;
+- (BOOL)wantsWindowToBecomeKey;
 
 @end
 

@@ -810,9 +810,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)resignKeyAndDismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion
 {
-    [self.previousKeyWindow makeKeyWindow];
-    [[self.previousKeyWindow rootViewController] setNeedsStatusBarAppearanceUpdate];
+    UIWindow *previousKeyWindow = self.previousKeyWindow;
     self.previousKeyWindow = nil;
+    [previousKeyWindow makeKeyWindow];
+    [[previousKeyWindow rootViewController] setNeedsStatusBarAppearanceUpdate];
     
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for scroll to top, but below FLEX otherwise for exploration.
@@ -822,6 +823,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [[UIApplication sharedApplication] setStatusBarStyle:self.previousStatusBarStyle];
     
     [self dismissViewControllerAnimated:animated completion:completion];
+}
+
+- (BOOL)wantsWindowToBecomeKey
+{
+    return self.previousKeyWindow != nil;
 }
 
 @end

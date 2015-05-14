@@ -113,8 +113,8 @@
 
 - (BOOL)canBecomeKeyWindow
 {
-    // Only when the explorer is showing a modal, because we want to affect the status bar and receive key input there.
-    return self.explorerViewController.presentedViewController != nil;
+    // Only when the explorer view controller wants it because it needs to accept key input & affect the status bar.
+    return [self.explorerViewController wantsWindowToBecomeKey];
 }
 
 
