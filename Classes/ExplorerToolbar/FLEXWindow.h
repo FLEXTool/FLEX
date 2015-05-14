@@ -19,5 +19,6 @@
 @protocol FLEXWindowEventDelegate <NSObject>
 
 - (BOOL)shouldHandleTouchAtPoint:(CGPoint)pointInWindow;
+- (BOOL)canBecomeKeyWindow;
 
 @end

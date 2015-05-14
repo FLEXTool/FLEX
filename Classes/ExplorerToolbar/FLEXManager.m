@@ -111,6 +111,12 @@
     return [self.explorerViewController shouldReceiveTouchAtWindowPoint:pointInWindow];
 }
 
+- (BOOL)canBecomeKeyWindow
+{
+    // Only when the explorer is showing a modal, because we want to affect the status bar and receive key input there.
+    return self.explorerViewController.presentedViewController != nil;
+}
+
 
 #pragma mark - FLEXExplorerViewControllerDelegate
 
