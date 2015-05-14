@@ -122,9 +122,18 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Rotation
 
+- (UIWindow*)mainApplicationWindow {
+    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+        if (!window.hidden && window != self.view.window) {
+            return window;
+        }
+    }
+    return nil;
+}
+
 - (UIViewController *)viewControllerForRotationAndOrientation
 {
-    UIWindow *window = self.previousKeyWindow ?: [[UIApplication sharedApplication] keyWindow];
+    UIWindow *window = self.previousKeyWindow ?: [self mainApplicationWindow];
     UIViewController *viewController = window.rootViewController;
     NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
     SEL viewControllerSelector = NSSelectorFromString(viewControllerSelectorString);
