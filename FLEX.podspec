@@ -35,5 +35,4 @@ Pod::Spec.new do |spec|
   spec.frameworks       = "CoreGraphics"
   spec.libraries        = "z"
   spec.requires_arc     = true
-  spec.private_header_files  = "Classes/**/*Private.h"
 end

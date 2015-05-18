@@ -9,7 +9,6 @@
 #import "FLEXSystemLogTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXSystemLogMessage.h"
-#import "FLEXSystemLogMessage+Private.h"
 #import "FLEXSystemLogTableViewCell.h"
 #import <asl.h>
 
