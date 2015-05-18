@@ -316,7 +316,7 @@
         NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
-        indexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:sender];
+        indexPath = [self.searchController.searchResultsTableView indexPathForCell:sender];
         fullPath = [self.searchPaths objectAtIndex:indexPath.row];
     }
 
@@ -334,7 +334,7 @@
         NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
-        indexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:sender];
+        indexPath = [self.searchController.searchResultsTableView indexPathForCell:sender];
         fullPath = [self.searchPaths objectAtIndex:indexPath.row];
     }
 
@@ -345,9 +345,9 @@
 
 - (void)reloadDisplayedPaths
 {
-    if (self.searchDisplayController.isActive) {
+    if (self.searchController.isActive) {
         [self reloadSearchPaths];
-        [self.searchDisplayController.searchResultsTableView reloadData];
+        [self.searchController.searchResultsTableView reloadData];
     } else {
         [self reloadChildPaths];
         [self.tableView reloadData];

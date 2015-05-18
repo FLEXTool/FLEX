@@ -62,7 +62,10 @@
 
     UISearchBar *searchBar = [[UISearchBar alloc] init];
     [searchBar sizeToFit];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     self.searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
+#pragma clang diagnostic pop
     self.searchController.delegate = self;
     self.searchController.searchResultsDataSource = self;
     self.searchController.searchResultsDelegate = self;
@@ -358,9 +361,9 @@
             return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
         }]];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.searchDisplayController.searchBar.text isEqual:searchString]) {
+            if ([self.searchController.searchBar.text isEqual:searchString]) {
                 self.filteredNetworkTransactions = filteredNetworkTransactions;
-                [self.searchDisplayController.searchResultsTableView reloadData];
+                [self.searchController.searchResultsTableView reloadData];
             }
         });
     });
