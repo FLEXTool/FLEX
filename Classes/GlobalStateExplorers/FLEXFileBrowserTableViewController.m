@@ -316,10 +316,7 @@
         NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        indexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:sender];
-#pragma clang diagnostic pop
+        indexPath = [self.searchController.searchResultsTableView indexPathForCell:sender];
         fullPath = [self.searchPaths objectAtIndex:indexPath.row];
     }
 
@@ -337,10 +334,7 @@
         NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        indexPath = [self.searchDisplayController.searchResultsTableView indexPathForCell:sender];
-#pragma clang diagnostic pop
+        indexPath = [self.searchController.searchResultsTableView indexPathForCell:sender];
         fullPath = [self.searchPaths objectAtIndex:indexPath.row];
     }
 
@@ -351,16 +345,13 @@
 
 - (void)reloadDisplayedPaths
 {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    if (self.searchDisplayController.isActive) {
+    if (self.searchController.isActive) {
         [self reloadSearchPaths];
-        [self.searchDisplayController.searchResultsTableView reloadData];
+        [self.searchController.searchResultsTableView reloadData];
     } else {
         [self reloadChildPaths];
         [self.tableView reloadData];
     }
-#pragma clang diagnostic pop
 }
 
 - (void)reloadChildPaths

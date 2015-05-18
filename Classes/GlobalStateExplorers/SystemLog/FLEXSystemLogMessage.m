@@ -7,14 +7,13 @@
 //
 
 #import "FLEXSystemLogMessage.h"
-#import <asl.h>
 
 @implementation FLEXSystemLogMessage
 
 +(instancetype)logMessageFromASLMessage:(aslmsg)aslMessage
 {
     FLEXSystemLogMessage *logMessage = [[FLEXSystemLogMessage alloc] init];
-    
+
     const char *timestamp = asl_get(aslMessage, ASL_KEY_TIME);
     if (timestamp) {
         NSTimeInterval timeInterval = [@(timestamp) integerValue];
@@ -24,22 +23,22 @@
         }
         logMessage.date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
     }
-    
+
     const char *sender = asl_get(aslMessage, ASL_KEY_SENDER);
     if (sender) {
         logMessage.sender = @(sender);
     }
-    
+
     const char *messageText = asl_get(aslMessage, ASL_KEY_MSG);
     if (messageText) {
         logMessage.messageText = @(messageText);
     }
-    
+
     const char *messageID = asl_get(aslMessage, ASL_KEY_MSG_ID);
     if (messageID) {
         logMessage.messageID = [@(messageID) longLongValue];
     }
-    
+
     return logMessage;
 }
 
