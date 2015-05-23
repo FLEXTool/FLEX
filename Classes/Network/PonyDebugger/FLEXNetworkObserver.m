@@ -149,6 +149,14 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 /// The superclass implementation (and implementations in classes above that) will be executed without inteference if called from the original implementation.
 + (void)sniffWithoutDuplicationForObject:(NSObject *)object selector:(SEL)selector sniffingBlock:(void (^)(void))sniffingBlock originalImplementationBlock:(void (^)(void))originalImplementationBlock
 {
+    // If we don't have an object to detect nested calls on, just run the original implmentation and bail.
+    // This case can happen if someone besides the URL loading system calls the delegate methods directly.
+    // See https://github.com/Flipboard/FLEX/issues/61 for an example.
+    if (!object) {
+        originalImplementationBlock();
+        return;
+    }
+
     const void *key = selector;
 
     // Don't run the sniffing block if we're inside a nested call
