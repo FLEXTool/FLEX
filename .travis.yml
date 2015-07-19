@@ -1,4 +1,8 @@
 language: objective-c
-xcode_project: Example/UICatalog.xcodeproj
-xcode_scheme: UICatalog
-xcode_sdk: iphonesimulator
+xcode_workspace: FLEX.xcworkspace
+matrix:
+    include:
+        - xcode_scheme: UICatalog
+          xcode_sdk: iphonesimulator
+        - xcode_scheme: FLEX
+          xcode_sdk: iphonesimulator
