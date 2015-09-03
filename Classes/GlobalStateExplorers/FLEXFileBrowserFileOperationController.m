@@ -13,6 +13,8 @@
 
 @property (nonatomic, copy, readonly) NSString *path;
 
+- (instancetype)initWithPath:(NSString *)path NS_DESIGNATED_INITIALIZER;
+
 @end
 
 @implementation FLEXFileBrowserFileDeleteOperationController
@@ -73,6 +75,8 @@
 @interface FLEXFileBrowserFileRenameOperationController () <UIAlertViewDelegate>
 
 @property (nonatomic, copy, readonly) NSString *path;
+
+- (instancetype)initWithPath:(NSString *)path NS_DESIGNATED_INITIALIZER;
 
 @end
 
