@@ -465,7 +465,6 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
         // The method signatures here are close enough that we can use the same logic to inject into all of them.
         const SEL selectors[] = {
-            @selector(dataTaskWithHTTPGetRequest:completionHandler:),
             @selector(dataTaskWithRequest:completionHandler:),
             @selector(dataTaskWithURL:completionHandler:),
             @selector(downloadTaskWithRequest:completionHandler:),
