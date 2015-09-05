@@ -867,8 +867,6 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     Method method = class_getInstanceMethod(cls, selector);
     struct objc_method_description methodDescription = *method_getDescription(method);
 
-    typedef void (^NSURLSessionTaskDidCompleteWithErrorBlock)(id slf, SEL sel);
-
     BOOL (^undefinedBlock)(id <NSURLSessionTaskDelegate>, SEL) = ^(id slf, SEL sel) {
         return YES;
     };
