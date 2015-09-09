@@ -352,14 +352,19 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Class class = [NSURLSessionTask class];
+        // In iOS 7 resume lives in __NSCFLocalSessionTask
+        // In iOS 8 resume lives in NSURLSessionTask
+        // In iOS 9 resume lives in __NSCFURLSessionTask
+        Class class = Nil;
+        if (![[NSProcessInfo processInfo] respondsToSelector:@selector(operatingSystemVersion)]) {
+            class = NSClassFromString([@[@"__", @"NSC", @"FLocalS", @"ession", @"Task"] componentsJoinedByString:@""]);
+        } else if ([[NSProcessInfo processInfo] operatingSystemVersion].majorVersion < 9) {
+            class = [NSURLSessionTask class];
+        } else {
+            class = NSClassFromString([@[@"__", @"NSC", @"FURLS", @"ession", @"Task"] componentsJoinedByString:@""]);
+        }
         SEL selector = @selector(resume);
         SEL swizzledSelector = [self swizzledSelectorForSelector:selector];
-
-        if ([self instanceRespondsButDoesNotImplementSelector:selector class:class]) {
-            // Dummy NSURLSessionTask to get the actual class, needed for iOS 7 (__NSCFURLSessionTask)
-            class = [[[NSURLSession sharedSession] dataTaskWithURL:[NSURL URLWithString:@"about:blank"]] superclass];
-        }
 
         Method originalResume = class_getInstanceMethod(class, selector);
 
