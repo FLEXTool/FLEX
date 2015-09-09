@@ -1151,7 +1151,8 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
         if (!requestState.dataAccumulator) {
-            requestState.dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)totalBytesExpectedToWrite];
+            NSUInteger unsignedBytesExpectedToWrite = totalBytesExpectedToWrite > 0 ? totalBytesExpectedToWrite : 0;
+            requestState.dataAccumulator = [[NSMutableData alloc] initWithCapacity:unsignedBytesExpectedToWrite];
             [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:downloadTask.response];
 
             NSString *requestMechanism = [NSString stringWithFormat:@"NSURLSessionDownloadTask (delegate: %@)", [delegate class]];
