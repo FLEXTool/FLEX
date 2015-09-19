@@ -246,8 +246,8 @@
         // [a, 1]
         NSArray *components = [keyValueString componentsSeparatedByString:@"="];
         if ([components count] == 2) {
-            NSString *key = [[components firstObject] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            id value = [[components lastObject] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *key = [[components firstObject] stringByRemovingPercentEncoding];
+            id value = [[components lastObject] stringByRemovingPercentEncoding];
 
             // Handle multiple entries under the same key as an array
             id existingEntry = [queryDictionary objectForKey:key];
