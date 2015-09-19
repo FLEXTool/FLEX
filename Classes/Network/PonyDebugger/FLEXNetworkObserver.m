@@ -20,7 +20,7 @@
 #import <dispatch/queue.h>
 
 NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNetworkObserverEnabledStateChangedNotification";
-static NSString *const kFLEXNetworkObserverEnableOnLaunchDefaultsKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
+static NSString *const kFLEXNetworkObserverEnabledDefaultsKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
 
 typedef void (^NSURLSessionAsyncCompletion)(id fileURLOrData, NSURLResponse *response, NSError *error);
 
@@ -67,7 +67,6 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 @interface FLEXNetworkObserver ()
 
-@property (nonatomic, assign, getter=isEnabled) BOOL enabled;
 @property (nonatomic, strong) NSMutableDictionary *requestStatesForRequestIDs;
 @property (nonatomic, strong) dispatch_queue_t queue;
 
@@ -79,43 +78,32 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 + (void)setEnabled:(BOOL)enabled
 {
+    BOOL previouslyEnabled = [self isEnabled];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:kFLEXNetworkObserverEnabledDefaultsKey];
+    
     if (enabled) {
         // Inject if needed. This injection is protected with a dispatch_once, so we're ok calling it multiple times.
         // By doing the injection lazily, we keep the impact of the tool lower when this feature isn't enabled.
         [self injectIntoAllNSURLConnectionDelegateClasses];
     }
-    [[self sharedObserver] setEnabled:enabled];
-}
-
-+ (BOOL)isEnabled
-{
-    return [[self sharedObserver] isEnabled];
-}
-
-- (void)setEnabled:(BOOL)enabled
-{
-    if (_enabled != enabled) {
-        _enabled = enabled;
+    
+    if (previouslyEnabled != enabled) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kFLEXNetworkObserverEnabledStateChangedNotification object:self];
     }
 }
 
-+ (void)setShouldEnableOnLaunch:(BOOL)shouldEnableOnLaunch
++ (BOOL)isEnabled
 {
-    [[NSUserDefaults standardUserDefaults] setBool:shouldEnableOnLaunch forKey:kFLEXNetworkObserverEnableOnLaunchDefaultsKey];
-}
-
-+ (BOOL)shouldEnableOnLaunch
-{
-    return [[[NSUserDefaults standardUserDefaults] objectForKey:kFLEXNetworkObserverEnableOnLaunchDefaultsKey] boolValue];
+    return [[[NSUserDefaults standardUserDefaults] objectForKey:kFLEXNetworkObserverEnabledDefaultsKey] boolValue];
 }
 
 + (void)load
 {
     // We don't want to do the swizzling from +load because not all the classes may be loaded at this point.
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self shouldEnableOnLaunch]) {
-            [self setEnabled:YES];
+        if ([self isEnabled]) {
+            [self injectIntoAllNSURLConnectionDelegateClasses];
         }
     });
 }
@@ -972,7 +960,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 
 - (void)performBlock:(dispatch_block_t)block
 {
-    if (self.isEnabled) {
+    if ([[self class] isEnabled]) {
         dispatch_async(_queue, block);
     }
 }
