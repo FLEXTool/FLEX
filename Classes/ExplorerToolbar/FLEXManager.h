@@ -18,6 +18,8 @@
 - (void)showExplorer;
 - (void)hideExplorer;
 
+#pragma mark - Network Debugging
+
 /// If this property is set to YES, FLEX will swizzle NSURLConnection*Delegate and NSURLSession*Delegate methods
 /// on classes that conform to the protocols. This allows you to view network activity history from the main FLEX menu.
 /// Full responses are kept temporarily in a size limited cache and may be pruged under memory pressure.
