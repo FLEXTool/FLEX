@@ -17,6 +17,17 @@
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates;
 - (BOOL)wantsWindowToBecomeKey;
 
+// Keyboard shortcut helpers
+
+- (void)toggleSelectTool;
+- (void)toggleMoveTool;
+- (void)toggleViewsTool;
+- (void)toggleMenuTool;
+- (void)handleDownArrowKeyPressed;
+- (void)handleUpArrowKeyPressed;
+- (void)handleRightArrowKeyPressed;
+- (void)handleLeftArrowKeyPressed;
+
 @end
 
 @protocol FLEXExplorerViewControllerDelegate <NSObject>
