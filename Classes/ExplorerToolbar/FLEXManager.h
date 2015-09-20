@@ -29,6 +29,23 @@
 /// The response cache uses an NSCache, so it may purge prior to hitting the limit when the app is under memory pressure.
 @property (nonatomic, assign) NSUInteger networkResponseCacheByteLimit;
 
+#pragma mark - Keyboard Shortcuts
+
+/// Simulator keyboard shortcuts are enabled by default.
+/// The shortcuts will not fire when there is an active text field, text view, or other responder accepting key input.
+/// You can disable keyboard shortcuts if you have existing keyboard shortcuts that conflict with FLEX, or if you like doing things the hard way ;)
+/// Keyboard shortcuts are always disabled (and support is compiled out) in non-simulator builds
+@property (nonatomic, assign) BOOL simulatorShortcutsEnabled;
+
+/// Adds an action to run when the specified key & modifier combination is pressed
+/// @param key A single character string matching a key on the keyboard
+/// @param modifiers Modifier keys such as shift, command, or alt/option
+/// @param action The block to run on the main thread when the key & modifier combination is recognized.
+/// @param description Shown the the keyboard shortcut help menu, which is accessed via the '?' key.
+/// @note The action block will be retained for the duration of the application. You may want to use weak references.
+/// @note FLEX registers several default keyboard shortcuts. Use the '?' key to see a list of shortcuts.
+- (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description;
+
 #pragma mark - Extensions
 
 /// Adds an entry at the bottom of the list of Global State items. Call this method before this view controller is displayed.

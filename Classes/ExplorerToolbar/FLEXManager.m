@@ -14,6 +14,7 @@
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkRecorder.h"
+#import "FLEXKeyboardShortcutManager.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -125,6 +126,48 @@
     [self hideExplorer];
 }
 
+#pragma mark - Simulator Shortcuts
+
+- (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description
+{
+# if TARGET_OS_SIMULATOR
+    [[FLEXKeyboardShortcutManager sharedManager] registerSimulatorShortcutWithKey:key modifiers:modifiers action:action description:description];
+#endif
+}
+
+- (void)setSimulatorShortcutsEnabled:(BOOL)simulatorShortcutsEnabled
+{
+# if TARGET_OS_SIMULATOR
+    [[FLEXKeyboardShortcutManager sharedManager] setEnabled:simulatorShortcutsEnabled];
+#endif
+}
+
+- (BOOL)simulatorShortcutsEnabled
+{
+# if TARGET_OS_SIMULATOR
+    return [[FLEXKeyboardShortcutManager sharedManager] isEnabled];
+#else
+    return NO;
+#endif
+}
+
+- (void)registerDefaultSimulatorShortcuts
+{
+    [self registerSimulatorShortcutWithKey:@"f" modifiers:0 action:^{
+        if ([self isHidden]) {
+            [self showExplorer];
+        } else {
+            [self hideExplorer];
+        }
+    } description:@"Toggle FLEX toolbar"];
+}
+
++ (void)load
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[[self class] sharedManager] registerDefaultSimulatorShortcuts];
+    });
+}
 
 #pragma mark - Extensions
 

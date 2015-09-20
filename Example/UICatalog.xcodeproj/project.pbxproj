@@ -52,6 +52,7 @@
 		9421B8911A8BBCB200BA3E46 /* FLEXNetworkTransactionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9421B8881A8BBCB200BA3E46 /* FLEXNetworkTransactionTableViewCell.m */; };
 		9421B8921A8BBCB200BA3E46 /* FLEXNetworkObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 9421B88B1A8BBCB200BA3E46 /* FLEXNetworkObserver.m */; };
 		9421B8931A8BBCB200BA3E46 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 9421B88C1A8BBCB200BA3E46 /* LICENSE */; };
+		942DCD8A1BAE131500DB5DC2 /* FLEXKeyboardShortcutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DCD891BAE131500DB5DC2 /* FLEXKeyboardShortcutManager.m */; };
 		943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */; };
 		944F7489197B458C009AB039 /* FLEXArrayExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7426197B458C009AB039 /* FLEXArrayExplorerViewController.m */; };
 		944F748A197B458C009AB039 /* FLEXClassExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 944F7428197B458C009AB039 /* FLEXClassExplorerViewController.m */; };
@@ -193,6 +194,8 @@
 		9421B88A1A8BBCB200BA3E46 /* FLEXNetworkObserver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkObserver.h; sourceTree = "<group>"; };
 		9421B88B1A8BBCB200BA3E46 /* FLEXNetworkObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkObserver.m; sourceTree = "<group>"; };
 		9421B88C1A8BBCB200BA3E46 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		942DCD881BAE131500DB5DC2 /* FLEXKeyboardShortcutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXKeyboardShortcutManager.h; sourceTree = "<group>"; };
+		942DCD891BAE131500DB5DC2 /* FLEXKeyboardShortcutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyboardShortcutManager.m; sourceTree = "<group>"; };
 		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
 		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
 		944F7425197B458C009AB039 /* FLEXArrayExplorerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArrayExplorerViewController.h; sourceTree = "<group>"; };
@@ -544,6 +547,8 @@
 				944F7443197B458C009AB039 /* FLEXUtility.m */,
 				94CB48371A8EC6000054A905 /* FLEXMultilineTableViewCell.h */,
 				94CB48381A8EC6000054A905 /* FLEXMultilineTableViewCell.m */,
+				942DCD881BAE131500DB5DC2 /* FLEXKeyboardShortcutManager.h */,
+				942DCD891BAE131500DB5DC2 /* FLEXKeyboardShortcutManager.m */,
 			);
 			name = Utility;
 			path = ../Classes/Utility;
@@ -772,6 +777,7 @@
 				944F74A2197B458C009AB039 /* FLEXArgumentInputViewFactory.m in Sources */,
 				944F74A1197B458C009AB039 /* FLEXArgumentInputView.m in Sources */,
 				535682B618F3670300BAAD62 /* AAPLSegmentedControlViewController.m in Sources */,
+				942DCD8A1BAE131500DB5DC2 /* FLEXKeyboardShortcutManager.m in Sources */,
 				944F74AE197B458C009AB039 /* FLEXClassesTableViewController.m in Sources */,
 				944F74B1197B458C009AB039 /* FLEXInstancesTableViewController.m in Sources */,
 				944F7497197B458C009AB039 /* FLEXUtility.m in Sources */,
