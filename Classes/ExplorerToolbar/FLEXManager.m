@@ -17,6 +17,7 @@
 #import "FLEXKeyboardShortcutManager.h"
 #import "FLEXFileBrowserTableViewController.h"
 #import "FLEXNetworkHistoryTableViewController.h"
+#import "FLEXKeyboardHelpViewController.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -216,6 +217,10 @@
             [self.explorerViewController handleLeftArrowKeyPressed];
         }
     } description:@"Move selected view left"];
+    
+    [self registerSimulatorShortcutWithKey:@"?" modifiers:0 action:^{
+        [self toggleTopViewControllerOfClass:[FLEXKeyboardHelpViewController class]];
+    } description:@"Toggle (this) help menu"];
     
     [self registerSimulatorShortcutWithKey:UIKeyInputEscape modifiers:0 action:^{
         [[[self topViewController] presentingViewController] dismissViewControllerAnimated:YES completion:nil];

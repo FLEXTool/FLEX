@@ -137,6 +137,8 @@
 		3A4C95431B5B21410088C3F2 /* FLEXNetworkObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94C31B5B21410088C3F2 /* FLEXNetworkObserver.m */; };
 		3A4C95471B5B217D0088C3F2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4C95461B5B217D0088C3F2 /* libz.dylib */; };
 		942DCD871BAE0CA300DB5DC2 /* FLEXKeyboardShortcutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DCD831BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.m */; };
+		94AAF0381BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */; };
 		94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 942DCD821BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 /* End PBXBuildFile section */
 
@@ -275,6 +277,8 @@
 		3A4C95461B5B217D0088C3F2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		942DCD821BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXKeyboardShortcutManager.h; sourceTree = "<group>"; };
 		942DCD831BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyboardShortcutManager.m; sourceTree = "<group>"; };
+		94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXKeyboardHelpViewController.h; sourceTree = "<group>"; };
+		94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyboardHelpViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,6 +381,8 @@
 				3A4C945E1B5B21410088C3F2 /* FLEXUtility.m */,
 				942DCD821BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.h */,
 				942DCD831BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.m */,
+				94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */,
+				94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -613,6 +619,7 @@
 				3A4C95421B5B21410088C3F2 /* FLEXNetworkObserver.h in Headers */,
 				3A4C95401B5B21410088C3F2 /* FLEXNetworkTransactionTableViewCell.h in Headers */,
 				3A4C95241B5B21410088C3F2 /* FLEXFileBrowserTableViewController.h in Headers */,
+				94AAF0381BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h in Headers */,
 				94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */,
 				3A4C94E11B5B21410088C3F2 /* FLEXResources.h in Headers */,
 			);
@@ -694,6 +701,7 @@
 				3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.m in Sources */,
 				3A4C94EC1B5B21410088C3F2 /* FLEXImagePreviewViewController.m in Sources */,
 				3A4C94F21B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m in Sources */,
+				94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */,
 				3A4C951F1B5B21410088C3F2 /* FLEXClassesTableViewController.m in Sources */,
 				3A4C94C61B5B21410088C3F2 /* FLEXArrayExplorerViewController.m in Sources */,
 				3A4C95081B5B21410088C3F2 /* FLEXDefaultEditorViewController.m in Sources */,
