@@ -82,6 +82,14 @@
     self.explorerWindow.hidden = YES;
 }
 
+- (void)toggleExplorer {
+    if (self.explorerWindow.isHidden) {
+        [self showExplorer];
+    } else {
+        [self hideExplorer];
+    }
+}
+
 - (BOOL)isHidden
 {
     return self.explorerWindow.isHidden;
