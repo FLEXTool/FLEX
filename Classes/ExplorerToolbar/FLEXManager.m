@@ -165,11 +165,7 @@
 - (void)registerDefaultSimulatorShortcuts
 {
     [self registerSimulatorShortcutWithKey:@"f" modifiers:0 action:^{
-        if ([self isHidden]) {
-            [self showExplorer];
-        } else {
-            [self hideExplorer];
-        }
+        [self toggleExplorer];
     } description:@"Toggle FLEX toolbar"];
     
     [self registerSimulatorShortcutWithKey:@"g" modifiers:0 action:^{
