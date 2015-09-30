@@ -66,7 +66,7 @@ Once a view is selected, you can tap on the info bar below the toolbar to presen
 ![View Modification](http://engineering.flipboard.com/assets/flex/advanced-view-editing.gif)
 
 ### Network History
-When enabled, network debugging allows you to view all requests made using NSURLConnection or NSURLSession. Settings allow you to adjust what kind of response bodies get cached and the maximum size limit of the response cache. You can choose to have network debugging enabled automatically on app launch. This setting is persisted accross launches.
+When enabled, network debugging allows you to view all requests made using NSURLConnection or NSURLSession. Settings allow you to adjust what kind of response bodies get cached and the maximum size limit of the response cache. You can choose to have network debugging enabled automatically on app launch. This setting is persisted across launches.
 
 ![Network History](http://engineering.flipboard.com/assets/flex/network-history.gif)
 
