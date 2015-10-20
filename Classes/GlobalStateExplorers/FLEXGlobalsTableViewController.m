@@ -14,6 +14,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXLiveObjectsTableViewController.h"
 #import "FLEXFileBrowserTableViewController.h"
+#import "FLEXCookiesTableViewController.h"
 #import "FLEXGlobalsTableViewControllerEntry.h"
 #import "FLEXManager+Private.h"
 #import "FLEXSystemLogTableViewController.h"
@@ -26,6 +27,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowSystemLog,
     FLEXGlobalsRowLiveObjects,
     FLEXGlobalsRowFileBrowser,
+    FLEXGlobalsCookies,    
     FLEXGlobalsRowSystemLibraries,
     FLEXGlobalsRowAppClasses,
     FLEXGlobalsRowAppDelegate,
@@ -162,6 +164,15 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 };
                 break;
 
+            case FLEXGlobalsCookies:
+                titleFuture = ^NSString *{
+                    return @"🍪  Cookies";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    return [[FLEXCookiesTableViewController alloc] init];
+                };
+                break;                
+                
             case FLEXGlobalsRowFileBrowser:
                 titleFuture = ^NSString *{
                     return @"📁  File Browser";
