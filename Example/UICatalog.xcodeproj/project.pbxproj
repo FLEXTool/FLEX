@@ -45,6 +45,7 @@
 		53874F9918F36B1800510922 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53874F9718F36B1800510922 /* Localizable.strings */; };
 		650855EB1A9007D5006109A1 /* FLEXArgumentInputDateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 650855EA1A9007D5006109A1 /* FLEXArgumentInputDateView.m */; };
 		65F8DC6C1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65F8DC6B1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m */; };
+		679F6A121BD61B2400A8C94C /* FLEXCookiesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 679F6A111BD61B2400A8C94C /* FLEXCookiesTableViewController.m */; settings = {ASSET_TAGS = (); }; };
 		9421B88D1A8BBCB200BA3E46 /* FLEXNetworkHistoryTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9421B8801A8BBCB200BA3E46 /* FLEXNetworkHistoryTableViewController.m */; };
 		9421B88E1A8BBCB200BA3E46 /* FLEXNetworkRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9421B8821A8BBCB200BA3E46 /* FLEXNetworkRecorder.m */; };
 		9421B88F1A8BBCB200BA3E46 /* FLEXNetworkTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 9421B8841A8BBCB200BA3E46 /* FLEXNetworkTransaction.m */; };
@@ -182,6 +183,8 @@
 		650855EA1A9007D5006109A1 /* FLEXArgumentInputDateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputDateView.m; sourceTree = "<group>"; };
 		65F8DC6A1A8F11020076F87B /* FLEXFileBrowserFileOperationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFileBrowserFileOperationController.h; sourceTree = "<group>"; };
 		65F8DC6B1A8F11020076F87B /* FLEXFileBrowserFileOperationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFileBrowserFileOperationController.m; sourceTree = "<group>"; };
+		679F6A101BD61B2400A8C94C /* FLEXCookiesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXCookiesTableViewController.h; sourceTree = "<group>"; };
+		679F6A111BD61B2400A8C94C /* FLEXCookiesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXCookiesTableViewController.m; sourceTree = "<group>"; };
 		9421B87F1A8BBCB200BA3E46 /* FLEXNetworkHistoryTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkHistoryTableViewController.h; sourceTree = "<group>"; };
 		9421B8801A8BBCB200BA3E46 /* FLEXNetworkHistoryTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkHistoryTableViewController.m; sourceTree = "<group>"; };
 		9421B8811A8BBCB200BA3E46 /* FLEXNetworkRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkRecorder.h; sourceTree = "<group>"; };
@@ -653,6 +656,8 @@
 				944F747D197B458C009AB039 /* FLEXLibrariesTableViewController.m */,
 				944F747E197B458C009AB039 /* FLEXLiveObjectsTableViewController.h */,
 				944F747F197B458C009AB039 /* FLEXLiveObjectsTableViewController.m */,
+				679F6A101BD61B2400A8C94C /* FLEXCookiesTableViewController.h */,
+				679F6A111BD61B2400A8C94C /* FLEXCookiesTableViewController.m */,
 				944F7480197B458C009AB039 /* FLEXWebViewController.h */,
 				944F7481197B458C009AB039 /* FLEXWebViewController.m */,
 			);
@@ -859,6 +864,7 @@
 				944F74AA197B458C009AB039 /* FLEXExplorerViewController.m in Sources */,
 				944F7492197B458C009AB039 /* FLEXViewControllerExplorerViewController.m in Sources */,
 				5356824A18F3656900BAAD62 /* main.m in Sources */,
+				679F6A121BD61B2400A8C94C /* FLEXCookiesTableViewController.m in Sources */,
 				535682B118F3670300BAAD62 /* AAPLImageViewController.m in Sources */,
 				944F7493197B458C009AB039 /* FLEXViewExplorerViewController.m in Sources */,
 				944F7495197B458C009AB039 /* FLEXResources.m in Sources */,
