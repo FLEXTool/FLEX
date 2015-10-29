@@ -127,11 +127,13 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     NSMutableArray *detailComponents = [NSMutableArray array];
 
     NSString *timestamp = [[self class] timestampStringFromRequestDate:self.transaction.startTime];
-    [detailComponents addObject:timestamp];
+    if ([timestamp length] > 0) {
+        [detailComponents addObject:timestamp];
+    }
 
     // Omit method for GET (assumed as default)
     NSString *httpMethod = self.transaction.request.HTTPMethod;
-    if (httpMethod) {
+    if ([httpMethod length] > 0) {
         [detailComponents addObject:httpMethod];
     }
 
