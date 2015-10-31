@@ -121,10 +121,10 @@
 {
     FLEXSystemLogTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXSystemLogTableViewCellIdentifier forIndexPath:indexPath];
     if (tableView == self.tableView) {
-        cell.logMessage = [self.logMessages objectAtIndex:indexPath.row];
+        cell.logMessage = self.logMessages[indexPath.row];
         cell.highlightedText = nil;
     } else if (tableView == self.searchController.searchResultsTableView) {
-        cell.logMessage = [self.filteredLogMessages objectAtIndex:indexPath.row];
+        cell.logMessage = self.filteredLogMessages[indexPath.row];
         cell.highlightedText = self.searchController.searchBar.text;
     }
     if (indexPath.row % 2 == 0) {
@@ -140,9 +140,9 @@
 {
     FLEXSystemLogMessage *logMessage = nil;
     if (tableView == self.tableView) {
-        logMessage = [self.logMessages objectAtIndex:indexPath.row];
+        logMessage = self.logMessages[indexPath.row];
     } else if (tableView == self.searchController.searchResultsTableView) {
-        logMessage = [self.filteredLogMessages objectAtIndex:indexPath.row];
+        logMessage = self.filteredLogMessages[indexPath.row];
     }
     return [FLEXSystemLogTableViewCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
 }
@@ -164,9 +164,9 @@
     if (action == @selector(copy:)) {
         FLEXSystemLogMessage *logMessage = nil;
         if (tableView == self.tableView) {
-            logMessage = [self.logMessages objectAtIndex:indexPath.row];
+            logMessage = self.logMessages[indexPath.row];
         } else if (tableView == self.searchController.searchResultsTableView) {
-            logMessage = [self.filteredLogMessages objectAtIndex:indexPath.row];
+            logMessage = self.filteredLogMessages[indexPath.row];
         }
 
         NSString *stringToCopy = [FLEXSystemLogTableViewCell displayedTextForLogMessage:logMessage] ?: @"";

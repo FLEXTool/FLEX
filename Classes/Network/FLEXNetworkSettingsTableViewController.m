@@ -92,7 +92,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
-    return [self.cells objectAtIndex:indexPath.row];
+    return self.cells[indexPath.row];
 }
 
 #pragma mark - UIActionSheetDelegate

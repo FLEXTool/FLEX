@@ -200,7 +200,7 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *className = [self.filteredClassNames objectAtIndex:indexPath.row];
+    NSString *className = self.filteredClassNames[indexPath.row];
     FLEXInstancesTableViewController *instancesViewController = [FLEXInstancesTableViewController instancesTableViewControllerForClassName:className];
     [self.navigationController pushViewController:instancesViewController animated:YES];
 }

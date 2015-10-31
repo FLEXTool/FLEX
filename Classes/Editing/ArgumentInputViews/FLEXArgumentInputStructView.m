@@ -31,7 +31,7 @@
             inputView.targetSize = FLEXArgumentInputViewSizeSmall;
             
             if (fieldIndex < [customTitles count]) {
-                inputView.title = [customTitles objectAtIndex:fieldIndex];
+                inputView.title = customTitles[fieldIndex];
             } else {
                 inputView.title = [NSString stringWithFormat:@"%@ field %lu (%@)", structName, (unsigned long)fieldIndex, prettyTypeEncoding];
             }
@@ -72,7 +72,7 @@
                 [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
                     
                     void *fieldPointer = unboxedValue + fieldOffset;
-                    FLEXArgumentInputView *inputView = [self.argumentInputViews objectAtIndex:fieldIndex];
+                    FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
                     
                     if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
                         inputView.inputValue = (__bridge id)fieldPointer;
@@ -102,7 +102,7 @@
         [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
             
             void *fieldPointer = unboxedStruct + fieldOffset;
-            FLEXArgumentInputView *inputView = [self.argumentInputViews objectAtIndex:fieldIndex];
+            FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
             
             if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
                 // Object fields

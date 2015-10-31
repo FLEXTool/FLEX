@@ -151,13 +151,13 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    FLEXNetworkDetailSection *sectionModel = [self.sections objectAtIndex:section];
+    FLEXNetworkDetailSection *sectionModel = self.sections[section];
     return [sectionModel.rows count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    FLEXNetworkDetailSection *sectionModel = [self.sections objectAtIndex:section];
+    FLEXNetworkDetailSection *sectionModel = self.sections[section];
     return sectionModel.title;
 }
 
@@ -200,8 +200,8 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 - (FLEXNetworkDetailRow *)rowModelAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXNetworkDetailSection *sectionModel = [self.sections objectAtIndex:indexPath.section];
-    return [sectionModel.rows objectAtIndex:indexPath.row];
+    FLEXNetworkDetailSection *sectionModel = self.sections[indexPath.section];
+    return sectionModel.rows[indexPath.row];
 }
 
 #pragma mark - Cell Copying

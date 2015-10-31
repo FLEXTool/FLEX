@@ -316,7 +316,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSUInteger numberOfArguments = [methodSignature numberOfArguments];
     for (NSUInteger argumentIndex = kFLEXNumberOfImplicitArgs; argumentIndex < numberOfArguments; argumentIndex++) {
         NSUInteger argumentsArrayIndex = argumentIndex - kFLEXNumberOfImplicitArgs;
-        id argumentObject = [arguments count] > argumentsArrayIndex ? [arguments objectAtIndex:argumentsArrayIndex] : nil;
+        id argumentObject = [arguments count] > argumentsArrayIndex ? arguments[argumentsArrayIndex] : nil;
         
         // NSNull in the arguments array can be passed as a placeholder to indicate nil. We only need to set the argument if it will be non-nil.
         if (argumentObject && ![argumentObject isKindOfClass:[NSNull class]]) {
