@@ -43,7 +43,7 @@
 
 - (NSString *)customSectionSubtitleForRowCookie:(id)rowCookie
 {
-    return [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self.dictionary objectForKey:rowCookie]];
+    return [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:self.dictionary[rowCookie]];
 }
 
 - (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
@@ -53,7 +53,7 @@
 
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
-    return [FLEXObjectExplorerFactory explorerViewControllerForObject:[self.dictionary objectForKey:rowCookie]];
+    return [FLEXObjectExplorerFactory explorerViewControllerForObject:self.dictionary[rowCookie]];
 }
 
 - (BOOL)shouldShowDescription

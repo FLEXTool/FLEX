@@ -222,7 +222,7 @@
     [self updateBytesReceived];
     [self updateFilteredBytesReceived];
 
-    FLEXNetworkTransaction *transaction = [notification.userInfo objectForKey:kFLEXNetworkRecorderUserInfoTransactionKey];
+    FLEXNetworkTransaction *transaction = notification.userInfo[kFLEXNetworkRecorderUserInfoTransactionKey];
     NSArray *tableViews = @[self.tableView];
     if (self.searchController.searchResultsTableView) {
         tableViews = [tableViews arrayByAddingObject:self.searchController.searchResultsTableView];

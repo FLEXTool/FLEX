@@ -333,7 +333,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (indexOfView != NSNotFound) {
         UIView *view = self.viewsAtTapPoint[indexOfView];
         NSValue *key = [NSValue valueWithNonretainedObject:view];
-        UIView *outline = [self.outlineViewsForVisibleViews objectForKey:key];
+        UIView *outline = self.outlineViewsForVisibleViews[key];
         if (outline) {
             outline.frame = [self frameInLocalCoordinatesForView:view];
         }
