@@ -171,7 +171,7 @@
     [self registerSimulatorShortcutWithKey:@"g" modifiers:0 action:^{
         [self showExplorerIfNeeded];
         [self.explorerViewController toggleMenuTool];
-    } description:@"Toggle FLEX globlas menu"];
+    } description:@"Toggle FLEX globals menu"];
     
     [self registerSimulatorShortcutWithKey:@"v" modifiers:0 action:^{
         [self showExplorerIfNeeded];
