@@ -72,7 +72,7 @@
 - (id)detailObjectForRowCookie:(id)rowCookie
 {
     NSUInteger index = [rowCookie unsignedIntegerValue];
-    return [self.array objectAtIndex:index];
+    return self.array[index];
 }
 
 @end

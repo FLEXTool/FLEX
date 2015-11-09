@@ -100,11 +100,11 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     
     NSUInteger totalCount = 0;
     for (NSString *className in self.allClassNames) {
-        totalCount += [[self.instanceCountsForClassNames objectForKey:className] unsignedIntegerValue];
+        totalCount += [self.instanceCountsForClassNames[className] unsignedIntegerValue];
     }
     NSUInteger filteredCount = 0;
     for (NSString *className in self.filteredClassNames) {
-        filteredCount += [[self.instanceCountsForClassNames objectForKey:className] unsignedIntegerValue];
+        filteredCount += [self.instanceCountsForClassNames[className] unsignedIntegerValue];
     }
     
     if (filteredCount == totalCount) {
@@ -154,8 +154,8 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
         self.filteredClassNames = [self.filteredClassNames sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     } else if (self.searchBar.selectedScopeButtonIndex == kFLEXLiveObjectsSortByCountIndex) {
         self.filteredClassNames = [self.filteredClassNames sortedArrayUsingComparator:^NSComparisonResult(NSString *className1, NSString *className2) {
-            NSNumber *count1 = [self.instanceCountsForClassNames objectForKey:className1];
-            NSNumber *count2 = [self.instanceCountsForClassNames objectForKey:className2];
+            NSNumber *count1 = self.instanceCountsForClassNames[className1];
+            NSNumber *count2 = self.instanceCountsForClassNames[className2];
             // Reversed for descending counts.
             return [count2 compare:count1];
         }];
@@ -189,7 +189,7 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     }
     
     NSString *className = self.filteredClassNames[indexPath.row];
-    NSNumber *count = [self.instanceCountsForClassNames objectForKey:className];
+    NSNumber *count = self.instanceCountsForClassNames[className];
     cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld)", className, (long)[count integerValue]];
     
     return cell;
@@ -200,7 +200,7 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *className = [self.filteredClassNames objectAtIndex:indexPath.row];
+    NSString *className = self.filteredClassNames[indexPath.row];
     FLEXInstancesTableViewController *instancesViewController = [FLEXInstancesTableViewController instancesTableViewControllerForClassName:className];
     [self.navigationController pushViewController:instancesViewController animated:YES];
 }

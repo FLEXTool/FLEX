@@ -100,10 +100,10 @@
         cell.detailTextLabel.textColor = [UIColor grayColor];
     }
     
-    id instance = [self.instances objectAtIndex:indexPath.row];
+    id instance = self.instances[indexPath.row];
     NSString *title = nil;
     if ((NSInteger)[self.fieldNames count] > indexPath.row) {
-        title = [NSString stringWithFormat:@"%@ %@", NSStringFromClass(object_getClass(instance)), [self.fieldNames objectAtIndex:indexPath.row]];
+        title = [NSString stringWithFormat:@"%@ %@", NSStringFromClass(object_getClass(instance)), self.fieldNames[indexPath.row]];
     } else {
         title = [NSString stringWithFormat:@"%@ %p", NSStringFromClass(object_getClass(instance)), instance];
     }
@@ -118,7 +118,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id instance = [self.instances objectAtIndex:indexPath.row];
+    id instance = self.instances[indexPath.row];
     FLEXObjectExplorerViewController *drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:instance];
     [self.navigationController pushViewController:drillInViewController animated:YES];
 }

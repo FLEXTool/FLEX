@@ -171,10 +171,10 @@
 {
     NSString *fullPath = nil;
     if (tableView == self.tableView) {
-        NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
+        NSString *subpath = self.childPaths[indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
-        fullPath = [self.searchPaths objectAtIndex:indexPath.row];
+        fullPath = self.searchPaths[indexPath.row];
     }
     
     NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:NULL];
@@ -221,10 +221,10 @@
     NSString *fullPath = nil;
     
     if (tableView == self.tableView) {
-        subpath = [self.childPaths objectAtIndex:indexPath.row];
+        subpath = self.childPaths[indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
-        fullPath = [self.searchPaths objectAtIndex:indexPath.row];
+        fullPath = self.searchPaths[indexPath.row];
         subpath = [fullPath lastPathComponent];
     }
     
@@ -313,11 +313,11 @@
 
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     if (indexPath) {
-        NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
+        NSString *subpath = self.childPaths[indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
         indexPath = [self.searchController.searchResultsTableView indexPathForCell:sender];
-        fullPath = [self.searchPaths objectAtIndex:indexPath.row];
+        fullPath = self.searchPaths[indexPath.row];
     }
 
     self.fileOperationController = [[FLEXFileBrowserFileRenameOperationController alloc] initWithPath:fullPath];
@@ -331,11 +331,11 @@
 
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     if (indexPath) {
-        NSString *subpath = [self.childPaths objectAtIndex:indexPath.row];
+        NSString *subpath = self.childPaths[indexPath.row];
         fullPath = [self.path stringByAppendingPathComponent:subpath];
     } else {
         indexPath = [self.searchController.searchResultsTableView indexPathForCell:sender];
-        fullPath = [self.searchPaths objectAtIndex:indexPath.row];
+        fullPath = self.searchPaths[indexPath.row];
     }
 
     self.fileOperationController = [[FLEXFileBrowserFileDeleteOperationController alloc] initWithPath:fullPath];

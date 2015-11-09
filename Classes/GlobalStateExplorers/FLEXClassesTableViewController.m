@@ -131,7 +131,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *className = [self.filteredClassNames objectAtIndex:indexPath.row];
+    NSString *className = self.filteredClassNames[indexPath.row];
     Class selectedClass = objc_getClass([className UTF8String]);
     FLEXObjectExplorerViewController *objectExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:selectedClass];
     [self.navigationController pushViewController:objectExplorer animated:YES];

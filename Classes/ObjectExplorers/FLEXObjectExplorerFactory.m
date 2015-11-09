@@ -50,7 +50,7 @@
         for (NSString *objectTypeString in explorerSubclassesForObjectTypeStrings) {
             Class objectClass = NSClassFromString(objectTypeString);
             if ([object isKindOfClass:objectClass]) {
-                explorerClass = [explorerSubclassesForObjectTypeStrings objectForKey:objectTypeString];
+                explorerClass = explorerSubclassesForObjectTypeStrings[objectTypeString];
                 break;
             }
         }

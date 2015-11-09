@@ -903,7 +903,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 
 - (FLEXInternalRequestState *)requestStateForRequestID:(NSString *)requestID
 {
-    FLEXInternalRequestState *requestState = [self.requestStatesForRequestIDs objectForKey:requestID];
+    FLEXInternalRequestState *requestState = self.requestStatesForRequestIDs[requestID];
     if (!requestState) {
         requestState = [[FLEXInternalRequestState alloc] init];
         [self.requestStatesForRequestIDs setObject:requestState forKey:requestID];

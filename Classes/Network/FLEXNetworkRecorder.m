@@ -129,7 +129,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     NSDate *responseDate = [NSDate date];
 
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
+        FLEXNetworkTransaction *transaction = self.networkTransactionsForRequestIdentifiers[requestID];
         if (!transaction) {
             return;
         }
@@ -144,7 +144,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)recordDataReceivedWithRequestID:(NSString *)requestID dataLength:(int64_t)dataLength
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
+        FLEXNetworkTransaction *transaction = self.networkTransactionsForRequestIdentifiers[requestID];
         if (!transaction) {
             return;
         }
@@ -159,7 +159,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     NSDate *finishedDate = [NSDate date];
 
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
+        FLEXNetworkTransaction *transaction = self.networkTransactionsForRequestIdentifiers[requestID];
         if (!transaction) {
             return;
         }
@@ -215,7 +215,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)recordLoadingFailedWithRequestID:(NSString *)requestID error:(NSError *)error
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
+        FLEXNetworkTransaction *transaction = self.networkTransactionsForRequestIdentifiers[requestID];
         if (!transaction) {
             return;
         }
@@ -230,7 +230,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)recordMechanism:(NSString *)mechanism forRequestID:(NSString *)requestID
 {
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [self.networkTransactionsForRequestIdentifiers objectForKey:requestID];
+        FLEXNetworkTransaction *transaction = self.networkTransactionsForRequestIdentifiers[requestID];
         if (!transaction) {
             return;
         }

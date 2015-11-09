@@ -251,7 +251,7 @@
             id value = [[components lastObject] stringByRemovingPercentEncoding];
 
             // Handle multiple entries under the same key as an array
-            id existingEntry = [queryDictionary objectForKey:key];
+            id existingEntry = queryDictionary[key];
             if (existingEntry) {
                 if ([existingEntry isKindOfClass:[NSArray class]]) {
                     value = [existingEntry arrayByAddingObject:value];

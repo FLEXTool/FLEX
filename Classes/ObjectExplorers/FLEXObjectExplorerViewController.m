@@ -273,7 +273,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (NSString *)titleForPropertyAtIndex:(NSInteger)index
 {
-    FLEXPropertyBox *propertyBox = [self.filteredProperties objectAtIndex:index];
+    FLEXPropertyBox *propertyBox = self.filteredProperties[index];
     return [FLEXRuntimeUtility prettyNameForProperty:propertyBox.property];
 }
 
@@ -281,7 +281,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 {
     id value = nil;
     if ([self canHaveInstanceState]) {
-        FLEXPropertyBox *propertyBox = [self.filteredProperties objectAtIndex:index];
+        FLEXPropertyBox *propertyBox = self.filteredProperties[index];
         value = [FLEXRuntimeUtility valueForProperty:propertyBox.property onObject:self.object];
     }
     return value;
@@ -352,7 +352,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (NSString *)titleForIvarAtIndex:(NSInteger)index
 {
-    FLEXIvarBox *ivarBox = [self.filteredIvars objectAtIndex:index];
+    FLEXIvarBox *ivarBox = self.filteredIvars[index];
     return [FLEXRuntimeUtility prettyNameForIvar:ivarBox.ivar];
 }
 
@@ -360,7 +360,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 {
     id value = nil;
     if ([self canHaveInstanceState]) {
-        FLEXIvarBox *ivarBox = [self.filteredIvars objectAtIndex:index];
+        FLEXIvarBox *ivarBox = self.filteredIvars[index];
         value = [FLEXRuntimeUtility valueForIvar:ivarBox.ivar onObject:self.object];
     }
     return value;
@@ -451,13 +451,13 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (NSString *)titleForMethodAtIndex:(NSInteger)index
 {
-    FLEXMethodBox *methodBox = [self.filteredMethods objectAtIndex:index];
+    FLEXMethodBox *methodBox = self.filteredMethods[index];
     return [FLEXRuntimeUtility prettyNameForMethod:methodBox.method isClassMethod:NO];
 }
 
 - (NSString *)titleForClassMethodAtIndex:(NSInteger)index
 {
-    FLEXMethodBox *classMethodBox = [self.filteredClassMethods objectAtIndex:index];
+    FLEXMethodBox *classMethodBox = self.filteredClassMethods[index];
     return [FLEXRuntimeUtility prettyNameForMethod:classMethodBox.method isClassMethod:YES];
 }
 
@@ -612,7 +612,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionSuperclasses:
-            title = NSStringFromClass([self.filteredSuperclasses objectAtIndex:row]);
+            title = NSStringFromClass(self.filteredSuperclasses[row]);
             break;
             
         case FLEXObjectExplorerSectionReferencingInstances:
@@ -669,7 +669,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             
         case FLEXObjectExplorerSectionProperties: {
             if ([self canHaveInstanceState]) {
-                FLEXPropertyBox *propertyBox = [self.filteredProperties objectAtIndex:row];
+                FLEXPropertyBox *propertyBox = self.filteredProperties[row];
                 objc_property_t property = propertyBox.property;
                 id currentValue = [self valueForPropertyAtIndex:row];
                 BOOL canEdit = [FLEXPropertyEditorViewController canEditProperty:property currentValue:currentValue];
@@ -680,7 +680,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             
         case FLEXObjectExplorerSectionIvars: {
             if ([self canHaveInstanceState]) {
-                FLEXIvarBox *ivarBox = [self.filteredIvars objectAtIndex:row];
+                FLEXIvarBox *ivarBox = self.filteredIvars[row];
                 Ivar ivar = ivarBox.ivar;
                 id currentValue = [self valueForIvarAtIndex:row];
                 BOOL canEdit = [FLEXIvarEditorViewController canEditIvar:ivar currentValue:currentValue];
@@ -790,7 +790,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
             break;
             
         case FLEXObjectExplorerSectionProperties: {
-            FLEXPropertyBox *propertyBox = [self.filteredProperties objectAtIndex:row];
+            FLEXPropertyBox *propertyBox = self.filteredProperties[row];
             objc_property_t property = propertyBox.property;
             id currentValue = [self valueForPropertyAtIndex:row];
             if ([FLEXPropertyEditorViewController canEditProperty:property currentValue:currentValue]) {
@@ -801,7 +801,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         } break;
             
         case FLEXObjectExplorerSectionIvars: {
-            FLEXIvarBox *ivarBox = [self.filteredIvars objectAtIndex:row];
+            FLEXIvarBox *ivarBox = self.filteredIvars[row];
             Ivar ivar = ivarBox.ivar;
             id currentValue = [self valueForIvarAtIndex:row];
             if ([FLEXIvarEditorViewController canEditIvar:ivar currentValue:currentValue]) {
@@ -812,19 +812,19 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         } break;
             
         case FLEXObjectExplorerSectionMethods: {
-            FLEXMethodBox *methodBox = [self.filteredMethods objectAtIndex:row];
+            FLEXMethodBox *methodBox = self.filteredMethods[row];
             Method method = methodBox.method;
             viewController = [[FLEXMethodCallingViewController alloc] initWithTarget:self.object method:method];
         } break;
             
         case FLEXObjectExplorerSectionClassMethods: {
-            FLEXMethodBox *methodBox = [self.filteredClassMethods objectAtIndex:row];
+            FLEXMethodBox *methodBox = self.filteredClassMethods[row];
             Method method = methodBox.method;
             viewController = [[FLEXMethodCallingViewController alloc] initWithTarget:[self.object class] method:method];
         } break;
             
         case FLEXObjectExplorerSectionSuperclasses: {
-            Class superclass = [self.filteredSuperclasses objectAtIndex:row];
+            Class superclass = self.filteredSuperclasses[row];
             viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:superclass];
         } break;
             
@@ -972,7 +972,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     if ([self.filterText length] > 0) {
         filteredIndexSet = [filteredIndexSet indexesPassingTest:^BOOL(NSUInteger index, BOOL *stop) {
             BOOL matches = NO;
-            NSString *rowTitle = [self customSectionTitleForRowCookie:[self.cachedCustomSectionRowCookies objectAtIndex:index]];
+            NSString *rowTitle = [self customSectionTitleForRowCookie:self.cachedCustomSectionRowCookies[index]];
             if ([rowTitle rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
                 matches = YES;
             }

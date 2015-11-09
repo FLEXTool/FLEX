@@ -49,7 +49,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 + (NSString *)typeEncodingForProperty:(objc_property_t)property
 {
     NSDictionary *attributesDictionary = [self attributesDictionaryForProperty:property];
-    return [attributesDictionary objectForKey:kFLEXUtilityAttributeTypeEncoding];
+    return attributesDictionary[kFLEXUtilityAttributeTypeEncoding];
 }
 
 + (BOOL)isReadonlyProperty:(objc_property_t)property
@@ -77,33 +77,33 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSMutableArray *attributesStrings = [NSMutableArray array];
     
     // Atomicity
-    if ([attributesDictionary objectForKey:kFLEXUtilityAttributeNonAtomic]) {
+    if (attributesDictionary[kFLEXUtilityAttributeNonAtomic]) {
         [attributesStrings addObject:@"nonatomic"];
     } else {
         [attributesStrings addObject:@"atomic"];
     }
     
     // Storage
-    if ([attributesDictionary objectForKey:kFLEXUtilityAttributeRetain]) {
+    if (attributesDictionary[kFLEXUtilityAttributeRetain]) {
         [attributesStrings addObject:@"strong"];
-    } else if ([attributesDictionary objectForKey:kFLEXUtilityAttributeCopy]) {
+    } else if (attributesDictionary[kFLEXUtilityAttributeCopy]) {
         [attributesStrings addObject:@"copy"];
-    } else if ([attributesDictionary objectForKey:kFLEXUtilityAttributeWeak]) {
+    } else if (attributesDictionary[kFLEXUtilityAttributeWeak]) {
         [attributesStrings addObject:@"weak"];
     } else {
         [attributesStrings addObject:@"assign"];
     }
     
     // Mutability
-    if ([attributesDictionary objectForKey:kFLEXUtilityAttributeReadOnly]) {
+    if (attributesDictionary[kFLEXUtilityAttributeReadOnly]) {
         [attributesStrings addObject:@"readonly"];
     } else {
         [attributesStrings addObject:@"readwrite"];
     }
     
     // Custom getter/setter
-    NSString *customGetter = [attributesDictionary objectForKey:kFLEXUtilityAttributeCustomGetter];
-    NSString *customSetter = [attributesDictionary objectForKey:kFLEXUtilityAttributeCustomSetter];
+    NSString *customGetter = attributesDictionary[kFLEXUtilityAttributeCustomGetter];
+    NSString *customSetter = attributesDictionary[kFLEXUtilityAttributeCustomSetter];
     if (customGetter) {
         [attributesStrings addObject:[NSString stringWithFormat:@"getter=%@", customGetter]];
     }
@@ -179,7 +179,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             for (NSString *attributeName in [attributePairs allKeys]) {
                 objc_property_attribute_t attribute;
                 attribute.name = [attributeName UTF8String];
-                attribute.value = [[attributePairs objectForKey:attributeName] UTF8String];
+                attribute.value = [attributePairs[attributeName] UTF8String];
                 attributes[attributeIndex++] = attribute;
             }
             
@@ -316,7 +316,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSUInteger numberOfArguments = [methodSignature numberOfArguments];
     for (NSUInteger argumentIndex = kFLEXNumberOfImplicitArgs; argumentIndex < numberOfArguments; argumentIndex++) {
         NSUInteger argumentsArrayIndex = argumentIndex - kFLEXNumberOfImplicitArgs;
-        id argumentObject = [arguments count] > argumentsArrayIndex ? [arguments objectAtIndex:argumentsArrayIndex] : nil;
+        id argumentObject = [arguments count] > argumentsArrayIndex ? arguments[argumentsArrayIndex] : nil;
         
         // NSNull in the arguments array can be passed as a placeholder to indicate nil. We only need to set the argument if it will be non-nil.
         if (argumentObject && ![argumentObject isKindOfClass:[NSNull class]]) {

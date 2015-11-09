@@ -64,8 +64,8 @@
                                    @" " : @"␠"};
     
     NSString *prettyKey = nil;
-    if (self.key && [keyMappings objectForKey:self.key]) {
-        prettyKey = [keyMappings objectForKey:self.key];
+    if (self.key && keyMappings[self.key]) {
+        prettyKey = keyMappings[self.key];
     } else {
         prettyKey = [self.key uppercaseString];
     }
@@ -207,16 +207,16 @@
         } else {
             FLEXKeyInput *exactMatch = [FLEXKeyInput keyInputForKey:unmodifiedInput flags:flags];
             
-            dispatch_block_t actionBlock = [self.actionsForKeyInputs objectForKey:exactMatch];
+            dispatch_block_t actionBlock = self.actionsForKeyInputs[exactMatch];
             
             if (!actionBlock) {
                 FLEXKeyInput *shiftMatch = [FLEXKeyInput keyInputForKey:modifiedInput flags:flags&(!UIKeyModifierShift)];
-                actionBlock = [self.actionsForKeyInputs objectForKey:shiftMatch];
+                actionBlock = self.actionsForKeyInputs[shiftMatch];
             }
             
             if (!actionBlock) {
                 FLEXKeyInput *capitalMatch = [FLEXKeyInput keyInputForKey:[unmodifiedInput uppercaseString] flags:flags];
-                actionBlock = [self.actionsForKeyInputs objectForKey:capitalMatch];
+                actionBlock = self.actionsForKeyInputs[capitalMatch];
             }
             
             if (actionBlock) {

@@ -222,7 +222,7 @@
     [self updateBytesReceived];
     [self updateFilteredBytesReceived];
 
-    FLEXNetworkTransaction *transaction = [notification.userInfo objectForKey:kFLEXNetworkRecorderUserInfoTransactionKey];
+    FLEXNetworkTransaction *transaction = notification.userInfo[kFLEXNetworkRecorderUserInfoTransactionKey];
     NSArray *tableViews = @[self.tableView];
     if (self.searchController.searchResultsTableView) {
         tableViews = [tableViews arrayByAddingObject:self.searchController.searchResultsTableView];
@@ -337,9 +337,9 @@
 {
     FLEXNetworkTransaction *transaction = nil;
     if (tableView == self.tableView) {
-        transaction = [self.networkTransactions objectAtIndex:indexPath.row];
+        transaction = self.networkTransactions[indexPath.row];
     } else if (tableView == self.searchController.searchResultsTableView) {
-        transaction = [self.filteredNetworkTransactions objectAtIndex:indexPath.row];
+        transaction = self.filteredNetworkTransactions[indexPath.row];
     }
     return transaction;
 }
