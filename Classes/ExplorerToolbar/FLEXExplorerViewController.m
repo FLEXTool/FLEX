@@ -841,7 +841,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (viewsModalShown) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
     } else {
-        [self resignKeyAndDismissViewControllerAnimated:NO completion:nil];
         NSArray *allViews = [self allViewsInHierarchy];
         NSDictionary *depthsForViews = [self hierarchyDepthsForViews:allViews];
         FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithViews:allViews viewsAtTap:self.viewsAtTapPoint selectedView:self.selectedView depths:depthsForViews];
@@ -858,7 +857,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (menuModalShown) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
     } else {
-        [self resignKeyAndDismissViewControllerAnimated:NO completion:nil];
         FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
         globalsViewController.delegate = self;
         [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
