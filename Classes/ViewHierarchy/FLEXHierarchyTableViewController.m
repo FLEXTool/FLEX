@@ -106,7 +106,10 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     if ([self.searchBar.text length] > 0) {
         self.displayedViews = [candidateViews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(UIView *candidateView, NSDictionary *bindings) {
             NSString *title = [FLEXUtility descriptionForView:candidateView includingFrame:NO];
-            return [title rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
+            NSString *candidateViewPointerAddress = [NSString stringWithFormat:@"%p", candidateView];
+            BOOL matchedViewPointerAddress = [candidateViewPointerAddress rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
+            BOOL matchedViewTitle = [title rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
+            return matchedViewPointerAddress || matchedViewTitle;
         }]];
     } else {
         self.displayedViews = candidateViews;
