@@ -10,14 +10,6 @@
 #import "FLEXTableContentCell.h"
 #import "FLEXTableLeftCell.h"
 
-
-typedef NS_ENUM(NSInteger,UIViewSeparatorLocation) {
-  UIViewSeparatorLocationTop,
-  UIViewSeparatorLocationLeft,
-  UIViewSeparatorLocationBottom,
-  UIViewSeparatorLocationRight
-};
-
 @interface FLEXMultiColumnTableView ()
 <UITableViewDataSource, UITableViewDelegate,UIScrollViewDelegate, FLEXTableContentCellDelegate>
 
@@ -61,9 +53,9 @@ static const CGFloat kColumnMargin = 1;
   CGFloat leftHeaderWidth = [self leftHeaderWidth];
   
   CGFloat contentWidth = 0.0;
-  NSInteger rowsCount = [self.dataSource numberOfColumnsInTableView:self];
+  NSInteger rowsCount = [self numberOfColumns];
   for (int i = 0; i < rowsCount; i++) {
-    contentWidth += [self.dataSource multiColumnTableView:self widthForContentCellInColumn:i];
+    contentWidth += [self contentWidthForColumn:i];
   }
   
   self.leftTableView.frame           = CGRectMake(0, topheaderHeight, leftHeaderWidth, height - topheaderHeight);
@@ -74,7 +66,6 @@ static const CGFloat kColumnMargin = 1;
   self.contentScrollView.contentSize = self.contentTableView.frame.size;
   self.leftHeader.frame              = CGRectMake(0, 0, [self leftHeaderWidth], [self topHeaderHeight]);
 }
-
 
 
 - (void)loadUI
@@ -239,7 +230,7 @@ static const CGFloat kColumnMargin = 1;
   else {
     FLEXTableLeftCell *cell          = [FLEXTableLeftCell cellWithTableView:tableView];
     cell.contentView.backgroundColor = backgroundColor;
-    cell.titlelabel.text             = [self.dataSource rowNameInRow:indexPath.row];
+    cell.titlelabel.text             = [self rowTitleForRow:indexPath.row];
     return cell;
   }
 }
@@ -349,48 +340,6 @@ static const CGFloat kColumnMargin = 1;
   if ([self.delegate respondsToSelector:@selector(multiColumnTableView:labelDidTapWithText:)]) {
     [self.delegate multiColumnTableView:self labelDidTapWithText:text];
   }
-}
-
-#pragma mark -
-#pragma mark - Private
-
-
-
-- (void)addSeparatorLineInView:(UIView *)view
-                      andWidth:(CGFloat)lineWidth
-                   andLocation:(UIViewSeparatorLocation)location
-                      andColor:(UIColor *)color
-{
-  CGFloat width  = view.frame.size.width;
-  CGFloat height = view.frame.size.height;
-  UIView *line = [[UIView alloc] init];
-  line.backgroundColor = color;
-  switch (location) {
-    case UIViewSeparatorLocationTop:
-      line.frame = CGRectMake(0, 0, width, lineWidth);
-      [view addSubview:line];
-      break;
-    case UIViewSeparatorLocationLeft:
-      line.frame = CGRectMake(0, 0, lineWidth, height);
-      [view addSubview:line];
-      break;
-    case UIViewSeparatorLocationBottom:
-      line.frame = CGRectMake(0, height - lineWidth, width, lineWidth);
-      [view addSubview:line];
-      break;
-    case UIViewSeparatorLocationRight:
-      line.frame = CGRectMake(width - lineWidth, 0, lineWidth, height);
-      [view addSubview:line];
-      break;
-  }
-}
-
-- (UIColor *)randomColor{
-  
-  CGFloat red = (CGFloat)random()/(CGFloat)RAND_MAX;
-  CGFloat green = (CGFloat)random()/(CGFloat)RAND_MAX;
-  CGFloat blue = (CGFloat)random()/(CGFloat)RAND_MAX;
-  return [UIColor colorWithRed:red green:green blue:blue alpha:1.0f];
 }
 
 @end

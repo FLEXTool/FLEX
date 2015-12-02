@@ -72,10 +72,9 @@
 
 - (NSString *)rowNameInRow:(NSInteger)row
 {
-  
   return [NSString stringWithFormat:@"%ld",(long)row];
-  
 }
+
 - (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row
 {
   if (self.contensArray.count > row) {
@@ -84,7 +83,7 @@
       return [NSString stringWithFormat:@"%@",[dic objectForKey:self.columnsArray[column]]];
     }
   }
-  return @"this is bug";
+  return @"";
 }
 
 - (NSArray *)contentAtRow:(NSInteger)row
@@ -99,6 +98,7 @@
   }
   return nil;
 }
+
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
       heightForContentCellInRow:(NSInteger)row
 {
@@ -110,7 +110,6 @@
 {
   return 120;
 }
-
 
 - (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView
 {
@@ -126,7 +125,6 @@
                                  attributes:attrs context:nil].size;
   return size.width + 20;
 }
-
 
 #pragma mark -
 #pragma mark MultiColumnTableView Delegate

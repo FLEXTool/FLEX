@@ -44,6 +44,40 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
   return YES;
 }
 
+- (BOOL)close {
+  if (!_db) {
+    return YES;
+  }
+  
+  int  rc;
+  BOOL retry;
+  BOOL triedFinalizingOpenStatements = NO;
+  
+  do {
+    retry   = NO;
+    rc      = sqlite3_close(_db);
+    if (SQLITE_BUSY == rc || SQLITE_LOCKED == rc) {
+      if (!triedFinalizingOpenStatements) {
+        triedFinalizingOpenStatements = YES;
+        sqlite3_stmt *pStmt;
+        while ((pStmt = sqlite3_next_stmt(_db, nil)) !=0) {
+          NSLog(@"Closing leaked statement");
+          sqlite3_finalize(pStmt);
+          retry = YES;
+        }
+      }
+    }
+    else if (SQLITE_OK != rc) {
+      NSLog(@"error closing!: %d", rc);
+    }
+  }
+  while (retry);
+  
+  _db = nil;
+  return YES;
+}
+
+
 - (NSArray *)queryAllTables
 {
   return [self executeQuery:QUERY_TABLENAMES_SQL];
@@ -71,8 +105,8 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
 
 - (NSArray *)executeQuery:(NSString *)sql
 {
-  NSMutableArray *resultArray = [NSMutableArray array];
   [self open];
+  NSMutableArray *resultArray = [NSMutableArray array];
   sqlite3_stmt *pstmt;
   if (sqlite3_prepare_v2(_db, [sql UTF8String], -1, &pstmt, 0) == SQLITE_OK) {
     while (sqlite3_step(pstmt) == SQLITE_ROW) {
@@ -93,6 +127,7 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
       }
     }
   }
+  [self close];
   return resultArray;
 }
 
