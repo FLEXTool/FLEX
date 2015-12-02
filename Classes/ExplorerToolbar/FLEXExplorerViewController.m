@@ -841,6 +841,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (viewsModalShown) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
     } else {
+        [self dismissPreviousPresentViewController];
         NSArray *allViews = [self allViewsInHierarchy];
         NSDictionary *depthsForViews = [self hierarchyDepthsForViews:allViews];
         FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithViews:allViews viewsAtTap:self.viewsAtTapPoint selectedView:self.selectedView depths:depthsForViews];
@@ -857,12 +858,21 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (menuModalShown) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
     } else {
+        [self dismissPreviousPresentViewController];
         FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
         globalsViewController.delegate = self;
         [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:globalsViewController];
         [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
     }
+}
+
+- (BOOL)dismissPreviousPresentViewController{
+    BOOL needDismissBeforePresent = self.previousKeyWindow && (self.previousKeyWindow != [UIApplication sharedApplication].keyWindow);
+    if (needDismissBeforePresent) {
+        [self resignKeyAndDismissViewControllerAnimated:NO completion:nil];
+    }
+    return needDismissBeforePresent;
 }
 
 - (void)handleDownArrowKeyPressed
