@@ -10,7 +10,7 @@
 
 @interface FLEXTableLeftCell : UITableViewCell
 
-@property (nonatomic, weak) UILabel *titlelabel;
+@property (nonatomic, strong) UILabel *titlelabel;
 
 + (instancetype)cellWithTableView:(UITableView *)tableView;
 

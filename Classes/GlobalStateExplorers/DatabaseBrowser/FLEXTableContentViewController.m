@@ -21,34 +21,34 @@
 
 - (instancetype)init
 {
-  self = [super init];
-  if (self) {
-    
-    CGRect rectStatus = [UIApplication sharedApplication].statusBarFrame;
-    CGFloat y = 64;
-    if (rectStatus.size.height == 0) {
-      y = 32;
+    self = [super init];
+    if (self) {
+        
+        CGRect rectStatus = [UIApplication sharedApplication].statusBarFrame;
+        CGFloat y = 64;
+        if (rectStatus.size.height == 0) {
+            y = 32;
+        }
+        _multiColumView = [[FLEXMultiColumnTableView alloc] initWithFrame:
+                           CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height - y)];
+        
+        _multiColumView.autoresizingMask          = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _multiColumView.backgroundColor           = [UIColor whiteColor];
+        _multiColumView.dataSource                = self;
+        _multiColumView.delegate                  = self;
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        
+        
+        [self.view addSubview:_multiColumView];
     }
-    _multiColumView = [[FLEXMultiColumnTableView alloc] initWithFrame:
-                       CGRectMake(0, y, self.view.frame.size.width, self.view.frame.size.height - y)];
-    
-    _multiColumView.autoresizingMask          = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _multiColumView.backgroundColor           = [UIColor whiteColor];
-    _multiColumView.dataSource                = self;
-    _multiColumView.delegate                  = self;
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    
-    
-    [self.view addSubview:_multiColumView];
-  }
-  return self;
+    return self;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-  [super viewWillAppear:animated];
-  [self.multiColumView reloadData];
-  
+    [super viewWillAppear:animated];
+    [self.multiColumView reloadData];
+    
 }
 
 #pragma mark -
@@ -56,11 +56,11 @@
 
 - (NSInteger)numberOfColumnsInTableView:(FLEXMultiColumnTableView *)tableView
 {
-  return self.columnsArray.count;
+    return self.columnsArray.count;
 }
 - (NSInteger)numberOfRowsInTableView:(FLEXMultiColumnTableView *)tableView
 {
-  return self.contensArray.count;
+    return self.contentsArray.count;
 }
 
 
@@ -72,91 +72,92 @@
 
 - (NSString *)rowNameInRow:(NSInteger)row
 {
-  return [NSString stringWithFormat:@"%ld",(long)row];
+    return [NSString stringWithFormat:@"%ld",(long)row];
 }
 
 - (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row
 {
-  if (self.contensArray.count > row) {
-    NSDictionary *dic = self.contensArray[row];
-    if (self.contensArray.count > column) {
-      return [NSString stringWithFormat:@"%@",[dic objectForKey:self.columnsArray[column]]];
+    if (self.contentsArray.count > row) {
+        NSDictionary *dic = self.contentsArray[row];
+        if (self.contentsArray.count > column) {
+            return [NSString stringWithFormat:@"%@",[dic objectForKey:self.columnsArray[column]]];
+        }
     }
-  }
-  return @"";
+    return @"";
 }
 
 - (NSArray *)contentAtRow:(NSInteger)row
 {
-  NSMutableArray *result = [NSMutableArray array];
-  if (self.contensArray.count > row) {
-    NSDictionary *dic = self.contensArray[row];
-    for (int i = 0; i < self.columnsArray.count; i ++) {
-      [result addObject:dic[self.columnsArray[i]]];
+    NSMutableArray *result = [NSMutableArray array];
+    if (self.contentsArray.count > row) {
+        NSDictionary *dic = self.contentsArray[row];
+        for (int i = 0; i < self.columnsArray.count; i ++) {
+            [result addObject:dic[self.columnsArray[i]]];
+        }
+        return  result;
     }
-    return  result;
-  }
-  return nil;
+    return nil;
 }
 
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
       heightForContentCellInRow:(NSInteger)row
 {
-  return 40;
+    return 40;
 }
 
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
     widthForContentCellInColumn:(NSInteger)column
 {
-  return 120;
+    return 120;
 }
 
 - (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView
 {
-  return 40;
+    return 40;
 }
 
-- (CGFloat)WidthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView
+- (CGFloat)widthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView
 {
-  NSString *str = [NSString stringWithFormat:@"%lu",(unsigned long)self.contensArray.count];
-  NSDictionary *attrs = @{@"NSFontAttributeName":[UIFont systemFontOfSize:17.0]};
-  CGSize size =   [str boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 14)
-                                    options:NSStringDrawingUsesLineFragmentOrigin
-                                 attributes:attrs context:nil].size;
-  return size.width + 20;
+    NSString *str = [NSString stringWithFormat:@"%lu",(unsigned long)self.contentsArray.count];
+    NSDictionary *attrs = @{@"NSFontAttributeName":[UIFont systemFontOfSize:17.0]};
+    CGSize size =   [str boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 14)
+                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                   attributes:attrs context:nil].size;
+    return size.width + 20;
 }
 
 #pragma mark -
 #pragma mark MultiColumnTableView Delegate
 
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView labelDidTapWithText:(NSString *)text
+
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapLabelWithText:(NSString *)text
 {
-  FLEXWebViewController * detailViewController = [[FLEXWebViewController alloc] initWithText:text];
-  [self.navigationController pushViewController:detailViewController animated:YES];
+    FLEXWebViewController * detailViewController = [[FLEXWebViewController alloc] initWithText:text];
+    [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView headerTapWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)type
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapHeaderWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)sortType
 {
-  
-  NSArray *sortContentData = [self.contensArray sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
     
-    if ([obj1 objectForKey:text] == [NSNull null]) {
-      return 0;
+    NSArray *sortContentData = [self.contentsArray sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        
+        if ([obj1 objectForKey:text] == [NSNull null]) {
+            return NSOrderedAscending;
+        }
+        if ([obj2 objectForKey:text] == [NSNull null]) {
+            return NSOrderedDescending;
+        }
+        NSComparisonResult result =  [[obj1 objectForKey:text] compare:[obj2 objectForKey:text]];
+        
+        return result;
+    }];
+    if (sortType == FLEXTableColumnHeaderSortTypeDesc) {
+        NSEnumerator *contentReverseEvumerator = [sortContentData reverseObjectEnumerator];
+        sortContentData = [NSArray arrayWithArray:[contentReverseEvumerator allObjects]];
     }
-    if ([obj2 objectForKey:text] == [NSNull null]) {
-      return 1;
-    }
-    NSComparisonResult result =  [[obj1 objectForKey:text] compare:[obj2 objectForKey:text]];
     
-    return result;
-  }];
-  if (type == FLEXTableColumnHeaderSortTypeDesc) {    
-    NSEnumerator *contentReverseEvumerator = [sortContentData reverseObjectEnumerator];
-    sortContentData = [NSArray arrayWithArray:[contentReverseEvumerator allObjects]];
-  }
-  
-  self.contensArray = sortContentData;
-  [self.multiColumView reloadData];
+    self.contentsArray = sortContentData;
+    [self.multiColumView reloadData];
 }
 
 #pragma mark -
@@ -165,18 +166,18 @@
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
               withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator
 {
-  [super willTransitionToTraitCollection:newCollection
-               withTransitionCoordinator:coordinator];
-  [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {
-    if (newCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
-      
-      _multiColumView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
-    }
-    else {
-      _multiColumView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
-    }
-    [self.view setNeedsLayout];
-  } completion:nil];
+    [super willTransitionToTraitCollection:newCollection
+                 withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {
+        if (newCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
+            
+            _multiColumView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
+        }
+        else {
+            _multiColumView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
+        }
+        [self.view setNeedsLayout];
+    } completion:nil];
 }
 
 

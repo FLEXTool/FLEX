@@ -13,11 +13,12 @@
 
 @protocol FLEXMultiColumnTableViewDelegate <NSObject>
 
-@optional
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView labelDidTapWithText:(NSString *)text;
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView headerTapWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)type;
+@required
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapLabelWithText:(NSString *)text;
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapHeaderWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)sortType;
 
 @end
+
 @protocol FLEXMultiColumnTableViewDataSource <NSObject>
 
 @required
@@ -32,7 +33,7 @@
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView widthForContentCellInColumn:(NSInteger)column;
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView heightForContentCellInRow:(NSInteger)row;
 - (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView;
-- (CGFloat)WidthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView;
+- (CGFloat)widthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView;
 
 @end
 

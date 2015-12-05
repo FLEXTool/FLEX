@@ -1,10 +1,15 @@
 //
 //  PTDatabaseManager.h
-//  PTDatabaseReader
+//  Derived from:
+//
+//  FMDatabase.h
+//  FMDB( https://github.com/ccgus/fmdb )
 //
 //  Created by Peng Tao on 15/11/23.
-//  Copyright © 2015年 Peng Tao. All rights reserved.
 //
+//  Licensed to Flying Meat Inc. under one or more contributor license agreements.
+//  See the LICENSE file distributed with this work for the terms under
+//  which Flying Meat Inc. licenses this file to you.
 
 #import <Foundation/Foundation.h>
 

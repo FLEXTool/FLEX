@@ -11,6 +11,6 @@
 @interface FLEXTableContentViewController : UIViewController
 
 @property (nonatomic, strong) NSArray *columnsArray;
-@property (nonatomic, strong) NSArray *contensArray;
+@property (nonatomic, strong) NSArray *contentsArray;
 
 @end
