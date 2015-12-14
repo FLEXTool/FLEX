@@ -35,5 +35,5 @@ Pod::Spec.new do |spec|
   spec.frameworks       = "CoreGraphics"
   spec.libraries        = "z"
   spec.requires_arc     = true
-  spec.public_header_files = "Classes/**/FLEXManager.h"
+  spec.public_header_files = [ "Classes/**/FLEXManager.h", "Classes/FLEX.h" ]
 end
