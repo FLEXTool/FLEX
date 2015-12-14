@@ -10,7 +10,7 @@
 
 #import "FLEXFileBrowserSearchOperation.h"
 
-@interface FLEXFileBrowserTableViewController : UITableViewController <UISearchDisplayDelegate, FLEXFileBrowserSearchOperationDelegate>
+@interface FLEXFileBrowserTableViewController : UITableViewController
 
 - (id)initWithPath:(NSString *)path;
 
