@@ -12,12 +12,9 @@
 #import "FLEXSystemLogTableViewCell.h"
 #import <asl.h>
 
-@interface FLEXSystemLogTableViewController () <UISearchDisplayDelegate>
+@interface FLEXSystemLogTableViewController () <UISearchResultsUpdating, UISearchControllerDelegate>
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-@property (nonatomic, strong) UISearchDisplayController *searchController;
-#pragma clang diagnostic pop
+@property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic, copy) NSArray *logMessages;
 @property (nonatomic, copy) NSArray *filteredLogMessages;
 @property (nonatomic, strong) NSTimer *logUpdateTimer;
@@ -35,17 +32,10 @@
     self.title = @"Loading...";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@" ⬇︎ " style:UIBarButtonItemStylePlain target:self action:@selector(scrollToLastRow)];
 
-    UISearchBar *searchBar = [[UISearchBar alloc] init];
-    [searchBar sizeToFit];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    self.searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-#pragma clang diagnostic pop
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.delegate = self;
-    self.searchController.searchResultsDataSource = self;
-    self.searchController.searchResultsDelegate = self;
-    [self.searchController.searchResultsTableView registerClass:[FLEXSystemLogTableViewCell class] forCellReuseIdentifier:kFLEXSystemLogTableViewCellIdentifier];
-    self.searchController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
     self.tableView.tableHeaderView = self.searchController.searchBar;
 
     [self updateLogMessages];
@@ -108,25 +98,15 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger numberOfRows = 0;
-    if (tableView == self.tableView) {
-        numberOfRows = [self.logMessages count];
-    } else if (tableView == self.searchController.searchResultsTableView) {
-        numberOfRows = [self.filteredLogMessages count];
-    }
-    return numberOfRows;
+    return self.searchController.isActive ? [self.filteredLogMessages count] : [self.logMessages count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     FLEXSystemLogTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXSystemLogTableViewCellIdentifier forIndexPath:indexPath];
-    if (tableView == self.tableView) {
-        cell.logMessage = self.logMessages[indexPath.row];
-        cell.highlightedText = nil;
-    } else if (tableView == self.searchController.searchResultsTableView) {
-        cell.logMessage = self.filteredLogMessages[indexPath.row];
-        cell.highlightedText = self.searchController.searchBar.text;
-    }
+    cell.logMessage = [self logMessageAtIndexPath:indexPath];
+    cell.highlightedText = self.searchController.searchBar.text;
+    
     if (indexPath.row % 2 == 0) {
         cell.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
     } else {
@@ -138,12 +118,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXSystemLogMessage *logMessage = nil;
-    if (tableView == self.tableView) {
-        logMessage = self.logMessages[indexPath.row];
-    } else if (tableView == self.searchController.searchResultsTableView) {
-        logMessage = self.filteredLogMessages[indexPath.row];
-    }
+    FLEXSystemLogMessage *logMessage = [self logMessageAtIndexPath:indexPath];
     return [FLEXSystemLogTableViewCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
 }
 
@@ -162,37 +137,34 @@
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
     if (action == @selector(copy:)) {
-        FLEXSystemLogMessage *logMessage = nil;
-        if (tableView == self.tableView) {
-            logMessage = self.logMessages[indexPath.row];
-        } else if (tableView == self.searchController.searchResultsTableView) {
-            logMessage = self.filteredLogMessages[indexPath.row];
-        }
-
+        FLEXSystemLogMessage *logMessage = [self logMessageAtIndexPath:indexPath];
         NSString *stringToCopy = [FLEXSystemLogTableViewCell displayedTextForLogMessage:logMessage] ?: @"";
         [[UIPasteboard generalPasteboard] setString:stringToCopy];
     }
 }
 
-#pragma mark - Search display delegate
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+- (FLEXSystemLogMessage *)logMessageAtIndexPath:(NSIndexPath *)indexPath
 {
+    return self.searchController.isActive ? self.filteredLogMessages[indexPath.row] : self.logMessages[indexPath.row];
+}
+
+#pragma mark - UISearchResultsUpdating
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+{
+    NSString *searchString = searchController.searchBar.text;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSArray *filteredLogMessages = [self.logMessages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXSystemLogMessage *logMessage, NSDictionary *bindings) {
             NSString *displayedText = [FLEXSystemLogTableViewCell displayedTextForLogMessage:logMessage];
             return [displayedText rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
         }]];
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.searchDisplayController.searchBar.text isEqual:searchString]) {
+            if ([searchController.searchBar.text isEqual:searchString]) {
                 self.filteredLogMessages = filteredLogMessages;
-                [self.searchDisplayController.searchResultsTableView reloadData];
+                [self.tableView reloadData];
             }
         });
     });
-
-    // Reload done after the data fetches asynchronously
-    return NO;
 }
 
 #pragma mark - Log Message Fetching
