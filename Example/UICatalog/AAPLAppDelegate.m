@@ -48,7 +48,7 @@
 #import "AAPLAppDelegate.h"
 
 #if DEBUG
-#import "FLEXManager.h"
+#import <FLEX/FLEX.h>
 #endif
 
 @interface AAPLAppDelegate () <NSURLConnectionDataDelegate, NSURLSessionDataDelegate>

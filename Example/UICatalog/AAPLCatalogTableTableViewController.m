@@ -8,7 +8,7 @@
 
 #if DEBUG
 // FLEX should only be compiled and used in debug builds.
-#import "FLEXManager.h"
+#import <FLEX/FLEX.h>
 #endif
 
 @implementation AAPLCatalogTableTableViewController
