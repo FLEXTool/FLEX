@@ -14,7 +14,7 @@
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkSettingsTableViewController.h"
 
-@interface FLEXNetworkHistoryTableViewController () <UISearchDisplayDelegate>
+@interface FLEXNetworkHistoryTableViewController () <UISearchResultsUpdating, UISearchControllerDelegate>
 
 /// Backing model
 @property (nonatomic, copy) NSArray *networkTransactions;
@@ -23,11 +23,9 @@
 @property (nonatomic, assign) long long filteredBytesReceived;
 
 @property (nonatomic, assign) BOOL rowInsertInProgress;
+@property (nonatomic, assign) BOOL isPresentingSearch;
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-@property (nonatomic, strong) UISearchDisplayController *searchController;
-#pragma clang diagnostic pop
+@property (nonatomic, strong) UISearchController *searchController;
 
 @end
 
@@ -60,18 +58,10 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = [FLEXNetworkTransactionTableViewCell preferredCellHeight];
 
-    UISearchBar *searchBar = [[UISearchBar alloc] init];
-    [searchBar sizeToFit];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    self.searchController = [[UISearchDisplayController alloc] initWithSearchBar:searchBar contentsController:self];
-#pragma clang diagnostic pop
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.delegate = self;
-    self.searchController.searchResultsDataSource = self;
-    self.searchController.searchResultsDelegate = self;
-    [self.searchController.searchResultsTableView registerClass:[FLEXNetworkTransactionTableViewCell class] forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier];
-    self.searchController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.searchController.searchResultsTableView.rowHeight = [FLEXNetworkTransactionTableViewCell preferredCellHeight];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
     self.tableView.tableHeaderView = self.searchController.searchBar;
 
     [self updateTransactions];
@@ -112,7 +102,7 @@
         bytesReceived += transaction.receivedDataLength;
     }
     self.bytesReceived = bytesReceived;
-    [self updateFirstSectionHeaderInTableView:self.tableView];
+    [self updateFirstSectionHeader];
 }
 
 - (void)setFilteredNetworkTransactions:(NSArray *)filteredNetworkTransactions
@@ -130,31 +120,31 @@
         filteredBytesReceived += transaction.receivedDataLength;
     }
     self.filteredBytesReceived = filteredBytesReceived;
-    [self updateFirstSectionHeaderInTableView:self.searchController.searchResultsTableView];
+    [self updateFirstSectionHeader];
 }
 
-- (void)updateFirstSectionHeaderInTableView:(UITableView *)tableView
+- (void)updateFirstSectionHeader
 {
-    UIView *view = [tableView headerViewForSection:0];
+    UIView *view = [self.tableView headerViewForSection:0];
     if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
         UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
-        headerView.textLabel.text = [self headerTextForTableView:tableView];
+        headerView.textLabel.text = [self headerText];
         [headerView setNeedsLayout];
     }
 }
 
-- (NSString *)headerTextForTableView:(UITableView *)tableView
+- (NSString *)headerText
 {
     NSString *headerText = nil;
     if ([FLEXNetworkObserver isEnabled]) {
         long long bytesReceived = 0;
         NSInteger totalRequests = 0;
-        if (tableView == self.tableView) {
-            bytesReceived = self.bytesReceived;
-            totalRequests = [self.networkTransactions count];
-        } else if (tableView == self.searchController.searchResultsTableView) {
+        if (self.searchController.isActive) {
             bytesReceived = self.filteredBytesReceived;
             totalRequests = [self.filteredNetworkTransactions count];
+        } else {
+            bytesReceived = self.bytesReceived;
+            totalRequests = [self.networkTransactions count];
         }
         NSString *byteCountText = [NSByteCountFormatter stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary];
         NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
@@ -179,13 +169,19 @@
     if (self.rowInsertInProgress) {
         return;
     }
+    
+    if (self.searchController.isActive) {
+        [self updateTransactions];
+        [self updateSearchResults];
+        return;
+    }
 
     NSInteger existingRowCount = [self.networkTransactions count];
     [self updateTransactions];
     NSInteger newRowCount = [self.networkTransactions count];
     NSInteger addedRowCount = newRowCount - existingRowCount;
 
-    if (addedRowCount != 0) {
+    if (addedRowCount != 0 && !self.isPresentingSearch) {
         // Insert animation if we're at the top.
         if (self.tableView.contentOffset.y <= 0.0 && addedRowCount > 0) {
             [CATransaction begin];
@@ -210,10 +206,6 @@
             CGFloat contentHeightChange = self.tableView.contentSize.height - existingContentSize.height;
             self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + contentHeightChange);
         }
-
-        if (self.searchController.isActive) {
-            [self updateSearchResultsWithSearchString:self.searchController.searchBar.text];
-        }
     }
 }
 
@@ -223,37 +215,30 @@
     [self updateFilteredBytesReceived];
 
     FLEXNetworkTransaction *transaction = notification.userInfo[kFLEXNetworkRecorderUserInfoTransactionKey];
-    NSArray *tableViews = @[self.tableView];
-    if (self.searchController.searchResultsTableView) {
-        tableViews = [tableViews arrayByAddingObject:self.searchController.searchResultsTableView];
-    }
 
     // Update both the main table view and search table view if needed.
-    for (UITableView *tableView in tableViews) {
-        for (FLEXNetworkTransactionTableViewCell *cell in [tableView visibleCells]) {
-            if ([cell.transaction isEqual:transaction]) {
-                // Using -[UITableView reloadRowsAtIndexPaths:withRowAnimation:] is overkill here and kicks off a lot of
-                // work that can make the table view somewhat unresponseive when lots of updates are streaming in.
-                // We just need to tell the cell that it needs to re-layout.
-                [cell setNeedsLayout];
-                break;
-            }
+    for (FLEXNetworkTransactionTableViewCell *cell in [self.tableView visibleCells]) {
+        if ([cell.transaction isEqual:transaction]) {
+            // Using -[UITableView reloadRowsAtIndexPaths:withRowAnimation:] is overkill here and kicks off a lot of
+            // work that can make the table view somewhat unresponseive when lots of updates are streaming in.
+            // We just need to tell the cell that it needs to re-layout.
+            [cell setNeedsLayout];
+            break;
         }
-        [self updateFirstSectionHeaderInTableView:tableView];
     }
+    [self updateFirstSectionHeader];
 }
 
 - (void)handleTransactionsClearedNotification:(NSNotification *)notification
 {
     [self updateTransactions];
     [self.tableView reloadData];
-    [self.searchController.searchResultsTableView reloadData];
 }
 
 - (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification
 {
     // Update the header, which displays a warning when network debugging is disabled
-    [self updateFirstSectionHeaderInTableView:self.tableView];
+    [self updateFirstSectionHeader];
 }
 
 #pragma mark - Table view data source
@@ -265,18 +250,12 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    NSInteger numberOfRows = 0;
-    if (tableView == self.tableView) {
-        numberOfRows = [self.networkTransactions count];
-    } else if (tableView == self.searchController.searchResultsTableView) {
-        numberOfRows = [self.filteredNetworkTransactions count];
-    }
-    return numberOfRows;
+    return self.searchController.isActive ? [self.filteredNetworkTransactions count] : [self.networkTransactions count];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [self headerTextForTableView:tableView];
+    return [self headerText];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
@@ -335,27 +314,19 @@
 
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
 {
-    FLEXNetworkTransaction *transaction = nil;
-    if (tableView == self.tableView) {
-        transaction = self.networkTransactions[indexPath.row];
-    } else if (tableView == self.searchController.searchResultsTableView) {
-        transaction = self.filteredNetworkTransactions[indexPath.row];
-    }
-    return transaction;
+    return self.searchController.isActive ? self.filteredNetworkTransactions[indexPath.row] : self.networkTransactions[indexPath.row];
 }
 
-#pragma mark - Search display delegate
+#pragma mark - UISearchResultsUpdating
 
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
 {
-    [self updateSearchResultsWithSearchString:searchString];
-
-    // Reload done after the data is filtered asynchronously
-    return NO;
+    [self updateSearchResults];
 }
 
-- (void)updateSearchResultsWithSearchString:(NSString *)searchString
+- (void)updateSearchResults
 {
+    NSString *searchString = self.searchController.searchBar.text;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSArray *filteredNetworkTransactions = [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary *bindings) {
             return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
@@ -363,10 +334,27 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([self.searchController.searchBar.text isEqual:searchString]) {
                 self.filteredNetworkTransactions = filteredNetworkTransactions;
-                [self.searchController.searchResultsTableView reloadData];
+                [self.tableView reloadData];
             }
         });
     });
+}
+
+#pragma mark - UISearchControllerDelegate
+
+- (void)willPresentSearchController:(UISearchController *)searchController
+{
+    self.isPresentingSearch = YES;
+}
+
+- (void)didPresentSearchController:(UISearchController *)searchController
+{
+    self.isPresentingSearch = NO;
+}
+
+- (void)willDismissSearchController:(UISearchController *)searchController
+{
+    [self.tableView reloadData];
 }
 
 @end
