@@ -190,6 +190,7 @@
 {
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
     NSString *subpath = [fullPath lastPathComponent];
+    NSString *pathExtension = [subpath pathExtension];
     
     BOOL isDirectory = NO;
     BOOL stillExists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory];
@@ -197,24 +198,24 @@
         UIViewController *drillInViewController = nil;
         if (isDirectory) {
             drillInViewController = [[[self class] alloc] initWithPath:fullPath];
-        } else if ([FLEXUtility isImagePathExtension:[fullPath pathExtension]]) {
+        } else if ([FLEXUtility isImagePathExtension:pathExtension]) {
             UIImage *image = [UIImage imageWithContentsOfFile:fullPath];
             drillInViewController = [[FLEXImagePreviewViewController alloc] initWithImage:image];
         } else {
             // Special case keyed archives, json, and plists to get more readable data.
             NSString *prettyString = nil;
-            if ([[subpath pathExtension] isEqual:@"archive"]) {
+            if ([pathExtension isEqual:@"archive"] || [pathExtension isEqual:@"coded"]) {
                 prettyString = [[NSKeyedUnarchiver unarchiveObjectWithFile:fullPath] description];
-            } else if ([[subpath pathExtension] isEqualToString:@"json"]) {
+            } else if ([pathExtension isEqualToString:@"json"]) {
                 prettyString = [FLEXUtility prettyJSONStringFromData:[NSData dataWithContentsOfFile:fullPath]];
-            } else if ([[subpath pathExtension] isEqualToString:@"plist"]) {
+            } else if ([pathExtension isEqualToString:@"plist"]) {
                 NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
                 prettyString = [[NSPropertyListSerialization propertyListWithData:fileData options:0 format:NULL error:NULL] description];
             }
             
             if ([prettyString length] > 0) {
                 drillInViewController = [[FLEXWebViewController alloc] initWithText:prettyString];
-            } else if ([FLEXWebViewController supportsPathExtension:[subpath pathExtension]]) {
+            } else if ([FLEXWebViewController supportsPathExtension:pathExtension]) {
                 drillInViewController = [[FLEXWebViewController alloc] initWithURL:[NSURL fileURLWithPath:fullPath]];
             } else if ([[subpath pathExtension] isEqualToString:@"db"]) {
               drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
