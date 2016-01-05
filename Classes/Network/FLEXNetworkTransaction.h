@@ -36,6 +36,9 @@ typedef NS_ENUM(NSInteger, FLEXNetworkTransactionState) {
 /// Only applicable for image downloads. A small thumbnail to preview the full response.
 @property (nonatomic, strong) UIImage *responseThumbnail;
 
+/// Populated lazily. Handles both normal HTTPBody data and HTTPBodyStreams.
+@property (nonatomic, strong, readonly) NSData *cachedRequestBody;
+
 + (NSString *)readableStringFromTransactionState:(FLEXNetworkTransactionState)state;
 
 @end

@@ -264,10 +264,10 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     requestMethodRow.detailText = transaction.request.HTTPMethod;
     [rows addObject:requestMethodRow];
 
-    if ([transaction.request.HTTPBody length] > 0) {
+    if ([transaction.cachedRequestBody length] > 0) {
         FLEXNetworkDetailRow *postBodySizeRow = [[FLEXNetworkDetailRow alloc] init];
         postBodySizeRow.title = @"Request Body Size";
-        postBodySizeRow.detailText = [NSByteCountFormatter stringFromByteCount:[transaction.request.HTTPBody length] countStyle:NSByteCountFormatterCountStyleBinary];
+        postBodySizeRow.detailText = [NSByteCountFormatter stringFromByteCount:[transaction.cachedRequestBody length] countStyle:NSByteCountFormatterCountStyleBinary];
         [rows addObject:postBodySizeRow];
 
         FLEXNetworkDetailRow *postBodyRow = [[FLEXNetworkDetailRow alloc] init];
@@ -396,7 +396,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 {
     FLEXNetworkDetailSection *postBodySection = [[FLEXNetworkDetailSection alloc] init];
     postBodySection.title = @"Request Body Parameters";
-    if ([transaction.request.HTTPBody length] > 0) {
+    if ([transaction.cachedRequestBody length] > 0) {
         NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
         if ([contentType hasPrefix:@"application/x-www-form-urlencoded"]) {
             NSString *bodyString = [[NSString alloc] initWithData:[self postBodyDataForTransaction:transaction] encoding:NSUTF8StringEncoding];
@@ -470,7 +470,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (NSData *)postBodyDataForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    NSData *bodyData = transaction.request.HTTPBody;
+    NSData *bodyData = transaction.cachedRequestBody;
     if ([bodyData length] > 0) {
         NSString *contentEncoding = [transaction.request valueForHTTPHeaderField:@"Content-Encoding"];
         if ([contentEncoding rangeOfString:@"deflate" options:NSCaseInsensitiveSearch].length > 0 || [contentEncoding rangeOfString:@"gzip" options:NSCaseInsensitiveSearch].length > 0) {
