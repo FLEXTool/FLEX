@@ -65,12 +65,13 @@ static void range_callback(task_t task, void *context, unsigned type, vm_range_t
     // Also https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396
     vm_address_t *zones = NULL;
     unsigned int zoneCount = 0;
-    kern_return_t result = malloc_get_all_zones(mach_task_self(), &memory_reader, &zones, &zoneCount);
+    mach_port_t task = mach_task_self();
+    kern_return_t result = malloc_get_all_zones(task, &memory_reader, &zones, &zoneCount);
     if (result == KERN_SUCCESS) {
         for (unsigned int i = 0; i < zoneCount; i++) {
             malloc_zone_t *zone = (malloc_zone_t *)zones[i];
             if (zone->introspect && zone->introspect->enumerator) {
-                zone->introspect->enumerator(mach_task_self(), (__bridge void *)(block), MALLOC_PTR_IN_USE_RANGE_TYPE, zones[i], &memory_reader, &range_callback);
+                zone->introspect->enumerator(task, (__bridge void *)block, MALLOC_PTR_IN_USE_RANGE_TYPE, zone, &memory_reader, &range_callback);
             }
         }
     }
