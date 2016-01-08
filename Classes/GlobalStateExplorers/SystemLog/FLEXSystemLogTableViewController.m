@@ -169,11 +169,6 @@
 
 #pragma mark - Log Message Fetching
 
-// Due to a mistake in asl.h, things get a little messy. We need to mark these symbols as weak since they won't exist on iOS 7 despite the compiler thinking otherwise.
-// asl.h in the iOS 8.1 SDK claims that asl_next() and asl_release() were introduced in iOS 7 to replace aslresponse_next() and aslresponse_free(). However, they were actually added in iOS 8.0.
-extern aslmsg asl_next(asl_object_t obj) __attribute__((weak_import));
-extern void asl_release(asl_object_t obj) __attribute__((weak_import));
-
 + (NSArray *)allLogMessagesForCurrentProcess
 {
     asl_object_t query = asl_new(ASL_TYPE_QUERY);
@@ -186,22 +181,10 @@ extern void asl_release(asl_object_t obj) __attribute__((weak_import));
     aslmsg aslMessage = NULL;
 
     NSMutableArray *logMessages = [NSMutableArray array];
-
-    if (&asl_next != NULL && &asl_release != NULL) {
-        while ((aslMessage = asl_next(response))) {
-            [logMessages addObject:[FLEXSystemLogMessage logMessageFromASLMessage:aslMessage]];
-        }
-        asl_release(response);
-    } else {
-        // Mute incorrect deprecated warnings. We'll need the "deprecated" functions on iOS 7, where their replacements don't yet exist.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        while ((aslMessage = aslresponse_next(response))) {
-            [logMessages addObject:[FLEXSystemLogMessage logMessageFromASLMessage:aslMessage]];
-        }
-        aslresponse_free(response);
-#pragma clang diagnostic pop
+    while ((aslMessage = asl_next(response))) {
+        [logMessages addObject:[FLEXSystemLogMessage logMessageFromASLMessage:aslMessage]];
     }
+    asl_release(response);
 
     return logMessages;
 }
