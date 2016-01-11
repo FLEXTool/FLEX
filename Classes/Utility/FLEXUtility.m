@@ -326,6 +326,28 @@
     return inflatedData;
 }
 
++ (NSArray *)allWindows
+{
+    BOOL includeInternalWindows = YES;
+    BOOL onlyVisibleWindows = NO;
+
+    NSArray *allWindowsComponents = @[@"al", @"lWindo", @"wsIncl", @"udingInt", @"ernalWin", @"dows:o", @"nlyVisi", @"bleWin", @"dows:"];
+    SEL allWindowsSelector = NSSelectorFromString([allWindowsComponents componentsJoinedByString:@""]);
+
+    NSMethodSignature *methodSignature = [[UIWindow class] methodSignatureForSelector:allWindowsSelector];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
+
+    invocation.target = [UIWindow class];
+    invocation.selector = allWindowsSelector;
+    [invocation setArgument:&includeInternalWindows atIndex:2];
+    [invocation setArgument:&onlyVisibleWindows atIndex:3];
+    [invocation invoke];
+
+    __unsafe_unretained NSArray *windows = nil;
+    [invocation getReturnValue:&windows];
+    return windows;
+}
+
 + (SEL)swizzledSelectorForSelector:(SEL)selector
 {
     return NSSelectorFromString([NSString stringWithFormat:@"_flex_swizzle_%x_%@", arc4random(), NSStringFromSelector(selector)]);

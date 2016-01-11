@@ -244,7 +244,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
     
     if (isKeyDown && [modifiedInput length] > 0 && interactionEnabled) {
         UIResponder *firstResponder = nil;
-        for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+        for (UIWindow *window in [FLEXUtility allWindows]) {
             firstResponder = [window valueForKey:@"firstResponder"];
             if (firstResponder) {
                 break;

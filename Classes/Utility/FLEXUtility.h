@@ -39,6 +39,8 @@
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
 
++ (NSArray *)allWindows;
+
 // Swizzling utilities
 
 + (SEL)swizzledSelectorForSelector:(SEL)selector;
