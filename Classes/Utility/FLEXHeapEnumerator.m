@@ -20,12 +20,6 @@ typedef struct {
 
 @implementation FLEXHeapEnumerator
 
-static kern_return_t memory_reader(task_t task, vm_address_t remote_address, vm_size_t size, void **local_memory)
-{
-    *local_memory = (void *)remote_address;
-    return KERN_SUCCESS;
-}
-
 static void range_callback(task_t task, void *context, unsigned type, vm_range_t *ranges, unsigned rangeCount)
 {
     flex_object_enumeration_block_t block = (__bridge flex_object_enumeration_block_t)context;
@@ -60,18 +54,19 @@ static void range_callback(task_t task, void *context, unsigned type, vm_range_t
     // Refresh the class list on every call in case classes are added to the runtime.
     [self updateRegisteredClasses];
     
-    // For another exmple of enumerating through malloc ranges (which helped my understanding of the api) see:
+    // Inspired by:
     // http://llvm.org/svn/llvm-project/lldb/tags/RELEASE_34/final/examples/darwin/heap_find/heap/heap_find.cpp
-    // Also https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396
+    // https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396
+    
     vm_address_t *zones = NULL;
     unsigned int zoneCount = 0;
-    mach_port_t task = mach_task_self();
-    kern_return_t result = malloc_get_all_zones(task, &memory_reader, &zones, &zoneCount);
+    kern_return_t result = malloc_get_all_zones(TASK_NULL, NULL, &zones, &zoneCount);
+    
     if (result == KERN_SUCCESS) {
         for (unsigned int i = 0; i < zoneCount; i++) {
             malloc_zone_t *zone = (malloc_zone_t *)zones[i];
             if (zone->introspect && zone->introspect->enumerator) {
-                zone->introspect->enumerator(task, (__bridge void *)block, MALLOC_PTR_IN_USE_RANGE_TYPE, zone, &memory_reader, &range_callback);
+                zone->introspect->enumerator(TASK_NULL, (__bridge void *)block, MALLOC_PTR_IN_USE_RANGE_TYPE, (vm_address_t)zone, NULL, &range_callback);
             }
         }
     }
