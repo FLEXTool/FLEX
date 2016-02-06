@@ -217,9 +217,14 @@
                 drillInViewController = [[FLEXWebViewController alloc] initWithText:prettyString];
             } else if ([FLEXWebViewController supportsPathExtension:pathExtension]) {
                 drillInViewController = [[FLEXWebViewController alloc] initWithURL:[NSURL fileURLWithPath:fullPath]];
-            } else if ([@[@"db", @"sqlite3", @"realm"] containsObject:[subpath pathExtension]]) {
+            } else if ([@[@"db", @"sqlite", @"sqlite3"] containsObject:[subpath pathExtension]]) {
               drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
             }
+#if __has_include("<Realm/Realm.h>")
+            else if ([@[@"realm"] containsObject:[subpath pathExtension]]) {
+                drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
+            }
+#endif
             else {
                 NSString *fileString = [NSString stringWithContentsOfFile:fullPath encoding:NSUTF8StringEncoding error:NULL];
                 if ([fileString length] > 0) {

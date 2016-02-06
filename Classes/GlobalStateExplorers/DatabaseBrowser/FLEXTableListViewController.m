@@ -7,9 +7,12 @@
 //
 
 #import "FLEXTableListViewController.h"
+
 #import "FLEXDatabaseManager.h"
 #import "FLEXSQLiteDatabaseManager.h"
+#if __has_include("<Realm/Realm.h>")
 #import "FLEXRealmDatabaseManager.h"
+#endif
 
 #import "FLEXTableContentViewController.h"
 
@@ -45,9 +48,12 @@
     if ([@[@"db", @"sqlite", @"sqlite3"] indexOfObject:pathExtension] != NSNotFound) {
         return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
     }
-    else if ([pathExtension isEqualToString:@"realm"]) {
+    
+#if __has_include("<Realm/Realm.h>")
+    if ([pathExtension isEqualToString:@"realm"]) {
         return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
     }
+#endif
     
     return nil;
 }
