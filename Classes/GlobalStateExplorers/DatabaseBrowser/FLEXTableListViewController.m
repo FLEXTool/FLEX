@@ -8,11 +8,14 @@
 
 #import "FLEXTableListViewController.h"
 #import "FLEXDatabaseManager.h"
+#import "FLEXSQLiteDatabaseManager.h"
+#import "FLEXRealmDatabaseManager.h"
+
 #import "FLEXTableContentViewController.h"
 
 @interface FLEXTableListViewController ()
 {
-    FLEXDatabaseManager *_dbm;
+    id<FLEXDatabaseManager> _dbm;
     NSString *_databasePath;
 }
 
@@ -28,11 +31,25 @@
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _databasePath = [path copy];
-        _dbm = [[FLEXDatabaseManager alloc] initWithPath:path];
+        _dbm = [self databaseManagerForFileAtPath:_databasePath];
         [_dbm open];
         [self getAllTables];
     }
     return self;
+}
+
+- (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path
+{
+    NSString *pathExtension = path.pathExtension.lowercaseString;
+    
+    if ([@[@"db", @"sqlite", @"sqlite3"] indexOfObject:pathExtension] != NSNotFound) {
+        return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
+    }
+    else if ([pathExtension isEqualToString:@"realm"]) {
+        return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
+    }
+    
+    return nil;
 }
 
 - (void)getAllTables

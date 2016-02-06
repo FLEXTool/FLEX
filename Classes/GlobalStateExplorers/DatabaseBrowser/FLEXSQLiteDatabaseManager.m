@@ -6,15 +6,13 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-
-
-#import "FLEXSQLiteDatabaseParser.h"
+#import "FLEXSQLiteDatabaseManager.h"
 #import <sqlite3.h>
 
 
 static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
 
-@implementation FLEXSQLiteDatabaseParser
+@implementation FLEXSQLiteDatabaseManager
 {
     sqlite3* _db;
     NSString* _databasePath;

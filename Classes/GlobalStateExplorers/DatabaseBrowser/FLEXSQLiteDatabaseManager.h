@@ -14,6 +14,6 @@
 #import <Foundation/Foundation.h>
 #import "FLEXDatabaseManager.h"
 
-@interface FLEXSQLiteDatabaseParser : NSObject <FLEXDatabaseManagerParser>
+@interface FLEXSQLiteDatabaseManager : NSObject <FLEXDatabaseManager>
 
 @end

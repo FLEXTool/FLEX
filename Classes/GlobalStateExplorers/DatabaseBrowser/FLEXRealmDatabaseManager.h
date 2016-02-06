@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "FLEXDatabaseManager.h"
 
-@interface FLEXRealmDatabaseParser : NSObject <FLEXDatabaseManagerParser>
+@interface FLEXRealmDatabaseManager : NSObject <FLEXDatabaseManager>
 
 @end

@@ -13,18 +13,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol FLEXDatabaseManagerParser <NSObject>
-
-- (instancetype)initWithPath:(NSString*)path;
-
-- (BOOL)open;
-- (NSArray *)queryAllTables;
-- (NSArray *)queryAllColumnsWithTableName:(NSString *)tableName;
-- (NSArray *)queryAllDataWithTableName:(NSString *)tableName;
-
-@end
-
-@interface FLEXDatabaseManager : NSObject
+@protocol FLEXDatabaseManager <NSObject>
 
 @property (nonatomic, readonly) NSString *path;
 

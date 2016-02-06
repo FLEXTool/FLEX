@@ -6,20 +6,20 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-#import "FLEXRealmDatabaseParser.h"
+#import "FLEXRealmDatabaseManager.h"
 
 //#if __has_include("<Realm/Realm.h>")
 
 #import <Realm/Realm.h>
 
-@interface FLEXRealmDatabaseParser ()
+@interface FLEXRealmDatabaseManager ()
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, strong) RLMRealm *realm;
 
 @end
 
-@implementation FLEXRealmDatabaseParser
+@implementation FLEXRealmDatabaseManager
 
 - (instancetype)initWithPath:(NSString*)aPath
 {
