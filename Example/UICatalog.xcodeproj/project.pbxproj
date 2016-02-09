@@ -47,19 +47,6 @@
 		94CB4D431A97183E0054A905 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 94CB4D421A97183E0054A905 /* libz.dylib */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		224D49B21C673BB5000EAB86 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		3EC6487218FF8A5000024205 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = SOURCE_ROOT; };
 		5356823A18F3656900BAAD62 /* UICatalog.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UICatalog.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -294,7 +281,6 @@
 				5356823618F3656900BAAD62 /* Sources */,
 				5356823718F3656900BAAD62 /* Frameworks */,
 				5356823818F3656900BAAD62 /* Resources */,
-				224D49B21C673BB5000EAB86 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
