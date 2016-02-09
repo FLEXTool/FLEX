@@ -8,7 +8,7 @@
 
 #import "FLEXRealmDatabaseManager.h"
 
-#if __has_include("<Realm/Realm.h>")
+#if __has_include(<Realm/Realm.h>)
 
 #import <Realm/Realm.h>
 #import <Realm/RLMRealm_Dynamic.h>
@@ -24,7 +24,7 @@
 
 @implementation FLEXRealmDatabaseManager
 
-#if __has_include("<Realm/Realm.h>")
+#if __has_include(<Realm/Realm.h>)
 
 - (instancetype)initWithPath:(NSString*)aPath
 {
@@ -38,13 +38,10 @@
 
 - (BOOL)open
 {
-    RLMRealmConfiguration *configuration = [RLMRealmConfiguration defaultConfiguration];
-    configuration.dynamic = YES;
-    configuration.path = self.path;
-    
     NSError *error = nil;
+    RLMRealmConfiguration *configuration = [[RLMRealmConfiguration alloc] init];
+    configuration.path = self.path;
     self.realm = [RLMRealm realmWithConfiguration:configuration error:&error];
-    
     return (error == nil);
 }
 

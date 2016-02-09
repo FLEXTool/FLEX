@@ -220,7 +220,7 @@
             } else if ([@[@"db", @"sqlite", @"sqlite3"] containsObject:[subpath pathExtension]]) {
               drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
             }
-#if __has_include("<Realm/Realm.h>")
+#if __has_include(<Realm/Realm.h>)
             else if ([@[@"realm"] containsObject:[subpath pathExtension]]) {
                 drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
             }

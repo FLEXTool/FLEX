@@ -10,7 +10,7 @@
 
 #import "FLEXDatabaseManager.h"
 #import "FLEXSQLiteDatabaseManager.h"
-#if __has_include("<Realm/Realm.h>")
+#if __has_include(<Realm/Realm.h>)
 #import "FLEXRealmDatabaseManager.h"
 #endif
 
@@ -49,7 +49,7 @@
         return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
     }
     
-#if __has_include("<Realm/Realm.h>")
+#if __has_include(<Realm/Realm.h>)
     if ([pathExtension isEqualToString:@"realm"]) {
         return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
     }
