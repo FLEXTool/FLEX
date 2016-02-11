@@ -114,7 +114,7 @@ The code injection is left as an exercise for the reader. :innocent:
 
 
 ## Installation
-FLEX is available on [Cocoapods](http://cocoapods.org/?q=FLEX). Simply add the following line to your podfile:
+FLEX is available on [CocoaPods](http://cocoapods.org/?q=FLEX). Simply add the following line to your podfile:
 
 ```ruby
 pod 'FLEX', '~> 2.0', :configurations => ['Debug']
