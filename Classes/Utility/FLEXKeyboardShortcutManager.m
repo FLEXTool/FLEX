@@ -147,43 +147,45 @@
     
     [FLEXUtility replaceImplementationOfKnownSelector:originalKeyEventSelector onClass:[UIApplication class] withBlock:handleKeyUIEventSwizzleBlock swizzledSelector:swizzledKeyEventSelector];
     
-    SEL originalSendEventSelector = NSSelectorFromString(@"sendEvent:");
-    SEL swizzledSendEventSelector = [FLEXUtility swizzledSelectorForSelector:originalSendEventSelector];
-    
-    void (^sendEventSwizzleBlock)(UIApplication *, UIEvent *) = ^(UIApplication *slf, UIEvent *event) {
-        if (event.type == UIEventTypeTouches) {
-            FLEXKeyboardShortcutManager *keyboardManager = [FLEXKeyboardShortcutManager sharedManager];
-            NSInteger pressureLevel = 0;
-            if (keyboardManager.isPressingShift) {
-                pressureLevel++;
-            }
-            if (keyboardManager.isPressingCommand) {
-                pressureLevel++;
-            }
-            if (keyboardManager.isPressingControl) {
-                pressureLevel++;
-            }
-            if (pressureLevel > 0) {
-                for (UITouch *touch in [event allTouches]) {
-                    double adjustedPressureLevel = pressureLevel * 20 * touch.maximumPossibleForce;
-                    [touch setValue:@(adjustedPressureLevel) forKey:@"_pressure"];
+    if ([[UITouch class] instancesRespondToSelector:@selector(maximumPossibleForce)]) {
+        SEL originalSendEventSelector = NSSelectorFromString(@"sendEvent:");
+        SEL swizzledSendEventSelector = [FLEXUtility swizzledSelectorForSelector:originalSendEventSelector];
+        
+        void (^sendEventSwizzleBlock)(UIApplication *, UIEvent *) = ^(UIApplication *slf, UIEvent *event) {
+            if (event.type == UIEventTypeTouches) {
+                FLEXKeyboardShortcutManager *keyboardManager = [FLEXKeyboardShortcutManager sharedManager];
+                NSInteger pressureLevel = 0;
+                if (keyboardManager.isPressingShift) {
+                    pressureLevel++;
+                }
+                if (keyboardManager.isPressingCommand) {
+                    pressureLevel++;
+                }
+                if (keyboardManager.isPressingControl) {
+                    pressureLevel++;
+                }
+                if (pressureLevel > 0) {
+                    for (UITouch *touch in [event allTouches]) {
+                        double adjustedPressureLevel = pressureLevel * 20 * touch.maximumPossibleForce;
+                        [touch setValue:@(adjustedPressureLevel) forKey:@"_pressure"];
+                    }
                 }
             }
-        }
+            
+            ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledSendEventSelector, event);
+        };
         
-        ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledSendEventSelector, event);
-    };
-    
-    [FLEXUtility replaceImplementationOfKnownSelector:originalSendEventSelector onClass:[UIApplication class] withBlock:sendEventSwizzleBlock swizzledSelector:swizzledSendEventSelector];
-    
-    SEL originalSupportsTouchPressureSelector = NSSelectorFromString(@"_supportsForceTouch");
-    SEL swizzledSupportsTouchPressureSelector = [FLEXUtility swizzledSelectorForSelector:originalSupportsTouchPressureSelector];
-    
-    BOOL (^supportsTouchPressureSwizzleBlock)(UIDevice *) = ^BOOL(UIDevice *slf) {
-        return YES;
-    };
-    
-    [FLEXUtility replaceImplementationOfKnownSelector:originalSupportsTouchPressureSelector onClass:[UIDevice class] withBlock:supportsTouchPressureSwizzleBlock swizzledSelector:swizzledSupportsTouchPressureSelector];
+        [FLEXUtility replaceImplementationOfKnownSelector:originalSendEventSelector onClass:[UIApplication class] withBlock:sendEventSwizzleBlock swizzledSelector:swizzledSendEventSelector];
+        
+        SEL originalSupportsTouchPressureSelector = NSSelectorFromString(@"_supportsForceTouch");
+        SEL swizzledSupportsTouchPressureSelector = [FLEXUtility swizzledSelectorForSelector:originalSupportsTouchPressureSelector];
+        
+        BOOL (^supportsTouchPressureSwizzleBlock)(UIDevice *) = ^BOOL(UIDevice *slf) {
+            return YES;
+        };
+        
+        [FLEXUtility replaceImplementationOfKnownSelector:originalSupportsTouchPressureSelector onClass:[UIDevice class] withBlock:supportsTouchPressureSwizzleBlock swizzledSelector:swizzledSupportsTouchPressureSelector];
+    }
 }
 
 - (instancetype)init
