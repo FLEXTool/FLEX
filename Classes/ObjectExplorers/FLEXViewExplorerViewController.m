@@ -15,7 +15,8 @@
 
 typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     FLEXViewExplorerRowViewController,
-    FLEXViewExplorerRowPreview
+    FLEXViewExplorerRowPreview,
+    FLEXViewExplorerRowViewControllerForAncestor
 };
 
 @interface FLEXViewExplorerViewController ()
@@ -46,6 +47,8 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     
     if ([FLEXUtility viewControllerForView:self.viewToExplore]) {
         [rowCookies addObject:@(FLEXViewExplorerRowViewController)];
+    }else{
+        [rowCookies addObject:@(FLEXViewExplorerRowViewControllerForAncestor)];
     }
     
     [rowCookies addObject:@(FLEXViewExplorerRowPreview)];
@@ -79,6 +82,10 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
             case FLEXViewExplorerRowPreview:
                 title = @"Preview Image";
                 break;
+            
+            case FLEXViewExplorerRowViewControllerForAncestor:
+                title = @"View Controller For Ancestor";
+                break;
         }
     } else if ([rowCookie isKindOfClass:[NSString class]]) {
         objc_property_t property = [self viewPropertyForName:rowCookie];
@@ -104,6 +111,10 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
                 break;
                 
             case FLEXViewExplorerRowPreview:
+                break;
+            
+            case FLEXViewExplorerRowViewControllerForAncestor:
+                subtitle = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[FLEXUtility viewControllerForAncestralView:self.viewToExplore]];
                 break;
         }
     } else if ([rowCookie isKindOfClass:[NSString class]]) {
@@ -140,6 +151,10 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
                 
             case FLEXViewExplorerRowPreview:
                 drillInViewController = [[self class] imagePreviewViewControllerForView:self.viewToExplore];
+                break;
+                
+            case FLEXViewExplorerRowViewControllerForAncestor:
+                drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:[FLEXUtility viewControllerForAncestralView:self.viewToExplore]];
                 break;
         }
     } else if ([rowCookie isKindOfClass:[NSString class]]) {
