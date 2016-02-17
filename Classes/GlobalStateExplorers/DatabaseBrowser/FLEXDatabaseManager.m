@@ -9,6 +9,7 @@
 
 
 #import "FLEXDatabaseManager.h"
+#import "FLEXManager.h"
 #import <sqlite3.h>
 
 
@@ -38,6 +39,15 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
         return YES;
     }
     int err = sqlite3_open([_databasePath UTF8String], &_db);
+
+    NSString *defaultDatabasePassword = [FLEXManager sharedManager].defaultDatabasePassword;
+
+    if (defaultDatabasePassword) {
+        const char *key = defaultDatabasePassword.UTF8String;
+
+        sqlite3_key(_db, key, (int)strlen(key));
+    }
+
     if(err != SQLITE_OK) {
         NSLog(@"error opening!: %d", err);
         return NO;

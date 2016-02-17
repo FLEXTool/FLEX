@@ -49,6 +49,10 @@
 
 #pragma mark - Extensions
 
+/// Default database password is @c nil by default.
+/// Set this to the password you want the databases to open with.
+@property (copy, nonatomic) NSString *defaultDatabasePassword;
+
 /// Adds an entry at the bottom of the list of Global State items. Call this method before this view controller is displayed.
 /// @param entryName The string to be displayed in the cell.
 /// @param objectFutureBlock When you tap on the row, information about the object returned by this block will be displayed.
