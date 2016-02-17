@@ -58,6 +58,18 @@
     return viewController;
 }
 
++ (UIViewController *)viewControllerForAncestralView:(UIView *)view{
+    UIViewController *viewController = nil;
+    SEL viewDelSel = NSSelectorFromString([NSString stringWithFormat:@"%@ewControllerForAncestor", @"_vi"]);
+    if ([view respondsToSelector:viewDelSel]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        viewController = [view performSelector:viewDelSel];
+#pragma clang diagnostic pop
+    }
+    return viewController;
+}
+
 + (NSString *)detailDescriptionForView:(UIView *)view
 {
     return [NSString stringWithFormat:@"frame %@", [self stringForCGRect:view.frame]];
