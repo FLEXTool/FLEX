@@ -22,10 +22,12 @@
 
 @property (nonatomic, strong) NSArray *tables;
 
++ (NSArray *)supportedSQLiteExtensions;
++ (NSArray *)supportedRealmExtensions;
+
 @end
 
 @implementation FLEXTableListViewController
-
 
 - (instancetype)initWithPath:(NSString *)path
 {
@@ -43,10 +45,13 @@
 {
     NSString *pathExtension = path.pathExtension.lowercaseString;
     
-    if ([@[@"db", @"sqlite", @"sqlite3"] indexOfObject:pathExtension] != NSNotFound) {
+    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    if ([sqliteExtensions indexOfObject:pathExtension] != NSNotFound) {
         return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
     }
-    else if ([pathExtension isEqualToString:@"realm"]) {
+    
+    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    if (realmExtensions != nil && [realmExtensions indexOfObject:pathExtension] != NSNotFound) {
         return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
     }
     
@@ -95,6 +100,37 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return [NSString stringWithFormat:@"%lu tables", (unsigned long)self.tables.count];
+}
+
++ (BOOL)supportsExtension:(NSString *)extension
+{
+    extension = extension.lowercaseString;
+    
+    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    if (sqliteExtensions.count > 0 && [sqliteExtensions indexOfObject:extension] != NSNotFound) {
+        return YES;
+    }
+    
+    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    if (realmExtensions.count > 0 && [realmExtensions indexOfObject:extension] != NSNotFound) {
+        return YES;
+    }
+    
+    return NO;
+}
+
++ (NSArray *)supportedSQLiteExtensions
+{
+    return @[@"db", @"sqlite", @"sqlite3"];
+}
+
++ (NSArray *)supportedRealmExtensions
+{
+    if (NSClassFromString(@"RLMRealm") == nil) {
+        return nil;
+    }
+    
+    return @[@"realm"];
 }
 
 @end

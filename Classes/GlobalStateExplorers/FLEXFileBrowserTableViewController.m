@@ -217,10 +217,7 @@
                 drillInViewController = [[FLEXWebViewController alloc] initWithText:prettyString];
             } else if ([FLEXWebViewController supportsPathExtension:pathExtension]) {
                 drillInViewController = [[FLEXWebViewController alloc] initWithURL:[NSURL fileURLWithPath:fullPath]];
-            } else if ([@[@"db", @"sqlite", @"sqlite3"] containsObject:[subpath pathExtension]]) {
-                drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
-            }
-            else if (NSClassFromString(@"RLMRealm") && [@[@"realm"] containsObject:[subpath pathExtension]]) {
+            } else if ([FLEXTableListViewController supportsExtension:subpath.pathExtension]) {
                 drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
             }
             else {
