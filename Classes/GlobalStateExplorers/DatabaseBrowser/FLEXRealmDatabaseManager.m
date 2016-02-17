@@ -9,25 +9,30 @@
 #import "FLEXRealmDatabaseManager.h"
 
 #if __has_include(<Realm/Realm.h>)
-
 #import <Realm/Realm.h>
 #import <Realm/RLMRealm_Dynamic.h>
+#else
+#import "FLEXRealmDefines.h"
+#endif
 
 @interface FLEXRealmDatabaseManager ()
 
 @property (nonatomic, copy) NSString *path;
-@property (nonatomic, strong) RLMRealm *realm;
+@property (nonatomic, strong) id realm;
 
 @end
 
-#endif
+//#endif
 
 @implementation FLEXRealmDatabaseManager
 
-#if __has_include(<Realm/Realm.h>)
-
 - (instancetype)initWithPath:(NSString*)aPath
 {
+    Class realmClass = NSClassFromString(@"RLMRealm");
+    if (realmClass == nil) {
+        return nil;
+    }
+    
     self = [super init];
     
     if (self) {
@@ -38,17 +43,24 @@
 
 - (BOOL)open
 {
+    Class realmClass = NSClassFromString(@"RLMRealm");
+    Class configurationClass = NSClassFromString(@"RLMRealmConfiguration");
+    
+    if (realmClass == nil || configurationClass == nil) {
+        return NO;
+    }
+    
     NSError *error = nil;
-    RLMRealmConfiguration *configuration = [[RLMRealmConfiguration alloc] init];
-    configuration.path = self.path;
-    self.realm = [RLMRealm realmWithConfiguration:configuration error:&error];
+    id configuration = [[configurationClass alloc] init];
+    [configuration setPath:self.path];
+    self.realm = [realmClass realmWithConfiguration:configuration error:&error];
     return (error == nil);
 }
 
 - (NSArray *)queryAllTables
 {
     NSMutableArray *allTables = [NSMutableArray array];
-    RLMSchema *schema = self.realm.schema;
+    RLMSchema *schema = [self.realm schema];
     
     for (RLMObjectSchema *objectSchema in schema.objectSchema) {
         if (objectSchema.className == nil) {
@@ -64,7 +76,7 @@
 
 - (NSArray *)queryAllColumnsWithTableName:(NSString *)tableName
 {
-    RLMObjectSchema *objectSchema = [self.realm.schema schemaForClassName:tableName];
+    RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
     if (objectSchema == nil) {
         return nil;
     }
@@ -79,7 +91,7 @@
 
 - (NSArray *)queryAllDataWithTableName:(NSString *)tableName
 {
-    RLMObjectSchema *objectSchema = [self.realm.schema schemaForClassName:tableName];
+    RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
     RLMResults *results = [self.realm allObjects:tableName];
     if (results.count == 0 || objectSchema == nil) {
         return nil;
@@ -97,7 +109,5 @@
     
     return allDataEntries;
 }
-
-#endif
 
 @end
