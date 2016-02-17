@@ -217,7 +217,7 @@
                 drillInViewController = [[FLEXWebViewController alloc] initWithText:prettyString];
             } else if ([FLEXWebViewController supportsPathExtension:pathExtension]) {
                 drillInViewController = [[FLEXWebViewController alloc] initWithURL:[NSURL fileURLWithPath:fullPath]];
-            } else if ([[subpath pathExtension] isEqualToString:@"db"]) {
+            } else if ([@[@"db", @"sqlite"] containsObject:[subpath pathExtension]]) {
               drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
             }
             else {
