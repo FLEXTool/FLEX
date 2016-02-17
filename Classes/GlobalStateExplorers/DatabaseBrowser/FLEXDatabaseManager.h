@@ -15,7 +15,7 @@
 
 @protocol FLEXDatabaseManager <NSObject>
 
-@optional
+@required
 - (instancetype)initWithPath:(NSString*)path;
 
 - (BOOL)open;
