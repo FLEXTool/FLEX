@@ -193,15 +193,11 @@
     
     NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"dogs" ofType:@"realm"];
     if (resourcePath == nil) {
-        [RLMRealm realmWithPath:destinationPath];
         return;
     }
     
     NSError *error = nil;
     [[NSFileManager defaultManager] copyItemAtPath:resourcePath toPath:destinationPath error:&error];
-    if (error == nil) {
-        [RLMRealm realmWithPath:destinationPath];
-    }
 }
 #endif
 
