@@ -49,6 +49,10 @@
 
 #if DEBUG
 #import <FLEX/FLEX.h>
+#if __has_include(<Realm/Realm.h>)
+#import "Dog.h"
+#import "Owner.h"
+#endif
 #endif
 
 @interface AAPLAppDelegate () <NSURLConnectionDataDelegate, NSURLSessionDataDelegate>
@@ -66,6 +70,11 @@
     [[FLEXManager sharedManager] setNetworkDebuggingEnabled:YES];
     [self sendExampleNetworkRequests];
     self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
+
+#if __has_include(<Realm/Realm.h>)
+    [self setUpRealm];
+#endif
+    
 #endif
     return YES;
 }
@@ -172,5 +181,24 @@
 {
     [self.connections removeObject:connection];
 }
+
+#if __has_include(<Realm/Realm.h>)
+- (void)setUpRealm
+{
+    NSString *destinationPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    destinationPath = [destinationPath stringByAppendingPathComponent:@"dogs.realm"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:destinationPath isDirectory:nil]) {
+        return;
+    }
+    
+    NSString *resourcePath = [[NSBundle mainBundle] pathForResource:@"dogs" ofType:@"realm"];
+    if (resourcePath == nil) {
+        return;
+    }
+    
+    NSError *error = nil;
+    [[NSFileManager defaultManager] copyItemAtPath:resourcePath toPath:destinationPath error:&error];
+}
+#endif
 
 @end

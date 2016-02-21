@@ -12,15 +12,8 @@
 //  which Flying Meat Inc. licenses this file to you.
 
 #import <Foundation/Foundation.h>
+#import "FLEXDatabaseManager.h"
 
-@protocol FLEXDatabaseManager <NSObject>
-
-@required
-- (instancetype)initWithPath:(NSString*)path;
-
-- (BOOL)open;
-- (NSArray *)queryAllTables;
-- (NSArray *)queryAllColumnsWithTableName:(NSString *)tableName;
-- (NSArray *)queryAllDataWithTableName:(NSString *)tableName;
+@interface FLEXSQLiteDatabaseManager : NSObject <FLEXDatabaseManager>
 
 @end

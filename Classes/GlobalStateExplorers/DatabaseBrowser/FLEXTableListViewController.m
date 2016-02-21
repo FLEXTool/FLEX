@@ -7,32 +7,55 @@
 //
 
 #import "FLEXTableListViewController.h"
+
 #import "FLEXDatabaseManager.h"
+#import "FLEXSQLiteDatabaseManager.h"
+#import "FLEXRealmDatabaseManager.h"
+
 #import "FLEXTableContentViewController.h"
 
 @interface FLEXTableListViewController ()
 {
-    FLEXDatabaseManager *_dbm;
+    id<FLEXDatabaseManager> _dbm;
     NSString *_databasePath;
 }
 
 @property (nonatomic, strong) NSArray *tables;
 
++ (NSArray *)supportedSQLiteExtensions;
++ (NSArray *)supportedRealmExtensions;
+
 @end
 
 @implementation FLEXTableListViewController
-
 
 - (instancetype)initWithPath:(NSString *)path
 {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _databasePath = [path copy];
-        _dbm = [[FLEXDatabaseManager alloc] initWithPath:path];
+        _dbm = [self databaseManagerForFileAtPath:_databasePath];
         [_dbm open];
         [self getAllTables];
     }
     return self;
+}
+
+- (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path
+{
+    NSString *pathExtension = path.pathExtension.lowercaseString;
+    
+    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    if ([sqliteExtensions indexOfObject:pathExtension] != NSNotFound) {
+        return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
+    }
+    
+    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    if (realmExtensions != nil && [realmExtensions indexOfObject:pathExtension] != NSNotFound) {
+        return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
+    }
+    
+    return nil;
 }
 
 - (void)getAllTables
@@ -77,6 +100,37 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return [NSString stringWithFormat:@"%lu tables", (unsigned long)self.tables.count];
+}
+
++ (BOOL)supportsExtension:(NSString *)extension
+{
+    extension = extension.lowercaseString;
+    
+    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    if (sqliteExtensions.count > 0 && [sqliteExtensions indexOfObject:extension] != NSNotFound) {
+        return YES;
+    }
+    
+    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    if (realmExtensions.count > 0 && [realmExtensions indexOfObject:extension] != NSNotFound) {
+        return YES;
+    }
+    
+    return NO;
+}
+
++ (NSArray *)supportedSQLiteExtensions
+{
+    return @[@"db", @"sqlite", @"sqlite3"];
+}
+
++ (NSArray *)supportedRealmExtensions
+{
+    if (NSClassFromString(@"RLMRealm") == nil) {
+        return nil;
+    }
+    
+    return @[@"realm"];
 }
 
 @end

@@ -217,8 +217,8 @@
                 drillInViewController = [[FLEXWebViewController alloc] initWithText:prettyString];
             } else if ([FLEXWebViewController supportsPathExtension:pathExtension]) {
                 drillInViewController = [[FLEXWebViewController alloc] initWithURL:[NSURL fileURLWithPath:fullPath]];
-            } else if ([[subpath pathExtension] isEqualToString:@"db"]) {
-              drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
+            } else if ([FLEXTableListViewController supportsExtension:subpath.pathExtension]) {
+                drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
             }
             else {
                 NSString *fileString = [NSString stringWithContentsOfFile:fullPath encoding:NSUTF8StringEncoding error:NULL];
