@@ -101,7 +101,8 @@
     for (RLMObject *result in results) {
         NSMutableDictionary *entry = [NSMutableDictionary dictionary];
         for (RLMProperty *property in objectSchema.properties) {
-            entry[property.name] = [result valueForKey:property.name];
+            id value = [result valueForKey:property.name];
+            entry[property.name] = (value) ? (value) : [NSNull null];
         }
         
         [allDataEntries addObject:entry];
