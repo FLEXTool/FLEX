@@ -12,6 +12,8 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXHeapEnumerator.h"
+#import <malloc/malloc.h>
+
 
 @interface FLEXInstancesTableViewController ()
 
