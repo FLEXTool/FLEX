@@ -12,6 +12,8 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXHeapEnumerator.h"
+#import <malloc/malloc.h>
+
 
 @interface FLEXInstancesTableViewController ()
 
@@ -31,7 +33,9 @@
             // Note: objects of certain classes crash when retain is called. It is up to the user to avoid tapping into instance lists for these classes.
             // Ex. OS_dispatch_queue_specific_queue
             // In the future, we could provide some kind of warning for classes that are known to be problematic.
-            [instances addObject:object];
+            if (malloc_size((__bridge const void *)(object)) > 0) {
+                [instances addObject:object];
+            }
         }
     }];
     FLEXInstancesTableViewController *instancesViewController = [[self alloc] init];
