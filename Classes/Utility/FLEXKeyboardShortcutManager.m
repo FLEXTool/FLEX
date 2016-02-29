@@ -220,7 +220,6 @@ static const long kFLEXCommandKeyCode = 0xe3;
     NSString *unmodifiedInput = nil;
     UIKeyModifierFlags flags = 0;
     BOOL isKeyDown = NO;
-    long keyCode = 0;
     
     if ([event respondsToSelector:@selector(_modifiedInput)]) {
         modifiedInput = [event _modifiedInput];
@@ -238,17 +237,14 @@ static const long kFLEXCommandKeyCode = 0xe3;
         isKeyDown = [event _isKeyDown];
     }
     
-    if ([event respondsToSelector:@selector(_keyCode)]) {
-        keyCode = [event _keyCode];
-    }
-    
     BOOL interactionEnabled = ![[UIApplication sharedApplication] isIgnoringInteractionEvents];
-    
+    BOOL hasFirstResponder = NO;
     if (isKeyDown && [modifiedInput length] > 0 && interactionEnabled) {
         UIResponder *firstResponder = nil;
         for (UIWindow *window in [FLEXUtility allWindows]) {
             firstResponder = [window valueForKey:@"firstResponder"];
             if (firstResponder) {
+                hasFirstResponder = YES;
                 break;
             }
         }
@@ -279,12 +275,17 @@ static const long kFLEXCommandKeyCode = 0xe3;
         }
     }
     
-    if (keyCode == kFLEXControlKeyCode) {
-        self.pressingControl = isKeyDown;
-    } else if (keyCode == kFLEXCommandKeyCode) {
-        self.pressingCommand = isKeyDown;
-    } else if (keyCode == kFLEXShiftKeyCode) {
-        self.pressingShift = isKeyDown;
+    // Calling _keyCode on events from the simulator keyboard will crash.
+    // It is only safe to call _keyCode when there's not an active responder.
+    if (!hasFirstResponder && [event respondsToSelector:@selector(_keyCode)]) {
+        long keyCode = [event _keyCode];
+        if (keyCode == kFLEXControlKeyCode) {
+            self.pressingControl = isKeyDown;
+        } else if (keyCode == kFLEXCommandKeyCode) {
+            self.pressingCommand = isKeyDown;
+        } else if (keyCode == kFLEXShiftKeyCode) {
+            self.pressingShift = isKeyDown;
+        }
     }
 }
 
