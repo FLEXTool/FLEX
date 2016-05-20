@@ -52,7 +52,7 @@
     
     NSError *error = nil;
     id configuration = [[configurationClass alloc] init];
-    [(RLMRealmConfiguration *)configuration setPath:self.path];
+    [(RLMRealmConfiguration *)configuration setFileURL:[NSURL fileURLWithPath:self.path]];
     self.realm = [realmClass realmWithConfiguration:configuration error:&error];
     return (error == nil);
 }

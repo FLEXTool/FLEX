@@ -12,7 +12,7 @@
 @class RLMObject, RLMResults, RLMRealm, RLMRealmConfiguration, RLMSchema, RLMObjectSchema, RLMProperty;
 
 @interface RLMRealmConfiguration : NSObject
-@property (nonatomic, copy) NSString *path;
+@property (nonatomic, copy) NSURL *fileURL;
 @end
 
 @interface RLMRealm : NSObject
