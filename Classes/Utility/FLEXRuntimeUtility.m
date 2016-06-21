@@ -436,9 +436,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSString *editableDescription = nil;
     
     if (object) {
-        // This is a hack to use JSON serialzation for our editable objects.
+        // This is a hack to use JSON serialization for our editable objects.
         // NSJSONSerialization doesn't allow writing fragments - the top level object must be an array or dictionary.
-        // We always wrap the object inside an array and then strip the outter square braces off the final string.
+        // We always wrap the object inside an array and then strip the outer square braces off the final string.
         NSArray *wrappedObject = @[object];
         if ([NSJSONSerialization isValidJSONObject:wrappedObject]) {
             NSString *wrappedDescription = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:wrappedObject options:0 error:NULL] encoding:NSUTF8StringEncoding];
@@ -674,7 +674,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type
 {
-    // CASE marcro inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
+    // CASE macro inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
 #define CASE(ctype, selectorpart) \
     if(strcmp(type, @encode(ctype)) == 0) { \
         return [NSNumber numberWith ## selectorpart: *(ctype *)pointer]; \
