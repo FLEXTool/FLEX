@@ -68,7 +68,7 @@
 
 - (void)updateTitle
 {
-    NSString *shortImageName = [[self.binaryImageName componentsSeparatedByString:@"/"] lastObject];
+    NSString *shortImageName = self.binaryImageName.lastPathComponent;
     self.title = [NSString stringWithFormat:@"%@ Classes (%lu)", shortImageName, (unsigned long)[self.filteredClassNames count]];
 }
 

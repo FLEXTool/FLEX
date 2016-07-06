@@ -9,6 +9,7 @@
 #import "FLEXLibrariesTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXClassesTableViewController.h"
+#import "FLEXClassExplorerViewController.h"
 #import <objc/runtime.h>
 
 @interface FLEXLibrariesTableViewController () <UISearchBarDelegate>
@@ -17,6 +18,7 @@
 @property (nonatomic, strong) NSArray *filteredImageNames;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) Class foundClass;
 
 @end
 
@@ -63,9 +65,9 @@
         
         // Sort alphabetically
         self.imageNames = [imageNameStrings sortedArrayWithOptions:0 usingComparator:^NSComparisonResult(NSString *name1, NSString *name2) {
-                NSString *shortName1 = [self shortNameForImageName:name1];
-                NSString *shortName2 = [self shortNameForImageName:name2];
-                return [shortName1 caseInsensitiveCompare:shortName2];
+            NSString *shortName1 = [self shortNameForImageName:name1];
+            NSString *shortName2 = [self shortNameForImageName:name2];
+            return [shortName1 caseInsensitiveCompare:shortName2];
         }];
         
         free(imageNames);
@@ -74,13 +76,11 @@
 
 - (NSString *)shortNameForImageName:(NSString *)imageName
 {
-    NSString *shortName = nil;
     NSArray *components = [imageName componentsSeparatedByString:@"/"];
-    NSUInteger componentsCount = [components count];
-    if (componentsCount >= 2) {
-        shortName = [NSString stringWithFormat:@"%@/%@", components[componentsCount - 2], components[componentsCount - 1]];
+    if (components.count >= 2) {
+        return [NSString stringWithFormat:@"%@/%@", components[components.count - 2], components[components.count - 1]];
     }
-    return shortName;
+    return imageName.lastPathComponent;
 }
 
 - (void)setImageNames:(NSArray *)imageNames
@@ -109,6 +109,8 @@
     } else {
         self.filteredImageNames = self.imageNames;
     }
+    
+    self.foundClass = NSClassFromString(searchText);
     [self.tableView reloadData];
 }
 
@@ -127,22 +129,32 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.filteredImageNames count];
+    return self.filteredImageNames.count + (self.foundClass ? 1 : 0);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *cellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
     }
     
-    NSString *fullImageName = self.filteredImageNames[indexPath.row];
-    cell.textLabel.text = [self shortNameForImageName:fullImageName];
+    NSString *executablePath;
+    if (self.foundClass) {
+        if (indexPath.row == 0) {
+            cell.textLabel.text = [NSString stringWithFormat:@"Class \"%@\"", self.searchBar.text];
+            return cell;
+        } else {
+            executablePath = self.filteredImageNames[indexPath.row-1];
+        }
+    } else {
+        executablePath = self.filteredImageNames[indexPath.row];
+    }
     
+    cell.textLabel.text = [self shortNameForImageName:executablePath];
     return cell;
 }
 
@@ -151,9 +163,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXClassesTableViewController *classesViewController = [[FLEXClassesTableViewController alloc] init];
-    classesViewController.binaryImageName = self.filteredImageNames[indexPath.row];
-    [self.navigationController pushViewController:classesViewController animated:YES];
+    if (indexPath.row == 0 && self.foundClass) {
+        FLEXClassExplorerViewController *objectExplorer = [FLEXClassExplorerViewController new];
+        objectExplorer.object = self.foundClass;
+        [self.navigationController pushViewController:objectExplorer animated:YES];
+    } else {
+        FLEXClassesTableViewController *classesViewController = [[FLEXClassesTableViewController alloc] init];
+        classesViewController.binaryImageName = self.filteredImageNames[self.foundClass ? indexPath.row-1 : indexPath.row];
+        [self.navigationController pushViewController:classesViewController animated:YES];
+    }
 }
 
 @end

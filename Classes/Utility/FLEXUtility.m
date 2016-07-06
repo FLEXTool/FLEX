@@ -105,12 +105,12 @@
 
 + (NSString *)applicationImageName
 {
-    return [[NSBundle mainBundle] executablePath];
+    return [NSBundle mainBundle].executablePath;
 }
 
 + (NSString *)applicationName
 {
-    return [[[FLEXUtility applicationImageName] componentsSeparatedByString:@"/"] lastObject];
+    return [FLEXUtility applicationImageName].lastPathComponent;
 }
 
 + (NSString *)safeDescriptionForObject:(id)object
