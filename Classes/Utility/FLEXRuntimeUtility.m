@@ -209,7 +209,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 #ifdef __arm64__
     // See http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html
     const char *name = ivar_getName(ivar);
-    if (type[0] == @encode(Class)[0] && strcmp(name, "isa") != 0) {
+    if (type[0] == @encode(Class)[0] && strcmp(name, "isa") == 0) {
         value = object_getClass(object);
     } else
 #endif
