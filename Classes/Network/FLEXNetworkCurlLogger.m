@@ -1,9 +1,9 @@
 //
 // FLEXCurlLogger.m
-// Instagram
+//
 //
 // Created by Ji Pei on 07/27/16
-// Copyright 2004-present Facebook. All Rights Reserved.
+//
 
 #import "FLEXNetworkCurlLogger.h"
 

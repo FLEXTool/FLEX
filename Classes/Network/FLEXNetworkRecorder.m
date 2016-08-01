@@ -123,9 +123,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
         [self postNewTransactionNotificationWithTransaction:transaction];
     });
-
-    // generate the curl command for all request to debugger while networking debugging is enabled
-    NSLog(@"%@",[FLEXNetworkCurlLogger curlCommandString:request]);
 }
 
 - (void)recordResponseReceivedWithRequestID:(NSString *)requestID response:(NSURLResponse *)response
