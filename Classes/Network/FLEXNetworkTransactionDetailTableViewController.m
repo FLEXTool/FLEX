@@ -7,6 +7,7 @@
 //
 
 #import "FLEXNetworkTransactionDetailTableViewController.h"
+#import "FLEXNetworkCurlLogger.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkTransaction.h"
 #import "FLEXWebViewController.h"
@@ -53,7 +54,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonPressed:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Copy curl" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonPressed:)];
     }
     return self;
 }
@@ -120,26 +121,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 - (void)copyButtonPressed:(id)sender
 {
-    NSMutableString *requestDetailString = [NSMutableString string];
-
-    for (FLEXNetworkDetailSection *section in self.sections) {
-        if ([section.rows count] > 0) {
-            if ([section.title length] > 0) {
-                [requestDetailString appendString:section.title];
-                [requestDetailString appendString:@"\n\n"];
-            }
-            for (FLEXNetworkDetailRow *row in section.rows) {
-                NSString *rowDescription = [[[self class] attributedTextForRow:row] string];
-                if ([rowDescription length] > 0) {
-                    [requestDetailString appendString:rowDescription];
-                    [requestDetailString appendString:@"\n"];
-                }
-            }
-            [requestDetailString appendString:@"\n\n"];
-        }
-    }
-
-    [[UIPasteboard generalPasteboard] setString:requestDetailString];
+    [[UIPasteboard generalPasteboard] setString:[FLEXNetworkCurlLogger curlCommandString:_transaction.request]];
 }
 
 #pragma mark - Table view data source

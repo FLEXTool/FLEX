@@ -7,6 +7,7 @@
 //
 
 #import "FLEXNetworkRecorder.h"
+#import "FLEXNetworkCurlLogger.h"
 #import "FLEXNetworkTransaction.h"
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
