@@ -45,6 +45,12 @@ static void range_callback(task_t task, void *context, unsigned type, vm_range_t
     }
 }
 
+static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_address, __unused vm_size_t size, void **local_memory)
+{
+    *local_memory = (void *)remote_address;
+    return KERN_SUCCESS;
+}
+
 + (void)enumerateLiveObjectsUsingBlock:(flex_object_enumeration_block_t)block
 {
     if (!block) {
@@ -60,13 +66,13 @@ static void range_callback(task_t task, void *context, unsigned type, vm_range_t
     
     vm_address_t *zones = NULL;
     unsigned int zoneCount = 0;
-    kern_return_t result = malloc_get_all_zones(TASK_NULL, NULL, &zones, &zoneCount);
+    kern_return_t result = malloc_get_all_zones(TASK_NULL, reader, &zones, &zoneCount);
     
     if (result == KERN_SUCCESS) {
         for (unsigned int i = 0; i < zoneCount; i++) {
             malloc_zone_t *zone = (malloc_zone_t *)zones[i];
             if (zone->introspect && zone->introspect->enumerator) {
-                zone->introspect->enumerator(TASK_NULL, (__bridge void *)block, MALLOC_PTR_IN_USE_RANGE_TYPE, (vm_address_t)zone, NULL, &range_callback);
+                zone->introspect->enumerator(TASK_NULL, (__bridge void *)block, MALLOC_PTR_IN_USE_RANGE_TYPE, (vm_address_t)zone, reader, &range_callback);
             }
         }
     }
