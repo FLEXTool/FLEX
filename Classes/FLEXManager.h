@@ -23,7 +23,7 @@
 
 /// If this property is set to YES, FLEX will swizzle NSURLConnection*Delegate and NSURLSession*Delegate methods
 /// on classes that conform to the protocols. This allows you to view network activity history from the main FLEX menu.
-/// Full responses are kept temporarily in a size limited cache and may be pruged under memory pressure.
+/// Full responses are kept temporarily in a size-limited cache and may be pruned under memory pressure.
 @property (nonatomic, assign, getter=isNetworkDebuggingEnabled) BOOL networkDebuggingEnabled;
 
 /// Defaults to 25 MB if never set. Values set here are presisted across launches of the app.
