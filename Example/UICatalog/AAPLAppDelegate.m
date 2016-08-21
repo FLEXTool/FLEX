@@ -167,11 +167,6 @@
     }
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler
-{
-    completionHandler(NSURLSessionResponseAllow);
-}
-
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     [self.connections removeObject:connection];
