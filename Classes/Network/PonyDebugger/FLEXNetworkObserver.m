@@ -172,7 +172,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
             @selector(URLSession:dataTask:didReceiveData:),
             @selector(URLSession:dataTask:didReceiveResponse:completionHandler:),
             @selector(URLSession:task:didCompleteWithError:),
-            @selector(URLSession:dataTask:didBecomeDownloadTask:delegate:),
+            @selector(URLSession:dataTask:didBecomeDownloadTask:),
             @selector(URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:),
             @selector(URLSession:downloadTask:didFinishDownloadingToURL:)
         };
