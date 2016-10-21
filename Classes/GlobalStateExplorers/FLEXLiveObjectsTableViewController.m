@@ -14,10 +14,12 @@
 
 static const NSInteger kFLEXLiveObjectsSortAlphabeticallyIndex = 0;
 static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
+static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 @interface FLEXLiveObjectsTableViewController () <UISearchBarDelegate>
 
 @property (nonatomic, strong) NSDictionary *instanceCountsForClassNames;
+@property (nonatomic, strong) NSDictionary *instanceSizesForClassNames;
 @property (nonatomic, readonly) NSArray *allClassNames;
 @property (nonatomic, strong) NSArray *filteredClassNames;
 @property (nonatomic, strong) UISearchBar *searchBar;
@@ -34,7 +36,7 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
     self.searchBar.delegate = self;
     self.searchBar.showsScopeBar = YES;
-    self.searchBar.scopeButtonTitles = @[@"Sort Alphabetically", @"Sort by Count"];
+    self.searchBar.scopeButtonTitles = @[@"Sort Alphabetically", @"Sort by Count", @"Sort by Size"];
     [self.searchBar sizeToFit];
     self.tableView.tableHeaderView = self.searchBar;
     
@@ -73,17 +75,20 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     
     // Convert our CF primitive dictionary into a nicer mapping of class name strings to counts that we will use as the table's model.
     NSMutableDictionary *mutableCountsForClassNames = [NSMutableDictionary dictionary];
+    NSMutableDictionary *mutableSizesForClassNames = [NSMutableDictionary dictionary];
     for (unsigned int i = 0; i < classCount; i++) {
         Class class = classes[i];
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));
+        NSString *className = @(class_getName(class));
         if (instanceCount > 0) {
-            NSString *className = @(class_getName(class));
             [mutableCountsForClassNames setObject:@(instanceCount) forKey:className];
         }
+        [mutableSizesForClassNames setObject:@(class_getInstanceSize(class)) forKey:className];
     }
     free(classes);
     
     self.instanceCountsForClassNames = mutableCountsForClassNames;
+    self.instanceSizesForClassNames = mutableSizesForClassNames;
     
     [self updateTableDataForSearchFilter];
 }
@@ -99,19 +104,27 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     NSString *title = @"Live Objects";
     
     NSUInteger totalCount = 0;
+    NSUInteger totalSize = 0;
     for (NSString *className in self.allClassNames) {
-        totalCount += [self.instanceCountsForClassNames[className] unsignedIntegerValue];
+        NSUInteger count = [self.instanceCountsForClassNames[className] unsignedIntegerValue];
+        totalCount += count;
+        totalSize += count * [self.instanceSizesForClassNames[className] unsignedIntegerValue];
     }
     NSUInteger filteredCount = 0;
+    NSUInteger filteredSize = 0;
     for (NSString *className in self.filteredClassNames) {
-        filteredCount += [self.instanceCountsForClassNames[className] unsignedIntegerValue];
+        NSUInteger count = [self.instanceCountsForClassNames[className] unsignedIntegerValue];
+        filteredCount += count;
+        filteredSize += count * [self.instanceSizesForClassNames[className] unsignedIntegerValue];
     }
     
     if (filteredCount == totalCount) {
         // Unfiltered
-        title = [title stringByAppendingFormat:@" (%lu)", (unsigned long)totalCount];
+        title = [title stringByAppendingFormat:@" (%lu, %@)", (unsigned long)totalCount,
+              [NSByteCountFormatter stringFromByteCount:totalSize countStyle:NSByteCountFormatterCountStyleFile]];
     } else {
-        title = [title stringByAppendingFormat:@" (filtered, %lu)", (unsigned long)filteredCount];
+        title = [title stringByAppendingFormat:@" (filtered, %lu, %@)", (unsigned long)filteredCount,
+              [NSByteCountFormatter stringFromByteCount:filteredSize countStyle:NSByteCountFormatterCountStyleFile]];
     }
     
     self.title = title;
@@ -159,6 +172,15 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
             // Reversed for descending counts.
             return [count2 compare:count1];
         }];
+    } else if (self.searchBar.selectedScopeButtonIndex == kFLEXLiveObjectsSortBySizeIndex) {
+        self.filteredClassNames = [self.filteredClassNames sortedArrayUsingComparator:^NSComparisonResult(NSString *className1, NSString *className2) {
+            NSNumber *count1 = self.instanceCountsForClassNames[className1];
+            NSNumber *count2 = self.instanceCountsForClassNames[className2];
+            NSNumber *size1 = self.instanceSizesForClassNames[className1];
+            NSNumber *size2 = self.instanceSizesForClassNames[className2];
+            // Reversed for descending sizes.
+            return [@(count2.integerValue * size2.integerValue) compare:@(count1.integerValue * size1.integerValue)];
+        }];
     }
     
     [self updateTitle];
@@ -190,7 +212,10 @@ static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
     
     NSString *className = self.filteredClassNames[indexPath.row];
     NSNumber *count = self.instanceCountsForClassNames[className];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld)", className, (long)[count integerValue]];
+    NSNumber *size = self.instanceSizesForClassNames[className];
+    unsigned long totalSize = count.unsignedIntegerValue * size.unsignedIntegerValue;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld, %@)", className, (long)[count integerValue],
+        [NSByteCountFormatter stringFromByteCount:totalSize countStyle:NSByteCountFormatterCountStyleFile]];
     
     return cell;
 }
