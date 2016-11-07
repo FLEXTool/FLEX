@@ -158,6 +158,8 @@ If you are using Carthage, only including the `FLEX.framework` in debug builds i
 	```
 	
 	Finally, add `$(SRCROOT)/Carthage/Build/iOS/FLEX.framework` as input file of this script phase.
+	
+<p align="center"><img src="README-images/flex-exclusion-carthage.jpg"/></p>
 
 ## Additional Notes
 - When setting fields of type `id` or values in `NSUserDefaults`, FLEX attempts to parse the input string as `JSON`. This allows you to use a combination of strings, numbers, arrays, and dictionaries. If you want to set a string value, it must be wrapped in quotes. For ivars or properties that are explicitly typed as `NSStrings`, quotes are not required.
