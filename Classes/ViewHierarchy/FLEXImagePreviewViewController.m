@@ -47,7 +47,7 @@
     self.scrollView.maximumZoomScale = 2.0;
     [self.view addSubview:self.scrollView];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonPressed:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
 }
 
 - (void)viewDidLayoutSubviews
@@ -78,9 +78,31 @@
     self.scrollView.contentInset = UIEdgeInsetsMake(verticalInset, horizontalInset, verticalInset, horizontalInset);
 }
 
-- (void)copyButtonPressed:(id)sender
+- (void)actionButtonPressed:(id)sender
 {
-    [[UIPasteboard generalPasteboard] setImage:self.image];
+    static BOOL CanSaveToCameraRoll = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if ([UIDevice currentDevice].systemVersion.floatValue < 10) {
+            CanSaveToCameraRoll = YES;
+            return;
+        }
+        
+        NSBundle *mainBundle = [NSBundle mainBundle];
+        if ([mainBundle.infoDictionary.allKeys containsObject:@"NSPhotoLibraryUsageDescription"]) {
+            CanSaveToCameraRoll = YES;
+        } else {
+            NSLog(@"Add NSPhotoLibraryUsageDescription in app's Info.plist for saving captured image into camera roll.");
+        }
+    });
+    
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.image] applicationActivities:@[]];
+    
+    if (!CanSaveToCameraRoll) {
+        activityVC.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+    }
+    
+    [self presentViewController:activityVC animated:YES completion:nil];
 }
 
 @end
