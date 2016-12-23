@@ -9,10 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @protocol FLEXHierarchyTableViewControllerDelegate;
+@class FLEXHierarchyItem;
 
 @interface FLEXHierarchyTableViewController : UITableViewController
 
-- (id)initWithViews:(NSArray *)allViews viewsAtTap:(NSArray *)viewsAtTap selectedView:(UIView *)selectedView depths:(NSDictionary *)depthsForViews;
+- (id)initWithItems:(NSArray *)allItems itemsAtTap:(NSArray *)itemsAtTap selectedItem:(FLEXHierarchyItem *)selectedItem depths:(NSDictionary *)depthsForItems;
 
 @property (nonatomic, weak) id <FLEXHierarchyTableViewControllerDelegate> delegate;
 
@@ -20,6 +21,6 @@
 
 @protocol FLEXHierarchyTableViewControllerDelegate <NSObject>
 
-- (void)hierarchyViewController:(FLEXHierarchyTableViewController *)hierarchyViewController didFinishWithSelectedView:(UIView *)selectedView;
+- (void)hierarchyViewController:(FLEXHierarchyTableViewController *)hierarchyViewController didFinishWithSelectedItem:(FLEXHierarchyItem *)selectedItem;
 
 @end

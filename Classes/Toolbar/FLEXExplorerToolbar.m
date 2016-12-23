@@ -24,9 +24,9 @@
 
 @property (nonatomic, strong) NSArray *toolbarItems;
 
-@property (nonatomic, strong) UIView *selectedViewDescriptionContainer;
+@property (nonatomic, strong) UIView *selectedItemDescriptionContainer;
 @property (nonatomic, strong) UIView *selectedViewColorIndicator;
-@property (nonatomic, strong) UILabel *selectedViewDescriptionLabel;
+@property (nonatomic, strong) UILabel *selectedItemDescriptionLabel;
 
 @end
 
@@ -74,19 +74,19 @@
         self.toolbarItems = toolbarItems;
         self.backgroundColor = [UIColor clearColor];
         
-        self.selectedViewDescriptionContainer = [[UIView alloc] init];
-        self.selectedViewDescriptionContainer.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.95];
-        self.selectedViewDescriptionContainer.hidden = YES;
-        [self addSubview:self.selectedViewDescriptionContainer];
+        self.selectedItemDescriptionContainer = [[UIView alloc] init];
+        self.selectedItemDescriptionContainer.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.95];
+        self.selectedItemDescriptionContainer.hidden = YES;
+        [self addSubview:self.selectedItemDescriptionContainer];
         
         self.selectedViewColorIndicator = [[UIView alloc] init];
         self.selectedViewColorIndicator.backgroundColor = [UIColor redColor];
-        [self.selectedViewDescriptionContainer addSubview:self.selectedViewColorIndicator];
+        [self.selectedItemDescriptionContainer addSubview:self.selectedViewColorIndicator];
         
-        self.selectedViewDescriptionLabel = [[UILabel alloc] init];
-        self.selectedViewDescriptionLabel.backgroundColor = [UIColor clearColor];
-        self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
-        [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionLabel];
+        self.selectedItemDescriptionLabel = [[UILabel alloc] init];
+        self.selectedItemDescriptionLabel.backgroundColor = [UIColor clearColor];
+        self.selectedItemDescriptionLabel.font = [[self class] descriptionLabelFont];
+        [self.selectedItemDescriptionContainer addSubview:self.selectedItemDescriptionLabel];
     }
     return self;
 }
@@ -130,7 +130,7 @@
     descriptionContainerFrame.size.height = kDescriptionContainerHeight;
     descriptionContainerFrame.origin.y = CGRectGetMaxY(self.bounds) - kDescriptionContainerHeight;
     descriptionContainerFrame.size.width = self.bounds.size.width;
-    self.selectedViewDescriptionContainer.frame = descriptionContainerFrame;
+    self.selectedItemDescriptionContainer.frame = descriptionContainerFrame;
     
     // Selected View Color
     CGRect selectedViewColorFrame = CGRectZero;
@@ -147,28 +147,28 @@
     descriptionLabelFrame.size.height = kDescriptionLabelHeight;
     descriptionLabelFrame.origin.x = descriptionOriginX;
     descriptionLabelFrame.origin.y = kDescriptionVerticalPadding;
-    descriptionLabelFrame.size.width = CGRectGetMaxX(self.selectedViewDescriptionContainer.bounds) - kHorizontalPadding - descriptionOriginX;
-    self.selectedViewDescriptionLabel.frame = descriptionLabelFrame;
+    descriptionLabelFrame.size.width = CGRectGetMaxX(self.selectedItemDescriptionContainer.bounds) - kHorizontalPadding - descriptionOriginX;
+    self.selectedItemDescriptionLabel.frame = descriptionLabelFrame;
 }
 
 
 #pragma mark - Setter Overrides
 
-- (void)setSelectedViewOverlayColor:(UIColor *)selectedViewOverlayColor
+- (void)setselectedItemOverlayColor:(UIColor *)selectedItemOverlayColor
 {
-    if (![_selectedViewOverlayColor isEqual:selectedViewOverlayColor]) {
-        _selectedViewOverlayColor = selectedViewOverlayColor;
-        self.selectedViewColorIndicator.backgroundColor = selectedViewOverlayColor;
+    if (![_selectedItemOverlayColor isEqual:selectedItemOverlayColor]) {
+        _selectedItemOverlayColor = selectedItemOverlayColor;
+        self.selectedViewColorIndicator.backgroundColor = selectedItemOverlayColor;
     }
 }
 
-- (void)setSelectedViewDescription:(NSString *)selectedViewDescription
+- (void)setselectedItemDescription:(NSString *)selectedItemDescription
 {
-    if (![_selectedViewDescription isEqual:selectedViewDescription]) {
-        _selectedViewDescription = selectedViewDescription;
-        self.selectedViewDescriptionLabel.text = selectedViewDescription;
-        BOOL showDescription = [selectedViewDescription length] > 0;
-        self.selectedViewDescriptionContainer.hidden = !showDescription;
+    if (![_selectedItemDescription isEqual:selectedItemDescription]) {
+        _selectedItemDescription = selectedItemDescription;
+        self.selectedItemDescriptionLabel.text = selectedItemDescription;
+        BOOL showDescription = [selectedItemDescription length] > 0;
+        self.selectedItemDescriptionContainer.hidden = !showDescription;
     }
 }
 

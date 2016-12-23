@@ -20,26 +20,6 @@
     return [UIColor colorWithHue:hue saturation:1.0 brightness:1.0 alpha:1.0];
 }
 
-+ (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame
-{
-    NSString *description = [[view class] description];
-    
-    NSString *viewControllerDescription = [[[self viewControllerForView:view] class] description];
-    if ([viewControllerDescription length] > 0) {
-        description = [description stringByAppendingFormat:@" (%@)", viewControllerDescription];
-    }
-    
-    if (includeFrame) {
-        description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:view.frame]];
-    }
-    
-    if ([view.accessibilityLabel length] > 0) {
-        description = [description stringByAppendingFormat:@" · %@", view.accessibilityLabel];
-    }
-    
-    return description;
-}
-
 + (NSString *)stringForCGRect:(CGRect)rect
 {
     return [NSString stringWithFormat:@"{(%g, %g), (%g, %g)}", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height];
@@ -68,11 +48,6 @@
 #pragma clang diagnostic pop
     }
     return viewController;
-}
-
-+ (NSString *)detailDescriptionForView:(UIView *)view
-{
-    return [NSString stringWithFormat:@"frame %@", [self stringForCGRect:view.frame]];
 }
 
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius

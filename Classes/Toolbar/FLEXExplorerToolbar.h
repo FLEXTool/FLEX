@@ -37,13 +37,13 @@
 @property (nonatomic, strong, readonly) UIView *dragHandle;
 
 /// A color matching the overlay on color on the selected view.
-@property (nonatomic, strong) UIColor *selectedViewOverlayColor;
+@property (nonatomic, strong) UIColor *selectedItemOverlayColor;
 
 /// Description text for the selected view displayed below the toolbar items.
-@property (nonatomic, copy) NSString *selectedViewDescription;
+@property (nonatomic, copy) NSString *selectedItemDescription;
 
 /// Area where details of the selected view are shown
 /// Users of the toolbar can attach a tap gesture recognizer to show additional details.
-@property (nonatomic, strong, readonly) UIView *selectedViewDescriptionContainer;
+@property (nonatomic, strong, readonly) UIView *selectedItemDescriptionContainer;
 
 @end
