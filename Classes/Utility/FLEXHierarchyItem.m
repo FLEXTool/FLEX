@@ -120,6 +120,45 @@
     }
 }
 
+- (CALayer *)layer
+{
+    if (self.type == FLEXHierarchyItemTypeView) {
+        return [(UIView *)self.object layer];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        return [self.object performSelector:NSSelectorFromString(@"layer")];
+#pragma clang diagnostic pop
+    }
+}
+
+- (id)layerOrView
+{
+    if (self.type == FLEXHierarchyItemTypeView) {
+        return self.object;
+    } else if (self.type == FLEXHierarchyItemTypeNode) {
+        NSString *selectorString = self.isLayerBacked ? @"layer" : @"view";
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        return [self.object performSelector:NSSelectorFromString(selectorString)];
+#pragma clang diagnostic pop
+    }
+
+    return nil;
+}
+
+- (BOOL)isLayerBacked
+{
+    if (self.type == FLEXHierarchyItemTypeNode) {
+        NSInvocation *invocation = [self _invocationWithStringSelector:@"isLayerBacked"];
+        [invocation invoke];
+        BOOL isLayerBacked = NO;
+        [invocation getReturnValue:&isLayerBacked];
+        return isLayerBacked;
+    }
+    return NO;
+}
+
 - (FLEXHierarchyItem *)parent
 {
     if (self.parentType == FLEXHierarchyItemTypeView) {

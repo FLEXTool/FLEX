@@ -217,7 +217,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             UIColor *outlineColor = selectedItem.color;
             self.selectedItemOverlay.backgroundColor = [outlineColor colorWithAlphaComponent:0.2];
             self.selectedItemOverlay.layer.borderColor = [outlineColor CGColor];
-            self.selectedItemOverlay.frame = [self.view convertRect:selectedItem.bounds fromView:selectedItem.view];
+            
+            CGRect overlayFrame = CGRectZero;
+            if (selectedItem.isLayerBacked) {
+                overlayFrame = [self.view.layer convertRect:selectedItem.bounds fromLayer:selectedItem.layer];
+            } else {
+                overlayFrame = [self.view convertRect:selectedItem.bounds fromView:selectedItem.view];
+            }
+            self.selectedItemOverlay.frame = overlayFrame;
             
             // Make sure the selected overlay is in front of all the other subviews except the toolbar, which should always stay on top.
             [self.view bringSubviewToFront:self.selectedItemOverlay];
@@ -292,7 +299,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     
     for (NSString *keyPath in [[self class] viewKeyPathsToTrack]) {
-        [item.view addObserver:self forKeyPath:keyPath options:0 context:NULL];
+        [item.layerOrView addObserver:self forKeyPath:keyPath options:0 context:NULL];
     }
     
     [self.observedItems addObject:item];
@@ -305,7 +312,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     
     for (NSString *keyPath in [[self class] viewKeyPathsToTrack]) {
-        [item.view removeObserver:self forKeyPath:keyPath];
+        [item.layerOrView removeObserver:self forKeyPath:keyPath];
     }
     
     [self.observedItems removeObject:item];
@@ -348,8 +355,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (CGRect)frameInLocalCoordinatesForItem:(FLEXHierarchyItem *)item
 {
+    CGRect frameInWindow = CGRectZero;
     // First convert to window coordinates since the view may be in a different window than our view.
-    CGRect frameInWindow = [item.view convertRect:item.view.bounds toView:nil];
+    if (item.isLayerBacked) {
+        frameInWindow = [item.layer convertRect:item.bounds toLayer:nil];
+    } else {
+        frameInWindow = [item.view convertRect:item.bounds toView:nil];
+    }
     // Then convert from the window to our view's coordinate space.
     return [self.view convertRect:frameInWindow fromView:nil];
 }

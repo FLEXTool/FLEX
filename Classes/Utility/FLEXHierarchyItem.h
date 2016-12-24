@@ -28,6 +28,15 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemType) {
 /// Convenience property to access the backing object's view.
 @property (nonatomic, strong, readonly) UIView *view;
 
+/// Convenience property to access the backing object's layer.
+@property (nonatomic, strong, readonly) CALayer *layer;
+
+/// Convenience property to access the backing object's view or layer if we're dealing with a layer-backed node.
+@property (nonatomic, strong, readonly) id layerOrView;
+
+/// Convenience property to access the backing object's view or layer if we're dealing with a layer-backed node.
+@property (nonatomic, assign, readonly) BOOL isLayerBacked;
+
 /// A passthough accessor to the view's superview or node's supernode
 @property (nonatomic, assign, readonly) FLEXHierarchyItem *parent;
 
