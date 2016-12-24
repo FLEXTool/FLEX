@@ -648,8 +648,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     for (FLEXHierarchyItem *item in items) {
         NSInteger depth = 0;
         FLEXHierarchyItem *tryItem = item;
-        while (tryItem.parent) {
-            tryItem = tryItem.parent;
+        FLEXHierarchyItem *parent = nil;
+        while (parent = tryItem.parent) {
+            tryItem = parent;
             depth++;
         }
         [hierarchyDepths setObject:@(depth) forKey:[NSValue valueWithNonretainedObject:item]];

@@ -10,56 +10,62 @@
 
 #import "FLEXHierarchyItem.h"
 
+typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
+    FLEXHierarchyItemNodeTypeNone,
+    FLEXHierarchyItemNodeTypeRegular,
+    FLEXHierarchyItemNodeTypeContainer,
+    FLEXHierarchyItemNodeTypeCell,
+};
 
 @interface FLEXHierarchyItem ()
 
-@property (nonatomic, assign, readonly) BOOL isContainerNode;
+@property (nonatomic, assign, readonly) FLEXHierarchyItemNodeType nodeType;
 
 @end
 
 @implementation FLEXHierarchyItem
 
-- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type parentType:(FLEXHierarchyItemType)parentType
+- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type
 {
     if (self = [super init]) {
         _object = object;
         _type = type;
-        _parentType = parentType;
-        _isContainerNode = NO;
 
         if (type == FLEXHierarchyItemTypeNode) {
-            for (NSString *containerClass in [[self class] containerNodeClasses]) {
-                Class objectClass = NSClassFromString(containerClass);
-                if ([object isKindOfClass:objectClass]) {
-                    _isContainerNode = YES;
-                    break;
-                }
-            }
+            _nodeType = [[self class] nodeTypeForNode:object];
+        } else {
+            _nodeType = FLEXHierarchyItemNodeTypeNone;
         }
     }
     return self;
 }
 
-- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type
+- (instancetype)initWithChildObject:(id)object parent:(FLEXHierarchyItem *)parent
 {
-    return [self initWithObject:object type:type parentType:FLEXHierarchyItemTypeNone];
-}
+    FLEXHierarchyItemType type = parent.type;
+    id backingNode = nil;
 
-- (instancetype)initWithChildObject:(id)object parentType:(FLEXHierarchyItemType)parentType
-{
-    FLEXHierarchyItemType type = parentType;
+    // Container node children see their parent as a view, as ascellnodes are not direct children of their container
+    // In order to preserve levels in between container and cell nodes — ie. contentView and the uiview cell itself, container nodes provide their subviews instead of subnodes as FLEXHierarchyItem.children and let the backing node logic below convert the subview into a node if it really is one
+    if (parent.nodeType == FLEXHierarchyItemNodeTypeContainer) {
+        type = FLEXHierarchyItemTypeView;
+    }
+
     // Switch to the node hierarchy if the subview has a backing node
-    id backingNode = [[self class] nodeForView:object];
+    backingNode = [[self class] nodeForView:object];
     if (backingNode != nil) {
         object = backingNode;
         type = FLEXHierarchyItemTypeNode;
     }
-    return [self initWithObject:object type:type parentType:parentType];
+    return [self initWithObject:object type:type];
 }
 
 - (CGPoint)convertPoint:(CGPoint)point toItem:(FLEXHierarchyItem *)item
 {
-    if (self.type == FLEXHierarchyItemTypeView || item.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXHierarchyItemTypeView ||
+        item.type == FLEXHierarchyItemTypeView ||
+        // stab in the dark, as we can't say that a container view has the same hierarchy as its cells
+        self.nodeType == FLEXHierarchyItemNodeTypeContainer) {
         return [self.view convertPoint:point toView:item.view];
     } else {
         SEL selector = NSSelectorFromString(@"convertPoint:toNode:");
@@ -161,10 +167,12 @@
 
 - (FLEXHierarchyItem *)parent
 {
-    if (self.parentType == FLEXHierarchyItemTypeView) {
+    // Cells should use their superview instead of supernode, so the uicellview, content view, etc. is included
+    if (self.type == FLEXHierarchyItemTypeView || self.nodeType == FLEXHierarchyItemNodeTypeCell) {
         id superview = self.view.superview;
         if (superview != nil) {
             FLEXHierarchyItemType type = FLEXHierarchyItemTypeView;
+            // Jump back to the node hierarchy if the parent is a node (in the case we switched to the view hierarchy between a cell and its container node)
             id backingNode = [[self class] nodeForView:superview];
             if (backingNode != nil) {
                 superview = backingNode;
@@ -172,7 +180,7 @@
             }
             return [[[self class] alloc] initWithObject:superview type:type];
         }
-    } else if (self.parentType == FLEXHierarchyItemTypeNode) {
+    } else if (self.type == FLEXHierarchyItemTypeNode) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         id supernode = [self.object performSelector:NSSelectorFromString(@"supernode")];
@@ -188,10 +196,8 @@
 - (NSArray<FLEXHierarchyItem *> *)subitems
 {
     NSMutableArray<FLEXHierarchyItem *> *items = [NSMutableArray array];
-    // Tell the children container node parents are views, such that the jump between node and view hierarchy is intact
-    FLEXHierarchyItemType parentType = self.isContainerNode ? FLEXHierarchyItemTypeView : self.type;
     for (id child in [self _children]) {
-        FLEXHierarchyItem *item = [[[self class] alloc] initWithChildObject:child parentType:parentType];
+        FLEXHierarchyItem *item = [[[self class] alloc] initWithChildObject:child parent:self];
         [items addObject:item];
     }
     return items;
@@ -275,7 +281,7 @@
 {
     // For container nodes (collections, tables, pager), use the view hierachy to get an accurate
     // picture of cells on screen.
-    if (self.type == FLEXHierarchyItemTypeNode && self.isContainerNode == NO) {
+    if (self.type == FLEXHierarchyItemTypeNode && self.nodeType != FLEXHierarchyItemNodeTypeContainer) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         return [self.object performSelector:NSSelectorFromString(@"subnodes")];
@@ -322,15 +328,31 @@
     return invocation;
 }
 
-+ (id)nodeForView:(id)object
++ (id)nodeForView:(id)view
 {
-    if ([object isKindOfClass:NSClassFromString(@"_ASDisplayView")]) {
-        return [object performSelector:NSSelectorFromString(@"asyncdisplaykit_node")];
-    } else if ([object isKindOfClass:NSClassFromString(@"_ASCollectionViewCell")] ||
-               [object isKindOfClass:NSClassFromString(@"_ASTableViewCell")]) {
-        return [object performSelector:NSSelectorFromString(@"node")];
+    if ([view isKindOfClass:NSClassFromString(@"_ASDisplayView")] ||
+        [view isKindOfClass:NSClassFromString(@"_ASCollectionView")] ||
+        [view isKindOfClass:NSClassFromString(@"_ASTableView")]) {
+        return [view performSelector:NSSelectorFromString(@"asyncdisplaykit_node")];
     }
     return nil;
+}
+
++ (FLEXHierarchyItemNodeType)nodeTypeForNode:(id)node
+{
+    if ([node isKindOfClass:NSClassFromString(@"ASCellNode")]) {
+        return FLEXHierarchyItemNodeTypeCell;
+    }
+    
+    for (NSString *containerClass in [self containerNodeClasses]) {
+        Class objectClass = NSClassFromString(containerClass);
+        if ([node isKindOfClass:objectClass]) {
+            return FLEXHierarchyItemNodeTypeContainer;
+            break;
+        }
+    }
+    
+    return FLEXHierarchyItemNodeTypeRegular;
 }
 
 + (NSArray *)containerNodeClasses

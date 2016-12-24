@@ -22,9 +22,6 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemType) {
 ///The type of object this item represents
 @property (nonatomic, assign, readonly) FLEXHierarchyItemType type;
 
-///The type of object this item's parent represents
-@property (nonatomic, assign, readonly) FLEXHierarchyItemType parentType;
-
 /// Convenience property to access the backing object's view.
 @property (nonatomic, strong, readonly) UIView *view;
 
