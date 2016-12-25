@@ -167,27 +167,36 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (FLEXHierarchyItem *)parent
 {
-    // Cells should use their superview instead of supernode, so the uicellview, content view, etc. is included
-    if (self.type == FLEXHierarchyItemTypeView || self.nodeType == FLEXHierarchyItemNodeTypeCell) {
-        id superview = self.view.superview;
-        if (superview != nil) {
-            FLEXHierarchyItemType type = FLEXHierarchyItemTypeView;
-            // Jump back to the node hierarchy if the parent is a node (in the case we switched to the view hierarchy between a cell and its container node)
-            id backingNode = [[self class] nodeForView:superview];
-            if (backingNode != nil) {
-                superview = backingNode;
-                type = FLEXHierarchyItemTypeNode;
-            }
-            return [[[self class] alloc] initWithObject:superview type:type];
-        }
-    } else if (self.type == FLEXHierarchyItemTypeNode) {
+    if (self.type == FLEXHierarchyItemTypeNone) {
+        return nil;
+    }
+    
+    // Cell nodes are hosted in a cell view. In order to include this cell in hierarchy output, call to the cell's
+    // superview (UICollection/TableViewCell), instead of supernode (Collection/TableNode)
+    if (self.type == FLEXHierarchyItemTypeNode && self.nodeType != FLEXHierarchyItemNodeTypeCell) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         id supernode = [self.object performSelector:NSSelectorFromString(@"supernode")];
 #pragma clang diagnostic pop
+        // If the node is the root of the hierarchy, supernode will be nil and the node's superview should be used
         if (supernode != nil) {
             return [[[self class] alloc] initWithObject:supernode type:FLEXHierarchyItemTypeNode];
         }
+    }
+    
+    id superview = self.view.superview;
+    if (superview != nil) {
+        FLEXHierarchyItemType type = FLEXHierarchyItemTypeView;
+        id backingNode;
+        if (self.type == FLEXHierarchyItemTypeView) {
+            // Jump back to the node hierarchy if the parent is a node (in the case we switched to the view hierarchy between a cell and its container node)
+            backingNode = [[self class] nodeForView:superview];
+            if (backingNode != nil) {
+                superview = backingNode;
+                type = FLEXHierarchyItemTypeNode;
+            }
+        }
+        return [[[self class] alloc] initWithObject:superview type:type];
     }
     
     return nil;
