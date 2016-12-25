@@ -58,8 +58,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemType) {
 /// Direct passthrough to the backing object's (view or node) accessibility label value
 @property (nonatomic, strong, readonly) NSString *accessibilityLabel;
 
-- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type parentType:(FLEXHierarchyItemType)parentType NS_DESIGNATED_INITIALIZER;
-- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type;
+- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
 - (CGPoint)convertPoint:(CGPoint)point toItem:(FLEXHierarchyItem *)item;

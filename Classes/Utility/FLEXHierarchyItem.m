@@ -342,7 +342,10 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
     if ([view isKindOfClass:NSClassFromString(@"_ASDisplayView")] ||
         [view isKindOfClass:NSClassFromString(@"_ASCollectionView")] ||
         [view isKindOfClass:NSClassFromString(@"_ASTableView")]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         return [view performSelector:NSSelectorFromString(@"asyncdisplaykit_node")];
+#pragma clang diagnostic pop
     }
     return nil;
 }

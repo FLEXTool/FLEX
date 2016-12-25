@@ -193,7 +193,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     FLEXHierarchyItem *drillInItem = self.displayedItems[indexPath.row];
-    FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:drillInItem.view];
+    FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:drillInItem.object];
     [self.navigationController pushViewController:viewExplorer animated:YES];
 }
 

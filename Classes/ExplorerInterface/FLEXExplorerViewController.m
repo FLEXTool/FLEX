@@ -508,7 +508,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarDetailsTapGesture:(UITapGestureRecognizer *)tapGR
 {
     if (tapGR.state == UIGestureRecognizerStateRecognized && self.selectedItem) {
-        FLEXObjectExplorerViewController *selectedItemExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedItem.view];
+        FLEXObjectExplorerViewController *selectedItemExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedItem];
         selectedItemExplorer.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(selectedItemExplorerFinished:)];
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:selectedItemExplorer];
         [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
@@ -649,7 +649,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         NSInteger depth = 0;
         FLEXHierarchyItem *tryItem = item;
         FLEXHierarchyItem *parent = nil;
-        while (parent = tryItem.parent) {
+        while ((parent = tryItem.parent) != nil) {
             tryItem = parent;
             depth++;
         }

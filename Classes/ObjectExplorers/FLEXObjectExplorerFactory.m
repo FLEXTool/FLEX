@@ -14,6 +14,7 @@
 #import "FLEXDefaultsExplorerViewController.h"
 #import "FLEXViewControllerExplorerViewController.h"
 #import "FLEXViewExplorerViewController.h"
+#import "FLEXNodeExplorerViewController.h"
 #import "FLEXImageExplorerViewController.h"
 #import "FLEXClassExplorerViewController.h"
 #import "FLEXLayerExplorerViewController.h"
@@ -31,12 +32,14 @@
     static NSDictionary *explorerSubclassesForObjectTypeStrings = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
+        Class displayNodeClass = NSClassFromString(@"ASDisplayNode");
         explorerSubclassesForObjectTypeStrings = @{NSStringFromClass([NSArray class])          : [FLEXArrayExplorerViewController class],
                                                    NSStringFromClass([NSSet class])            : [FLEXSetExplorerViewController class],
                                                    NSStringFromClass([NSDictionary class])     : [FLEXDictionaryExplorerViewController class],
                                                    NSStringFromClass([NSUserDefaults class])   : [FLEXDefaultsExplorerViewController class],
                                                    NSStringFromClass([UIViewController class]) : [FLEXViewControllerExplorerViewController class],
                                                    NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class],
+                                                   NSStringFromClass(displayNodeClass)         : [FLEXNodeExplorerViewController class],
                                                    NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class],
                                                    NSStringFromClass([CALayer class])          : [FLEXLayerExplorerViewController class]};
     });
