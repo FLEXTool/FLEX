@@ -426,13 +426,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)updateButtonStates
 {
-    // Move and details only active when an object is selected.
-    BOOL hasSelectedObject = self.selectedItem != nil;
-    self.explorerToolbar.moveItem.enabled = hasSelectedObject;
+    self.explorerToolbar.moveItem.enabled = [self shouldEnableMoveItem];
     self.explorerToolbar.selectItem.selected = self.currentMode == FLEXExplorerModeSelect;
     self.explorerToolbar.moveItem.selected = self.currentMode == FLEXExplorerModeMove;
 }
 
+- (BOOL)shouldEnableMoveItem
+{
+    // Move and details only active when an object is selected and a view
+    return self.selectedItem != nil && self.selectedItem.isLayerBacked == NO;
+}
 
 #pragma mark - Toolbar Dragging
 
