@@ -109,7 +109,12 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (NSString *)detailDescription
 {
-    return [NSString stringWithFormat:@"frame %@", [FLEXUtility stringForCGRect:self.frame]];
+    NSString *base = [NSString stringWithFormat:@"frame %@", [FLEXUtility stringForCGRect:self.frame]];
+    if (self.type == FLEXHierarchyItemTypeNode) {
+        NSString *type = self.isLayerBacked ? @"layer" : @"view";
+        base = [NSString stringWithFormat:@"%@ - %@", type, base];
+    }
+    return base;
 }
 
 #pragma mark - Accessors
