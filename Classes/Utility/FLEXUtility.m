@@ -201,6 +201,7 @@
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data
 {
     UIImage *thumbnail = nil;
+    #ifndef __LP64__
     CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)data, 0);
     if (imageSource) {
         NSDictionary *options = @{ (__bridge id)kCGImageSourceCreateThumbnailWithTransform : @YES,
@@ -214,6 +215,7 @@
         }
         CFRelease(imageSource);
     }
+    #endif
     return thumbnail;
 }
 
