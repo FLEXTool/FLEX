@@ -339,7 +339,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     NSUInteger indexOfElement = NSNotFound;
     for (NSUInteger i = 0; i < self.elementsAtTapPoint.count; i++) {
         FLEXElement *element = self.elementsAtTapPoint[i];
-        if (element.view == object) {
+        if (element.layerOrView == object) {
             indexOfElement = i;
             break;
         }
@@ -353,7 +353,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             outline.frame = [self frameInLocalCoordinatesForElement:element];
         }
     }
-    if (object == self.selectedElement.view) {
+    if (object == self.selectedElement.layerOrView) {
         // Update the selected view description since we show the frame value there.
         self.explorerToolbar.selectedItemDescription = [self.selectedElement descriptionIncludingFrame:YES];
         CGRect selectedElementOutlineFrame = [self frameInLocalCoordinatesForElement:self.selectedElement];
