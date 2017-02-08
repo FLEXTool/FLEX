@@ -32,16 +32,22 @@
     static NSDictionary *explorerSubclassesForObjectTypeStrings = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
+        NSMutableDictionary *subclasses = [NSMutableDictionary dictionaryWithDictionary:@{
+            NSStringFromClass([NSArray class])          : [FLEXArrayExplorerViewController class],
+            NSStringFromClass([NSSet class])            : [FLEXSetExplorerViewController class],
+            NSStringFromClass([NSDictionary class])     : [FLEXDictionaryExplorerViewController class],
+            NSStringFromClass([NSUserDefaults class])   : [FLEXDefaultsExplorerViewController class],
+            NSStringFromClass([UIViewController class]) : [FLEXViewControllerExplorerViewController class],
+            NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class],
+            NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class],
+            NSStringFromClass([CALayer class])          : [FLEXLayerExplorerViewController class]
+        }];
+    
         Class displayNodeClass = NSClassFromString(@"ASDisplayNode");
-        explorerSubclassesForObjectTypeStrings = @{NSStringFromClass([NSArray class])          : [FLEXArrayExplorerViewController class],
-                                                   NSStringFromClass([NSSet class])            : [FLEXSetExplorerViewController class],
-                                                   NSStringFromClass([NSDictionary class])     : [FLEXDictionaryExplorerViewController class],
-                                                   NSStringFromClass([NSUserDefaults class])   : [FLEXDefaultsExplorerViewController class],
-                                                   NSStringFromClass([UIViewController class]) : [FLEXViewControllerExplorerViewController class],
-                                                   NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class],
-                                                   NSStringFromClass(displayNodeClass)         : [FLEXNodeExplorerViewController class],
-                                                   NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class],
-                                                   NSStringFromClass([CALayer class])          : [FLEXLayerExplorerViewController class]};
+        if (displayNodeClass != nil) {
+            subclasses[NSStringFromClass(displayNodeClass)] = [FLEXNodeExplorerViewController class];
+        }
+        explorerSubclassesForObjectTypeStrings = subclasses;
     });
     
     Class explorerClass = nil;
