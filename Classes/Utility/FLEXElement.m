@@ -1,5 +1,5 @@
 //
-//  FLEXHierarchyItem.m
+//  FLEXElement.m
 //  FLEX
 //
 //  Created by Levi McCallum on 12/23/16.
@@ -8,65 +8,65 @@
 
 #import "FLEXUtility.h"
 
-#import "FLEXHierarchyItem.h"
+#import "FLEXElement.h"
 
-typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
-    FLEXHierarchyItemNodeTypeNone,
-    FLEXHierarchyItemNodeTypeRegular,
-    FLEXHierarchyItemNodeTypeContainer,
-    FLEXHierarchyItemNodeTypeCell,
+typedef NS_ENUM(NSUInteger, FLEXElementNodeType) {
+    FLEXElementNodeTypeNone,
+    FLEXElementNodeTypeRegular,
+    FLEXElementNodeTypeContainer,
+    FLEXElementNodeTypeCell,
 };
 
-@interface FLEXHierarchyItem ()
+@interface FLEXElement ()
 
-@property (nonatomic, assign, readonly) FLEXHierarchyItemNodeType nodeType;
+@property (nonatomic, assign, readonly) FLEXElementNodeType nodeType;
 
 @end
 
-@implementation FLEXHierarchyItem
+@implementation FLEXElement
 
-- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type
+- (instancetype)initWithObject:(id)object type:(FLEXElementType)type
 {
     if (self = [super init]) {
         _object = object;
         _type = type;
 
-        if (type == FLEXHierarchyItemTypeNode) {
+        if (type == FLEXElementTypeNode) {
             _nodeType = [[self class] nodeTypeForNode:object];
         } else {
-            _nodeType = FLEXHierarchyItemNodeTypeNone;
+            _nodeType = FLEXElementNodeTypeNone;
         }
     }
     return self;
 }
 
-- (instancetype)initWithChildObject:(id)object parent:(FLEXHierarchyItem *)parent
+- (instancetype)initWithChildObject:(id)object parent:(FLEXElement *)parent
 {
-    FLEXHierarchyItemType type = parent.type;
+    FLEXElementType type = parent.type;
     id backingNode = nil;
 
     // Container node children see their parent as a view, as ascellnodes are not direct children of their container
-    // In order to preserve levels in between container and cell nodes — ie. contentView and the uiview cell itself, container nodes provide their subviews instead of subnodes as FLEXHierarchyItem.children and let the backing node logic below convert the subview into a node if it really is one
-    if (parent.nodeType == FLEXHierarchyItemNodeTypeContainer) {
-        type = FLEXHierarchyItemTypeView;
+    // In order to preserve levels in between container and cell nodes — ie. contentView and the uiview cell itself, container nodes provide their subviews instead of subnodes as FLEXElement.children and let the backing node logic below convert the subview into a node if it really is one
+    if (parent.nodeType == FLEXElementNodeTypeContainer) {
+        type = FLEXElementTypeView;
     }
 
     // Switch to the node hierarchy if the subview has a backing node
     backingNode = [[self class] nodeForView:object];
     if (backingNode != nil) {
         object = backingNode;
-        type = FLEXHierarchyItemTypeNode;
+        type = FLEXElementTypeNode;
     }
     return [self initWithObject:object type:type];
 }
 
-- (CGPoint)convertPoint:(CGPoint)point toItem:(FLEXHierarchyItem *)item
+- (CGPoint)convertPoint:(CGPoint)point toElement:(FLEXElement *)element
 {
-    if (self.type == FLEXHierarchyItemTypeView ||
-        item.type == FLEXHierarchyItemTypeView ||
+    if (self.type == FLEXElementTypeView ||
+        element.type == FLEXElementTypeView ||
         // stab in the dark, as we can't say that a container view has the same hierarchy as its cells
-        self.nodeType == FLEXHierarchyItemNodeTypeContainer) {
-        return [self.view convertPoint:point toView:item.view];
+        self.nodeType == FLEXElementNodeTypeContainer) {
+        return [self.view convertPoint:point toView:element.view];
     } else {
         SEL selector = NSSelectorFromString(@"convertPoint:toNode:");
         Class nodeClass = NSClassFromString(@"ASDisplayNode");
@@ -75,7 +75,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
         invocation.target = self.object;
         invocation.selector = selector;
         [invocation setArgument:&point atIndex:2];
-        id node = item.object;
+        id node = element.object;
         [invocation setArgument:&node atIndex:3];
         [invocation invoke];
         CGPoint returnValue;
@@ -88,7 +88,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 {
     NSString *description = [[self.object class] description];
     
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         NSString *viewControllerDescription = [[[FLEXUtility viewControllerForView:self.view] class] description];
         if ([viewControllerDescription length] > 0) {
             description = [description stringByAppendingFormat:@" (%@)", viewControllerDescription];
@@ -110,7 +110,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 - (NSString *)detailDescription
 {
     NSString *base = [NSString stringWithFormat:@"frame %@", [FLEXUtility stringForCGRect:self.frame]];
-    if (self.type == FLEXHierarchyItemTypeNode) {
+    if (self.type == FLEXElementTypeNode) {
         NSString *type = self.isLayerBacked ? @"layer" : @"view";
         base = [NSString stringWithFormat:@"%@ - %@", type, base];
     }
@@ -121,7 +121,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (UIView *)view
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return self.object;
     } else {
 #pragma clang diagnostic push
@@ -133,7 +133,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (CALayer *)layer
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return [(UIView *)self.object layer];
     } else {
 #pragma clang diagnostic push
@@ -145,9 +145,9 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (id)layerOrView
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return self.object;
-    } else if (self.type == FLEXHierarchyItemTypeNode) {
+    } else if (self.type == FLEXElementTypeNode) {
         NSString *selectorString = self.isLayerBacked ? @"layer" : @"view";
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -160,7 +160,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (BOOL)isLayerBacked
 {
-    if (self.type == FLEXHierarchyItemTypeNode) {
+    if (self.type == FLEXElementTypeNode) {
         NSInvocation *invocation = [self _invocationWithStringSelector:@"isLayerBacked"];
         [invocation invoke];
         BOOL isLayerBacked = NO;
@@ -170,35 +170,35 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
     return NO;
 }
 
-- (FLEXHierarchyItem *)parent
+- (FLEXElement *)parent
 {
-    if (self.type == FLEXHierarchyItemTypeNone) {
+    if (self.type == FLEXElementTypeNone) {
         return nil;
     }
     
     // Cell nodes are hosted in a cell view. In order to include this cell in hierarchy output, call to the cell's
     // superview (UICollection/TableViewCell), instead of supernode (Collection/TableNode)
-    if (self.type == FLEXHierarchyItemTypeNode && self.nodeType != FLEXHierarchyItemNodeTypeCell) {
+    if (self.type == FLEXElementTypeNode && self.nodeType != FLEXElementNodeTypeCell) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         id supernode = [self.object performSelector:NSSelectorFromString(@"supernode")];
 #pragma clang diagnostic pop
         // If the node is the root of the hierarchy, supernode will be nil and the node's superview should be used
         if (supernode != nil) {
-            return [[[self class] alloc] initWithObject:supernode type:FLEXHierarchyItemTypeNode];
+            return [[[self class] alloc] initWithObject:supernode type:FLEXElementTypeNode];
         }
     }
     
     id superview = self.view.superview;
     if (superview != nil) {
-        FLEXHierarchyItemType type = FLEXHierarchyItemTypeView;
+        FLEXElementType type = FLEXElementTypeView;
         id backingNode;
-        if (self.type == FLEXHierarchyItemTypeView) {
+        if (self.type == FLEXElementTypeView) {
             // Jump back to the node hierarchy if the parent is a node (in the case we switched to the view hierarchy between a cell and its container node)
             backingNode = [[self class] nodeForView:superview];
             if (backingNode != nil) {
                 superview = backingNode;
-                type = FLEXHierarchyItemTypeNode;
+                type = FLEXElementTypeNode;
             }
         }
         return [[[self class] alloc] initWithObject:superview type:type];
@@ -207,11 +207,11 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
     return nil;
 }
 
-- (NSArray<FLEXHierarchyItem *> *)subitems
+- (NSArray<FLEXElement *> *)subitems
 {
-    NSMutableArray<FLEXHierarchyItem *> *items = [NSMutableArray array];
+    NSMutableArray<FLEXElement *> *items = [NSMutableArray array];
     for (id child in [self _children]) {
-        FLEXHierarchyItem *item = [[[self class] alloc] initWithChildObject:child parent:self];
+        FLEXElement *item = [[[self class] alloc] initWithChildObject:child parent:self];
         [items addObject:item];
     }
     return items;
@@ -229,7 +229,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (CGRect)frame
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return ((UIView *)self.object).frame;
     } else {
         NSInvocation *invocation = [self _invocationWithStringSelector:@"frame"];
@@ -242,7 +242,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (void)setFrame:(CGRect)frame
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         [((UIView *)self.object) setFrame:frame];
     } else {
         NSInvocation *invocation = [self _invocationWithStringSelector:@"setFrame:"];
@@ -253,7 +253,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (CGRect)bounds
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return ((UIView *)self.object).bounds;
     } else {
         NSInvocation *invocation = [self _invocationWithStringSelector:@"bounds"];
@@ -266,7 +266,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (BOOL)clipsToBounds
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return ((UIView *)self.object).clipsToBounds;
     } else {
         NSInvocation *invocation = [self _invocationWithStringSelector:@"clipsToBounds"];
@@ -279,7 +279,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (NSString *)accessibilityLabel
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return self.view.accessibilityLabel;
     } else {
 #pragma clang diagnostic push
@@ -295,7 +295,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 {
     // For container nodes (collections, tables, pager), use the view hierachy to get an accurate
     // picture of cells on screen.
-    if (self.type == FLEXHierarchyItemTypeNode && self.nodeType != FLEXHierarchyItemNodeTypeContainer) {
+    if (self.type == FLEXElementTypeNode && self.nodeType != FLEXElementNodeTypeContainer) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         return [self.object performSelector:NSSelectorFromString(@"subnodes")];
@@ -307,7 +307,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (CGFloat)_alpha
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return ((UIView *)self.object).alpha;
     } else {
         NSInvocation *invocation = [self _invocationWithStringSelector:@"alpha"];
@@ -320,7 +320,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
 
 - (BOOL)_isHidden
 {
-    if (self.type == FLEXHierarchyItemTypeView) {
+    if (self.type == FLEXElementTypeView) {
         return ((UIView *)self.object).isHidden;
     } else {
         NSInvocation *invocation = [self _invocationWithStringSelector:@"isHidden"];
@@ -355,21 +355,21 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemNodeType) {
     return nil;
 }
 
-+ (FLEXHierarchyItemNodeType)nodeTypeForNode:(id)node
++ (FLEXElementNodeType)nodeTypeForNode:(id)node
 {
     if ([node isKindOfClass:NSClassFromString(@"ASCellNode")]) {
-        return FLEXHierarchyItemNodeTypeCell;
+        return FLEXElementNodeTypeCell;
     }
     
     for (NSString *containerClass in [self containerNodeClasses]) {
         Class objectClass = NSClassFromString(containerClass);
         if ([node isKindOfClass:objectClass]) {
-            return FLEXHierarchyItemNodeTypeContainer;
+            return FLEXElementNodeTypeContainer;
             break;
         }
     }
     
-    return FLEXHierarchyItemNodeTypeRegular;
+    return FLEXElementNodeTypeRegular;
 }
 
 + (NSArray *)containerNodeClasses

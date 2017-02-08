@@ -8,7 +8,7 @@
 
 #import "FLEXHierarchyTableViewController.h"
 #import "FLEXUtility.h"
-#import "FLEXHierarchyItem.h"
+#import "FLEXElement.h"
 #import "FLEXHierarchyTableViewCell.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
@@ -18,11 +18,11 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 @interface FLEXHierarchyTableViewController () <UISearchBarDelegate>
 
-@property (nonatomic, strong) NSArray<FLEXHierarchyItem *> *allItems;
-@property (nonatomic, strong) NSDictionary<NSValue *, NSNumber *> *depthsForViews;
-@property (nonatomic, strong) NSArray<FLEXHierarchyItem *> *itemsAtTap;
-@property (nonatomic, strong) FLEXHierarchyItem *selectedItem;
-@property (nonatomic, strong) NSArray<FLEXHierarchyItem *> *displayedItems;
+@property (nonatomic, strong) NSArray<FLEXElement *> *allElements;
+@property (nonatomic, strong) NSDictionary<NSValue *, NSNumber *> *depthsForElements;
+@property (nonatomic, strong) NSArray<FLEXElement *> *elementsAtTap;
+@property (nonatomic, strong) FLEXElement *selectedElement;
+@property (nonatomic, strong) NSArray<FLEXElement *> *displayedElements;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 
@@ -30,14 +30,14 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 @implementation FLEXHierarchyTableViewController
 
-- (id)initWithItems:(NSArray *)allItems itemsAtTap:(NSArray *)itemsAtTap selectedItem:(FLEXHierarchyItem *)selectedItem depths:(NSDictionary *)depthsForItems
+- (id)initWithElements:(NSArray *)allElements elementsAtTap:(NSArray *)elementsAtTap selectedElement:(FLEXElement *)selectedElement depths:(NSDictionary *)depthsForElements
 {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.allItems = allItems;
-        self.depthsForViews = depthsForItems;
-        self.itemsAtTap = itemsAtTap;
-        self.selectedItem = selectedItem;
+        self.allElements = allElements;
+        self.depthsForElements = depthsForElements;
+        self.elementsAtTap = elementsAtTap;
+        self.selectedElement = selectedElement;
         
         self.title = @"View Hierarchy";
     }
@@ -84,28 +84,28 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (void)trySelectCellForSelectedViewWithScrollPosition:(UITableViewScrollPosition)scrollPosition
 {
-    NSUInteger selectedItemIndex = [self.displayedItems indexOfObject:self.selectedItem];
-    if (selectedItemIndex != NSNotFound) {
-        NSIndexPath *selectedItemIndexPath = [NSIndexPath indexPathForRow:selectedItemIndex inSection:0];
-        [self.tableView selectRowAtIndexPath:selectedItemIndexPath animated:YES scrollPosition:scrollPosition];
+    NSUInteger selectedElementIndex = [self.displayedElements indexOfObject:self.selectedElement];
+    if (selectedElementIndex != NSNotFound) {
+        NSIndexPath *selectedElementIndexPath = [NSIndexPath indexPathForRow:selectedElementIndex inSection:0];
+        [self.tableView selectRowAtIndexPath:selectedElementIndexPath animated:YES scrollPosition:scrollPosition];
     }
 }
 
 - (void)updateDisplayedViews
 {
-    NSArray<FLEXHierarchyItem *> *candidateItems = nil;
+    NSArray<FLEXElement *> *candidateElements = nil;
     if ([self showScopeBar]) {
         if (self.searchBar.selectedScopeButtonIndex == kFLEXHierarchyScopeViewsAtTapIndex) {
-            candidateItems = self.itemsAtTap;
+            candidateElements = self.elementsAtTap;
         } else if (self.searchBar.selectedScopeButtonIndex == kFLEXHierarchyScopeFullHierarchyIndex) {
-            candidateItems = self.allItems;
+            candidateElements = self.allElements;
         }
     } else {
-        candidateItems = self.allItems;
+        candidateElements = self.allElements;
     }
     
     if ([self.searchBar.text length] > 0) {
-        self.displayedItems = [candidateItems filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXHierarchyItem *candidateItem, NSDictionary *bindings) {
+        self.displayedElements = [candidateElements filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXElement *candidateItem, NSDictionary *bindings) {
             NSString *title = [candidateItem descriptionIncludingFrame:NO];
             NSString *candidateViewPointerAddress = [NSString stringWithFormat:@"%p", candidateItem.object];
             BOOL matchedViewPointerAddress = [candidateViewPointerAddress rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
@@ -113,7 +113,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
             return matchedViewPointerAddress || matchedViewTitle;
         }]];
     } else {
-        self.displayedItems = candidateItems;
+        self.displayedElements = candidateElements;
     }
     
     [self.tableView reloadData];
@@ -121,7 +121,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (BOOL)showScopeBar
 {
-    return [self.itemsAtTap count] > 0;
+    return [self.elementsAtTap count] > 0;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope
@@ -155,7 +155,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.displayedItems count];
+    return [self.displayedElements count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -166,14 +166,14 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
         cell = [[FLEXHierarchyTableViewCell alloc] initWithReuseIdentifier:CellIdentifier];
     }
     
-    FLEXHierarchyItem *item = self.displayedItems[indexPath.row];
-    NSNumber *depth = [self.depthsForViews objectForKey:[NSValue valueWithNonretainedObject:item]];
-    UIColor *viewColor = item.color;
-    cell.textLabel.text = [item descriptionIncludingFrame:NO];
-    cell.detailTextLabel.text = [item detailDescription];
+    FLEXElement *element = self.displayedElements[indexPath.row];
+    NSNumber *depth = [self.depthsForElements objectForKey:[NSValue valueWithNonretainedObject:element]];
+    UIColor *viewColor = element.color;
+    cell.textLabel.text = [element descriptionIncludingFrame:NO];
+    cell.detailTextLabel.text = [element detailDescription];
     cell.viewColor = viewColor;
     cell.viewDepth = [depth integerValue];
-    if ([item isInvisible]) {
+    if (element.isInvisible) {
         cell.textLabel.textColor = [UIColor lightGrayColor];
         cell.detailTextLabel.textColor = [UIColor lightGrayColor];
     } else {
@@ -186,14 +186,14 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedItem = self.displayedItems[indexPath.row];
-    [self.delegate hierarchyViewController:self didFinishWithSelectedItem:self.selectedItem];
+    self.selectedElement = self.displayedElements[indexPath.row];
+    [self.delegate hierarchyViewController:self didFinishWithSelectedElement:self.selectedElement];
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXHierarchyItem *drillInItem = self.displayedItems[indexPath.row];
-    FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:drillInItem.object];
+    FLEXElement *drillInElement = self.displayedElements[indexPath.row];
+    FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:drillInElement.object];
     [self.navigationController pushViewController:viewExplorer animated:YES];
 }
 
@@ -202,7 +202,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (void)donePressed:(id)sender
 {
-    [self.delegate hierarchyViewController:self didFinishWithSelectedItem:self.selectedItem];
+    [self.delegate hierarchyViewController:self didFinishWithSelectedElement:self.selectedElement];
 }
 
 @end

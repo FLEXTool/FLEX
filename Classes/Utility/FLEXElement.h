@@ -1,5 +1,5 @@
 //
-//  FLEXHierarchyItem.h
+//  FLEXElement.h
 //  FLEX
 //
 //  Created by Levi McCallum on 12/23/16.
@@ -8,19 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
-typedef NS_ENUM(NSUInteger, FLEXHierarchyItemType) {
-    FLEXHierarchyItemTypeNone,
-    FLEXHierarchyItemTypeView,
-    FLEXHierarchyItemTypeNode,
+typedef NS_ENUM(NSUInteger, FLEXElementType) {
+    FLEXElementTypeNone,
+    FLEXElementTypeView,
+    FLEXElementTypeNode,
 };
 
-@interface FLEXHierarchyItem : NSObject
+@interface FLEXElement : NSObject
 
 /// The backing object — either a UIView or an ASDisplayNode
 @property (nonatomic, strong, readonly) id object;
 
-///The type of object this item represents
-@property (nonatomic, assign, readonly) FLEXHierarchyItemType type;
+///The type of object this element represents
+@property (nonatomic, assign, readonly) FLEXElementType type;
 
 /// Convenience property to access the backing object's view.
 @property (nonatomic, strong, readonly) UIView *view;
@@ -35,15 +35,15 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemType) {
 @property (nonatomic, assign, readonly) BOOL isLayerBacked;
 
 /// A passthough accessor to the view's superview or node's supernode
-@property (nonatomic, assign, readonly) FLEXHierarchyItem *parent;
+@property (nonatomic, assign, readonly) FLEXElement *parent;
 
-/// Array of items each representing the backing view's subview or a node's subnodes
-@property (nonatomic, strong, readonly) NSArray<FLEXHierarchyItem *> *subitems;
+/// Array of elements each representing the backing view's subview or a node's subnodes
+@property (nonatomic, strong, readonly) NSArray<FLEXElement *> *subelements;
 
 /// Determines if the view or node is invisible on screen (isHidden == NO or alpha < 0.01)
 @property (nonatomic, assign, readonly) BOOL isInvisible;
 
-/// Provide a consistent random color for this item's backing object
+/// Provide a consistent random color for this element's backing object
 @property (nonatomic, strong, readonly) UIColor *color;
 
 /// Direct passthrough to the backing object's (view or node) frame value
@@ -58,10 +58,10 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyItemType) {
 /// Direct passthrough to the backing object's (view or node) accessibility label value
 @property (nonatomic, strong, readonly) NSString *accessibilityLabel;
 
-- (instancetype)initWithObject:(id)object type:(FLEXHierarchyItemType)type NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithObject:(id)object type:(FLEXElementType)type NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
-- (CGPoint)convertPoint:(CGPoint)point toItem:(FLEXHierarchyItem *)item;
+- (CGPoint)convertPoint:(CGPoint)point toElement:(FLEXElement *)element;
 
 - (NSString *)descriptionIncludingFrame:(BOOL)frame;
 - (NSString *)detailDescription;
