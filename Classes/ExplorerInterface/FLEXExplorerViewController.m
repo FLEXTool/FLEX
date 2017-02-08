@@ -336,7 +336,15 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)updateOverlayAndDescriptionForObjectIfNeeded:(id)object
 {
-    NSUInteger indexOfItem = [self.itemsAtTapPoint indexOfObject:object];
+    NSUInteger indexOfItem = NSNotFound;
+    for (NSUInteger i = 0; i < self.itemsAtTapPoint.count; i++) {
+        FLEXHierarchyItem *item = self.itemsAtTapPoint[i];
+        if (item.view == object) {
+            indexOfItem = i;
+            break;
+        }
+    }
+    
     if (indexOfItem != NSNotFound) {
         FLEXHierarchyItem *item = self.itemsAtTapPoint[indexOfItem];
         NSValue *key = [NSValue valueWithNonretainedObject:item];
@@ -345,7 +353,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             outline.frame = [self frameInLocalCoordinatesForItem:item];
         }
     }
-    if (object == self.selectedItem) {
+    if (object == self.selectedItem.view) {
         // Update the selected view description since we show the frame value there.
         self.explorerToolbar.selectedItemDescription = [self.selectedItem descriptionIncludingFrame:YES];
         CGRect selectedItemOutlineFrame = [self frameInLocalCoordinatesForItem:self.selectedItem];

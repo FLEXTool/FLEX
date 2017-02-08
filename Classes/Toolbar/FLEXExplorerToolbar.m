@@ -154,7 +154,7 @@
 
 #pragma mark - Setter Overrides
 
-- (void)setselectedItemOverlayColor:(UIColor *)selectedItemOverlayColor
+- (void)setSelectedItemOverlayColor:(UIColor *)selectedItemOverlayColor
 {
     if (![_selectedItemOverlayColor isEqual:selectedItemOverlayColor]) {
         _selectedItemOverlayColor = selectedItemOverlayColor;
@@ -162,7 +162,7 @@
     }
 }
 
-- (void)setselectedItemDescription:(NSString *)selectedItemDescription
+- (void)setSelectedItemDescription:(NSString *)selectedItemDescription
 {
     if (![_selectedItemDescription isEqual:selectedItemDescription]) {
         _selectedItemDescription = selectedItemDescription;
