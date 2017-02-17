@@ -207,14 +207,14 @@ typedef NS_ENUM(NSUInteger, FLEXElementNodeType) {
     return nil;
 }
 
-- (NSArray<FLEXElement *> *)subitems
+- (NSArray<FLEXElement *> *)subelements
 {
-    NSMutableArray<FLEXElement *> *items = [NSMutableArray array];
+    NSMutableArray<FLEXElement *> *elements = [NSMutableArray array];
     for (id child in [self _children]) {
-        FLEXElement *item = [[[self class] alloc] initWithChildObject:child parent:self];
-        [items addObject:item];
+        FLEXElement *element = [[[self class] alloc] initWithChildObject:child parent:self];
+        [elements addObject:element];
     }
-    return items;
+    return elements;
 }
 
 - (BOOL)isInvisible

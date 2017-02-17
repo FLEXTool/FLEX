@@ -105,12 +105,12 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     }
     
     if ([self.searchBar.text length] > 0) {
-        self.displayedElements = [candidateElements filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXElement *candidateItem, NSDictionary *bindings) {
-            NSString *title = [candidateItem descriptionIncludingFrame:NO];
-            NSString *candidateViewPointerAddress = [NSString stringWithFormat:@"%p", candidateItem.object];
-            BOOL matchedViewPointerAddress = [candidateViewPointerAddress rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
-            BOOL matchedViewTitle = [title rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
-            return matchedViewPointerAddress || matchedViewTitle;
+        self.displayedElements = [candidateElements filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXElement *candidateElement, NSDictionary *bindings) {
+            NSString *title = [candidateElement descriptionIncludingFrame:NO];
+            NSString *candidateElementPointerAddress = [NSString stringWithFormat:@"%p", candidateElement.object];
+            BOOL matchedElementPointerAddress = [candidateElementPointerAddress rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
+            BOOL matchedElementTitle = [title rangeOfString:self.searchBar.text options:NSCaseInsensitiveSearch].location != NSNotFound;
+            return matchedElementPointerAddress || matchedElementTitle;
         }]];
     } else {
         self.displayedElements = candidateElements;
