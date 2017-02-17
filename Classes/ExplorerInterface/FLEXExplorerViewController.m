@@ -47,7 +47,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 @property (nonatomic, strong) NSDictionary *outlineViewsForVisibleElements;
 
 /// The actual views at the selection point with the deepest view last.
-@property (nonatomic, strong) NSArray *elementsAtTapPoint;
+@property (nonatomic, strong) NSArray<FLEXElement *> *elementsAtTapPoint;
 
 /// The view that we're currently highlighting with an overlay and displaying details for.
 @property (nonatomic, strong) FLEXElement *selectedElement;
@@ -892,7 +892,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         frame.origin.y += 1.0 / [[UIScreen mainScreen] scale];
         self.selectedElement.frame = frame;
     } else if (self.currentMode == FLEXExplorerModeSelect && [self.elementsAtTapPoint count] > 0) {
-        NSInteger selectedElementIndex = [self.elementsAtTapPoint indexOfObject:self.selectedElement];
+        NSUInteger selectedElementIndex = [self _indexOfSelectedElement];
         if (selectedElementIndex > 0) {
             self.selectedElement = [self.elementsAtTapPoint objectAtIndex:selectedElementIndex - 1];
         }
@@ -906,7 +906,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         frame.origin.y -= 1.0 / [[UIScreen mainScreen] scale];
         self.selectedElement.frame = frame;
     } else if (self.currentMode == FLEXExplorerModeSelect && [self.elementsAtTapPoint count] > 0) {
-        NSInteger selectedElementIndex = [self.elementsAtTapPoint indexOfObject:self.selectedElement];
+        NSUInteger selectedElementIndex = [self _indexOfSelectedElement];
         if (selectedElementIndex < [self.elementsAtTapPoint count] - 1) {
             self.selectedElement = [self.elementsAtTapPoint objectAtIndex:selectedElementIndex + 1];
         }
@@ -929,6 +929,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         frame.origin.x -= 1.0 / [[UIScreen mainScreen] scale];
         self.selectedElement.frame = frame;
     }
+}
+
+- (NSUInteger)_indexOfSelectedElement
+{
+    return [self.elementsAtTapPoint indexOfObjectPassingTest:^BOOL(FLEXElement * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return self.selectedElement.object == obj.object;
+    }];
 }
 
 @end

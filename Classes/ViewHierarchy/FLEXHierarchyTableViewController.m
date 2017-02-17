@@ -84,7 +84,9 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (void)trySelectCellForSelectedViewWithScrollPosition:(UITableViewScrollPosition)scrollPosition
 {
-    NSUInteger selectedElementIndex = [self.displayedElements indexOfObject:self.selectedElement];
+    NSUInteger selectedElementIndex = [self.displayedElements indexOfObjectPassingTest:^BOOL(FLEXElement * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return self.selectedElement.object == obj.object;
+    }];
     if (selectedElementIndex != NSNotFound) {
         NSIndexPath *selectedElementIndexPath = [NSIndexPath indexPathForRow:selectedElementIndex inSection:0];
         [self.tableView selectRowAtIndexPath:selectedElementIndexPath animated:YES scrollPosition:scrollPosition];
