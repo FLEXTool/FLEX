@@ -19,7 +19,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 @interface FLEXHierarchyTableViewController () <UISearchBarDelegate>
 
 @property (nonatomic, strong) NSArray<FLEXElement *> *allElements;
-@property (nonatomic, strong) NSDictionary<NSValue *, NSNumber *> *depthsForElements;
+@property (nonatomic, strong) NSDictionary<NSValue *, NSNumber *> *depthsForElementObjects;
 @property (nonatomic, strong) NSArray<FLEXElement *> *elementsAtTap;
 @property (nonatomic, strong) FLEXElement *selectedElement;
 @property (nonatomic, strong) NSArray<FLEXElement *> *displayedElements;
@@ -30,12 +30,12 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 @implementation FLEXHierarchyTableViewController
 
-- (id)initWithElements:(NSArray *)allElements elementsAtTap:(NSArray *)elementsAtTap selectedElement:(FLEXElement *)selectedElement depths:(NSDictionary *)depthsForElements
+- (id)initWithElements:(NSArray *)allElements elementsAtTap:(NSArray *)elementsAtTap selectedElement:(FLEXElement *)selectedElement depths:(NSDictionary *)depthsForElementObjects
 {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         self.allElements = allElements;
-        self.depthsForElements = depthsForElements;
+        self.depthsForElementObjects = depthsForElementObjects;
         self.elementsAtTap = elementsAtTap;
         self.selectedElement = selectedElement;
         
@@ -169,7 +169,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     }
     
     FLEXElement *element = self.displayedElements[indexPath.row];
-    NSNumber *depth = [self.depthsForElements objectForKey:[NSValue valueWithNonretainedObject:element]];
+    NSNumber *depth = [self.depthsForElementObjects objectForKey:[NSValue valueWithNonretainedObject:element.object]];
     UIColor *viewColor = element.color;
     cell.textLabel.text = [element descriptionIncludingFrame:NO];
     cell.detailTextLabel.text = [element detailDescription];

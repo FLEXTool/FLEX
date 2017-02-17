@@ -13,7 +13,7 @@
 
 @interface FLEXHierarchyTableViewController : UITableViewController
 
-- (id)initWithElements:(NSArray *)allElements elementsAtTap:(NSArray *)elementsAtTap selectedElement:(FLEXElement *)selectedElement depths:(NSDictionary *)depthsForElements;
+- (id)initWithElements:(NSArray *)allElements elementsAtTap:(NSArray *)elementsAtTap selectedElement:(FLEXElement *)selectedElement depths:(NSDictionary *)depthsForElementObjects;
 
 @property (nonatomic, weak) id <FLEXHierarchyTableViewControllerDelegate> delegate;
 

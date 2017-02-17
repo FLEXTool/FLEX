@@ -653,7 +653,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return children;
 }
 
-- (NSDictionary *)hierarchyDepthsForElements:(NSArray *)elements
+- (NSDictionary *)hierarchyDepthsForElementObjects:(NSArray *)elements
 {
     NSMutableDictionary *hierarchyDepths = [NSMutableDictionary dictionary];
     for (FLEXElement *element in elements) {
@@ -664,7 +664,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             tryElement = parent;
             depth++;
         }
-        [hierarchyDepths setObject:@(depth) forKey:[NSValue valueWithNonretainedObject:element]];
+        [hierarchyDepths setObject:@(depth) forKey:[NSValue valueWithNonretainedObject:element.object]];
     }
     return hierarchyDepths;
 }
@@ -847,8 +847,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     } else {
         void (^presentBlock)() = ^{
             NSArray *allElements = [self allElementsInHierarchy];
-            NSDictionary *depthsForElements = [self hierarchyDepthsForElements:allElements];
-            FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithElements:allElements elementsAtTap:self.elementsAtTapPoint selectedElement:self.selectedElement depths:depthsForElements];
+            NSDictionary *depthsForElementObjects = [self hierarchyDepthsForElementObjects:allElements];
+            FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithElements:allElements elementsAtTap:self.elementsAtTapPoint selectedElement:self.selectedElement depths:depthsForElementObjects];
             hierarchyTVC.delegate = self;
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:hierarchyTVC];
             [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
