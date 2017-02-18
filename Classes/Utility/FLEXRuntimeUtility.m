@@ -410,63 +410,64 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                     return nil;
                 }
                 
-                NSUInteger bufferSize = 0;
                 @try {
+                    NSUInteger bufferSize = 0;
+                    
                     // NSGetSizeAndAlignment barfs on type encoding for bitfields.
                     NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
+                    
+                    if (bufferSize > 0) {
+                        void *buffer = calloc(bufferSize, 1);
+                        [argumentValue getValue:buffer];
+                        [invocation setArgument:buffer atIndex:argumentIndex];
+                        free(buffer);
+                    }
                 } @catch (NSException *exception) { }
-                
-                if (bufferSize > 0) {
-                    void *buffer = calloc(bufferSize, 1);
-                    [argumentValue getValue:buffer];
-                    [invocation setArgument:buffer atIndex:argumentIndex];
-                    free(buffer);
-                }
             }
         }
     }
     
     // Try to invoke the invocation but guard against an exception being thrown.
-    BOOL successfullyInvoked = NO;
+    id returnObject = nil;
     @try {
         // Some methods are not fit to be called...
         // Looking at you -[UIResponder(UITextInputAdditions) _caretRect]
         [invocation invoke];
-        successfullyInvoked = YES;
+        
+        // Retreive the return value and box if necessary.
+        const char *returnType = [methodSignature methodReturnType];
+        
+        if (returnType[0] == @encode(id)[0] || returnType[0] == @encode(Class)[0]) {
+            // Return value is an object.
+            __unsafe_unretained id objectReturnedFromMethod = nil;
+            [invocation getReturnValue:&objectReturnedFromMethod];
+            returnObject = objectReturnedFromMethod;
+        } else if (returnType[0] != @encode(void)[0]) {
+            // Will use arbitrary buffer for return value and box it.
+            void *returnValue = malloc([methodSignature methodReturnLength]);
+            
+            if (returnValue) {
+                [invocation getReturnValue:returnValue];
+                returnObject = [self valueForPrimitivePointer:returnValue objCType:returnType];
+                free(returnValue);
+            }
+        }
     } @catch (NSException *exception) {
         // Bummer...
         if (error) {
             // "… on <class>" / "… on instance of <class>"
             NSString *class = NSStringFromClass([object class]);
             NSString *calledOn = object == [object class] ? class : [@"an instance of " stringByAppendingString:class];
-
+            
             NSString *message = [NSString stringWithFormat:@"Exception '%@' thrown while performing selector '%@' on %@.\nReason:\n\n%@",
                                  exception.name,
                                  NSStringFromSelector(selector),
                                  calledOn,
                                  exception.reason];
-
+            
             *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain
                                          code:FLEXRuntimeUtilityErrorCodeInvocationFailed
                                      userInfo:@{ NSLocalizedDescriptionKey : message }];
-        }
-    }
-    
-    // Retreive the return value and box if necessary.
-    id returnObject = nil;
-    if (successfullyInvoked) {
-        const char *returnType = [methodSignature methodReturnType];
-        if (returnType[0] == @encode(id)[0] || returnType[0] == @encode(Class)[0]) {
-            __unsafe_unretained id objectReturnedFromMethod = nil;
-            [invocation getReturnValue:&objectReturnedFromMethod];
-            returnObject = objectReturnedFromMethod;
-        } else if (returnType[0] != @encode(void)[0]) {
-            void *returnValue = malloc([methodSignature methodReturnLength]);
-            if (returnValue) {
-                [invocation getReturnValue:returnValue];
-                returnObject = [self valueForPrimitivePointer:returnValue objCType:returnType];
-                free(returnValue);
-            }
         }
     }
     
