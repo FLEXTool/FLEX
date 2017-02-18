@@ -67,7 +67,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 @property (nonatomic, assign) UIStatusBarStyle previousStatusBarStyle;
 
 /// All views that we're KVOing. Used to help us clean up properly.
-@property (nonatomic, strong) NSMutableSet *observedElements;
+@property (nonatomic, strong) NSMutableSet *observedViews;
 
 @end
 
@@ -77,14 +77,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.observedElements = [NSMutableSet set];
+        self.observedViews = [NSMutableSet set];
     }
     return self;
 }
 
 -(void)dealloc
 {
-    for (FLEXElement *element in _observedElements) {
+    for (FLEXElement *element in _observedViews) {
         [self stopObservingElement:element];
     }
 }
@@ -294,28 +294,28 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)beginObservingElement:(FLEXElement *)element
 {
     // Bail if we're already observing this view or if there's nothing to observe.
-    if (!element || [self.observedElements containsObject:element]) {
+    if (!element || element.isLayerBacked || [self.observedViews containsObject:element.view]) {
         return;
     }
     
     for (NSString *keyPath in [[self class] viewKeyPathsToTrack]) {
-        [element.layerOrView addObserver:self forKeyPath:keyPath options:0 context:NULL];
+        [element.view addObserver:self forKeyPath:keyPath options:0 context:NULL];
     }
     
-    [self.observedElements addObject:element];
+    [self.observedViews addObject:element.view];
 }
 
 - (void)stopObservingElement:(FLEXElement *)element
 {
-    if (!element) {
+    if (!element || element.isLayerBacked) {
         return;
     }
     
     for (NSString *keyPath in [[self class] viewKeyPathsToTrack]) {
-        [element.layerOrView removeObserver:self forKeyPath:keyPath];
+        [element.view removeObserver:self forKeyPath:keyPath];
     }
     
-    [self.observedElements removeObject:element];
+    [self.observedViews removeObject:element];
 }
 
 + (NSArray *)viewKeyPathsToTrack
