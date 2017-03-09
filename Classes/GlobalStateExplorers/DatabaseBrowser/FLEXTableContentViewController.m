@@ -147,6 +147,11 @@
         if ([obj2 objectForKey:text] == [NSNull null]) {
             return NSOrderedDescending;
         }
+        
+        if (![[obj1 objectForKey:text] respondsToSelector:@selector(compare:)] && ![[obj2 objectForKey:text] respondsToSelector:@selector(compare:)]) {
+            return NSOrderedSame;
+        }
+        
         NSComparisonResult result =  [[obj1 objectForKey:text] compare:[obj2 objectForKey:text]];
         
         return result;
