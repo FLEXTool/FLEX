@@ -16,6 +16,8 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXNetworkHistoryTableViewController.h"
 
+static NSString *const kFLEXToolbarTopMarginDefaultsKey = @"com.flex.FLEXToolbar.topMargin";
+
 typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeDefault,
     FLEXExplorerModeSelect,
@@ -96,7 +98,19 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     self.explorerToolbar = [[FLEXExplorerToolbar alloc] init];
     CGSize toolbarSize = [self.explorerToolbar sizeThatFits:self.view.bounds.size];
     // Start the toolbar off below any bars that may be at the top of the view.
-    CGFloat toolbarOriginY = 100.0;
+
+    id toolbarOriginYDefault = [[NSUserDefaults standardUserDefaults] objectForKey:kFLEXToolbarTopMarginDefaultsKey];
+
+    CGFloat toolbarOriginY;
+
+    if (toolbarOriginYDefault) {
+        toolbarOriginY = [toolbarOriginYDefault doubleValue];
+    } else {
+        toolbarOriginY = 100;
+
+        [[NSUserDefaults standardUserDefaults] setDouble:toolbarOriginY forKey:kFLEXToolbarTopMarginDefaultsKey];
+    }
+
     self.explorerToolbar.frame = CGRectMake(0.0, toolbarOriginY, toolbarSize.width, toolbarSize.height);
     self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.explorerToolbar];
@@ -470,6 +484,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     
     self.explorerToolbar.frame = newToolbarFrame;
+
+    [[NSUserDefaults standardUserDefaults] setDouble:newToolbarFrame.origin.y forKey:kFLEXToolbarTopMarginDefaultsKey];
 }
 
 - (void)handleToolbarHintTapGesture:(UITapGestureRecognizer *)tapGR
