@@ -136,7 +136,7 @@
     if (isDestructive) {
         actionButton.tintColor = [UIColor redColor];
     }
-    actionButton.titleLabel.font = [[self class] cellTitleFont];;
+    actionButton.titleLabel.font = [[self class] cellTitleFont];
     [actionButton addTarget:self action:@selector(clearRequestsTapped:) forControlEvents:UIControlEventTouchUpInside];
 
     [buttonCell.contentView addSubview:actionButton];
