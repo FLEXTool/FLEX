@@ -104,6 +104,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
+    for (NSString *host in self.hostBlacklist) {
+        if ([request.URL.host hasSuffix:host]) {
+            return;
+        }
+    }
+    
     NSDate *startDate = [NSDate date];
 
     if (redirectResponse) {
