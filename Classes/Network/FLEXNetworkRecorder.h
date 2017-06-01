@@ -27,6 +27,9 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 /// If NO, the recorder not cache will not cache response for content types with an "image", "video", or "audio" prefix.
 @property (nonatomic, assign) BOOL shouldCacheMediaResponses;
 
+@property (nonatomic, copy) NSArray<NSString *> *hostBlacklist;
+
+
 // Accessing recorded network activity
 
 /// Array of FLEXNetworkTransaction objects ordered by start time with the newest first.

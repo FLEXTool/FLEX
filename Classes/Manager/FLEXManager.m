@@ -115,6 +115,14 @@
     [[FLEXNetworkRecorder defaultRecorder] setResponseCacheByteLimit:networkResponseCacheByteLimit];
 }
 
+- (void)setNetworkRequestHostBlacklist:(NSArray<NSString *> *)networkRequestHostBlacklist {
+    [FLEXNetworkRecorder defaultRecorder].hostBlacklist = networkRequestHostBlacklist;
+}
+
+- (NSArray<NSString *> *)hostBlacklist {
+    return [FLEXNetworkRecorder defaultRecorder].hostBlacklist;
+}
+
 #pragma mark - FLEXWindowEventDelegate
 
 - (BOOL)shouldHandleTouchAtPoint:(CGPoint)pointInWindow
