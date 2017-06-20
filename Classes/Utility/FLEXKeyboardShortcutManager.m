@@ -260,7 +260,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
             dispatch_block_t actionBlock = self.actionsForKeyInputs[exactMatch];
             
             if (!actionBlock) {
-                FLEXKeyInput *shiftMatch = [FLEXKeyInput keyInputForKey:modifiedInput flags:flags&(!UIKeyModifierShift)];
+                FLEXKeyInput *shiftMatch = [FLEXKeyInput keyInputForKey:modifiedInput flags:flags&(~UIKeyModifierShift)];
                 actionBlock = self.actionsForKeyInputs[shiftMatch];
             }
             
