@@ -249,6 +249,18 @@
     return httpResponseString;
 }
 
++ (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response {
+    NSIndexSet *errorStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(400, 200)];
+    
+    if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        return [errorStatusCodes containsIndex:httpResponse.statusCode];
+    }
+    
+    return NO;
+}
+
+
 + (NSDictionary *)dictionaryFromQuery:(NSString *)query
 {
     NSMutableDictionary *queryDictionary = [NSMutableDictionary dictionary];
