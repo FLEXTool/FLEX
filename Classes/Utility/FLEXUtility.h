@@ -35,6 +35,7 @@
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
++ (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response;
 + (NSDictionary *)dictionaryFromQuery:(NSString *)query;
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
 + (BOOL)isValidJSONData:(NSData *)data;
