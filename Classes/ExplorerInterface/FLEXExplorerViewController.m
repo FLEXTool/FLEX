@@ -220,7 +220,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
         // Update the toolbar and selected overlay
         self.explorerToolbar.selectedViewDescription = [FLEXUtility descriptionForView:selectedView includingFrame:YES];
-        self.explorerToolbar.selectedViewOverlayColor = [FLEXUtility consistentRandomColorForObject:selectedView];;
+        self.explorerToolbar.selectedViewOverlayColor = [FLEXUtility consistentRandomColorForObject:selectedView];
 
         if (selectedView) {
             if (!self.selectedViewOverlay) {
