@@ -22,8 +22,6 @@
 
 @property (nonatomic, strong) UIImageView *dragHandleImageView;
 
-@property (nonatomic, strong) NSArray *toolbarItems;
-
 @property (nonatomic, strong) UIView *selectedViewDescriptionContainer;
 @property (nonatomic, strong) UIView *selectedViewColorIndicator;
 @property (nonatomic, strong) UILabel *selectedViewDescriptionLabel;
@@ -36,8 +34,6 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        NSMutableArray *toolbarItems = [NSMutableArray array];
-        
         self.dragHandle = [[UIView alloc] init];
         self.dragHandle.backgroundColor = [FLEXToolbarItem defaultBackgroundColor];
         [self addSubview:self.dragHandle];
@@ -48,30 +44,19 @@
         
         UIImage *globalsIcon = [FLEXResources globeIcon];
         self.globalsItem = [FLEXToolbarItem toolbarItemWithTitle:@"menu" image:globalsIcon];
-        [self addSubview:self.globalsItem];
-        [toolbarItems addObject:self.globalsItem];
         
         UIImage *listIcon = [FLEXResources listIcon];
         self.hierarchyItem = [FLEXToolbarItem toolbarItemWithTitle:@"views" image:listIcon];
-        [self addSubview:self.hierarchyItem];
-        [toolbarItems addObject:self.hierarchyItem];
         
         UIImage *selectIcon = [FLEXResources selectIcon];
         self.selectItem = [FLEXToolbarItem toolbarItemWithTitle:@"select" image:selectIcon];
-        [self addSubview:self.selectItem];
-        [toolbarItems addObject:self.selectItem];
         
         UIImage *moveIcon = [FLEXResources moveIcon];
         self.moveItem = [FLEXToolbarItem toolbarItemWithTitle:@"move" image:moveIcon];
-        [self addSubview:self.moveItem];
-        [toolbarItems addObject:self.moveItem];
         
         UIImage *closeIcon = [FLEXResources closeIcon];
         self.closeItem = [FLEXToolbarItem toolbarItemWithTitle:@"close" image:closeIcon];
-        [self addSubview:self.closeItem];
-        [toolbarItems addObject:self.closeItem];
         
-        self.toolbarItems = toolbarItems;
         self.backgroundColor = [UIColor clearColor];
         
         self.selectedViewDescriptionContainer = [[UIView alloc] init];
@@ -87,7 +72,10 @@
         self.selectedViewDescriptionLabel.backgroundColor = [UIColor clearColor];
         self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
         [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionLabel];
+        
+        self.toolbarItems = @[_globalsItem, _hierarchyItem, _selectItem, _moveItem, _closeItem];
     }
+        
     return self;
 }
 
@@ -150,9 +138,35 @@
     descriptionLabelFrame.size.width = CGRectGetMaxX(self.selectedViewDescriptionContainer.bounds) - kHorizontalPadding - descriptionOriginX;
     self.selectedViewDescriptionLabel.frame = descriptionLabelFrame;
 }
-
-
+    
+    
 #pragma mark - Setter Overrides
+
+- (void)setToolbarItems:(NSArray *)toolbarItems {
+    if (_toolbarItems == toolbarItems) {
+        return;
+    }
+    
+    // Remove old toolbar items, if any
+    for (FLEXToolbarItem *item in _toolbarItems) {
+        [item removeFromSuperview];
+    }
+    
+    // Trim to 5 items if necessary
+    if (toolbarItems.count > 5) {
+        toolbarItems = [toolbarItems subarrayWithRange:NSMakeRange(0, 5)];
+    }
+
+    for (FLEXToolbarItem *item in toolbarItems) {
+        [self addSubview:item];
+    }
+
+    _toolbarItems = toolbarItems.copy;
+
+    // Lay out new items
+    [self setNeedsLayout];
+    [self layoutIfNeeded];
+}
 
 - (void)setSelectedViewOverlayColor:(UIColor *)selectedViewOverlayColor
 {
