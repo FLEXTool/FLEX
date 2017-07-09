@@ -277,14 +277,22 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSMutableArray *components = [NSMutableArray array];
     
     NSString *selectorName = NSStringFromSelector(method_getName(method));
-    NSArray *selectorComponents = [selectorName componentsSeparatedByString:@":"];
-    unsigned int numberOfArguments = method_getNumberOfArguments(method);
+    NSMutableArray *selectorComponents = [[selectorName componentsSeparatedByString:@":"] mutableCopy];
     
-    for (unsigned int argIndex = kFLEXNumberOfImplicitArgs; argIndex < numberOfArguments; argIndex++) {
-        char *argType = method_copyArgumentType(method, argIndex);
-        NSString *readableArgType = [self readableTypeForEncoding:@(argType)];
+    // this is a workaround cause method_getNumberOfArguments() returns wrong number for some methods
+    if (selectorComponents.count == 1) {
+        return [selectorComponents copy];
+    }
+    
+    if ([selectorComponents.lastObject isEqualToString:@""]) {
+        [selectorComponents removeLastObject];
+    }
+    
+    for (unsigned int argIndex = 0; argIndex < selectorComponents.count; argIndex++) {
+        char *argType = method_copyArgumentType(method, argIndex + kFLEXNumberOfImplicitArgs);
+        NSString *readableArgType = (argType != NULL) ? [self readableTypeForEncoding:@(argType)] : nil;
         free(argType);
-        NSString *prettyComponent = [NSString stringWithFormat:@"%@:(%@) ", [selectorComponents objectAtIndex:argIndex - kFLEXNumberOfImplicitArgs], readableArgType];
+        NSString *prettyComponent = [NSString stringWithFormat:@"%@:(%@) ", [selectorComponents objectAtIndex:argIndex], readableArgType];
         [components addObject:prettyComponent];
     }
     
