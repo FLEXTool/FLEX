@@ -85,6 +85,8 @@
         
         XCTAssert([newWay isEqual:prevWay]);
     }
+    
+    free(methods);
 }
 
 - (void)testPerformanceExample {
