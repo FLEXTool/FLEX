@@ -62,23 +62,29 @@
     self.searchController.delegate = self;
     self.searchController.searchResultsUpdater = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.hidesNavigationBarDuringPresentation = NO;
     self.tableView.tableHeaderView = self.searchController.searchBar;
 
     [self updateTransactions];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.searchController.searchBar.hidden = NO;
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    self.searchController.searchBar.hidden = YES;
+}
+
 - (void)settingsButtonTapped:(id)sender
 {
     FLEXNetworkSettingsTableViewController *settingsViewController = [[FLEXNetworkSettingsTableViewController alloc] init];
-    settingsViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(settingsViewControllerDoneTapped:)];
     settingsViewController.title = @"Network Debugging Settings";
-    UINavigationController *wrapperNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-    [self presentViewController:wrapperNavigationController animated:YES completion:nil];
-}
-
-- (void)settingsViewControllerDoneTapped:(id)sender
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
 - (void)updateTransactions
