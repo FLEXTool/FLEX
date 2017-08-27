@@ -41,6 +41,10 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetworkObserverEnabledStateChangedNotification:) name:kFLEXNetworkObserverEnabledStateChangedNotification object:nil];
         self.title = @"📡  Network";
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(settingsButtonTapped:)];
+
+        // Needed to avoid search bar showing over detail pages pushed on the nav stack
+        // see http://asciiwwdc.com/2014/sessions/228
+        self.definesPresentationContext = YES;
     }
     return self;
 }
