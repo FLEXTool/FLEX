@@ -22,7 +22,7 @@
 {
     self = [super initWithFrame:CGRectZero];
     if (self) {
-        self.typeEncoding = @(typeEncoding);
+        self.typeEncoding = typeEncoding != NULL ? @(typeEncoding) : nil;
     }
     return self;
 }
