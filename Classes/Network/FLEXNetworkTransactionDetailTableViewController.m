@@ -14,6 +14,8 @@
 #import "FLEXImagePreviewViewController.h"
 #import "FLEXMultilineTableViewCell.h"
 #import "FLEXUtility.h"
+#import "FLEXManager+Private.h"
+#import "FLEXCustomContentTypeViewer.h"
 
 @interface FLEXNetworkDetailSection : NSObject
 
@@ -250,7 +252,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         FLEXNetworkDetailRow *postBodySizeRow = [[FLEXNetworkDetailRow alloc] init];
         postBodySizeRow.title = @"Request Body Size";
         postBodySizeRow.detailText = [NSByteCountFormatter stringFromByteCount:[transaction.cachedRequestBody length] countStyle:NSByteCountFormatterCountStyleBinary];
-        [rows addObject:postBodySizeRow];
+        [rows addObject:  postBodySizeRow];
 
         FLEXNetworkDetailRow *postBodyRow = [[FLEXNetworkDetailRow alloc] init];
         postBodyRow.title = @"Request Body";
@@ -425,6 +427,16 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (UIViewController *)detailViewControllerForMIMEType:(NSString *)mimeType data:(NSData *)data
 {
+    FLEXCustomContentTypeViewer *customContentTypeViewer = [[[FLEXManager sharedManager].customContentTypeViewers filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXCustomContentTypeViewer *viewer, id _) {
+        return [viewer.contentType isEqualToString:mimeType];
+    }]] firstObject];
+
+    if (customContentTypeViewer != nil) {
+        UIViewController *viewController = customContentTypeViewer.viewControllerFuture(mimeType, data);
+
+        return viewController;
+    }
+
     // FIXME (RKO): Don't rely on UTF8 string encoding
     UIViewController *detailViewController = nil;
     if ([FLEXUtility isValidJSONData:data]) {

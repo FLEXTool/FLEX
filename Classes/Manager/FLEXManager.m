@@ -18,6 +18,7 @@
 #import "FLEXFileBrowserTableViewController.h"
 #import "FLEXNetworkHistoryTableViewController.h"
 #import "FLEXKeyboardHelpViewController.h"
+#import "FLEXCustomContentTypeViewer.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -25,6 +26,7 @@
 @property (nonatomic, strong) FLEXExplorerViewController *explorerViewController;
 
 @property (nonatomic, readonly, strong) NSMutableArray *userGlobalEntries;
+@property (nonatomic, readonly, strong) NSMutableArray *customContentTypeViewers;
 
 @end
 
@@ -45,6 +47,7 @@
     self = [super init];
     if (self) {
         _userGlobalEntries = [[NSMutableArray alloc] init];
+        _customContentTypeViewers = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -284,6 +287,18 @@
     }];
 
     [self.userGlobalEntries addObject:entry];
+}
+
+- (void)registerCustomViewerForContentType:(NSString *)contentType viewControllerFutureBlock:(UIViewController *(^)(NSString *, NSData *))viewControllerFutureBlock {
+    NSParameterAssert(contentType);
+    NSParameterAssert(viewControllerFutureBlock);
+    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
+
+    FLEXCustomContentTypeViewer *viewer = [FLEXCustomContentTypeViewer new];
+    viewer.contentType = contentType;
+    viewer.viewControllerFuture = viewControllerFutureBlock;
+
+    [self.customContentTypeViewers addObject:viewer];
 }
 
 - (void)tryScrollDown

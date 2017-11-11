@@ -77,4 +77,6 @@
 - (void)registerGlobalEntryWithName:(NSString *)entryName
           viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock;
 
+- (void)registerCustomViewerForContentType:(NSString *)contentType viewControllerFutureBlock:(UIViewController *(^)(NSString *mimeType, NSData *data))viewControllerFutureBlock;
+
 @end

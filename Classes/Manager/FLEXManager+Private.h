@@ -13,4 +13,7 @@
 /// An array of FLEXGlobalsTableViewControllerEntry objects that have been registered by the user.
 @property (nonatomic, readonly, strong) NSArray *userGlobalEntries;
 
+/// An array of FLEXCustomContentTypeViewer objects that have been registered by the user.
+@property (nonatomic, readonly, strong) NSMutableArray *customContentTypeViewers;
+
 @end

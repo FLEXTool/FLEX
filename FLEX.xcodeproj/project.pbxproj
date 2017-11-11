@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		04F1CA191C137CF1000A52B0 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 04F1CA181C137CF1000A52B0 /* LICENSE */; };
+		1410F7751FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1410F7731FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.h */; };
+		1410F7761FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1410F7741FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.m */; };
 		1C27A8B91F0E5A0400F0D02D /* FLEXTestsMethodsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */; };
 		1C27A8BB1F0E5A0400F0D02D /* FLEX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4C941F1B5B20570088C3F2 /* FLEX.framework */; };
 		222C88221C7339DC007CA15F /* FLEXRealmDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 222C88211C7339DC007CA15F /* FLEXRealmDefines.h */; };
@@ -180,6 +182,8 @@
 
 /* Begin PBXFileReference section */
 		04F1CA181C137CF1000A52B0 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		1410F7731FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXCustomContentTypeViewer.h; sourceTree = "<group>"; };
+		1410F7741FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXCustomContentTypeViewer.m; sourceTree = "<group>"; };
 		1C27A8B61F0E5A0300F0D02D /* FLEXTestsMethodsList.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FLEXTestsMethodsList.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTestsMethodsList.m; sourceTree = "<group>"; };
 		1C27A8BA1F0E5A0400F0D02D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -448,6 +452,8 @@
 				3A4C94511B5B21410088C3F2 /* FLEXViewControllerExplorerViewController.m */,
 				3A4C94521B5B21410088C3F2 /* FLEXViewExplorerViewController.h */,
 				3A4C94531B5B21410088C3F2 /* FLEXViewExplorerViewController.m */,
+				1410F7731FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.h */,
+				1410F7741FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.m */,
 			);
 			path = ObjectExplorers;
 			sourceTree = "<group>";
@@ -718,6 +724,7 @@
 				3A4C950D1B5B21410088C3F2 /* FLEXIvarEditorViewController.h in Headers */,
 				3A4C95281B5B21410088C3F2 /* FLEXInstancesTableViewController.h in Headers */,
 				3A4C950F1B5B21410088C3F2 /* FLEXMethodCallingViewController.h in Headers */,
+				1410F7751FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.h in Headers */,
 				3A4C94F51B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.h in Headers */,
 				3A4C94F11B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.h in Headers */,
 				779B1ED61C0C4D7C001F5E49 /* FLEXTableContentViewController.h in Headers */,
@@ -940,6 +947,7 @@
 				3A4C952D1B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.m in Sources */,
 				3A4C953D1B5B21410088C3F2 /* FLEXNetworkTransaction.m in Sources */,
 				3A4C94E81B5B21410088C3F2 /* FLEXHierarchyTableViewCell.m in Sources */,
+				1410F7761FB73B6700C1DBD8 /* FLEXCustomContentTypeViewer.m in Sources */,
 				3A4C94C81B5B21410088C3F2 /* FLEXClassExplorerViewController.m in Sources */,
 				3A4C950A1B5B21410088C3F2 /* FLEXFieldEditorView.m in Sources */,
 				3A4C95061B5B21410088C3F2 /* FLEXArgumentInputViewFactory.m in Sources */,
