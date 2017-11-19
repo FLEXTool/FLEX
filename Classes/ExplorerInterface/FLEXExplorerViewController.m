@@ -96,22 +96,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 	
     // Toolbar
     self.explorerToolbar = [[FLEXExplorerToolbar alloc] init];
-    CGSize toolbarSize = [self.explorerToolbar sizeThatFits:self.view.bounds.size];
+
     // Start the toolbar off below any bars that may be at the top of the view.
-
     id toolbarOriginYDefault = [[NSUserDefaults standardUserDefaults] objectForKey:kFLEXToolbarTopMarginDefaultsKey];
+    CGFloat toolbarOriginY = toolbarOriginYDefault ? [toolbarOriginYDefault doubleValue] : 100;
 
-    CGFloat toolbarOriginY;
-
-    if (toolbarOriginYDefault) {
-        toolbarOriginY = [toolbarOriginYDefault doubleValue];
-    } else {
-        toolbarOriginY = 100;
-
-        [[NSUserDefaults standardUserDefaults] setDouble:toolbarOriginY forKey:kFLEXToolbarTopMarginDefaultsKey];
-    }
-
-    self.explorerToolbar.frame = CGRectMake(0.0, toolbarOriginY, toolbarSize.width, toolbarSize.height);
+    CGRect safeArea = [self viewSafeArea];
+    CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea))];
+    [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(CGRectGetMinX(safeArea), toolbarOriginY, toolbarSize.width, toolbarSize.height)];
     self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.explorerToolbar];
     [self setupToolbarActions];
@@ -476,16 +468,24 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     CGRect newToolbarFrame = self.toolbarFrameBeforeDragging;
     newToolbarFrame.origin.y += translation.y;
     
-    CGFloat maxY = CGRectGetMaxY(self.view.bounds) - newToolbarFrame.size.height;
-    if (newToolbarFrame.origin.y < 0.0) {
-        newToolbarFrame.origin.y = 0.0;
-    } else if (newToolbarFrame.origin.y > maxY) {
-        newToolbarFrame.origin.y = maxY;
-    }
-    
-    self.explorerToolbar.frame = newToolbarFrame;
+    [self updateToolbarPositionWithUnconstrainedFrame:newToolbarFrame];
+}
 
-    [[NSUserDefaults standardUserDefaults] setDouble:newToolbarFrame.origin.y forKey:kFLEXToolbarTopMarginDefaultsKey];
+- (void)updateToolbarPositionWithUnconstrainedFrame:(CGRect)unconstrainedFrame
+{
+    CGRect safeArea = [self viewSafeArea];
+    // We only constrain the Y-axis because We want the toolbar to handle the X-axis safeArea layout by itself
+    CGFloat minY = CGRectGetMinY(safeArea);
+    CGFloat maxY = CGRectGetMaxY(safeArea) - unconstrainedFrame.size.height;
+    if (unconstrainedFrame.origin.y < minY) {
+        unconstrainedFrame.origin.y = minY;
+    } else if (unconstrainedFrame.origin.y > maxY) {
+        unconstrainedFrame.origin.y = maxY;
+    }
+
+    self.explorerToolbar.frame = unconstrainedFrame;
+
+    [[NSUserDefaults standardUserDefaults] setDouble:unconstrainedFrame.origin.y forKey:kFLEXToolbarTopMarginDefaultsKey];
 }
 
 - (void)handleToolbarHintTapGesture:(UITapGestureRecognizer *)tapGR
@@ -688,6 +688,33 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     newSelectedViewFrame.origin.y = FLEXFloor(newSelectedViewFrame.origin.y + translation.y);
     self.selectedView.frame = newSelectedViewFrame;
 }
+
+
+#pragma mark - Safe Area Handling
+
+- (CGRect)viewSafeArea
+{
+    CGRect safeArea = self.view.bounds;
+#if FLEX_AT_LEAST_IOS11_SDK
+    if (@available(iOS 11, *)) {
+        safeArea = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
+    }
+#endif
+    return safeArea;
+}
+
+#if FLEX_AT_LEAST_IOS11_SDK
+- (void)viewSafeAreaInsetsDidChange
+{
+  if (@available(iOS 11, *)) {
+    [super viewSafeAreaInsetsDidChange];
+  }
+
+  CGRect safeArea = [self viewSafeArea];
+  CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea))];
+  [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(CGRectGetMinX(self.explorerToolbar.frame), CGRectGetMinY(self.explorerToolbar.frame), toolbarSize.width, toolbarSize.height)];
+}
+#endif
 
 
 #pragma mark - Touch Handling

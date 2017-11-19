@@ -6,11 +6,15 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#import <Availability.h>
+#import <AvailabilityInternal.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
 #define FLEXFloor(x) (floor([[UIScreen mainScreen] scale] * (x)) / [[UIScreen mainScreen] scale])
+
+#define FLEX_AT_LEAST_IOS11_SDK defined(__IPHONE_11_0) && (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0)
 
 @interface FLEXUtility : NSObject
 
