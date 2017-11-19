@@ -43,7 +43,7 @@
 
 #pragma mark - Display Defaults
 
-+ (NSDictionary *)titleAttributes
++ (NSDictionary<NSString *, id> *)titleAttributes
 {
     return @{NSFontAttributeName : [FLEXUtility defaultFontOfSize:12.0]};
 }

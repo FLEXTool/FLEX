@@ -86,23 +86,24 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
 }
 
 
-- (NSArray *)queryAllTables
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables
 {
     return [self executeQuery:QUERY_TABLENAMES_SQL];
 }
 
-- (NSArray *)queryAllColumnsWithTableName:(NSString *)tableName
+- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName
 {
     NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info('%@')",tableName];
-    NSArray *resultArray =  [self executeQuery:sql];
-    NSMutableArray *array = [NSMutableArray array];
-    for (NSDictionary *dict in resultArray) {
-        [array addObject:dict[@"name"]];
+    NSArray<NSDictionary<NSString *, id> *> *resultArray =  [self executeQuery:sql];
+    NSMutableArray<NSString *> *array = [NSMutableArray array];
+    for (NSDictionary<NSString *, id> *dict in resultArray) {
+        NSString *columnName = (NSString *)dict[@"name"] ?: @"";
+        [array addObject:columnName];
     }
     return array;
 }
 
-- (NSArray *)queryAllDataWithTableName:(NSString *)tableName
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName
 {
     NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@",tableName];
     return [self executeQuery:sql];
@@ -111,16 +112,16 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
 #pragma mark -
 #pragma mark - Private
 
-- (NSArray *)executeQuery:(NSString *)sql
+- (NSArray<NSDictionary<NSString *, id> *> *)executeQuery:(NSString *)sql
 {
     [self open];
-    NSMutableArray *resultArray = [NSMutableArray array];
+    NSMutableArray<NSDictionary<NSString *, id> *> *resultArray = [NSMutableArray array];
     sqlite3_stmt *pstmt;
     if (sqlite3_prepare_v2(_db, [sql UTF8String], -1, &pstmt, 0) == SQLITE_OK) {
         while (sqlite3_step(pstmt) == SQLITE_ROW) {
             NSUInteger num_cols = (NSUInteger)sqlite3_data_count(pstmt);
             if (num_cols > 0) {
-                NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:num_cols];
+                NSMutableDictionary<NSString *, id> *dict = [NSMutableDictionary dictionaryWithCapacity:num_cols];
                 
                 int columnCount = sqlite3_column_count(pstmt);
                 

@@ -57,9 +57,9 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     return rowCookies;
 }
 
-- (NSArray *)shortcutPropertyNames
+- (NSArray<NSString *> *)shortcutPropertyNames
 {
-    NSArray *propertyNames = @[@"frame", @"bounds", @"center", @"transform", @"backgroundColor", @"alpha", @"opaque", @"hidden", @"clipsToBounds", @"userInteractionEnabled", @"layer"];
+    NSArray<NSString *> *propertyNames = @[@"frame", @"bounds", @"center", @"transform", @"backgroundColor", @"alpha", @"opaque", @"hidden", @"clipsToBounds", @"userInteractionEnabled", @"layer"];
     
     if ([self.viewToExplore isKindOfClass:[UILabel class]]) {
         propertyNames = [@[@"text", @"font", @"textColor"] arrayByAddingObjectsFromArray:propertyNames];
@@ -195,22 +195,22 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     // We add these properties to the class at runtime if they haven't been added yet.
     // This way, we can use our property editor to access and change them.
     // The property attributes match the declared attributes in UIView.h
-    NSDictionary *frameAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGRect)), kFLEXUtilityAttributeNonAtomic : @""};
+    NSDictionary<NSString *, NSString *> *frameAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGRect)), kFLEXUtilityAttributeNonAtomic : @""};
     [FLEXRuntimeUtility tryAddPropertyWithName:"frame" attributes:frameAttributes toClass:[UIView class]];
     
-    NSDictionary *alphaAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGFloat)), kFLEXUtilityAttributeNonAtomic : @""};
+    NSDictionary<NSString *, NSString *> *alphaAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGFloat)), kFLEXUtilityAttributeNonAtomic : @""};
     [FLEXRuntimeUtility tryAddPropertyWithName:"alpha" attributes:alphaAttributes toClass:[UIView class]];
     
-    NSDictionary *clipsAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @""};
+    NSDictionary<NSString *, NSString *> *clipsAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @""};
     [FLEXRuntimeUtility tryAddPropertyWithName:"clipsToBounds" attributes:clipsAttributes toClass:[UIView class]];
     
-    NSDictionary *opaqueAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isOpaque"};
+    NSDictionary<NSString *, NSString *> *opaqueAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isOpaque"};
     [FLEXRuntimeUtility tryAddPropertyWithName:"opaque" attributes:opaqueAttributes toClass:[UIView class]];
     
-    NSDictionary *hiddenAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isHidden"};
+    NSDictionary<NSString *, NSString *> *hiddenAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isHidden"};
     [FLEXRuntimeUtility tryAddPropertyWithName:"hidden" attributes:hiddenAttributes toClass:[UIView class]];
     
-    NSDictionary *backgroundColorAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(FLEXEncodeClass(UIColor)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCopy : @""};
+    NSDictionary<NSString *, NSString *> *backgroundColorAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(FLEXEncodeClass(UIColor)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCopy : @""};
     [FLEXRuntimeUtility tryAddPropertyWithName:"backgroundColor" attributes:backgroundColorAttributes toClass:[UIView class]];
 }
 

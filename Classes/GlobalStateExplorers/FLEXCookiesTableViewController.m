@@ -12,7 +12,7 @@
 
 @interface FLEXCookiesTableViewController ()
 
-@property (nonatomic, strong) NSArray *cookies;
+@property (nonatomic, strong) NSArray<NSHTTPCookie *> *cookies;
 
 @end
 
@@ -25,7 +25,7 @@
         self.title = @"Cookies";
 
         NSSortDescriptor *nameSortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
-        _cookies =[[NSHTTPCookieStorage sharedHTTPCookieStorage].cookies sortedArrayUsingDescriptors:@[nameSortDescriptor]];
+        _cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage].cookies sortedArrayUsingDescriptors:@[nameSortDescriptor]];
     }
     
     return self;

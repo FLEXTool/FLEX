@@ -11,7 +11,7 @@
 
 @interface FLEXArgumentInputFontsPickerView ()
 
-@property (nonatomic, strong) NSMutableArray *availableFonts;
+@property (nonatomic, strong) NSMutableArray<NSString *> *availableFonts;
 
 @end
 
@@ -35,7 +35,7 @@
     if ([self.availableFonts indexOfObject:inputValue] == NSNotFound) {
         [self.availableFonts insertObject:inputValue atIndex:0];
     }
-    [(UIPickerView*)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue] inComponent:0 animated:NO];
+    [(UIPickerView *)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue] inComponent:0 animated:NO];
 }
 
 - (id)inputValue
@@ -56,7 +56,7 @@
 
 - (void)createAvailableFonts
 {
-    NSMutableArray *unsortedFontsArray = [NSMutableArray array];
+    NSMutableArray<NSString *> *unsortedFontsArray = [NSMutableArray array];
     for (NSString *eachFontFamily in [UIFont familyNames]) {
         for (NSString *eachFontName in [UIFont fontNamesForFamilyName:eachFontFamily]) {
             [unsortedFontsArray addObject:eachFontName];
@@ -90,7 +90,7 @@
         fontLabel = (UILabel*)view;
     }
     UIFont *font = [UIFont fontWithName:self.availableFonts[row] size:15.0];
-    NSDictionary *attributesDictionary = [NSDictionary dictionaryWithObject:font forKey:NSFontAttributeName];
+    NSDictionary<NSString *, id> *attributesDictionary = [NSDictionary<NSString *, id> dictionaryWithObject:font forKey:NSFontAttributeName];
     NSAttributedString *attributesString = [[NSAttributedString alloc] initWithString:self.availableFonts[row] attributes:attributesDictionary];
     fontLabel.attributedText = attributesString;
     [fontLabel sizeToFit];

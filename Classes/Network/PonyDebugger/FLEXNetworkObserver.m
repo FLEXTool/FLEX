@@ -68,7 +68,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 @interface FLEXNetworkObserver ()
 
-@property (nonatomic, strong) NSMutableDictionary *requestStatesForRequestIDs;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, FLEXInternalRequestState *> *requestStatesForRequestIDs;
 @property (nonatomic, strong) dispatch_queue_t queue;
 
 @end
@@ -995,7 +995,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 {
     [self performBlock:^{
         // Mimic the behavior of NSURLSession which is to create an error on cancellation.
-        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : @"cancelled" };
+        NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : @"cancelled" };
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorCancelled userInfo:userInfo];
         [self connection:connection didFailWithError:error delegate:nil];
     }];

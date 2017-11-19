@@ -18,9 +18,9 @@
 
 @interface FLEXTableContentCell : UITableViewCell
 
-@property (nonatomic, strong)NSArray *labels;
+@property (nonatomic, strong) NSArray<UILabel *> *labels;
 
-@property (nonatomic, weak) id<FLEXTableContentCellDelegate>delegate;
+@property (nonatomic, weak) id<FLEXTableContentCellDelegate> delegate;
 
 + (instancetype)cellWithTableView:(UITableView *)tableView columnNumber:(NSInteger)number;
 

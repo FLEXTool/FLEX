@@ -20,10 +20,10 @@
     NSString *_databasePath;
 }
 
-@property (nonatomic, strong) NSArray *tables;
+@property (nonatomic, strong) NSArray<NSString *> *tables;
 
-+ (NSArray *)supportedSQLiteExtensions;
-+ (NSArray *)supportedRealmExtensions;
++ (NSArray<NSString *> *)supportedSQLiteExtensions;
++ (NSArray<NSString *> *)supportedRealmExtensions;
 
 @end
 
@@ -45,12 +45,12 @@
 {
     NSString *pathExtension = path.pathExtension.lowercaseString;
     
-    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    NSArray<NSString *> *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
     if ([sqliteExtensions indexOfObject:pathExtension] != NSNotFound) {
         return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
     }
     
-    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    NSArray<NSString *> *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
     if (realmExtensions != nil && [realmExtensions indexOfObject:pathExtension] != NSNotFound) {
         return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
     }
@@ -60,10 +60,11 @@
 
 - (void)getAllTables
 {
-    NSArray *resultArray = [_dbm queryAllTables];
-    NSMutableArray *array = [NSMutableArray array];
-    for (NSDictionary *dict in resultArray) {
-        [array addObject:dict[@"name"]];
+    NSArray<NSDictionary<NSString *, id> *> *resultArray = [_dbm queryAllTables];
+    NSMutableArray<NSString *> *array = [NSMutableArray array];
+    for (NSDictionary<NSString *, id> *dict in resultArray) {
+        NSString *columnName = (NSString *)dict[@"name"] ?: @"";
+        [array addObject:columnName];
     }
     self.tables = array;
 }
@@ -106,12 +107,12 @@
 {
     extension = extension.lowercaseString;
     
-    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    NSArray<NSString *> *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
     if (sqliteExtensions.count > 0 && [sqliteExtensions indexOfObject:extension] != NSNotFound) {
         return YES;
     }
     
-    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    NSArray<NSString *> *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
     if (realmExtensions.count > 0 && [realmExtensions indexOfObject:extension] != NSNotFound) {
         return YES;
     }
@@ -119,12 +120,12 @@
     return NO;
 }
 
-+ (NSArray *)supportedSQLiteExtensions
++ (NSArray<NSString *> *)supportedSQLiteExtensions
 {
     return @[@"db", @"sqlite", @"sqlite3"];
 }
 
-+ (NSArray *)supportedRealmExtensions
++ (NSArray<NSString *> *)supportedRealmExtensions
 {
     if (NSClassFromString(@"RLMRealm") == nil) {
         return nil;

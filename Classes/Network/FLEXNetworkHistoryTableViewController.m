@@ -17,9 +17,9 @@
 @interface FLEXNetworkHistoryTableViewController () <UISearchResultsUpdating, UISearchControllerDelegate>
 
 /// Backing model
-@property (nonatomic, copy) NSArray *networkTransactions;
+@property (nonatomic, copy) NSArray<FLEXNetworkTransaction *> *networkTransactions;
 @property (nonatomic, assign) long long bytesReceived;
-@property (nonatomic, copy) NSArray *filteredNetworkTransactions;
+@property (nonatomic, copy) NSArray<FLEXNetworkTransaction *> *filteredNetworkTransactions;
 @property (nonatomic, assign) long long filteredBytesReceived;
 
 @property (nonatomic, assign) BOOL rowInsertInProgress;
@@ -90,7 +90,7 @@
     self.networkTransactions = [[FLEXNetworkRecorder defaultRecorder] networkTransactions];
 }
 
-- (void)setNetworkTransactions:(NSArray *)networkTransactions
+- (void)setNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)networkTransactions
 {
     if (![_networkTransactions isEqual:networkTransactions]) {
         _networkTransactions = networkTransactions;
@@ -109,7 +109,7 @@
     [self updateFirstSectionHeader];
 }
 
-- (void)setFilteredNetworkTransactions:(NSArray *)filteredNetworkTransactions
+- (void)setFilteredNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)filteredNetworkTransactions
 {
     if (![_filteredNetworkTransactions isEqual:filteredNetworkTransactions]) {
         _filteredNetworkTransactions = filteredNetworkTransactions;
@@ -196,7 +196,7 @@
                 [self tryUpdateTransactions];
             }];
 
-            NSMutableArray *indexPathsToReload = [NSMutableArray array];
+            NSMutableArray<NSIndexPath *> *indexPathsToReload = [NSMutableArray array];
             for (NSInteger row = 0; row < addedRowCount; row++) {
                 [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
             }
@@ -332,7 +332,7 @@
 {
     NSString *searchString = self.searchController.searchBar.text;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSArray *filteredNetworkTransactions = [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary *bindings) {
+        NSArray<FLEXNetworkTransaction *> *filteredNetworkTransactions = [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary<NSString *, id> *bindings) {
             return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
         }]];
         dispatch_async(dispatch_get_main_queue(), ^{

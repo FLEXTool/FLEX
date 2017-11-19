@@ -74,12 +74,12 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
 + (NSAttributedString *)attributedTextForLogMessage:(FLEXSystemLogMessage *)logMessage highlightedText:(NSString *)highlightedText
 {
     NSString *text = [self displayedTextForLogMessage:logMessage];
-    NSDictionary *attributes = @{ NSFontAttributeName : [UIFont fontWithName:@"CourierNewPSMT" size:12.0] };
+    NSDictionary<NSString *, id> *attributes = @{ NSFontAttributeName : [UIFont fontWithName:@"CourierNewPSMT" size:12.0] };
     NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:attributes];
 
     if ([highlightedText length] > 0) {
         NSMutableAttributedString *mutableAttributedText = [attributedText mutableCopy];
-        NSMutableDictionary *highlightAttributes = [@{ NSBackgroundColorAttributeName : [UIColor yellowColor] } mutableCopy];
+        NSMutableDictionary<NSString *, id> *highlightAttributes = [@{ NSBackgroundColorAttributeName : [UIColor yellowColor] } mutableCopy];
         [highlightAttributes addEntriesFromDictionary:attributes];
         
         NSRange remainingSearchRange = NSMakeRange(0, text.length);

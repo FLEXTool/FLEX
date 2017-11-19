@@ -13,7 +13,7 @@
 
 @interface FLEXNetworkSettingsTableViewController () <UIActionSheetDelegate>
 
-@property (nonatomic, copy) NSArray *cells;
+@property (nonatomic, copy) NSArray<UITableViewCell *> *cells;
 
 @property (nonatomic, strong) UITableViewCell *cacheLimitCell;
 
@@ -34,7 +34,7 @@
 {
     [super viewDidLoad];
 
-    NSMutableArray *mutableCells = [NSMutableArray array];
+    NSMutableArray<UITableViewCell *> *mutableCells = [NSMutableArray array];
 
     UITableViewCell *networkDebuggingCell = [self switchCellWithTitle:@"Network Debugging" toggleAction:@selector(networkDebuggingToggled:) isOn:[FLEXNetworkObserver isEnabled]];
     [mutableCells addObject:networkDebuggingCell];

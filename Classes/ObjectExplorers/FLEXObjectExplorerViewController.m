@@ -41,24 +41,24 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 @interface FLEXObjectExplorerViewController () <UISearchBarDelegate>
 
-@property (nonatomic, strong) NSArray *properties;
-@property (nonatomic, strong) NSArray *inheritedProperties;
-@property (nonatomic, strong) NSArray *filteredProperties;
+@property (nonatomic, strong) NSArray<FLEXPropertyBox *> *properties;
+@property (nonatomic, strong) NSArray<FLEXPropertyBox *> *inheritedProperties;
+@property (nonatomic, strong) NSArray<FLEXPropertyBox *> *filteredProperties;
 
-@property (nonatomic, strong) NSArray *ivars;
-@property (nonatomic, strong) NSArray *inheritedIvars;
-@property (nonatomic, strong) NSArray *filteredIvars;
+@property (nonatomic, strong) NSArray<FLEXIvarBox *> *ivars;
+@property (nonatomic, strong) NSArray<FLEXIvarBox *> *inheritedIvars;
+@property (nonatomic, strong) NSArray<FLEXIvarBox *> *filteredIvars;
 
-@property (nonatomic, strong) NSArray *methods;
-@property (nonatomic, strong) NSArray *inheritedMethods;
-@property (nonatomic, strong) NSArray *filteredMethods;
+@property (nonatomic, strong) NSArray<FLEXMethodBox *> *methods;
+@property (nonatomic, strong) NSArray<FLEXMethodBox *> *inheritedMethods;
+@property (nonatomic, strong) NSArray<FLEXMethodBox *> *filteredMethods;
 
-@property (nonatomic, strong) NSArray *classMethods;
-@property (nonatomic, strong) NSArray *inheritedClassMethods;
-@property (nonatomic, strong) NSArray *filteredClassMethods;
+@property (nonatomic, strong) NSArray<FLEXMethodBox *> *classMethods;
+@property (nonatomic, strong) NSArray<FLEXMethodBox *> *inheritedClassMethods;
+@property (nonatomic, strong) NSArray<FLEXMethodBox *> *filteredClassMethods;
 
-@property (nonatomic, strong) NSArray *superclasses;
-@property (nonatomic, strong) NSArray *filteredSuperclasses;
+@property (nonatomic, strong) NSArray<Class> *superclasses;
+@property (nonatomic, strong) NSArray<Class> *filteredSuperclasses;
 
 @property (nonatomic, strong) NSArray *cachedCustomSectionRowCookies;
 @property (nonatomic, strong) NSIndexSet *customSectionVisibleIndexes;
@@ -218,9 +218,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     self.inheritedProperties = [[self class] inheritedPropertiesForClass:class];
 }
 
-+ (NSArray *)propertiesForClass:(Class)class
++ (NSArray<FLEXPropertyBox *> *)propertiesForClass:(Class)class
 {
-    NSMutableArray *boxedProperties = [NSMutableArray array];
+    NSMutableArray<FLEXPropertyBox *> *boxedProperties = [NSMutableArray array];
     unsigned int propertyCount = 0;
     objc_property_t *propertyList = class_copyPropertyList(class, &propertyCount);
     if (propertyList) {
@@ -234,9 +234,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     return boxedProperties;
 }
 
-+ (NSArray *)inheritedPropertiesForClass:(Class)class
++ (NSArray<FLEXPropertyBox *> *)inheritedPropertiesForClass:(Class)class
 {
-    NSMutableArray *inheritedProperties = [NSMutableArray array];
+    NSMutableArray<FLEXPropertyBox *> *inheritedProperties = [NSMutableArray array];
     while ((class = [class superclass])) {
         [inheritedProperties addObjectsFromArray:[self propertiesForClass:class]];
     }
@@ -245,14 +245,14 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (void)updateFilteredProperties
 {
-    NSArray *candidateProperties = self.properties;
+    NSArray<FLEXPropertyBox *> *candidateProperties = self.properties;
     if (self.includeInheritance) {
         candidateProperties = [candidateProperties arrayByAddingObjectsFromArray:self.inheritedProperties];
     }
     
-    NSArray *unsortedFilteredProperties = nil;
+    NSArray<FLEXPropertyBox *> *unsortedFilteredProperties = nil;
     if ([self.filterText length] > 0) {
-        NSMutableArray *mutableUnsortedFilteredProperties = [NSMutableArray array];
+        NSMutableArray<FLEXPropertyBox *> *mutableUnsortedFilteredProperties = [NSMutableArray array];
         for (FLEXPropertyBox *propertyBox in candidateProperties) {
             NSString *prettyName = [FLEXRuntimeUtility prettyNameForProperty:propertyBox.property];
             if ([prettyName rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
@@ -297,9 +297,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     self.inheritedIvars = [[self class] inheritedIvarsForClass:class];
 }
 
-+ (NSArray *)ivarsForClass:(Class)class
++ (NSArray<FLEXIvarBox *> *)ivarsForClass:(Class)class
 {
-    NSMutableArray *boxedIvars = [NSMutableArray array];
+    NSMutableArray<FLEXIvarBox *> *boxedIvars = [NSMutableArray array];
     unsigned int ivarCount = 0;
     Ivar *ivarList = class_copyIvarList(class, &ivarCount);
     if (ivarList) {
@@ -313,9 +313,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     return boxedIvars;
 }
 
-+ (NSArray *)inheritedIvarsForClass:(Class)class
++ (NSArray<FLEXIvarBox *> *)inheritedIvarsForClass:(Class)class
 {
-    NSMutableArray *inheritedIvars = [NSMutableArray array];
+    NSMutableArray<FLEXIvarBox *> *inheritedIvars = [NSMutableArray array];
     while ((class = [class superclass])) {
         [inheritedIvars addObjectsFromArray:[self ivarsForClass:class]];
     }
@@ -324,14 +324,14 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 - (void)updateFilteredIvars
 {
-    NSArray *candidateIvars = self.ivars;
+    NSArray<FLEXIvarBox *> *candidateIvars = self.ivars;
     if (self.includeInheritance) {
         candidateIvars = [candidateIvars arrayByAddingObjectsFromArray:self.inheritedIvars];
     }
     
-    NSArray *unsortedFilteredIvars = nil;
+    NSArray<FLEXIvarBox *> *unsortedFilteredIvars = nil;
     if ([self.filterText length] > 0) {
-        NSMutableArray *mutableUnsortedFilteredIvars = [NSMutableArray array];
+        NSMutableArray<FLEXIvarBox *> *mutableUnsortedFilteredIvars = [NSMutableArray array];
         for (FLEXIvarBox *ivarBox in candidateIvars) {
             NSString *prettyName = [FLEXRuntimeUtility prettyNameForIvar:ivarBox.ivar];
             if ([prettyName rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
@@ -394,9 +394,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     self.filteredClassMethods = [self filteredMethodsFromMethods:self.classMethods inheritedMethods:self.inheritedClassMethods areClassMethods:YES];
 }
 
-+ (NSArray *)methodsForClass:(Class)class
++ (NSArray<FLEXMethodBox *> *)methodsForClass:(Class)class
 {
-    NSMutableArray *boxedMethods = [NSMutableArray array];
+    NSMutableArray<FLEXMethodBox *> *boxedMethods = [NSMutableArray array];
     unsigned int methodCount = 0;
     Method *methodList = class_copyMethodList(class, &methodCount);
     if (methodList) {
@@ -410,25 +410,25 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     return boxedMethods;
 }
 
-+ (NSArray *)inheritedMethodsForClass:(Class)class
++ (NSArray<FLEXMethodBox *> *)inheritedMethodsForClass:(Class)class
 {
-    NSMutableArray *inheritedMethods = [NSMutableArray array];
+    NSMutableArray<FLEXMethodBox *> *inheritedMethods = [NSMutableArray array];
     while ((class = [class superclass])) {
         [inheritedMethods addObjectsFromArray:[self methodsForClass:class]];
     }
     return inheritedMethods;
 }
 
-- (NSArray *)filteredMethodsFromMethods:(NSArray *)methods inheritedMethods:(NSArray *)inheritedMethods areClassMethods:(BOOL)areClassMethods
+- (NSArray<FLEXMethodBox *> *)filteredMethodsFromMethods:(NSArray<FLEXMethodBox *> *)methods inheritedMethods:(NSArray<FLEXMethodBox *> *)inheritedMethods areClassMethods:(BOOL)areClassMethods
 {
-    NSArray *candidateMethods = methods;
+    NSArray<FLEXMethodBox *> *candidateMethods = methods;
     if (self.includeInheritance) {
         candidateMethods = [candidateMethods arrayByAddingObjectsFromArray:inheritedMethods];
     }
     
-    NSArray *unsortedFilteredMethods = nil;
+    NSArray<FLEXMethodBox *> *unsortedFilteredMethods = nil;
     if ([self.filterText length] > 0) {
-        NSMutableArray *mutableUnsortedFilteredMethods = [NSMutableArray array];
+        NSMutableArray<FLEXMethodBox *> *mutableUnsortedFilteredMethods = [NSMutableArray array];
         for (FLEXMethodBox *methodBox in candidateMethods) {
             NSString *prettyName = [FLEXRuntimeUtility prettyNameForMethod:methodBox.method isClassMethod:areClassMethods];
             if ([prettyName rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
@@ -440,7 +440,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
         unsortedFilteredMethods = candidateMethods;
     }
     
-    NSArray *sortedFilteredMethods = [unsortedFilteredMethods sortedArrayUsingComparator:^NSComparisonResult(FLEXMethodBox *methodBox1, FLEXMethodBox *methodBox2) {
+    NSArray<FLEXMethodBox *> *sortedFilteredMethods = [unsortedFilteredMethods sortedArrayUsingComparator:^NSComparisonResult(FLEXMethodBox *methodBox1, FLEXMethodBox *methodBox2) {
         NSString *name1 = NSStringFromSelector(method_getName(methodBox1.method));
         NSString *name2 = NSStringFromSelector(method_getName(methodBox2.method));
         return [name1 caseInsensitiveCompare:name2];
@@ -464,9 +464,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 #pragma mark - Superclasses
 
-+ (NSArray *)superclassesForClass:(Class)class
++ (NSArray<Class> *)superclassesForClass:(Class)class
 {
-    NSMutableArray *superClasses = [NSMutableArray array];
+    NSMutableArray<Class> *superClasses = [NSMutableArray array];
     while ((class = [class superclass])) {
         [superClasses addObject:class];
     }
@@ -481,7 +481,7 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 - (void)updateFilteredSuperclasses
 {
     if ([self.filterText length] > 0) {
-        NSMutableArray *filteredSuperclasses = [NSMutableArray array];
+        NSMutableArray<Class> *filteredSuperclasses = [NSMutableArray array];
         for (Class superclass in self.superclasses) {
             if ([NSStringFromClass(superclass) rangeOfString:self.filterText options:NSCaseInsensitiveSearch].length > 0) {
                 [filteredSuperclasses addObject:superclass];
@@ -496,9 +496,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
 
 #pragma mark - Table View Data Helpers
 
-- (NSArray *)possibleExplorerSections
+- (NSArray<NSNumber *> *)possibleExplorerSections
 {
-    static NSArray *possibleSections = nil;
+    static NSArray<NSNumber *> *possibleSections = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         possibleSections = @[@(FLEXObjectExplorerSectionDescription),
@@ -513,9 +513,9 @@ static const NSInteger kFLEXObjectExplorerScopeIncludeInheritanceIndex = 1;
     return possibleSections;
 }
 
-- (NSArray *)visibleExplorerSections
+- (NSArray<NSNumber *> *)visibleExplorerSections
 {
-    NSMutableArray *visibleSections = [NSMutableArray array];
+    NSMutableArray<NSNumber *> *visibleSections = [NSMutableArray array];
     
     for (NSNumber *possibleSection in [self possibleExplorerSections]) {
         FLEXObjectExplorerSection explorerSection = [possibleSection unsignedIntegerValue];

@@ -33,7 +33,7 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 // Accessing recorded network activity
 
 /// Array of FLEXNetworkTransaction objects ordered by start time with the newest first.
-- (NSArray *)networkTransactions;
+- (NSArray<FLEXNetworkTransaction *> *)networkTransactions;
 
 /// The full response data IFF it hasn't been purged due to memory pressure.
 - (NSData *)cachedResponseBodyForTransaction:(FLEXNetworkTransaction *)transaction;

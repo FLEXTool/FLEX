@@ -57,12 +57,12 @@
 
 - (NSString *)description
 {
-    NSDictionary *keyMappings = @{ UIKeyInputUpArrow : @"↑",
-                                   UIKeyInputDownArrow : @"↓",
-                                   UIKeyInputLeftArrow : @"←",
-                                   UIKeyInputRightArrow : @"→",
-                                   UIKeyInputEscape : @"␛",
-                                   @" " : @"␠"};
+    NSDictionary<NSString *, NSString *> *keyMappings = @{ UIKeyInputUpArrow : @"↑",
+                                                           UIKeyInputDownArrow : @"↓",
+                                                           UIKeyInputLeftArrow : @"←",
+                                                           UIKeyInputRightArrow : @"→",
+                                                           UIKeyInputEscape : @"␛",
+                                                           @" " : @"␠"};
     
     NSString *prettyKey = nil;
     if (self.key && keyMappings[self.key]) {
@@ -113,7 +113,7 @@
 
 @interface FLEXKeyboardShortcutManager ()
 
-@property (nonatomic, strong) NSMutableDictionary *actionsForKeyInputs;
+@property (nonatomic, strong) NSMutableDictionary<FLEXKeyInput *, dispatch_block_t> *actionsForKeyInputs;
 
 @property (nonatomic, assign, getter=isPressingShift) BOOL pressingShift;
 @property (nonatomic, assign, getter=isPressingCommand) BOOL pressingCommand;
@@ -292,7 +292,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
 - (NSString *)keyboardShortcutsDescription
 {
     NSMutableString *description = [NSMutableString string];
-    NSArray *keyInputs = [[self.actionsForKeyInputs allKeys] sortedArrayUsingComparator:^NSComparisonResult(FLEXKeyInput *_Nonnull input1, FLEXKeyInput *_Nonnull input2) {
+    NSArray<FLEXKeyInput *> *keyInputs = [[self.actionsForKeyInputs allKeys] sortedArrayUsingComparator:^NSComparisonResult(FLEXKeyInput *_Nonnull input1, FLEXKeyInput *_Nonnull input2) {
         return [input1.key caseInsensitiveCompare:input2.key];
     }];
     for (FLEXKeyInput *keyInput in keyInputs) {

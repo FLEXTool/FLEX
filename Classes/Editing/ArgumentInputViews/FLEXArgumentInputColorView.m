@@ -228,7 +228,7 @@
     CGFloat hexLabelOriginY = CGRectGetMaxY(self.colorPreviewBox.frame) - self.colorPreviewBox.layer.borderWidth - self.hexLabel.frame.size.height;
     self.hexLabel.frame = CGRectMake(hexLabelOriginX, hexLabelOriginY, self.hexLabel.frame.size.width, self.hexLabel.frame.size.height);
     
-    NSArray *colorComponentInputViews = @[self.alphaInput, self.redInput, self.greenInput, self.blueInput];
+    NSArray<FLEXColorComponentInputView *> *colorComponentInputViews = @[self.alphaInput, self.redInput, self.greenInput, self.blueInput];
     for (FLEXColorComponentInputView *inputView in colorComponentInputViews) {
         CGSize fitSize = [inputView sizeThatFits:constrainSize];
         inputView.frame = CGRectMake(0, runningOriginY, fitSize.width, fitSize.height);

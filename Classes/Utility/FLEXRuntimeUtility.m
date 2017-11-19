@@ -48,7 +48,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)typeEncodingForProperty:(objc_property_t)property
 {
-    NSDictionary *attributesDictionary = [self attributesDictionaryForProperty:property];
+    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesDictionaryForProperty:property];
     return attributesDictionary[kFLEXUtilityAttributeTypeEncoding];
 }
 
@@ -73,8 +73,8 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)fullDescriptionForProperty:(objc_property_t)property
 {
-    NSDictionary *attributesDictionary = [self attributesDictionaryForProperty:property];
-    NSMutableArray *attributesStrings = [NSMutableArray array];
+    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesDictionaryForProperty:property];
+    NSMutableArray<NSString *> *attributesStrings = [NSMutableArray array];
     
     // Atomicity
     if (attributesDictionary[kFLEXUtilityAttributeNonAtomic]) {
@@ -168,7 +168,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return description;
 }
 
-+ (void)tryAddPropertyWithName:(const char *)name attributes:(NSDictionary *)attributePairs toClass:(__unsafe_unretained Class)theClass
++ (void)tryAddPropertyWithName:(const char *)name attributes:(NSDictionary<NSString *, NSString *> *)attributePairs toClass:(__unsafe_unretained Class)theClass
 {
     objc_property_t property = class_getProperty(theClass, name);
     if (!property) {
@@ -262,7 +262,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSString *readableReturnType = [self readableTypeForEncoding:@(returnType)];
     free(returnType);
     NSString *prettyName = [NSString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
-    NSArray *components = [self prettyArgumentComponentsForMethod:method];
+    NSArray<NSString *> *components = [self prettyArgumentComponentsForMethod:method];
     if ([components count] > 0) {
         prettyName = [prettyName stringByAppendingString:[components componentsJoinedByString:@" "]];
     } else {
@@ -272,12 +272,12 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return prettyName;
 }
 
-+ (NSArray *)prettyArgumentComponentsForMethod:(Method)method
++ (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method
 {
-    NSMutableArray *components = [NSMutableArray array];
+    NSMutableArray<NSString *> *components = [NSMutableArray array];
     
     NSString *selectorName = NSStringFromSelector(method_getName(method));
-    NSMutableArray *selectorComponents = [[selectorName componentsSeparatedByString:@":"] mutableCopy];
+    NSMutableArray<NSString *> *selectorComponents = [[selectorName componentsSeparatedByString:@":"] mutableCopy];
     
     // this is a workaround cause method_getNumberOfArguments() returns wrong number for some methods
     if (selectorComponents.count == 1) {
@@ -307,7 +307,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // Bail if the object won't respond to this selector.
     if (![object respondsToSelector:selector]) {
         if (error) {
-            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@ does not respond to the selector %@", object, NSStringFromSelector(selector)]};
+            NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@ does not respond to the selector %@", object, NSStringFromSelector(selector)]};
             *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector userInfo:userInfo];
         }
         return nil;
@@ -343,7 +343,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 // Ensure that the type encoding on the NSValue matches the type encoding of the argument in the method signature
                 if (strcmp([argumentValue objCType], typeEncodingCString) != 0) {
                     if (error) {
-                        NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Type encoding mismatch for agrument at index %lu. Value type: %s; Method argument type: %s.", (unsigned long)argumentsArrayIndex, [argumentValue objCType], typeEncodingCString]};
+                        NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Type encoding mismatch for agrument at index %lu. Value type: %s; Method argument type: %s.", (unsigned long)argumentsArrayIndex, [argumentValue objCType], typeEncodingCString]};
                         *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch userInfo:userInfo];
                     }
                     return nil;
@@ -375,7 +375,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     } @catch (NSException *exception) {
         // Bummer...
         if (error) {
-            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Exception thrown while performing selector %@ on object %@", NSStringFromSelector(selector), object]};
+            NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Exception thrown while performing selector %@ on object %@", NSStringFromSelector(selector), object]};
             *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeInvocationFailed userInfo:userInfo];
         }
     }
@@ -558,12 +558,12 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Internal Helpers
 
-+ (NSDictionary *)attributesDictionaryForProperty:(objc_property_t)property
++ (NSDictionary<NSString *, NSString *> *)attributesDictionaryForProperty:(objc_property_t)property
 {
     NSString *attributes = @(property_getAttributes(property));
     // Thanks to MAObjcRuntime for inspiration here.
-    NSArray *attributePairs = [attributes componentsSeparatedByString:@","];
-    NSMutableDictionary *attributesDictionary = [NSMutableDictionary dictionaryWithCapacity:[attributePairs count]];
+    NSArray<NSString *> *attributePairs = [attributes componentsSeparatedByString:@","];
+    NSMutableDictionary<NSString *, NSString *> *attributesDictionary = [NSMutableDictionary dictionaryWithCapacity:[attributePairs count]];
     for (NSString *attributePair in attributePairs) {
         [attributesDictionary setObject:[attributePair substringFromIndex:1] forKey:[attributePair substringToIndex:1]];
     }

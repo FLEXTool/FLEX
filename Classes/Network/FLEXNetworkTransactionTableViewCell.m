@@ -111,7 +111,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 - (NSString *)pathLabelText
 {
     NSURL *url = self.transaction.request.URL;
-    NSMutableArray *mutablePathComponents = [[url pathComponents] mutableCopy];
+    NSMutableArray<NSString *> *mutablePathComponents = [[url pathComponents] mutableCopy];
     if ([mutablePathComponents count] > 0) {
         [mutablePathComponents removeLastObject];
     }
@@ -124,7 +124,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 
 - (NSString *)transactionDetailsLabelText
 {
-    NSMutableArray *detailComponents = [NSMutableArray array];
+    NSMutableArray<NSString *> *detailComponents = [NSMutableArray array];
 
     NSString *timestamp = [[self class] timestampStringFromRequestDate:self.transaction.startTime];
     if ([timestamp length] > 0) {

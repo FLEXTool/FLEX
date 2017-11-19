@@ -12,7 +12,7 @@
 
 @interface FLEXArgumentInputStructView ()
 
-@property (nonatomic, strong) NSArray *argumentInputViews;
+@property (nonatomic, strong) NSArray<UIView *> *argumentInputViews;
 
 @end
 
@@ -22,8 +22,8 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        NSMutableArray *inputViews = [NSMutableArray array];
-        NSArray *customTitles = [[self class] customFieldTitlesForTypeEncoding:typeEncoding];
+        NSMutableArray<UIView *> *inputViews = [NSMutableArray array];
+        NSArray<NSString *> *customTitles = [[self class] customFieldTitlesForTypeEncoding:typeEncoding];
         [FLEXRuntimeUtility enumerateTypesInStructEncoding:typeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
             
             FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:fieldTypeEncoding];
@@ -179,9 +179,9 @@
     return type && type[0] == '{';
 }
 
-+ (NSArray *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding
++ (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding
 {
-    NSArray *customTitles = nil;
+    NSArray<NSString *> *customTitles = nil;
     if (strcmp(typeEncoding, @encode(CGRect)) == 0) {
         customTitles = @[@"CGPoint origin", @"CGSize size"];
     } else if (strcmp(typeEncoding, @encode(CGPoint)) == 0) {

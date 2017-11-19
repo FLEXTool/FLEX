@@ -15,8 +15,8 @@
 @interface FLEXSystemLogTableViewController () <UISearchResultsUpdating, UISearchControllerDelegate>
 
 @property (nonatomic, strong) UISearchController *searchController;
-@property (nonatomic, copy) NSArray *logMessages;
-@property (nonatomic, copy) NSArray *filteredLogMessages;
+@property (nonatomic, copy) NSArray<FLEXSystemLogMessage *> *logMessages;
+@property (nonatomic, copy) NSArray<FLEXSystemLogMessage *> *filteredLogMessages;
 @property (nonatomic, strong) NSTimer *logUpdateTimer;
 
 @end
@@ -65,7 +65,7 @@
 - (void)updateLogMessages
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSArray *logMessages = [[self class] allLogMessagesForCurrentProcess];
+        NSArray<FLEXSystemLogMessage *> *logMessages = [[self class] allLogMessagesForCurrentProcess];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.title = @"System Log";
             self.logMessages = logMessages;
@@ -154,7 +154,7 @@
 {
     NSString *searchString = searchController.searchBar.text;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSArray *filteredLogMessages = [self.logMessages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXSystemLogMessage *logMessage, NSDictionary *bindings) {
+        NSArray<FLEXSystemLogMessage *> *filteredLogMessages = [self.logMessages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXSystemLogMessage *logMessage, NSDictionary<NSString *, id> *bindings) {
             NSString *displayedText = [FLEXSystemLogTableViewCell displayedTextForLogMessage:logMessage];
             return [displayedText rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
         }]];
@@ -169,7 +169,7 @@
 
 #pragma mark - Log Message Fetching
 
-+ (NSArray *)allLogMessagesForCurrentProcess
++ (NSArray<FLEXSystemLogMessage *> *)allLogMessagesForCurrentProcess
 {
     asl_object_t query = asl_new(ASL_TYPE_QUERY);
 
@@ -180,7 +180,7 @@
     aslresponse response = asl_search(NULL, query);
     aslmsg aslMessage = NULL;
 
-    NSMutableArray *logMessages = [NSMutableArray array];
+    NSMutableArray<FLEXSystemLogMessage *> *logMessages = [NSMutableArray array];
     while ((aslMessage = asl_next(response))) {
         [logMessages addObject:[FLEXSystemLogMessage logMessageFromASLMessage:aslMessage]];
     }

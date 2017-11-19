@@ -19,7 +19,7 @@
 @property (nonatomic, strong) UITableView  *contentTableView;
 @property (nonatomic, strong) UIView       *leftHeader;
 
-@property (nonatomic, strong) NSDictionary *sortStatusDict;
+@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *sortStatusDict;
 @property (nonatomic, strong) NSArray *rowData;
 @end
 
@@ -135,7 +135,7 @@ static const CGFloat kColumnMargin = 1;
 
 - (void)loadHeaderData
 {
-    NSArray *subviews = self.headerScrollView.subviews;
+    NSArray<UIView *> *subviews = self.headerScrollView.subviews;
     
     for (UIView *subview in subviews) {
         [subview removeFromSuperview];
