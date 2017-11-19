@@ -40,12 +40,12 @@
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
 + (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response;
-+ (NSDictionary *)dictionaryFromQuery:(NSString *)query;
++ (NSDictionary<NSString *, id> *)dictionaryFromQuery:(NSString *)query;
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
 
-+ (NSArray *)allWindows;
++ (NSArray<UIWindow *> *)allWindows;
 
 // Swizzling utilities
 

@@ -13,6 +13,6 @@
 @property (nonatomic, copy) NSString *targetDescription;
 @property (nonatomic, copy) NSString *fieldDescription;
 
-@property (nonatomic, strong) NSArray *argumentInputViews;
+@property (nonatomic, strong) NSArray<UIView *> *argumentInputViews;
 
 @end

@@ -14,8 +14,8 @@
 
 @interface FLEXClassesTableViewController () <UISearchBarDelegate>
 
-@property (nonatomic, strong) NSArray *classNames;
-@property (nonatomic, strong) NSArray *filteredClassNames;
+@property (nonatomic, strong) NSArray<NSString *> *classNames;
+@property (nonatomic, strong) NSArray<NSString *> *filteredClassNames;
 @property (nonatomic, strong) UISearchBar *searchBar;
 
 @end
@@ -42,7 +42,7 @@
     }
 }
 
-- (void)setClassNames:(NSArray *)classNames
+- (void)setClassNames:(NSArray<NSString *> *)classNames
 {
     _classNames = classNames;
     self.filteredClassNames = classNames;
@@ -53,7 +53,7 @@
     unsigned int classNamesCount = 0;
     const char **classNames = objc_copyClassNamesForImage([self.binaryImageName UTF8String], &classNamesCount);
     if (classNames) {
-        NSMutableArray *classNameStrings = [NSMutableArray array];
+        NSMutableArray<NSString *> *classNameStrings = [NSMutableArray array];
         for (unsigned int i = 0; i < classNamesCount; i++) {
             const char *className = classNames[i];
             NSString *classNameString = [NSString stringWithUTF8String:className];

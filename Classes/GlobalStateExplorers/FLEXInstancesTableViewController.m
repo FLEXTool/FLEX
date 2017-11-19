@@ -18,7 +18,7 @@
 @interface FLEXInstancesTableViewController ()
 
 @property (nonatomic, strong) NSArray *instances;
-@property (nonatomic, strong) NSArray *fieldNames;
+@property (nonatomic, strong) NSArray<NSString *> *fieldNames;
 
 @end
 
@@ -47,7 +47,7 @@
 + (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object
 {
     NSMutableArray *instances = [NSMutableArray array];
-    NSMutableArray *fieldNames = [NSMutableArray array];
+    NSMutableArray<NSString *> *fieldNames = [NSMutableArray array];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
         // Get all the ivars on the object. Start with the class and and travel up the inheritance chain.
         // Once we find a match, record it and move on to the next object. There's no reason to find multiple matches within the same object.

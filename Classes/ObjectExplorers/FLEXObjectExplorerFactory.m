@@ -28,7 +28,7 @@
         return nil;
     }
     
-    static NSDictionary *explorerSubclassesForObjectTypeStrings = nil;
+    static NSDictionary<NSString *, Class> *explorerSubclassesForObjectTypeStrings = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         explorerSubclassesForObjectTypeStrings = @{NSStringFromClass([NSArray class])          : [FLEXArrayExplorerViewController class],

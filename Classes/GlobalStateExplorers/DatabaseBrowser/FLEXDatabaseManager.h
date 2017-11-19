@@ -19,8 +19,8 @@
 - (instancetype)initWithPath:(NSString*)path;
 
 - (BOOL)open;
-- (NSArray *)queryAllTables;
-- (NSArray *)queryAllColumnsWithTableName:(NSString *)tableName;
-- (NSArray *)queryAllDataWithTableName:(NSString *)tableName;
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables;
+- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName;
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName;
 
 @end

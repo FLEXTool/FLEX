@@ -20,6 +20,6 @@
 
 @protocol FLEXFileBrowserSearchOperationDelegate <NSObject>
 
-- (void)fileBrowserSearchOperationResult:(NSArray *)searchResult size:(uint64_t)size;
+- (void)fileBrowserSearchOperationResult:(NSArray<NSString *> *)searchResult size:(uint64_t)size;
 
 @end

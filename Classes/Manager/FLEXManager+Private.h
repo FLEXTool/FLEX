@@ -8,9 +8,11 @@
 
 #import "FLEXManager.h"
 
+@class FLEXGlobalsTableViewControllerEntry;
+
 @interface FLEXManager ()
 
 /// An array of FLEXGlobalsTableViewControllerEntry objects that have been registered by the user.
-@property (nonatomic, readonly, strong) NSArray *userGlobalEntries;
+@property (nonatomic, readonly, strong) NSArray<FLEXGlobalsTableViewControllerEntry *> *userGlobalEntries;
 
 @end

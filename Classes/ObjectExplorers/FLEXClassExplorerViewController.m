@@ -35,11 +35,11 @@ typedef NS_ENUM(NSUInteger, FLEXClassExplorerRow) {
 
 #pragma mark - Superclass Overrides
 
-- (NSArray *)possibleExplorerSections
+- (NSArray<NSNumber *> *)possibleExplorerSections
 {
     // Move class methods to between our custom section and the properties section since
     // we are more interested in the class sections than in the instance level sections.
-    NSMutableArray *mutableSections = [[super possibleExplorerSections] mutableCopy];
+    NSMutableArray<NSNumber *> *mutableSections = [[super possibleExplorerSections] mutableCopy];
     [mutableSections removeObject:@(FLEXObjectExplorerSectionClassMethods)];
     [mutableSections insertObject:@(FLEXObjectExplorerSectionClassMethods) atIndex:[mutableSections indexOfObject:@(FLEXObjectExplorerSectionProperties)]];
     return mutableSections;

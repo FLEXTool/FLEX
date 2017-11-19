@@ -18,10 +18,10 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 @interface FLEXLiveObjectsTableViewController () <UISearchBarDelegate>
 
-@property (nonatomic, strong) NSDictionary *instanceCountsForClassNames;
-@property (nonatomic, strong) NSDictionary *instanceSizesForClassNames;
-@property (nonatomic, readonly) NSArray *allClassNames;
-@property (nonatomic, strong) NSArray *filteredClassNames;
+@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *instanceCountsForClassNames;
+@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *instanceSizesForClassNames;
+@property (nonatomic, readonly) NSArray<NSString *> *allClassNames;
+@property (nonatomic, strong) NSArray<NSString *> *filteredClassNames;
 @property (nonatomic, strong) UISearchBar *searchBar;
 
 @end
@@ -46,7 +46,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     [self reloadTableData];
 }
 
-- (NSArray *)allClassNames
+- (NSArray<NSString *> *)allClassNames
 {
     return [self.instanceCountsForClassNames allKeys];
 }
@@ -74,8 +74,8 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     }];
     
     // Convert our CF primitive dictionary into a nicer mapping of class name strings to counts that we will use as the table's model.
-    NSMutableDictionary *mutableCountsForClassNames = [NSMutableDictionary dictionary];
-    NSMutableDictionary *mutableSizesForClassNames = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, NSNumber *> *mutableCountsForClassNames = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, NSNumber *> *mutableSizesForClassNames = [NSMutableDictionary dictionary];
     for (unsigned int i = 0; i < classCount; i++) {
         Class class = classes[i];
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));

@@ -18,7 +18,7 @@
 @interface FLEXRealmDatabaseManager ()
 
 @property (nonatomic, copy) NSString *path;
-@property (nonatomic, strong) id realm;
+@property (nonatomic, strong) RLMRealm * realm;
 
 @end
 
@@ -57,9 +57,9 @@
     return (error == nil);
 }
 
-- (NSArray *)queryAllTables
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables
 {
-    NSMutableArray *allTables = [NSMutableArray array];
+    NSMutableArray<NSDictionary<NSString *, id> *> *allTables = [NSMutableArray array];
     RLMSchema *schema = [self.realm schema];
     
     for (RLMObjectSchema *objectSchema in schema.objectSchema) {
@@ -67,21 +67,21 @@
             continue;
         }
         
-        NSDictionary *dictionary = @{@"name":objectSchema.className};
+        NSDictionary<NSString *, id> *dictionary = @{@"name":objectSchema.className};
         [allTables addObject:dictionary];
     }
     
     return allTables;
 }
 
-- (NSArray *)queryAllColumnsWithTableName:(NSString *)tableName
+- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName
 {
     RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
     if (objectSchema == nil) {
         return nil;
     }
     
-    NSMutableArray *columnNames = [NSMutableArray array];
+    NSMutableArray<NSString *> *columnNames = [NSMutableArray array];
     for (RLMProperty *property in objectSchema.properties) {
         [columnNames addObject:property.name];
     }
@@ -89,7 +89,7 @@
     return columnNames;
 }
 
-- (NSArray *)queryAllDataWithTableName:(NSString *)tableName
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName
 {
     RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
     RLMResults *results = [self.realm allObjects:tableName];
@@ -97,9 +97,9 @@
         return nil;
     }
     
-    NSMutableArray *allDataEntries = [NSMutableArray array];
+    NSMutableArray<NSDictionary<NSString *, id> *> *allDataEntries = [NSMutableArray array];
     for (RLMObject *result in results) {
-        NSMutableDictionary *entry = [NSMutableDictionary dictionary];
+        NSMutableDictionary<NSString *, id> *entry = [NSMutableDictionary dictionary];
         for (RLMProperty *property in objectSchema.properties) {
             id value = [result valueForKey:property.name];
             entry[property.name] = (value) ? (value) : [NSNull null];

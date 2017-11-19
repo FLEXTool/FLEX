@@ -14,8 +14,8 @@
 
 @interface FLEXLibrariesTableViewController () <UISearchBarDelegate>
 
-@property (nonatomic, strong) NSArray *imageNames;
-@property (nonatomic, strong) NSArray *filteredImageNames;
+@property (nonatomic, strong) NSArray<NSString *> *imageNames;
+@property (nonatomic, strong) NSArray<NSString *> *filteredImageNames;
 
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) Class foundClass;
@@ -52,7 +52,7 @@
     unsigned int imageNamesCount = 0;
     const char **imageNames = objc_copyImageNames(&imageNamesCount);
     if (imageNames) {
-        NSMutableArray *imageNameStrings = [NSMutableArray array];
+        NSMutableArray<NSString *> *imageNameStrings = [NSMutableArray array];
         NSString *appImageName = [FLEXUtility applicationImageName];
         for (unsigned int i = 0; i < imageNamesCount; i++) {
             const char *imageName = imageNames[i];
@@ -76,14 +76,14 @@
 
 - (NSString *)shortNameForImageName:(NSString *)imageName
 {
-    NSArray *components = [imageName componentsSeparatedByString:@"/"];
+    NSArray<NSString *> *components = [imageName componentsSeparatedByString:@"/"];
     if (components.count >= 2) {
         return [NSString stringWithFormat:@"%@/%@", components[components.count - 2], components[components.count - 1]];
     }
     return imageName.lastPathComponent;
 }
 
-- (void)setImageNames:(NSArray *)imageNames
+- (void)setImageNames:(NSArray<NSString *> *)imageNames
 {
     if (![_imageNames isEqual:imageNames]) {
         _imageNames = imageNames;
@@ -97,7 +97,7 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     if ([searchText length] > 0) {
-        NSPredicate *searchPreidcate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        NSPredicate *searchPreidcate = [NSPredicate predicateWithBlock:^BOOL(NSString *evaluatedObject, NSDictionary<NSString *, id> *bindings) {
             BOOL matches = NO;
             NSString *shortName = [self shortNameForImageName:evaluatedObject];
             if ([shortName rangeOfString:searchText options:NSCaseInsensitiveSearch].length > 0) {

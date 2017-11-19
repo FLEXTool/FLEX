@@ -38,7 +38,7 @@
 - (uint64_t)totalSizeAtPath:(NSString *)path
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSDictionary *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
+    NSDictionary<NSString *, id> *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
     uint64_t totalSize = [attributes fileSize];
     
     for (NSString *fileName in [fileManager enumeratorAtPath:path]) {
@@ -65,16 +65,16 @@
 - (void)main
 {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSMutableArray *searchPaths = [NSMutableArray array];
-    NSMutableDictionary *sizeMapping = [NSMutableDictionary dictionary];
+    NSMutableArray<NSString *> *searchPaths = [NSMutableArray array];
+    NSMutableDictionary<NSString *, NSNumber *> *sizeMapping = [NSMutableDictionary dictionary];
     uint64_t totalSize = 0;
-    NSMutableArray *stack = [NSMutableArray array];
+    NSMutableArray<NSString *> *stack = [NSMutableArray array];
     [stack flex_push:self.path];
     
     //recursive found all match searchString paths, and precomputing there size
     while ([stack count]) {
         NSString *currentPath = [stack flex_pop];
-        NSArray *directoryPath = [fileManager contentsOfDirectoryAtPath:currentPath error:nil];
+        NSArray<NSString *> *directoryPath = [fileManager contentsOfDirectoryAtPath:currentPath error:nil];
         
         for (NSString *subPath in directoryPath) {
             NSString *fullPath = [currentPath stringByAppendingPathComponent:subPath];
@@ -99,7 +99,7 @@
     }
     
     //sort
-    NSArray *sortedArray = [searchPaths sortedArrayUsingComparator:^NSComparisonResult(NSString *path1, NSString *path2) {
+    NSArray<NSString *> *sortedArray = [searchPaths sortedArrayUsingComparator:^NSComparisonResult(NSString *path1, NSString *path2) {
         uint64_t pathSize1 = [sizeMapping[path1] unsignedLongLongValue];
         uint64_t pathSize2 = [sizeMapping[path2] unsignedLongLongValue];
         if (pathSize1 < pathSize2) {

@@ -42,17 +42,15 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 @interface FLEXGlobalsTableViewController ()
 
-/// [FLEXGlobalsTableViewControllerEntry *]
-@property (nonatomic, readonly, copy) NSArray *entries;
+@property (nonatomic, readonly, copy) NSArray<FLEXGlobalsTableViewControllerEntry *> *entries;
 
 @end
 
 @implementation FLEXGlobalsTableViewController
 
-/// [FLEXGlobalsTableViewControllerEntry *]
-+ (NSArray *)defaultGlobalEntries
++ (NSArray<FLEXGlobalsTableViewControllerEntry *> *)defaultGlobalEntries
 {
-    NSMutableArray *defaultGlobalEntries = [NSMutableArray array];
+    NSMutableArray<FLEXGlobalsTableViewControllerEntry *> *defaultGlobalEntries = [NSMutableArray array];
 
     for (FLEXGlobalsRow defaultRowIndex = 0; defaultRowIndex < FLEXGlobalsRowCount; defaultRowIndex++) {
         FLEXGlobalsTableViewControllerEntryNameFuture titleFuture = nil;

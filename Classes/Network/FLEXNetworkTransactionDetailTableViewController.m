@@ -15,17 +15,6 @@
 #import "FLEXMultilineTableViewCell.h"
 #import "FLEXUtility.h"
 
-@interface FLEXNetworkDetailSection : NSObject
-
-@property (nonatomic, copy) NSString *title;
-@property (nonatomic, copy) NSArray *rows;
-
-@end
-
-@implementation FLEXNetworkDetailSection
-
-@end
-
 typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 @interface FLEXNetworkDetailRow : NSObject
@@ -40,9 +29,20 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 @end
 
+@interface FLEXNetworkDetailSection : NSObject
+
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSArray<FLEXNetworkDetailRow *> *rows;
+
+@end
+
+@implementation FLEXNetworkDetailSection
+
+@end
+
 @interface FLEXNetworkTransactionDetailTableViewController ()
 
-@property (nonatomic, copy) NSArray *sections;
+@property (nonatomic, copy) NSArray<FLEXNetworkDetailSection *> *sections;
 
 @end
 
@@ -75,7 +75,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     }
 }
 
-- (void)setSections:(NSArray *)sections
+- (void)setSections:(NSArray<FLEXNetworkDetailSection *> *)sections
 {
     if (![_sections isEqual:sections]) {
         _sections = [sections copy];
@@ -85,7 +85,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 - (void)rebuildTableSections
 {
-    NSMutableArray *sections = [NSMutableArray array];
+    NSMutableArray<FLEXNetworkDetailSection *> *sections = [NSMutableArray array];
 
     FLEXNetworkDetailSection *generalSection = [[self class] generalSectionForTransaction:self.transaction];
     if ([generalSection.rows count] > 0) {
@@ -210,10 +210,10 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (NSAttributedString *)attributedTextForRow:(FLEXNetworkDetailRow *)row
 {
-    NSDictionary *titleAttributes = @{ NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0],
-                                       NSForegroundColorAttributeName : [UIColor colorWithWhite:0.5 alpha:1.0] };
-    NSDictionary *detailAttributes = @{ NSFontAttributeName : [FLEXUtility defaultTableViewCellLabelFont],
-                                        NSForegroundColorAttributeName : [UIColor blackColor] };
+    NSDictionary<NSString *, id> *titleAttributes = @{ NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0],
+                                                       NSForegroundColorAttributeName : [UIColor colorWithWhite:0.5 alpha:1.0] };
+    NSDictionary<NSString *, id> *detailAttributes = @{ NSFontAttributeName : [FLEXUtility defaultTableViewCellLabelFont],
+                                                        NSForegroundColorAttributeName : [UIColor blackColor] };
 
     NSString *title = [NSString stringWithFormat:@"%@: ", row.title];
     NSString *detailText = row.detailText ?: @"";
@@ -228,7 +228,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (FLEXNetworkDetailSection *)generalSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    NSMutableArray *rows = [NSMutableArray array];
+    NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray array];
 
     FLEXNetworkDetailRow *requestURLRow = [[FLEXNetworkDetailRow alloc] init];
     requestURLRow.title = @"Request URL";
@@ -390,7 +390,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (FLEXNetworkDetailSection *)queryParametersSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    NSDictionary *queryDictionary = [FLEXUtility dictionaryFromQuery:transaction.request.URL.query];
+    NSDictionary<NSString *, id> *queryDictionary = [FLEXUtility dictionaryFromQuery:transaction.request.URL.query];
     FLEXNetworkDetailSection *querySection = [[FLEXNetworkDetailSection alloc] init];
     querySection.title = @"Query Parameters";
     querySection.rows = [self networkDetailRowsFromDictionary:queryDictionary];
@@ -409,12 +409,12 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     return responseHeadersSection;
 }
 
-+ (NSArray *)networkDetailRowsFromDictionary:(NSDictionary *)dictionary
++ (NSArray<FLEXNetworkDetailRow *> *)networkDetailRowsFromDictionary:(NSDictionary<NSString *, id> *)dictionary
 {
-    NSMutableArray *rows = [NSMutableArray arrayWithCapacity:[dictionary count]];
-    NSArray *sortedKeys = [[dictionary allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray arrayWithCapacity:[dictionary count]];
+    NSArray<NSString *> *sortedKeys = [[dictionary allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     for (NSString *key in sortedKeys) {
-        NSString *value = dictionary[key];
+        id value = dictionary[key];
         FLEXNetworkDetailRow *row = [[FLEXNetworkDetailRow alloc] init];
         row.title = key;
         row.detailText = [value description];

@@ -13,7 +13,7 @@
 
 @interface FLEXTableContentViewController ()<FLEXMultiColumnTableViewDataSource, FLEXMultiColumnTableViewDelegate>
 
-@property (nonatomic, strong)FLEXMultiColumnTableView *multiColumView;
+@property (nonatomic, strong) FLEXMultiColumnTableView *multiColumView;
 
 @end
 
@@ -48,7 +48,6 @@
 {
     [super viewWillAppear:animated];
     [self.multiColumView reloadData];
-    
 }
 
 #pragma mark -
@@ -78,7 +77,7 @@
 - (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row
 {
     if (self.contentsArray.count > row) {
-        NSDictionary *dic = self.contentsArray[row];
+        NSDictionary<NSString *, id> *dic = self.contentsArray[row];
         if (self.contentsArray.count > column) {
             return [NSString stringWithFormat:@"%@",[dic objectForKey:self.columnsArray[column]]];
         }
@@ -90,11 +89,11 @@
 {
     NSMutableArray *result = [NSMutableArray array];
     if (self.contentsArray.count > row) {
-        NSDictionary *dic = self.contentsArray[row];
+        NSDictionary<NSString *, id> *dic = self.contentsArray[row];
         for (int i = 0; i < self.columnsArray.count; i ++) {
             [result addObject:dic[self.columnsArray[i]]];
         }
-        return  result;
+        return result;
     }
     return nil;
 }
@@ -119,7 +118,7 @@
 - (CGFloat)widthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView
 {
     NSString *str = [NSString stringWithFormat:@"%lu",(unsigned long)self.contentsArray.count];
-    NSDictionary *attrs = @{@"NSFontAttributeName":[UIFont systemFontOfSize:17.0]};
+    NSDictionary<NSString *, id> *attrs = @{@"NSFontAttributeName":[UIFont systemFontOfSize:17.0]};
     CGSize size =   [str boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 14)
                                       options:NSStringDrawingUsesLineFragmentOrigin
                                    attributes:attrs context:nil].size;
@@ -139,7 +138,7 @@
 - (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapHeaderWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)sortType
 {
     
-    NSArray *sortContentData = [self.contentsArray sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+    NSArray<NSDictionary<NSString *, id> *> *sortContentData = [self.contentsArray sortedArrayUsingComparator:^NSComparisonResult(NSDictionary<NSString *, id> * obj1, NSDictionary<NSString *, id> * obj2) {
         
         if ([obj1 objectForKey:text] == [NSNull null]) {
             return NSOrderedAscending;

@@ -19,8 +19,8 @@
 @interface FLEXFileBrowserTableViewController () <FLEXFileBrowserFileOperationControllerDelegate, FLEXFileBrowserSearchOperationDelegate, UISearchResultsUpdating, UISearchControllerDelegate>
 
 @property (nonatomic, copy) NSString *path;
-@property (nonatomic, copy) NSArray *childPaths;
-@property (nonatomic, strong) NSArray *searchPaths;
+@property (nonatomic, copy) NSArray<NSString *> *childPaths;
+@property (nonatomic, strong) NSArray<NSString *> *searchPaths;
 @property (nonatomic, strong) NSNumber *recursiveSize;
 @property (nonatomic, strong) NSNumber *searchPathsSize;
 @property (nonatomic, strong) UISearchController *searchController;
@@ -55,7 +55,7 @@
         FLEXFileBrowserTableViewController *__weak weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSDictionary *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
+            NSDictionary<NSString *, id> *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
             uint64_t totalSize = [attributes fileSize];
             
             for (NSString *fileName in [fileManager enumeratorAtPath:path]) {
@@ -93,7 +93,7 @@
 
 #pragma mark - FLEXFileBrowserSearchOperationDelegate
 
-- (void)fileBrowserSearchOperationResult:(NSArray *)searchResult size:(uint64_t)size
+- (void)fileBrowserSearchOperationResult:(NSArray<NSString *> *)searchResult size:(uint64_t)size
 {
     self.searchPaths = searchResult;
     self.searchPathsSize = @(size);
@@ -133,7 +133,7 @@
 {
     BOOL isSearchActive = self.searchController.isActive;
     NSNumber *currentSize = isSearchActive ? self.searchPathsSize : self.recursiveSize;
-    NSArray *currentPaths = isSearchActive ? self.searchPaths : self.childPaths;
+    NSArray<NSString *> *currentPaths = isSearchActive ? self.searchPaths : self.childPaths;
     
     NSString *sizeString = nil;
     if (!currentSize) {
@@ -148,7 +148,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
-    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:NULL];
+    NSDictionary<NSString *, id> *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:NULL];
     BOOL isDirectory = [[attributes fileType] isEqual:NSFileTypeDirectory];
     NSString *subtitle = nil;
     if (isDirectory) {
@@ -306,8 +306,8 @@
 
 - (void)reloadChildPaths
 {
-    NSMutableArray *childPaths = [NSMutableArray array];
-    NSArray *subpaths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
+    NSMutableArray<NSString *> *childPaths = [NSMutableArray array];
+    NSArray<NSString *> *subpaths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
     for (NSString *subpath in subpaths) {
         [childPaths addObject:[self.path stringByAppendingPathComponent:subpath]];
     }

@@ -14,7 +14,7 @@
 
 /// The items to be displayed in the toolbar. Defaults to:
 /// globalsItem, hierarchyItem, selectItem, moveItem, closeItem
-@property (nonatomic, copy) NSArray<UIView *> *toolbarItems;
+@property (nonatomic, copy) NSArray<FLEXToolbarItem *> *toolbarItems;
 
 /// Toolbar item for selecting views.
 /// Users of the toolbar can configure the enabled/selected state and event targets/actions.

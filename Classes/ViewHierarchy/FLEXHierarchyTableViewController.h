@@ -12,7 +12,7 @@
 
 @interface FLEXHierarchyTableViewController : UITableViewController
 
-- (id)initWithViews:(NSArray *)allViews viewsAtTap:(NSArray *)viewsAtTap selectedView:(UIView *)selectedView depths:(NSDictionary *)depthsForViews;
+- (instancetype)initWithViews:(NSArray<UIView *> *)allViews viewsAtTap:(NSArray<UIView *> *)viewsAtTap selectedView:(UIView *)selectedView depths:(NSDictionary<NSValue *, NSNumber *> *)depthsForViews;
 
 @property (nonatomic, weak) id <FLEXHierarchyTableViewControllerDelegate> delegate;
 

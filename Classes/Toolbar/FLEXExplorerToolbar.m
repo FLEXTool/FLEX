@@ -163,7 +163,7 @@
     
 #pragma mark - Setter Overrides
 
-- (void)setToolbarItems:(NSArray *)toolbarItems {
+- (void)setToolbarItems:(NSArray<FLEXToolbarItem *> *)toolbarItems {
     if (_toolbarItems == toolbarItems) {
         return;
     }

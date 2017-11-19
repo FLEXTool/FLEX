@@ -138,7 +138,7 @@
 
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString
 {
-    static NSDictionary *escapingDictionary = nil;
+    static NSDictionary<NSString *, NSString *> *escapingDictionary = nil;
     static NSRegularExpression *regex = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -156,7 +156,7 @@
     
     NSMutableString *mutableString = [originalString mutableCopy];
     
-    NSArray *matches = [regex matchesInString:mutableString options:0 range:NSMakeRange(0, [mutableString length])];
+    NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:mutableString options:0 range:NSMakeRange(0, [mutableString length])];
     for (NSTextCheckingResult *result in [matches reverseObjectEnumerator]) {
         NSString *foundString = [mutableString substringWithRange:result.range];
         NSString *replacementString = escapingDictionary[foundString];
@@ -170,7 +170,7 @@
 
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask
 {
-    NSArray *supportedOrientations = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UISupportedInterfaceOrientations"];
+    NSArray<NSString *> *supportedOrientations = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UISupportedInterfaceOrientations"];
     UIInterfaceOrientationMask supportedOrientationsMask = 0;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"]) {
         supportedOrientationsMask |= UIInterfaceOrientationMaskPortrait;
@@ -203,9 +203,9 @@
     UIImage *thumbnail = nil;
     CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)data, 0);
     if (imageSource) {
-        NSDictionary *options = @{ (__bridge id)kCGImageSourceCreateThumbnailWithTransform : @YES,
-                                   (__bridge id)kCGImageSourceCreateThumbnailFromImageAlways : @YES,
-                                   (__bridge id)kCGImageSourceThumbnailMaxPixelSize : @(dimension) };
+        NSDictionary<NSString *, id> *options = @{ (__bridge id)kCGImageSourceCreateThumbnailWithTransform : @YES,
+                                                   (__bridge id)kCGImageSourceCreateThumbnailFromImageAlways : @YES,
+                                                   (__bridge id)kCGImageSourceThumbnailMaxPixelSize : @(dimension) };
 
         CGImageRef scaledImageRef = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, (__bridge CFDictionaryRef)options);
         if (scaledImageRef) {
@@ -261,15 +261,15 @@
 }
 
 
-+ (NSDictionary *)dictionaryFromQuery:(NSString *)query
++ (NSDictionary<NSString *, id> *)dictionaryFromQuery:(NSString *)query
 {
-    NSMutableDictionary *queryDictionary = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, id> *queryDictionary = [NSMutableDictionary dictionary];
 
     // [a=1, b=2, c=3]
-    NSArray *queryComponents = [query componentsSeparatedByString:@"&"];
+    NSArray<NSString *> *queryComponents = [query componentsSeparatedByString:@"&"];
     for (NSString *keyValueString in queryComponents) {
         // [a, 1]
-        NSArray *components = [keyValueString componentsSeparatedByString:@"="];
+        NSArray<NSString *> *components = [keyValueString componentsSeparatedByString:@"="];
         if ([components count] == 2) {
             NSString *key = [[components firstObject] stringByRemovingPercentEncoding];
             id value = [[components lastObject] stringByRemovingPercentEncoding];
@@ -350,12 +350,12 @@
     return inflatedData;
 }
 
-+ (NSArray *)allWindows
++ (NSArray<UIWindow *> *)allWindows
 {
     BOOL includeInternalWindows = YES;
     BOOL onlyVisibleWindows = NO;
 
-    NSArray *allWindowsComponents = @[@"al", @"lWindo", @"wsIncl", @"udingInt", @"ernalWin", @"dows:o", @"nlyVisi", @"bleWin", @"dows:"];
+    NSArray<NSString *> *allWindowsComponents = @[@"al", @"lWindo", @"wsIncl", @"udingInt", @"ernalWin", @"dows:o", @"nlyVisi", @"bleWin", @"dows:"];
     SEL allWindowsSelector = NSSelectorFromString([allWindowsComponents componentsJoinedByString:@""]);
 
     NSMethodSignature *methodSignature = [[UIWindow class] methodSignatureForSelector:allWindowsSelector];
@@ -367,7 +367,7 @@
     [invocation setArgument:&onlyVisibleWindows atIndex:3];
     [invocation invoke];
 
-    __unsafe_unretained NSArray *windows = nil;
+    __unsafe_unretained NSArray<UIWindow *> *windows = nil;
     [invocation getReturnValue:&windows];
     return windows;
 }
