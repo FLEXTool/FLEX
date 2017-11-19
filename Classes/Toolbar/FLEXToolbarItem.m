@@ -70,7 +70,7 @@
 
 + (UIColor *)defaultBackgroundColor
 {
-    return [UIColor colorWithWhite:1.0 alpha:0.95];
+    return [UIColor clearColor];
 }
 
 + (CGFloat)topMargin

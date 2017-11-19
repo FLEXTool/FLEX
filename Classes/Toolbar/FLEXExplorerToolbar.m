@@ -23,8 +23,11 @@
 @property (nonatomic, strong) UIImageView *dragHandleImageView;
 
 @property (nonatomic, strong) UIView *selectedViewDescriptionContainer;
+@property (nonatomic, strong) UIView *selectedViewDescriptionSafeAreaContainer;
 @property (nonatomic, strong) UIView *selectedViewColorIndicator;
 @property (nonatomic, strong) UILabel *selectedViewDescriptionLabel;
+
+@property (nonatomic, strong,readwrite) UIView *backgroundView;
 
 @end
 
@@ -34,8 +37,12 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        self.backgroundView = [[UIView alloc] init];
+        self.backgroundView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.95];
+        [self addSubview:self.backgroundView];
+
         self.dragHandle = [[UIView alloc] init];
-        self.dragHandle.backgroundColor = [FLEXToolbarItem defaultBackgroundColor];
+        self.dragHandle.backgroundColor = [UIColor clearColor];
         [self addSubview:self.dragHandle];
         
         UIImage *dragHandle = [FLEXResources dragHandle];
@@ -56,22 +63,24 @@
         
         UIImage *closeIcon = [FLEXResources closeIcon];
         self.closeItem = [FLEXToolbarItem toolbarItemWithTitle:@"close" image:closeIcon];
-        
-        self.backgroundColor = [UIColor clearColor];
-        
+
         self.selectedViewDescriptionContainer = [[UIView alloc] init];
         self.selectedViewDescriptionContainer.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.95];
         self.selectedViewDescriptionContainer.hidden = YES;
         [self addSubview:self.selectedViewDescriptionContainer];
+
+        self.selectedViewDescriptionSafeAreaContainer = [[UIView alloc] init];
+        self.selectedViewDescriptionSafeAreaContainer.backgroundColor = [UIColor clearColor];
+        [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionSafeAreaContainer];
         
         self.selectedViewColorIndicator = [[UIView alloc] init];
         self.selectedViewColorIndicator.backgroundColor = [UIColor redColor];
-        [self.selectedViewDescriptionContainer addSubview:self.selectedViewColorIndicator];
+        [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewColorIndicator];
         
         self.selectedViewDescriptionLabel = [[UILabel alloc] init];
         self.selectedViewDescriptionLabel.backgroundColor = [UIColor clearColor];
         self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
-        [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionLabel];
+        [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewDescriptionLabel];
         
         self.toolbarItems = @[_globalsItem, _hierarchyItem, _selectItem, _moveItem, _closeItem];
     }
@@ -82,10 +91,12 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+
+
+    CGRect safeArea = [self safeArea];
     // Drag Handle
     const CGFloat kToolbarItemHeight = [[self class] toolbarItemHeight];
-    self.dragHandle.frame = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, [[self class] dragHandleWidth], kToolbarItemHeight);
+    self.dragHandle.frame = CGRectMake(CGRectGetMinX(safeArea), CGRectGetMinY(safeArea), [[self class] dragHandleWidth], kToolbarItemHeight);
     CGRect dragHandleImageFrame = self.dragHandleImageView.frame;
     dragHandleImageFrame.origin.x = FLEXFloor((self.dragHandle.frame.size.width - dragHandleImageFrame.size.width) / 2.0);
     dragHandleImageFrame.origin.y = FLEXFloor((self.dragHandle.frame.size.height - dragHandleImageFrame.size.height) / 2.0);
@@ -94,9 +105,9 @@
     
     // Toolbar Items
     CGFloat originX = CGRectGetMaxX(self.dragHandle.frame);
-    CGFloat originY = self.bounds.origin.y;
+    CGFloat originY = CGRectGetMinY(safeArea);
     CGFloat height = kToolbarItemHeight;
-    CGFloat width = FLEXFloor((CGRectGetMaxX(self.bounds) - originX) / [self.toolbarItems count]);
+    CGFloat width = FLEXFloor((CGRectGetWidth(safeArea) - CGRectGetWidth(self.dragHandle.frame)) / [self.toolbarItems count]);
     for (UIView *toolbarItem in self.toolbarItems) {
         toolbarItem.frame = CGRectMake(originX, originY, width, height);
         originX = CGRectGetMaxX(toolbarItem.frame);
@@ -105,8 +116,10 @@
     // Make sure the last toolbar item goes to the edge to account for any accumulated rounding effects.
     UIView *lastToolbarItem = [self.toolbarItems lastObject];
     CGRect lastToolbarItemFrame = lastToolbarItem.frame;
-    lastToolbarItemFrame.size.width = CGRectGetMaxX(self.bounds) - lastToolbarItemFrame.origin.x;
+    lastToolbarItemFrame.size.width = CGRectGetMaxX(safeArea) - lastToolbarItemFrame.origin.x;
     lastToolbarItem.frame = lastToolbarItemFrame;
+
+    self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), kToolbarItemHeight);
     
     const CGFloat kSelectedViewColorDiameter = [[self class] selectedViewColorIndicatorDiameter];
     const CGFloat kDescriptionLabelHeight = [[self class] descriptionLabelHeight];
@@ -115,11 +128,19 @@
     const CGFloat kDescriptionContainerHeight = [[self class] descriptionContainerHeight];
     
     CGRect descriptionContainerFrame = CGRectZero;
+    descriptionContainerFrame.size.width = CGRectGetWidth(self.bounds);
     descriptionContainerFrame.size.height = kDescriptionContainerHeight;
+    descriptionContainerFrame.origin.x = CGRectGetMinX(self.bounds);
     descriptionContainerFrame.origin.y = CGRectGetMaxY(self.bounds) - kDescriptionContainerHeight;
-    descriptionContainerFrame.size.width = self.bounds.size.width;
     self.selectedViewDescriptionContainer.frame = descriptionContainerFrame;
-    
+
+    CGRect descriptionSafeAreaContainerFrame = CGRectZero;
+    descriptionSafeAreaContainerFrame.size.width = CGRectGetWidth(safeArea);
+    descriptionSafeAreaContainerFrame.size.height = kDescriptionContainerHeight;
+    descriptionSafeAreaContainerFrame.origin.x = CGRectGetMinX(safeArea);
+    descriptionSafeAreaContainerFrame.origin.y = CGRectGetMinY(safeArea);
+    self.selectedViewDescriptionSafeAreaContainer.frame = descriptionSafeAreaContainerFrame;
+
     // Selected View Color
     CGRect selectedViewColorFrame = CGRectZero;
     selectedViewColorFrame.size.width = kSelectedViewColorDiameter;
@@ -235,6 +256,17 @@
     height += [[self class] toolbarItemHeight];
     height += [[self class] descriptionContainerHeight];
     return CGSizeMake(size.width, height);
+}
+
+- (CGRect)safeArea
+{
+  CGRect safeArea = self.bounds;
+#if FLEX_AT_LEAST_IOS11_SDK
+  if (@available(iOS 11, *)) {
+    safeArea = UIEdgeInsetsInsetRect(self.bounds, self.safeAreaInsets);
+  }
+#endif
+  return safeArea;
 }
 
 @end
