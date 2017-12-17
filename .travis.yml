@@ -1,8 +1,12 @@
 language: objective-c
 xcode_workspace: FLEX.xcworkspace
+xcode_sdk: iphonesimulator
+before_install:
+    - gem install xcpretty
 matrix:
     include:
         - xcode_scheme: UICatalog
-          xcode_sdk: iphonesimulator
         - xcode_scheme: FLEX
-          xcode_sdk: iphonesimulator
+script:
+    - set -o pipefail
+    - xcodebuild -workspace $TRAVIS_XCODE_WORKSPACE -scheme $TRAVIS_XCODE_SCHEME -sdk $TRAVIS_XCODE_SDK build | xcpretty
