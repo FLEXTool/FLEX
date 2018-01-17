@@ -318,7 +318,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
             if ([FLEXNetworkObserver isEnabled]) {
                 NSString *requestID = [self nextRequestID];
                 [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
-                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
                 [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
                 NSURLConnectionAsyncCompletion completionWrapper = ^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                     [[FLEXNetworkRecorder defaultRecorder] recordResponseReceivedWithRequestID:requestID response:response];
@@ -357,7 +357,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
             if ([FLEXNetworkObserver isEnabled]) {
                 NSString *requestID = [self nextRequestID];
                 [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
-                NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
                 [[FLEXNetworkRecorder defaultRecorder] recordMechanism:mechanism forRequestID:requestID];
                 NSError *temporaryError = nil;
                 NSURLResponse *temporaryResponse = nil;
@@ -420,7 +420,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
                 // with nil completion block.
                 if ([FLEXNetworkObserver isEnabled] && completion) {
                     NSString *requestID = [self nextRequestID];
-                    NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                    NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
                     NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
                     task = ((id(*)(id, SEL, id, id))objc_msgSend)(slf, swizzledSelector, argument, completionWrapper);
                     [self setRequestID:requestID forConnectionOrTask:task];
@@ -464,7 +464,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
                 NSURLSessionUploadTask *task = nil;
                 if ([FLEXNetworkObserver isEnabled] && completion) {
                     NSString *requestID = [self nextRequestID];
-                    NSString *mechanism = [self mechansimFromClassMethod:selector onClass:class];
+                    NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
                     NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
                     task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(slf, swizzledSelector, request, argument, completionWrapper);
                     [self setRequestID:requestID forConnectionOrTask:task];
@@ -479,7 +479,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     });
 }
 
-+ (NSString *)mechansimFromClassMethod:(SEL)selector onClass:(Class)class
++ (NSString *)mechanismFromClassMethod:(SEL)selector onClass:(Class)class
 {
     return [NSString stringWithFormat:@"+[%@ %@]", NSStringFromClass(class), NSStringFromSelector(selector)];
 }
