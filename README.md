@@ -150,16 +150,6 @@ FLEX makes it easy to explore the internals of your app, so it is not something 
 
 At the places in your code where you integrate FLEX, do a `#if DEBUG` check to ensure the tool is only accessible in your `Debug` builds and to avoid errors in your `Release` builds. For more help with integrating FLEX, see the example project.
 
-### FLEX files added manually to a project
-
-In Xcode, navigate to the "Build Settings" tab of your project. Click the plus and select `Add User-Defined Setting`.
-
-![Add User-Defined Setting](http://engineering.flipboard.com/assets/flex/flex-readme-exclude-1.png)
-
-Name the setting `EXCLUDED_SOURCE_FILE_NAMES`. For your `Release` configuration, set the value to `FLEX*`. This will exclude all files with the prefix FLEX from compilation. Leave the value blank for your `Debug` configuration.
-
-![EXCLUDED_SOURCE_FILE_NAMES](http://engineering.flipboard.com/assets/flex/flex-readme-exclude-2.png)
-
 ### FLEX added with CocoaPods
 
 CocoaPods automatically excludes FLEX from release builds if you only specify the Debug configuration for FLEX in your Podfile.
@@ -182,7 +172,18 @@ If you are using Carthage, only including the `FLEX.framework` in debug builds i
 	
 <p align="center"><img src="README-images/flex-exclusion-carthage.jpg"/></p>
 
+### FLEX files added manually to a project
+
+In Xcode, navigate to the "Build Settings" tab of your project. Click the plus and select `Add User-Defined Setting`.
+
+![Add User-Defined Setting](http://engineering.flipboard.com/assets/flex/flex-readme-exclude-1.png)
+
+Name the setting `EXCLUDED_SOURCE_FILE_NAMES`. For your `Release` configuration, set the value to `FLEX*`. This will exclude all files with the prefix FLEX from compilation. Leave the value blank for your `Debug` configuration.
+
+![EXCLUDED_SOURCE_FILE_NAMES](http://engineering.flipboard.com/assets/flex/flex-readme-exclude-2.png)
+
 ## Additional Notes
+
 - When setting fields of type `id` or values in `NSUserDefaults`, FLEX attempts to parse the input string as `JSON`. This allows you to use a combination of strings, numbers, arrays, and dictionaries. If you want to set a string value, it must be wrapped in quotes. For ivars or properties that are explicitly typed as `NSStrings`, quotes are not required.
 - You may want to disable the exception breakpoint while using FLEX. Certain functions that FLEX uses throw exceptions when they get input they can't handle (i.e. `NSGetSizeAndAlignment()`). FLEX catches these to avoid crashing, but your breakpoint will get hit if it is active.
 
