@@ -120,13 +120,28 @@ The code injection is left as an exercise for the reader. :innocent:
 
 
 ## Installation
-FLEX is available on [CocoaPods](http://cocoapods.org/?q=FLEX). Simply add the following line to your podfile:
+
+FLEX requires an app that targets iOS 7 or higher.
+
+### CocoaPods
+
+FLEX is available on [CocoaPods](https://cocoapods.org/pods/FLEX). Simply add the following line to your podfile:
 
 ```ruby
 pod 'FLEX', '~> 2.0', :configurations => ['Debug']
 ```
 
-Alternatively, you can manually add the files in `Classes/` to your Xcode project. FLEX requires iOS 7 or higher.
+### Carthage
+
+Add the following to your Cartfile:
+
+```
+github "flipboard/FLEX" ~> 2.0
+```
+
+### Manual
+
+Manually add the files in `Classes/` to your Xcode project.
 
 
 ## Excluding FLEX from Release (App Store) Builds
