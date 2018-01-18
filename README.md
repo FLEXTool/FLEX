@@ -37,7 +37,13 @@ In the iOS simulator, you can use keyboard shortcuts to activate FLEX. `f` will 
 Short version:
 
 ```objc
+// Objective-C
 [[FLEXManager sharedManager] showExplorer];
+```
+
+```swift
+// Swift
+FLEXManager.shared().showExplorer()
 ```
 
 More complete version:
