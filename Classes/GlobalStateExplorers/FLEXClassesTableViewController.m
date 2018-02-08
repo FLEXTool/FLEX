@@ -78,8 +78,18 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     if ([searchText length] > 0) {
-        NSPredicate *searchPreidcate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", searchText];
-        self.filteredClassNames = [self.classNames filteredArrayUsingPredicate:searchPreidcate];
+        NSArray *searchArray = [searchText componentsSeparatedByString: @" "];
+        int index = 0;  
+        for (id searchItem in searchArray) {
+            NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", searchItem];
+            if (index == 0){
+                self.filteredClassNames = [self.classNames filteredArrayUsingPredicate:searchPredicate];
+            }
+            else{
+                self.filteredClassNames = [self.filteredClassNames filteredArrayUsingPredicate:searchPredicate];
+            }
+            index++;
+        }
     } else {
         self.filteredClassNames = self.classNames;
     }
