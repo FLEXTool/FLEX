@@ -103,7 +103,7 @@
     }
 }
 
-- (void)setArgumentInputViews:(NSArray<UIView *> *)argumentInputViews
+- (void)setArgumentInputViews:(NSArray<FLEXArgumentInputView *> *)argumentInputViews
 {
     if (![_argumentInputViews isEqual:argumentInputViews]) {
         

@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class FLEXArgumentInputView;
+
 @interface FLEXFieldEditorView : UIView
 
 @property (nonatomic, copy) NSString *targetDescription;
 @property (nonatomic, copy) NSString *fieldDescription;
 
-@property (nonatomic, strong) NSArray<UIView *> *argumentInputViews;
+@property (nonatomic, strong) NSArray<FLEXArgumentInputView *> *argumentInputViews;
 
 @end

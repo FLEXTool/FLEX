@@ -12,7 +12,7 @@
 
 @interface FLEXArgumentInputStructView ()
 
-@property (nonatomic, strong) NSArray<UIView *> *argumentInputViews;
+@property (nonatomic, strong) NSArray<FLEXArgumentInputView *> *argumentInputViews;
 
 @end
 
@@ -22,7 +22,7 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        NSMutableArray<UIView *> *inputViews = [NSMutableArray array];
+        NSMutableArray<FLEXArgumentInputView *> *inputViews = [NSMutableArray array];
         NSArray<NSString *> *customTitles = [[self class] customFieldTitlesForTypeEncoding:typeEncoding];
         [FLEXRuntimeUtility enumerateTypesInStructEncoding:typeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
             
