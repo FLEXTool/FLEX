@@ -39,7 +39,7 @@
     self.fieldEditorView.fieldDescription = [FLEXRuntimeUtility prettyNameForMethod:self.method isClassMethod:[self isClassMethod]];
     
     NSArray<NSString *> *methodComponents = [FLEXRuntimeUtility prettyArgumentComponentsForMethod:self.method];
-    NSMutableArray<UIView *> *argumentInputViews = [NSMutableArray array];
+    NSMutableArray<FLEXArgumentInputView *> *argumentInputViews = [NSMutableArray array];
     unsigned int argumentIndex = kFLEXNumberOfImplicitArgs;
     for (NSString *methodComponent in methodComponents) {
         char *argumentTypeEncoding = method_copyArgumentType(self.method, argumentIndex);
