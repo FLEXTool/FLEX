@@ -147,7 +147,7 @@
     
     [FLEXUtility replaceImplementationOfKnownSelector:originalKeyEventSelector onClass:[UIApplication class] withBlock:handleKeyUIEventSwizzleBlock swizzledSelector:swizzledKeyEventSelector];
     
-    if ([[UITouch class] instancesRespondToSelector:@selector(maximumPossibleForce)]) {
+    if (@available(iOS 9.0, *)) {
         SEL originalSendEventSelector = NSSelectorFromString(@"sendEvent:");
         SEL swizzledSendEventSelector = [FLEXUtility swizzledSelectorForSelector:originalSendEventSelector];
         
