@@ -171,31 +171,31 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return shouldAutorotate;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
-        outlineView.hidden = YES;
-    }
-    self.selectedViewOverlay.hidden = YES;
-}
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
+     {
+         for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
+             outlineView.hidden = YES;
+         }
+         self.selectedViewOverlay.hidden = YES;
+     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
+     {
+         for (UIView *view in self.viewsAtTapPoint) {
+             NSValue *key = [NSValue valueWithNonretainedObject:view];
+             UIView *outlineView = self.outlineViewsForVisibleViews[key];
+             outlineView.frame = [self frameInLocalCoordinatesForView:view];
+             if (self.currentMode == FLEXExplorerModeSelect) {
+                 outlineView.hidden = NO;
+             }
+         }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    for (UIView *view in self.viewsAtTapPoint) {
-        NSValue *key = [NSValue valueWithNonretainedObject:view];
-        UIView *outlineView = self.outlineViewsForVisibleViews[key];
-        outlineView.frame = [self frameInLocalCoordinatesForView:view];
-        if (self.currentMode == FLEXExplorerModeSelect) {
-            outlineView.hidden = NO;
-        }
-    }
-    
-    if (self.selectedView) {
-        self.selectedViewOverlay.frame = [self frameInLocalCoordinatesForView:self.selectedView];
-        self.selectedViewOverlay.hidden = NO;
-    }
+         if (self.selectedView) {
+             self.selectedViewOverlay.frame = [self frameInLocalCoordinatesForView:self.selectedView];
+             self.selectedViewOverlay.hidden = NO;
+         }
+     }];
 }
-
 
 #pragma mark - Setter Overrides
 
