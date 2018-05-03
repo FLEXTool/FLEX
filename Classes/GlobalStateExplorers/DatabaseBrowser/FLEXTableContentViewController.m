@@ -175,10 +175,10 @@
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {
         if (newCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
             
-            _multiColumView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
+            self->_multiColumView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
         }
         else {
-            _multiColumView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
+            self->_multiColumView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
         }
         [self.view setNeedsLayout];
     } completion:nil];
