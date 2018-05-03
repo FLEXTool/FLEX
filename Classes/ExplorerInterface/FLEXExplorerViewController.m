@@ -695,7 +695,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (CGRect)viewSafeArea
 {
     CGRect safeArea = self.view.bounds;
-#if FLEX_AT_LEAST_IOS11_SDK
+#ifdef FLEX_AT_LEAST_IOS11_SDK
     if (@available(iOS 11, *)) {
         safeArea = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
     }
@@ -703,7 +703,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return safeArea;
 }
 
-#if FLEX_AT_LEAST_IOS11_SDK
+#ifdef FLEX_AT_LEAST_IOS11_SDK
 - (void)viewSafeAreaInsetsDidChange
 {
   if (@available(iOS 11, *)) {
