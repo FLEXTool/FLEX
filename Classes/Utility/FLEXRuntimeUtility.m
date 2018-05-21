@@ -155,10 +155,14 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         }
     }
     
-    if (!description) {
-        // Single line display - replace newlines and tabs with spaces.
-        description = [[value description] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-        description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
+    @try {
+        if (!description) {
+            // Single line display - replace newlines and tabs with spaces.
+            description = [[value description] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+            description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
+        }
+    } @catch (NSException *e) {
+        description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"];
     }
     
     if (!description) {
