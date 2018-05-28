@@ -109,6 +109,16 @@
 
 #pragma mark - UISearchControllerDelegate
 
+- (void)willPresentSearchController:(UISearchController *)searchController
+{
+	[self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+- (void)didPresentSearchController:(UISearchController *)searchController
+{
+	[self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
 - (void)willDismissSearchController:(UISearchController *)searchController
 {
     [self.operationQueue cancelAllOperations];
