@@ -77,6 +77,7 @@
     settingsViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(settingsViewControllerDoneTapped:)];
     settingsViewController.title = @"Network Debugging Settings";
     UINavigationController *wrapperNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+    wrapperNavigationController.navigationBar.translucent = NO;
     [self presentViewController:wrapperNavigationController animated:YES completion:nil];
 }
 

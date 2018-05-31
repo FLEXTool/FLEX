@@ -868,6 +868,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithViews:allViews viewsAtTap:self.viewsAtTapPoint selectedView:self.selectedView depths:depthsForViews];
             hierarchyTVC.delegate = self;
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:hierarchyTVC];
+            navigationController.navigationBar.translucent = NO;
             [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
         };
         
@@ -891,6 +892,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             globalsViewController.delegate = self;
             [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
             UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:globalsViewController];
+            navigationController.navigationBar.translucent = NO;
             [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
         };
         
