@@ -261,7 +261,7 @@
 - (CGRect)safeArea
 {
   CGRect safeArea = self.bounds;
-#ifdef FLEX_AT_LEAST_IOS11_SDK
+#if FLEX_AT_LEAST_IOS11_SDK
   if (@available(iOS 11, *)) {
     safeArea = UIEdgeInsetsInsetRect(self.bounds, self.safeAreaInsets);
   }

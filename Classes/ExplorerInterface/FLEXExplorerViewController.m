@@ -173,14 +173,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context)
-     {
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
          for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
              outlineView.hidden = YES;
          }
          self.selectedViewOverlay.hidden = YES;
-     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context)
-     {
+     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
          for (UIView *view in self.viewsAtTapPoint) {
              NSValue *key = [NSValue valueWithNonretainedObject:view];
              UIView *outlineView = self.outlineViewsForVisibleViews[key];
@@ -695,7 +693,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (CGRect)viewSafeArea
 {
     CGRect safeArea = self.view.bounds;
-#ifdef FLEX_AT_LEAST_IOS11_SDK
+#if FLEX_AT_LEAST_IOS11_SDK
     if (@available(iOS 11, *)) {
         safeArea = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
     }
@@ -703,7 +701,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return safeArea;
 }
 
-#ifdef FLEX_AT_LEAST_IOS11_SDK
+#if FLEX_AT_LEAST_IOS11_SDK
 - (void)viewSafeAreaInsetsDidChange
 {
   if (@available(iOS 11, *)) {

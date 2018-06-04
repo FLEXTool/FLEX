@@ -165,12 +165,14 @@
                     pressureLevel++;
                 }
                 if (pressureLevel > 0) {
+#if FLEX_AT_LEAST_IOS11_SDK
                     if (@available(iOS 9.0, *)) {
                         for (UITouch *touch in [event allTouches]) {
                             double adjustedPressureLevel = pressureLevel * 20 * touch.maximumPossibleForce;
                             [touch setValue:@(adjustedPressureLevel) forKey:@"_pressure"];
                         }
                     }
+#endif
                 }
             }
             
