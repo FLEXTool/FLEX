@@ -349,11 +349,13 @@
 - (void)willPresentSearchController:(UISearchController *)searchController
 {
     self.isPresentingSearch = YES;
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)didPresentSearchController:(UISearchController *)searchController
 {
     self.isPresentingSearch = NO;
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 - (void)willDismissSearchController:(UISearchController *)searchController
