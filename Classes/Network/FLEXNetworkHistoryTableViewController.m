@@ -66,7 +66,9 @@
     self.searchController.delegate = self;
     self.searchController.searchResultsUpdater = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
-    self.tableView.tableHeaderView = self.searchController.searchBar;
+	self.searchController.hidesNavigationBarDuringPresentation = YES;
+	self.tableView.tableHeaderView = self.searchController.searchBar;
+	self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 
     [self updateTransactions];
 }
@@ -349,17 +351,22 @@
 - (void)willPresentSearchController:(UISearchController *)searchController
 {
     self.isPresentingSearch = YES;
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+	CGRect newFrame = self.tableView.tableHeaderView.frame;
+	newFrame.size.height = 0;
+	self.tableView.tableHeaderView.frame = newFrame;
 }
 
 - (void)didPresentSearchController:(UISearchController *)searchController
 {
     self.isPresentingSearch = NO;
-    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 - (void)willDismissSearchController:(UISearchController *)searchController
 {
+	self.isPresentingSearch = NO;
+	float navigationBarHeight = self.navigationController.navigationBar.frame.size.height;
+	float statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+	self.tableView.contentInset = UIEdgeInsetsMake(navigationBarHeight-statusBarHeight-4, 0, 0, 0);
     [self.tableView reloadData];
 }
 

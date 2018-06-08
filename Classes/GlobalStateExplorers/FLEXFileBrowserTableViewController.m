@@ -49,7 +49,10 @@
         self.searchController.searchResultsUpdater = self;
         self.searchController.delegate = self;
         self.searchController.dimsBackgroundDuringPresentation = NO;
-        self.tableView.tableHeaderView = self.searchController.searchBar;
+		self.searchController.hidesNavigationBarDuringPresentation = YES;
+		self.tableView.tableHeaderView = self.searchController.searchBar;
+		self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+		self.definesPresentationContext = YES;
         
         //computing path size
         FLEXFileBrowserTableViewController *__weak weakSelf = self;
@@ -111,19 +114,20 @@
 
 - (void)willPresentSearchController:(UISearchController *)searchController
 {
-	[self.navigationController setNavigationBarHidden:YES animated:YES];
-}
-
-- (void)didPresentSearchController:(UISearchController *)searchController
-{
-	[self.navigationController setNavigationBarHidden:NO animated:YES];
+	CGRect newFrame = self.tableView.tableHeaderView.frame;
+	newFrame.size.height = 0;
+	self.tableView.tableHeaderView.frame = newFrame;
 }
 
 - (void)willDismissSearchController:(UISearchController *)searchController
 {
-    [self.operationQueue cancelAllOperations];
-    [self reloadChildPaths];
-    [self.tableView reloadData];
+	float navigationBarHeight = self.navigationController.navigationBar.frame.size.height;
+	float statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+	self.tableView.contentInset = UIEdgeInsetsMake(navigationBarHeight-statusBarHeight-4, 0, 0, 0);
+	[self.tableView reloadData];
+	[self.operationQueue cancelAllOperations];
+	[self reloadChildPaths];
+	[self.tableView reloadData];
 }
 
 
