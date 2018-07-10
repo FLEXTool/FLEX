@@ -755,7 +755,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     // Note that we need to wait until the view controller is dismissed to calculated the frame of the outline view.
     // Otherwise the coordinate conversion doesn't give the correct result.
-    [self resignKeyAndDismissViewControllerAnimated:YES completion:^{
+    [self toggleViewsToolWithCompletion:^{
         // If the selected view is outside of the tap point array (selected from "Full Hierarchy"),
         // then clear out the tap point array and remove all the outline views.
         if (![self.viewsAtTapPoint containsObject:selectedView]) {
@@ -835,6 +835,15 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return self.previousKeyWindow != nil;
 }
 
+- (void)toggleToolWithViewControllerProvider:(UIViewController *(^)())future completion:(void(^)())completion
+{
+    if (self.presentedViewController) {
+        [self resignKeyAndDismissViewControllerAnimated:YES completion:completion];
+    } else {
+        [self makeKeyAndPresentViewController:future() animated:YES completion:completion];
+    }
+}
+
 #pragma mark - Keyboard Shortcut Helpers
 
 - (void)toggleSelectTool
@@ -857,49 +866,32 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)toggleViewsTool
 {
-    BOOL viewsModalShown = [[self presentedViewController] isKindOfClass:[UINavigationController class]];
-    viewsModalShown = viewsModalShown && [[[(UINavigationController *)[self presentedViewController] viewControllers] firstObject] isKindOfClass:[FLEXHierarchyTableViewController class]];
-    if (viewsModalShown) {
-        [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
-    } else {
-        void (^presentBlock)(void) = ^{
-            NSArray<UIView *> *allViews = [self allViewsInHierarchy];
-            NSDictionary<NSValue *, NSNumber *> *depthsForViews = [self hierarchyDepthsForViews:allViews];
-            FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithViews:allViews viewsAtTap:self.viewsAtTapPoint selectedView:self.selectedView depths:depthsForViews];
-            hierarchyTVC.delegate = self;
-            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:hierarchyTVC];
-            [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
-        };
-        
-        if (self.presentedViewController) {
-            [self resignKeyAndDismissViewControllerAnimated:NO completion:presentBlock];
-        } else {
-            presentBlock();
+    [self toggleViewsToolWithCompletion:nil];
+}
+
+- (void)toggleViewsToolWithCompletion:(void(^)())completion
+{
+    [self toggleToolWithViewControllerProvider:^UIViewController *{
+        NSArray<UIView *> *allViews = [self allViewsInHierarchy];
+        NSDictionary *depthsForViews = [self hierarchyDepthsForViews:allViews];
+        FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithViews:allViews viewsAtTap:self.viewsAtTapPoint selectedView:self.selectedView depths:depthsForViews];
+        hierarchyTVC.delegate = self;
+        return [[UINavigationController alloc] initWithRootViewController:hierarchyTVC];
+    } completion:^{
+        if (completion) {
+            completion();
         }
-    }
+    }];
 }
 
 - (void)toggleMenuTool
 {
-    BOOL menuModalShown = [[self presentedViewController] isKindOfClass:[UINavigationController class]];
-    menuModalShown = menuModalShown && [[[(UINavigationController *)[self presentedViewController] viewControllers] firstObject] isKindOfClass:[FLEXGlobalsTableViewController class]];
-    if (menuModalShown) {
-        [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
-    } else {
-        void (^presentBlock)(void) = ^{
-            FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
-            globalsViewController.delegate = self;
-            [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
-            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:globalsViewController];
-            [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
-        };
-        
-        if (self.presentedViewController) {
-            [self resignKeyAndDismissViewControllerAnimated:NO completion:presentBlock];
-        } else {
-            presentBlock();
-        }
-    }
+    [self toggleToolWithViewControllerProvider:^UIViewController *{
+        FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
+        globalsViewController.delegate = self;
+        [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
+        return [[UINavigationController alloc] initWithRootViewController:globalsViewController];
+    } completion:nil];
 }
 
 - (void)handleDownArrowKeyPressed

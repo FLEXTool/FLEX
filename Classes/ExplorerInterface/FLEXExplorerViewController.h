@@ -17,6 +17,12 @@
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates;
 - (BOOL)wantsWindowToBecomeKey;
 
+/// @brief Used to present (or dismiss) a modal view controller ("tool"), typically triggered by pressing a button in the toolbar.
+///
+/// If a tool is already presented, this method simply dismisses it and calls the completion block.
+/// If no tool is presented, @code future() @endcode is presented and the completion block is called.
+- (void)toggleToolWithViewControllerProvider:(UIViewController *(^)())future completion:(void(^)())completion;
+
 // Keyboard shortcut helpers
 
 - (void)toggleSelectTool;
