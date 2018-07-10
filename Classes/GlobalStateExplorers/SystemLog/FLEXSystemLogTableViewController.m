@@ -15,9 +15,10 @@
 @interface FLEXSystemLogTableViewController () <UISearchResultsUpdating, UISearchControllerDelegate>
 
 @property (nonatomic, strong) UISearchController *searchController;
-@property (nonatomic, copy) NSArray<FLEXSystemLogMessage *> *logMessages;
+@property (nonatomic, readonly) NSMutableArray<FLEXSystemLogMessage *> *logMessages;
 @property (nonatomic, copy) NSArray<FLEXSystemLogMessage *> *filteredLogMessages;
 @property (nonatomic, strong) NSTimer *logUpdateTimer;
+@property (nonatomic, readonly) NSMutableIndexSet *logMessageIdentifiers;
 
 @end
 
@@ -26,6 +27,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
+    _logMessages = [NSMutableArray array];
+    _logMessageIdentifiers = [NSMutableIndexSet indexSet];
 
     [self.tableView registerClass:[FLEXSystemLogTableViewCell class] forCellReuseIdentifier:kFLEXSystemLogTableViewCellIdentifier];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -65,10 +69,15 @@
 - (void)updateLogMessages
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSArray<FLEXSystemLogMessage *> *logMessages = [[self class] allLogMessagesForCurrentProcess];
+        NSArray<FLEXSystemLogMessage *> *newMessages = [self newLogMessagesForCurrentProcess];
+
         dispatch_async(dispatch_get_main_queue(), ^{
             self.title = @"System Log";
-            self.logMessages = logMessages;
+
+            [self.logMessages addObjectsFromArray:newMessages];
+            for (FLEXSystemLogMessage *message in newMessages) {
+                [self.logMessageIdentifiers addIndex:(NSUInteger)message.messageID];
+            }
 
             // "Follow" the log as new messages stream in if we were previously near the bottom.
             BOOL wasNearBottom = self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.frame.size.height - 100.0;
@@ -169,15 +178,48 @@
 
 #pragma mark - Log Message Fetching
 
-+ (NSArray<FLEXSystemLogMessage *> *)allLogMessagesForCurrentProcess
+- (NSArray<FLEXSystemLogMessage *> *)newLogMessagesForCurrentProcess
 {
+    if (!self.logMessages.count) {
+        return [[self class] allLogMessagesForCurrentProcess];
+    }
+
+    aslresponse response = [FLEXSystemLogTableViewController ASLMessageListForCurrentProcess];
+    aslmsg aslMessage = NULL;
+
+    NSMutableArray<FLEXSystemLogMessage *> *newMessages = [NSMutableArray array];
+
+    while ((aslMessage = asl_next(response))) {
+        NSUInteger messageID = (NSUInteger)atoll(asl_get(aslMessage, ASL_KEY_MSG_ID));
+        if (![self.logMessageIdentifiers containsIndex:messageID]) {
+            [newMessages addObject:[FLEXSystemLogMessage logMessageFromASLMessage:aslMessage]];
+        }
+    }
+
+    asl_release(response);
+    return newMessages;
+}
+
++ (aslresponse)ASLMessageListForCurrentProcess
+{
+    static NSString *pidString = nil;
+    if (!pidString) {
+        pidString = @([[NSProcessInfo processInfo] processIdentifier]).stringValue;
+    }
+
+    // Create system log query object.
     asl_object_t query = asl_new(ASL_TYPE_QUERY);
 
-    // Filter for messages from the current process. Note that this appears to happen by default on device, but is required in the simulator.
-    NSString *pidString = [NSString stringWithFormat:@"%d", [[NSProcessInfo processInfo] processIdentifier]];
-    asl_set_query(query, ASL_KEY_PID, [pidString UTF8String], ASL_QUERY_OP_EQUAL);
+    // Filter for messages from the current process.
+    // Note that this appears to happen by default on device, but is required in the simulator.
+    asl_set_query(query, ASL_KEY_PID, pidString.UTF8String, ASL_QUERY_OP_EQUAL);
 
-    aslresponse response = asl_search(NULL, query);
+    return asl_search(NULL, query);
+}
+
++ (NSArray<FLEXSystemLogMessage *> *)allLogMessagesForCurrentProcess
+{
+    aslresponse response = [self ASLMessageListForCurrentProcess];
     aslmsg aslMessage = NULL;
 
     NSMutableArray<FLEXSystemLogMessage *> *logMessages = [NSMutableArray array];

@@ -10,7 +10,7 @@
 
 @implementation FLEXSystemLogMessage
 
-+(instancetype)logMessageFromASLMessage:(aslmsg)aslMessage
++ (instancetype)logMessageFromASLMessage:(aslmsg)aslMessage
 {
     FLEXSystemLogMessage *logMessage = [[FLEXSystemLogMessage alloc] init];
 
