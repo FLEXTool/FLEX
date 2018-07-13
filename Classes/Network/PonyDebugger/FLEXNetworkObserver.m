@@ -944,7 +944,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
         NSMutableData *dataAccumulator = nil;
         if (response.expectedContentLength < 0) {
             dataAccumulator = [[NSMutableData alloc] init];
-        } else {
+        } else if (response.expectedContentLength < 52428800) {
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
         }
         requestState.dataAccumulator = dataAccumulator;
