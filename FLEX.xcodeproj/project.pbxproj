@@ -547,8 +547,7 @@
 				94A515231C4CA2080063292F /* FLEXToolbarItem.h */,
 				94A515241C4CA2080063292F /* FLEXToolbarItem.m */,
 			);
-			name = Toolbar;
-			path = ExplorerToolbar;
+			path = Toolbar;
 			sourceTree = "<group>";
 		};
 		3A4C949A1B5B21410088C3F2 /* GlobalStateExplorers */ = {
