@@ -70,6 +70,9 @@
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSArray<FLEXSystemLogMessage *> *newMessages = [self newLogMessagesForCurrentProcess];
+        if (!newMessages.count) {
+            return;
+        }
 
         dispatch_async(dispatch_get_main_queue(), ^{
             self.title = @"System Log";
