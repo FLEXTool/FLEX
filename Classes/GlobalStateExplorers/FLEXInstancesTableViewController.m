@@ -12,17 +12,48 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXHeapEnumerator.h"
+#import "FLEXObjectRef.h"
 #import <malloc/malloc.h>
 
 
 @interface FLEXInstancesTableViewController ()
 
-@property (nonatomic, strong) NSArray *instances;
-@property (nonatomic, strong) NSArray<NSString *> *fieldNames;
+/// Array of [[section], [section], ...]
+/// where [section] is [["row title", instance], ["row title", instance], ...]
+@property (nonatomic) NSArray<FLEXObjectRef *> *instances;
+@property (nonatomic) NSArray<NSArray<FLEXObjectRef*>*> *sections;
+@property (nonatomic) NSArray<NSString *> *sectionTitles;
+@property (nonatomic) NSArray<NSPredicate *> *predicates;
+@property (nonatomic, readonly) NSInteger maxSections;
 
 @end
 
 @implementation FLEXInstancesTableViewController
+
+- (id)initWithReferences:(NSArray<FLEXObjectRef *> *)references {
+    return [self initWithReferences:references predicates:nil sectionTitles:nil];
+}
+
+- (id)initWithReferences:(NSArray<FLEXObjectRef *> *)references
+              predicates:(NSArray<NSPredicate *> *)predicates
+           sectionTitles:(NSArray<NSString *> *)sectionTitles {
+    NSParameterAssert(predicates.count == sectionTitles.count);
+
+    self = [super init];
+    if (self) {
+        self.instances = references;
+        self.predicates = predicates;
+        self.sectionTitles = sectionTitles;
+
+        if (predicates.count) {
+            [self buildSections];
+        } else {
+            self.sections = @[references];
+        }
+    }
+
+    return self;
+}
 
 + (instancetype)instancesTableViewControllerForClassName:(NSString *)className
 {
@@ -38,16 +69,15 @@
             }
         }
     }];
-    FLEXInstancesTableViewController *instancesViewController = [[self alloc] init];
-    instancesViewController.instances = instances;
-    instancesViewController.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)[instances count]];
-    return instancesViewController;
+    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingAll:instances];
+    FLEXInstancesTableViewController *viewController = [[self alloc] initWithReferences:references];
+    viewController.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)[instances count]];
+    return viewController;
 }
 
 + (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object
 {
-    NSMutableArray *instances = [NSMutableArray array];
-    NSMutableArray<NSString *> *fieldNames = [NSMutableArray array];
+    NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray array];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
         // Get all the ivars on the object. Start with the class and and travel up the inheritance chain.
         // Once we find a match, record it and move on to the next object. There's no reason to find multiple matches within the same object.
@@ -62,8 +92,7 @@
                     ptrdiff_t offset = ivar_getOffset(ivar);
                     uintptr_t *fieldPointer = (__bridge void *)tryObject + offset;
                     if (*fieldPointer == (uintptr_t)(__bridge void *)object) {
-                        [instances addObject:tryObject];
-                        [fieldNames addObject:@(ivar_getName(ivar))];
+                        [instances addObject:[FLEXObjectRef referencing:tryObject ivar:@(ivar_getName(ivar))]];
                         return;
                     }
                 }
@@ -71,11 +100,85 @@
             tryClass = class_getSuperclass(tryClass);
         }
     }];
-    FLEXInstancesTableViewController *instancesViewController = [[self alloc] init];
-    instancesViewController.instances = instances;
-    instancesViewController.fieldNames = fieldNames;
-    instancesViewController.title = [NSString stringWithFormat:@"Referencing %@ %p", NSStringFromClass(object_getClass(object)), object];
-    return instancesViewController;
+
+    NSArray<NSPredicate *> *predicates = [self defaultPredicates];
+    NSArray<NSString *> *sectionTitles = [self defaultSectionTitles];
+    FLEXInstancesTableViewController *viewController = [[self alloc] initWithReferences:instances
+                                                                             predicates:predicates
+                                                                          sectionTitles:sectionTitles];
+    viewController.title = [NSString stringWithFormat:@"Referencing %@ %p", NSStringFromClass(object_getClass(object)), object];
+    return viewController;
+}
+
++ (NSPredicate *)defaultPredicateForSection:(NSInteger)section
+{
+    // These are the types of references that we typically don't care about.
+    // We want this list of "object-ivar pairs" split into two sections.
+    BOOL(^isObserver)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
+        NSString *row = ref.reference;
+        return [row isEqualToString:@"__NSObserver object"] ||
+               [row isEqualToString:@"_CFXNotificationObjcObserverRegistration _object"];
+    };
+
+    /// These are common AutoLayout related references we also rarely care about.
+    BOOL(^isConstraintRelated)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
+        static NSSet *ignored = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            ignored = [NSSet setWithArray:@[
+                @"NSLayoutConstraint _container",
+                @"NSContentSizeLayoutConstraint _container",
+                @"NSAutoresizingMaskLayoutConstraint _container",
+                @"MASViewConstraint _installedView",
+                @"MASLayoutConstraint _container",
+                @"MASViewAttribute _view"
+            ]];
+        });
+
+        NSString *row = ref.reference;
+        return ([row hasPrefix:@"NSLayout"] && [row hasSuffix:@" _referenceItem"]) ||
+               ([row hasPrefix:@"NSIS"] && [row hasSuffix:@" _delegate"])  ||
+               ([row hasPrefix:@"_NSAutoresizingMask"] && [row hasSuffix:@" _referenceItem"]) ||
+               [ignored containsObject:row];
+    };
+
+    BOOL(^isEssential)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
+        return !(isObserver(ref, bindings) || isConstraintRelated(ref, bindings));
+    };
+
+    switch (section) {
+        case 0: return [NSPredicate predicateWithBlock:isEssential];
+        case 1: return [NSPredicate predicateWithBlock:isConstraintRelated];
+        case 2: return [NSPredicate predicateWithBlock:isObserver];
+
+        default: return nil;
+    }
+}
+
++ (NSArray<NSPredicate *> *)defaultPredicates {
+    return @[[self defaultPredicateForSection:0],
+             [self defaultPredicateForSection:1],
+             [self defaultPredicateForSection:2]];
+}
+
++ (NSArray<NSString *> *)defaultSectionTitles {
+    return @[@"", @"AutoLayout", @"Trivial"];
+}
+
+- (void)buildSections
+{
+    NSInteger maxSections = self.maxSections;
+    NSMutableArray *sections = [NSMutableArray array];
+    for (NSInteger i = 0; i < maxSections; i++) {
+        NSPredicate *predicate = self.predicates[i];
+        [sections addObject:[self.instances filteredArrayUsingPredicate:predicate]];
+    }
+
+    self.sections = sections;
+}
+
+- (NSInteger)maxSections {
+    return self.predicates.count ?: 1;
 }
 
 
@@ -83,12 +186,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return self.maxSections;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.instances count];
+    return self.sections[section].count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -103,18 +206,25 @@
         cell.detailTextLabel.font = cellFont;
         cell.detailTextLabel.textColor = [UIColor grayColor];
     }
-    
-    id instance = self.instances[indexPath.row];
-    NSString *title = nil;
-    if ((NSInteger)[self.fieldNames count] > indexPath.row) {
-        title = [NSString stringWithFormat:@"%@ %@", NSStringFromClass(object_getClass(instance)), self.fieldNames[indexPath.row]];
-    } else {
-        title = [NSString stringWithFormat:@"%@ %p", NSStringFromClass(object_getClass(instance)), instance];
-    }
-    cell.textLabel.text = title;
-    cell.detailTextLabel.text = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:instance];
+
+    FLEXObjectRef *row = self.sections[indexPath.section][indexPath.row];
+    cell.textLabel.text = row.reference;
+    cell.detailTextLabel.text = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:row.object];
     
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (self.sectionTitles.count) {
+        // Return nil instead of empty strings
+        NSString *title = self.sectionTitles[section];
+        if (title.length) {
+            return title;
+        }
+    }
+
+    return nil;
 }
 
 
