@@ -21,7 +21,7 @@
 ///
 /// If a tool is already presented, this method simply dismisses it and calls the completion block.
 /// If no tool is presented, @code future() @endcode is presented and the completion block is called.
-- (void)toggleToolWithViewControllerProvider:(UIViewController *(^)())future completion:(void(^)())completion;
+- (void)toggleToolWithViewControllerProvider:(UIViewController *(^)(void))future completion:(void(^)(void))completion;
 
 // Keyboard shortcut helpers
 
