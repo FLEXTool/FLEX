@@ -833,7 +833,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return self.previousKeyWindow != nil;
 }
 
-- (void)toggleToolWithViewControllerProvider:(UIViewController *(^)())future completion:(void(^)())completion
+- (void)toggleToolWithViewControllerProvider:(UIViewController *(^)(void))future completion:(void(^)(void))completion
 {
     if (self.presentedViewController) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:completion];
@@ -867,7 +867,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self toggleViewsToolWithCompletion:nil];
 }
 
-- (void)toggleViewsToolWithCompletion:(void(^)())completion
+- (void)toggleViewsToolWithCompletion:(void(^)(void))completion
 {
     [self toggleToolWithViewControllerProvider:^UIViewController *{
         NSArray<UIView *> *allViews = [self allViewsInHierarchy];
