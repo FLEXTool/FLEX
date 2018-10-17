@@ -33,6 +33,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowAppDelegate,
     FLEXGlobalsRowRootViewController,
     FLEXGlobalsRowUserDefaults,
+    FLEXGlobalsRowMainBundle,
     FLEXGlobalsRowApplication,
     FLEXGlobalsRowKeyWindow,
     FLEXGlobalsRowMainScreen,
@@ -120,6 +121,16 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 viewControllerFuture = ^UIViewController *{
                     NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:standardUserDefaults];
+                };
+                break;
+
+            case FLEXGlobalsRowMainBundle:
+                titleFuture = ^NSString *{
+                    return @"📦  +[NSBundle mainBundle]";
+                };
+                viewControllerFuture = ^UIViewController *{
+                    NSBundle *mainBundle = [NSBundle mainBundle];
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:mainBundle];
                 };
                 break;
 
