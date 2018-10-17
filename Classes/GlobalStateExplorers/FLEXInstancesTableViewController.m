@@ -232,7 +232,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    id instance = self.instances[indexPath.row];
+    id instance = self.instances[indexPath.row].object;
     FLEXObjectExplorerViewController *drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:instance];
     [self.navigationController pushViewController:drillInViewController animated:YES];
 }
