@@ -11,6 +11,7 @@
 #import "FLEXHierarchyTableViewCell.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
+#import "FLEXResources.h"
 
 static const NSInteger kFLEXHierarchyScopeViewsAtTapIndex = 0;
 static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
@@ -178,6 +179,20 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     } else {
         cell.textLabel.textColor = [UIColor blackColor];
         cell.detailTextLabel.textColor = [UIColor blackColor];
+    }
+    
+    // Use a pattern-based colour to simplify application of the checker pattern.
+    static UIColor *checkerPatternColour = nil;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        checkerPatternColour = [UIColor colorWithPatternImage:[FLEXResources checkerPattern]];
+    });
+    
+    UIColor *viewColour = view.backgroundColor;
+    if (!viewColour || [viewColour isEqual:[UIColor clearColor]]) {
+        cell.viewBackgroundColorView.backgroundColor = checkerPatternColour;
+    } else {
+        cell.viewBackgroundColorView.backgroundColor = viewColour;
     }
     
     return cell;

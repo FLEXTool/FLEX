@@ -14,5 +14,6 @@
 
 @property (nonatomic, assign) NSInteger viewDepth;
 @property (nonatomic, strong) UIColor *viewColor;
+@property (nonatomic, strong) UIView *viewBackgroundColorView;
 
 @end
