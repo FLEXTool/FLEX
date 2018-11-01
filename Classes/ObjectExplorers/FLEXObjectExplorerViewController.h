@@ -33,6 +33,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
 - (NSString *)customSectionSubtitleForRowCookie:(id)rowCookie;
 - (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie;
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie;
+- (UIView *)customViewForRowCookie:(id)rowCookie;
 
 // More subclass configuration hooks.
 

@@ -941,7 +941,8 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-    
+
+    BOOL isCustomSection = explorerSection == FLEXObjectExplorerSectionCustom;
     BOOL useDescriptionCell = explorerSection == FLEXObjectExplorerSectionDescription;
     NSString *cellIdentifier = useDescriptionCell ? kFLEXMultilineTableViewCellIdentifier : @"cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
@@ -957,7 +958,16 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
             cell.detailTextLabel.textColor = [UIColor grayColor];
         }
     }
-    
+
+
+    UIView *customView;
+    if (isCustomSection) {
+        customView = [self customViewForRowCookie:[self customSectionRowCookieForVisibleRow:indexPath.row]];
+        if (customView) {
+            [cell.contentView addSubview:customView];
+        }
+    }
+
     cell.textLabel.text = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
     cell.detailTextLabel.text = [self subtitleForRow:indexPath.row inExplorerSection:explorerSection];
     cell.accessoryType = [self canDrillInToRow:indexPath.row inExplorerSection:explorerSection] ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
@@ -974,7 +984,11 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
         NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSFontAttributeName : [FLEXUtility defaultTableViewCellLabelFont] }];
         CGFloat preferredHeight = [FLEXMultilineTableViewCell preferredHeightWithAttributedText:attributedText inTableViewWidth:self.tableView.frame.size.width style:tableView.style showsAccessory:NO];
         height = MAX(height, preferredHeight);
+    } else if (explorerSection == FLEXObjectExplorerSectionCustom) {
+        id cookie = [self customSectionRowCookieForVisibleRow:indexPath.row];
+        height = [self heightForCustomViewRowForRowCookie:cookie];
     }
+    
     return height;
 }
 
@@ -1101,6 +1115,16 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
     return nil;
+}
+
+- (UIView *)customViewForRowCookie:(id)rowCookie
+{
+    return nil;
+}
+
+- (CGFloat)heightForCustomViewRowForRowCookie:(id)rowCookie
+{
+    return self.tableView.rowHeight;
 }
 
 - (BOOL)canHaveInstanceState
