@@ -367,7 +367,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     id value = nil;
     if ([self canHaveInstanceState]) {
         FLEXPropertyBox *propertyBox = self.filteredProperties[index];
+        NSString *typeString = [FLEXRuntimeUtility typeEncodingForProperty:propertyBox.property];
+        const FLEXTypeEncoding *encoding = [typeString cStringUsingEncoding:NSUTF8StringEncoding];
         value = [FLEXRuntimeUtility valueForProperty:propertyBox.property onObject:self.object];
+        value = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:value type:encoding];
     }
     return value;
 }
@@ -449,7 +452,9 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     id value = nil;
     if ([self canHaveInstanceState]) {
         FLEXIvarBox *ivarBox = self.filteredIvars[index];
+        const FLEXTypeEncoding *encoding = ivar_getTypeEncoding(ivarBox.ivar);
         value = [FLEXRuntimeUtility valueForIvar:ivarBox.ivar onObject:self.object];
+        value = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:value type:encoding];
     }
     return value;
 }
