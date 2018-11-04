@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FLEXRuntimeUtility.h"
+#import "FLEXObjcInternal.h"
 
 // See https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
 NSString *const kFLEXUtilityAttributeTypeEncoding = @"T";
@@ -35,6 +36,57 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 @implementation FLEXRuntimeUtility
 
+
+#pragma mark - General Helpers (Public)
+
++ (BOOL)pointerIsValidObjcObject:(const void *)pointer
+{
+    return FLEXPointerIsValidObjcObject(pointer);
+}
+
++ (id)potentiallyUnwrapBoxedPointer:(id)returnedObjectOrNil type:(const FLEXTypeEncoding *)returnType
+{
+    if (!returnedObjectOrNil) {
+        return nil;
+    }
+    
+    NSInteger i = 0;
+    if (returnType[i] == FLEXTypeEncodingConst) {
+        i++;
+    }
+    
+    BOOL returnsObjectOrClass = returnType[i] == FLEXTypeEncodingObjcObject ||
+                                returnType[i] == FLEXTypeEncodingObjcClass;
+    BOOL returnsVoidPointer   = returnType[i] == FLEXTypeEncodingPointer &&
+                                returnType[i+1] == FLEXTypeEncodingVoid;
+    BOOL returnsCString       = returnType[i] == FLEXTypeEncodingCString;
+    
+    // If we got back an NSValue and the return type is not an object,
+    // we check to see if the pointer is of a valid object. If not,
+    // we just display the NSValue.
+    if (!returnsObjectOrClass) {
+        // Can only be NSValue since return type is not an object,
+        // so we bail if this doesn't add up
+        if (![returnedObjectOrNil isKindOfClass:[NSValue class]]) {
+            return returnedObjectOrNil;
+        }
+        
+        NSValue *value = (NSValue *)returnedObjectOrNil;
+        
+        if (returnsCString) {
+            // Wrap char * in NSString
+            const char *string = (const char *)value.pointerValue;
+            returnedObjectOrNil = [NSString stringWithCString:string encoding:NSUTF8StringEncoding];
+        } else if (returnsVoidPointer) {
+            // Cast valid objects disguised as void * to id
+            if ([FLEXRuntimeUtility pointerIsValidObjcObject:value.pointerValue]) {
+                returnedObjectOrNil = (__bridge id)value.pointerValue;
+            }
+        }
+    }
+    
+    return returnedObjectOrNil;
+}
 
 #pragma mark - Property Helpers (Public)
 
@@ -301,6 +353,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
     
     return components;
+}
+
++ (FLEXTypeEncoding *)returnTypeForMethod:(Method)method
+{
+    return (FLEXTypeEncoding *)method_copyReturnType(method);
 }
 
 
