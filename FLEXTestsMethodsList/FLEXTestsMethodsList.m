@@ -24,49 +24,43 @@
 
 @implementation FLEXTestMethodList
 
-- (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
-
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
 - (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-    [self testMethodListForClass:[NSObject class]];
-    [self testMethodListForClass:[NSArray class]];
-    [self testMethodListForClass:[UIApplication class]];
-    [self testMethodListForClass:[UIView class]];
-    [self testMethodListForClass:[NSThread class]];
-    [self testMethodListForClass:[CALayer class]];
-    [self testMethodListForClass:[NSDictionary class]];
-    [self testMethodListForClass:[NSProxy class]];
-    [self testMethodListForClass:[NSData class]];
-    [self testMethodListForClass:[FLEXManager class]];
-    [self testMethodListForClass:[FLEXWindow class]];
-    [self testMethodListForClass:[FLEXMultiColumnTableView class]];
-    [self testMethodListForClass:[NSString class]];
-    [self testMethodListForClass:[NSSet class]];
-    [self testMethodListForClass:[NSUndoManager class]];
-    [self testMethodListForClass:[NSMutableArray class]];
-    [self testMethodListForClass:[NSMutableDictionary class]];
-    [self testMethodListForClass:[NSException class]];
-    [self testMethodListForClass:[UIImage class]];
-    [self testMethodListForClass:[UIViewController class]];
-    [self testMethodListForClass:[UIScreen class]];
-    [self testMethodListForClass:[UIResponder class]];
-    [self testMethodListForClass:[NSNumber class]];
-    [self testMethodListForClass:[NSValue class]];
-    [self testMethodListForClass:[NSError class]];
-    [self testMethodListForClass:[NSNotificationCenter class]];
-    [self testMethodListForClass:[NSUserActivity class]];
-    [self testMethodListForClass:[NSUserDefaults class]];
-    [self testMethodListForClass:[NSExpression class]];
-    [self testMethodListForClass:[NSBundle class]];
+    NSArray<Class> *classesToTest = @[
+        [NSObject class],
+        [NSArray class],
+        [UIApplication class],
+        [UIView class],
+        [NSThread class],
+        [CALayer class],
+        [NSDictionary class],
+        [NSProxy class],
+        [NSData class],
+        [FLEXManager class],
+        [FLEXWindow class],
+        [FLEXMultiColumnTableView class],
+        [NSString class],
+        [NSSet class],
+        [NSUndoManager class],
+        [NSMutableArray class],
+        [NSMutableDictionary class],
+        [NSException class],
+        [UIImage class],
+        [UIViewController class],
+        [UIScreen class],
+        [UIResponder class],
+        [NSNumber class],
+        [NSValue class],
+        [NSError class],
+        [NSNotificationCenter class],
+        [NSUserActivity class],
+        [NSUserDefaults class],
+        [NSExpression class],
+        [NSBundle class]
+    ];
+    
+    for (Class cls in classesToTest) {
+        [self testMethodListForClass:cls];
+    }
 }
 
 - (void)testMethodListForClass:(Class)class {
@@ -75,25 +69,13 @@
     Method *methods = class_copyMethodList(class, &methodCount);
     for (unsigned int i = 0; i < methodCount; ++i) {
         Method method = methods[i];
-        NSString *selectorName = NSStringFromSelector(method_getName(method));
         NSArray *prevWay = [self prettyArgumentComponentsForMethod:method];
-        if (![prevWay count]) {
-            prevWay = @[ selectorName ];
-        }
-        
         NSArray *newWay = [FLEXRuntimeUtility prettyArgumentComponentsForMethod:method];
         
-        XCTAssert([newWay isEqual:prevWay]);
+        XCTAssertEqualObjects(prevWay, newWay);
     }
     
     free(methods);
-}
-
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
 }
 
 #pragma mark - Method to test with
