@@ -337,7 +337,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     
     // this is a workaround cause method_getNumberOfArguments() returns wrong number for some methods
     if (selectorComponents.count == 1) {
-        return [selectorComponents copy];
+        return @[];
     }
     
     if ([selectorComponents.lastObject isEqualToString:@""]) {
