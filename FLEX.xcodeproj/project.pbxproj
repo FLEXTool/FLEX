@@ -166,6 +166,8 @@
 		94AAF0381BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */; };
 		94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 942DCD821BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		C37A0C93218BAC9600848CA7 /* FLEXObjcInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */; };
+		C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */; };
 		C395D6D921789BD800BEAD4D /* FLEXColorExplorerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C395D6D721789BD800BEAD4D /* FLEXColorExplorerViewController.h */; };
 		C395D6DA21789BD800BEAD4D /* FLEXColorExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C395D6D821789BD800BEAD4D /* FLEXColorExplorerViewController.m */; };
 		C3DB9F642107FC9600B46809 /* FLEXObjectRef.h in Headers */ = {isa = PBXBuildFile; fileRef = C3DB9F622107FC9600B46809 /* FLEXObjectRef.h */; };
@@ -346,6 +348,8 @@
 		94A515241C4CA2080063292F /* FLEXToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXToolbarItem.m; path = Classes/Toolbar/FLEXToolbarItem.m; sourceTree = SOURCE_ROOT; };
 		94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXKeyboardHelpViewController.h; sourceTree = "<group>"; };
 		94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyboardHelpViewController.m; sourceTree = "<group>"; };
+		C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXObjcInternal.h; sourceTree = "<group>"; };
+		C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXObjcInternal.mm; sourceTree = "<group>"; };
 		C395D6D721789BD800BEAD4D /* FLEXColorExplorerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXColorExplorerViewController.h; sourceTree = "<group>"; };
 		C395D6D821789BD800BEAD4D /* FLEXColorExplorerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXColorExplorerViewController.m; sourceTree = "<group>"; };
 		C3DB9F622107FC9600B46809 /* FLEXObjectRef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXObjectRef.h; sourceTree = "<group>"; };
@@ -471,6 +475,8 @@
 				3A4C94581B5B21410088C3F2 /* FLEXMultilineTableViewCell.m */,
 				3A4C94591B5B21410088C3F2 /* FLEXResources.h */,
 				3A4C945A1B5B21410088C3F2 /* FLEXResources.m */,
+				C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */,
+				C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */,
 				3A4C945B1B5B21410088C3F2 /* FLEXRuntimeUtility.h */,
 				3A4C945C1B5B21410088C3F2 /* FLEXRuntimeUtility.m */,
 				3A4C945D1B5B21410088C3F2 /* FLEXUtility.h */,
@@ -710,6 +716,7 @@
 				3A4C94FD1B5B21410088C3F2 /* FLEXArgumentInputStructView.h in Headers */,
 				94A515141C4CA1C00063292F /* FLEXManager.h in Headers */,
 				3A4C95201B5B21410088C3F2 /* FLEXFileBrowserFileOperationController.h in Headers */,
+				C37A0C93218BAC9600848CA7 /* FLEXObjcInternal.h in Headers */,
 				3A4C953E1B5B21410088C3F2 /* FLEXNetworkTransactionDetailTableViewController.h in Headers */,
 				3A4C95301B5B21410088C3F2 /* FLEXSystemLogMessage.h in Headers */,
 				3A4C95361B5B21410088C3F2 /* FLEXNetworkHistoryTableViewController.h in Headers */,
@@ -939,6 +946,7 @@
 				3A4C95351B5B21410088C3F2 /* FLEXSystemLogTableViewController.m in Sources */,
 				3A4C95271B5B21410088C3F2 /* FLEXGlobalsTableViewController.m in Sources */,
 				779B1ED31C0C4D7C001F5E49 /* FLEXTableColumnHeader.m in Sources */,
+				C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */,
 				3A4C94EA1B5B21410088C3F2 /* FLEXHierarchyTableViewController.m in Sources */,
 				3A4C95331B5B21410088C3F2 /* FLEXSystemLogTableViewCell.m in Sources */,
 				C3DB9F652107FC9600B46809 /* FLEXObjectRef.m in Sources */,
