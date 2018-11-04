@@ -18,6 +18,7 @@
 + (UIImage *)listIcon;
 + (UIImage *)moveIcon;
 + (UIImage *)selectIcon;
++ (UIImage *)checkerPattern;
 
 + (UIImage *)jsonIcon;
 + (UIImage *)textPlainIcon;
