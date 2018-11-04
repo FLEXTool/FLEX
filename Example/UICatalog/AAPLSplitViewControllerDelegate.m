@@ -49,6 +49,9 @@
 
 @implementation AAPLSplitViewControllerDelegate
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+
 #pragma mark - UISplitViewControllerDelegate
 
 // Implementing this delegate method allows us to present the detail view controller with the "More" bar button item.
@@ -74,5 +77,7 @@
 
     [detailRootViewController.navigationItem setLeftBarButtonItem:nil animated:YES];
 }
+
+#pragma clang diagnostic pop
 
 @end
