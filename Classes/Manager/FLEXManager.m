@@ -25,6 +25,7 @@
 @property (nonatomic, strong) FLEXExplorerViewController *explorerViewController;
 
 @property (nonatomic, readonly, strong) NSMutableArray<FLEXGlobalsTableViewControllerEntry *> *userGlobalEntries;
+@property (nonatomic, readonly, strong) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
 
 @end
 
@@ -45,6 +46,7 @@
     self = [super init];
     if (self) {
         _userGlobalEntries = [NSMutableArray array];
+        _customContentTypeViewers = [NSMutableDictionary dictionary];
     }
     return self;
 }
@@ -286,6 +288,15 @@
     }];
 
     [self.userGlobalEntries addObject:entry];
+}
+
+- (void)setCustomViewerForContentType:(NSString *)contentType viewControllerFutureBlock:(FLEXCustomContentViewerFuture)viewControllerFutureBlock
+{
+    NSParameterAssert(contentType.length);
+    NSParameterAssert(viewControllerFutureBlock);
+    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
+
+    self.customContentTypeViewers[contentType.lowercaseString] = viewControllerFutureBlock;
 }
 
 - (void)tryScrollDown
