@@ -14,6 +14,7 @@
 #import "FLEXImagePreviewViewController.h"
 #import "FLEXMultilineTableViewCell.h"
 #import "FLEXUtility.h"
+#import "FLEXManager+Private.h"
 
 typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
@@ -425,6 +426,16 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (UIViewController *)detailViewControllerForMIMEType:(NSString *)mimeType data:(NSData *)data
 {
+    FLEXCustomContentViewerFuture makeCustomViewer = [FLEXManager sharedManager].customContentTypeViewers[mimeType.lowercaseString];
+
+    if (makeCustomViewer) {
+        UIViewController *viewer = makeCustomViewer(data);
+
+        if (viewer) {
+            return viewer;
+        }
+    }
+
     // FIXME (RKO): Don't rely on UTF8 string encoding
     UIViewController *detailViewController = nil;
     if ([FLEXUtility isValidJSONData:data]) {

@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+typedef UIViewController *(^FLEXCustomContentViewerFuture)(NSData *data);
+
 @interface FLEXManager : NSObject
 
 + (instancetype)sharedManager;
@@ -76,5 +78,14 @@
 /// @note The passed block will be copied and retain for the duration of the application, you may want to use __weak references.
 - (void)registerGlobalEntryWithName:(NSString *)entryName
           viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock;
+
+/// Sets custom viewer for specific content type.
+/// @param contentType Mime type like application/json
+/// @param viewControllerFutureBlock Viewer (view controller) creation block
+/// @note This method must be called from the main thread.
+/// The viewControllerFutureBlock will be invoked from the main thread and may not return nil.
+/// @note The passed block will be copied and retain for the duration of the application, you may want to use __weak references.
+- (void)setCustomViewerForContentType:(NSString *)contentType
+            viewControllerFutureBlock:(FLEXCustomContentViewerFuture)viewControllerFutureBlock;
 
 @end
