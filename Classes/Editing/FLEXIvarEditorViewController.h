@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXFieldEditorViewController.h"
+#import "FLEXMutableFieldEditorViewController.h"
 #import <objc/runtime.h>
 
-@interface FLEXIvarEditorViewController : FLEXFieldEditorViewController
+@interface FLEXIvarEditorViewController : FLEXMutableFieldEditorViewController
 
 - (id)initWithTarget:(id)target ivar:(Ivar)ivar;
 

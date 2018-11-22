@@ -10,8 +10,10 @@
 #import "FLEXFieldEditorView.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
+#import "FLEXObjectExplorerFactory.h"
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputViewFactory.h"
+#import "FLEXObjectExplorerViewController.h"
 
 @interface FLEXFieldEditorViewController () <UIScrollViewDelegate>
 
@@ -112,6 +114,18 @@
 {
     // Subclasses can override.
     return @"Set";
+}
+
+- (void)exploreObjectOrPopViewController:(id)objectOrNil {
+    if (objectOrNil) {
+        // For non-nil (or void) return types, push an explorer view controller to display the object
+        FLEXObjectExplorerViewController *explorerViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:objectOrNil];
+        [self.navigationController pushViewController:explorerViewController animated:YES];
+    } else {
+        // If we didn't get a returned object but the method call succeeded,
+        // pop this view controller off the stack to indicate that the call went through.
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 @end

@@ -64,6 +64,13 @@
     self.firstInputView.inputValue = [self.defaults objectForKey:self.key];
 }
 
+- (void)getterButtonPressed:(id)sender
+{
+    [super getterButtonPressed:sender];
+    id returnedObject = [self.defaults objectForKey:self.key];
+    [self exploreObjectOrPopViewController:returnedObject];
+}
+
 + (BOOL)canEditDefaultWithValue:(id)currentValue
 {
     return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:@encode(id) currentValue:currentValue];
