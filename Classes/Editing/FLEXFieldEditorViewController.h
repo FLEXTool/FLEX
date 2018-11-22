@@ -22,7 +22,11 @@
 @property (nonatomic, strong, readonly) id target;
 @property (nonatomic, strong, readonly) FLEXFieldEditorView *fieldEditorView;
 @property (nonatomic, strong, readonly) UIBarButtonItem *setterButton;
+
 - (void)actionButtonPressed:(id)sender;
 - (NSString *)titleForActionButton;
+/// Pushes an explorer view controller for the given object
+/// or pops the current view controller.
+- (void)exploreObjectOrPopViewController:(id)objectOrNil;
 
 @end

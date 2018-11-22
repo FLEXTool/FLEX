@@ -76,6 +76,13 @@
     }
 }
 
+- (void)getterButtonPressed:(id)sender
+{
+    [super getterButtonPressed:sender];
+    id returnedObject = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    [self exploreObjectOrPopViewController:returnedObject];
+}
+
 - (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)argumentInputView
 {
     if ([argumentInputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {

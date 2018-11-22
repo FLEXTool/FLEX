@@ -168,6 +168,8 @@
 		94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 942DCD821BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C395D6D921789BD800BEAD4D /* FLEXColorExplorerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C395D6D721789BD800BEAD4D /* FLEXColorExplorerViewController.h */; };
 		C395D6DA21789BD800BEAD4D /* FLEXColorExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C395D6D821789BD800BEAD4D /* FLEXColorExplorerViewController.m */; };
+		C3DA55FE21A76406005DDA60 /* FLEXMutableFieldEditorViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C3DA55FC21A76406005DDA60 /* FLEXMutableFieldEditorViewController.h */; };
+		C3DA55FF21A76406005DDA60 /* FLEXMutableFieldEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DA55FD21A76406005DDA60 /* FLEXMutableFieldEditorViewController.m */; };
 		C3DB9F642107FC9600B46809 /* FLEXObjectRef.h in Headers */ = {isa = PBXBuildFile; fileRef = C3DB9F622107FC9600B46809 /* FLEXObjectRef.h */; };
 		C3DB9F652107FC9600B46809 /* FLEXObjectRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DB9F632107FC9600B46809 /* FLEXObjectRef.m */; };
 /* End PBXBuildFile section */
@@ -348,6 +350,8 @@
 		94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyboardHelpViewController.m; sourceTree = "<group>"; };
 		C395D6D721789BD800BEAD4D /* FLEXColorExplorerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXColorExplorerViewController.h; sourceTree = "<group>"; };
 		C395D6D821789BD800BEAD4D /* FLEXColorExplorerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXColorExplorerViewController.m; sourceTree = "<group>"; };
+		C3DA55FC21A76406005DDA60 /* FLEXMutableFieldEditorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMutableFieldEditorViewController.h; sourceTree = "<group>"; };
+		C3DA55FD21A76406005DDA60 /* FLEXMutableFieldEditorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMutableFieldEditorViewController.m; sourceTree = "<group>"; };
 		C3DB9F622107FC9600B46809 /* FLEXObjectRef.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXObjectRef.h; sourceTree = "<group>"; };
 		C3DB9F632107FC9600B46809 /* FLEXObjectRef.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXObjectRef.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -506,6 +510,8 @@
 				3A4C94851B5B21410088C3F2 /* FLEXFieldEditorView.m */,
 				3A4C94861B5B21410088C3F2 /* FLEXFieldEditorViewController.h */,
 				3A4C94871B5B21410088C3F2 /* FLEXFieldEditorViewController.m */,
+				C3DA55FC21A76406005DDA60 /* FLEXMutableFieldEditorViewController.h */,
+				C3DA55FD21A76406005DDA60 /* FLEXMutableFieldEditorViewController.m */,
 				3A4C94881B5B21410088C3F2 /* FLEXIvarEditorViewController.h */,
 				3A4C94891B5B21410088C3F2 /* FLEXIvarEditorViewController.m */,
 				3A4C948A1B5B21410088C3F2 /* FLEXMethodCallingViewController.h */,
@@ -701,6 +707,7 @@
 				779B1EDA1C0C4D7C001F5E49 /* FLEXTableListViewController.h in Headers */,
 				3A4C94ED1B5B21410088C3F2 /* FLEXArgumentInputColorView.h in Headers */,
 				3A4C94EB1B5B21410088C3F2 /* FLEXImagePreviewViewController.h in Headers */,
+				C3DA55FE21A76406005DDA60 /* FLEXMutableFieldEditorViewController.h in Headers */,
 				3A4C95381B5B21410088C3F2 /* FLEXNetworkRecorder.h in Headers */,
 				3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */,
 				3A4C95051B5B21410088C3F2 /* FLEXArgumentInputViewFactory.h in Headers */,
@@ -902,6 +909,7 @@
 				94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */,
 				3A4C951F1B5B21410088C3F2 /* FLEXClassesTableViewController.m in Sources */,
 				3A4C94C61B5B21410088C3F2 /* FLEXArrayExplorerViewController.m in Sources */,
+				C3DA55FF21A76406005DDA60 /* FLEXMutableFieldEditorViewController.m in Sources */,
 				3A4C95081B5B21410088C3F2 /* FLEXDefaultEditorViewController.m in Sources */,
 				779B1ED11C0C4D7C001F5E49 /* FLEXMultiColumnTableView.m in Sources */,
 				3A4C94EE1B5B21410088C3F2 /* FLEXArgumentInputColorView.m in Sources */,
