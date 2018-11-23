@@ -73,6 +73,9 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
             malloc_introspection_t *introspection = zone->introspect;
             NSString *zoneName = @(zone->zone_name);
 
+            // We only need to look at the default malloc zone.
+            // This may explain why some zone functions are
+            // sometimes invalid; perhaps not all zones support them?
             if (![zoneName isEqualToString:@"DefaultMallocZone"] || !introspection) {
                 continue;
             }
@@ -90,20 +93,23 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
             // The largest realistic memory address varies by platform.
             // Only 48 bits are used by 64 bit machines while
             // 32 bit machines use all bits.
-#if __arm64__
-            static uintptr_t MAX_REALISTIC_ADDRESS = 0xFFFFFFFFFFFF;
+            //
+            // __LP64__ is defined as 1 for both arm64 and x86_64
+            // via: clang -dM -arch [arm64|x86_64] -E -x c /dev/null | grep LP
+#if __LP64__
+            static uintptr_t MAX_REALISTIC_ADDRESS = 0x0000FFFFFFFFFFFF;
+            BOOL lockZoneValid = lock_zone != nil && (uintptr_t)lock_zone < MAX_REALISTIC_ADDRESS;
+            BOOL unlockZoneValid = unlock_zone != nil && (uintptr_t)unlock_zone < MAX_REALISTIC_ADDRESS;
 #else
-            static uintptr_t MAX_REALISTIC_ADDRESS = INT_MAX;
+            BOOL lockZoneValid = lock_zone != nil;
+            BOOL unlockZoneValid = unlock_zone != nil;
 #endif
 
             // There is little documentation on when and why
             // any of these function pointers might be NULL
             // or garbage, so we resort to checking for NULL
             // and impossible memory addresses at least
-            if (lock_zone && unlock_zone &&
-                introspection->enumerator &&
-                (uintptr_t)lock_zone < MAX_REALISTIC_ADDRESS &&
-                (uintptr_t)unlock_zone < MAX_REALISTIC_ADDRESS) {
+            if (introspection->enumerator && lockZoneValid && unlockZoneValid) {
                 lock_zone(zone);
                 introspection->enumerator(TASK_NULL, (void *)&callback, MALLOC_PTR_IN_USE_RANGE_TYPE, (vm_address_t)zone, reader, &range_callback);
                 unlock_zone(zone);
