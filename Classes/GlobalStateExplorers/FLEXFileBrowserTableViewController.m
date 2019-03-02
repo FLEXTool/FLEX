@@ -12,6 +12,8 @@
 #import "FLEXWebViewController.h"
 #import "FLEXImagePreviewViewController.h"
 #import "FLEXTableListViewController.h"
+#import "FLEXObjectExplorerFactory.h"
+#import "FLEXObjectExplorerViewController.h"
 
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end
@@ -221,12 +223,17 @@
 
         // Special case keyed archives, json, and plists to get more readable data.
         NSString *prettyString = nil;
-        if ([pathExtension isEqual:@"archive"] || [pathExtension isEqual:@"coded"]) {
-            prettyString = [[NSKeyedUnarchiver unarchiveObjectWithData:fileData] description];
-        } else if ([pathExtension isEqualToString:@"json"]) {
+        if ([pathExtension isEqualToString:@"json"]) {
             prettyString = [FLEXUtility prettyJSONStringFromData:fileData];
-        } else if ([pathExtension isEqualToString:@"plist"]) {
-            prettyString = [[NSPropertyListSerialization propertyListWithData:fileData options:0 format:NULL error:NULL] description];
+        } else {
+            @try {
+                // Try to decode an archived object regardless of file extension
+                id object = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
+                drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
+            } @catch (NSException *e) {
+                // Try to decode a property list instead, also regardless of file extension
+                prettyString = [[NSPropertyListSerialization propertyListWithData:fileData options:0 format:NULL error:NULL] description];
+            }
         }
 
         if (prettyString.length) {
@@ -236,7 +243,7 @@
         } else if ([FLEXTableListViewController supportsExtension:pathExtension]) {
             drillInViewController = [[FLEXTableListViewController alloc] initWithPath:fullPath];
         }
-        else {
+        else if (!drillInViewController) {
             NSString *fileString = [NSString stringWithUTF8String:fileData.bytes];
             if (fileString.length) {
                 drillInViewController = [[FLEXWebViewController alloc] initWithText:fileString];
