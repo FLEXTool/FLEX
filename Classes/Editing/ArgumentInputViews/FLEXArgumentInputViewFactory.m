@@ -39,26 +39,23 @@
 + (Class)argumentInputViewSubclassForTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue
 {
     Class argumentInputViewSubclass = nil;
+    NSArray<Class> *inputViewClasses = @[[FLEXArgumentInputColorView class],
+                                         [FLEXArgumentInputFontView class],
+                                         [FLEXArgumentInputStringView class],
+                                         [FLEXArgumentInputStructView class],
+                                         [FLEXArgumentInputSwitchView class],
+                                         [FLEXArgumentInputDateView class],
+                                         [FLEXArgumentInputNumberView class],
+                                         [FLEXArgumentInputJSONObjectView class]];
     
     // Note that order is important here since multiple subclasses may support the same type.
     // An example is the number subclass and the bool subclass for the type @encode(BOOL).
     // Both work, but we'd prefer to use the bool subclass.
-    if ([FLEXArgumentInputColorView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputColorView class];
-    } else if ([FLEXArgumentInputFontView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputFontView class];
-    } else if ([FLEXArgumentInputStringView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputStringView class];
-    } else if ([FLEXArgumentInputStructView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputStructView class];
-    } else if ([FLEXArgumentInputSwitchView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputSwitchView class];
-    } else if ([FLEXArgumentInputDateView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputDateView class];
-    } else if ([FLEXArgumentInputNumberView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputNumberView class];
-    } else if ([FLEXArgumentInputJSONObjectView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
-        argumentInputViewSubclass = [FLEXArgumentInputJSONObjectView class];
+    for (Class inputView in inputViewClasses) {
+        if ([inputView supportsObjCType:typeEncoding withCurrentValue:currentValue]) {
+            argumentInputViewSubclass = inputView;
+            break;
+        }
     }
     
     return argumentInputViewSubclass;

@@ -8,6 +8,7 @@
 
 #import "FLEXArgumentInputTextView.h"
 
+#warning TODO This is never supported
 @interface FLEXArgumentInputJSONObjectView : FLEXArgumentInputTextView
 
 @end

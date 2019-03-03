@@ -8,14 +8,24 @@
 
 #import <Foundation/Foundation.h>
 #import <asl.h>
+#import "ActivityStreamAPI.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXSystemLogMessage : NSObject
 
 + (instancetype)logMessageFromASLMessage:(aslmsg)aslMessage;
+//+ (instancetype)logMessageFromOSLog:(os_log_message_t)logMessage;
++ (instancetype)logMessageFromDate:(NSDate *)date text:(NSString *)text;
 
-@property (nonatomic, strong) NSDate *date;
-@property (nonatomic, copy) NSString *sender;
-@property (nonatomic, copy) NSString *messageText;
-@property (nonatomic, assign) long long messageID;
+// ASL specific properties
+@property (nonatomic, readonly, nullable) NSString *sender;
+@property (nonatomic, readonly, nullable) aslmsg aslMessage;
+
+@property (nonatomic, readonly) NSDate *date;
+@property (nonatomic, readonly) NSString *messageText;
+@property (nonatomic, readonly) long long messageID;
 
 @end
+
+NS_ASSUME_NONNULL_END
