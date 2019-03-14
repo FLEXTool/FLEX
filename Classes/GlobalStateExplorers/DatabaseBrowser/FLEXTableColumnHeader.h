@@ -1,6 +1,6 @@
 //
 //  FLEXTableContentHeaderCell.h
-//  UICatalog
+//  FLEX
 //
 //  Created by Peng Tao on 15/11/26.
 //  Copyright © 2015年 f. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  FLEXMultilineTableViewCell.m
-//  UICatalog
+//  FLEX
 //
 //  Created by Ryan Olson on 2/13/15.
 //  Copyright (c) 2015 f. All rights reserved.

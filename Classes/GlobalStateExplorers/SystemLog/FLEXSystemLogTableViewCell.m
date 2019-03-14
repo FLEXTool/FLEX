@@ -1,6 +1,6 @@
 //
 //  FLEXSystemLogTableViewCell.m
-//  UICatalog
+//  FLEX
 //
 //  Created by Ryan Olson on 1/25/15.
 //  Copyright (c) 2015 f. All rights reserved.
