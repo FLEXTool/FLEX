@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
+#import "FLEXSwiftRuntimeUtility.h"
 
 // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
 NSString *const kFLEXPropertyAttributeKeyTypeEncoding = @"T";
@@ -296,13 +297,18 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         return nil;
     }
 
+    // Case: `object` is a Swift object or class. Does not implement methodSignatureForSelector:
+    if ([FLEXSwiftRuntimeUtility isSwiftObjectOrClass:object]) {
+        return [FLEXSwiftRuntimeUtility performSelector:selector onSwiftObject:object withArguments:arguments error:error];
+    }
+    
     // Probably an unsupported type encoding, like bitfields
     // or inline arrays. In the future, we could calculate
     // the return length on our own. For now, we abort.
     //
     // For future reference, the code here will get the true type encoding.
-    // NSMethodSignature will convert {?=b8b4b1b1b18[8S]} to {?}
-    // A solution might involve hooking NSGetSizeAndAlignment.
+    // NSMethodSignature will convert `{?=b8b4b1b1b18[8S]}` to `{?}`.
+    // A solution might involve hooking NSGetSizeAndAlignment or writing our own..
     //
     // returnType = method_getTypeEncoding(class_getInstanceMethod([object class], selector));
     NSMethodSignature *methodSignature = [object methodSignatureForSelector:selector];
