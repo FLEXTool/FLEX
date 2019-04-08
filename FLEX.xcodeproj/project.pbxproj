@@ -17,6 +17,8 @@
 		224D49AB1C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 224D49A71C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m */; };
 		2EF6B04D1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF6B04B1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m */; };
 		2EF6B04E1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EF6B04C1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h */; };
+		3894176E225B592400DC827E /* FLEXAddressInspectorViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3894176C225B592400DC827E /* FLEXAddressInspectorViewController.h */; };
+		3894176F225B592400DC827E /* FLEXAddressInspectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3894176D225B592400DC827E /* FLEXAddressInspectorViewController.m */; };
 		3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94241B5B20570088C3F2 /* FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A4C94C51B5B21410088C3F2 /* FLEXArrayExplorerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C943C1B5B21410088C3F2 /* FLEXArrayExplorerViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C94C61B5B21410088C3F2 /* FLEXArrayExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C943D1B5B21410088C3F2 /* FLEXArrayExplorerViewController.m */; };
@@ -203,6 +205,8 @@
 		224D49A71C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXSQLiteDatabaseManager.m; sourceTree = "<group>"; };
 		2EF6B04B1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkCurlLogger.m; sourceTree = "<group>"; };
 		2EF6B04C1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkCurlLogger.h; sourceTree = "<group>"; };
+		3894176C225B592400DC827E /* FLEXAddressInspectorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXAddressInspectorViewController.h; sourceTree = "<group>"; };
+		3894176D225B592400DC827E /* FLEXAddressInspectorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXAddressInspectorViewController.m; sourceTree = "<group>"; };
 		3A4C941F1B5B20570088C3F2 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A4C94231B5B20570088C3F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A4C94241B5B20570088C3F2 /* FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEX.h; sourceTree = "<group>"; };
@@ -588,6 +592,8 @@
 			children = (
 				779B1EBF1C0C4D7C001F5E49 /* DatabaseBrowser */,
 				3A4C94AD1B5B21410088C3F2 /* SystemLog */,
+				3894176C225B592400DC827E /* FLEXAddressInspectorViewController.h */,
+				3894176D225B592400DC827E /* FLEXAddressInspectorViewController.m */,
 				3A4C949B1B5B21410088C3F2 /* FLEXClassesTableViewController.h */,
 				3A4C949C1B5B21410088C3F2 /* FLEXClassesTableViewController.m */,
 				3A4C949D1B5B21410088C3F2 /* FLEXFileBrowserFileOperationController.h */,
@@ -757,6 +763,7 @@
 				3A4C94E31B5B21410088C3F2 /* FLEXRuntimeUtility.h in Headers */,
 				3A4C95341B5B21410088C3F2 /* FLEXSystemLogTableViewController.h in Headers */,
 				3A4C95091B5B21410088C3F2 /* FLEXFieldEditorView.h in Headers */,
+				3894176E225B592400DC827E /* FLEXAddressInspectorViewController.h in Headers */,
 				3A4C950D1B5B21410088C3F2 /* FLEXIvarEditorViewController.h in Headers */,
 				3A4C95281B5B21410088C3F2 /* FLEXInstancesTableViewController.h in Headers */,
 				3A4C950F1B5B21410088C3F2 /* FLEXMethodCallingViewController.h in Headers */,
@@ -927,6 +934,7 @@
 				224D49A91C673AB5000EAB86 /* FLEXRealmDatabaseManager.m in Sources */,
 				2EF6B04D1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m in Sources */,
 				94A515201C4CA1F10063292F /* FLEXWindow.m in Sources */,
+				3894176F225B592400DC827E /* FLEXAddressInspectorViewController.m in Sources */,
 				3A4C95121B5B21410088C3F2 /* FLEXPropertyEditorViewController.m in Sources */,
 				3A4C95391B5B21410088C3F2 /* FLEXNetworkRecorder.m in Sources */,
 				3A4C950E1B5B21410088C3F2 /* FLEXIvarEditorViewController.m in Sources */,

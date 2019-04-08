@@ -19,6 +19,7 @@
 #import "FLEXManager+Private.h"
 #import "FLEXSystemLogTableViewController.h"
 #import "FLEXNetworkHistoryTableViewController.h"
+#import "FLEXAddressInspectorViewController.h"
 
 static __weak UIWindow *s_applicationWindow = nil;
 
@@ -26,6 +27,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowNetworkHistory,
     FLEXGlobalsRowSystemLog,
     FLEXGlobalsRowLiveObjects,
+    FLEXGlobalsRowAddressInspector,
     FLEXGlobalsRowFileBrowser,
     FLEXGlobalsCookies,    
     FLEXGlobalsRowSystemLibraries,
@@ -67,6 +69,17 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     classesViewController.binaryImageName = [FLEXUtility applicationImageName];
 
                     return classesViewController;
+                };
+                break;
+                
+            case FLEXGlobalsRowAddressInspector:
+                titleFuture = ^NSString *{
+                    return @"🔎 Address Inspector";
+                };
+                
+                viewControllerFuture = ^UIViewController *{
+                    FLEXAddressInspectorViewController *addressInspectorViewController = [[FLEXAddressInspectorViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                    return addressInspectorViewController;
                 };
                 break;
 
