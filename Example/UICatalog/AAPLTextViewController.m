@@ -61,6 +61,10 @@
 
 @implementation AAPLTextViewController
 
+- (void)dealloc {
+    NSLog(@"Ass");
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 

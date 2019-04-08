@@ -126,6 +126,10 @@
     return description;
 }
 
++ (NSString *)addressForObject:(id)object {
+    return [NSString stringWithFormat:@"%p", object];
+}
+
 + (UIFont *)defaultFontOfSize:(CGFloat)size
 {
     return [UIFont fontWithName:@"HelveticaNeue" size:size];

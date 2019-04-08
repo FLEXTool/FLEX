@@ -601,7 +601,8 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     static NSArray<NSNumber *> *possibleSections = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        possibleSections = @[@(FLEXObjectExplorerSectionDescription),
+        possibleSections = @[@(FLEXObjectExplorerSectionAddress),
+                             @(FLEXObjectExplorerSectionDescription),
                              @(FLEXObjectExplorerSectionCustom),
                              @(FLEXObjectExplorerSectionProperties),
                              @(FLEXObjectExplorerSectionIvars),
@@ -647,6 +648,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 {
     NSInteger numberOfRows = 0;
     switch (section) {
+        case FLEXObjectExplorerSectionAddress:
+            numberOfRows = 1;
+            break;
+            
         case FLEXObjectExplorerSectionDescription:
             numberOfRows = [self shouldShowDescription] ? 1 : 0;
             break;
@@ -687,6 +692,11 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 {
     NSString *title = nil;
     switch (section) {
+            
+        case FLEXObjectExplorerSectionAddress:
+            title = [FLEXUtility addressForObject:self.object];
+            break;
+            
         case FLEXObjectExplorerSectionDescription:
             title = [FLEXUtility safeDescriptionForObject:self.object];
             break;
@@ -726,6 +736,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 {
     NSString *subtitle = nil;
     switch (section) {
+            
+        case FLEXObjectExplorerSectionAddress:
+            break;
+            
         case FLEXObjectExplorerSectionDescription:
             break;
             
@@ -760,6 +774,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 {
     BOOL canDrillIn = NO;
     switch (section) {
+            
+        case FLEXObjectExplorerSectionAddress:
+            break;
+            
         case FLEXObjectExplorerSectionDescription:
             break;
             
@@ -813,6 +831,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     BOOL canCopy = NO;
     
     switch (section) {
+        case FLEXObjectExplorerSectionAddress:
+            canCopy = YES;
+            break;
+            
         case FLEXObjectExplorerSectionDescription:
             canCopy = YES;
             break;
@@ -827,6 +849,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 {
     NSString *title = nil;
     switch (section) {
+        case FLEXObjectExplorerSectionAddress: {
+            title = @"Address";
+        } break;
+            
         case FLEXObjectExplorerSectionDescription: {
             title = @"Description";
         } break;
@@ -870,6 +896,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 {
     UIViewController *viewController = nil;
     switch (section) {
+            
+        case FLEXObjectExplorerSectionAddress:
+            break;
+            
         case FLEXObjectExplorerSectionDescription:
             break;
             
