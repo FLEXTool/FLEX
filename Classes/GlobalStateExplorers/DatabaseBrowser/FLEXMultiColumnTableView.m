@@ -53,11 +53,11 @@ static const CGFloat kColumnMargin = 1;
     CGFloat leftHeaderWidth = [self leftHeaderWidth];
     CGFloat topInsets = 0.f;
 
-    #if FLEX_AT_LEAST_IOS11_SDK
+#if FLEX_AT_LEAST_IOS11_SDK
     if (@available (iOS 11.0, *)) {
         topInsets = self.safeAreaInsets.top;
     }
-    #endif
+#endif
     
     CGFloat contentWidth = 0.0;
     NSInteger rowsCount = [self numberOfColumns];
