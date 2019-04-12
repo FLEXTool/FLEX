@@ -31,7 +31,7 @@ Pod::Spec.new do |spec|
   spec.social_media_url = "https://twitter.com/ryanolsonk"
   spec.platform         = :ios, "8.0"
   spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
-  spec.source_files     = "Classes/**/*.{h,m}"
+  spec.source_files     = "Classes/**/*.{h,m,mm}"
   spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
