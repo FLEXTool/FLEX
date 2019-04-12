@@ -48,6 +48,7 @@
 		9420A1AD1C1E84EE00B587DF /* FLEX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9420A1AC1C1E84EE00B587DF /* FLEX.framework */; };
 		943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */; };
 		94CB4D431A97183E0054A905 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 94CB4D421A97183E0054A905 /* libz.dylib */; };
+		C3EF50CD22610FE200B0BE49 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3EF50CC22610FE200B0BE49 /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -136,6 +137,7 @@
 		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
 		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
 		94CB4D421A97183E0054A905 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		C3EF50CC22610FE200B0BE49 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +218,7 @@
 				5356824518F3656900BAAD62 /* UICatalog-Info.plist */,
 				5356824B18F3656900BAAD62 /* UICatalog-Prefix.pch */,
 				53874F9718F36B1800510922 /* Localizable.strings */,
+				C3EF50CC22610FE200B0BE49 /* LaunchScreen.xib */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -366,6 +369,7 @@
 				22679D5D1C741A7A002248FC /* dogs.realm in Resources */,
 				5356825418F3656900BAAD62 /* Main_iPad.storyboard in Resources */,
 				53874F9918F36B1800510922 /* Localizable.strings in Resources */,
+				C3EF50CD22610FE200B0BE49 /* LaunchScreen.xib in Resources */,
 				5356825918F3656900BAAD62 /* Images.xcassets in Resources */,
 				3EC6487318FF8A5000024205 /* ReadMe.txt in Resources */,
 				5356825118F3656900BAAD62 /* Main_iPhone.storyboard in Resources */,
@@ -546,7 +550,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = S6N2F22V2Z;
 				EXCLUDED_SOURCE_FILE_NAMES = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -567,7 +570,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				DEVELOPMENT_TEAM = S6N2F22V2Z;
 				EXCLUDED_SOURCE_FILE_NAMES = "FLEX*";
 				FRAMEWORK_SEARCH_PATHS = (
