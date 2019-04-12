@@ -83,7 +83,7 @@
                 [self.logMessageIdentifiers addIndex:(NSUInteger)message.messageID];
             }
 
-            self.lastTimestamp = @(asl_get(newMessages.lastObject.aslMessage, ASL_KEY_TIME));
+            self.lastTimestamp = @(asl_get(newMessages.lastObject.aslMessage, ASL_KEY_TIME) ?: "null");
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
