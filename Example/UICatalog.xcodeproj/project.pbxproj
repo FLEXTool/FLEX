@@ -45,10 +45,11 @@
 		535682BF18F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m in Sources */ = {isa = PBXBuildFile; fileRef = 535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */; };
 		53874F9918F36B1800510922 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 53874F9718F36B1800510922 /* Localizable.strings */; };
 		779B1EF51C0C4F25001F5E49 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 779B1EF41C0C4F25001F5E49 /* libsqlite3.dylib */; };
-		9420A1AD1C1E84EE00B587DF /* FLEX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9420A1AC1C1E84EE00B587DF /* FLEX.framework */; };
 		943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */; };
 		94CB4D431A97183E0054A905 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 94CB4D421A97183E0054A905 /* libz.dylib */; };
 		C3EF50CD22610FE200B0BE49 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3EF50CC22610FE200B0BE49 /* LaunchScreen.xib */; };
+		C3FB77E52266367F00DF4E73 /* FLEX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FB77E42266367F00DF4E73 /* FLEX.framework */; };
+		C3FB77E6226636AA00DF4E73 /* FLEX.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C3FB77E42266367F00DF4E73 /* FLEX.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,6 +59,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				C3FB77E6226636AA00DF4E73 /* FLEX.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,11 +135,11 @@
 		535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+AAPLApplicationSpecific.m"; sourceTree = "<group>"; };
 		53874F9818F36B1800510922 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		779B1EF41C0C4F25001F5E49 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = ../../../../../../usr/lib/libsqlite3.dylib; sourceTree = "<group>"; };
-		9420A1AC1C1E84EE00B587DF /* FLEX.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FLEX.framework; path = "../../../Library/Developer/Xcode/DerivedData/FLEX-gixtctkeshzdbwbdapvulcvleeiu/Build/Products/Debug-iphoneos/FLEX.framework"; sourceTree = "<group>"; };
 		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
 		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
 		94CB4D421A97183E0054A905 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		C3EF50CC22610FE200B0BE49 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
+		C3FB77E42266367F00DF4E73 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +147,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9420A1AD1C1E84EE00B587DF /* FLEX.framework in Frameworks */,
+				C3FB77E52266367F00DF4E73 /* FLEX.framework in Frameworks */,
 				779B1EF51C0C4F25001F5E49 /* libsqlite3.dylib in Frameworks */,
 				94CB4D431A97183E0054A905 /* libz.dylib in Frameworks */,
 				5356824018F3656900BAAD62 /* CoreGraphics.framework in Frameworks */,
@@ -190,7 +192,7 @@
 		5356823C18F3656900BAAD62 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9420A1AC1C1E84EE00B587DF /* FLEX.framework */,
+				C3FB77E42266367F00DF4E73 /* FLEX.framework */,
 				779B1EF41C0C4F25001F5E49 /* libsqlite3.dylib */,
 				94CB4D421A97183E0054A905 /* libz.dylib */,
 				5356823D18F3656900BAAD62 /* Foundation.framework */,
