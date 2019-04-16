@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name             = "FLEX"
-  spec.version          = "2.4.0"
+  spec.version          = "3.0.0"
   spec.summary          = "A set of in-app debugging and exploration tools for iOS"
   spec.description      = <<-DESC
                         - Inspect and modify views in the hierarchy.
@@ -27,8 +27,8 @@ Pod::Spec.new do |spec|
                             "http://engineering.flipboard.com/assets/flex/flex-readme-reverse-2.png" ]
 
   spec.license          = { :type => "BSD", :file => "LICENSE" }
-  spec.author           = { "Ryan Olson" => "ryanolsonk@gmail.com" }
-  spec.social_media_url = "https://twitter.com/ryanolsonk"
+  spec.author           = { "Tanner Bennett" => "tannerbennett@me.com" }
+  spec.social_media_url = "https://twitter.com/NSExceptional"
   spec.platform         = :ios, "8.0"
   spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,m,mm}"
