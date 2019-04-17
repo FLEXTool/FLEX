@@ -6,11 +6,11 @@
 //  Copyright (c) 2015 f. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXTableViewCell.h"
 
 extern NSString *const kFLEXMultilineTableViewCellIdentifier;
 
-@interface FLEXMultilineTableViewCell : UITableViewCell
+@interface FLEXMultilineTableViewCell : FLEXTableViewCell
 
 + (CGFloat)preferredHeightWithAttributedText:(NSAttributedString *)attributedText inTableViewWidth:(CGFloat)tableViewWidth style:(UITableViewStyle)style showsAccessory:(BOOL)showsAccessory;
 
