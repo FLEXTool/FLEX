@@ -286,20 +286,24 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 - (BOOL)shouldShowDescription
 {
-    BOOL showDescription = YES;
-    
-    // Not if it's empty or nil.
-    NSString *descripition = [FLEXUtility safeDescriptionForObject:self.object];
-    if (showDescription) {
-        showDescription = [descripition length] > 0;
-    }
-    
     // Not if we have filter text that doesn't match the desctiption.
-    if (showDescription && [self.filterText length] > 0) {
-        showDescription = [descripition rangeOfString:self.filterText options:NSCaseInsensitiveSearch].length > 0;
+    if (self.filterText.length) {
+        NSString *description = [self displayedObjectDescription];
+        return [description rangeOfString:self.filterText options:NSCaseInsensitiveSearch].length > 0;
     }
     
-    return showDescription;
+    return YES;
+}
+
+- (NSString *)displayedObjectDescription {
+    NSString *desc = [FLEXUtility safeDescriptionForObject:self.object];
+
+    if (!desc.length) {
+        NSString *address = [FLEXUtility addressOfObject:self.object];
+        desc = [NSString stringWithFormat:@"Object at %@ returned empty description", address];
+    }
+
+    return desc;
 }
 
 
@@ -701,7 +705,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     NSString *title = nil;
     switch (section) {
         case FLEXObjectExplorerSectionDescription:
-            title = [FLEXUtility safeDescriptionForObject:self.object];
+            title = [self displayedObjectDescription];
             break;
             
         case FLEXObjectExplorerSectionCustom:
