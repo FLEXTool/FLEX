@@ -15,6 +15,7 @@
 #import "FLEXIvarEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXInstancesTableViewController.h"
+#import "FLEXTableView.h"
 #import <objc/runtime.h>
 
 typedef NS_ENUM(NSUInteger, FLEXObjectExplorerScope) {
@@ -90,10 +91,19 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 @implementation FLEXObjectExplorerViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
++ (void)initialize
 {
-    // Force grouped style
-    return [super initWithStyle:UITableViewStyleGrouped];
+    if (self == [FLEXObjectExplorerViewController class]) {
+        // Initialize custom menu items for entire app
+        UIMenuItem *copyObjectAddress = [[UIMenuItem alloc] initWithTitle:@"Copy Address" action:@selector(copyObjectAddress:)];
+        [UIMenuController sharedMenuController].menuItems = @[copyObjectAddress];
+        [[UIMenuController sharedMenuController] update];
+    }
+}
+
+- (void)loadView
+{
+    self.tableView = [[FLEXTableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
 }
 
 - (void)viewDidLoad
@@ -134,7 +144,8 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 #pragma mark - Search
 
-- (void)refreshScopeTitles {
+- (void)refreshScopeTitles
+{
     if (!self.searchBar) return;
 
     Class parent = [self.object superclass];
@@ -172,7 +183,8 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     [self updateDisplayedData];
 }
 
-- (NSArray *)metadata:(FLEXMetadataKind)metadataKind forScope:(FLEXObjectExplorerScope)scope {
+- (NSArray *)metadata:(FLEXMetadataKind)metadataKind forScope:(FLEXObjectExplorerScope)scope
+{
     switch (metadataKind) {
         case FLEXMetadataKindProperties:
             switch (self.scope) {
@@ -221,7 +233,8 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     }
 }
 
-- (NSInteger)totalCountOfMetadata:(FLEXMetadataKind)metadataKind forScope:(FLEXObjectExplorerScope)scope {
+- (NSInteger)totalCountOfMetadata:(FLEXMetadataKind)metadataKind forScope:(FLEXObjectExplorerScope)scope
+{
     return [self metadata:metadataKind forScope:scope].count;
 }
 
@@ -808,19 +821,9 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     return canDrillIn;
 }
 
-- (BOOL)canCopyRow:(NSInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
+- (BOOL)sectionHasActions:(NSInteger)section
 {
-    BOOL canCopy = NO;
-    
-    switch (section) {
-        case FLEXObjectExplorerSectionDescription:
-            canCopy = YES;
-            break;
-            
-        default:
-            break;
-    }
-    return canCopy;
+    return [self explorerSectionAtIndex:section] == FLEXObjectExplorerSectionDescription;
 }
 
 - (NSString *)titleForExplorerSection:(FLEXObjectExplorerSection)section
@@ -1019,45 +1022,65 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-    BOOL canCopy = [self canCopyRow:indexPath.row inExplorerSection:explorerSection];
-    return canCopy;
+    return [self sectionHasActions:indexPath.section];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
-    BOOL canPerformAction = NO;
-    
-    if (action == @selector(copy:)) {
-        FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-        BOOL canCopy = [self canCopyRow:indexPath.row inExplorerSection:explorerSection];
-        canPerformAction = canCopy;
+    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
+    switch (explorerSection) {
+        case FLEXObjectExplorerSectionDescription:
+            return action == @selector(copy:) || action == @selector(copyObjectAddress:);
+
+        default:
+            return NO;
     }
-    
-    return canPerformAction;
 }
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
-    if (action == @selector(copy:)) {
-        FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-        NSString *stringToCopy = @"";
-        
-        NSString *title = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
-        if ([title length] > 0) {
-            stringToCopy = [stringToCopy stringByAppendingString:title];
-        }
-        
-        NSString *subtitle = [self subtitleForRow:indexPath.row inExplorerSection:explorerSection];
-        if ([subtitle length] > 0) {
-            if ([stringToCopy length] > 0) {
-                stringToCopy = [stringToCopy stringByAppendingString:@"\n\n"];
-            }
-            stringToCopy = [stringToCopy stringByAppendingString:subtitle];
-        }
-        
-        [[UIPasteboard generalPasteboard] setString:stringToCopy];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [self performSelector:action withObject:indexPath];
+#pragma clang diagnostic pop
+}
+
+
+#pragma mark - UIMenuController
+
+/// Prevent the search bar from trying to use us as a responder
+///
+/// Our table cells will use the UITableViewDelegate methods
+/// to make sure we can perform the actions we want to
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
+{
+    return NO;
+}
+
+- (void)copy:(NSIndexPath *)indexPath
+{
+    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
+    NSString *stringToCopy = @"";
+
+    NSString *title = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
+    if (title.length) {
+        stringToCopy = [stringToCopy stringByAppendingString:title];
     }
+
+    NSString *subtitle = [self subtitleForRow:indexPath.row inExplorerSection:explorerSection];
+    if (subtitle.length) {
+        if (stringToCopy.length) {
+            stringToCopy = [stringToCopy stringByAppendingString:@"\n\n"];
+        }
+        stringToCopy = [stringToCopy stringByAppendingString:subtitle];
+    }
+
+    [UIPasteboard generalPasteboard].string = stringToCopy;
+}
+
+- (void)copyObjectAddress:(NSIndexPath *)indexPath
+{
+    [UIPasteboard generalPasteboard].string = [FLEXUtility addressOfObject:self.object];
 }
 
 
