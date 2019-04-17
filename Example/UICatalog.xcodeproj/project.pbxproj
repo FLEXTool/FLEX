@@ -47,6 +47,7 @@
 		779B1EF51C0C4F25001F5E49 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 779B1EF41C0C4F25001F5E49 /* libsqlite3.dylib */; };
 		943203FE1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */; };
 		94CB4D431A97183E0054A905 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 94CB4D421A97183E0054A905 /* libz.dylib */; };
+		C34C811A22678CF5006C4D4B /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = C34C811922678CF5006C4D4B /* Person.m */; };
 		C3EF50CD22610FE200B0BE49 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3EF50CC22610FE200B0BE49 /* LaunchScreen.xib */; };
 		C3FB77E52266367F00DF4E73 /* FLEX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3FB77E42266367F00DF4E73 /* FLEX.framework */; };
 		C3FB77E6226636AA00DF4E73 /* FLEX.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C3FB77E42266367F00DF4E73 /* FLEX.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -138,6 +139,8 @@
 		943203FC1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLCatalogTableTableViewController.h; sourceTree = "<group>"; };
 		943203FD1978F42F00E24DB3 /* AAPLCatalogTableTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLCatalogTableTableViewController.m; sourceTree = "<group>"; };
 		94CB4D421A97183E0054A905 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		C34C811822678CF5006C4D4B /* Person.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		C34C811922678CF5006C4D4B /* Person.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 		C3EF50CC22610FE200B0BE49 /* LaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		C3FB77E42266367F00DF4E73 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -297,6 +300,8 @@
 				535682A618F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m */,
 				5356824F18F3656900BAAD62 /* Main_iPhone.storyboard */,
 				5356825218F3656900BAAD62 /* Main_iPad.storyboard */,
+				C34C811822678CF5006C4D4B /* Person.h */,
+				C34C811922678CF5006C4D4B /* Person.m */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -397,6 +402,7 @@
 				535682AF18F3670300BAAD62 /* AAPLDefaultSearchBarViewController.m in Sources */,
 				535682BC18F3670300BAAD62 /* AAPLTextViewController.m in Sources */,
 				535682B418F3670300BAAD62 /* AAPLPickerViewController.m in Sources */,
+				C34C811A22678CF5006C4D4B /* Person.m in Sources */,
 				535682BE18F3670300BAAD62 /* AAPLWebViewController.m in Sources */,
 				535682BB18F3670300BAAD62 /* AAPLTextFieldViewController.m in Sources */,
 				535682BF18F3670300BAAD62 /* UIColor+AAPLApplicationSpecific.m in Sources */,

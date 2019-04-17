@@ -49,6 +49,7 @@
 
 #if DEBUG
 #import <FLEX/FLEX.h>
+#import "Person.h"
 #if __has_include(<Realm/Realm.h>)
 #import "Dog.h"
 #import "Owner.h"
@@ -71,6 +72,10 @@
     [self sendExampleNetworkRequests];
     self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
 
+    // For testing unarchiving of objects
+    NSString *documents = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
+    NSString *whereToSaveBob = [documents stringByAppendingPathComponent:@"Bob.plist"];
+    [NSKeyedArchiver archiveRootObject:[Person bob] toFile:whereToSaveBob];
 #if __has_include(<Realm/Realm.h>)
     [self setUpRealm];
 #endif
