@@ -52,6 +52,8 @@
 
 + (NSArray<UIWindow *> *)allWindows;
 
++ (void)alert:(NSString *)title message:(NSString *)message from:(UIViewController *)viewController;
+
 // Swizzling utilities
 
 + (SEL)swizzledSelectorForSelector:(SEL)selector;

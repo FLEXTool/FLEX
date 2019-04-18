@@ -48,7 +48,7 @@
 + (UIViewController *)viewControllerForView:(UIView *)view
 {
     UIViewController *viewController = nil;
-    SEL viewDelSel = NSSelectorFromString([NSString stringWithFormat:@"%@ewDelegate", @"_vi"]);
+    SEL viewDelSel = NSSelectorFromString(@"_viewDelegate");
     if ([view respondsToSelector:viewDelSel]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -58,7 +58,8 @@
     return viewController;
 }
 
-+ (UIViewController *)viewControllerForAncestralView:(UIView *)view{
++ (UIViewController *)viewControllerForAncestralView:(UIView *)view
+{
     UIViewController *viewController = nil;
     SEL viewDelSel = NSSelectorFromString([NSString stringWithFormat:@"%@ewControllerForAncestor", @"_vi"]);
     if ([view respondsToSelector:viewDelSel]) {
@@ -254,7 +255,8 @@
     return httpResponseString;
 }
 
-+ (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response {
++ (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response
+{
     NSIndexSet *errorStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(400, 200)];
     
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
@@ -264,7 +266,6 @@
     
     return NO;
 }
-
 
 + (NSDictionary<NSString *, id> *)dictionaryFromQuery:(NSString *)query
 {
@@ -375,6 +376,15 @@
     __unsafe_unretained NSArray<UIWindow *> *windows = nil;
     [invocation getReturnValue:&windows];
     return windows;
+}
+
++ (void)alert:(NSString *)title message:(NSString *)message from:(UIViewController *)viewController
+{
+    [[[UIAlertView alloc] initWithTitle:title
+                                message:message
+                               delegate:nil
+                      cancelButtonTitle:nil
+                      otherButtonTitles:@"Dismiss", nil] show];
 }
 
 + (SEL)swizzledSelectorForSelector:(SEL)selector
