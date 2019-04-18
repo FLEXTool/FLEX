@@ -30,7 +30,10 @@
 
 #import "FLEXObjcInternal.h"
 #import <objc/runtime.h>
+// For malloc_size
 #import <malloc/malloc.h>
+// For vm_region_64
+#include <mach/mach.h>
 
 #define ALWAYS_INLINE inline __attribute__((always_inline))
 #define NEVER_INLINE inline __attribute__((noinline))
@@ -245,51 +248,73 @@ struct flex_objc_object {
     isa_t isa;
 };
 
-//////////////////////////////////////////////////////////
-// Returns nil on platforms without nonpointer isa.     //
-// Supporting those platforms would be too complicated  //
-// for such a niche feature anyway. - @NSExceptional    //
-//                                                      //
-// Code modified from objc_object::ISA() on 11/04/18    //
-//////////////////////////////////////////////////////////
-static id flex_getIsa(const flex_objc_object *object) {
-#if SUPPORT_NONPOINTER_ISA
-    if (object->isa.nonpointer) {
-        return object_getClass((__bridge id)object);
-    }
-    return (__bridge Class)(void *)object->isa.bits;
-#else
-    return nil;
-#endif
-}
-
 /////////////////////////////////////
 // FLEXObjectInternal              //
 // No Apple code beyond this point //
 /////////////////////////////////////
 
 extern "C" {
-/// Assumes memory is valid and readable.
+
+static BOOL FLEXPointerIsReadable(const void *inPtr)
+{
+    kern_return_t error = KERN_SUCCESS;
+
+    vm_size_t vmsize;
+    vm_address_t address = (vm_address_t)inPtr;
+    vm_region_basic_info_data_t info;
+    mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
+    memory_object_name_t object;
+
+    error = vm_region_64(
+        mach_task_self(),
+        &address,
+        &vmsize,
+        VM_REGION_BASIC_INFO,
+        (vm_region_info_t)&info,
+        &info_count,
+        &object
+    );
+
+    if (error != KERN_SUCCESS) {
+        // vm_region/vm_region_64 returned an error
+        return NO;
+    } else if (!(BOOL)(info.protection & VM_PROT_READ)) {
+        return NO;
+    }
+
+    // Read the memory
+    vm_offset_t readMem = 0;
+    mach_msg_type_number_t size = 0;
+    error = vm_read(mach_task_self(), address, sizeof(uintptr_t), &readMem, &size);
+    if (error != KERN_SUCCESS) {
+        // vm_read returned an error
+        return NO;
+    }
+
+    return YES;
+}
+
+/// Accepts addresses that may or may not be readable.
 /// https://blog.timac.org/2016/1124-testing-if-an-arbitrary-pointer-is-a-valid-objective-c-object/
-BOOL FLEXPointerIsValidObjcObject(const void * ptr)
+BOOL FLEXPointerIsValidObjcObject(const void *ptr)
 {
     uintptr_t pointer = (uintptr_t)ptr;
-    
+
     if (!ptr) {
         return NO;
     }
-    
+
     // Tagged pointers have 0x1 set, no other valid pointers do
     // objc-internal.h -> _objc_isTaggedPointer()
     if (flex_isTaggedPointer(ptr) || flex_isExtTaggedPointer(ptr)) {
         return YES;
     }
-    
+
     // Check pointer alignment
     if ((pointer % sizeof(uintptr_t)) != 0) {
         return NO;
     }
-    
+
     // From LLDB:
     // Pointers in a class_t will only have bits 0 through 46 set,
     // so if any pointer has bits 47 through 63 high, we know that this is not a valid isa
@@ -297,13 +322,19 @@ BOOL FLEXPointerIsValidObjcObject(const void * ptr)
     if ((pointer & 0xFFFF800000000000) != 0) {
         return NO;
     }
-    
-    // http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html :
-    if (flex_getIsa((const flex_objc_object *)ptr)) {
-        return YES;
+
+    // Make sure dereferencing this address won't crash
+    if (!FLEXPointerIsReadable(ptr)) {
+        return NO;
     }
-    
-    return NO;
+
+    // http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html :
+    if (!object_getClass((__bridge id)ptr)) {
+        return NO;
+    }
+
+    return YES;
 }
+
     
 }
