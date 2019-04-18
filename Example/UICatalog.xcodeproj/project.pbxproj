@@ -568,7 +568,7 @@
 				GCC_PREFIX_HEADER = "UICatalog/UICatalog-Prefix.pch";
 				INFOPLIST_FILE = "UICatalog/UICatalog-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.UICatalog";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.FLEX.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -588,7 +588,7 @@
 				GCC_PREFIX_HEADER = "UICatalog/UICatalog-Prefix.pch";
 				INFOPLIST_FILE = "UICatalog/UICatalog-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.UICatalog";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.FLEX.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
