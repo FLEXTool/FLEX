@@ -285,6 +285,7 @@ static BOOL FLEXPointerIsReadable(const void *inPtr)
     // Read the memory
     vm_offset_t readMem = 0;
     mach_msg_type_number_t size = 0;
+    address = (vm_address_t)inPtr;
     error = vm_read(mach_task_self(), address, sizeof(uintptr_t), &readMem, &size);
     if (error != KERN_SUCCESS) {
         // vm_read returned an error
