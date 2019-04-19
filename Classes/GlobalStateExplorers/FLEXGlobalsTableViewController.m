@@ -8,6 +8,7 @@
 
 #import "FLEXGlobalsTableViewController.h"
 #import "FLEXUtility.h"
+#import "FLEXRuntimeUtility.h"
 #import "FLEXLibrariesTableViewController.h"
 #import "FLEXClassesTableViewController.h"
 #import "FLEXObjectExplorerViewController.h"
@@ -26,6 +27,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowNetworkHistory,
     FLEXGlobalsRowSystemLog,
     FLEXGlobalsRowLiveObjects,
+    FLEXGlobalsRowAddressInspector,
     FLEXGlobalsRowFileBrowser,
     FLEXGlobalsCookies,    
     FLEXGlobalsRowSystemLibraries,
@@ -56,6 +58,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     for (FLEXGlobalsRow defaultRowIndex = 0; defaultRowIndex < FLEXGlobalsRowCount; defaultRowIndex++) {
         FLEXGlobalsTableViewControllerEntryNameFuture titleFuture = nil;
         FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture = nil;
+        FLEXGlobalsTableViewControllerRowAction rowAction = nil;
 
         switch (defaultRowIndex) {
             case FLEXGlobalsRowAppClasses:
@@ -67,6 +70,49 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     classesViewController.binaryImageName = [FLEXUtility applicationImageName];
 
                     return classesViewController;
+                };
+                break;
+                
+            case FLEXGlobalsRowAddressInspector:
+                titleFuture = ^NSString *{
+                    return @"🔎 Address Explorer";
+                };
+                
+                rowAction = ^(FLEXGlobalsTableViewController *host) {
+                    NSString *title = @"Explore Object at Address";
+                    NSString *message = @"Paste a hexadecimal address below, starting with '0x'. "
+                    "Use the unsafe option if you need to bypass pointer validation, "
+                    "but know that it may crash the app if the address is invalid.";
+
+                    UIAlertController *addressInput = [UIAlertController alertControllerWithTitle:title
+                                                                                          message:message
+                                                                                   preferredStyle:UIAlertControllerStyleAlert];
+                    void (^handler)(UIAlertAction *) = ^(UIAlertAction *action) {
+                        if (action.style == UIAlertActionStyleCancel) {
+                            [host deselectSelectedRow]; return;
+                        }
+                        NSString *address = addressInput.textFields.firstObject.text;
+                        [host tryExploreAddress:address safely:action.style == UIAlertActionStyleDefault];
+                    };
+                    [addressInput addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+                        NSString *copied = [UIPasteboard generalPasteboard].string;
+                        textField.placeholder = @"0x00000070deadbeef";
+                        // Go ahead and paste our clipboard if we have an address copied
+                        if ([copied hasPrefix:@"0x"]) {
+                            textField.text = copied;
+                            [textField selectAll:nil];
+                        }
+                    }];
+                    [addressInput addAction:[UIAlertAction actionWithTitle:@"Explore"
+                                                                     style:UIAlertActionStyleDefault
+                                                                   handler:handler]];
+                    [addressInput addAction:[UIAlertAction actionWithTitle:@"Unsafe Explore"
+                                                                     style:UIAlertActionStyleDestructive
+                                                                   handler:handler]];
+                    [addressInput addAction:[UIAlertAction actionWithTitle:@"Cancel"
+                                                                     style:UIAlertActionStyleCancel
+                                                                   handler:handler]];
+                    [host presentViewController:addressInput animated:YES completion:nil];
                 };
                 break;
 
@@ -212,10 +258,18 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
         }
 
-        NSParameterAssert(titleFuture);
-        NSParameterAssert(viewControllerFuture);
+        NSAssert(viewControllerFuture || rowAction, @"The switch-case above must assign one of these");
 
-        [defaultGlobalEntries addObject:[FLEXGlobalsTableViewControllerEntry entryWithNameFuture:titleFuture viewControllerFuture:viewControllerFuture]];
+        if (viewControllerFuture) {
+            [defaultGlobalEntries addObject:[FLEXGlobalsTableViewControllerEntry
+                                             entryWithNameFuture:titleFuture
+                                             viewControllerFuture:viewControllerFuture]];
+        } else {
+            [defaultGlobalEntries addObject:[FLEXGlobalsTableViewControllerEntry
+                                             entryWithNameFuture:titleFuture
+                                             action:rowAction]];
+        }
+
     }
 
     return defaultGlobalEntries;
@@ -229,6 +283,11 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         _entries = [[[self class] defaultGlobalEntries] arrayByAddingObjectsFromArray:[FLEXManager sharedManager].userGlobalEntries];
     }
     return self;
+}
+
+- (void)deselectSelectedRow {
+    NSIndexPath *selected = self.tableView.indexPathForSelectedRow;
+    [self.tableView deselectRowAtIndexPath:selected animated:YES];
 }
 
 #pragma mark - Public
@@ -247,11 +306,37 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed:)];
 }
 
-#pragma mark -
+#pragma mark - Misc
 
 - (void)donePressed:(id)sender
 {
     [self.delegate globalsViewControllerDidFinish:self];
+}
+
+- (void)tryExploreAddress:(NSString *)addressString safely:(BOOL)safely {
+    NSScanner *scanner = [NSScanner scannerWithString:addressString];
+    unsigned long long hexValue = 0;
+    BOOL didParseAddress = [scanner scanHexLongLong:&hexValue];
+    const void *pointerValue = (void *)hexValue;
+
+    NSString *error = nil;
+
+    if (didParseAddress) {
+        if (safely && ![FLEXRuntimeUtility pointerIsValidObjcObject:pointerValue]) {
+            error = @"The given address is unlikely to be a valid object.";
+        }
+    } else {
+        error = @"Malformed address. Make sure it's not too long and starts with '0x'.";
+    }
+
+    if (!error) {
+        id object = (__bridge id)pointerValue;
+        FLEXObjectExplorerViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
+        [self.navigationController pushViewController:explorer animated:YES];
+    } else {
+        [FLEXUtility alert:@"Uh-oh" message:error from:self];
+        [self deselectSelectedRow];
+    }
 }
 
 #pragma mark - Table Data Helpers
@@ -266,13 +351,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
 
     return entry.entryNameFuture();
-}
-
-- (UIViewController *)viewControllerToPushForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
-
-    return entry.viewControllerFuture();
 }
 
 #pragma mark - Table View Data Source
@@ -302,14 +380,16 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     return cell;
 }
 
-
 #pragma mark - Table View Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIViewController *viewControllerToPush = [self viewControllerToPushForRowAtIndexPath:indexPath];
-
-    [self.navigationController pushViewController:viewControllerToPush animated:YES];
+    FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
+    if (entry.viewControllerFuture) {
+        [self.navigationController pushViewController:entry.viewControllerFuture() animated:YES];
+    } else {
+        entry.rowAction(self);
+    }
 }
 
 @end
