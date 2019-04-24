@@ -94,7 +94,7 @@
 - (NSString *)description
 {
     NSString *escaped = [self.messageText stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"];
-    return [NSString stringWithFormat:@"(%lu) %@", self.messageText.length, escaped];
+    return [NSString stringWithFormat:@"(%@) %@", @(self.messageText.length), escaped];
 }
 
 @end

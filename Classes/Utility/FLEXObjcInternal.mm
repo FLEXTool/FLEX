@@ -51,6 +51,12 @@
 // objc-internal.h //
 /////////////////////
 
+#if __LP64__
+#define OBJC_HAVE_TAGGED_POINTERS 1
+#endif
+
+#if OBJC_HAVE_TAGGED_POINTERS
+
 #if TARGET_OS_OSX && __x86_64__
 // 64-bit Mac - tag bit is LSB
 #   define OBJC_MSB_TAGGED_POINTERS 0
@@ -100,6 +106,8 @@ static BOOL flex_isTaggedPointer(const void *ptr)
 {
     return ((uintptr_t)ptr & _OBJC_TAG_MASK) == _OBJC_TAG_MASK;
 }
+
+#endif
 
 ///////////////////
 // objc-config.h //
@@ -305,11 +313,13 @@ BOOL FLEXPointerIsValidObjcObject(const void *ptr)
         return NO;
     }
 
+#if OBJC_HAVE_TAGGED_POINTERS
     // Tagged pointers have 0x1 set, no other valid pointers do
     // objc-internal.h -> _objc_isTaggedPointer()
     if (flex_isTaggedPointer(ptr) || flex_isExtTaggedPointer(ptr)) {
         return YES;
     }
+#endif
 
     // Check pointer alignment
     if ((pointer % sizeof(uintptr_t)) != 0) {
