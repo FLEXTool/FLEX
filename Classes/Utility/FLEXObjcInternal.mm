@@ -43,8 +43,6 @@
 // as few modifications as possible. Changes are noted in boxed comments.
 // https://opensource.apple.com/source/objc4/objc4-723/
 // https://opensource.apple.com/source/objc4/objc4-723/runtime/objc-internal.h.auto.html
-// https://opensource.apple.com/source/objc4/objc4-723/runtime/objc-private.h.auto.html
-// https://opensource.apple.com/source/objc4/objc4-723/runtime/objc-config.h.auto.html
 // https://opensource.apple.com/source/objc4/objc4-723/runtime/objc-object.h.auto.html
 
 /////////////////////
@@ -65,38 +63,12 @@
 #   define OBJC_MSB_TAGGED_POINTERS 1
 #endif
 
-#define _OBJC_TAG_INDEX_MASK 0x7
-// array slot includes the tag bit itself
-#define _OBJC_TAG_SLOT_COUNT 16
-#define _OBJC_TAG_SLOT_MASK 0xf
-
-#define _OBJC_TAG_EXT_INDEX_MASK 0xff
-// array slot has no extra bits
-#define _OBJC_TAG_EXT_SLOT_COUNT 256
-#define _OBJC_TAG_EXT_SLOT_MASK 0xff
-
 #if OBJC_MSB_TAGGED_POINTERS
 #   define _OBJC_TAG_MASK (1UL<<63)
-#   define _OBJC_TAG_INDEX_SHIFT 60
-#   define _OBJC_TAG_SLOT_SHIFT 60
-#   define _OBJC_TAG_PAYLOAD_LSHIFT 4
-#   define _OBJC_TAG_PAYLOAD_RSHIFT 4
 #   define _OBJC_TAG_EXT_MASK (0xfUL<<60)
-#   define _OBJC_TAG_EXT_INDEX_SHIFT 52
-#   define _OBJC_TAG_EXT_SLOT_SHIFT 52
-#   define _OBJC_TAG_EXT_PAYLOAD_LSHIFT 12
-#   define _OBJC_TAG_EXT_PAYLOAD_RSHIFT 12
 #else
 #   define _OBJC_TAG_MASK 1UL
-#   define _OBJC_TAG_INDEX_SHIFT 1
-#   define _OBJC_TAG_SLOT_SHIFT 0
-#   define _OBJC_TAG_PAYLOAD_LSHIFT 0
-#   define _OBJC_TAG_PAYLOAD_RSHIFT 4
 #   define _OBJC_TAG_EXT_MASK 0xfUL
-#   define _OBJC_TAG_EXT_INDEX_SHIFT 4
-#   define _OBJC_TAG_EXT_SLOT_SHIFT 4
-#   define _OBJC_TAG_EXT_PAYLOAD_LSHIFT 0
-#   define _OBJC_TAG_EXT_PAYLOAD_RSHIFT 12
 #endif
 
 //////////////////////////////////////
@@ -106,139 +78,6 @@ static BOOL flex_isTaggedPointer(const void *ptr)
 {
     return ((uintptr_t)ptr & _OBJC_TAG_MASK) == _OBJC_TAG_MASK;
 }
-
-#endif
-
-///////////////////
-// objc-config.h //
-///////////////////
-
-// Define SUPPORT_INDEXED_ISA=1 on platforms that store the class in the isa 
-// field as an index into a class table.
-#if __ARM_ARCH_7K__ >= 2
-#   define SUPPORT_INDEXED_ISA 1
-#else
-#   define SUPPORT_INDEXED_ISA 0
-#endif
-
-// Define SUPPORT_PACKED_ISA=1 on platforms that store the class in the isa 
-// field as a maskable pointer with other data around it.
-#if (!__LP64__  ||  TARGET_OS_WIN32  ||  TARGET_OS_SIMULATOR)
-#   define SUPPORT_PACKED_ISA 0
-#else
-#   define SUPPORT_PACKED_ISA 1
-#endif
-
-// Define SUPPORT_NONPOINTER_ISA=1 on any platform that may store something
-// in the isa field that is not a raw pointer.
-#if !SUPPORT_INDEXED_ISA  &&  !SUPPORT_PACKED_ISA
-#   define SUPPORT_NONPOINTER_ISA 0
-#else
-#   define SUPPORT_NONPOINTER_ISA 1
-#endif
-
-////////////////////
-// objc-private.h //
-////////////////////
-
-union isa_t 
-{
-    isa_t() { }
-    isa_t(uintptr_t value) : bits(value) { }
-    
-    Class cls;
-    uintptr_t bits;
-    
-#if SUPPORT_PACKED_ISA
-    
-    // extra_rc must be the MSB-most field (so it matches carry/overflow flags)
-    // nonpointer must be the LSB (fixme or get rid of it)
-    // shiftcls must occupy the same bits that a real class pointer would
-    // bits + RC_ONE is equivalent to extra_rc + 1
-    // RC_HALF is the high bit of extra_rc (i.e. half of its range)
-    
-    // future expansion:
-    // uintptr_t fast_rr : 1;     // no r/r overrides
-    // uintptr_t lock : 2;        // lock for atomic property, @synch
-    // uintptr_t extraBytes : 1;  // allocated with extra bytes
-    
-# if __arm64__
-#   define ISA_MASK        0x0000000ffffffff8ULL
-#   define ISA_MAGIC_MASK  0x000003f000000001ULL
-#   define ISA_MAGIC_VALUE 0x000001a000000001ULL
-    struct {
-        uintptr_t nonpointer        : 1;
-        uintptr_t has_assoc         : 1;
-        uintptr_t has_cxx_dtor      : 1;
-        uintptr_t shiftcls          : 33; // MACH_VM_MAX_ADDRESS 0x1000000000
-        uintptr_t magic             : 6;
-        uintptr_t weakly_referenced : 1;
-        uintptr_t deallocating      : 1;
-        uintptr_t has_sidetable_rc  : 1;
-        uintptr_t extra_rc          : 19;
-#       define RC_ONE   (1ULL<<45)
-#       define RC_HALF  (1ULL<<18)
-    };
-    
-# elif __x86_64__
-#   define ISA_MASK        0x00007ffffffffff8ULL
-#   define ISA_MAGIC_MASK  0x001f800000000001ULL
-#   define ISA_MAGIC_VALUE 0x001d800000000001ULL
-    struct {
-        uintptr_t nonpointer        : 1;
-        uintptr_t has_assoc         : 1;
-        uintptr_t has_cxx_dtor      : 1;
-        uintptr_t shiftcls          : 44; // MACH_VM_MAX_ADDRESS 0x7fffffe00000
-        uintptr_t magic             : 6;
-        uintptr_t weakly_referenced : 1;
-        uintptr_t deallocating      : 1;
-        uintptr_t has_sidetable_rc  : 1;
-        uintptr_t extra_rc          : 8;
-#       define RC_ONE   (1ULL<<56)
-#       define RC_HALF  (1ULL<<7)
-    };
-    
-# else
-#   error unknown architecture for packed isa
-# endif
-    
-    // SUPPORT_PACKED_ISA
-#endif
-    
-    
-#if SUPPORT_INDEXED_ISA
-    
-# if  __ARM_ARCH_7K__ >= 2
-    
-#   define ISA_INDEX_IS_NPI      1
-#   define ISA_INDEX_MASK        0x0001FFFC
-#   define ISA_INDEX_SHIFT       2
-#   define ISA_INDEX_BITS        15
-#   define ISA_INDEX_COUNT       (1 << ISA_INDEX_BITS)
-#   define ISA_INDEX_MAGIC_MASK  0x001E0001
-#   define ISA_INDEX_MAGIC_VALUE 0x001C0001
-    struct {
-        uintptr_t nonpointer        : 1;
-        uintptr_t has_assoc         : 1;
-        uintptr_t indexcls          : 15;
-        uintptr_t magic             : 4;
-        uintptr_t has_cxx_dtor      : 1;
-        uintptr_t weakly_referenced : 1;
-        uintptr_t deallocating      : 1;
-        uintptr_t has_sidetable_rc  : 1;
-        uintptr_t extra_rc          : 7;
-#       define RC_ONE   (1ULL<<25)
-#       define RC_HALF  (1ULL<<6)
-    };
-    
-# else
-#   error unknown architecture for indexed isa
-# endif
-    
-    // SUPPORT_INDEXED_ISA
-#endif
-    
-};
 
 ///////////////////
 // objc-object.h //
@@ -252,9 +91,7 @@ static BOOL flex_isExtTaggedPointer(const void *ptr)
     return ((uintptr_t)ptr & _OBJC_TAG_EXT_MASK) == _OBJC_TAG_EXT_MASK;
 }
 
-struct flex_objc_object {
-    isa_t isa;
-};
+#endif
 
 /////////////////////////////////////
 // FLEXObjectInternal              //
