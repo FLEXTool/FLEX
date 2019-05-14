@@ -169,8 +169,8 @@
     UITableViewCell *cell = nil;
 
     // Separate image and text only cells because otherwise the separator lines get out-of-whack on image cells reused with text only.
-    BOOL showImagePreview = [FLEXUtility isImagePathExtension:[fullPath pathExtension]];
-    NSString *cellIdentifier = showImagePreview ? imageCellIdentifier : textCellIdentifier;
+    UIImage *image = [UIImage imageWithContentsOfFile:fullPath];
+    NSString *cellIdentifier = image ? imageCellIdentifier : textCellIdentifier;
 
     if (!cell) {
         cell = [[FLEXFileBrowserTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
@@ -183,9 +183,9 @@
     cell.textLabel.text = cellTitle;
     cell.detailTextLabel.text = subtitle;
 
-    if (showImagePreview) {
+    if (image) {
         cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
-        cell.imageView.image = [UIImage imageWithContentsOfFile:fullPath];
+        cell.imageView.image = image;
     }
 
     return cell;
@@ -201,6 +201,8 @@
 
     BOOL isDirectory = NO;
     BOOL stillExists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+    UIImage *image = cell.imageView.image;
 
     if (!stillExists) {
         [self alert:@"File Not Found" message:@"The file at the specified path no longer exists."];
@@ -211,8 +213,7 @@
     UIViewController *drillInViewController = nil;
     if (isDirectory) {
         drillInViewController = [[[self class] alloc] initWithPath:fullPath];
-    } else if ([FLEXUtility isImagePathExtension:pathExtension]) {
-        UIImage *image = [UIImage imageWithContentsOfFile:fullPath];
+    } else if (image) {
         drillInViewController = [[FLEXImagePreviewViewController alloc] initWithImage:image];
     } else {
         NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
