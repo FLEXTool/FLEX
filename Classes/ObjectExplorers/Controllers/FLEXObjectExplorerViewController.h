@@ -23,9 +23,9 @@ typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
 
 @property (nonatomic, strong) id object;
 
-// Sublasses can override the methods below to provide data in a custom section.
-// The subclass should provide an array of "row cookies" to allow retreival of individual row data later on.
-// The objects in the rowCookies array will be used to call the row title, subtitle, etc methods to consturct the rows.
+// Subclasses can override the methods below to provide data in a custom section.
+// The subclass should provide an array of "row cookies" to allow retrieval of individual row data later on.
+// The objects in the rowCookies array will be used to call the row title, subtitle, etc methods to construct the rows.
 // The cookies approach is used here because we may filter the visible rows based on the search text entered by the user.
 - (NSString *)customSectionTitle;
 - (NSArray *)customSectionRowCookies;
@@ -37,7 +37,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
 
 // More subclass configuration hooks.
 
-/// Whether to allow showing/drilling in to current values for ivars and properties. Defalut is YES.
+/// Whether to allow showing/drilling in to current values for ivars and properties. Default is YES.
 - (BOOL)canHaveInstanceState;
 
 /// Whether to allow drilling in to method calling interfaces for instance methods. Default is YES.

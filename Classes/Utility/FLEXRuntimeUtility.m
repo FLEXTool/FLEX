@@ -10,7 +10,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
 
-// See https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
+// See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
 NSString *const kFLEXUtilityAttributeTypeEncoding = @"T";
 NSString *const kFLEXUtilityAttributeBackingIvar = @"V";
 NSString *const kFLEXUtilityAttributeReadOnly = @"R";
@@ -404,7 +404,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 // Ensure that the type encoding on the NSValue matches the type encoding of the argument in the method signature
                 if (strcmp([argumentValue objCType], typeEncodingCString) != 0) {
                     if (error) {
-                        NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Type encoding mismatch for agrument at index %lu. Value type: %s; Method argument type: %s.", (unsigned long)argumentsArrayIndex, [argumentValue objCType], typeEncodingCString]};
+                        NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Type encoding mismatch for argument at index %lu. Value type: %s; Method argument type: %s.", (unsigned long)argumentsArrayIndex, [argumentValue objCType], typeEncodingCString]};
                         *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch userInfo:userInfo];
                     }
                     return nil;
@@ -434,7 +434,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         // Looking at you -[UIResponder(UITextInputAdditions) _caretRect]
         [invocation invoke];
         
-        // Retreive the return value and box if necessary.
+        // Retrieve the return value and box if necessary.
         const char *returnType = [methodSignature methodReturnType];
         
         if (returnType[0] == @encode(id)[0] || returnType[0] == @encode(Class)[0]) {
@@ -476,7 +476,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (BOOL)isTollFreeBridgedValue:(id)value forCFType:(const char *)typeEncoding
 {
-    // See https://developer.apple.com/library/ios/documentation/general/conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html
+    // See https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html
 #define CASE(cftype, foundationClass) \
     if(strcmp(typeEncoding, @encode(cftype)) == 0) { \
         return [value isKindOfClass:[foundationClass class]]; \
@@ -546,7 +546,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber *number = [formatter numberFromString:inputString];
     
-    // Make sure we box the number with the correct type encoding so it can be propperly unboxed later via getValue:
+    // Make sure we box the number with the correct type encoding so it can be properly unboxed later via getValue:
     NSValue *value = nil;
     if (strcmp(typeEncoding, @encode(char)) == 0) {
         char primitiveValue = [number charValue];
@@ -615,7 +615,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                     NSString *typeEncoding = [@(structEncoding) substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)];
                     typeBlock(structName, [typeEncoding UTF8String], [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
                     runningFieldOffset += fieldSize;
-                    // Padding to keep propper alignment. __attribute((packed)) structs will break here.
+                    // Padding to keep proper alignment. __attribute((packed)) structs will break here.
                     // The type encoding is no different for packed structs, so it's not clear there's anything we can do for those.
                     if (runningFieldOffset % fieldAlignment != 0) {
                         runningFieldOffset += fieldAlignment - runningFieldOffset % fieldAlignment;
@@ -660,7 +660,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         return nil;
     }
     
-    // See https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
+    // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
     // class-dump has a much nicer and much more complete implementation for this task, but it is distributed under GPLv2 :/
     // See https://github.com/nygard/class-dump/blob/master/Source/CDType.m
     // Warning: this method uses multiple middle returns and macros to cut down on boilerplate.

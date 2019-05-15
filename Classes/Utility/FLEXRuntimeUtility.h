@@ -11,7 +11,7 @@
 
 extern const unsigned int kFLEXNumberOfImplicitArgs;
 
-// See https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
+// See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
 extern NSString *const kFLEXUtilityAttributeTypeEncoding;
 extern NSString *const kFLEXUtilityAttributeBackingIvar;
 extern NSString *const kFLEXUtilityAttributeReadOnly;

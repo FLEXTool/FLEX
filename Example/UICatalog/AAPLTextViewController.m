@@ -182,7 +182,7 @@
 
 - (void)adjustTextViewSelection:(UITextView *)textView {
     // Ensure that the text view is visible by making the text view frame smaller as text can be slightly cropped at the bottom.
-    // Note that this is a workwaround to a bug in iOS.
+    // Note that this is a workaround to a bug in iOS.
     [textView layoutIfNeeded];
 
     CGRect caretRect = [textView caretRectForPosition:textView.selectedTextRange.end];

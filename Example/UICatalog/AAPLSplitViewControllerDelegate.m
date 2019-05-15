@@ -60,7 +60,7 @@
 
     UINavigationController *detailViewController = [splitViewController.viewControllers lastObject];
 
-    // It's possible that the detail view controller has more than one view controller currently in its heirarchy. If this is the case, we
+    // It's possible that the detail view controller has more than one view controller currently in its hierarchy. If this is the case, we
     // want to be sure that the root view controller of the navigation controller has its left bar button item set on its navigation item.
     // We don't want to override the navigation controller's top view controller's "Back" bar button item with the "More" bar button item.
     UIViewController *detailRootViewController = [detailViewController.viewControllers firstObject];

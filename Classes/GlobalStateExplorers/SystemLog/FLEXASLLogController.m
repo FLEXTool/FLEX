@@ -9,7 +9,7 @@
 #import "FLEXASLLogController.h"
 #import <asl.h>
 
-// Querrying the ASL is much slower in the simulator. We need a longer polling interval to keep things repsonsive.
+// Querying the ASL is much slower in the simulator. We need a longer polling interval to keep things responsive.
 #if TARGET_IPHONE_SIMULATOR
     #define updateInterval 5.0
 #else
@@ -129,7 +129,7 @@
     // Filter for messages from the current process.
     // Note that this appears to happen by default on device, but is required in the simulator.
     asl_set_query(query, ASL_KEY_PID, pidString.UTF8String, ASL_QUERY_OP_EQUAL);
-    // Filter for messages after the last retreived message.
+    // Filter for messages after the last retrieved message.
     if (self.lastTimestamp) {
         asl_set_query(query, ASL_KEY_TIME, self.lastTimestamp.UTF8String, ASL_QUERY_OP_GREATER);
     }

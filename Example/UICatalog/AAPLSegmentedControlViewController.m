@@ -90,19 +90,19 @@
 }
 
 - (void)configureCustomSegmentsSegmentedControl {
-    NSDictionary *imageToAccesssibilityLabelMappings = @{
+    NSDictionary *imageToAccessibilityLabelMappings = @{
         @"checkmark_icon": NSLocalizedString(@"Done", nil),
         @"search_icon": NSLocalizedString(@"Search", nil),
         @"tools_icon": NSLocalizedString(@"Settings", nil)
     };
     
     // Guarantee that the segments show up in the same order.
-    NSArray *sortedSegmentImageNames = [[imageToAccesssibilityLabelMappings allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    NSArray *sortedSegmentImageNames = [[imageToAccessibilityLabelMappings allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 
     [sortedSegmentImageNames enumerateObjectsUsingBlock:^(NSString *segmentImageName, NSUInteger idx, BOOL *stop) {
         UIImage *image = [UIImage imageNamed:segmentImageName];
         
-        image.accessibilityLabel = imageToAccesssibilityLabelMappings[segmentImageName];
+        image.accessibilityLabel = imageToAccessibilityLabelMappings[segmentImageName];
         
         [self.customSegmentsSegmentedControl setImage:image forSegmentAtIndex:idx];
     }];

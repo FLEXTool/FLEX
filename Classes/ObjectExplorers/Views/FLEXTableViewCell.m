@@ -43,7 +43,7 @@
 
 /// We use this to allow our table view to allow its delegate
 /// to handle any action it chooses to support, without
-/// explicitly implementing the method ourselelves.
+/// explicitly implementing the method ourselves.
 ///
 /// Alternative considered: override respondsToSelector
 /// to return NO. I decided against this for simplicity's
