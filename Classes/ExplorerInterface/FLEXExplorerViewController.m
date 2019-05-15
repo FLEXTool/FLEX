@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 @property (nonatomic, assign) CGRect toolbarFrameBeforeDragging;
 
 /// Borders of all the visible views in the hierarchy at the selection point.
-/// The keys are NSValues with the correponding view (nonretained).
+/// The keys are NSValues with the corresponding view (nonretained).
 @property (nonatomic, strong) NSDictionary<NSValue *, UIView *> *outlineViewsForVisibleViews;
 
 /// The actual views at the selection point with the deepest view last.
@@ -57,14 +57,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 @property (nonatomic, strong) UIView *selectedViewOverlay;
 
 /// Tracked so we can restore the key window after dismissing a modal.
-/// We need to become key after modal presentation so we can correctly capture intput.
+/// We need to become key after modal presentation so we can correctly capture input.
 /// If we're just showing the toolbar, we want the main app's window to remain key so that we don't interfere with input, status bar, etc.
 @property (nonatomic, strong) UIWindow *previousKeyWindow;
 
 /// Similar to the previousKeyWindow property above, we need to track status bar styling if
 /// the app doesn't use view controller based status bar management. When we present a modal,
-/// we want to change the status bar style to UIStausBarStyleDefault. Before changing, we stash
-/// the current style. On dismissal, we return the staus bar to the style that the app was using previously.
+/// we want to change the status bar style to UIStatusBarStyleDefault. Before changing, we stash
+/// the current style. On dismissal, we return the status bar to the style that the app was using previously.
 @property (nonatomic, assign) UIStatusBarStyle previousStatusBarStyle;
 
 /// All views that we're KVOing. Used to help us clean up properly.
@@ -133,6 +133,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     UIWindow *window = self.previousKeyWindow ?: [[UIApplication sharedApplication] keyWindow];
     UIViewController *viewController = window.rootViewController;
+    // Obfuscating selector _viewControllerForSupportedInterfaceOrientations
     NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
     SEL viewControllerSelector = NSSelectorFromString(viewControllerSelectorString);
     if ([viewController respondsToSelector:viewControllerSelector]) {
@@ -447,12 +448,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     switch (panGR.state) {
         case UIGestureRecognizerStateBegan:
             self.toolbarFrameBeforeDragging = self.explorerToolbar.frame;
-            [self updateToolbarPostionWithDragGesture:panGR];
+            [self updateToolbarPositionWithDragGesture:panGR];
             break;
             
         case UIGestureRecognizerStateChanged:
         case UIGestureRecognizerStateEnded:
-            [self updateToolbarPostionWithDragGesture:panGR];
+            [self updateToolbarPositionWithDragGesture:panGR];
             break;
             
         default:
@@ -460,7 +461,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)updateToolbarPostionWithDragGesture:(UIPanGestureRecognizer *)panGR
+- (void)updateToolbarPositionWithDragGesture:(UIPanGestureRecognizer *)panGR
 {
     CGPoint translation = [panGR translationInView:self.view];
     CGRect newToolbarFrame = self.toolbarFrameBeforeDragging;
@@ -802,7 +803,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [[self statusWindow] setWindowLevel:self.view.window.windowLevel + 1.0];
     
     // If this app doesn't use view controller based status bar management and we're on iOS 7+,
-    // make sure the status bar style is UIStatusBarStyleDefault. We don't actully have to check
+    // make sure the status bar style is UIStatusBarStyleDefault. We don't actually have to check
     // for view controller based management because the global methods no-op if that is turned on.
     self.previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
@@ -822,7 +823,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // We want it above FLEX while a modal is presented for scroll to top, but below FLEX otherwise for exploration.
     [[self statusWindow] setWindowLevel:UIWindowLevelStatusBar];
     
-    // Restore the stauts bar style if the app is using global status bar management.
+    // Restore the status bar style if the app is using global status bar management.
     [[UIApplication sharedApplication] setStatusBarStyle:self.previousStatusBarStyle];
     
     [self dismissViewControllerAnimated:animated completion:completion];

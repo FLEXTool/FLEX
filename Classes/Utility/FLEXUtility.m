@@ -313,7 +313,7 @@
 }
 
 // Thanks to the following links for help with this method
-// http://www.cocoanetics.com/2012/02/decompressing-files-into-memory/
+// https://www.cocoanetics.com/2012/02/decompressing-files-into-memory/
 // https://github.com/nicklockwood/GZIP
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData
 {
@@ -355,6 +355,7 @@
     BOOL includeInternalWindows = YES;
     BOOL onlyVisibleWindows = NO;
 
+    // Obfuscating selector allWindowsIncludingInternalWindows:onlyVisibleWindows:
     NSArray<NSString *> *allWindowsComponents = @[@"al", @"lWindo", @"wsIncl", @"udingInt", @"ernalWin", @"dows:o", @"nlyVisi", @"bleWin", @"dows:"];
     SEL allWindowsSelector = NSSelectorFromString([allWindowsComponents componentsJoinedByString:@""]);
 

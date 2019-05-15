@@ -13,7 +13,7 @@
 
 @interface FLEXTableContentViewController ()<FLEXMultiColumnTableViewDataSource, FLEXMultiColumnTableViewDelegate>
 
-@property (nonatomic, strong) FLEXMultiColumnTableView *multiColumView;
+@property (nonatomic, strong) FLEXMultiColumnTableView *multiColumnView;
 
 @end
 
@@ -22,29 +22,29 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    [self.view addSubview:self.multiColumView];
+    [self.view addSubview:self.multiColumnView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self.multiColumView reloadData];
+    [self.multiColumnView reloadData];
 }
 
 #pragma mark -
 
 #pragma mark init SubView
-- (FLEXMultiColumnTableView *)multiColumView {
-    if (!_multiColumView) {
-        _multiColumView = [[FLEXMultiColumnTableView alloc] initWithFrame:
+- (FLEXMultiColumnTableView *)multiColumnView {
+    if (!_multiColumnView) {
+        _multiColumnView = [[FLEXMultiColumnTableView alloc] initWithFrame:
                            CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         
-        _multiColumView.autoresizingMask          = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin;
-        _multiColumView.backgroundColor           = [UIColor whiteColor];
-        _multiColumView.dataSource                = self;
-        _multiColumView.delegate                  = self;
+        _multiColumnView.autoresizingMask          = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin;
+        _multiColumnView.backgroundColor           = [UIColor whiteColor];
+        _multiColumnView.dataSource                = self;
+        _multiColumnView.delegate                  = self;
     }
-    return _multiColumView;
+    return _multiColumnView;
 }
 #pragma mark MultiColumnTableView DataSource
 
@@ -151,12 +151,12 @@
         return result;
     }];
     if (sortType == FLEXTableColumnHeaderSortTypeDesc) {
-        NSEnumerator *contentReverseEvumerator = [sortContentData reverseObjectEnumerator];
-        sortContentData = [NSArray arrayWithArray:[contentReverseEvumerator allObjects]];
+        NSEnumerator *contentReverseEnumerator = [sortContentData reverseObjectEnumerator];
+        sortContentData = [NSArray arrayWithArray:[contentReverseEnumerator allObjects]];
     }
     
     self.contentsArray = sortContentData;
-    [self.multiColumView reloadData];
+    [self.multiColumnView reloadData];
 }
 
 #pragma mark -
@@ -170,10 +170,10 @@
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {
         if (newCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
             
-            self->_multiColumView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
+            self->_multiColumnView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
         }
         else {
-            self->_multiColumView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
+            self->_multiColumnView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
         }
         [self.view setNeedsLayout];
     } completion:nil];

@@ -13,7 +13,7 @@
 
 static CFMutableSetRef registeredClasses;
 
-// Mimics the objective-c object stucture for checking if a range of memory is an object.
+// Mimics the objective-c object structure for checking if a range of memory is an object.
 typedef struct {
     Class isa;
 } flex_maybe_object_t;
@@ -60,7 +60,7 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     [self updateRegisteredClasses];
     
     // Inspired by:
-    // http://llvm.org/svn/llvm-project/lldb/tags/RELEASE_34/final/examples/darwin/heap_find/heap/heap_find.cpp
+    // https://llvm.org/svn/llvm-project/lldb/tags/RELEASE_34/final/examples/darwin/heap_find/heap/heap_find.cpp
     // https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396
     
     vm_address_t *zones = NULL;

@@ -221,8 +221,8 @@
     
     [self.hexLabel sizeToFit];
     const CGFloat kLabelVerticalOutsetAmount = 0.0;
-    const CGFloat kLabelHorizonalOutsetAmount = 2.0;
-    UIEdgeInsets labelOutset = UIEdgeInsetsMake(-kLabelVerticalOutsetAmount, -kLabelHorizonalOutsetAmount, -kLabelVerticalOutsetAmount, -kLabelHorizonalOutsetAmount);
+    const CGFloat kLabelHorizontalOutsetAmount = 2.0;
+    UIEdgeInsets labelOutset = UIEdgeInsetsMake(-kLabelVerticalOutsetAmount, -kLabelHorizontalOutsetAmount, -kLabelVerticalOutsetAmount, -kLabelHorizontalOutsetAmount);
     self.hexLabel.frame = UIEdgeInsetsInsetRect(self.hexLabel.frame, labelOutset);
     CGFloat hexLabelOriginX = self.colorPreviewBox.layer.borderWidth;
     CGFloat hexLabelOriginY = CGRectGetMaxY(self.colorPreviewBox.frame) - self.colorPreviewBox.layer.borderWidth - self.hexLabel.frame.size.height;

@@ -102,7 +102,7 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     // Report the error inside the web view.
-    NSString *localizedErrorMessage = NSLocalizedString(@"An error occured:", nil);
+    NSString *localizedErrorMessage = NSLocalizedString(@"An error occurred:", nil);
     NSString *errorFormatString = @"<!doctype html><html><body><div style=\"width: 100%%; text-align: center; font-size: 36pt;\">%@%@</div></body></html>";
 
     NSString *errorHTML = [NSString stringWithFormat:errorFormatString, localizedErrorMessage, error.localizedDescription];

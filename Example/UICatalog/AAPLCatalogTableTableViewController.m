@@ -39,7 +39,7 @@
     // fill it with some stuff
     UILabel *infoLabel = [[UILabel alloc] init];
     infoLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    infoLabel.text = @"Add switches, notes or whatewer you wish to provide your testers with superpowers!";
+    infoLabel.text = @"Add switches, notes or whatever you wish to provide your testers with superpowers!";
     infoLabel.numberOfLines = 0;
     infoLabel.textAlignment = NSTextAlignmentCenter;
 

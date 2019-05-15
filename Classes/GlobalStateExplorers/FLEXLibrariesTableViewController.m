@@ -97,7 +97,7 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     if ([searchText length] > 0) {
-        NSPredicate *searchPreidcate = [NSPredicate predicateWithBlock:^BOOL(NSString *evaluatedObject, NSDictionary<NSString *, id> *bindings) {
+        NSPredicate *searchPredicate = [NSPredicate predicateWithBlock:^BOOL(NSString *evaluatedObject, NSDictionary<NSString *, id> *bindings) {
             BOOL matches = NO;
             NSString *shortName = [self shortNameForImageName:evaluatedObject];
             if ([shortName rangeOfString:searchText options:NSCaseInsensitiveSearch].length > 0) {
@@ -105,7 +105,7 @@
             }
             return matches;
         }];
-        self.filteredImageNames = [self.imageNames filteredArrayUsingPredicate:searchPreidcate];
+        self.filteredImageNames = [self.imageNames filteredArrayUsingPredicate:searchPredicate];
     } else {
         self.filteredImageNames = self.imageNames;
     }

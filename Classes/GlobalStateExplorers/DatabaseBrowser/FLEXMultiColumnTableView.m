@@ -289,7 +289,7 @@ static const CGFloat kColumnMargin = 1;
 #pragma mark -
 #pragma mark DataSource Accessor
 
-- (NSInteger)numberOfrows
+- (NSInteger)numberOfRows
 {
     return [self.dataSource numberOfRowsInTableView:self];
 }

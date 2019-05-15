@@ -40,7 +40,7 @@ static uint8_t (*OSLogGetType)(void *);
 
 + (void)load
 {
-    // Persist logs when the app launches on iOS 10 if we have persitent logs turned on
+    // Persist logs when the app launches on iOS 10 if we have persistent logs turned on
     if (FLEXOSLogAvailable()) {
         BOOL persistent = [[NSUserDefaults standardUserDefaults] boolForKey:kFLEXiOSPersistentOSLogKey];
         if (persistent) {

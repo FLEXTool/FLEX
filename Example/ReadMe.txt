@@ -5,7 +5,7 @@ This sample is a catalog exhibiting many views and controls in the UIKit framewo
 
 Note that this sample also shows you how to make your non-standard views (images or custom views) accessible. Using the iOS Accessibility API enhances the user experience of VoiceOver users.
 
-You will also notice this sample shows how to localize string content by using the NSLocalizedString macro. Each language has a "Localizeable.strings" file and this macro refers to this file when loading the strings from the default bundle.
+You will also notice this sample shows how to localize string content by using the NSLocalizedString macro. Each language has a "Localizable.strings" file and this macro refers to this file when loading the strings from the default bundle.
 
 ===========================================================================
 Using the Sample

@@ -157,8 +157,8 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 - (void)updateTableDataForSearchFilter
 {
     if ([self.searchBar.text length] > 0) {
-        NSPredicate *searchPreidcate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.searchBar.text];
-        self.filteredClassNames = [self.allClassNames filteredArrayUsingPredicate:searchPreidcate];
+        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", self.searchBar.text];
+        self.filteredClassNames = [self.allClassNames filteredArrayUsingPredicate:searchPredicate];
     } else {
         self.filteredClassNames = self.allClassNames;
     }
