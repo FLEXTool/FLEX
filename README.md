@@ -209,6 +209,9 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
 ## Contributing
 Please see our [Contributing Guide](https://github.com/Flipboard/FLEX/blob/master/CONTRIBUTING.md).
 
+## Issues List
+Please see the following link for a list of known issues with the project. Choose one and go for it!
+https://github.com/Flipboard/FLEX/issues
 
 ## TODO
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
