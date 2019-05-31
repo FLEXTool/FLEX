@@ -161,7 +161,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
         objc_property_t property = [self viewPropertyForName:rowCookie];
         if (property) {
             id currentValue = [FLEXRuntimeUtility valueForProperty:property onObject:self.viewToExplore];
-            if ([FLEXPropertyEditorViewController canEditProperty:property currentValue:currentValue]) {
+            if ([FLEXPropertyEditorViewController canEditProperty:property onObject:self.viewToExplore currentValue:currentValue]) {
                 drillInViewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.object property:property];
             } else {
                 drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];

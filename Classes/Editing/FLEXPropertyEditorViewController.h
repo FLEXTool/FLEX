@@ -13,6 +13,6 @@
 
 - (id)initWithTarget:(id)target property:(objc_property_t)property;
 
-+ (BOOL)canEditProperty:(objc_property_t)property currentValue:(id)value;
++ (BOOL)canEditProperty:(objc_property_t)property onObject:(id)object currentValue:(id)value;
 
 @end

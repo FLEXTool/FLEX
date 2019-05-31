@@ -789,7 +789,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
                 FLEXPropertyBox *propertyBox = self.filteredProperties[row];
                 objc_property_t property = propertyBox.property;
                 id currentValue = [self valueForPropertyAtIndex:row];
-                BOOL canEdit = [FLEXPropertyEditorViewController canEditProperty:property currentValue:currentValue];
+                BOOL canEdit = [FLEXPropertyEditorViewController canEditProperty:property onObject:self.object currentValue:currentValue];
                 BOOL canExplore = currentValue != nil;
                 canDrillIn = canEdit || canExplore;
             }
@@ -888,7 +888,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
             FLEXPropertyBox *propertyBox = self.filteredProperties[row];
             objc_property_t property = propertyBox.property;
             id currentValue = [self valueForPropertyAtIndex:row];
-            if ([FLEXPropertyEditorViewController canEditProperty:property currentValue:currentValue]) {
+            if ([FLEXPropertyEditorViewController canEditProperty:property onObject:self.object currentValue:currentValue]) {
                 viewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.object property:property];
             } else if (currentValue) {
                 viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
