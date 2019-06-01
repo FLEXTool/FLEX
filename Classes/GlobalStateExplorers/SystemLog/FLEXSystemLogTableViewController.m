@@ -27,17 +27,9 @@
 {
     [super viewDidLoad];
 
+    __weak typeof(self) weakSelf = self;
     id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) {
-        self.title = @"System Log";
-
-        [self.logMessages addObjectsFromArray:newMessages];
-
-        // "Follow" the log as new messages stream in if we were previously near the bottom.
-        BOOL wasNearBottom = self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.frame.size.height - 100.0;
-        [self.tableView reloadData];
-        if (wasNearBottom) {
-            [self scrollToLastRow];
-        }
+        [weakSelf handleUpdateWithNewMessages:newMessages];
     };
 
     _logMessages = [NSMutableArray array];
@@ -70,6 +62,20 @@
     self.searchController.searchResultsUpdater = self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
     self.tableView.tableHeaderView = self.searchController.searchBar;
+}
+
+- (void)handleUpdateWithNewMessages:(NSArray<FLEXSystemLogMessage *> *)newMessages
+{
+    self.title = @"System Log";
+
+    [self.logMessages addObjectsFromArray:newMessages];
+
+    // "Follow" the log as new messages stream in if we were previously near the bottom.
+    BOOL wasNearBottom = self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.frame.size.height - 100.0;
+    [self.tableView reloadData];
+    if (wasNearBottom) {
+        [self scrollToLastRow];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
