@@ -838,7 +838,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     if (self.presentedViewController) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:completion];
-    } else {
+    } else if (future) {
         [self makeKeyAndPresentViewController:future() animated:YES completion:completion];
     }
 }
