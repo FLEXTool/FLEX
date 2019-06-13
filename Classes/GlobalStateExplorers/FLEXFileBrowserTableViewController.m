@@ -154,14 +154,14 @@
 {
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
     NSDictionary<NSString *, id> *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:NULL];
-    BOOL isDirectory = [[attributes fileType] isEqual:NSFileTypeDirectory];
+    BOOL isDirectory = [attributes.fileType isEqual:NSFileTypeDirectory];
     NSString *subtitle = nil;
     if (isDirectory) {
         NSUInteger count = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:fullPath error:NULL] count];
-        subtitle = [NSString stringWithFormat:@"%lu file%@", (unsigned long)count, (count == 1 ? @"" : @"s")];
+        subtitle = [NSString stringWithFormat:@"%lu item%@", (unsigned long)count, (count == 1 ? @"" : @"s")];
     } else {
-        NSString *sizeString = [NSByteCountFormatter stringFromByteCount:[attributes fileSize] countStyle:NSByteCountFormatterCountStyleFile];
-        subtitle = [NSString stringWithFormat:@"%@ - %@", sizeString, [attributes fileModificationDate]];
+        NSString *sizeString = [NSByteCountFormatter stringFromByteCount:attributes.fileSize countStyle:NSByteCountFormatterCountStyleFile];
+        subtitle = [NSString stringWithFormat:@"%@ - %@", sizeString, attributes.fileModificationDate ?: @"Never modified"];
     }
 
     static NSString *textCellIdentifier = @"textCell";
@@ -298,7 +298,7 @@
 - (void)openFileController:(NSString *)fullPath
 {
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
-    controller.URL = [[NSURL alloc] initFileURLWithPath:fullPath];
+    controller.URL = [NSURL fileURLWithPath:fullPath];
 
     [controller presentOptionsMenuFromRect:self.view.bounds inView:self.view animated:YES];
     self.documentController = controller;
@@ -324,10 +324,12 @@
     [self.fileOperationController show];
 }
 
-- (void)fileBrowserShare:(UITableViewCell *)sender
+- (void)fileBrowserCopyPath:(UITableViewCell *)sender
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
+    [UIPasteboard generalPasteboard].string = fullPath;
+}
 
 - (void)fileBrowserShare:(UITableViewCell *)sender
 {
@@ -390,22 +392,29 @@
 
 @implementation FLEXFileBrowserTableViewCell
 
+- (void)forwardAction:(SEL)action withSender:(id)sender {
+    id target = [self.nextResponder targetForAction:action withSender:sender];
+    [[UIApplication sharedApplication] sendAction:action to:target from:self forEvent:nil];
+}
+
 - (void)fileBrowserRename:(UIMenuController *)sender
 {
-    id target = [self.nextResponder targetForAction:_cmd withSender:sender];
-    [[UIApplication sharedApplication] sendAction:_cmd to:target from:self forEvent:nil];
+    [self forwardAction:_cmd withSender:sender];
 }
 
 - (void)fileBrowserDelete:(UIMenuController *)sender
 {
-    id target = [self.nextResponder targetForAction:_cmd withSender:sender];
-    [[UIApplication sharedApplication] sendAction:_cmd to:target from:self forEvent:nil];
+    [self forwardAction:_cmd withSender:sender];
+}
+
+- (void)fileBrowserCopyPath:(UIMenuController *)sender
+{
+    [self forwardAction:_cmd withSender:sender];
 }
 
 - (void)fileBrowserShare:(UIMenuController *)sender
 {
-    id target = [self.nextResponder targetForAction:_cmd withSender:sender];
-    [[UIApplication sharedApplication] sendAction:_cmd to:target from:self forEvent:nil];
+    [self forwardAction:_cmd withSender:sender];
 }
 
 @end
