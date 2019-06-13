@@ -265,15 +265,9 @@
 {
     UIMenuItem *renameMenuItem = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
     UIMenuItem *deleteMenuItem = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
-    NSMutableArray *menus = [NSMutableArray arrayWithObjects:renameMenuItem, deleteMenuItem, nil];
+    UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:@"Share" action:@selector(fileBrowserShare:)];
 
-    NSString *fullPath = [self filePathAtIndexPath:indexPath];
-    NSError *error = nil;
-    NSDictionary *attributes = [NSFileManager.defaultManager attributesOfItemAtPath:fullPath error:&error];
-    if (error == nil && [attributes fileType] != NSFileTypeDirectory) {
-        UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:@"Share" action:@selector(fileBrowserShare:)];
-        [menus addObject:shareMenuItem];
-    }
+    NSMutableArray *menus = [NSMutableArray arrayWithObjects:renameMenuItem, deleteMenuItem, shareMenuItem, nil];
     [UIMenuController sharedMenuController].menuItems = menus;
 
     return YES;
@@ -333,8 +327,7 @@
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
 
     if (fullPath != nil) {
-        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[fullPath] applicationActivities:nil];
-        [self presentViewController:activityViewController animated:true completion:nil];
+        [self openFileController:fullPath];
     }
 }
 
