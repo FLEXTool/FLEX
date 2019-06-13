@@ -176,12 +176,15 @@ BOOL FLEXPointerIsValidObjcObject(const void *ptr)
         return NO;
     }
 
-    // http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html :
-    if (!object_getClass((__bridge id)ptr)) {
-        return NO;
+    // http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html
+    // We check if the returned class is readable because object_getClass
+    // can return a garbage value when given a non-nil pointer to a non-object
+    Class cls = object_getClass((__bridge id)ptr);
+    if (cls && FLEXPointerIsReadable((__bridge void *)cls) && object_isClass(cls)) {
+        return YES;
     }
 
-    return YES;
+    return NO;
 }
 
     
