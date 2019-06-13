@@ -263,19 +263,22 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIMenuItem *renameMenuItem = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
-    UIMenuItem *deleteMenuItem = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
-    UIMenuItem *shareMenuItem = [[UIMenuItem alloc] initWithTitle:@"Share" action:@selector(fileBrowserShare:)];
+    UIMenuItem *rename = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
+    UIMenuItem *delete = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
+    UIMenuItem *copyPath = [[UIMenuItem alloc] initWithTitle:@"Copy Path" action:@selector(fileBrowserCopyPath:)];
+    UIMenuItem *share = [[UIMenuItem alloc] initWithTitle:@"Share" action:@selector(fileBrowserShare:)];
 
-    NSMutableArray *menus = [NSMutableArray arrayWithObjects:renameMenuItem, deleteMenuItem, shareMenuItem, nil];
-    [UIMenuController sharedMenuController].menuItems = menus;
+    [UIMenuController sharedMenuController].menuItems = @[rename, delete, copyPath, share];
 
     return YES;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
-    return action == @selector(fileBrowserDelete:) || action == @selector(fileBrowserRename:) || action == @selector(fileBrowserShare:);
+    return action == @selector(fileBrowserDelete:)
+        || action == @selector(fileBrowserRename:)
+        || action == @selector(fileBrowserCopyPath:)
+        || action == @selector(fileBrowserShare:);
 }
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
@@ -326,8 +329,22 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
 
-    if (fullPath != nil) {
-        [self openFileController:fullPath];
+- (void)fileBrowserShare:(UITableViewCell *)sender
+{
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
+    NSString *pathString = [self filePathAtIndexPath:indexPath];
+    NSURL *filePath = [NSURL fileURLWithPath:pathString];
+
+    BOOL isDirectory = NO;
+    [[NSFileManager defaultManager] fileExistsAtPath:pathString isDirectory:&isDirectory];
+
+    if (isDirectory) {
+        // UIDocumentInteractionController for folders
+        [self openFileController:pathString];
+    } else {
+        // Share sheet for files
+        UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[filePath] applicationActivities:nil];
+        [self presentViewController:shareSheet animated:true completion:nil];
     }
 }
 
