@@ -46,11 +46,6 @@
     return nil;
 }
 
-- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
-{
-    return YES;
-}
-
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
     return [FLEXObjectExplorerFactory explorerViewControllerForObject:rowCookie];

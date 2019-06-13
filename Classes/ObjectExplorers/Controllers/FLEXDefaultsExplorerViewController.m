@@ -47,11 +47,6 @@
     return [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self.defaults objectForKey:rowCookie]];
 }
 
-- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
-{
-    return YES;
-}
-
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
     UIViewController *drillInViewController = nil;

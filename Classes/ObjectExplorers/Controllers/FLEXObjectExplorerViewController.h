@@ -50,3 +50,17 @@ typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
 - (NSArray *)possibleExplorerSections;
 
 @end
+
+@interface FLEXObjectExplorerViewController (Shortcuts)
+
+/// @brief Names of properties to supply as shortcuts. If this array is empty, no shortcuts are displayed.
+///
+/// @discussion Populating this array in a subclass will make FLEXObjectExplorerViewController show a custom
+/// section with row titles like "@property NSString *foo" and subtitles with their values.
+/// customSectionRowCookies will return this array. Every row in the section is drillable by default.
+///
+/// For an example on how to use the default behavior provided or to override it,
+/// see FLEXViewExplorerViewController
+- (NSArray<NSString *> *)shortcutPropertyNames;
+
+@end

@@ -37,13 +37,4 @@
     return square;
 }
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
-//    if (indexPath.section == 0 && indexPath.row == 0) {
-//        cell.contentView.backgroundColor = (UIColor *)self.object;
-//    }
-//
-//    return cell;
-//}
-
 @end

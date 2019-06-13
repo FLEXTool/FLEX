@@ -127,6 +127,21 @@
     return description;
 }
 
++ (NSString *)safeDebugDescriptionForObject:(id)object
+{
+    NSString *description = [self safeDescriptionForObject:object];
+    if (!description) {
+        NSString *cls = NSStringFromClass(object_getClass(object));
+        if (object_isClass(object)) {
+            description = [cls stringByAppendingString:@" class (no description)"];
+       } else {
+           description = [cls stringByAppendingString:@" instance (no description)"];
+       }
+    }
+
+    return description;
+}
+
 + (NSString *)addressOfObject:(id)object
 {
     return [NSString stringWithFormat:@"%p", object];

@@ -578,6 +578,11 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     return [FLEXRuntimeUtility prettyNameForMethod:classMethodBox.method isClassMethod:YES];
 }
 
+- (objc_property_t)viewPropertyForName:(NSString *)propertyName
+{
+    return class_getProperty([self.object class], propertyName.UTF8String);
+}
+
 
 #pragma mark - Superclasses
 
@@ -1121,31 +1126,71 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 - (NSString *)customSectionTitle
 {
-    return nil;
+    return self.shortcutPropertyNames.count ? @"Shortcuts" : nil;
 }
 
 - (NSArray *)customSectionRowCookies
 {
-    return nil;
+    return self.shortcutPropertyNames;
 }
 
 - (NSString *)customSectionTitleForRowCookie:(id)rowCookie
 {
+    if ([rowCookie isKindOfClass:[NSString class]]) {
+        objc_property_t property = [self viewPropertyForName:rowCookie];
+        if (property) {
+            NSString *prettyPropertyName = [FLEXRuntimeUtility prettyNameForProperty:property];
+            // Since we're outside of the "properties" section, prepend @property for clarity.
+            return [@"@property " stringByAppendingString:prettyPropertyName];
+        } else if ([rowCookie respondsToSelector:@selector(description)]) {
+            return [@"No property found for object: " stringByAppendingString:[rowCookie description]];
+        } else {
+            NSString *cls = NSStringFromClass([rowCookie class]);
+            return [@"No property found for object of class " stringByAppendingString:cls];
+        }
+    }
+
     return nil;
 }
 
 - (NSString *)customSectionSubtitleForRowCookie:(id)rowCookie
 {
+    if ([rowCookie isKindOfClass:[NSString class]]) {
+        objc_property_t property = [self viewPropertyForName:rowCookie];
+        if (property) {
+            id value = [FLEXRuntimeUtility valueForProperty:property onObject:self.object];
+            return [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:value];
+        } else {
+            return nil;
+        }
+    }
+
     return nil;
 }
 
 - (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
 {
-    return NO;
+    return YES;
 }
 
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
+    if ([rowCookie isKindOfClass:[NSString class]]) {
+        objc_property_t property = [self viewPropertyForName:rowCookie];
+        if (property) {
+            id currentValue = [FLEXRuntimeUtility valueForProperty:property onObject:self.object];
+            if ([FLEXPropertyEditorViewController canEditProperty:property onObject:self.object currentValue:currentValue]) {
+                return [[FLEXPropertyEditorViewController alloc] initWithTarget:self.object property:property];
+            } else {
+                return [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
+            }
+        } else {
+            [NSException raise:NSInternalInconsistencyException
+                        format:@"Cannot drill into row for cookie: %@", rowCookie];
+            return nil;
+        }
+    }
+
     return nil;
 }
 
@@ -1168,5 +1213,12 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 {
     return YES;
 }
+
+@end
+
+
+@implementation FLEXObjectExplorerViewController (Shortcuts)
+
+- (NSArray<NSString *> *)shortcutPropertyNames { return @[]; }
 
 @end

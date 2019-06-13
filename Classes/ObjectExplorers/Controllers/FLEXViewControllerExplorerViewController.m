@@ -76,7 +76,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewControllerExplorerRow) {
     BOOL canDrillIn = NO;
     if ([rowCookie isEqual:@(FLEXViewControllerExplorerRowPush)]) {
         canDrillIn = [self canPushViewController];
-    }else if ([rowCookie isEqual:@(FLEXViewControllerExplorerRowView)]) {
+    } else if ([rowCookie isEqual:@(FLEXViewControllerExplorerRowView)]) {
         canDrillIn = self.viewController.view != nil;
     }
     return canDrillIn;

@@ -52,14 +52,16 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     }
     
     [rowCookies addObject:@(FLEXViewExplorerRowPreview)];
-    [rowCookies addObjectsFromArray:[self shortcutPropertyNames]];
+    [rowCookies addObjectsFromArray:[super customSectionRowCookies]];
     
     return rowCookies;
 }
 
 - (NSArray<NSString *> *)shortcutPropertyNames
 {
-    NSArray<NSString *> *propertyNames = @[@"frame", @"bounds", @"center", @"transform", @"backgroundColor", @"alpha", @"opaque", @"hidden", @"clipsToBounds", @"userInteractionEnabled", @"layer"];
+    NSArray *propertyNames = @[@"frame", @"bounds", @"center", @"transform",
+                               @"backgroundColor", @"alpha", @"opaque", @"hidden",
+                               @"clipsToBounds", @"userInteractionEnabled", @"layer"];
     
     if ([self.viewToExplore isKindOfClass:[UILabel class]]) {
         propertyNames = [@[@"text", @"font", @"textColor"] arrayByAddingObjectsFromArray:propertyNames];
@@ -88,12 +90,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
                 break;
         }
     } else if ([rowCookie isKindOfClass:[NSString class]]) {
-        objc_property_t property = [self viewPropertyForName:rowCookie];
-        if (property) {
-            NSString *prettyPropertyName = [FLEXRuntimeUtility prettyNameForProperty:property];
-            // Since we're outside of the "properties" section, prepend @property for clarity.
-            title = [NSString stringWithFormat:@"@property %@", prettyPropertyName];
-        }
+        title = [super customSectionTitleForRowCookie:rowCookie];
     }
     
     return title;
@@ -118,24 +115,10 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
                 break;
         }
     } else if ([rowCookie isKindOfClass:[NSString class]]) {
-        objc_property_t property = [self viewPropertyForName:rowCookie];
-        if (property) {
-            id value = [FLEXRuntimeUtility valueForProperty:property onObject:self.viewToExplore];
-            subtitle = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:value];
-        }
+        return [super customSectionSubtitleForRowCookie:rowCookie];
     }
     
     return subtitle;
-}
-
-- (objc_property_t)viewPropertyForName:(NSString *)propertyName
-{
-    return class_getProperty([self.viewToExplore class], [propertyName UTF8String]);
-}
-
-- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
-{
-    return YES;
 }
 
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
@@ -158,15 +141,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
                 break;
         }
     } else if ([rowCookie isKindOfClass:[NSString class]]) {
-        objc_property_t property = [self viewPropertyForName:rowCookie];
-        if (property) {
-            id currentValue = [FLEXRuntimeUtility valueForProperty:property onObject:self.viewToExplore];
-            if ([FLEXPropertyEditorViewController canEditProperty:property onObject:self.viewToExplore currentValue:currentValue]) {
-                drillInViewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.object property:property];
-            } else {
-                drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
-            }
-        }
+        return [super customSectionDrillInViewControllerForRowCookie:rowCookie];
     }
 
     return drillInViewController;

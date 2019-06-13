@@ -54,11 +54,6 @@ typedef NS_ENUM(NSUInteger, FLEXLayerExplorerRow) {
     return title;
 }
 
-- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
-{
-    return YES;
-}
-
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
     UIViewController *drillInViewController = nil;

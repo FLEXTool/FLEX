@@ -52,11 +52,6 @@ typedef NS_ENUM(NSUInteger, FLEXImageExplorerRow) {
     return nil;
 }
 
-- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
-{
-    return YES;
-}
-
 - (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
 {
     UIViewController *drillInViewController = nil;
