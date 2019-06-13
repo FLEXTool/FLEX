@@ -167,6 +167,8 @@
 		C309B82F223ED64400B228EC /* FLEXLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = C309B82D223ED64400B228EC /* FLEXLogController.h */; };
 		C33E46AF223B02CD004BD0E6 /* FLEXASLLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = C33E46AD223B02CD004BD0E6 /* FLEXASLLogController.h */; };
 		C33E46B0223B02CD004BD0E6 /* FLEXASLLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = C33E46AE223B02CD004BD0E6 /* FLEXASLLogController.m */; };
+		C34A70A022B2EC8D009C2C5F /* FLEXBundleExplorerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C34A709E22B2EC8D009C2C5F /* FLEXBundleExplorerViewController.h */; };
+		C34A70A122B2EC8D009C2C5F /* FLEXBundleExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C34A709F22B2EC8D009C2C5F /* FLEXBundleExplorerViewController.m */; };
 		C34EE30821CB23CC00BD3A7C /* FLEXOSLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = C34EE30621CB23CC00BD3A7C /* FLEXOSLogController.h */; };
 		C37A0C93218BAC9600848CA7 /* FLEXObjcInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */; };
 		C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */; };
@@ -362,6 +364,8 @@
 		C309B82D223ED64400B228EC /* FLEXLogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXLogController.h; sourceTree = "<group>"; };
 		C33E46AD223B02CD004BD0E6 /* FLEXASLLogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXASLLogController.h; sourceTree = "<group>"; };
 		C33E46AE223B02CD004BD0E6 /* FLEXASLLogController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXASLLogController.m; sourceTree = "<group>"; };
+		C34A709E22B2EC8D009C2C5F /* FLEXBundleExplorerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXBundleExplorerViewController.h; sourceTree = "<group>"; };
+		C34A709F22B2EC8D009C2C5F /* FLEXBundleExplorerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXBundleExplorerViewController.m; sourceTree = "<group>"; };
 		C34EE30621CB23CC00BD3A7C /* FLEXOSLogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXOSLogController.h; sourceTree = "<group>"; };
 		C34EE30721CB23CC00BD3A7C /* FLEXOSLogController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXOSLogController.m; sourceTree = "<group>"; };
 		C34EE30A21CB249E00BD3A7C /* ActivityStreamAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActivityStreamAPI.h; sourceTree = "<group>"; };
@@ -750,6 +754,8 @@
 				3A4C94531B5B21410088C3F2 /* FLEXViewExplorerViewController.m */,
 				C395D6D721789BD800BEAD4D /* FLEXColorExplorerViewController.h */,
 				C395D6D821789BD800BEAD4D /* FLEXColorExplorerViewController.m */,
+				C34A709E22B2EC8D009C2C5F /* FLEXBundleExplorerViewController.h */,
+				C34A709F22B2EC8D009C2C5F /* FLEXBundleExplorerViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -840,6 +846,7 @@
 				3A4C94CD1B5B21410088C3F2 /* FLEXGlobalsTableViewControllerEntry.h in Headers */,
 				3A4C94FB1B5B21410088C3F2 /* FLEXArgumentInputStringView.h in Headers */,
 				3A4C95421B5B21410088C3F2 /* FLEXNetworkObserver.h in Headers */,
+				C34A70A022B2EC8D009C2C5F /* FLEXBundleExplorerViewController.h in Headers */,
 				679F64861BD53B7B00A8C94C /* FLEXCookiesTableViewController.h in Headers */,
 				C3DB9F642107FC9600B46809 /* FLEXObjectRef.h in Headers */,
 				3A4C95401B5B21410088C3F2 /* FLEXNetworkTransactionTableViewCell.h in Headers */,
@@ -1024,6 +1031,7 @@
 				3A4C94FA1B5B21410088C3F2 /* FLEXArgumentInputNumberView.m in Sources */,
 				779B1ED71C0C4D7C001F5E49 /* FLEXTableContentViewController.m in Sources */,
 				C395D6DA21789BD800BEAD4D /* FLEXColorExplorerViewController.m in Sources */,
+				C34A70A122B2EC8D009C2C5F /* FLEXBundleExplorerViewController.m in Sources */,
 				3A4C95001B5B21410088C3F2 /* FLEXArgumentInputSwitchView.m in Sources */,
 				3A4C94CC1B5B21410088C3F2 /* FLEXDictionaryExplorerViewController.m in Sources */,
 				C3F31D442267D883003C991A /* FLEXTableView.m in Sources */,

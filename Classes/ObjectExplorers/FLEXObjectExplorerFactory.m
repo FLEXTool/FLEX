@@ -18,6 +18,7 @@
 #import "FLEXClassExplorerViewController.h"
 #import "FLEXLayerExplorerViewController.h"
 #import "FLEXColorExplorerViewController.h"
+#import "FLEXBundleExplorerViewController.h"
 #import <objc/runtime.h>
 
 @implementation FLEXObjectExplorerFactory
@@ -40,7 +41,8 @@
                                                    NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class],
                                                    NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class],
                                                    NSStringFromClass([CALayer class])          : [FLEXLayerExplorerViewController class],
-                                                   NSStringFromClass([UIColor class])          : [FLEXColorExplorerViewController class]
+                                                   NSStringFromClass([UIColor class])          : [FLEXColorExplorerViewController class],
+                                                   NSStringFromClass([NSBundle class])         : [FLEXBundleExplorerViewController class],
                                                    };
     });
     
