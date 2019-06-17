@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FLEXSystemLogMessage : NSObject
 
 + (instancetype)logMessageFromASLMessage:(aslmsg)aslMessage;
-//+ (instancetype)logMessageFromOSLog:(os_log_message_t)logMessage;
 + (instancetype)logMessageFromDate:(NSDate *)date text:(NSString *)text;
 
 // ASL specific properties

@@ -46,12 +46,6 @@
     return message;
 }
 
-+ (instancetype)logMessageFromOSLog:(os_log_message_t)logMessage
-{
-    abort();
-    return nil;
-}
-
 + (instancetype)logMessageFromDate:(NSDate *)date text:(NSString *)text
 {
     return [[self alloc] initWithDate:date sender:nil text:text messageID:0];
