@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXNetworkTransactionDetailTableViewController.h"
 #import "FLEXNetworkCurlLogger.h"
 #import "FLEXNetworkRecorder.h"
@@ -214,7 +215,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     NSDictionary<NSString *, id> *titleAttributes = @{ NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0],
                                                        NSForegroundColorAttributeName : [UIColor colorWithWhite:0.5 alpha:1.0] };
     NSDictionary<NSString *, id> *detailAttributes = @{ NSFontAttributeName : [FLEXUtility defaultTableViewCellLabelFont],
-                                                        NSForegroundColorAttributeName : [UIColor blackColor] };
+                                                        NSForegroundColorAttributeName : [FLEXColor primaryTextColor] };
 
     NSString *title = [NSString stringWithFormat:@"%@: ", row.title];
     NSString *detailText = row.detailText ?: @"";

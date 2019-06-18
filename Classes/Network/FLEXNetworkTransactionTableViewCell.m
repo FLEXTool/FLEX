@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXNetworkTransactionTableViewCell.h"
 #import "FLEXNetworkTransaction.h"
 #import "FLEXUtility.h"
@@ -79,7 +80,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     self.nameLabel.text = [self nameLabelText];
     CGSize nameLabelPreferredSize = [self.nameLabel sizeThatFits:CGSizeMake(availableTextWidth, CGFLOAT_MAX)];
     self.nameLabel.frame = CGRectMake(textOriginX, kVerticalPadding, availableTextWidth, nameLabelPreferredSize.height);
-    self.nameLabel.textColor = (self.transaction.error || [FLEXUtility isErrorStatusCodeFromURLResponse:self.transaction.response]) ? [UIColor redColor] : [UIColor blackColor];
+    self.nameLabel.textColor = (self.transaction.error || [FLEXUtility isErrorStatusCodeFromURLResponse:self.transaction.response]) ? [UIColor redColor] : [FLEXColor primaryTextColor];
 
     self.pathLabel.text = [self pathLabelText];
     CGSize pathLabelPreferredSize = [self.pathLabel sizeThatFits:CGSizeMake(availableTextWidth, CGFLOAT_MAX)];
