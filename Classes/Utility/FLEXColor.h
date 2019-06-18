@@ -13,8 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXColor : NSObject
 
-+ (UIColor *)backgoundColor;
-+ (UIColor *)backgoundColorWithAlpha:(CGFloat)alpha;
++ (UIColor *)systemBackgroundColor;
++ (UIColor *)systemBackgroundColorWithAlpha:(CGFloat)alpha;
 + (UIColor *)secondaryBackgroundColorWithAlpha:(CGFloat)alpha;
 + (UIColor *)scrollViewBackgroundColor;
 

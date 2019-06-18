@@ -24,11 +24,11 @@ UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor) {
     return lightColor;
 }
 
-+ (UIColor *)backgoundColor {
-    return [self backgoundColorWithAlpha:1.0];
++ (UIColor *)systemBackgroundColor {
+    return [self systemBackgroundColorWithAlpha:1.0];
 }
 
-+ (UIColor *)backgoundColorWithAlpha:(CGFloat)alpha {
++ (UIColor *)systemBackgroundColorWithAlpha:(CGFloat)alpha {
     return colorWithDynamicProvider([UIColor colorWithWhite:1.0 alpha:alpha],
                                     [UIColor colorWithWhite:0.0 alpha:alpha]);
 }

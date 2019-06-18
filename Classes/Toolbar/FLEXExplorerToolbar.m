@@ -39,7 +39,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundView = [[UIView alloc] init];
-        self.backgroundView.backgroundColor = [FLEXColor backgoundColorWithAlpha:0.95];
+        self.backgroundView.backgroundColor = [FLEXColor systemBackgroundColorWithAlpha:0.95];
         [self addSubview:self.backgroundView];
 
         self.dragHandle = [[UIView alloc] init];
