@@ -33,6 +33,10 @@ UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor) {
                                     [UIColor colorWithWhite:0.0 alpha:alpha]);
 }
 
++ (UIColor *)secondaryBackgroundColor {
+    return [self secondaryBackgroundColorWithAlpha:1.0];
+}
+
 + (UIColor *)secondaryBackgroundColorWithAlpha:(CGFloat)alpha {
     return colorWithDynamicProvider([UIColor colorWithWhite:0.9 alpha:alpha],
                                     [UIColor colorWithWhite:0.1 alpha:alpha]);

@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (UIColor *)systemBackgroundColor;
 + (UIColor *)systemBackgroundColorWithAlpha:(CGFloat)alpha;
++ (UIColor *)secondaryBackgroundColor;
 + (UIColor *)secondaryBackgroundColorWithAlpha:(CGFloat)alpha;
 + (UIColor *)scrollViewBackgroundColor;
 
