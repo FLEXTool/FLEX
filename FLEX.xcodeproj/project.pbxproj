@@ -135,6 +135,8 @@
 		3A4C95471B5B217D0088C3F2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4C95461B5B217D0088C3F2 /* libz.dylib */; };
 		679F64861BD53B7B00A8C94C /* FLEXCookiesTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 679F64841BD53B7B00A8C94C /* FLEXCookiesTableViewController.h */; };
 		679F64871BD53B7B00A8C94C /* FLEXCookiesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 679F64851BD53B7B00A8C94C /* FLEXCookiesTableViewController.m */; };
+		7349FD6A22B93CDF00051810 /* FLEXColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7349FD6822B93CDF00051810 /* FLEXColor.h */; };
+		7349FD6B22B93CDF00051810 /* FLEXColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349FD6922B93CDF00051810 /* FLEXColor.m */; };
 		779B1ECE1C0C4D7C001F5E49 /* FLEXDatabaseManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 779B1EC01C0C4D7C001F5E49 /* FLEXDatabaseManager.h */; };
 		779B1ED01C0C4D7C001F5E49 /* FLEXMultiColumnTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 779B1EC21C0C4D7C001F5E49 /* FLEXMultiColumnTableView.h */; };
 		779B1ED11C0C4D7C001F5E49 /* FLEXMultiColumnTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 779B1EC31C0C4D7C001F5E49 /* FLEXMultiColumnTableView.m */; };
@@ -332,6 +334,8 @@
 		3A4C95461B5B217D0088C3F2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		679F64841BD53B7B00A8C94C /* FLEXCookiesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXCookiesTableViewController.h; sourceTree = "<group>"; };
 		679F64851BD53B7B00A8C94C /* FLEXCookiesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXCookiesTableViewController.m; sourceTree = "<group>"; };
+		7349FD6822B93CDF00051810 /* FLEXColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXColor.h; sourceTree = "<group>"; };
+		7349FD6922B93CDF00051810 /* FLEXColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXColor.m; sourceTree = "<group>"; };
 		779B1EC01C0C4D7C001F5E49 /* FLEXDatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXDatabaseManager.h; sourceTree = "<group>"; };
 		779B1EC21C0C4D7C001F5E49 /* FLEXMultiColumnTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXMultiColumnTableView.h; sourceTree = "<group>"; };
 		779B1EC31C0C4D7C001F5E49 /* FLEXMultiColumnTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMultiColumnTableView.m; sourceTree = "<group>"; };
@@ -492,6 +496,8 @@
 				942DCD831BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.m */,
 				94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */,
 				94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */,
+				7349FD6822B93CDF00051810 /* FLEXColor.h */,
+				7349FD6922B93CDF00051810 /* FLEXColor.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -843,6 +849,7 @@
 				3A4C94F31B5B21410088C3F2 /* FLEXArgumentInputFontView.h in Headers */,
 				3A4C95261B5B21410088C3F2 /* FLEXGlobalsTableViewController.h in Headers */,
 				224D49A81C673AB5000EAB86 /* FLEXRealmDatabaseManager.h in Headers */,
+				7349FD6A22B93CDF00051810 /* FLEXColor.h in Headers */,
 				3A4C94CD1B5B21410088C3F2 /* FLEXGlobalsTableViewControllerEntry.h in Headers */,
 				3A4C94FB1B5B21410088C3F2 /* FLEXArgumentInputStringView.h in Headers */,
 				3A4C95421B5B21410088C3F2 /* FLEXNetworkObserver.h in Headers */,
@@ -979,6 +986,7 @@
 				3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.m in Sources */,
 				3A4C94EC1B5B21410088C3F2 /* FLEXImagePreviewViewController.m in Sources */,
 				3A4C94F21B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m in Sources */,
+				7349FD6B22B93CDF00051810 /* FLEXColor.m in Sources */,
 				94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */,
 				3A4C951F1B5B21410088C3F2 /* FLEXClassesTableViewController.m in Sources */,
 				3A4C94C61B5B21410088C3F2 /* FLEXArrayExplorerViewController.m in Sources */,

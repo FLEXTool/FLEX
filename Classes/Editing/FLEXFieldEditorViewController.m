@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXFieldEditorView.h"
 #import "FLEXRuntimeUtility.h"
