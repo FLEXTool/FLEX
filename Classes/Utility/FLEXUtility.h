@@ -35,7 +35,6 @@
 + (UIViewController *)viewControllerForAncestralView:(UIView *)view;
 + (NSString *)detailDescriptionForView:(UIView *)view;
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius;
-+ (UIColor *)scrollViewGrayColor;
 + (UIColor *)hierarchyIndentPatternColor;
 + (NSString *)applicationImageName;
 + (NSString *)applicationName;

@@ -75,7 +75,7 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [FLEXUtility scrollViewGrayColor];
+    self.view.backgroundColor = [FLEXColor scrollViewBackgroundColor];
     
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     self.scrollView.backgroundColor = self.view.backgroundColor;
