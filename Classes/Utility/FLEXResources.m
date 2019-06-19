@@ -87,41 +87,43 @@ static const u_int8_t FLEXBinaryIcon2x[] = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 
     [self imageWithBytesNoCopy:(void *)base##2x length:sizeof(base##2x) scale:2.0] : \
     [self imageWithBytesNoCopy:(void *)base length:sizeof(base) scale:1.0])
 
+#define FLEXImageTemplate(base) ([FLEXImage(base) imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate])
+
 #define FLEXRetinaOnlyImage(base) ([self imageWithBytesNoCopy:(void *)(base) length:sizeof(base) scale:2.0])
 
 + (UIImage *)closeIcon
 {
-    return FLEXImage(FLEXCloseIcon);
+    return FLEXImageTemplate(FLEXCloseIcon);
 }
 
 + (UIImage *)dragHandle
 {
-    return FLEXImage(FLEXDragHandle);
+    return FLEXImageTemplate(FLEXDragHandle);
 }
 
 + (UIImage *)globeIcon
 {
-    return FLEXImage(FLEXGlobeIcon);
+    return FLEXImageTemplate(FLEXGlobeIcon);
 }
 
 + (UIImage *)hierarchyIndentPattern
 {
-    return FLEXImage(FLEXHierarchyIndentPattern);
+    return FLEXImageTemplate(FLEXHierarchyIndentPattern);
 }
 
 + (UIImage *)listIcon
 {
-    return FLEXImage(FLEXListIcon);
+    return FLEXImageTemplate(FLEXListIcon);
 }
 
 + (UIImage *)moveIcon
 {
-    return FLEXImage(FLEXMoveIcon);
+    return FLEXImageTemplate(FLEXMoveIcon);
 }
 
 + (UIImage *)selectIcon
 {
-    return FLEXImage(FLEXSelectIcon);
+    return FLEXImageTemplate(FLEXSelectIcon);
 }
 
 + (UIImage *)jsonIcon
