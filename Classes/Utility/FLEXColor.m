@@ -63,4 +63,9 @@ static UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor
                                     [UIColor colorWithRed:16.0/255.0 green:16.0/255.0 blue:11.0/255.0 alpha:1.0]);
 }
 
++ (UIColor *)iconColor {
+    return colorWithDynamicProvider([UIColor darkGrayColor],
+                                    [UIColor lightGrayColor]);
+}
+
 @end

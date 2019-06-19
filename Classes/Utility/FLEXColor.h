@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // UI element colors
 + (UIColor *)scrollViewBackgroundColor;
++ (UIColor *)iconColor;
 
 @end
 

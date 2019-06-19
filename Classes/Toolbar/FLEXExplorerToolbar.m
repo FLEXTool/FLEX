@@ -48,6 +48,7 @@
         
         UIImage *dragHandle = [FLEXResources dragHandle];
         self.dragHandleImageView = [[UIImageView alloc] initWithImage:dragHandle];
+        self.dragHandleImageView.tintColor = [FLEXColor iconColor];
         [self.dragHandle addSubview:self.dragHandleImageView];
         
         UIImage *globalsIcon = [FLEXResources globeIcon];
