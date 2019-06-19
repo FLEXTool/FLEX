@@ -11,7 +11,7 @@
 
 @implementation FLEXColor
 
-UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor) {
+static UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor) {
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
         return [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
