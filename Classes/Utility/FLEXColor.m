@@ -24,6 +24,8 @@ static UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor
     return lightColor;
 }
 
+#pragma mark - Background Colors
+
 + (UIColor *)systemBackgroundColor {
     return [self systemBackgroundColorWithAlpha:1.0];
 }
@@ -42,10 +44,7 @@ static UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor
                                     [UIColor colorWithWhite:0.1 alpha:alpha]);
 }
 
-+ (UIColor *)scrollViewBackgroundColor {
-    return colorWithDynamicProvider([UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0],
-                                    [UIColor colorWithRed:16.0/255.0 green:16.0/255.0 blue:11.0/255.0 alpha:1.0]);
-}
+#pragma mark - Text colors
 
 + (UIColor *)primaryTextColor {
     return colorWithDynamicProvider([UIColor blackColor],
@@ -55,6 +54,13 @@ static UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor
 + (UIColor *)deemphasizedTextColor {
     return colorWithDynamicProvider([UIColor lightGrayColor],
                                     [UIColor darkGrayColor]);
+}
+
+#pragma mark - UI Element Colors
+
++ (UIColor *)scrollViewBackgroundColor {
+    return colorWithDynamicProvider([UIColor colorWithRed:239.0/255.0 green:239.0/255.0 blue:244.0/255.0 alpha:1.0],
+                                    [UIColor colorWithRed:16.0/255.0 green:16.0/255.0 blue:11.0/255.0 alpha:1.0]);
 }
 
 @end
