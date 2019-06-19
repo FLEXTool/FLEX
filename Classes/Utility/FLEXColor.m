@@ -68,4 +68,9 @@ static UIColor *colorWithDynamicProvider(UIColor *lightColor, UIColor *darkColor
                                     [UIColor lightGrayColor]);
 }
 
++ (UIColor *)borderColor {
+    return colorWithDynamicProvider([UIColor blackColor],
+                                    [UIColor whiteColor]);
+}
+
 @end

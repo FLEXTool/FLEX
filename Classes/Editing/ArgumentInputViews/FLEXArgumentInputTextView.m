@@ -6,6 +6,7 @@
 //
 //
 
+#import "FLEXColor.h"
 #import "FLEXArgumentInputTextView.h"
 #import "FLEXUtility.h"
 
@@ -24,8 +25,8 @@
     if (self) {
         self.inputTextView = [[UITextView alloc] init];
         self.inputTextView.font = [[self class] inputFont];
-        self.inputTextView.backgroundColor = [UIColor whiteColor];
-        self.inputTextView.layer.borderColor = [[UIColor blackColor] CGColor];
+        self.inputTextView.backgroundColor = [FLEXColor systemBackgroundColor];
+        self.inputTextView.layer.borderColor = [[FLEXColor borderColor] CGColor];
         self.inputTextView.layer.borderWidth = 1.0;
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -108,6 +109,18 @@
     CGSize fitSize = [super sizeThatFits:size];
     fitSize.height += [self inputTextViewHeight];
     return fitSize;
+}
+
+#pragma mark - Trait collection changes
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+#if FLEX_AT_LEAST_IOS13_SDK
+    if (@available(iOS 13.0, *)) {
+        if (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle) {
+            self.inputTextView.layer.borderColor = [[FLEXColor borderColor] CGColor];
+        }
+    }
+#endif
 }
 
 
