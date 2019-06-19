@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXNetworkHistoryTableViewController.h"
 #import "FLEXNetworkTransaction.h"
 #import "FLEXNetworkTransactionTableViewCell.h"
@@ -280,9 +281,9 @@
     // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
     NSInteger totalRows = [tableView numberOfRowsInSection:indexPath.section];
     if ((totalRows - indexPath.row) % 2 == 0) {
-        cell.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
+        cell.backgroundColor = [FLEXColor secondaryBackgroundColor];
     } else {
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.backgroundColor = [FLEXColor systemBackgroundColor];
     }
 
     return cell;

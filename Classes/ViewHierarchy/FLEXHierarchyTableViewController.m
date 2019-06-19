@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXHierarchyTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXHierarchyTableViewCell.h"
@@ -174,11 +175,11 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     cell.viewColor = viewColor;
     cell.viewDepth = [depth integerValue];
     if (view.isHidden || view.alpha < 0.01) {
-        cell.textLabel.textColor = [UIColor lightGrayColor];
-        cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+        cell.textLabel.textColor = [FLEXColor deemphasizedTextColor];
+        cell.detailTextLabel.textColor = [FLEXColor deemphasizedTextColor];
     } else {
-        cell.textLabel.textColor = [UIColor blackColor];
-        cell.detailTextLabel.textColor = [UIColor blackColor];
+        cell.textLabel.textColor = [FLEXColor primaryTextColor];
+        cell.detailTextLabel.textColor = [FLEXColor primaryTextColor];
     }
     
     // Use a pattern-based colour to simplify application of the checker pattern.

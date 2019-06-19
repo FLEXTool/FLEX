@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXExplorerToolbar.h"
 #import "FLEXToolbarItem.h"
 #import "FLEXResources.h"
@@ -38,7 +39,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundView = [[UIView alloc] init];
-        self.backgroundView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.95];
+        self.backgroundView.backgroundColor = [FLEXColor systemBackgroundColorWithAlpha:0.95];
         [self addSubview:self.backgroundView];
 
         self.dragHandle = [[UIView alloc] init];
@@ -65,7 +66,7 @@
         self.closeItem = [FLEXToolbarItem toolbarItemWithTitle:@"close" image:closeIcon];
 
         self.selectedViewDescriptionContainer = [[UIView alloc] init];
-        self.selectedViewDescriptionContainer.backgroundColor = [UIColor colorWithWhite:0.9 alpha:0.95];
+        self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
         self.selectedViewDescriptionContainer.hidden = YES;
         [self addSubview:self.selectedViewDescriptionContainer];
 

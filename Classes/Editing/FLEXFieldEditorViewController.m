@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXFieldEditorView.h"
 #import "FLEXRuntimeUtility.h"
@@ -74,7 +75,7 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [FLEXUtility scrollViewGrayColor];
+    self.view.backgroundColor = [FLEXColor scrollViewBackgroundColor];
     
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     self.scrollView.backgroundColor = self.view.backgroundColor;
