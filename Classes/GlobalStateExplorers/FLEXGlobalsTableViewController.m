@@ -61,7 +61,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         FLEXGlobalsTableViewControllerRowAction rowAction = nil;
 
         switch (defaultRowIndex) {
-            case FLEXGlobalsRowAppClasses:
+            case FLEXGlobalsRowAppClasses: {
                 titleFuture = ^NSString *{
                     return [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];
                 };
@@ -72,8 +72,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return classesViewController;
                 };
                 break;
+            }
                 
-            case FLEXGlobalsRowAddressInspector:
+            case FLEXGlobalsRowAddressInspector: {
                 titleFuture = ^NSString *{
                     return @"🔎 Address Explorer";
                 };
@@ -115,6 +116,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     [host presentViewController:addressInput animated:YES completion:nil];
                 };
                 break;
+            }
 
             case FLEXGlobalsRowSystemLibraries: {
                 NSString *titleString = @"📚  System Libraries";
@@ -130,7 +132,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
             }
 
-            case FLEXGlobalsRowLiveObjects:
+            case FLEXGlobalsRowLiveObjects: {
                 titleFuture = ^NSString *{
                     return @"💩  Heap Objects";
                 };
@@ -139,8 +141,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 };
 
                 break;
+            }
 
-            case FLEXGlobalsRowAppDelegate:
+            case FLEXGlobalsRowAppDelegate: {
                 titleFuture = ^NSString *{
                     return [NSString stringWithFormat:@"👉  %@", [[[UIApplication sharedApplication] delegate] class]];
                 };
@@ -149,8 +152,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:appDelegate];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowRootViewController:
+            case FLEXGlobalsRowRootViewController: {
                 titleFuture = ^NSString *{
                     return [NSString stringWithFormat:@"🌴  %@", [[s_applicationWindow rootViewController] class]];
                 };
@@ -159,8 +163,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:rootViewController];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowUserDefaults:
+            case FLEXGlobalsRowUserDefaults: {
                 titleFuture = ^NSString *{
                     return @"🚶  +[NSUserDefaults standardUserDefaults]";
                 };
@@ -169,8 +174,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:standardUserDefaults];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowMainBundle:
+            case FLEXGlobalsRowMainBundle: {
                 titleFuture = ^NSString *{
                     return @"📦  +[NSBundle mainBundle]";
                 };
@@ -179,8 +185,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:mainBundle];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowApplication:
+            case FLEXGlobalsRowApplication: {
                 titleFuture = ^NSString *{
                     return @"💾  +[UIApplication sharedApplication]";
                 };
@@ -189,8 +196,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:sharedApplication];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowKeyWindow:
+            case FLEXGlobalsRowKeyWindow: {
                 titleFuture = ^NSString *{
                     return @"🔑  -[UIApplication keyWindow]";
                 };
@@ -198,8 +206,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:s_applicationWindow];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowMainScreen:
+            case FLEXGlobalsRowMainScreen: {
                 titleFuture = ^NSString *{
                     return @"💻  +[UIScreen mainScreen]";
                 };
@@ -208,8 +217,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:mainScreen];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowCurrentDevice:
+            case FLEXGlobalsRowCurrentDevice: {
                 titleFuture = ^NSString *{
                     return @"📱  +[UIDevice currentDevice]";
                 };
@@ -218,17 +228,19 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:currentDevice];
                 };
                 break;
+            }
 
-            case FLEXGlobalsCookies:
+            case FLEXGlobalsCookies: {
                 titleFuture = ^NSString *{
                     return @"🍪  Cookies";
                 };
                 viewControllerFuture = ^UIViewController *{
                     return [[FLEXCookiesTableViewController alloc] init];
                 };
-                break;                
+                break;
+            }
                 
-            case FLEXGlobalsRowFileBrowser:
+            case FLEXGlobalsRowFileBrowser: {
                 titleFuture = ^NSString *{
                     return @"📁  File Browser";
                 };
@@ -236,8 +248,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [[FLEXFileBrowserTableViewController alloc] init];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowSystemLog:
+            case FLEXGlobalsRowSystemLog: {
                 titleFuture = ^{
                     return @"⚠️  System Log";
                 };
@@ -245,8 +258,9 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                     return [[FLEXSystemLogTableViewController alloc] init];
                 };
                 break;
+            }
 
-            case FLEXGlobalsRowNetworkHistory:
+            case FLEXGlobalsRowNetworkHistory: {
                 titleFuture = ^{
                     return @"📡  Network History";
                 };
@@ -256,6 +270,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 break;
             case FLEXGlobalsRowCount:
                 break;
+            }
         }
 
         NSAssert(viewControllerFuture || rowAction, @"The switch-case above must assign one of these");
