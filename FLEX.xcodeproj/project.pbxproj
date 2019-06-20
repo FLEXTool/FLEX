@@ -133,6 +133,7 @@
 		3A4C95421B5B21410088C3F2 /* FLEXNetworkObserver.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94C21B5B21410088C3F2 /* FLEXNetworkObserver.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C95431B5B21410088C3F2 /* FLEXNetworkObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94C31B5B21410088C3F2 /* FLEXNetworkObserver.m */; };
 		3A4C95471B5B217D0088C3F2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4C95461B5B217D0088C3F2 /* libz.dylib */; };
+		3BAE0DBD22BBDB5B00039DBD /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BAE0DBC22BBDB5B00039DBD /* WebKit.framework */; };
 		679F64861BD53B7B00A8C94C /* FLEXCookiesTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 679F64841BD53B7B00A8C94C /* FLEXCookiesTableViewController.h */; };
 		679F64871BD53B7B00A8C94C /* FLEXCookiesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 679F64851BD53B7B00A8C94C /* FLEXCookiesTableViewController.m */; };
 		7349FD6A22B93CDF00051810 /* FLEXColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7349FD6822B93CDF00051810 /* FLEXColor.h */; };
@@ -332,6 +333,7 @@
 		3A4C94C31B5B21410088C3F2 /* FLEXNetworkObserver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkObserver.m; sourceTree = "<group>"; };
 		3A4C94C41B5B21410088C3F2 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		3A4C95461B5B217D0088C3F2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		3BAE0DBC22BBDB5B00039DBD /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		679F64841BD53B7B00A8C94C /* FLEXCookiesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXCookiesTableViewController.h; sourceTree = "<group>"; };
 		679F64851BD53B7B00A8C94C /* FLEXCookiesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXCookiesTableViewController.m; sourceTree = "<group>"; };
 		7349FD6822B93CDF00051810 /* FLEXColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXColor.h; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 			files = (
 				779B1EDD1C0C4EAD001F5E49 /* libsqlite3.dylib in Frameworks */,
 				3A4C95471B5B217D0088C3F2 /* libz.dylib in Frameworks */,
+				3BAE0DBD22BBDB5B00039DBD /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,6 +669,7 @@
 		3A4C95451B5B216C0088C3F2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3BAE0DBC22BBDB5B00039DBD /* WebKit.framework */,
 				779B1EDC1C0C4EAD001F5E49 /* libsqlite3.dylib */,
 				3A4C95461B5B217D0088C3F2 /* libz.dylib */,
 			);
