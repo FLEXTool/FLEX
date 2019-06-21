@@ -13,12 +13,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXColor : NSObject
 
-// Background colors
-+ (UIColor *)systemBackgroundColor;
-+ (UIColor *)systemBackgroundColorWithAlpha:(CGFloat)alpha;
+// Background colors, from intense to less intense
++ (UIColor *)primaryBackgroundColor;
++ (UIColor *)primaryBackgroundColorWithAlpha:(CGFloat)alpha;
 
 + (UIColor *)secondaryBackgroundColor;
 + (UIColor *)secondaryBackgroundColorWithAlpha:(CGFloat)alpha;
+
++ (UIColor *)tertiaryBackgroundColor;
++ (UIColor *)tertiaryBackgroundColorWithAlpha:(CGFloat)alpha;
 
 // Text colors
 + (UIColor *)primaryTextColor;
@@ -28,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIColor *)scrollViewBackgroundColor;
 + (UIColor *)iconColor;
 + (UIColor *)borderColor;
++ (UIColor *)toolbarItemHighlightedColor;
++ (UIColor *)toolbarItemSelectedColor;
 
 @end
 

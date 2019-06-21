@@ -283,7 +283,7 @@
     if ((totalRows - indexPath.row) % 2 == 0) {
         cell.backgroundColor = [FLEXColor secondaryBackgroundColor];
     } else {
-        cell.backgroundColor = [FLEXColor systemBackgroundColor];
+        cell.backgroundColor = [FLEXColor primaryBackgroundColor];
     }
 
     return cell;

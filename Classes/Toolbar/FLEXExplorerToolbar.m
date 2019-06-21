@@ -39,7 +39,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundView = [[UIView alloc] init];
-        self.backgroundView.backgroundColor = [FLEXColor systemBackgroundColorWithAlpha:0.95];
+        self.backgroundView.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
         [self addSubview:self.backgroundView];
 
         self.dragHandle = [[UIView alloc] init];
@@ -67,7 +67,7 @@
         self.closeItem = [FLEXToolbarItem toolbarItemWithTitle:@"close" image:closeIcon];
 
         self.selectedViewDescriptionContainer = [[UIView alloc] init];
-        self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
+        self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor tertiaryBackgroundColorWithAlpha:0.95];
         self.selectedViewDescriptionContainer.hidden = YES;
         [self addSubview:self.selectedViewDescriptionContainer];
 

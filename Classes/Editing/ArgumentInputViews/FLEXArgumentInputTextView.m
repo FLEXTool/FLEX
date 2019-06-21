@@ -25,7 +25,7 @@
     if (self) {
         self.inputTextView = [[UITextView alloc] init];
         self.inputTextView.font = [[self class] inputFont];
-        self.inputTextView.backgroundColor = [FLEXColor systemBackgroundColor];
+        self.inputTextView.backgroundColor = [FLEXColor primaryBackgroundColor];
         self.inputTextView.layer.borderColor = [[FLEXColor borderColor] CGColor];
         self.inputTextView.layer.borderWidth = 1.0;
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
