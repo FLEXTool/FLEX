@@ -12,33 +12,25 @@
 
 @interface FLEXToolbarItem ()
 
-@property (nonatomic, copy) NSAttributedString *attributedTitle;
+@property (nonatomic, copy) NSString *title;
 @property (nonatomic, strong) UIImage *image;
 
 @end
 
 @implementation FLEXToolbarItem
 
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.backgroundColor = [[self class] defaultBackgroundColor];
-        [self setTitleColor:[[self class] defaultTitleColor] forState:UIControlStateNormal];
-        [self setTitleColor:[[self class] disabledTitleColor] forState:UIControlStateDisabled];
-    }
-    return self;
-}
-
 + (instancetype)toolbarItemWithTitle:(NSString *)title image:(UIImage *)image
 {
-    FLEXToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeCustom];
-    NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:[self titleAttributes]];
-    toolbarItem.attributedTitle = attributedTitle;
+    FLEXToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeSystem];
+    toolbarItem.title = title;
+    toolbarItem.backgroundColor = [self defaultBackgroundColor];
     toolbarItem.image = image;
-    [toolbarItem setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+    toolbarItem.titleLabel.font = [FLEXUtility defaultFontOfSize:12.0];
+    [toolbarItem setTitle:title forState:UIControlStateNormal];
     [toolbarItem setImage:image forState:UIControlStateNormal];
-    [toolbarItem.imageView setTintColor:[FLEXColor iconColor]];
+    [toolbarItem setTitleColor:[FLEXColor primaryTextColor] forState:UIControlStateNormal];
+    [toolbarItem setTitleColor:[FLEXColor deemphasizedTextColor] forState:UIControlStateDisabled];
+    [toolbarItem setTintColor:[FLEXColor iconColor]];
     return toolbarItem;
 }
 
@@ -50,24 +42,14 @@
     return @{NSFontAttributeName : [FLEXUtility defaultFontOfSize:12.0]};
 }
 
-+ (UIColor *)defaultTitleColor
-{
-    return [UIColor blackColor];
-}
-
-+ (UIColor *)disabledTitleColor
-{
-    return [UIColor colorWithWhite:121.0/255.0 alpha:1.0];
-}
-
 + (UIColor *)highlightedBackgroundColor
 {
-    return [UIColor colorWithWhite:0.9 alpha:1.0];
+    return [FLEXColor toolbarItemHighlightedColor];
 }
 
 + (UIColor *)selectedBackgroundColor
 {
-    return [UIColor colorWithRed:199.0/255.0 green:199.0/255.0 blue:255.0/255.0 alpha:1.0];
+    return [FLEXColor toolbarItemSelectedColor];
 }
 
 + (UIColor *)defaultBackgroundColor
@@ -86,17 +68,20 @@
 - (void)setHighlighted:(BOOL)highlighted
 {
     [super setHighlighted:highlighted];
-    [self updateBackgroundColor];
+    [self updateColors];
 }
 
 - (void)setSelected:(BOOL)selected
 {
     [super setSelected:selected];
-    [self updateBackgroundColor];
+    [self updateColors];
 }
 
-- (void)updateBackgroundColor
++ (id)_selectedIndicatorImage { return nil; }
+
+- (void)updateColors
 {
+    // Background color
     if (self.highlighted) {
         self.backgroundColor = [[self class] highlightedBackgroundColor];
     } else if (self.selected) {
@@ -111,9 +96,13 @@
 
 - (CGRect)titleRectForContentRect:(CGRect)contentRect
 {
+    NSDictionary *attrs = [[self class] titleAttributes];
     // Bottom aligned and centered.
     CGRect titleRect = CGRectZero;
-    CGSize titleSize = [self.attributedTitle boundingRectWithSize:contentRect.size options:0 context:nil].size;
+    CGSize titleSize = [self.title boundingRectWithSize:contentRect.size
+                                                options:0
+                                             attributes:attrs
+                                                context:nil].size;
     titleSize = CGSizeMake(ceil(titleSize.width), ceil(titleSize.height));
     titleRect.size = titleSize;
     titleRect.origin.y = contentRect.origin.y + CGRectGetMaxY(contentRect) - titleSize.height;
