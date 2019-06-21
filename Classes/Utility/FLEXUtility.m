@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
 #import <ImageIO/ImageIO.h>
@@ -95,7 +96,26 @@
     dispatch_once(&onceToken, ^{
         UIImage *indentationPatternImage = [FLEXResources hierarchyIndentPattern];
         patternColor = [UIColor colorWithPatternImage:indentationPatternImage];
+
+#if FLEX_AT_LEAST_IOS13_SDK
+        if (@available(iOS 13.0, *)) {
+            // Create a dark mode version
+            UIGraphicsBeginImageContextWithOptions(indentationPatternImage.size, NO, indentationPatternImage.scale);
+            [[FLEXColor iconColor] set];
+            [indentationPatternImage drawInRect:CGRectMake(0, 0, indentationPatternImage.size.width, indentationPatternImage.size.height)];
+            UIImage *darkModePatternImage = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+
+            // Create dynamic color provider
+            patternColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+                return (traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight
+                        ? [UIColor colorWithPatternImage:indentationPatternImage]
+                        : [UIColor colorWithPatternImage:darkModePatternImage]);
+            }];
+        }
+#endif
     });
+
     return patternColor;
 }
 

@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#import "FLEXColor.h"
 #import "FLEXToolbarItem.h"
 #import "FLEXUtility.h"
 
@@ -37,6 +38,7 @@
     toolbarItem.image = image;
     [toolbarItem setAttributedTitle:attributedTitle forState:UIControlStateNormal];
     [toolbarItem setImage:image forState:UIControlStateNormal];
+    [toolbarItem.imageView setTintColor:[FLEXColor iconColor]];
     return toolbarItem;
 }
 
