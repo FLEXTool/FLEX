@@ -37,4 +37,13 @@
     return square;
 }
 
+- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
+{
+    if ([@0 isEqual:rowCookie]) {
+        return NO;
+    }
+    
+    return [super customSectionCanDrillIntoRowWithCookie:rowCookie];
+}
+
 @end
