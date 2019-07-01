@@ -28,9 +28,10 @@
 {
     [super viewDidLoad];
 
-    __weak typeof(self) weakSelf = self;
+    __weak __typeof(self) weakSelf = self;
     id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) {
-        [weakSelf handleUpdateWithNewMessages:newMessages];
+        __strong __typeof(weakSelf) self = weakSelf;
+        [self handleUpdateWithNewMessages:newMessages];
     };
 
     _logMessages = [NSMutableArray array];
