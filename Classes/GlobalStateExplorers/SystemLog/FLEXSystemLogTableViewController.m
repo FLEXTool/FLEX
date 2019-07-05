@@ -8,6 +8,7 @@
 
 #import "FLEXSystemLogTableViewController.h"
 #import "FLEXUtility.h"
+#import "FLEXColor.h"
 #import "FLEXASLLogController.h"
 #import "FLEXOSLogController.h"
 #import "FLEXSystemLogTableViewCell.h"
@@ -134,9 +135,9 @@
     cell.highlightedText = self.searchController.searchBar.text;
     
     if (indexPath.row % 2 == 0) {
-        cell.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1.0];
+        cell.backgroundColor = [FLEXColor primaryBackgroundColor];
     } else {
-        cell.backgroundColor = [UIColor whiteColor];
+        cell.backgroundColor = [FLEXColor secondaryBackgroundColor];
     }
     
     return cell;
