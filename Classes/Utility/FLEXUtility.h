@@ -45,7 +45,6 @@
 + (UIFont *)defaultTableViewCellLabelFont;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
-+ (NSString *)searchBarPlaceholderText;
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;

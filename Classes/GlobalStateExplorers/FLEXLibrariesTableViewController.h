@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXTableViewController.h"
 
-@interface FLEXLibrariesTableViewController : UITableViewController
+@interface FLEXLibrariesTableViewController : FLEXTableViewController
 
 @end

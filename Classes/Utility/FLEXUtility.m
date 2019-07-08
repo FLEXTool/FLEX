@@ -223,11 +223,6 @@
     return supportedOrientationsMask;
 }
 
-+ (NSString *)searchBarPlaceholderText
-{
-    return @"Filter";
-}
-
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data
 {
     UIImage *thumbnail = nil;

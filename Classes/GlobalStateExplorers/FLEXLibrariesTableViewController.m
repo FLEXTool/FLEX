@@ -12,12 +12,11 @@
 #import "FLEXClassExplorerViewController.h"
 #import <objc/runtime.h>
 
-@interface FLEXLibrariesTableViewController () <UISearchBarDelegate>
+@interface FLEXLibrariesTableViewController ()
 
 @property (nonatomic, strong) NSArray<NSString *> *imageNames;
 @property (nonatomic, strong) NSArray<NSString *> *filteredImageNames;
 
-@property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) Class foundClass;
 
 @end
@@ -37,11 +36,7 @@
 {
     [super viewDidLoad];
     
-    self.searchBar = [[UISearchBar alloc] init];
-    self.searchBar.delegate = self;
-    self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
-    [self.searchBar sizeToFit];
-    self.tableView.tableHeaderView = self.searchBar;
+    self.showsSearchBar = YES;
 }
 
 
@@ -94,9 +89,9 @@
 
 #pragma mark - Filtering
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+- (void)updateSearchResults:(NSString *)searchText
 {
-    if ([searchText length] > 0) {
+    if (searchText.length) {
         NSPredicate *searchPredicate = [NSPredicate predicateWithBlock:^BOOL(NSString *evaluatedObject, NSDictionary<NSString *, id> *bindings) {
             BOOL matches = NO;
             NSString *shortName = [self shortNameForImageName:evaluatedObject];
@@ -112,11 +107,6 @@
     
     self.foundClass = NSClassFromString(searchText);
     [self.tableView reloadData];
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    [searchBar resignFirstResponder];
 }
 
 
@@ -145,7 +135,7 @@
     NSString *executablePath;
     if (self.foundClass) {
         if (indexPath.row == 0) {
-            cell.textLabel.text = [NSString stringWithFormat:@"Class \"%@\"", self.searchBar.text];
+            cell.textLabel.text = [NSString stringWithFormat:@"Class \"%@\"", self.searchText];
             return cell;
         } else {
             executablePath = self.filteredImageNames[indexPath.row-1];

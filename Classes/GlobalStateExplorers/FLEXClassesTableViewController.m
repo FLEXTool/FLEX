@@ -12,11 +12,10 @@
 #import "FLEXUtility.h"
 #import <objc/runtime.h>
 
-@interface FLEXClassesTableViewController () <UISearchBarDelegate>
+@interface FLEXClassesTableViewController ()
 
 @property (nonatomic, strong) NSArray<NSString *> *classNames;
 @property (nonatomic, strong) NSArray<NSString *> *filteredClassNames;
-@property (nonatomic, strong) UISearchBar *searchBar;
 
 @end
 
@@ -26,11 +25,7 @@
 {
     [super viewDidLoad];
     
-    self.searchBar = [[UISearchBar alloc] init];
-    self.searchBar.placeholder = [FLEXUtility searchBarPlaceholderText];
-    self.searchBar.delegate = self;
-    [self.searchBar sizeToFit];
-    self.tableView.tableHeaderView = self.searchBar;
+    self.showsSearchBar = YES;
 }
 
 - (void)setBinaryImageName:(NSString *)binaryImageName
@@ -73,9 +68,9 @@
 }
 
 
-#pragma mark - Search
+#pragma mark - Search bar
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+- (void)updateSearchResults:(NSString *)searchText
 {
     if ([searchText length] > 0) {
         NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", searchText];
@@ -85,17 +80,6 @@
     }
     [self updateTitle];
     [self.tableView reloadData];
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    [searchBar resignFirstResponder];
-}
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    // Dismiss the keyboard when interacting with filtered results.
-    [self.searchBar endEditing:YES];
 }
 
 

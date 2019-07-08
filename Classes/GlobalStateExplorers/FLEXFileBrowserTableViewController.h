@@ -6,11 +6,10 @@
 //  Based on previous work by Evan Doll
 //
 
-#import <UIKit/UIKit.h>
-
+#import "FLEXTableViewController.h"
 #import "FLEXFileBrowserSearchOperation.h"
 
-@interface FLEXFileBrowserTableViewController : UITableViewController
+@interface FLEXFileBrowserTableViewController : FLEXTableViewController
 
 - (id)initWithPath:(NSString *)path;
 

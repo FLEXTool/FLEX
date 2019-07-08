@@ -18,14 +18,13 @@
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end
 
-@interface FLEXFileBrowserTableViewController () <FLEXFileBrowserFileOperationControllerDelegate, FLEXFileBrowserSearchOperationDelegate, UISearchResultsUpdating, UISearchControllerDelegate>
+@interface FLEXFileBrowserTableViewController () <FLEXFileBrowserFileOperationControllerDelegate, FLEXFileBrowserSearchOperationDelegate>
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, copy) NSArray<NSString *> *childPaths;
 @property (nonatomic, strong) NSArray<NSString *> *searchPaths;
 @property (nonatomic, strong) NSNumber *recursiveSize;
 @property (nonatomic, strong) NSNumber *searchPathsSize;
-@property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic) NSOperationQueue *operationQueue;
 @property (nonatomic, strong) UIDocumentInteractionController *documentController;
 @property (nonatomic, strong) id<FLEXFileBrowserFileOperationController> fileOperationController;
@@ -34,25 +33,20 @@
 
 @implementation FLEXFileBrowserTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
+- (id)init
 {
     return [self initWithPath:NSHomeDirectory()];
 }
 
 - (id)initWithPath:(NSString *)path
 {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super init];
     if (self) {
         self.path = path;
         self.title = [path lastPathComponent];
         self.operationQueue = [NSOperationQueue new];
-
-        self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
-        self.searchController.searchResultsUpdater = self;
-        self.searchController.delegate = self;
-        self.searchController.dimsBackgroundDuringPresentation = NO;
-        self.tableView.tableHeaderView = self.searchController.searchBar;
-
+        
+        
         //computing path size
         FLEXFileBrowserTableViewController *__weak weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -87,7 +81,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
+    self.showsSearchBar = YES;
+    self.searchBarDebounceInterval = kFLEXDebounceForAsyncSearch;
 }
 
 #pragma mark - Misc
@@ -105,14 +101,14 @@
     [self.tableView reloadData];
 }
 
-#pragma mark - UISearchResultsUpdating
+#pragma mark - Search bar
 
-- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
+- (void)updateSearchResults:(NSString *)newText
 {
     [self reloadDisplayedPaths];
 }
 
-#pragma mark - UISearchControllerDelegate
+#pragma mark UISearchControllerDelegate
 
 - (void)willDismissSearchController:(UISearchController *)searchController
 {
@@ -377,7 +373,7 @@
 
     //clear pre search request and start a new one
     [self.operationQueue cancelAllOperations];
-    FLEXFileBrowserSearchOperation *newOperation = [[FLEXFileBrowserSearchOperation alloc] initWithPath:self.path searchString:self.searchController.searchBar.text];
+    FLEXFileBrowserSearchOperation *newOperation = [[FLEXFileBrowserSearchOperation alloc] initWithPath:self.path searchString:self.searchText];
     newOperation.delegate = self;
     [self.operationQueue addOperation:newOperation];
 }

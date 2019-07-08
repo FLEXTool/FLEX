@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXTableViewController.h"
 
 @protocol FLEXHierarchyTableViewControllerDelegate;
 
-@interface FLEXHierarchyTableViewController : UITableViewController
+@interface FLEXHierarchyTableViewController : FLEXTableViewController
 
 - (instancetype)initWithViews:(NSArray<UIView *> *)allViews viewsAtTap:(NSArray<UIView *> *)viewsAtTap selectedView:(UIView *)selectedView depths:(NSDictionary<NSValue *, NSNumber *> *)depthsForViews;
 

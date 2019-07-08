@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXTableViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
     FLEXObjectExplorerSectionDescription,
@@ -19,7 +19,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
     FLEXObjectExplorerSectionReferencingInstances
 };
 
-@interface FLEXObjectExplorerViewController : UITableViewController
+@interface FLEXObjectExplorerViewController : FLEXTableViewController
 
 @property (nonatomic, strong) id object;
 
