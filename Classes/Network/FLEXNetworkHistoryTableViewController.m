@@ -261,9 +261,7 @@
 {
     if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
         UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
-        headerView.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
-        headerView.textLabel.textColor = [UIColor whiteColor];
-        headerView.contentView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:1.0];
+        headerView.textLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightSemibold];
     }
 }
 
