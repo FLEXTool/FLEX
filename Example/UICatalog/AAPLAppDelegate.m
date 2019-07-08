@@ -68,10 +68,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #if DEBUG
+    [[FLEXManager sharedManager] showExplorer];
     [[FLEXManager sharedManager] setNetworkDebuggingEnabled:YES];
     [self sendExampleNetworkRequests];
     self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
 
+    [[NSUserDefaults standardUserDefaults] setObject:@"foo" forKey:@"FLEXExamplePrefFoo"];
+    
     // For testing unarchiving of objects
     NSString *documents = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
     NSString *whereToSaveBob = [documents stringByAppendingPathComponent:@"Bob.plist"];
