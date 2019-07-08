@@ -222,13 +222,25 @@
         if ([pathExtension isEqualToString:@"json"]) {
             prettyString = [FLEXUtility prettyJSONStringFromData:fileData];
         } else {
+            // Regardless of file extension...
+            
+            id object = nil;
             @try {
                 // Try to decode an archived object regardless of file extension
-                id object = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
+                object = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
+            } @catch (NSException *e) { }
+            
+            // Try to decode other things instead
+            object = object
+                        ?: [NSPropertyListSerialization propertyListWithData:fileData
+                                                                     options:0
+                                                                      format:NULL
+                                                                       error:NULL]
+                        ?: [NSDictionary dictionaryWithContentsOfFile:fullPath]
+                        ?: [NSArray arrayWithContentsOfFile:fullPath];
+            
+            if (object) {
                 drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
-            } @catch (NSException *e) {
-                // Try to decode a property list instead, also regardless of file extension
-                prettyString = [[NSPropertyListSerialization propertyListWithData:fileData options:0 format:NULL error:NULL] description];
             }
         }
 
