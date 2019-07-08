@@ -14,18 +14,57 @@
 @interface FLEXDefaultsExplorerViewController ()
 
 @property (nonatomic, readonly) NSUserDefaults *defaults;
+@property (nonatomic) BOOL onlyShowKeysForAppPrefs;
+@property (nonatomic) NSArray *keyWhitelist;
+@property (nonatomic) NSArray *keys;
 
 @end
 
 @implementation FLEXDefaultsExplorerViewController
+@synthesize keys = _keys;
 
 - (NSUserDefaults *)defaults
 {
     return [self.object isKindOfClass:[NSUserDefaults class]] ? self.object : nil;
 }
 
+- (NSArray *)keys
+{
+    if (!_keys) {
+        self.keys = self.defaults.dictionaryRepresentation.allKeys;
+    }
+    
+    return _keys;
+}
+
+- (void)setKeys:(NSArray *)keys {
+    _keys = [keys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+}
+
+- (void)setOnlyShowKeysForAppPrefs:(BOOL)onlyShowKeysForAppPrefs
+{
+    if (_onlyShowKeysForAppPrefs == onlyShowKeysForAppPrefs) return;
+    _onlyShowKeysForAppPrefs = onlyShowKeysForAppPrefs;
+    
+    if (onlyShowKeysForAppPrefs) {
+        // Read keys from preferences file
+        NSString *bundle = [NSBundle mainBundle].bundleIdentifier;
+        NSString *prefsPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Preferences"];
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@.plist", prefsPath, bundle];
+        self.keys = [NSDictionary dictionaryWithContentsOfFile:filePath].allKeys;
+    }
+}
 
 #pragma mark - Superclass Overrides
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // Hide keys not present in the preferences file.
+    // Useful because standardUserDefaults includes a lot of keys that are
+    // included by default in every app, and probably aren't what you wan to see.
+    self.onlyShowKeysForAppPrefs = self.defaults == [NSUserDefaults standardUserDefaults];
+}
 
 - (NSString *)customSectionTitle
 {
@@ -34,7 +73,7 @@
 
 - (NSArray *)customSectionRowCookies
 {
-    return [[[self.defaults dictionaryRepresentation] allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    return self.keys;
 }
 
 - (NSString *)customSectionTitleForRowCookie:(id)rowCookie
@@ -58,11 +97,6 @@
         drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:drillInObject];
     }
     return drillInViewController;
-}
-
-- (BOOL)shouldShowDescription
-{
-    return NO;
 }
 
 @end
