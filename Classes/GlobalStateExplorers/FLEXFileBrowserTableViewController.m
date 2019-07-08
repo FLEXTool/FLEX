@@ -71,7 +71,7 @@
             });
         });
 
-        [self reloadChildPaths];
+        [self reloadCurrentPath];
     }
     return self;
 }
@@ -113,10 +113,9 @@
 - (void)willDismissSearchController:(UISearchController *)searchController
 {
     [self.operationQueue cancelAllOperations];
-    [self reloadChildPaths];
+    [self reloadCurrentPath];
     [self.tableView reloadData];
 }
-
 
 #pragma mark - Table view data source
 
@@ -349,14 +348,14 @@
 - (void)reloadDisplayedPaths
 {
     if (self.searchController.isActive) {
-        [self reloadSearchPaths];
+        [self updateSearchPaths];
     } else {
-        [self reloadChildPaths];
+        [self reloadCurrentPath];
+        [self.tableView reloadData];
     }
-    [self.tableView reloadData];
 }
 
-- (void)reloadChildPaths
+- (void)reloadCurrentPath
 {
     NSMutableArray<NSString *> *childPaths = [NSMutableArray array];
     NSArray<NSString *> *subpaths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
@@ -366,7 +365,7 @@
     self.childPaths = childPaths;
 }
 
-- (void)reloadSearchPaths
+- (void)updateSearchPaths
 {
     self.searchPaths = nil;
     self.searchPathsSize = nil;
@@ -388,7 +387,8 @@
 
 @implementation FLEXFileBrowserTableViewCell
 
-- (void)forwardAction:(SEL)action withSender:(id)sender {
+- (void)forwardAction:(SEL)action withSender:(id)sender
+{
     id target = [self.nextResponder targetForAction:action withSender:sender];
     [[UIApplication sharedApplication] sendAction:action to:target from:self forEvent:nil];
 }
