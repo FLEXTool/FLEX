@@ -9,12 +9,13 @@
 #import "FLEXSQLiteDatabaseManager.h"
 #import "FLEXManager.h"
 #import "NSArray+Functional.h"
+#import "FLEXSQLResult.h"
 #import <sqlite3.h>
 
-static NSString * const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
+static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
 
 @interface FLEXSQLiteDatabaseManager ()
-@property (nonatomic, readonly) sqlite3 *db;
+@property (nonatomic) sqlite3 *db;
 @property (nonatomic, copy) NSString *path;
 @end
 
@@ -36,7 +37,7 @@ static NSString * const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master 
 }
 
 - (BOOL)open {
-    if (_db) {
+    if (self.db) {
         return YES;
     }
     
@@ -57,9 +58,9 @@ static NSString * const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master 
     
     return YES;
 }
-
+    
 - (BOOL)close {
-    if (!_db) {
+    if (!self.db) {
         return YES;
     }
     
@@ -84,87 +85,84 @@ static NSString * const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master 
         }
     } while (retry);
     
-    _db = nil;
+    self.db = nil;
     return YES;
 }
 
 - (NSArray<NSString *> *)queryAllTables {
-    return [[self executeQuery:QUERY_TABLENAMES_SQL] flex_mapped:^id(NSArray *table, NSUInteger idx) {
+    return [[self executeStatement:QUERY_TABLENAMES].rows flex_mapped:^id(NSArray *table, NSUInteger idx) {
         return table.firstObject;
     }];
 }
 
-- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName {
+- (NSArray<NSString *> *)queryAllColumnsOfTable:(NSString *)tableName {
     NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info('%@')",tableName];
-    NSArray<NSDictionary *> *results =  [self executeQueryWithColumns:sql];
+    FLEXSQLResult *results = [self executeStatement:sql];
     
-    return [results flex_mapped:^id(NSDictionary *column, NSUInteger idx) {
+    return [results.keyedRows flex_mapped:^id(NSDictionary *column, NSUInteger idx) {
         return column[@"name"];
     }];
 }
 
-- (NSArray<NSArray *> *)queryAllDataWithTableName:(NSString *)tableName {
-    return [self executeQuery:[@"SELECT * FROM "
+- (NSArray<NSArray *> *)queryAllDataInTable:(NSString *)tableName {
+    return [self executeStatement:[@"SELECT * FROM "
         stringByAppendingString:tableName
-    ]];
+    ]].rows;
 }
 
-#pragma mark - Private
-
-/// @return an array of rows, where each row is an array
-/// containing the values of each column for that row
-- (NSArray<NSArray *> *)executeQuery:(NSString *)sql {
+- (FLEXSQLResult *)executeStatement:(NSString *)sql {
     [self open];
     
-    NSMutableArray<NSArray *> *results = [NSMutableArray array];
+    FLEXSQLResult *result = nil;
     
     sqlite3_stmt *pstmt;
     if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &pstmt, 0) == SQLITE_OK) {
-        while (sqlite3_step(pstmt) == SQLITE_ROW) {
-            int num_cols = sqlite3_data_count(pstmt);
-            if (num_cols > 0) {
-                int columnCount = sqlite3_column_count(pstmt);
-                
-                [results addObject:[NSArray flex_forEachUpTo:columnCount map:^id(NSUInteger i) {
+        NSMutableArray<NSArray *> *rows = [NSMutableArray new];
+        
+        // Grab columns
+        int columnCount = sqlite3_column_count(pstmt);
+        NSArray<NSString *> *columns = [NSArray flex_forEachUpTo:columnCount map:^id(NSUInteger i) {
+            return @(sqlite3_column_name(pstmt, (int)i));
+        }];
+        
+        // Execute statement
+        int status;
+        while ((status = sqlite3_step(pstmt)) == SQLITE_ROW) {
+            // Grab rows if this is a selection query
+            int dataCount = sqlite3_data_count(pstmt);
+            if (dataCount > 0) {
+                [rows addObject:[NSArray flex_forEachUpTo:columnCount map:^id(NSUInteger i) {
                     return [self objectForColumnIndex:(int)i stmt:pstmt];
                 }]];
             }
         }
+        
+        if (status == SQLITE_DONE) {
+            if (rows.count) {
+                // We selected some rows
+                result = [FLEXSQLResult columns:columns rows:rows];
+            } else {
+                // We executed a query like INSERT, UDPATE, or DELETE
+                int rowsAffected = sqlite3_changes(_db);
+                NSString *message = [NSString stringWithFormat:@"%d row(s) affected", rowsAffected];
+                result = [FLEXSQLResult message:message];
+            }
+        } else {
+            // An error occured executing the query
+            result = [FLEXSQLResult message:@(sqlite3_errmsg(_db) ?: "(Execution: empty error)")];
+        }
+    } else {
+        // An error occurred creating the prepared statement
+        result = [FLEXSQLResult message:@(sqlite3_errmsg(_db) ?: "(Prepared statement: empty error)")];
     }
     
+    sqlite3_finalize(pstmt);
     [self close];
-    return results;
+    return result;
 }
 
-/// Like \c executeQuery: except that a list of dictionaries are returned,
-/// where the keys are column names and the values are the data.
-- (NSArray<NSDictionary *> *)executeQueryWithColumns:(NSString *)sql {
-    [self open];
-    
-    NSMutableArray<NSDictionary *> *results = [NSMutableArray array];
-    
-    sqlite3_stmt *pstmt;
-    if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &pstmt, 0) == SQLITE_OK) {
-        while (sqlite3_step(pstmt) == SQLITE_ROW) {
-            int num_cols = sqlite3_data_count(pstmt);
-            if (num_cols > 0) {
-                int columnCount = sqlite3_column_count(pstmt);
-                
-                
-                NSMutableDictionary *rowFields = [NSMutableDictionary new];
-                for (int i = 0; i < columnCount; i++) {
-                    id value = [self objectForColumnIndex:(int)i stmt:pstmt];
-                    rowFields[@(sqlite3_column_name(pstmt, i))] = value;
-                }
-                
-                [results addObject:rowFields];
-            }
-        }
-    }
-    
-    [self close];
-    return results;
-}
+
+#pragma mark - Private
 
 - (id)objectForColumnIndex:(int)columnIdx stmt:(sqlite3_stmt*)stmt {
     int columnType = sqlite3_column_type(stmt, columnIdx);
@@ -184,7 +182,7 @@ static NSString * const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master 
             return [self stringForColumnIndex:columnIdx stmt:stmt] ?: NSNull.null;
     }
 }
-
+                
 - (NSString *)stringForColumnIndex:(int)columnIdx stmt:(sqlite3_stmt *)stmt {
     if (sqlite3_column_type(stmt, columnIdx) == SQLITE_NULL || columnIdx < 0) {
         return nil;

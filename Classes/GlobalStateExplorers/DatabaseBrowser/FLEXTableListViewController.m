@@ -12,6 +12,7 @@
 #import "FLEXRealmDatabaseManager.h"
 #import "FLEXTableContentViewController.h"
 #import "NSArray+Functional.h"
+#import "FLEXAlert.h"
 
 @interface FLEXTableListViewController ()
 @property (nonatomic, readonly) id<FLEXDatabaseManager> dbm;
@@ -30,14 +31,53 @@
 - (instancetype)initWithPath:(NSString *)path {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        _path = [path copy];
-        _dbm = [self databaseManagerForFileAtPath:self.path];
-        [self.dbm open];
-        [self getAllTables];
+        _path = path.copy;
+        _dbm = [self databaseManagerForFileAtPath:path];
     }
+    
     return self;
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.showsSearchBar = YES;
+    [self getAllTables];
+
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+        initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+        target:self
+        action:@selector(queryButtonPressed)
+    ];
+    // Cannot run custom queries on realm databases
+    self.navigationItem.rightBarButtonItem.enabled = [self.dbm
+        respondsToSelector:@selector(executeStatement:)
+    ];
+}
+    
+- (void)queryButtonPressed {
+    FLEXSQLiteDatabaseManager *database = self.dbm;
+    
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Execute an SQL query");
+        make.textField(nil);
+        make.button(@"Run").handler(^(NSArray<NSString *> *strings) {
+            FLEXSQLResult *result = [database executeStatement:strings[0]];
+            
+            if (result.message) {
+                [FLEXAlert showAlert:@"Message" message:result.message from:self];
+            } else {
+                UIViewController *resultsScreen = [FLEXTableContentViewController
+                    columns:result.columns rows:result.rows
+                ];
+                
+                [self.navigationController pushViewController:resultsScreen animated:YES];
+            }
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
+}
+    
 - (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path {
     NSString *pathExtension = path.pathExtension.lowercaseString;
     
@@ -55,14 +95,9 @@
 }
 
 - (void)getAllTables {
-    self.tables = self.filteredTables = [self.dbm queryAllTables];;
+    self.tables = self.filteredTables = [self.dbm queryAllTables];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.showsSearchBar = YES;
-}
 
 #pragma mark - Search bar
 
@@ -95,15 +130,13 @@
     return cell;
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXTableContentViewController *contentViewController = [FLEXTableContentViewController new];
+    NSArray *rows = [self.dbm queryAllDataInTable:self.filteredTables[indexPath.row]];
+    NSArray *columns = [self.dbm queryAllColumnsOfTable:self.filteredTables[indexPath.row]];
     
-    contentViewController.rows = [self.dbm queryAllDataWithTableName:self.filteredTables[indexPath.row]];
-    contentViewController.columns = [self.dbm queryAllColumnsWithTableName:self.filteredTables[indexPath.row]];
-    
-    contentViewController.title = self.filteredTables[indexPath.row];
-    [self.navigationController pushViewController:contentViewController animated:YES];
+    UIViewController *resultsScreen = [FLEXTableContentViewController columns:columns rows:rows];
+    resultsScreen.title = self.filteredTables[indexPath.row];
+    [self.navigationController pushViewController:resultsScreen animated:YES];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {

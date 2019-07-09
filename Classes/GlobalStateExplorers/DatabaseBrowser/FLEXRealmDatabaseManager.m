@@ -8,6 +8,7 @@
 
 #import "FLEXRealmDatabaseManager.h"
 #import "NSArray+Functional.h"
+#import "FLEXSQLResult.h"
 
 #if __has_include(<Realm/Realm.h>)
 #import <Realm/Realm.h>
@@ -68,7 +69,7 @@ static Class RLMRealmClass = nil;
     }];
 }
 
-- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName {
+- (NSArray<NSString *> *)queryAllColumnsOfTable:(NSString *)tableName {
     RLMObjectSchema *objectSchema = [self.realm.schema schemaForClassName:tableName];
     // Map each column to its name
     return [objectSchema.properties flex_mapped:^id(RLMProperty *property, NSUInteger idx) {
@@ -76,7 +77,7 @@ static Class RLMRealmClass = nil;
     }];
 }
 
-- (NSArray<NSArray *> *)queryAllDataWithTableName:(NSString *)tableName {
+- (NSArray<NSArray *> *)queryAllDataInTable:(NSString *)tableName {
     RLMObjectSchema *objectSchema = [self.realm.schema schemaForClassName:tableName];
     RLMResults *results = [self.realm allObjects:tableName];
     if (results.count == 0 || !objectSchema) {

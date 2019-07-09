@@ -14,21 +14,32 @@
 @interface FLEXTableContentViewController () <
     FLEXMultiColumnTableViewDataSource, FLEXMultiColumnTableViewDelegate
 >
+@property (nonatomic, readonly) NSArray<NSString *> *columns;
+@property (nonatomic, copy) NSArray<NSArray *> *rows;
+
 @property (nonatomic) FLEXMultiColumnTableView *multiColumnView;
 @end
 
 @implementation FLEXTableContentViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.edgesForExtendedLayout = UIRectEdgeNone;
-    
++ (instancetype)columns:(NSArray<NSString *> *)columnNames
+                   rows:(NSArray<NSArray<NSString *> *> *)rowData {
+    FLEXTableContentViewController *controller = [self new];
+    controller->_columns = columnNames;
+    controller->_rows = rowData;
+    return controller;
+}
+
+- (void)loadView {
+    [super loadView];
     
     [self.view addSubview:self.multiColumnView];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.multiColumnView reloadData];
 }
 
@@ -38,8 +49,8 @@
             initWithFrame:FLEXRectSetSize(CGRectZero, self.view.frame.size)
         ];
         
-        _multiColumnView.dataSource       = self;
-        _multiColumnView.delegate         = self;
+        _multiColumnView.dataSource = self;
+        _multiColumnView.delegate   = self;
     }
     
     return _multiColumnView;
