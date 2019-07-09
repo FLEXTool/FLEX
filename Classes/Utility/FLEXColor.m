@@ -9,16 +9,26 @@
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
 
+#if FLEX_AT_LEAST_IOS13_SDK
+#define FLEXDynamicColor(dynamic, static) ({ \
+    UIColor *c; \
+    if (@available(iOS 13, *)) { \
+        c = [UIColor dynamic]; \
+    } else { \
+        c = [UIColor static]; \
+    } \
+    c; \
+});
+#else
+#define FLEXDynamicColor(dynamic, static) [UIColor static]
+#endif
+
 @implementation FLEXColor
 
 #pragma mark - Background Colors
 
 + (UIColor *)primaryBackgroundColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor systemBackgroundColor];
-    } else {
-        return [UIColor whiteColor];
-    }
+    return FLEXDynamicColor(systemBackgroundColor, whiteColor);
 }
 
 + (UIColor *)primaryBackgroundColorWithAlpha:(CGFloat)alpha {
@@ -26,11 +36,10 @@
 }
 
 + (UIColor *)secondaryBackgroundColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor secondarySystemBackgroundColor];
-    } else {
-        return [UIColor colorWithHue:2.0/3.0 saturation:0.02 brightness:0.95 alpha:1];
-    }
+    return FLEXDynamicColor(
+        secondarySystemBackgroundColor,
+        colorWithHue:2.0/3.0 saturation:0.02 brightness:0.95 alpha:1
+    );
 }
 
 + (UIColor *)secondaryBackgroundColorWithAlpha:(CGFloat)alpha {
@@ -38,14 +47,10 @@
 }
 
 + (UIColor *)tertiaryBackgroundColor {
-    if (@available(iOS 13.0, *)) {
-        // All the background/fill colors are varying shades
-        // of white and black with really low alpha levels.
-        // We use this instead to avoid alpha issues.
-        return [UIColor systemGray4Color];
-    } else {
-        return [UIColor lightGrayColor];
-    }
+    // All the background/fill colors are varying shades
+    // of white and black with really low alpha levels.
+    // We use systemGray4Color instead to avoid alpha issues.
+    return FLEXDynamicColor(systemGray4Color, lightGrayColor);
 }
 
 + (UIColor *)tertiaryBackgroundColorWithAlpha:(CGFloat)alpha {
@@ -55,37 +60,24 @@
 #pragma mark - Text colors
 
 + (UIColor *)primaryTextColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor labelColor];
-    } else {
-        return [UIColor blackColor];
-    }
+    return FLEXDynamicColor(labelColor, blackColor);
 }
 
 + (UIColor *)deemphasizedTextColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor tertiaryLabelColor];
-    } else {
-        return [UIColor lightGrayColor];
-    }
+    return FLEXDynamicColor(tertiaryLabelColor, lightGrayColor);
 }
 
 #pragma mark - UI Element Colors
 
 + (UIColor *)scrollViewBackgroundColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor systemGroupedBackgroundColor];
-    } else {
-        return [UIColor colorWithHue:2.0/3.0 saturation:0.02 brightness:0.95 alpha:1];
-    }
+    return FLEXDynamicColor(
+        systemGroupedBackgroundColor,
+        colorWithHue:2.0/3.0 saturation:0.02 brightness:0.95 alpha:1
+    );
 }
 
 + (UIColor *)iconColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor labelColor];
-    } else {
-        return [UIColor blackColor];
-    }
+    return FLEXDynamicColor(labelColor, blackColor);
 }
 
 + (UIColor *)borderColor {
@@ -93,19 +85,17 @@
 }
 
 + (UIColor *)toolbarItemHighlightedColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor quaternaryLabelColor];
-    } else {
-        return [UIColor colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.6];
-    }
+    return FLEXDynamicColor(
+        quaternaryLabelColor,
+        colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.6
+    );
 }
 
 + (UIColor *)toolbarItemSelectedColor {
-    if (@available(iOS 13.0, *)) {
-        return [UIColor secondaryLabelColor];
-    } else {
-        return [UIColor colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.68];
-    }
+    return FLEXDynamicColor(
+        secondaryLabelColor,
+        colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.68
+    );
 }
 
 @end
