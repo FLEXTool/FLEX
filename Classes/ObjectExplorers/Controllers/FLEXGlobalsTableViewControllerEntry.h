@@ -18,9 +18,9 @@ typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewCont
 
 @interface FLEXGlobalsTableViewControllerEntry : NSObject
 
-@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerEntryNameFuture entryNameFuture;
-@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
-@property (nonatomic, readonly, copy) FLEXGlobalsTableViewControllerRowAction rowAction;
+@property (nonatomic, readonly) FLEXGlobalsTableViewControllerEntryNameFuture entryNameFuture;
+@property (nonatomic, readonly) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
+@property (nonatomic, readonly) FLEXGlobalsTableViewControllerRowAction rowAction;
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
 + (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction;
