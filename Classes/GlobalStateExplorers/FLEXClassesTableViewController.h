@@ -7,8 +7,9 @@
 //
 
 #import "FLEXTableViewController.h"
+#import "FLEXGlobalsTableViewControllerEntry.h"
 
-@interface FLEXClassesTableViewController : FLEXTableViewController
+@interface FLEXClassesTableViewController : FLEXTableViewController <FLEXGlobalsTableViewControllerEntry>
 
 @property (nonatomic, copy) NSString *binaryImageName;
 

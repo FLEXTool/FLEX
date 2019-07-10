@@ -86,6 +86,16 @@
     self.searchBarDebounceInterval = kFLEXDebounceForAsyncSearch;
 }
 
+#pragma mark - FLEXGlobalsTableViewControllerEntry
+
++ (NSString *)globalsEntryTitle {
+    return @"📁  File Browser";
+}
+
++ (instancetype)globalsEntryViewController {
+    return [self new];
+}
+
 #pragma mark - Misc
 
 - (void)alert:(NSString *)title message:(NSString *)message {

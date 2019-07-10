@@ -127,6 +127,17 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 }
 
 
+#pragma mark - FLEXGlobalsTableViewControllerEntry
+
++ (NSString *)globalsEntryTitle {
+    return @"💩  Heap Objects";
+}
+
++ (instancetype)globalsEntryViewController {
+    return [self new];
+}
+
+
 #pragma mark - Search bar
 
 - (void)updateSearchResults:(NSString *)newText

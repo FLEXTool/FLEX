@@ -154,6 +154,16 @@
     return headerText;
 }
 
+#pragma mark - FLEXGlobalsTableViewControllerEntry
+
++ (NSString *)globalsEntryTitle {
+    return @"📡  Network History";
+}
+
++ (instancetype)globalsEntryViewController {
+    return [self new];
+}
+
 #pragma mark - Notification Handlers
 
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification

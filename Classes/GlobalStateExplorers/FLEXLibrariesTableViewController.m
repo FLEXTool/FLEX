@@ -40,6 +40,20 @@
 }
 
 
+#pragma mark - FLEXGlobalsTableViewControllerEntry
+
++ (NSString *)globalsEntryTitle {
+    return @"📚  System Libraries";
+}
+
++ (instancetype)globalsEntryViewController {
+    FLEXLibrariesTableViewController *librariesViewController = [self new];
+    librariesViewController.title = [self globalsEntryTitle];
+
+    return librariesViewController;
+}
+
+
 #pragma mark - Binary Images
 
 - (void)loadImageNames

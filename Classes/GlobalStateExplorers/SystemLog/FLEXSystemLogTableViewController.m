@@ -116,6 +116,16 @@
     [self presentViewController:settings animated:YES completion:nil];
 }
 
+#pragma mark - FLEXGlobalsTableViewControllerEntry
+
++ (NSString *)globalsEntryTitle {
+    return @"⚠️  System Log";
+}
+
++ (instancetype)globalsEntryViewController {
+    return [self new];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

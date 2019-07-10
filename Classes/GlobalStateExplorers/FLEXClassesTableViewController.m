@@ -68,6 +68,20 @@
 }
 
 
+#pragma mark - FLEXGlobalsTableViewControllerEntry
+
++ (NSString *)globalsEntryTitle {
+    return [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];
+}
+
++ (instancetype)globalsEntryViewController {
+    FLEXClassesTableViewController *classesViewController = [self new];
+    classesViewController.binaryImageName = [FLEXUtility applicationImageName];
+
+    return classesViewController;
+}
+
+
 #pragma mark - Search bar
 
 - (void)updateSearchResults:(NSString *)searchText
