@@ -591,14 +591,9 @@
 			children = (
 				779B1EBF1C0C4D7C001F5E49 /* DatabaseBrowser */,
 				3A4C94AD1B5B21410088C3F2 /* SystemLog */,
+				C33CF16B22D664E600F9C6C0 /* FileBrowser */,
 				3A4C949B1B5B21410088C3F2 /* FLEXClassesTableViewController.h */,
 				3A4C949C1B5B21410088C3F2 /* FLEXClassesTableViewController.m */,
-				3A4C949D1B5B21410088C3F2 /* FLEXFileBrowserFileOperationController.h */,
-				3A4C949E1B5B21410088C3F2 /* FLEXFileBrowserFileOperationController.m */,
-				3A4C949F1B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h */,
-				3A4C94A01B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m */,
-				3A4C94A11B5B21410088C3F2 /* FLEXFileBrowserTableViewController.h */,
-				3A4C94A21B5B21410088C3F2 /* FLEXFileBrowserTableViewController.m */,
 				3A4C94A31B5B21410088C3F2 /* FLEXGlobalsTableViewController.h */,
 				3A4C94A41B5B21410088C3F2 /* FLEXGlobalsTableViewController.m */,
 				3A4C94A51B5B21410088C3F2 /* FLEXInstancesTableViewController.h */,
@@ -721,6 +716,19 @@
 				94A5151C1C4CA1F10063292F /* FLEXWindow.m */,
 			);
 			path = ExplorerInterface;
+			sourceTree = "<group>";
+		};
+		C33CF16B22D664E600F9C6C0 /* FileBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				3A4C949D1B5B21410088C3F2 /* FLEXFileBrowserFileOperationController.h */,
+				3A4C949E1B5B21410088C3F2 /* FLEXFileBrowserFileOperationController.m */,
+				3A4C949F1B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h */,
+				3A4C94A01B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m */,
+				3A4C94A11B5B21410088C3F2 /* FLEXFileBrowserTableViewController.h */,
+				3A4C94A21B5B21410088C3F2 /* FLEXFileBrowserTableViewController.m */,
+			);
+			path = FileBrowser;
 			sourceTree = "<group>";
 		};
 		C38DF0E722CFE4140077B4AD /* Core */ = {
