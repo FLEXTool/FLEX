@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXTableViewController.h"
 
 @protocol FLEXGlobalsTableViewControllerDelegate;
 
-@interface FLEXGlobalsTableViewController : UITableViewController
+@interface FLEXGlobalsTableViewController : FLEXTableViewController
 
 @property (nonatomic, weak) id <FLEXGlobalsTableViewControllerDelegate> delegate;
 
