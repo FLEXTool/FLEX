@@ -1,5 +1,5 @@
 //
-//  FLEXGlobalsTableViewControllerEntry.h
+//  FLEXGlobalsEntry.h
 //  FLEX
 //
 //  Created by Javier Soto on 7/26/14.
@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLEXTableViewSection.h"
 @class FLEXGlobalsTableViewController;
 
-typedef NSString *(^FLEXGlobalsTableViewControllerEntryNameFuture)(void);
+typedef NSString *(^FLEXGlobalsEntryNameFuture)(void);
 /// Simply return a view controller to be pushed on the navigation stack
 typedef UIViewController *(^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
 /// Do something like present an alert, then use the host
@@ -22,7 +23,7 @@ typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewCont
 /// Previously, the concrete entries relied on "futures" for the view controller and title.
 /// With this protocol, the conforming class itself can act as a future, since the methods
 /// will not be invoked until the title and view controller / row action are needed.
-@protocol FLEXGlobalsTableViewControllerEntry <NSObject>
+@protocol FLEXGlobalsEntry <NSObject>
 
 + (NSString *)globalsEntryTitle;
 
@@ -34,23 +35,23 @@ typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewCont
 
 @end
 
-@interface FLEXGlobalsTableViewControllerEntry : NSObject
+@interface FLEXGlobalsEntry : NSObject <FLEXPatternMatching>
 
-@property (nonatomic, readonly) FLEXGlobalsTableViewControllerEntryNameFuture entryNameFuture;
+@property (nonatomic, readonly) FLEXGlobalsEntryNameFuture entryNameFuture;
 @property (nonatomic, readonly) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
 @property (nonatomic, readonly) FLEXGlobalsTableViewControllerRowAction rowAction;
 
-+ (instancetype)entryWithEntry:(Class<FLEXGlobalsTableViewControllerEntry>)entry;
-+ (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
-+ (instancetype)entryWithNameFuture:(FLEXGlobalsTableViewControllerEntryNameFuture)nameFuture action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction;
++ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)entry;
++ (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
++ (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction;
 
 @end
 
 
-@interface NSObject (FLEXGlobalsTableViewControllerEntry)
+@interface NSObject (FLEXGlobalsEntry)
 
-/// @return The result of passing self to +[FLEXGlobalsTableViewControllerEntry entryWithEntry:]
-/// if the class conforms to FLEXGlobalsTableViewControllerEntry, else, nil.
-+ (FLEXGlobalsTableViewControllerEntry *)flex_concreteGlobalsEntry;
+/// @return The result of passing self to +[FLEXGlobalsEntry entryWithEntry:]
+/// if the class conforms to FLEXGlobalsEntry, else, nil.
++ (FLEXGlobalsEntry *)flex_concreteGlobalsEntry;
 
 @end

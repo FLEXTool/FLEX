@@ -9,7 +9,7 @@
 #import "FLEXManager.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXWindow.h"
-#import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXGlobalsEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXNetworkObserver.h"
@@ -24,7 +24,7 @@
 @property (nonatomic, strong) FLEXWindow *explorerWindow;
 @property (nonatomic, strong) FLEXExplorerViewController *explorerViewController;
 
-@property (nonatomic, readonly, strong) NSMutableArray<FLEXGlobalsTableViewControllerEntry *> *userGlobalEntries;
+@property (nonatomic, readonly, strong) NSMutableArray<FLEXGlobalsEntry *> *userGlobalEntries;
 @property (nonatomic, readonly, strong) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
 
 @end
@@ -263,7 +263,7 @@
     NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
 
     entryName = entryName.copy;
-    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
+    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString *{
         return entryName;
     } viewControllerFuture:^UIViewController *{
         return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
@@ -279,7 +279,7 @@
     NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
 
     entryName = entryName.copy;
-    FLEXGlobalsTableViewControllerEntry *entry = [FLEXGlobalsTableViewControllerEntry entryWithNameFuture:^NSString *{
+    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString *{
         return entryName;
     } viewControllerFuture:^UIViewController *{
         UIViewController *viewController = viewControllerFutureBlock();

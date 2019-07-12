@@ -7,8 +7,8 @@
 //
 
 #import "FLEXTableViewController.h"
-#import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXGlobalsEntry.h"
 
-@interface FLEXNetworkHistoryTableViewController : FLEXTableViewController <FLEXGlobalsTableViewControllerEntry>
+@interface FLEXNetworkHistoryTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
 @end

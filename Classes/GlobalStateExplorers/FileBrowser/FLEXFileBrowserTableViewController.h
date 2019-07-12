@@ -7,10 +7,10 @@
 //
 
 #import "FLEXTableViewController.h"
-#import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXGlobalsEntry.h"
 #import "FLEXFileBrowserSearchOperation.h"
 
-@interface FLEXFileBrowserTableViewController : FLEXTableViewController <FLEXGlobalsTableViewControllerEntry>
+@interface FLEXFileBrowserTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
 - (id)initWithPath:(NSString *)path;
 

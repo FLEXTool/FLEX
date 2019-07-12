@@ -40,7 +40,7 @@
 }
 
 
-#pragma mark - FLEXGlobalsTableViewControllerEntry
+#pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle {
     return @"📚  System Libraries";

@@ -68,7 +68,7 @@
     [self.navigationController pushViewController:cookieViewController animated:YES];
 }
 
-#pragma mark - FLEXGlobalsTableViewControllerEntry
+#pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle {
     return @"🍪  Cookies";

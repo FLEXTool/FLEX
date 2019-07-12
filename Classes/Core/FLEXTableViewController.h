@@ -29,6 +29,11 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// 
 /// Setting this to YES will initialize searchController.
 @property (nonatomic) BOOL showsSearchBar;
+/// Defaults to NO.
+///
+/// Setting this to YES will make the search bar appear whenever the view appears.
+/// Otherwise, iOS will only show the search bar when you scroll up.
+@property (nonatomic) BOOL hideSearchBarInitially;
 
 /// nil unless showsSearchBar is set to YES.
 /// 

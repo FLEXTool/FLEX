@@ -16,11 +16,12 @@
 #import "FLEXLiveObjectsTableViewController.h"
 #import "FLEXFileBrowserTableViewController.h"
 #import "FLEXCookiesTableViewController.h"
-#import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXGlobalsEntry.h"
 #import "FLEXManager+Private.h"
 #import "FLEXSystemLogTableViewController.h"
 #import "FLEXNetworkHistoryTableViewController.h"
 #import "FLEXAddressExplorerCoordinator.h"
+#import "FLEXTableViewSection.h"
 
 static __weak UIWindow *s_applicationWindow = nil;
 
@@ -60,7 +61,8 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 @interface FLEXGlobalsTableViewController ()
 
-@property (nonatomic, readonly) NSArray<NSArray<FLEXGlobalsTableViewControllerEntry *> *> *sections;
+@property (nonatomic, readonly) NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *sections;
+@property (nonatomic, copy) NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *filteredSections;
 
 @end
 
@@ -83,7 +85,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     }
 }
 
-+ (FLEXGlobalsTableViewControllerEntry *)globalsEntryForRow:(FLEXGlobalsRow)row
++ (FLEXGlobalsEntry *)globalsEntryForRow:(FLEXGlobalsRow)row
 {
     switch (row) {
         case FLEXGlobalsRowAppClasses:
@@ -103,7 +105,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
         case FLEXGlobalsRowNetworkHistory:
             return [FLEXNetworkHistoryTableViewController flex_concreteGlobalsEntry];
         case FLEXGlobalsRowAppDelegate:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return [NSString stringWithFormat:@"👉  %@", [[UIApplication sharedApplication].delegate class]];
                 } viewControllerFuture:^UIViewController *{
@@ -112,7 +114,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 }
             ];
         case FLEXGlobalsRowRootViewController:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return [NSString stringWithFormat:@"🌴  %@", [s_applicationWindow.rootViewController class]];
                 } viewControllerFuture:^UIViewController *{
@@ -121,7 +123,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 }
             ];
         case FLEXGlobalsRowUserDefaults:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return @"🚶  +[NSUserDefaults standardUserDefaults]";
                 } viewControllerFuture:^UIViewController *{
@@ -130,7 +132,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 }
             ];
         case FLEXGlobalsRowMainBundle:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return @"📦  +[NSBundle mainBundle]";
                 } viewControllerFuture:^UIViewController *{
@@ -139,7 +141,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 }
             ];
         case FLEXGlobalsRowApplication:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return @"💾  +[UIApplication sharedApplication]";
                 } viewControllerFuture:^UIViewController *{
@@ -148,7 +150,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 }
             ];
         case FLEXGlobalsRowKeyWindow:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return @"🔑  -[UIApplication keyWindow]";
                 } viewControllerFuture:^UIViewController *{
@@ -156,7 +158,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
                 }
             ];
         case FLEXGlobalsRowMainScreen:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return @"💻  +[UIScreen mainScreen]";
                 } viewControllerFuture:^UIViewController *{
@@ -166,7 +168,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
             ];
 
         case FLEXGlobalsRowCurrentDevice:
-            return [FLEXGlobalsTableViewControllerEntry
+            return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
                     return @"📱  +[UIDevice currentDevice]";
                 } viewControllerFuture:^UIViewController *{
@@ -180,31 +182,45 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     }
 }
 
-+ (NSArray<NSArray<FLEXGlobalsTableViewControllerEntry *> *> *)defaultGlobalSections
++ (NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *)defaultGlobalSections
 {
-    return @[
-        @[ // FLEXGlobalsSectionProcess
-            [self globalsEntryForRow:FLEXGlobalsRowNetworkHistory],
-            [self globalsEntryForRow:FLEXGlobalsRowSystemLog],
-            [self globalsEntryForRow:FLEXGlobalsRowLiveObjects],
-            [self globalsEntryForRow:FLEXGlobalsRowAddressInspector],
-            [self globalsEntryForRow:FLEXGlobalsRowSystemLibraries],
-            [self globalsEntryForRow:FLEXGlobalsRowAppClasses],
-        ],
-        @[ // FLEXGlobalsSectionAppShortcuts
-            [self globalsEntryForRow:FLEXGlobalsRowMainBundle],
-            [self globalsEntryForRow:FLEXGlobalsRowUserDefaults],
-            [self globalsEntryForRow:FLEXGlobalsRowApplication],
-            [self globalsEntryForRow:FLEXGlobalsRowAppDelegate],
-            [self globalsEntryForRow:FLEXGlobalsRowKeyWindow],
-            [self globalsEntryForRow:FLEXGlobalsRowRootViewController],
-            [self globalsEntryForRow:FLEXGlobalsRowCookies],
-        ],
-        @[ // FLEXGlobalsSectionMisc
-            [self globalsEntryForRow:FLEXGlobalsRowMainScreen],
-            [self globalsEntryForRow:FLEXGlobalsRowCurrentDevice],
-        ]
-    ];
+    static NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *sections = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSArray *rows = @[
+            @[
+                [self globalsEntryForRow:FLEXGlobalsRowNetworkHistory],
+                [self globalsEntryForRow:FLEXGlobalsRowSystemLog],
+                [self globalsEntryForRow:FLEXGlobalsRowLiveObjects],
+                [self globalsEntryForRow:FLEXGlobalsRowAddressInspector],
+                [self globalsEntryForRow:FLEXGlobalsRowSystemLibraries],
+                [self globalsEntryForRow:FLEXGlobalsRowAppClasses],
+            ],
+            @[ // FLEXGlobalsSectionAppShortcuts
+                [self globalsEntryForRow:FLEXGlobalsRowMainBundle],
+                [self globalsEntryForRow:FLEXGlobalsRowUserDefaults],
+                [self globalsEntryForRow:FLEXGlobalsRowApplication],
+                [self globalsEntryForRow:FLEXGlobalsRowAppDelegate],
+                [self globalsEntryForRow:FLEXGlobalsRowKeyWindow],
+                [self globalsEntryForRow:FLEXGlobalsRowRootViewController],
+                [self globalsEntryForRow:FLEXGlobalsRowCookies],
+            ],
+            @[ // FLEXGlobalsSectionMisc
+                [self globalsEntryForRow:FLEXGlobalsRowMainScreen],
+                [self globalsEntryForRow:FLEXGlobalsRowCurrentDevice],
+            ]
+        ];
+        
+        NSMutableArray *tmp = [NSMutableArray array];
+        for (NSInteger i = 0; i < FLEXGlobalsSectionCount - 1; i++) { // Skip custom
+            NSString *title = [self globalsTitleForSection:i];
+            [tmp addObject:[FLEXTableViewSection section:i title:title rows:rows[i]]];
+        }
+        
+        sections = tmp.copy;
+    });
+    
+    return sections;
 }
 
 #pragma mark - Public
@@ -221,15 +237,48 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     [super viewDidLoad];
 
     self.title = @"💪  FLEX";
+    self.showsSearchBar = YES;
+    self.hideSearchBarInitially = YES;
+    self.searchBarDebounceInterval = kFLEXDebounceInstant;
 
     // Table view data
     _sections = [[self class] defaultGlobalSections];
     if ([FLEXManager sharedManager].userGlobalEntries.count) {
-        _sections = [_sections arrayByAddingObject:[FLEXManager sharedManager].userGlobalEntries];
+        // Make custom section
+        NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
+        FLEXTableViewSection *custom = [FLEXTableViewSection
+            section:FLEXGlobalsSectionCustom
+            title:title
+            rows:[FLEXManager sharedManager].userGlobalEntries
+        ];
+        _sections = [_sections arrayByAddingObject:custom];
     }
 
     // Done button
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed:)];
+}
+
+#pragma mark - Search Bar
+
+- (void)updateSearchResults:(NSString *)newText {
+    if (!newText.length) {
+        self.filteredSections = nil;
+        [self.tableView reloadData];
+        return;
+    }
+
+    // Sections are a map of index to rows, since empty sections are omitted
+    NSMutableArray *filteredSections = [NSMutableArray array];
+
+    [self.sections enumerateObjectsUsingBlock:^(FLEXTableViewSection<FLEXGlobalsEntry *> *section, NSUInteger idx, BOOL *stop) {
+        section = [section newSectionWithRowsMatchingQuery:newText];
+        if (section) {
+            [filteredSections addObject:section];
+        }
+    }];
+
+    self.filteredSections = filteredSections.copy;
+    [self.tableView reloadData];
 }
 
 #pragma mark - Misc
@@ -241,15 +290,27 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 #pragma mark - Table Data Helpers
 
-- (FLEXGlobalsTableViewControllerEntry *)globalEntryAtIndexPath:(NSIndexPath *)indexPath
+- (FLEXGlobalsEntry *)globalEntryAtIndexPath:(NSIndexPath *)indexPath
 {
-    return self.sections[indexPath.section][indexPath.row];
+    if (self.filteredSections) {
+        return self.filteredSections[indexPath.section][indexPath.row];
+    } else {
+        return self.sections[indexPath.section][indexPath.row];
+    }
+}
+
+- (NSString *)titleForSection:(NSInteger)section
+{
+    if (self.filteredSections) {
+        return self.filteredSections[section].title;
+    } else {
+        return self.sections[section].title;
+    }
 }
 
 - (NSString *)titleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
-
+    FLEXGlobalsEntry *entry = [self globalEntryAtIndexPath:indexPath];
     return entry.entryNameFuture();
 }
 
@@ -257,12 +318,16 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.sections.count;
+    return self.filteredSections ? self.filteredSections.count : self.sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.sections[section].count;
+    if (self.filteredSections) {
+        return self.filteredSections[section].count;
+    } else {
+        return self.sections[section].count;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -282,14 +347,14 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [[self class] globalsTitleForSection:section];
+    return [self titleForSection:section];
 }
 
 #pragma mark - Table View Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXGlobalsTableViewControllerEntry *entry = [self globalEntryAtIndexPath:indexPath];
+    FLEXGlobalsEntry *entry = [self globalEntryAtIndexPath:indexPath];
     if (entry.viewControllerFuture) {
         [self.navigationController pushViewController:entry.viewControllerFuture() animated:YES];
     } else {

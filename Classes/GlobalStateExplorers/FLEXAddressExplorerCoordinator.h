@@ -6,8 +6,8 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXGlobalsTableViewControllerEntry.h"
+#import "FLEXGlobalsEntry.h"
 
-@interface FLEXAddressExplorerCoordinator : NSObject <FLEXGlobalsTableViewControllerEntry>
+@interface FLEXAddressExplorerCoordinator : NSObject <FLEXGlobalsEntry>
 
 @end

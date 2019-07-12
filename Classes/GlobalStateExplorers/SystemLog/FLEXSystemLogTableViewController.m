@@ -116,7 +116,7 @@
     [self presentViewController:settings animated:YES completion:nil];
 }
 
-#pragma mark - FLEXGlobalsTableViewControllerEntry
+#pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle {
     return @"⚠️  System Log";

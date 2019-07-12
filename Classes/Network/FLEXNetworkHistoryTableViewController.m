@@ -154,7 +154,7 @@
     return headerText;
 }
 
-#pragma mark - FLEXGlobalsTableViewControllerEntry
+#pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle {
     return @"📡  Network History";

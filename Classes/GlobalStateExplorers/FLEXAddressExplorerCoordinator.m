@@ -20,7 +20,7 @@
 
 @implementation FLEXAddressExplorerCoordinator
 
-#pragma mark - FLEXGlobalsTableViewControllerEntry
+#pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle {
     return @"🔎 Address Explorer";

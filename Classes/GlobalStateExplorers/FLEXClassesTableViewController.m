@@ -68,7 +68,7 @@
 }
 
 
-#pragma mark - FLEXGlobalsTableViewControllerEntry
+#pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle {
     return [NSString stringWithFormat:@"📕  %@ Classes", [FLEXUtility applicationName]];
