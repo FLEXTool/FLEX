@@ -23,26 +23,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsSection) {
     FLEXGlobalsSectionCount
 };
 
-typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
-    FLEXGlobalsRowNetworkHistory,
-    FLEXGlobalsRowSystemLog,
-    FLEXGlobalsRowLiveObjects,
-    FLEXGlobalsRowAddressInspector,
-    FLEXGlobalsRowFileBrowser,
-    FLEXGlobalsRowCookies,
-    FLEXGlobalsRowSystemLibraries,
-    FLEXGlobalsRowAppClasses,
-    FLEXGlobalsRowAppDelegate,
-    FLEXGlobalsRowRootViewController,
-    FLEXGlobalsRowUserDefaults,
-    FLEXGlobalsRowMainBundle,
-    FLEXGlobalsRowApplication,
-    FLEXGlobalsRowKeyWindow,
-    FLEXGlobalsRowMainScreen,
-    FLEXGlobalsRowCurrentDevice,
-    FLEXGlobalsRowCount
-};
-
 @interface FLEXGlobalsTableViewController : FLEXTableViewController
 
 @property (nonatomic, weak) id <FLEXGlobalsTableViewControllerDelegate> delegate;

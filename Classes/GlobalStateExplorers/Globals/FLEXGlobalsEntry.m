@@ -10,21 +10,21 @@
 
 @implementation FLEXGlobalsEntry
 
-+ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)cls
++ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)cls row:(FLEXGlobalsRow)row
 {
     NSParameterAssert(cls);
     NSParameterAssert(
-        [cls respondsToSelector:@selector(globalsEntryViewController)] ||
-        [cls respondsToSelector:@selector(globalsEntryRowAction)]
+        [cls respondsToSelector:@selector(globalsEntryViewController:)] ||
+        [cls respondsToSelector:@selector(globalsEntryRowAction:)]
     );
 
     FLEXGlobalsEntry *entry = [self new];
-    entry->_entryNameFuture = ^{ return [cls globalsEntryTitle]; };
+    entry->_entryNameFuture = ^{ return [cls globalsEntryTitle:row]; };
 
-    if ([cls respondsToSelector:@selector(globalsEntryViewController)]) {
-        entry->_viewControllerFuture = ^{ return [cls globalsEntryViewController]; };
+    if ([cls respondsToSelector:@selector(globalsEntryViewController:)]) {
+        entry->_viewControllerFuture = ^{ return [cls globalsEntryViewController:row]; };
     } else {
-        entry->_rowAction = [cls globalsEntryRowAction];
+        entry->_rowAction = [cls globalsEntryRowAction:row];
     }
 
     return entry;
@@ -69,9 +69,9 @@
 
 @implementation NSObject (FLEXGlobalsEntry)
 
-+ (FLEXGlobalsEntry *)flex_concreteGlobalsEntry {
++ (FLEXGlobalsEntry *)flex_concreteGlobalsEntry:(FLEXGlobalsRow)row {
     if ([self conformsToProtocol:@protocol(FLEXGlobalsEntry)]) {
-        return [FLEXGlobalsEntry entryWithEntry:self];
+        return [FLEXGlobalsEntry entryWithEntry:self row:row];
     }
 
     return nil;

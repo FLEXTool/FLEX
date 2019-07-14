@@ -118,11 +118,11 @@
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle {
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
     return @"⚠️  System Log";
 }
 
-+ (instancetype)globalsEntryViewController {
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
     return [self new];
 }
 

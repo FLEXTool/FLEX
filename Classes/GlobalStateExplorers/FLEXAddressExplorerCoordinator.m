@@ -22,11 +22,11 @@
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle {
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
     return @"🔎 Address Explorer";
 }
 
-+ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction {
++ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
     return ^(FLEXGlobalsTableViewController *host) {
         NSString *title = @"Explore Object at Address";
         NSString *message = @"Paste a hexadecimal address below, starting with '0x'. "

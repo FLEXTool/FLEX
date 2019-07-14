@@ -88,12 +88,20 @@
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle {
-    return @"📁  File Browser";
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
+    switch (row) {
+        case FLEXGlobalsRowBrowseBundle: return @"📁  Browse Bundle Directory";
+        case FLEXGlobalsRowBrowseContainer: return @"📁  Browse Container Directory";
+        default: return nil;
+    }
 }
 
-+ (instancetype)globalsEntryViewController {
-    return [self new];
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
+    switch (row) {
+        case FLEXGlobalsRowBrowseBundle: return [[self alloc] initWithPath:NSBundle.mainBundle.bundlePath];
+        case FLEXGlobalsRowBrowseContainer: return [[self alloc] initWithPath:NSHomeDirectory()];
+        default: return [self new];
+    }
 }
 
 #pragma mark - Misc

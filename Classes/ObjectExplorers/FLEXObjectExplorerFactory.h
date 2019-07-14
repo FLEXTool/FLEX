@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "FLEXGlobalsEntry.h"
 
 @class FLEXObjectExplorerViewController;
 
-@interface FLEXObjectExplorerFactory : NSObject
+@interface FLEXObjectExplorerFactory : NSObject <FLEXGlobalsEntry>
 
 + (FLEXObjectExplorerViewController *)explorerViewControllerForObject:(id)object;
 

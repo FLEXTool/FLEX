@@ -55,30 +55,22 @@ static __weak UIWindow *s_applicationWindow = nil;
 {
     switch (row) {
         case FLEXGlobalsRowAppClasses:
-            return [FLEXClassesTableViewController flex_concreteGlobalsEntry];
+            return [FLEXClassesTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowAddressInspector:
-            return [FLEXAddressExplorerCoordinator flex_concreteGlobalsEntry];
+            return [FLEXAddressExplorerCoordinator flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowSystemLibraries:
-            return [FLEXLibrariesTableViewController flex_concreteGlobalsEntry];
+            return [FLEXLibrariesTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowLiveObjects:
-            return [FLEXLiveObjectsTableViewController flex_concreteGlobalsEntry];
+            return [FLEXLiveObjectsTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowCookies:
-            return [FLEXCookiesTableViewController flex_concreteGlobalsEntry];
-        case FLEXGlobalsRowFileBrowser:
-            return [FLEXFileBrowserTableViewController flex_concreteGlobalsEntry];
+            return [FLEXCookiesTableViewController flex_concreteGlobalsEntry:row];
+        case FLEXGlobalsRowBrowseBundle:
+        case FLEXGlobalsRowBrowseContainer:
+            return [FLEXFileBrowserTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowSystemLog:
-            return [FLEXSystemLogTableViewController flex_concreteGlobalsEntry];
+            return [FLEXSystemLogTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowNetworkHistory:
-            return [FLEXNetworkHistoryTableViewController flex_concreteGlobalsEntry];
-        case FLEXGlobalsRowAppDelegate:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return [NSString stringWithFormat:@"👉  %@", [[UIApplication sharedApplication].delegate class]];
-                } viewControllerFuture:^UIViewController *{
-                    id<UIApplicationDelegate> appDelegate = [UIApplication sharedApplication].delegate;
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:appDelegate];
-                }
-            ];
+            return [FLEXNetworkHistoryTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowRootViewController:
             return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
@@ -86,33 +78,6 @@ static __weak UIWindow *s_applicationWindow = nil;
                 } viewControllerFuture:^UIViewController *{
                     UIViewController *rootViewController = s_applicationWindow.rootViewController;
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:rootViewController];
-                }
-            ];
-        case FLEXGlobalsRowUserDefaults:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return @"🚶  +[NSUserDefaults standardUserDefaults]";
-                } viewControllerFuture:^UIViewController *{
-                    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:standardUserDefaults];
-                }
-            ];
-        case FLEXGlobalsRowMainBundle:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return @"📦  +[NSBundle mainBundle]";
-                } viewControllerFuture:^UIViewController *{
-                    NSBundle *mainBundle = [NSBundle mainBundle];
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:mainBundle];
-                }
-            ];
-        case FLEXGlobalsRowApplication:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return @"💾  +[UIApplication sharedApplication]";
-                } viewControllerFuture:^UIViewController *{
-                    UIApplication *sharedApplication = [UIApplication sharedApplication];
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:sharedApplication];
                 }
             ];
         case FLEXGlobalsRowKeyWindow:
@@ -123,25 +88,15 @@ static __weak UIWindow *s_applicationWindow = nil;
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:s_applicationWindow];
                 }
             ];
+        case FLEXGlobalsRowProcessInfo:
+        case FLEXGlobalsRowAppDelegate:
+        case FLEXGlobalsRowUserDefaults:
+        case FLEXGlobalsRowMainBundle:
+        case FLEXGlobalsRowApplication:
         case FLEXGlobalsRowMainScreen:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return @"💻  +[UIScreen mainScreen]";
-                } viewControllerFuture:^UIViewController *{
-                    UIScreen *mainScreen = [UIScreen mainScreen];
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:mainScreen];
-                }
-            ];
-
         case FLEXGlobalsRowCurrentDevice:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return @"📱  +[UIDevice currentDevice]";
-                } viewControllerFuture:^UIViewController *{
-                    UIDevice *currentDevice = [UIDevice currentDevice];
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:currentDevice];
-                }
-            ];
+        case FLEXGlobalsRowPasteboard:
+            return [FLEXObjectExplorerFactory flex_concreteGlobalsEntry:row];
 
         default:
             @throw NSInternalInconsistencyException;
@@ -155,6 +110,7 @@ static __weak UIWindow *s_applicationWindow = nil;
     dispatch_once(&onceToken, ^{
         NSArray *rows = @[
             @[
+                [self globalsEntryForRow:FLEXGlobalsRowProcessInfo],
                 [self globalsEntryForRow:FLEXGlobalsRowNetworkHistory],
                 [self globalsEntryForRow:FLEXGlobalsRowSystemLog],
                 [self globalsEntryForRow:FLEXGlobalsRowLiveObjects],
@@ -170,8 +126,11 @@ static __weak UIWindow *s_applicationWindow = nil;
                 [self globalsEntryForRow:FLEXGlobalsRowKeyWindow],
                 [self globalsEntryForRow:FLEXGlobalsRowRootViewController],
                 [self globalsEntryForRow:FLEXGlobalsRowCookies],
+                [self globalsEntryForRow:FLEXGlobalsRowBrowseBundle],
+                [self globalsEntryForRow:FLEXGlobalsRowBrowseContainer],
             ],
             @[ // FLEXGlobalsSectionMisc
+                [self globalsEntryForRow:FLEXGlobalsRowPasteboard],
                 [self globalsEntryForRow:FLEXGlobalsRowMainScreen],
                 [self globalsEntryForRow:FLEXGlobalsRowCurrentDevice],
             ]

@@ -42,13 +42,13 @@
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle {
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
     return @"📚  System Libraries";
 }
 
-+ (instancetype)globalsEntryViewController {
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
     FLEXLibrariesTableViewController *librariesViewController = [self new];
-    librariesViewController.title = [self globalsEntryTitle];
+    librariesViewController.title = [self globalsEntryTitle:row];
 
     return librariesViewController;
 }
