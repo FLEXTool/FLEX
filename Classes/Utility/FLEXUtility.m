@@ -375,6 +375,19 @@
     return inflatedData;
 }
 
++ (NSArray *)map:(NSArray *)array block:(id(^)(id obj, NSUInteger idx))mapFunc
+{
+    NSMutableArray *map = [NSMutableArray new];
+    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        id ret = mapFunc(obj, idx);
+        if (ret) {
+            [map addObject:ret];
+        }
+    }];
+
+    return map;
+}
+
 + (NSArray<UIWindow *> *)allWindows
 {
     BOOL includeInternalWindows = YES;

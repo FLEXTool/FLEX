@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class FLEXScopeCarousel;
 
 typedef CGFloat FLEXDebounceInterval;
 /// No delay, all events delivered
@@ -26,8 +27,17 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 - (id)init;
 
 /// Defaults to NO.
+///
+/// Setting this to YES will initialize the carousel and the view.
+@property (nonatomic) BOOL showsCarousel;
+/// A horizontally scrolling list with functionality similar to
+/// that of a search bar's scope bar. You'd want to use this when
+/// you have potentially more than 4 scope options.
+@property (nonatomic) FLEXScopeCarousel *carousel;
+
+/// Defaults to NO.
 /// 
-/// Setting this to YES will initialize searchController.
+/// Setting this to YES will initialize searchController and the view.
 @property (nonatomic) BOOL showsSearchBar;
 /// Defaults to NO.
 ///
@@ -64,7 +74,8 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// searchBar manually.
 @property (nonatomic) BOOL automaticallyShowsSearchBarCancelButton;
 
-/// self.searchController.searchBar.selectedScopeButtonIndex
+/// If using the scope bar, self.searchController.searchBar.selectedScopeButtonIndex.
+/// Otherwise, this is the selected index of the carousel, or NSNotFound if using neither.
 @property (nonatomic, readonly) NSInteger selectedScope;
 /// self.searchController.searchBar.text
 @property (nonatomic, readonly) NSString *searchText;

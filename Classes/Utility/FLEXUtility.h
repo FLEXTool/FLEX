@@ -54,6 +54,10 @@
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
 
+/// Actually more like flatmap, but it seems like the objc way to allow returning nil to omit objects.
+/// So, return nil from the block to omit objects, and return an object to include it in the new array.
++ (NSArray *)map:(NSArray *)array block:(id(^)(id obj, NSUInteger idx))mapFunc;
+
 + (NSArray<UIWindow *> *)allWindows;
 
 + (void)alert:(NSString *)title message:(NSString *)message from:(UIViewController *)viewController;

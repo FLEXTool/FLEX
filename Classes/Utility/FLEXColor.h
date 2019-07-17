@@ -28,11 +28,13 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIColor *)deemphasizedTextColor;
 
 // UI element colors
++ (UIColor *)tintColor;
 + (UIColor *)scrollViewBackgroundColor;
 + (UIColor *)iconColor;
 + (UIColor *)borderColor;
 + (UIColor *)toolbarItemHighlightedColor;
 + (UIColor *)toolbarItemSelectedColor;
++ (UIColor *)hairlineColor;
 
 @end
 

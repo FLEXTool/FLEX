@@ -88,6 +88,17 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return returnedObjectOrNil;
 }
 
++ (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass
+{
+    NSMutableArray<Class> *superClasses = [NSMutableArray new];
+    id cls = [objectOrClass class];
+    do {
+        [superClasses addObject:cls];
+    } while ((cls = [cls superclass]));
+
+    return superClasses;
+}
+
 #pragma mark - Property Helpers (Public)
 
 + (NSString *)prettyNameForProperty:(objc_property_t)property

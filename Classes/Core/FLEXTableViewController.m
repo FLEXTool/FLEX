@@ -7,6 +7,9 @@
 //
 
 #import "FLEXTableViewController.h"
+#import "FLEXScopeCarousel.h"
+#import "FLEXTableView.h"
+#import <objc/runtime.h>
 
 @interface Block : NSObject
 - (void)invoke;
@@ -19,6 +22,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 @interface FLEXTableViewController ()
 @property (nonatomic) NSTimer *debounceTimer;
+
 @end
 
 @implementation FLEXTableViewController
@@ -69,8 +73,40 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
+- (void)setShowsCarousel:(BOOL)showsCarousel {
+    if (_showsCarousel == showsCarousel) return;
+    _showsCarousel = showsCarousel;
+
+    _carousel = ({
+        __weak __typeof(self) weakSelf = self;
+
+        FLEXScopeCarousel *carousel = [FLEXScopeCarousel new];
+        carousel.selectedIndexChangedAction = ^(NSInteger idx) {
+            __typeof(self) self = weakSelf;
+            [self updateSearchResults:self.searchText];
+        };
+
+        self.tableView.tableHeaderView = carousel;
+        [self.tableView layoutIfNeeded];
+        // UITableView won't update the header size unless you reset the header view
+        [carousel registerBlockForDynamicTypeChanges:^(FLEXScopeCarousel *carousel) {
+            __typeof(self) self = weakSelf;
+            self.tableView.tableHeaderView = carousel;
+            [self.tableView layoutIfNeeded];
+        }];
+
+        carousel;
+    });
+}
+
 - (NSInteger)selectedScope {
-    return self.searchController.searchBar.selectedScopeButtonIndex;
+    if (self.searchController.searchBar.showsScopeBar) {
+        return self.searchController.searchBar.selectedScopeButtonIndex;
+    } else if (self.showsCarousel) {
+        return self.carousel.selectedIndex;
+    } else {
+        return NSNotFound;
+    }
 }
 
 - (NSString *)searchText {

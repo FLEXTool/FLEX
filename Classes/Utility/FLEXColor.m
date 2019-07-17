@@ -69,6 +69,18 @@
 
 #pragma mark - UI Element Colors
 
++ (UIColor *)tintColor {
+    #if FLEX_AT_LEAST_IOS13_SDK
+    if (@available(iOS 13, *)) {
+        return [UIColor systemBlueColor];
+    } else {
+        return [UIApplication sharedApplication].keyWindow.tintColor;
+    }
+    #else
+    return [UIApplication sharedApplication].keyWindow.tintColor;
+    #endif
+}
+
 + (UIColor *)scrollViewBackgroundColor {
     return FLEXDynamicColor(
         systemGroupedBackgroundColor,
@@ -96,6 +108,10 @@
         secondaryLabelColor,
         colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.68
     );
+}
+
++ (UIColor *)hairlineColor {
+    return FLEXDynamicColor(systemGrayColor, grayColor);
 }
 
 @end

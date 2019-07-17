@@ -10,10 +10,24 @@
 #import "FLEXSubtitleTableViewCell.h"
 #import "FLEXMultilineTableViewCell.h"
 
+@interface UITableView (Private)
+- (CGFloat)_heightForHeaderInSection:(NSInteger)section;
+@end
+
 @implementation FLEXTableView
 
+- (CGFloat)_heightForHeaderInSection:(NSInteger)section {
+    CGFloat height = [super _heightForHeaderInSection:section];
+    if (section == 0 && self.tableHeaderView) {
+        return height - self.tableHeaderView.frame.size.height + 8;
+    }
+
+    return height;
+}
+
 - (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style
-{    self = [super initWithFrame:frame style:style];
+{
+    self = [super initWithFrame:frame style:style];
     if (self) {
         [self registerCells:@{
             self.defaultReuseIdentifier: [FLEXTableViewCell class],
@@ -26,17 +40,20 @@
 }
 
 - (void)registerCells:(NSDictionary<NSString*,Class> *)registrationMapping
-{    [registrationMapping enumerateKeysAndObjectsUsingBlock:^(NSString *identifier, Class cellClass, BOOL *stop) {
+{
+    [registrationMapping enumerateKeysAndObjectsUsingBlock:^(NSString *identifier, Class cellClass, BOOL *stop) {
         [self registerClass:cellClass forCellReuseIdentifier:identifier];
     }];
 }
 
 - (NSString *)defaultReuseIdentifier
-{    return @"kFLEXTableViewCellIdentifier";
+{
+    return @"kFLEXTableViewCellIdentifier";
 }
 
 - (NSString *)subtitleReuseIdentifier
-{    return @"kFLEXSubtitleTableViewCellIdentifier";
+{
+    return @"kFLEXSubtitleTableViewCellIdentifier";
 }
 
 - (NSString *)multilineReuseIdentifier

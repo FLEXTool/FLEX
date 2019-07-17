@@ -63,6 +63,10 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 /// Unwraps raw pointers to objects stored in NSValue, and re-boxes C strings into NSStrings.
 + (id)potentiallyUnwrapBoxedPointer:(id)returnedObjectOrNil type:(const FLEXTypeEncoding *)returnType;
 
+/// @return The class hierarchy for the given object or class,
+/// from the current class to the root-most class.
++ (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass;
+
 // Property Helpers
 + (NSString *)prettyNameForProperty:(objc_property_t)property;
 + (NSString *)typeEncodingForProperty:(objc_property_t)property;
