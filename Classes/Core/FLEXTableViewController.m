@@ -26,12 +26,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 #pragma mark - Public
 
 - (id)init {
+#if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
         self = [self initWithStyle:UITableViewStyleInsetGrouped];
     } else {
         self = [self initWithStyle:UITableViewStyleGrouped];
     }
-    
+#else
+    self = [self initWithStyle:UITableViewStyleGrouped];
+#endif
     return self;
 }
 
@@ -73,11 +76,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 }
 
 - (void)setAutomaticallyShowsSearchBarCancelButton:(BOOL)autoShowCancel {
+#if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13, *)) {
         self.searchController.automaticallyShowsCancelButton = autoShowCancel;
     } else {
         _automaticallyShowsSearchBarCancelButton = autoShowCancel;
     }
+#else
+    _automaticallyShowsSearchBarCancelButton = autoShowCancel;
+#endif
 }
 
 - (void)updateSearchResults:(NSString *)newText { }
