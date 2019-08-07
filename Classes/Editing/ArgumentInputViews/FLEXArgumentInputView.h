@@ -26,7 +26,8 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
 /// To populate the filed with an initial value, set this property.
 /// To reteive the value input by the user, access the property.
 /// Primitive types and structs should/will be boxed in NSValue containers.
-/// Concrete subclasses *must* override both the setter and getter for this property.
+/// Concrete subclasses should override both the setter and getter for this property.
+/// Subclasses can call super.inputValue to access a backing store for the value.
 @property (nonatomic) id inputValue;
 
 /// Setting this value to large will make some argument input views increase the size of their input field(s).
