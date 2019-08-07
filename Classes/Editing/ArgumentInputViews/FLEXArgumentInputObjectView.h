@@ -1,5 +1,5 @@
 //
-//  FLEXArgumentInputJSONObjectView.h
+//  FLEXArgumentInputObjectView.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/15/14.
@@ -8,7 +8,6 @@
 
 #import "FLEXArgumentInputTextView.h"
 
-// #warning TODO This is never supported
-@interface FLEXArgumentInputJSONObjectView : FLEXArgumentInputTextView
+@interface FLEXArgumentInputObjectView : FLEXArgumentInputTextView
 
 @end
