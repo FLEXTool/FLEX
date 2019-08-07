@@ -82,21 +82,14 @@
 
 - (NSUInteger)numberOfInputLines
 {
-    NSUInteger numberOfInputLines = 0;
     switch (self.targetSize) {
         case FLEXArgumentInputViewSizeDefault:
-            numberOfInputLines = 2;
-            break;
-            
+            return 2;
         case FLEXArgumentInputViewSizeSmall:
-            numberOfInputLines = 1;
-            break;
-            
+            return 1;
         case FLEXArgumentInputViewSizeLarge:
-            numberOfInputLines = 8;
-            break;
+            return 8;
     }
-    return numberOfInputLines;
 }
 
 - (CGFloat)inputTextViewHeight

@@ -89,17 +89,6 @@
     return NO;
 }
 
-- (void)setInputValue:(id)inputValue
-{
-    // Subclasses should override.
-}
-
-- (id)inputValue
-{
-    // Subclasses should override.
-    return nil;
-}
-
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
     return NO;
