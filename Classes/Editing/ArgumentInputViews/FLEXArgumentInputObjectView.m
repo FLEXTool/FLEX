@@ -9,7 +9,7 @@
 #import "FLEXArgumentInputObjectView.h"
 #import "FLEXRuntimeUtility.h"
 
-static const CGFloat kSegmentInputMargin = 4;
+static const CGFloat kSegmentInputMargin = 10;
 
 typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     FLEXArgInputObjectTypeJSON,
@@ -57,11 +57,12 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
         [self populateTextAreaFromValue:super.inputValue];
     } else {
         // Clear the text field
-        self.inputValue = nil;
+        [self populateTextAreaFromValue:nil];
     }
 }
 
-- (void)setInputType:(FLEXArgInputObjectType)inputType {
+- (void)setInputType:(FLEXArgInputObjectType)inputType
+{
     if (_inputType == inputType) return;
 
     _inputType = inputType;
@@ -73,6 +74,23 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
             break;
         case FLEXArgInputObjectTypeAddress:
             self.targetSize = FLEXArgumentInputViewSizeSmall;
+            break;
+    }
+
+    // Change placeholder
+    switch (inputType) {
+        case FLEXArgInputObjectTypeJSON:
+            self.inputPlaceholderText =
+            @"You can put any valid JSON here, such as a string, number, array, or dictionary:"
+            "\n\"This is a string\""
+            "\n1234"
+            "\n{ \"name\": \"Bob\", \"age\": 47 }"
+            "\n["
+            "\n   1, 2, 3"
+            "\n]";
+            break;
+        case FLEXArgInputObjectTypeAddress:
+            self.inputPlaceholderText = @"0x0000deadb33f";
             break;
     }
 
@@ -106,11 +124,18 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
 
 - (void)populateTextAreaFromValue:(id)value
 {
-    if (self.inputType == FLEXArgInputObjectTypeJSON) {
-        self.inputTextView.text = [FLEXRuntimeUtility editableJSONStringForObject:value];
-    } else if (self.inputType == FLEXArgInputObjectTypeAddress) {
-        self.inputTextView.text = [NSString stringWithFormat:@"%p", value];
+    if (!value) {
+        self.inputTextView.text = nil;
+    } else {
+        if (self.inputType == FLEXArgInputObjectTypeJSON) {
+            self.inputTextView.text = [FLEXRuntimeUtility editableJSONStringForObject:value];
+        } else if (self.inputType == FLEXArgInputObjectTypeAddress) {
+            self.inputTextView.text = [NSString stringWithFormat:@"%p", value];
+        }
     }
+
+    // Delegate methods are not called for programmatic changes
+    [self textViewDidChange:self.inputTextView];
 }
 
 - (CGSize)sizeThatFits:(CGSize)size
@@ -121,24 +146,27 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     return fitSize;
 }
 
-- (void)layoutSubviews {
-    // Must be called first since we are overriding self.inputTextView's position
-    [super layoutSubviews];
-
+- (void)layoutSubviews
+{
     CGFloat segmentHeight = [self.objectTypeSegmentControl sizeThatFits:self.frame.size].height;
-
-    self.inputTextView.frame = CGRectMake(
-        0.0,
-        segmentHeight + self.topInputFieldVerticalLayoutGuide + kSegmentInputMargin,
-        self.inputTextView.frame.size.width,
-        self.inputTextView.frame.size.height
-    );
     self.objectTypeSegmentControl.frame = CGRectMake(
         0.0,
-        self.topInputFieldVerticalLayoutGuide,
+        // Our segmented control is taking the position
+        // of the text view, as far as super is concerned,
+        // and we override this property to be different
+        super.topInputFieldVerticalLayoutGuide,
         self.frame.size.width,
         segmentHeight
     );
+
+    [super layoutSubviews];
+}
+
+- (CGFloat)topInputFieldVerticalLayoutGuide
+{
+    // Our text view is offset from the segmented control
+    CGFloat segmentHeight = [self.objectTypeSegmentControl sizeThatFits:self.frame.size].height;
+    return segmentHeight + super.topInputFieldVerticalLayoutGuide + kSegmentInputMargin;
 }
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
