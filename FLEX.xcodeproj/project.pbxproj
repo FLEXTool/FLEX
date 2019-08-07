@@ -64,8 +64,8 @@
 		3A4C94F21B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C946D1B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m */; };
 		3A4C94F31B5B21410088C3F2 /* FLEXArgumentInputFontView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C946E1B5B21410088C3F2 /* FLEXArgumentInputFontView.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C94F41B5B21410088C3F2 /* FLEXArgumentInputFontView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C946F1B5B21410088C3F2 /* FLEXArgumentInputFontView.m */; };
-		3A4C94F51B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94701B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94711B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.m */; };
+		3A4C94F51B5B21410088C3F2 /* FLEXArgumentInputObjectView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94701B5B21410088C3F2 /* FLEXArgumentInputObjectView.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputObjectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94711B5B21410088C3F2 /* FLEXArgumentInputObjectView.m */; };
 		3A4C94F71B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94721B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C94F81B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94731B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.m */; };
 		3A4C94F91B5B21410088C3F2 /* FLEXArgumentInputNumberView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94741B5B21410088C3F2 /* FLEXArgumentInputNumberView.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -266,8 +266,8 @@
 		3A4C946D1B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputFontsPickerView.m; sourceTree = "<group>"; };
 		3A4C946E1B5B21410088C3F2 /* FLEXArgumentInputFontView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputFontView.h; sourceTree = "<group>"; };
 		3A4C946F1B5B21410088C3F2 /* FLEXArgumentInputFontView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputFontView.m; sourceTree = "<group>"; };
-		3A4C94701B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputJSONObjectView.h; sourceTree = "<group>"; };
-		3A4C94711B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputJSONObjectView.m; sourceTree = "<group>"; };
+		3A4C94701B5B21410088C3F2 /* FLEXArgumentInputObjectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputObjectView.h; sourceTree = "<group>"; };
+		3A4C94711B5B21410088C3F2 /* FLEXArgumentInputObjectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputObjectView.m; sourceTree = "<group>"; };
 		3A4C94721B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputNotSupportedView.h; sourceTree = "<group>"; };
 		3A4C94731B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXArgumentInputNotSupportedView.m; sourceTree = "<group>"; };
 		3A4C94741B5B21410088C3F2 /* FLEXArgumentInputNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXArgumentInputNumberView.h; sourceTree = "<group>"; };
@@ -557,8 +557,8 @@
 				3A4C946D1B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m */,
 				3A4C946E1B5B21410088C3F2 /* FLEXArgumentInputFontView.h */,
 				3A4C946F1B5B21410088C3F2 /* FLEXArgumentInputFontView.m */,
-				3A4C94701B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.h */,
-				3A4C94711B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.m */,
+				3A4C94701B5B21410088C3F2 /* FLEXArgumentInputObjectView.h */,
+				3A4C94711B5B21410088C3F2 /* FLEXArgumentInputObjectView.m */,
 				3A4C94721B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.h */,
 				3A4C94731B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.m */,
 				3A4C94741B5B21410088C3F2 /* FLEXArgumentInputNumberView.h */,
@@ -834,7 +834,7 @@
 				3A4C950D1B5B21410088C3F2 /* FLEXIvarEditorViewController.h in Headers */,
 				3A4C95281B5B21410088C3F2 /* FLEXInstancesTableViewController.h in Headers */,
 				3A4C950F1B5B21410088C3F2 /* FLEXMethodCallingViewController.h in Headers */,
-				3A4C94F51B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.h in Headers */,
+				3A4C94F51B5B21410088C3F2 /* FLEXArgumentInputObjectView.h in Headers */,
 				3A4C94F11B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.h in Headers */,
 				779B1ED61C0C4D7C001F5E49 /* FLEXTableContentViewController.h in Headers */,
 				3A4C94C91B5B21410088C3F2 /* FLEXDefaultsExplorerViewController.h in Headers */,
@@ -1014,7 +1014,7 @@
 				3A4C950E1B5B21410088C3F2 /* FLEXIvarEditorViewController.m in Sources */,
 				C3DC287C223ED5F200F48AA6 /* FLEXOSLogController.m in Sources */,
 				3A4C95101B5B21410088C3F2 /* FLEXMethodCallingViewController.m in Sources */,
-				3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputJSONObjectView.m in Sources */,
+				3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputObjectView.m in Sources */,
 				3A4C94EC1B5B21410088C3F2 /* FLEXImagePreviewViewController.m in Sources */,
 				3A4C94F21B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m in Sources */,
 				7349FD6B22B93CDF00051810 /* FLEXColor.m in Sources */,

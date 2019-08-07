@@ -8,7 +8,7 @@
 
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXArgumentInputView.h"
-#import "FLEXArgumentInputJSONObjectView.h"
+#import "FLEXArgumentInputObjectView.h"
 #import "FLEXArgumentInputNumberView.h"
 #import "FLEXArgumentInputSwitchView.h"
 #import "FLEXArgumentInputStructView.h"
@@ -46,7 +46,7 @@
                                          [FLEXArgumentInputSwitchView class],
                                          [FLEXArgumentInputDateView class],
                                          [FLEXArgumentInputNumberView class],
-                                         [FLEXArgumentInputJSONObjectView class]];
+                                         [FLEXArgumentInputObjectView class]];
     
     // Note that order is important here since multiple subclasses may support the same type.
     // An example is the number subclass and the bool subclass for the type @encode(BOOL).
