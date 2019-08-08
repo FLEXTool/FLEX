@@ -18,7 +18,7 @@ extern CGFloat const kFLEXDebounceForAsyncSearch;
 /// The least frequent, at just over once per second; for I/O or other expensive operations
 extern CGFloat const kFLEXDebounceForExpensiveIO;
 
-@interface FLEXTableViewController : UITableViewController <UISearchResultsUpdating, UISearchControllerDelegate>
+@interface FLEXTableViewController : UITableViewController <UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate>
 
 /// A grouped table view. Inset on iOS 13.
 /// 

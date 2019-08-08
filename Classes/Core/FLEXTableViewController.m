@@ -59,6 +59,8 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.searchController.delegate = (id)self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
     self.searchController.hidesNavigationBarDuringPresentation = NO;
+    /// Not necessary in iOS 13; remove this when iOS 13 is the deployment target
+    self.searchController.searchBar.delegate = self;
     
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = self.searchController;
@@ -171,6 +173,13 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     if (self.automaticallyShowsSearchBarCancelButton) {
         [searchController.searchBar setShowsCancelButton:NO animated:YES];
     }
+}
+
+#pragma mark UISearchBarDelegate
+
+/// Not necessary in iOS 13; remove this when iOS 13 is the deployment target
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+    [self updateSearchResultsForSearchController:self.searchController];
 }
 
 @end
