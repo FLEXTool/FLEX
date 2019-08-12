@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#if !FLEX_AT_LEAST_IOS13_SDK
+@class UIWindowScene;
+#endif
+
 typedef UIViewController *(^FLEXCustomContentViewerFuture)(NSData *data);
 
 @interface FLEXManager : NSObject
@@ -20,6 +24,10 @@ typedef UIViewController *(^FLEXCustomContentViewerFuture)(NSData *data);
 - (void)showExplorer;
 - (void)hideExplorer;
 - (void)toggleExplorer;
+
+/// Use this to present the explorer in a specific scene when the one
+/// it chooses by default is not the one you wish to display it in.
+- (void)showExplorerFromScene:(UIWindowScene *)scene API_AVAILABLE(ios(13.0));
 
 #pragma mark - Network Debugging
 

@@ -7,6 +7,7 @@
 //
 
 #import "FLEXManager.h"
+#import "FLEXUtility.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXWindow.h"
 #import "FLEXGlobalsEntry.h"
@@ -77,6 +78,18 @@
 - (void)showExplorer
 {
     self.explorerWindow.hidden = NO;
+#if FLEX_AT_LEAST_IOS13_SDK
+    if (@available(iOS 13.0, *)) {
+        if (!self.explorerWindow.windowScene) {
+            for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+                if (scene.activationState == UISceneActivationStateForegroundActive) {
+                    self.explorerWindow.windowScene = (id)scene;
+                    break;
+                }
+            }
+        }
+    }
+#endif
 }
 
 - (void)hideExplorer
@@ -91,6 +104,16 @@
         [self hideExplorer];
     }
 }
+
+#if FLEX_AT_LEAST_IOS13_SDK
+- (void)showExplorerFromScene:(UIWindowScene *)scene
+{
+    if (@available(iOS 13.0, *)) {
+        self.explorerWindow.windowScene = scene;
+    }
+    [self showExplorer];
+}
+#endif
 
 - (BOOL)isHidden
 {
