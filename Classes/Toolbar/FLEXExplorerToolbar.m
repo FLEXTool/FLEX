@@ -86,7 +86,7 @@
         
         self.toolbarItems = @[_globalsItem, _hierarchyItem, _selectItem, _moveItem, _closeItem];
     }
-        
+
     return self;
 }
 
@@ -161,8 +161,8 @@
     descriptionLabelFrame.size.width = CGRectGetMaxX(self.selectedViewDescriptionContainer.bounds) - kHorizontalPadding - descriptionOriginX;
     self.selectedViewDescriptionLabel.frame = descriptionLabelFrame;
 }
-    
-    
+
+
 #pragma mark - Setter Overrides
 
 - (void)setToolbarItems:(NSArray<FLEXToolbarItem *> *)toolbarItems {
@@ -262,13 +262,12 @@
 
 - (CGRect)safeArea
 {
-  CGRect safeArea = self.bounds;
-#if FLEX_AT_LEAST_IOS11_SDK
-  if (@available(iOS 11, *)) {
-    safeArea = UIEdgeInsetsInsetRect(self.bounds, self.safeAreaInsets);
-  }
-#endif
-  return safeArea;
+    CGRect safeArea = self.bounds;
+    if (@available(iOS 11.0, *)) {
+        safeArea = UIEdgeInsetsInsetRect(self.bounds, self.safeAreaInsets);
+    }
+
+    return safeArea;
 }
 
 @end

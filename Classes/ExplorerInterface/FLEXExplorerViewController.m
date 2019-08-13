@@ -93,7 +93,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+
     // Toolbar
     self.explorerToolbar = [[FLEXExplorerToolbar alloc] init];
 
@@ -175,25 +175,25 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-         for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
-             outlineView.hidden = YES;
-         }
-         self.selectedViewOverlay.hidden = YES;
-     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-         for (UIView *view in self.viewsAtTapPoint) {
-             NSValue *key = [NSValue valueWithNonretainedObject:view];
-             UIView *outlineView = self.outlineViewsForVisibleViews[key];
-             outlineView.frame = [self frameInLocalCoordinatesForView:view];
-             if (self.currentMode == FLEXExplorerModeSelect) {
-                 outlineView.hidden = NO;
-             }
-         }
+        for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
+            outlineView.hidden = YES;
+        }
+        self.selectedViewOverlay.hidden = YES;
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        for (UIView *view in self.viewsAtTapPoint) {
+            NSValue *key = [NSValue valueWithNonretainedObject:view];
+            UIView *outlineView = self.outlineViewsForVisibleViews[key];
+            outlineView.frame = [self frameInLocalCoordinatesForView:view];
+            if (self.currentMode == FLEXExplorerModeSelect) {
+                outlineView.hidden = NO;
+            }
+        }
 
-         if (self.selectedView) {
-             self.selectedViewOverlay.frame = [self frameInLocalCoordinatesForView:self.selectedView];
-             self.selectedViewOverlay.hidden = NO;
-         }
-     }];
+        if (self.selectedView) {
+            self.selectedViewOverlay.frame = [self frameInLocalCoordinatesForView:self.selectedView];
+            self.selectedViewOverlay.hidden = NO;
+        }
+    }];
 }
 
 #pragma mark - Setter Overrides
@@ -694,26 +694,23 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (CGRect)viewSafeArea
 {
     CGRect safeArea = self.view.bounds;
-#if FLEX_AT_LEAST_IOS11_SDK
-    if (@available(iOS 11, *)) {
+    if (@available(iOS 11.0, *)) {
         safeArea = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
     }
-#endif
+
     return safeArea;
 }
 
-#if FLEX_AT_LEAST_IOS11_SDK
 - (void)viewSafeAreaInsetsDidChange
 {
-  if (@available(iOS 11, *)) {
-    [super viewSafeAreaInsetsDidChange];
-  }
+    if (@available(iOS 11.0, *)) {
+        [super viewSafeAreaInsetsDidChange];
 
-  CGRect safeArea = [self viewSafeArea];
-  CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea))];
-  [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(CGRectGetMinX(self.explorerToolbar.frame), CGRectGetMinY(self.explorerToolbar.frame), toolbarSize.width, toolbarSize.height)];
+        CGRect safeArea = [self viewSafeArea];
+        CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea))];
+        [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(CGRectGetMinX(self.explorerToolbar.frame), CGRectGetMinY(self.explorerToolbar.frame), toolbarSize.width, toolbarSize.height)];
+    }
 }
-#endif
 
 
 #pragma mark - Touch Handling

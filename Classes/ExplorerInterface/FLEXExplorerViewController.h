@@ -10,6 +10,7 @@
 
 @protocol FLEXExplorerViewControllerDelegate;
 
+/// A view controller that manages the FLEX toolbar.
 @interface FLEXExplorerViewController : UIViewController
 
 @property (nonatomic, weak) id <FLEXExplorerViewControllerDelegate> delegate;

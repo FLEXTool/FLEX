@@ -115,7 +115,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 - (void)setAutomaticallyShowsSearchBarCancelButton:(BOOL)autoShowCancel {
 #if FLEX_AT_LEAST_IOS13_SDK
-    if (@available(iOS 13, *)) {
+    if (@available(iOS 13.0, *)) {
         self.searchController.automaticallyShowsCancelButton = autoShowCancel;
     } else {
         _automaticallyShowsSearchBarCancelButton = autoShowCancel;

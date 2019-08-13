@@ -12,7 +12,7 @@
 #if FLEX_AT_LEAST_IOS13_SDK
 #define FLEXDynamicColor(dynamic, static) ({ \
     UIColor *c; \
-    if (@available(iOS 13, *)) { \
+    if (@available(iOS 13.0, *)) { \
         c = [UIColor dynamic]; \
     } else { \
         c = [UIColor static]; \
@@ -71,7 +71,7 @@
 
 + (UIColor *)tintColor {
     #if FLEX_AT_LEAST_IOS13_SDK
-    if (@available(iOS 13, *)) {
+    if (@available(iOS 13.0, *)) {
         return [UIColor systemBlueColor];
     } else {
         return [UIApplication sharedApplication].keyWindow.tintColor;

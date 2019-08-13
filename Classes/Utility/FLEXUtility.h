@@ -14,12 +14,6 @@
 
 #define FLEXFloor(x) (floor([[UIScreen mainScreen] scale] * (x)) / [[UIScreen mainScreen] scale])
 
-#if defined(__IPHONE_11_0)
-#define FLEX_AT_LEAST_IOS11_SDK (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_11_0)
-#else
-#define FLEX_AT_LEAST_IOS11_SDK NO
-#endif
-
 #if defined(__IPHONE_13_0)
 #define FLEX_AT_LEAST_IOS13_SDK (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
 #else
