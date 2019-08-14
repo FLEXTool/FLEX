@@ -80,9 +80,12 @@
     self.explorerWindow.hidden = NO;
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
-        if (!self.explorerWindow.windowScene) {
+        // Only look for a new scene if the one we have isn't the active scene
+        if (self.explorerWindow.windowScene.activationState != UISceneActivationStateForegroundActive) {
             for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
-                if (scene.activationState == UISceneActivationStateForegroundActive) {
+                // Look for an active UIWindowScene
+                if (scene.activationState == UISceneActivationStateForegroundActive &&
+                    [scene isKindOfClass:[UIWindowScene class]]) {
                     self.explorerWindow.windowScene = (id)scene;
                     break;
                 }
@@ -111,7 +114,7 @@
     if (@available(iOS 13.0, *)) {
         self.explorerWindow.windowScene = scene;
     }
-    [self showExplorer];
+    self.explorerWindow.hidden = NO;
 }
 #endif
 
