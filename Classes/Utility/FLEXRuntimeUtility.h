@@ -55,6 +55,7 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 };
 
 #define FLEXEncodeClass(class) ("@\"" #class "\"")
+#define FLEXEncodeObject(obj) (obj ? [NSString stringWithFormat:@"@\"%@\"", [obj class]].UTF8String : @encode(id))
 
 @interface FLEXRuntimeUtility : NSObject
 

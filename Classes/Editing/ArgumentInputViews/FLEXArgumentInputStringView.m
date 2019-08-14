@@ -32,6 +32,7 @@
     return [self.inputTextView.text length] > 0 ? [self.inputTextView.text copy] : nil;
 }
 
+// TODO: Support using object address for strings, as in the object arg view.
 
 #pragma mark -
 

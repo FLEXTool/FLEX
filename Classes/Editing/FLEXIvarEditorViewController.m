@@ -52,6 +52,9 @@
 - (void)actionButtonPressed:(id)sender
 {
     [super actionButtonPressed:sender];
+
+    // TODO: check mutability and use mutableCopy if necessary;
+    // this currently could and would assign NSArray to NSMutableArray
     
     [FLEXRuntimeUtility setValue:self.firstInputView.inputValue forIvar:self.ivar onObject:self.target];
     self.firstInputView.inputValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];

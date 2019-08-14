@@ -195,22 +195,35 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
         if (strcmp(type, @encode(id)) != 0) {
             BOOL isJSONSerializableType = NO;
 
+            // Parse class name out of the string,
+            // which is in the form `@"ClassName"`
+            Class cls = NSClassFromString(({
+                NSString *className = nil;
+                NSScanner *scan = [NSScanner scannerWithString:@(type)];
+                NSCharacterSet *allowed = [NSCharacterSet
+                    characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$"
+                ];
+
+                // Skip over the @" then scan the name
+                if ([scan scanString:@"@\"" intoString:nil]) {
+                    [scan scanCharactersFromSet:allowed intoString:&className];
+                }
+
+                className;
+            }));
+
             // Note: we can't use @encode(NSString) here because that drops
             // the class information and just goes to @encode(id).
-            NSArray *jsonTypes = @[
-                @(FLEXEncodeClass(NSString)),
-                @(FLEXEncodeClass(NSNumber)),
-                @(FLEXEncodeClass(NSArray)),
-                @(FLEXEncodeClass(NSDictionary)),
-                @(FLEXEncodeClass(NSMutableString)),
-                @(FLEXEncodeClass(NSMutableArray)),
-                @(FLEXEncodeClass(NSMutableDictionary)),
+            NSArray<Class> *jsonTypes = @[
+                [NSString class],
+                [NSNumber class],
+                [NSArray class],
+                [NSDictionary class],
             ];
 
             // Look for matching types
-            NSString *typeStr = @(type);
-            for (NSString *encodedClass in jsonTypes) {
-                if ([typeStr isEqualToString:encodedClass]) {
+            for (Class jsonClass in jsonTypes) {
+                if ([cls isSubclassOfClass:jsonClass]) {
                     isJSONSerializableType = YES;
                     break;
                 }

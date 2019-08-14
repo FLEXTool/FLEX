@@ -43,7 +43,10 @@
     self.fieldEditorView.fieldDescription = self.key;
 
     id currentValue = [self.defaults objectForKey:self.key];
-    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(id) currentValue:currentValue];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory
+        argumentInputViewForTypeEncoding:FLEXEncodeObject(currentValue)
+        currentValue:currentValue
+    ];
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.inputValue = currentValue;
     self.fieldEditorView.argumentInputViews = @[inputView];
@@ -73,7 +76,10 @@
 
 + (BOOL)canEditDefaultWithValue:(id)currentValue
 {
-    return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:@encode(id) currentValue:currentValue];
+    return [FLEXArgumentInputViewFactory
+        canEditFieldWithTypeEncoding:FLEXEncodeObject(currentValue)
+        currentValue:currentValue
+    ];
 }
 
 @end
