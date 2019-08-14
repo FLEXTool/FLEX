@@ -86,7 +86,7 @@
                 // Look for an active UIWindowScene
                 if (scene.activationState == UISceneActivationStateForegroundActive &&
                     [scene isKindOfClass:[UIWindowScene class]]) {
-                    self.explorerWindow.windowScene = (id)scene;
+                    self.explorerWindow.windowScene = (UIWindowScene)scene;
                     break;
                 }
             }
