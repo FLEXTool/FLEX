@@ -18,7 +18,7 @@
 
 - (CGFloat)_heightForHeaderInSection:(NSInteger)section {
     CGFloat height = [super _heightForHeaderInSection:section];
-    if (section == 0 && self.tableHeaderView) {
+    if (section == 0 && self.tableHeaderView && !@available(iOS 13.0, *)) {
         return height - self.tableHeaderView.frame.size.height + 8;
     }
 
@@ -30,9 +30,9 @@
     self = [super initWithFrame:frame style:style];
     if (self) {
         [self registerCells:@{
-            self.defaultReuseIdentifier: [FLEXTableViewCell class],
-            self.subtitleReuseIdentifier: [FLEXSubtitleTableViewCell class],
-            self.multilineReuseIdentifier: [FLEXMultilineTableViewCell class],
+            self.defaultReuseIdentifier : [FLEXTableViewCell class],
+            self.subtitleReuseIdentifier : [FLEXSubtitleTableViewCell class],
+            self.multilineReuseIdentifier : [FLEXMultilineTableViewCell class],
         }];
     }
 
