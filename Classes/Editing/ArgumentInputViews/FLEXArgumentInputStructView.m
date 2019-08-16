@@ -12,7 +12,7 @@
 
 @interface FLEXArgumentInputStructView ()
 
-@property (nonatomic, strong) NSArray<FLEXArgumentInputView *> *argumentInputViews;
+@property (nonatomic) NSArray<FLEXArgumentInputView *> *argumentInputViews;
 
 @end
 

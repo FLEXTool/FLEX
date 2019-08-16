@@ -21,10 +21,10 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 @interface FLEXNetworkRecorder ()
 
-@property (nonatomic, strong) NSCache *responseCache;
-@property (nonatomic, strong) NSMutableArray<FLEXNetworkTransaction *> *orderedTransactions;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, FLEXNetworkTransaction *> *networkTransactionsForRequestIdentifiers;
-@property (nonatomic, strong) dispatch_queue_t queue;
+@property (nonatomic) NSCache *responseCache;
+@property (nonatomic) NSMutableArray<FLEXNetworkTransaction *> *orderedTransactions;
+@property (nonatomic) NSMutableDictionary<NSString *, FLEXNetworkTransaction *> *networkTransactionsForRequestIdentifiers;
+@property (nonatomic) dispatch_queue_t queue;
 
 @end
 

@@ -14,8 +14,8 @@
 
 @interface FLEXClassesTableViewController ()
 
-@property (nonatomic, strong) NSArray<NSString *> *classNames;
-@property (nonatomic, strong) NSArray<NSString *> *filteredClassNames;
+@property (nonatomic) NSArray<NSString *> *classNames;
+@property (nonatomic) NSArray<NSString *> *filteredClassNames;
 
 @end
 

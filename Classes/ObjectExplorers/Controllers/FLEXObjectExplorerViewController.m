@@ -28,44 +28,44 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 // Convenience boxes to keep runtime properties, ivars, and methods in foundation collections.
 @interface FLEXPropertyBox : NSObject
-@property (nonatomic, assign) objc_property_t property;
+@property (nonatomic) objc_property_t property;
 @end
 @implementation FLEXPropertyBox
 @end
 
 @interface FLEXIvarBox : NSObject
-@property (nonatomic, assign) Ivar ivar;
+@property (nonatomic) Ivar ivar;
 @end
 @implementation FLEXIvarBox
 @end
 
 @interface FLEXMethodBox : NSObject
-@property (nonatomic, assign) Method method;
+@property (nonatomic) Method method;
 @end
 @implementation FLEXMethodBox
 @end
 
 @interface FLEXObjectExplorerViewController ()
 
-@property (nonatomic, strong) NSMutableArray<NSArray<FLEXPropertyBox *> *> *properties;
-@property (nonatomic, strong) NSArray<FLEXPropertyBox *> *filteredProperties;
+@property (nonatomic) NSMutableArray<NSArray<FLEXPropertyBox *> *> *properties;
+@property (nonatomic) NSArray<FLEXPropertyBox *> *filteredProperties;
 
-@property (nonatomic, strong) NSMutableArray<NSArray<FLEXIvarBox *> *> *ivars;
-@property (nonatomic, strong) NSArray<FLEXIvarBox *> *filteredIvars;
+@property (nonatomic) NSMutableArray<NSArray<FLEXIvarBox *> *> *ivars;
+@property (nonatomic) NSArray<FLEXIvarBox *> *filteredIvars;
 
-@property (nonatomic, strong) NSMutableArray<NSArray<FLEXMethodBox *> *> *methods;
-@property (nonatomic, strong) NSArray<FLEXMethodBox *> *filteredMethods;
+@property (nonatomic) NSMutableArray<NSArray<FLEXMethodBox *> *> *methods;
+@property (nonatomic) NSArray<FLEXMethodBox *> *filteredMethods;
 
-@property (nonatomic, strong) NSMutableArray<NSArray<FLEXMethodBox *> *> *classMethods;
-@property (nonatomic, strong) NSArray<FLEXMethodBox *> *filteredClassMethods;
+@property (nonatomic) NSMutableArray<NSArray<FLEXMethodBox *> *> *classMethods;
+@property (nonatomic) NSArray<FLEXMethodBox *> *filteredClassMethods;
 
 @property (nonatomic, copy) NSArray<Class> *classHierarchy;
 @property (nonatomic, copy) NSArray<Class> *filteredSuperclasses;
 
-@property (nonatomic, strong) NSArray *cachedCustomSectionRowCookies;
-@property (nonatomic, strong) NSIndexSet *customSectionVisibleIndexes;
+@property (nonatomic) NSArray *cachedCustomSectionRowCookies;
+@property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
 
-@property (nonatomic, strong) NSString *filterText;
+@property (nonatomic) NSString *filterText;
 /// An index into the `classHierarchy` array
 @property (nonatomic) NSInteger classScope;
 

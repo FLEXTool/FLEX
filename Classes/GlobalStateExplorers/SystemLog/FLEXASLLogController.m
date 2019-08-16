@@ -20,7 +20,7 @@
 
 @property (nonatomic, readonly) void (^updateHandler)(NSArray<FLEXSystemLogMessage *> *);
 
-@property (nonatomic, strong) NSTimer *logUpdateTimer;
+@property (nonatomic) NSTimer *logUpdateTimer;
 @property (nonatomic, readonly) NSMutableIndexSet *logMessageIdentifiers;
 
 // ASL stuff

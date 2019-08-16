@@ -14,21 +14,21 @@
 
 @interface FLEXExplorerToolbar ()
 
-@property (nonatomic, strong, readwrite) FLEXToolbarItem *selectItem;
-@property (nonatomic, strong, readwrite) FLEXToolbarItem *moveItem;
-@property (nonatomic, strong, readwrite) FLEXToolbarItem *globalsItem;
-@property (nonatomic, strong, readwrite) FLEXToolbarItem *closeItem;
-@property (nonatomic, strong, readwrite) FLEXToolbarItem *hierarchyItem;
-@property (nonatomic, strong, readwrite) UIView *dragHandle;
+@property (nonatomic, readwrite) FLEXToolbarItem *selectItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *moveItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *globalsItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *closeItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *hierarchyItem;
+@property (nonatomic, readwrite) UIView *dragHandle;
 
-@property (nonatomic, strong) UIImageView *dragHandleImageView;
+@property (nonatomic) UIImageView *dragHandleImageView;
 
-@property (nonatomic, strong) UIView *selectedViewDescriptionContainer;
-@property (nonatomic, strong) UIView *selectedViewDescriptionSafeAreaContainer;
-@property (nonatomic, strong) UIView *selectedViewColorIndicator;
-@property (nonatomic, strong) UILabel *selectedViewDescriptionLabel;
+@property (nonatomic) UIView *selectedViewDescriptionContainer;
+@property (nonatomic) UIView *selectedViewDescriptionSafeAreaContainer;
+@property (nonatomic) UIView *selectedViewColorIndicator;
+@property (nonatomic) UILabel *selectedViewDescriptionLabel;
 
-@property (nonatomic, strong,readwrite) UIView *backgroundView;
+@property (nonatomic,readwrite) UIView *backgroundView;
 
 @end
 

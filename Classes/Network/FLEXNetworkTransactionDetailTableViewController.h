@@ -12,6 +12,6 @@
 
 @interface FLEXNetworkTransactionDetailTableViewController : UITableViewController
 
-@property (nonatomic, strong) FLEXNetworkTransaction *transaction;
+@property (nonatomic) FLEXNetworkTransaction *transaction;
 
 @end

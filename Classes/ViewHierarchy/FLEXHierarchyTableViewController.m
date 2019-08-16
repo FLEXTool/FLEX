@@ -19,11 +19,11 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 @interface FLEXHierarchyTableViewController ()
 
-@property (nonatomic, strong) NSArray<UIView *> *allViews;
-@property (nonatomic, strong) NSDictionary<NSValue *, NSNumber *> *depthsForViews;
-@property (nonatomic, strong) NSArray<UIView *> *viewsAtTap;
-@property (nonatomic, strong) UIView *selectedView;
-@property (nonatomic, strong) NSArray<UIView *> *displayedViews;
+@property (nonatomic) NSArray<UIView *> *allViews;
+@property (nonatomic) NSDictionary<NSValue *, NSNumber *> *depthsForViews;
+@property (nonatomic) NSArray<UIView *> *viewsAtTap;
+@property (nonatomic) UIView *selectedView;
+@property (nonatomic) NSArray<UIView *> *displayedViews;
 
 @end
 

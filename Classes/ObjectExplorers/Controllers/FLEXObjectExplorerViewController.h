@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
 
 @interface FLEXObjectExplorerViewController : FLEXTableViewController
 
-@property (nonatomic, strong) id object;
+@property (nonatomic) id object;
 
 // Subclasses can override the methods below to provide data in a custom section.
 // The subclass should provide an array of "row cookies" to allow retrieval of individual row data later on.

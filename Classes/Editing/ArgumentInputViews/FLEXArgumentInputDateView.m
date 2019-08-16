@@ -11,7 +11,7 @@
 
 @interface FLEXArgumentInputDateView ()
 
-@property (nonatomic, strong) UIDatePicker *datePicker;
+@property (nonatomic) UIDatePicker *datePicker;
 
 @end
 

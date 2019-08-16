@@ -17,7 +17,7 @@
 - (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description;
 - (NSString *)keyboardShortcutsDescription;
 
-@property (nonatomic, assign, getter=isEnabled) BOOL enabled;
+@property (nonatomic, getter=isEnabled) BOOL enabled;
 
 @end
 

@@ -11,8 +11,8 @@
 
 @interface FLEXArgumentInputView ()
 
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) NSString *typeEncoding;
+@property (nonatomic) UILabel *titleLabel;
+@property (nonatomic) NSString *typeEncoding;
 
 @end
 

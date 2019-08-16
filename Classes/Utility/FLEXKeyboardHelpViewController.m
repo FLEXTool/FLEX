@@ -11,7 +11,7 @@
 
 @interface FLEXKeyboardHelpViewController ()
 
-@property (nonatomic, strong) UITextView *textView;
+@property (nonatomic) UITextView *textView;
 
 @end
 

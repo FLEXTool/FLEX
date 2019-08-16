@@ -12,7 +12,7 @@
 
 @interface FLEXCookiesTableViewController ()
 
-@property (nonatomic, strong) NSArray<NSHTTPCookie *> *cookies;
+@property (nonatomic) NSArray<NSHTTPCookie *> *cookies;
 
 @end
 

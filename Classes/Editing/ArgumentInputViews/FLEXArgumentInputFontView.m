@@ -13,8 +13,8 @@
 
 @interface FLEXArgumentInputFontView ()
 
-@property (nonatomic, strong) FLEXArgumentInputView *fontNameInput;
-@property (nonatomic, strong) FLEXArgumentInputView *pointSizeInput;
+@property (nonatomic) FLEXArgumentInputView *fontNameInput;
+@property (nonatomic) FLEXArgumentInputView *pointSizeInput;
 
 @end
 

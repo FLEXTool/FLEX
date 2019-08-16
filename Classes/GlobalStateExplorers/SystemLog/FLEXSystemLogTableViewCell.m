@@ -13,8 +13,8 @@ NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableView
 
 @interface FLEXSystemLogTableViewCell ()
 
-@property (nonatomic, strong) UILabel *logMessageLabel;
-@property (nonatomic, strong) NSAttributedString *logMessageAttributedText;
+@property (nonatomic) UILabel *logMessageLabel;
+@property (nonatomic) NSAttributedString *logMessageAttributedText;
 
 @end
 

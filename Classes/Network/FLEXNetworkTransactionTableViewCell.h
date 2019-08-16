@@ -14,7 +14,7 @@ extern NSString *const kFLEXNetworkTransactionCellIdentifier;
 
 @interface FLEXNetworkTransactionTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) FLEXNetworkTransaction *transaction;
+@property (nonatomic) FLEXNetworkTransaction *transaction;
 
 + (CGFloat)preferredCellHeight;
 

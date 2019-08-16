@@ -58,8 +58,8 @@
 
 @interface AAPLAppDelegate () <NSURLConnectionDataDelegate, NSURLSessionDataDelegate>
 
-@property (nonatomic, strong) NSTimer *repeatingLogExampleTimer;
-@property (nonatomic, strong) NSMutableArray *connections;
+@property (nonatomic) NSTimer *repeatingLogExampleTimer;
+@property (nonatomic) NSMutableArray *connections;
 
 @end
 

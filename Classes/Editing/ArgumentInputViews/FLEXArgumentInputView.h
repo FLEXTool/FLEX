@@ -32,7 +32,7 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
 
 /// Setting this value to large will make some argument input views increase the size of their input field(s).
 /// Useful to increase the use of space if there is only one input view on screen (i.e. for property and ivar editing).
-@property (nonatomic, assign) FLEXArgumentInputViewSize targetSize;
+@property (nonatomic) FLEXArgumentInputViewSize targetSize;
 
 /// Users of the input view can get delegate callbacks for incremental changes in user input.
 @property (nonatomic, weak) id <FLEXArgumentInputViewDelegate> delegate;
@@ -48,8 +48,8 @@ typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
 
 // For subclass eyes only
 
-@property (nonatomic, strong, readonly) UILabel *titleLabel;
-@property (nonatomic, strong, readonly) NSString *typeEncoding;
+@property (nonatomic, readonly) UILabel *titleLabel;
+@property (nonatomic, readonly) NSString *typeEncoding;
 @property (nonatomic, readonly) CGFloat topInputFieldVerticalLayoutGuide;
 
 @end

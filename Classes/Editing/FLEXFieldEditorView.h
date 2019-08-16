@@ -15,6 +15,6 @@
 @property (nonatomic, copy) NSString *targetDescription;
 @property (nonatomic, copy) NSString *fieldDescription;
 
-@property (nonatomic, strong) NSArray<FLEXArgumentInputView *> *argumentInputViews;
+@property (nonatomic) NSArray<FLEXArgumentInputView *> *argumentInputViews;
 
 @end

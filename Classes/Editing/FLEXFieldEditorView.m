@@ -12,10 +12,10 @@
 
 @interface FLEXFieldEditorView ()
 
-@property (nonatomic, strong) UILabel *targetDescriptionLabel;
-@property (nonatomic, strong) UIView *targetDescriptionDivider;
-@property (nonatomic, strong) UILabel *fieldDescriptionLabel;
-@property (nonatomic, strong) UIView *fieldDescriptionDivider;
+@property (nonatomic) UILabel *targetDescriptionLabel;
+@property (nonatomic) UIView *targetDescriptionDivider;
+@property (nonatomic) UILabel *fieldDescriptionLabel;
+@property (nonatomic) UIView *fieldDescriptionDivider;
 
 @end
 

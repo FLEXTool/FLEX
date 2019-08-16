@@ -12,10 +12,10 @@
 
 @interface FLEXImagePreviewViewController () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic) UIImage *image;
 
-@property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic) UIScrollView *scrollView;
+@property (nonatomic) UIImageView *imageView;
 
 @end
 

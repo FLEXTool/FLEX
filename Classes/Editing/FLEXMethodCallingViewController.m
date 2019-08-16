@@ -16,8 +16,8 @@
 
 @interface FLEXMethodCallingViewController ()
 
-@property (nonatomic, assign) Method method;
-@property (nonatomic, assign) FLEXTypeEncoding *returnType;
+@property (nonatomic) Method method;
+@property (nonatomic) FLEXTypeEncoding *returnType;
 
 @end
 

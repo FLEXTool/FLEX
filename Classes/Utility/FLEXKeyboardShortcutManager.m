@@ -15,18 +15,18 @@
 
 @interface UIEvent (UIPhysicalKeyboardEvent)
 
-@property (nonatomic, strong) NSString *_modifiedInput;
-@property (nonatomic, strong) NSString *_unmodifiedInput;
-@property (nonatomic, assign) UIKeyModifierFlags _modifierFlags;
-@property (nonatomic, assign) BOOL _isKeyDown;
-@property (nonatomic, assign) long _keyCode;
+@property (nonatomic) NSString *_modifiedInput;
+@property (nonatomic) NSString *_unmodifiedInput;
+@property (nonatomic) UIKeyModifierFlags _modifierFlags;
+@property (nonatomic) BOOL _isKeyDown;
+@property (nonatomic) long _keyCode;
 
 @end
 
 @interface FLEXKeyInput : NSObject <NSCopying>
 
 @property (nonatomic, copy, readonly) NSString *key;
-@property (nonatomic, assign, readonly) UIKeyModifierFlags flags;
+@property (nonatomic, readonly) UIKeyModifierFlags flags;
 @property (nonatomic, copy, readonly) NSString *helpDescription;
 
 @end
@@ -113,11 +113,11 @@
 
 @interface FLEXKeyboardShortcutManager ()
 
-@property (nonatomic, strong) NSMutableDictionary<FLEXKeyInput *, dispatch_block_t> *actionsForKeyInputs;
+@property (nonatomic) NSMutableDictionary<FLEXKeyInput *, dispatch_block_t> *actionsForKeyInputs;
 
-@property (nonatomic, assign, getter=isPressingShift) BOOL pressingShift;
-@property (nonatomic, assign, getter=isPressingCommand) BOOL pressingCommand;
-@property (nonatomic, assign, getter=isPressingControl) BOOL pressingControl;
+@property (nonatomic, getter=isPressingShift) BOOL pressingShift;
+@property (nonatomic, getter=isPressingCommand) BOOL pressingCommand;
+@property (nonatomic, getter=isPressingControl) BOOL pressingControl;
 
 @end
 

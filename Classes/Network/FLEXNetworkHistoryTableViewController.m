@@ -19,12 +19,12 @@
 
 /// Backing model
 @property (nonatomic, copy) NSArray<FLEXNetworkTransaction *> *networkTransactions;
-@property (nonatomic, assign) long long bytesReceived;
+@property (nonatomic) long long bytesReceived;
 @property (nonatomic, copy) NSArray<FLEXNetworkTransaction *> *filteredNetworkTransactions;
-@property (nonatomic, assign) long long filteredBytesReceived;
+@property (nonatomic) long long filteredBytesReceived;
 
-@property (nonatomic, assign) BOOL rowInsertInProgress;
-@property (nonatomic, assign) BOOL isPresentingSearch;
+@property (nonatomic) BOOL rowInsertInProgress;
+@property (nonatomic) BOOL isPresentingSearch;
 
 @end
 

@@ -19,10 +19,10 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 @interface FLEXLiveObjectsTableViewController ()
 
-@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *instanceCountsForClassNames;
-@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *instanceSizesForClassNames;
+@property (nonatomic) NSDictionary<NSString *, NSNumber *> *instanceCountsForClassNames;
+@property (nonatomic) NSDictionary<NSString *, NSNumber *> *instanceSizesForClassNames;
 @property (nonatomic, readonly) NSArray<NSString *> *allClassNames;
-@property (nonatomic, strong) NSArray<NSString *> *filteredClassNames;
+@property (nonatomic) NSArray<NSString *> *filteredClassNames;
 
 @end
 

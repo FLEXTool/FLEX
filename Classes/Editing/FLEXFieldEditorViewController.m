@@ -18,11 +18,11 @@
 
 @interface FLEXFieldEditorViewController () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic) UIScrollView *scrollView;
 
-@property (nonatomic, strong, readwrite) id target;
-@property (nonatomic, strong, readwrite) FLEXFieldEditorView *fieldEditorView;
-@property (nonatomic, strong, readwrite) UIBarButtonItem *setterButton;
+@property (nonatomic, readwrite) id target;
+@property (nonatomic, readwrite) FLEXFieldEditorView *fieldEditorView;
+@property (nonatomic, readwrite) UIBarButtonItem *setterButton;
 
 @end
 

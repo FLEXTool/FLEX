@@ -11,8 +11,8 @@
 
 @interface FLEXHierarchyTableViewCell ()
 
-@property (nonatomic, strong) UIView *depthIndicatorView;
-@property (nonatomic, strong) UIImageView *colorCircleImageView;
+@property (nonatomic) UIView *depthIndicatorView;
+@property (nonatomic) UIImageView *colorCircleImageView;
 
 @end
 

@@ -22,11 +22,11 @@
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
-@property (nonatomic, strong) FLEXWindow *explorerWindow;
-@property (nonatomic, strong) FLEXExplorerViewController *explorerViewController;
+@property (nonatomic) FLEXWindow *explorerWindow;
+@property (nonatomic) FLEXExplorerViewController *explorerViewController;
 
-@property (nonatomic, readonly, strong) NSMutableArray<FLEXGlobalsEntry *> *userGlobalEntries;
-@property (nonatomic, readonly, strong) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
+@property (nonatomic, readonly) NSMutableArray<FLEXGlobalsEntry *> *userGlobalEntries;
+@property (nonatomic, readonly) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
 
 @end
 

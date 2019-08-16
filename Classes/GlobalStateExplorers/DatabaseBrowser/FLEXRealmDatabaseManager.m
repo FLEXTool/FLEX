@@ -18,7 +18,7 @@
 @interface FLEXRealmDatabaseManager ()
 
 @property (nonatomic, copy) NSString *path;
-@property (nonatomic, strong) RLMRealm * realm;
+@property (nonatomic) RLMRealm * realm;
 
 @end
 

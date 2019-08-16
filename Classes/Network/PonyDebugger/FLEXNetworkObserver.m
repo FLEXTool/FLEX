@@ -28,7 +28,7 @@ typedef void (^NSURLSessionAsyncCompletion)(id fileURLOrData, NSURLResponse *res
 @interface FLEXInternalRequestState : NSObject
 
 @property (nonatomic, copy) NSURLRequest *request;
-@property (nonatomic, strong) NSMutableData *dataAccumulator;
+@property (nonatomic) NSMutableData *dataAccumulator;
 
 @end
 
@@ -68,8 +68,8 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
 @interface FLEXNetworkObserver ()
 
-@property (nonatomic, strong) NSMutableDictionary<NSString *, FLEXInternalRequestState *> *requestStatesForRequestIDs;
-@property (nonatomic, strong) dispatch_queue_t queue;
+@property (nonatomic) NSMutableDictionary<NSString *, FLEXInternalRequestState *> *requestStatesForRequestIDs;
+@property (nonatomic) dispatch_queue_t queue;
 
 @end
 

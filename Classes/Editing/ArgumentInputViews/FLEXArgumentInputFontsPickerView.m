@@ -11,7 +11,7 @@
 
 @interface FLEXArgumentInputFontsPickerView ()
 
-@property (nonatomic, strong) NSMutableArray<NSString *> *availableFonts;
+@property (nonatomic) NSMutableArray<NSString *> *availableFonts;
 
 @end
 

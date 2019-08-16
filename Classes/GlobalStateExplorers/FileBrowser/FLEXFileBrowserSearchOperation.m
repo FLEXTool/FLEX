@@ -26,8 +26,8 @@
 
 @interface FLEXFileBrowserSearchOperation ()
 
-@property (nonatomic, strong) NSString *path;
-@property (nonatomic, strong) NSString *searchString;
+@property (nonatomic) NSString *path;
+@property (nonatomic) NSString *searchString;
 
 @end
 

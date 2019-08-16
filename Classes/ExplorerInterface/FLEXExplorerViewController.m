@@ -26,49 +26,49 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 @interface FLEXExplorerViewController () <FLEXHierarchyTableViewControllerDelegate, FLEXGlobalsTableViewControllerDelegate>
 
-@property (nonatomic, strong) FLEXExplorerToolbar *explorerToolbar;
+@property (nonatomic) FLEXExplorerToolbar *explorerToolbar;
 
 /// Tracks the currently active tool/mode
-@property (nonatomic, assign) FLEXExplorerMode currentMode;
+@property (nonatomic) FLEXExplorerMode currentMode;
 
 /// Gesture recognizer for dragging a view in move mode
-@property (nonatomic, strong) UIPanGestureRecognizer *movePanGR;
+@property (nonatomic) UIPanGestureRecognizer *movePanGR;
 
 /// Gesture recognizer for showing additional details on the selected view
-@property (nonatomic, strong) UITapGestureRecognizer *detailsTapGR;
+@property (nonatomic) UITapGestureRecognizer *detailsTapGR;
 
 /// Only valid while a move pan gesture is in progress.
-@property (nonatomic, assign) CGRect selectedViewFrameBeforeDragging;
+@property (nonatomic) CGRect selectedViewFrameBeforeDragging;
 
 /// Only valid while a toolbar drag pan gesture is in progress.
-@property (nonatomic, assign) CGRect toolbarFrameBeforeDragging;
+@property (nonatomic) CGRect toolbarFrameBeforeDragging;
 
 /// Borders of all the visible views in the hierarchy at the selection point.
 /// The keys are NSValues with the corresponding view (nonretained).
-@property (nonatomic, strong) NSDictionary<NSValue *, UIView *> *outlineViewsForVisibleViews;
+@property (nonatomic) NSDictionary<NSValue *, UIView *> *outlineViewsForVisibleViews;
 
 /// The actual views at the selection point with the deepest view last.
-@property (nonatomic, strong) NSArray<UIView *> *viewsAtTapPoint;
+@property (nonatomic) NSArray<UIView *> *viewsAtTapPoint;
 
 /// The view that we're currently highlighting with an overlay and displaying details for.
-@property (nonatomic, strong) UIView *selectedView;
+@property (nonatomic) UIView *selectedView;
 
 /// A colored transparent overlay to indicate that the view is selected.
-@property (nonatomic, strong) UIView *selectedViewOverlay;
+@property (nonatomic) UIView *selectedViewOverlay;
 
 /// Tracked so we can restore the key window after dismissing a modal.
 /// We need to become key after modal presentation so we can correctly capture input.
 /// If we're just showing the toolbar, we want the main app's window to remain key so that we don't interfere with input, status bar, etc.
-@property (nonatomic, strong) UIWindow *previousKeyWindow;
+@property (nonatomic) UIWindow *previousKeyWindow;
 
 /// Similar to the previousKeyWindow property above, we need to track status bar styling if
 /// the app doesn't use view controller based status bar management. When we present a modal,
 /// we want to change the status bar style to UIStatusBarStyleDefault. Before changing, we stash
 /// the current style. On dismissal, we return the status bar to the style that the app was using previously.
-@property (nonatomic, assign) UIStatusBarStyle previousStatusBarStyle;
+@property (nonatomic) UIStatusBarStyle previousStatusBarStyle;
 
 /// All views that we're KVOing. Used to help us clean up properly.
-@property (nonatomic, strong) NSMutableSet<UIView *> *observedViews;
+@property (nonatomic) NSMutableSet<UIView *> *observedViews;
 
 @end
 

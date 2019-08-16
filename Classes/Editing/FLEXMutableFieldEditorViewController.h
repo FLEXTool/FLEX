@@ -10,7 +10,7 @@
 
 @interface FLEXMutableFieldEditorViewController : FLEXFieldEditorViewController
 
-@property (nonatomic, strong, readonly) UIBarButtonItem *getterButton;
+@property (nonatomic, readonly) UIBarButtonItem *getterButton;
 
 - (void)getterButtonPressed:(id)sender;
 - (NSString *)titleForGetterButton;

@@ -12,8 +12,8 @@
 
 @interface FLEXWebViewController () <WKNavigationDelegate>
 
-@property (nonatomic, strong) WKWebView *webView;
-@property (nonatomic, strong) NSString *originalText;
+@property (nonatomic) WKWebView *webView;
+@property (nonatomic) NSString *originalText;
 
 @end
 

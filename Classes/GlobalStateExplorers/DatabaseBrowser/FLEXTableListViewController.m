@@ -20,7 +20,7 @@
     NSString *_databasePath;
 }
 
-@property (nonatomic, strong) NSArray<NSString *> *tables;
+@property (nonatomic) NSArray<NSString *> *tables;
 
 + (NSArray<NSString *> *)supportedSQLiteExtensions;
 + (NSArray<NSString *> *)supportedRealmExtensions;

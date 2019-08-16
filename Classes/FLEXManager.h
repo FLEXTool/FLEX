@@ -34,11 +34,11 @@ typedef UIViewController *(^FLEXCustomContentViewerFuture)(NSData *data);
 /// If this property is set to YES, FLEX will swizzle NSURLConnection*Delegate and NSURLSession*Delegate methods
 /// on classes that conform to the protocols. This allows you to view network activity history from the main FLEX menu.
 /// Full responses are kept temporarily in a size-limited cache and may be pruned under memory pressure.
-@property (nonatomic, assign, getter=isNetworkDebuggingEnabled) BOOL networkDebuggingEnabled;
+@property (nonatomic, getter=isNetworkDebuggingEnabled) BOOL networkDebuggingEnabled;
 
 /// Defaults to 25 MB if never set. Values set here are persisted across launches of the app.
 /// The response cache uses an NSCache, so it may purge prior to hitting the limit when the app is under memory pressure.
-@property (nonatomic, assign) NSUInteger networkResponseCacheByteLimit;
+@property (nonatomic) NSUInteger networkResponseCacheByteLimit;
 
 /// Requests whose host ends with one of the blacklisted entries in this array will be not be recorded (eg. google.com).
 /// Wildcard or subdomain entries are not required (eg. google.com will match any subdomain under google.com).
@@ -52,7 +52,7 @@ typedef UIViewController *(^FLEXCustomContentViewerFuture)(NSData *data);
 /// The shortcuts will not fire when there is an active text field, text view, or other responder accepting key input.
 /// You can disable keyboard shortcuts if you have existing keyboard shortcuts that conflict with FLEX, or if you like doing things the hard way ;)
 /// Keyboard shortcuts are always disabled (and support is compiled out) in non-simulator builds
-@property (nonatomic, assign) BOOL simulatorShortcutsEnabled;
+@property (nonatomic) BOOL simulatorShortcutsEnabled;
 
 /// Adds an action to run when the specified key & modifier combination is pressed
 /// @param key A single character string matching a key on the keyboard

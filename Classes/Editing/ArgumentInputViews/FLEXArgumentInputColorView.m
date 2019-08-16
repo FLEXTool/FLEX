@@ -14,8 +14,8 @@
 
 @interface FLEXColorComponentInputView : UIView
 
-@property (nonatomic, strong) UISlider *slider;
-@property (nonatomic, strong) UILabel *valueLabel;
+@property (nonatomic) UISlider *slider;
+@property (nonatomic) UILabel *valueLabel;
 
 @property (nonatomic, weak) id <FLEXColorComponentInputViewDelegate> delegate;
 
@@ -94,9 +94,9 @@
 
 @interface FLEXColorPreviewBox : UIView
 
-@property (nonatomic, strong) UIColor *color;
+@property (nonatomic) UIColor *color;
 
-@property (nonatomic, strong) UIView *colorOverlayView;
+@property (nonatomic) UIView *colorOverlayView;
 
 @end
 
@@ -153,12 +153,12 @@
 
 @interface FLEXArgumentInputColorView () <FLEXColorComponentInputViewDelegate>
 
-@property (nonatomic, strong) FLEXColorPreviewBox *colorPreviewBox;
-@property (nonatomic, strong) UILabel *hexLabel;
-@property (nonatomic, strong) FLEXColorComponentInputView *alphaInput;
-@property (nonatomic, strong) FLEXColorComponentInputView *redInput;
-@property (nonatomic, strong) FLEXColorComponentInputView *greenInput;
-@property (nonatomic, strong) FLEXColorComponentInputView *blueInput;
+@property (nonatomic) FLEXColorPreviewBox *colorPreviewBox;
+@property (nonatomic) UILabel *hexLabel;
+@property (nonatomic) FLEXColorComponentInputView *alphaInput;
+@property (nonatomic) FLEXColorComponentInputView *redInput;
+@property (nonatomic) FLEXColorComponentInputView *greenInput;
+@property (nonatomic) FLEXColorComponentInputView *blueInput;
 
 @end
 

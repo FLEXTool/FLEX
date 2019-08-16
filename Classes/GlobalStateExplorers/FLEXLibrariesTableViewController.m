@@ -14,10 +14,10 @@
 
 @interface FLEXLibrariesTableViewController ()
 
-@property (nonatomic, strong) NSArray<NSString *> *imageNames;
-@property (nonatomic, strong) NSArray<NSString *> *filteredImageNames;
+@property (nonatomic) NSArray<NSString *> *imageNames;
+@property (nonatomic) NSArray<NSString *> *filteredImageNames;
 
-@property (nonatomic, strong) Class foundClass;
+@property (nonatomic) Class foundClass;
 
 @end
 

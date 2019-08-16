@@ -12,8 +12,8 @@
 
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
-@property (nonatomic, assign) NSInteger viewDepth;
-@property (nonatomic, strong) UIColor *viewColor;
-@property (nonatomic, strong) UIView *viewBackgroundColorView;
+@property (nonatomic) NSInteger viewDepth;
+@property (nonatomic) UIColor *viewColor;
+@property (nonatomic) UIView *viewBackgroundColorView;
 
 @end

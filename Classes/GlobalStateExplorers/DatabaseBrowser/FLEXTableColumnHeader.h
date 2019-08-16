@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, FLEXTableColumnHeaderSortType) {
 
 @interface FLEXTableColumnHeader : UIView
 
-@property (nonatomic, strong) UILabel *label;
+@property (nonatomic) UILabel *label;
 
 - (void)changeSortStatusWithType:(FLEXTableColumnHeaderSortType)type;
 

@@ -52,7 +52,7 @@
 @property (nonatomic, weak) IBOutlet UIDatePicker *datePicker;
 @property (nonatomic, weak) IBOutlet UILabel *dateLabel;
 
-@property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic) NSDateFormatter *dateFormatter;
 
 @end
 

@@ -11,7 +11,7 @@
 
 @interface FLEXMutableFieldEditorViewController ()
 
-@property (nonatomic, strong, readwrite) UIBarButtonItem *getterButton;
+@property (nonatomic, readwrite) UIBarButtonItem *getterButton;
 
 @end
 

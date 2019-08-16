@@ -22,12 +22,12 @@
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, copy) NSArray<NSString *> *childPaths;
-@property (nonatomic, strong) NSArray<NSString *> *searchPaths;
-@property (nonatomic, strong) NSNumber *recursiveSize;
-@property (nonatomic, strong) NSNumber *searchPathsSize;
+@property (nonatomic) NSArray<NSString *> *searchPaths;
+@property (nonatomic) NSNumber *recursiveSize;
+@property (nonatomic) NSNumber *searchPathsSize;
 @property (nonatomic) NSOperationQueue *operationQueue;
-@property (nonatomic, strong) UIDocumentInteractionController *documentController;
-@property (nonatomic, strong) id<FLEXFileBrowserFileOperationController> fileOperationController;
+@property (nonatomic) UIDocumentInteractionController *documentController;
+@property (nonatomic) id<FLEXFileBrowserFileOperationController> fileOperationController;
 
 @end
 

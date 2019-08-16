@@ -10,7 +10,7 @@
 
 @interface FLEXArgumentInputSwitchView ()
 
-@property (nonatomic, strong) UISwitch *inputSwitch;
+@property (nonatomic) UISwitch *inputSwitch;
 
 @end
 

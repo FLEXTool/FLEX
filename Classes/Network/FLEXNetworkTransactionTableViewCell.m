@@ -16,10 +16,10 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 
 @interface FLEXNetworkTransactionTableViewCell ()
 
-@property (nonatomic, strong) UIImageView *thumbnailImageView;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *pathLabel;
-@property (nonatomic, strong) UILabel *transactionDetailsLabel;
+@property (nonatomic) UIImageView *thumbnailImageView;
+@property (nonatomic) UILabel *nameLabel;
+@property (nonatomic) UILabel *pathLabel;
+@property (nonatomic) UILabel *transactionDetailsLabel;
 
 @end
 

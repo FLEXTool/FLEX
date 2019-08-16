@@ -19,9 +19,9 @@
 @property (nonatomic, readonly) FLEXArgumentInputView *firstInputView;
 
 // For subclass use only.
-@property (nonatomic, strong, readonly) id target;
-@property (nonatomic, strong, readonly) FLEXFieldEditorView *fieldEditorView;
-@property (nonatomic, strong, readonly) UIBarButtonItem *setterButton;
+@property (nonatomic, readonly) id target;
+@property (nonatomic, readonly) FLEXFieldEditorView *fieldEditorView;
+@property (nonatomic, readonly) UIBarButtonItem *setterButton;
 
 - (void)actionButtonPressed:(id)sender;
 - (NSString *)titleForActionButton;

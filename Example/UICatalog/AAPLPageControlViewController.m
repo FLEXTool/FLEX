@@ -52,7 +52,7 @@
 @property (nonatomic, weak) IBOutlet UIPageControl *pageControl;
 
 @property (nonatomic, weak) IBOutlet UIView *colorView;
-@property (nonatomic, strong) NSArray *colors;
+@property (nonatomic) NSArray *colors;
 
 @end
 

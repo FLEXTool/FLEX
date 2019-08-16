@@ -15,7 +15,7 @@
 
 @property (nonatomic, copy) NSArray<UITableViewCell *> *cells;
 
-@property (nonatomic, strong) UITableViewCell *cacheLimitCell;
+@property (nonatomic) UITableViewCell *cacheLimitCell;
 
 @end
 

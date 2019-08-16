@@ -13,7 +13,7 @@
 @interface FLEXToolbarItem ()
 
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic) UIImage *image;
 
 @end
 

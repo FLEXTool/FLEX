@@ -15,7 +15,7 @@
 
 @interface FLEXPropertyEditorViewController () <FLEXArgumentInputViewDelegate>
 
-@property (nonatomic, assign) objc_property_t property;
+@property (nonatomic) objc_property_t property;
 
 @end
 

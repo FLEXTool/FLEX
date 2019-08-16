@@ -10,7 +10,7 @@
 
 @interface FLEXNetworkTransaction ()
 
-@property (nonatomic, strong, readwrite) NSData *cachedRequestBody;
+@property (nonatomic, readwrite) NSData *cachedRequestBody;
 
 @end
 

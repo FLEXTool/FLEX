@@ -13,14 +13,14 @@
 @interface FLEXMultiColumnTableView ()
 <UITableViewDataSource, UITableViewDelegate,UIScrollViewDelegate, FLEXTableContentCellDelegate>
 
-@property (nonatomic, strong) UIScrollView *contentScrollView;
-@property (nonatomic, strong) UIScrollView *headerScrollView;
-@property (nonatomic, strong) UITableView  *leftTableView;
-@property (nonatomic, strong) UITableView  *contentTableView;
-@property (nonatomic, strong) UIView       *leftHeader;
+@property (nonatomic) UIScrollView *contentScrollView;
+@property (nonatomic) UIScrollView *headerScrollView;
+@property (nonatomic) UITableView  *leftTableView;
+@property (nonatomic) UITableView  *contentTableView;
+@property (nonatomic) UIView       *leftHeader;
 
-@property (nonatomic, strong) NSDictionary<NSString *, NSNumber *> *sortStatusDict;
-@property (nonatomic, strong) NSArray *rowData;
+@property (nonatomic) NSDictionary<NSString *, NSNumber *> *sortStatusDict;
+@property (nonatomic) NSArray *rowData;
 @end
 
 static const CGFloat kColumnMargin = 1;

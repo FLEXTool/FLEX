@@ -13,7 +13,7 @@
 
 @interface FLEXTableContentViewController ()<FLEXMultiColumnTableViewDataSource, FLEXMultiColumnTableViewDelegate>
 
-@property (nonatomic, strong) FLEXMultiColumnTableView *multiColumnView;
+@property (nonatomic) FLEXMultiColumnTableView *multiColumnView;
 
 @end
 

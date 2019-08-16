@@ -15,7 +15,7 @@
 
 @interface FLEXIvarEditorViewController () <FLEXArgumentInputViewDelegate>
 
-@property (nonatomic, assign) Ivar ivar;
+@property (nonatomic) Ivar ivar;
 
 @end
 

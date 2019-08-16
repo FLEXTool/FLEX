@@ -15,7 +15,7 @@
 @interface FLEXDefaultEditorViewController ()
 
 @property (nonatomic, readonly) NSUserDefaults *defaults;
-@property (nonatomic, strong) NSString *key;
+@property (nonatomic) NSString *key;
 
 @end
 
