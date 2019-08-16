@@ -7,6 +7,7 @@
 //
 
 #import "FLEXManager.h"
+#import "FLEXUtility.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXWindow.h"
 #import "FLEXGlobalsEntry.h"
@@ -77,6 +78,21 @@
 - (void)showExplorer
 {
     self.explorerWindow.hidden = NO;
+#if FLEX_AT_LEAST_IOS13_SDK
+    if (@available(iOS 13.0, *)) {
+        // Only look for a new scene if the one we have isn't the active scene
+        if (self.explorerWindow.windowScene.activationState != UISceneActivationStateForegroundActive) {
+            for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+                // Look for an active UIWindowScene
+                if (scene.activationState == UISceneActivationStateForegroundActive &&
+                    [scene isKindOfClass:[UIWindowScene class]]) {
+                    self.explorerWindow.windowScene = (UIWindowScene)scene;
+                    break;
+                }
+            }
+        }
+    }
+#endif
 }
 
 - (void)hideExplorer
@@ -91,6 +107,16 @@
         [self hideExplorer];
     }
 }
+
+#if FLEX_AT_LEAST_IOS13_SDK
+- (void)showExplorerFromScene:(UIWindowScene *)scene
+{
+    if (@available(iOS 13.0, *)) {
+        self.explorerWindow.windowScene = scene;
+    }
+    self.explorerWindow.hidden = NO;
+}
+#endif
 
 - (BOOL)isHidden
 {
