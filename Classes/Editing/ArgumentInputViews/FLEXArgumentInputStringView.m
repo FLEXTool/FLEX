@@ -29,7 +29,7 @@
 {
     // Interpret empty string as nil. We loose the ability to set empty string as a string value,
     // but we accept that tradeoff in exchange for not having to type quotes for every string.
-    return [self.inputTextView.text length] > 0 ? [self.inputTextView.text copy] : nil;
+    return self.inputTextView.text.length > 0 ? [self.inputTextView.text copy] : nil;
 }
 
 // TODO: Support using object address for strings, as in the object arg view.

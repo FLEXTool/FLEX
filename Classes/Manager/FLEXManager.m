@@ -57,7 +57,7 @@
     NSAssert([NSThread isMainThread], @"You must use %@ from the main thread only.", NSStringFromClass([self class]));
     
     if (!_explorerWindow) {
-        _explorerWindow = [[FLEXWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+        _explorerWindow = [[FLEXWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
         _explorerWindow.eventDelegate = self;
         _explorerWindow.rootViewController = self.explorerViewController;
     }
@@ -82,7 +82,7 @@
     if (@available(iOS 13.0, *)) {
         // Only look for a new scene if the one we have isn't the active scene
         if (self.explorerWindow.windowScene.activationState != UISceneActivationStateForegroundActive) {
-            for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+            for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
                 // Look for an active UIWindowScene
                 if (scene.activationState == UISceneActivationStateForegroundActive &&
                     [scene isKindOfClass:[UIWindowScene class]]) {
@@ -108,15 +108,15 @@
     }
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
 - (void)showExplorerFromScene:(UIWindowScene *)scene
 {
+    #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
         self.explorerWindow.windowScene = scene;
     }
+    #endif
     self.explorerWindow.hidden = NO;
 }
-#endif
 
 - (BOOL)isHidden
 {
@@ -328,7 +328,7 @@
 - (void)tryScrollDown
 {
     UIScrollView *firstScrollView = [self firstScrollView];
-    CGPoint contentOffset = [firstScrollView contentOffset];
+    CGPoint contentOffset = firstScrollView.contentOffset;
     CGFloat distance = floor(firstScrollView.frame.size.height / 2.0);
     CGFloat maxContentOffsetY = firstScrollView.contentSize.height + firstScrollView.contentInset.bottom - firstScrollView.frame.size.height;
     distance = MIN(maxContentOffsetY - firstScrollView.contentOffset.y, distance);
@@ -339,7 +339,7 @@
 - (void)tryScrollUp
 {
     UIScrollView *firstScrollView = [self firstScrollView];
-    CGPoint contentOffset = [firstScrollView contentOffset];
+    CGPoint contentOffset = firstScrollView.contentOffset;
     CGFloat distance = floor(firstScrollView.frame.size.height / 2.0);
     CGFloat minContentOffsetY = -firstScrollView.contentInset.top;
     distance = MIN(firstScrollView.contentOffset.y - minContentOffsetY, distance);
@@ -349,16 +349,16 @@
 
 - (UIScrollView *)firstScrollView
 {
-    NSMutableArray<UIView *> *views = [[[[UIApplication sharedApplication] keyWindow] subviews] mutableCopy];
+    NSMutableArray<UIView *> *views = [UIApplication.sharedApplication.keyWindow.subviews mutableCopy];
     UIScrollView *scrollView = nil;
-    while ([views count] > 0) {
-        UIView *view = [views firstObject];
+    while (views.count > 0) {
+        UIView *view = views.firstObject;
         [views removeObjectAtIndex:0];
         if ([view isKindOfClass:[UIScrollView class]]) {
             scrollView = (UIScrollView *)view;
             break;
         } else {
-            [views addObjectsFromArray:[view subviews]];
+            [views addObjectsFromArray:view.subviews];
         }
     }
     return scrollView;
@@ -378,7 +378,7 @@
 
 - (UIViewController *)topViewController
 {
-    UIViewController *topViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+    UIViewController *topViewController = [[UIApplication.sharedApplication keyWindow] rootViewController];
     while ([topViewController presentedViewController]) {
         topViewController = [topViewController presentedViewController];
     }
@@ -388,7 +388,9 @@
 - (void)toggleTopViewControllerOfClass:(Class)class
 {
     UIViewController *topViewController = [self topViewController];
-    if ([topViewController isKindOfClass:[UINavigationController class]] && [[[(UINavigationController *)topViewController viewControllers] firstObject] isKindOfClass:[class class]]) {
+    if ([topViewController isKindOfClass:[UINavigationController class]] &&
+        [[(UINavigationController *)topViewController viewControllers].firstObject isKindOfClass:[class class]])
+    {
         [[topViewController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     } else {
         id viewController = [[class alloc] init];

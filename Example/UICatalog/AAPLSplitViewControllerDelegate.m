@@ -58,12 +58,12 @@
 - (void)splitViewController:(UISplitViewController *)splitViewController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController {
     barButtonItem.title = NSLocalizedString(@"UICatalog", nil);
 
-    UINavigationController *detailViewController = [splitViewController.viewControllers lastObject];
+    UINavigationController *detailViewController = splitViewController.viewControllers.lastObject;
 
     // It's possible that the detail view controller has more than one view controller currently in its hierarchy. If this is the case, we
     // want to be sure that the root view controller of the navigation controller has its left bar button item set on its navigation item.
     // We don't want to override the navigation controller's top view controller's "Back" bar button item with the "More" bar button item.
-    UIViewController *detailRootViewController = [detailViewController.viewControllers firstObject];
+    UIViewController *detailRootViewController = detailViewController.viewControllers.firstObject;
 
     [detailRootViewController.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
 }
@@ -71,9 +71,9 @@
 // This method is similar to the one above except that it removes the bar button on the detail view controller's root view controller
 // since the interface orientation is now portrait.
 - (void)splitViewController:(UISplitViewController *)splitViewController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem {
-    UINavigationController *detailViewController = [splitViewController.viewControllers lastObject];
+    UINavigationController *detailViewController = splitViewController.viewControllers.lastObject;
     
-    UIViewController *detailRootViewController = [detailViewController.viewControllers firstObject];
+    UIViewController *detailRootViewController = detailViewController.viewControllers.firstObject;
 
     [detailRootViewController.navigationItem setLeftBarButtonItem:nil animated:YES];
 }

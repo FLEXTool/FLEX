@@ -107,12 +107,12 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.layer.borderWidth = 1.0;
-        self.layer.borderColor = [[UIColor blackColor] CGColor];
+        self.layer.borderColor = UIColor.blackColor.CGColor;
         self.backgroundColor = [UIColor colorWithPatternImage:[[self class] backgroundPatternImage]];
         
         self.colorOverlayView = [[UIView alloc] initWithFrame:self.bounds];
         self.colorOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        self.colorOverlayView.backgroundColor = [UIColor clearColor];
+        self.colorOverlayView.backgroundColor = UIColor.clearColor;
         [self addSubview:self.colorOverlayView];
     }
     return self;
@@ -134,12 +134,12 @@
     CGSize squareSize = CGSizeMake(kSquareDimension, kSquareDimension);
     CGSize imageSize = CGSizeMake(2.0 * kSquareDimension, 2.0 * kSquareDimension);
     
-    UIGraphicsBeginImageContextWithOptions(imageSize, YES, [[UIScreen mainScreen] scale]);
+    UIGraphicsBeginImageContextWithOptions(imageSize, YES, UIScreen.mainScreen.scale);
     
-    [[UIColor whiteColor] setFill];
+    [UIColor.whiteColor setFill];
     UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
     
-    [[UIColor grayColor] setFill];
+    [UIColor.grayColor setFill];
     UIRectFill(CGRectMake(squareSize.width, 0, squareSize.width, squareSize.height));
     UIRectFill(CGRectMake(0, squareSize.height, squareSize.width, squareSize.height));
     
@@ -178,22 +178,22 @@
         [self addSubview:self.hexLabel];
         
         self.alphaInput = [[FLEXColorComponentInputView alloc] init];
-        self.alphaInput.slider.minimumTrackTintColor = [UIColor blackColor];
+        self.alphaInput.slider.minimumTrackTintColor = UIColor.blackColor;
         self.alphaInput.delegate = self;
         [self addSubview:self.alphaInput];
         
         self.redInput = [[FLEXColorComponentInputView alloc] init];
-        self.redInput.slider.minimumTrackTintColor = [UIColor redColor];
+        self.redInput.slider.minimumTrackTintColor = UIColor.redColor;
         self.redInput.delegate = self;
         [self addSubview:self.redInput];
         
         self.greenInput = [[FLEXColorComponentInputView alloc] init];
-        self.greenInput.slider.minimumTrackTintColor = [UIColor greenColor];
+        self.greenInput.slider.minimumTrackTintColor = UIColor.greenColor;
         self.greenInput.delegate = self;
         [self addSubview:self.greenInput];
         
         self.blueInput = [[FLEXColorComponentInputView alloc] init];
-        self.blueInput.slider.minimumTrackTintColor = [UIColor blueColor];
+        self.blueInput.slider.minimumTrackTintColor = UIColor.blueColor;
         self.blueInput.delegate = self;
         [self addSubview:self.blueInput];
     }

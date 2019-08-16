@@ -54,7 +54,7 @@
 
 + (UIColor *)defaultBackgroundColor
 {
-    return [UIColor clearColor];
+    return UIColor.clearColor;
 }
 
 + (CGFloat)topMargin

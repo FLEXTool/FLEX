@@ -34,7 +34,7 @@ typedef NS_ENUM(NSUInteger, FLEXBundleExplorerRow) {
 {
     BOOL isDirectory = NO;
     NSString *bundlePath = self.bundleToExplore.bundlePath;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:bundlePath isDirectory:&isDirectory] && isDirectory) {
+    if ([NSFileManager.defaultManager fileExistsAtPath:bundlePath isDirectory:&isDirectory] && isDirectory) {
         return [@[@(FLEXBundleExplorerRowBundlePath)] arrayByAddingObjectsFromArray:[super customSectionRowCookies]];
     }
 

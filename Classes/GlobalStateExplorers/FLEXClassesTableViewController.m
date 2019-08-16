@@ -46,7 +46,7 @@
 - (void)loadClassNames
 {
     unsigned int classNamesCount = 0;
-    const char **classNames = objc_copyClassNamesForImage([self.binaryImageName UTF8String], &classNamesCount);
+    const char **classNames = objc_copyClassNamesForImage(self.binaryImageName.UTF8String, &classNamesCount);
     if (classNames) {
         NSMutableArray<NSString *> *classNameStrings = [NSMutableArray array];
         for (unsigned int i = 0; i < classNamesCount; i++) {
@@ -64,7 +64,7 @@
 - (void)updateTitle
 {
     NSString *shortImageName = self.binaryImageName.lastPathComponent;
-    self.title = [NSString stringWithFormat:@"%@ Classes (%lu)", shortImageName, (unsigned long)[self.filteredClassNames count]];
+    self.title = [NSString stringWithFormat:@"%@ Classes (%lu)", shortImageName, (unsigned long)self.filteredClassNames.count];
 }
 
 
@@ -86,7 +86,7 @@
 
 - (void)updateSearchResults:(NSString *)searchText
 {
-    if ([searchText length] > 0) {
+    if (searchText.length > 0) {
         NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", searchText];
         self.filteredClassNames = [self.classNames filteredArrayUsingPredicate:searchPredicate];
     } else {
@@ -106,7 +106,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.filteredClassNames count];
+    return self.filteredClassNames.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -130,7 +130,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *className = self.filteredClassNames[indexPath.row];
-    Class selectedClass = objc_getClass([className UTF8String]);
+    Class selectedClass = objc_getClass(className.UTF8String);
     FLEXObjectExplorerViewController *objectExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:selectedClass];
     [self.navigationController pushViewController:objectExplorer animated:YES];
 }

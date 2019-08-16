@@ -44,7 +44,7 @@
             [host tryExploreAddress:address safely:action.style == UIAlertActionStyleDefault];
         };
         [addressInput addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            NSString *copied = [UIPasteboard generalPasteboard].string;
+            NSString *copied = UIPasteboard.generalPasteboard.string;
             textField.placeholder = @"0x00000070deadbeef";
             // Go ahead and paste our clipboard if we have an address copied
             if ([copied hasPrefix:@"0x"]) {

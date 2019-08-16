@@ -69,8 +69,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    if ([UIApplication sharedApplication].isNetworkActivityIndicatorVisible) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    if (UIApplication.sharedApplication.isNetworkActivityIndicatorVisible) {
+        UIApplication.sharedApplication.networkActivityIndicatorVisible = NO;
     }
 }
 
@@ -84,7 +84,7 @@
 #pragma mark - Configuration
 
 - (void)configureWebView {
-    self.webView.backgroundColor = [UIColor whiteColor];
+    self.webView.backgroundColor = UIColor.whiteColor;
     self.webView.scalesPageToFit = YES;
     self.webView.dataDetectorTypes = UIDataDetectorTypeAll;
 }
@@ -93,11 +93,11 @@
 #pragma mark - UIWebViewDelegate
 
 - (void)webViewDidStartLoad:(UIWebView *)webView {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    UIApplication.sharedApplication.networkActivityIndicatorVisible = YES;
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    UIApplication.sharedApplication.networkActivityIndicatorVisible = NO;
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
@@ -108,7 +108,7 @@
     NSString *errorHTML = [NSString stringWithFormat:errorFormatString, localizedErrorMessage, error.localizedDescription];
     [self.webView loadHTMLString:errorHTML baseURL:nil];
 
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    UIApplication.sharedApplication.networkActivityIndicatorVisible = NO;
 }
 
 

@@ -76,9 +76,9 @@
 }
 
 - (void)configureTintedSwitch {
-    self.tintedSwitch.tintColor = [UIColor aapl_applicationBlueColor];
-    self.tintedSwitch.onTintColor = [UIColor aapl_applicationGreenColor];
-    self.tintedSwitch.thumbTintColor = [UIColor aapl_applicationPurpleColor];
+    self.tintedSwitch.tintColor = UIColor.aapl_applicationBlueColor;
+    self.tintedSwitch.onTintColor = UIColor.aapl_applicationGreenColor;
+    self.tintedSwitch.thumbTintColor = UIColor.aapl_applicationPurpleColor;
 
     [self.tintedSwitch addTarget:self action:@selector(switchValueDidChange:) forControlEvents:UIControlEventValueChanged];
 }

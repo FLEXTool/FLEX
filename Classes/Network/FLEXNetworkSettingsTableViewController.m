@@ -87,7 +87,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.cells count];
+    return self.cells.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -134,7 +134,7 @@
     UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [actionButton setTitle:title forState:UIControlStateNormal];
     if (isDestructive) {
-        actionButton.tintColor = [UIColor redColor];
+        actionButton.tintColor = UIColor.redColor;
     }
     actionButton.titleLabel.font = [[self class] cellTitleFont];
     [actionButton addTarget:self action:@selector(clearRequestsTapped:) forControlEvents:UIControlEventTouchUpInside];

@@ -130,7 +130,7 @@
 
 + (UIColor *)dividerColor
 {
-    return [UIColor lightGrayColor];
+    return UIColor.lightGrayColor;
 }
 
 + (CGFloat)horizontalPadding

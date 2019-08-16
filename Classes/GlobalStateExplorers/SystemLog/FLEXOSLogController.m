@@ -73,7 +73,7 @@ static uint8_t (*OSLogGetType)(void *);
 
     self = [super init];
     if (self) {
-        _filterPid = [NSProcessInfo processInfo].processIdentifier;
+        _filterPid = NSProcessInfo.processInfo.processIdentifier;
         _levelInfo = NO;
         _subsystemInfo = NO;
     }

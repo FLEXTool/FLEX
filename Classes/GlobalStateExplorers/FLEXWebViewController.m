@@ -70,14 +70,14 @@
     self.webView.frame = self.view.bounds;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-    if ([self.originalText length] > 0) {
+    if (self.originalText.length > 0) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonTapped:)];
     }
 }
 
 - (void)copyButtonTapped:(id)sender
 {
-    [[UIPasteboard generalPasteboard] setString:self.originalText];
+    [UIPasteboard.generalPasteboard setString:self.originalText];
 }
 
 

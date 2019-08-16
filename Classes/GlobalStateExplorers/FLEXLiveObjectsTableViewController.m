@@ -45,7 +45,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 - (NSArray<NSString *> *)allClassNames
 {
-    return [self.instanceCountsForClassNames allKeys];
+    return self.instanceCountsForClassNames.allKeys;
 }
 
 - (void)reloadTableData
@@ -186,7 +186,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.filteredClassNames count];
+    return self.filteredClassNames.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

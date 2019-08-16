@@ -41,7 +41,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
         [self.contentView addSubview:self.pathLabel];
 
         self.thumbnailImageView = [[UIImageView alloc] init];
-        self.thumbnailImageView.layer.borderColor = [[UIColor blackColor] CGColor];
+        self.thumbnailImageView.layer.borderColor = UIColor.blackColor.CGColor;
         self.thumbnailImageView.layer.borderWidth = 1.0;
         self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFit;
         [self.contentView addSubview:self.thumbnailImageView];
@@ -80,7 +80,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     self.nameLabel.text = [self nameLabelText];
     CGSize nameLabelPreferredSize = [self.nameLabel sizeThatFits:CGSizeMake(availableTextWidth, CGFLOAT_MAX)];
     self.nameLabel.frame = CGRectMake(textOriginX, kVerticalPadding, availableTextWidth, nameLabelPreferredSize.height);
-    self.nameLabel.textColor = (self.transaction.error || [FLEXUtility isErrorStatusCodeFromURLResponse:self.transaction.response]) ? [UIColor redColor] : [FLEXColor primaryTextColor];
+    self.nameLabel.textColor = (self.transaction.error || [FLEXUtility isErrorStatusCodeFromURLResponse:self.transaction.response]) ? UIColor.redColor : [FLEXColor primaryTextColor];
 
     self.pathLabel.text = [self pathLabelText];
     CGSize pathLabelPreferredSize = [self.pathLabel sizeThatFits:CGSizeMake(availableTextWidth, CGFLOAT_MAX)];
@@ -99,7 +99,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 {
     NSURL *url = self.transaction.request.URL;
     NSString *name = [url lastPathComponent];
-    if ([name length] == 0) {
+    if (name.length == 0) {
         name = @"/";
     }
     NSString *query = [url query];
@@ -113,7 +113,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 {
     NSURL *url = self.transaction.request.URL;
     NSMutableArray<NSString *> *mutablePathComponents = [[url pathComponents] mutableCopy];
-    if ([mutablePathComponents count] > 0) {
+    if (mutablePathComponents.count > 0) {
         [mutablePathComponents removeLastObject];
     }
     NSString *path = [url host];
@@ -128,19 +128,19 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     NSMutableArray<NSString *> *detailComponents = [NSMutableArray array];
 
     NSString *timestamp = [[self class] timestampStringFromRequestDate:self.transaction.startTime];
-    if ([timestamp length] > 0) {
+    if (timestamp.length > 0) {
         [detailComponents addObject:timestamp];
     }
 
     // Omit method for GET (assumed as default)
     NSString *httpMethod = self.transaction.request.HTTPMethod;
-    if ([httpMethod length] > 0) {
+    if (httpMethod.length > 0) {
         [detailComponents addObject:httpMethod];
     }
 
     if (self.transaction.transactionState == FLEXNetworkTransactionStateFinished || self.transaction.transactionState == FLEXNetworkTransactionStateFailed) {
         NSString *statusCodeString = [FLEXUtility statusCodeStringFromURLResponse:self.transaction.response];
-        if ([statusCodeString length] > 0) {
+        if (statusCodeString.length > 0) {
             [detailComponents addObject:statusCodeString];
         }
 

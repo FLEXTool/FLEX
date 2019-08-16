@@ -81,7 +81,7 @@
 - (UIBarButtonItem *)customImageBarButtonItem {
     UIBarButtonItem *customImageBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"tools_icon"] style:UIBarButtonItemStylePlain target:self action:@selector(barButtonItemClicked:)];
 
-    customImageBarButtonItem.tintColor = [UIColor aapl_applicationPurpleColor];
+    customImageBarButtonItem.tintColor = UIColor.aapl_applicationPurpleColor;
 
     return customImageBarButtonItem;
 }
@@ -93,7 +93,7 @@
 - (UIBarButtonItem *)customBarButtonItem {
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Button", nil) style:UIBarButtonItemStylePlain target:self action:@selector(barButtonItemClicked:)];
 
-    NSDictionary *attributes = @{NSForegroundColorAttributeName: [UIColor aapl_applicationPurpleColor]};
+    NSDictionary *attributes = @{NSForegroundColorAttributeName: UIColor.aapl_applicationPurpleColor};
     [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
 
     return barButtonItem;

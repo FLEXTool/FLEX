@@ -31,7 +31,7 @@
         self.depthIndicatorView.backgroundColor = [FLEXUtility hierarchyIndentPatternColor];
         [self.contentView addSubview:self.depthIndicatorView];
         
-        UIImage *defaultCircleImage = [FLEXUtility circularImageWithColor:[UIColor blackColor] radius:5.0];
+        UIImage *defaultCircleImage = [FLEXUtility circularImageWithColor:UIColor.blackColor radius:5.0];
         self.colorCircleImageView = [[UIImageView alloc] initWithImage:defaultCircleImage];
         [self.contentView addSubview:self.colorCircleImageView];
         
@@ -41,7 +41,7 @@
         
         self.viewBackgroundColorView = [[UIView alloc] init];
         self.viewBackgroundColorView.clipsToBounds = YES;
-        self.viewBackgroundColorView.layer.borderColor = [UIColor blackColor].CGColor;
+        self.viewBackgroundColorView.layer.borderColor = UIColor.blackColor.CGColor;
         self.viewBackgroundColorView.layer.borderWidth = 1.0f;
         [self.contentView addSubview:self.viewBackgroundColorView];
     }

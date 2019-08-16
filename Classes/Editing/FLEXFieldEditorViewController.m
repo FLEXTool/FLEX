@@ -33,15 +33,15 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         self.target = target;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)keyboardDidShow:(NSNotification *)notification
@@ -102,7 +102,7 @@
 
 - (FLEXArgumentInputView *)firstInputView
 {
-    return [[self.fieldEditorView argumentInputViews] firstObject];
+    return [self.fieldEditorView argumentInputViews].firstObject;
 }
 
 - (void)actionButtonPressed:(id)sender

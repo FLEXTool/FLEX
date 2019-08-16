@@ -33,7 +33,7 @@
 
 - (NSArray *)customSectionRowCookies
 {
-    return [self.dictionary allKeys];
+    return self.dictionary.allKeys;
 }
 
 - (NSString *)customSectionTitleForRowCookie:(id)rowCookie

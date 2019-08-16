@@ -30,7 +30,7 @@
             inputView.backgroundColor = self.backgroundColor;
             inputView.targetSize = FLEXArgumentInputViewSizeSmall;
             
-            if (fieldIndex < [customTitles count]) {
+            if (fieldIndex < customTitles.count) {
                 inputView.title = customTitles[fieldIndex];
             } else {
                 inputView.title = [NSString stringWithFormat:@"%@ field %lu (%@)", structName, (unsigned long)fieldIndex, prettyTypeEncoding];
@@ -59,7 +59,7 @@
 {
     if ([inputValue isKindOfClass:[NSValue class]]) {
         const char *structTypeEncoding = [inputValue objCType];
-        if (strcmp([self.typeEncoding UTF8String], structTypeEncoding) == 0) {
+        if (strcmp(self.typeEncoding.UTF8String, structTypeEncoding) == 0) {
             NSUInteger valueSize = 0;
             @try {
                 // NSGetSizeAndAlignment barfs on type encoding for bitfields.
@@ -90,7 +90,7 @@
 - (id)inputValue
 {
     NSValue *boxedStruct = nil;
-    const char *structTypeEncoding = [self.typeEncoding UTF8String];
+    const char *structTypeEncoding = self.typeEncoding.UTF8String;
     NSUInteger structSize = 0;
     @try {
         // NSGetSizeAndAlignment barfs on type encoding for bitfields.

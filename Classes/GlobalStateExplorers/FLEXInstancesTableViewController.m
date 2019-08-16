@@ -57,7 +57,7 @@
 
 + (instancetype)instancesTableViewControllerForClassName:(NSString *)className
 {
-    const char *classNameCString = [className UTF8String];
+    const char *classNameCString = className.UTF8String;
     NSMutableArray *instances = [NSMutableArray array];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
         if (strcmp(classNameCString, class_getName(actualClass)) == 0) {
@@ -71,7 +71,7 @@
     }];
     NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingAll:instances];
     FLEXInstancesTableViewController *viewController = [[self alloc] initWithReferences:references];
-    viewController.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)[instances count]];
+    viewController.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)instances.count];
     return viewController;
 }
 
@@ -209,7 +209,7 @@
         UIFont *cellFont = [FLEXUtility defaultTableViewCellLabelFont];
         cell.textLabel.font = cellFont;
         cell.detailTextLabel.font = cellFont;
-        cell.detailTextLabel.textColor = [UIColor grayColor];
+        cell.detailTextLabel.textColor = UIColor.grayColor;
     }
 
     FLEXObjectRef *row = self.sections[indexPath.section][indexPath.row];

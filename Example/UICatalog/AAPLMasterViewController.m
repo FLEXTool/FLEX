@@ -79,7 +79,7 @@
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
 #pragma clang diagnostic pop
         UINavigationController *newDetailViewController = [segue destinationViewController];
-        UINavigationController *oldDetailViewController = [self.splitViewController.viewControllers lastObject];
+        UINavigationController *oldDetailViewController = self.splitViewController.viewControllers.lastObject;
         
         // In order for a segue to occur when the view controller is in portrait, the "More" bar button item must be visible.
         // However, the "More" bar button item is only visible if the detail view controller's root view controller is

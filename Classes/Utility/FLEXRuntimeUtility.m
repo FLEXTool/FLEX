@@ -190,7 +190,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
     
     SEL getterSelector;
-    if ([customGetterString length] > 0) {
+    if (customGetterString.length > 0) {
         getterSelector = NSSelectorFromString(customGetterString);
     } else {
         NSString *propertyName = @(property_getName(property));
@@ -239,14 +239,14 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 {
     objc_property_t property = class_getProperty(theClass, name);
     if (!property) {
-        unsigned int totalAttributesCount = (unsigned int)[attributePairs count];
+        unsigned int totalAttributesCount = (unsigned int)attributePairs.count;
         objc_property_attribute_t *attributes = malloc(sizeof(objc_property_attribute_t) * totalAttributesCount);
         if (attributes) {
             unsigned int attributeIndex = 0;
-            for (NSString *attributeName in [attributePairs allKeys]) {
+            for (NSString *attributeName in attributePairs.allKeys) {
                 objc_property_attribute_t attribute;
-                attribute.name = [attributeName UTF8String];
-                attribute.value = [attributePairs[attributeName] UTF8String];
+                attribute.name = attributeName.UTF8String;
+                attribute.value = attributePairs[attributeName].UTF8String;
                 attributes[attributeIndex++] = attribute;
             }
             
@@ -330,7 +330,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     free(returnType);
     NSString *prettyName = [NSString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
     NSArray<NSString *> *components = [self prettyArgumentComponentsForMethod:method];
-    if ([components count] > 0) {
+    if (components.count > 0) {
         prettyName = [prettyName stringByAppendingString:[components componentsJoinedByString:@" "]];
     } else {
         prettyName = [prettyName stringByAppendingString:selectorName];
@@ -396,7 +396,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSUInteger numberOfArguments = [methodSignature numberOfArguments];
     for (NSUInteger argumentIndex = kFLEXNumberOfImplicitArgs; argumentIndex < numberOfArguments; argumentIndex++) {
         NSUInteger argumentsArrayIndex = argumentIndex - kFLEXNumberOfImplicitArgs;
-        id argumentObject = [arguments count] > argumentsArrayIndex ? arguments[argumentsArrayIndex] : nil;
+        id argumentObject = arguments.count > argumentsArrayIndex ? arguments[argumentsArrayIndex] : nil;
         
         // NSNull in the arguments array can be passed as a placeholder to indicate nil. We only need to set the argument if it will be non-nil.
         if (argumentObject && ![argumentObject isKindOfClass:[NSNull class]]) {
@@ -446,7 +446,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         [invocation invoke];
         
         // Retrieve the return value and box if necessary.
-        const char *returnType = [methodSignature methodReturnType];
+        const char *returnType = methodSignature.methodReturnType;
         
         if (returnType[0] == @encode(id)[0] || returnType[0] == @encode(Class)[0]) {
             // Return value is an object.
@@ -455,7 +455,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             returnObject = objectReturnedFromMethod;
         } else if (returnType[0] != @encode(void)[0]) {
             // Will use arbitrary buffer for return value and box it.
-            void *returnValue = malloc([methodSignature methodReturnLength]);
+            void *returnValue = malloc(methodSignature.methodReturnLength);
             
             if (returnValue) {
                 [invocation getReturnValue:returnValue];
@@ -534,7 +534,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSArray *wrappedObject = @[object];
         if ([NSJSONSerialization isValidJSONObject:wrappedObject]) {
             NSString *wrappedDescription = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:wrappedObject options:0 error:NULL] encoding:NSUTF8StringEncoding];
-            editableDescription = [wrappedDescription substringWithRange:NSMakeRange(1, [wrappedDescription length] - 2)];
+            editableDescription = [wrappedDescription substringWithRange:NSMakeRange(1, wrappedDescription.length - 2)];
         }
     }
     
@@ -624,7 +624,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                     // If the struct type encoding was successfully handled by NSGetSizeAndAlignment above, we *should* be ok with the field here.
                     const char *nextTypeStart = NSGetSizeAndAlignment(typeStart, &fieldSize, NULL);
                     NSString *typeEncoding = [@(structEncoding) substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)];
-                    typeBlock(structName, [typeEncoding UTF8String], [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
+                    typeBlock(structName, typeEncoding.UTF8String, [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
                     runningFieldOffset += fieldSize;
                     // Padding to keep proper alignment. __attribute((packed)) structs will break here.
                     // The type encoding is no different for packed structs, so it's not clear there's anything we can do for those.
@@ -647,7 +647,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSString *attributes = @(property_getAttributes(property));
     // Thanks to MAObjcRuntime for inspiration here.
     NSArray<NSString *> *attributePairs = [attributes componentsSeparatedByString:@","];
-    NSMutableDictionary<NSString *, NSString *> *attributesDictionary = [NSMutableDictionary dictionaryWithCapacity:[attributePairs count]];
+    NSMutableDictionary<NSString *, NSString *> *attributesDictionary = [NSMutableDictionary dictionaryWithCapacity:attributePairs.count];
     for (NSString *attributePair in attributePairs) {
         [attributesDictionary setObject:[attributePair substringFromIndex:1] forKey:[attributePair substringToIndex:1]];
     }
@@ -657,7 +657,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 + (NSString *)appendName:(NSString *)name toType:(NSString *)type
 {
     NSString *combined = nil;
-    if ([type characterAtIndex:[type length] - 1] == '*') {
+    if ([type characterAtIndex:type.length - 1] == '*') {
         combined = [type stringByAppendingString:name];
     } else {
         combined = [type stringByAppendingFormat:@" %@", name];
@@ -676,13 +676,13 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // See https://github.com/nygard/class-dump/blob/master/Source/CDType.m
     // Warning: this method uses multiple middle returns and macros to cut down on boilerplate.
     // The use of macros here was inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
-    const char *encodingCString = [encodingString UTF8String];
+    const char *encodingCString = encodingString.UTF8String;
     
     // Objects
     if (encodingCString[0] == '@') {
         NSString *class = [encodingString substringFromIndex:1];
         class = [class stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-        if ([class length] == 0 || [class isEqual:@"?"]) {
+        if (class.length == 0 || [class isEqual:@"?"]) {
             class = @"id";
         } else {
             class = [class stringByAppendingString:@" *"];

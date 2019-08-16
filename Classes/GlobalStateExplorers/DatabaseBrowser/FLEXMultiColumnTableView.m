@@ -204,7 +204,7 @@ static const CGFloat kColumnMargin = 1;
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIColor *backgroundColor = [UIColor whiteColor];
+    UIColor *backgroundColor = UIColor.whiteColor;
     if (indexPath.row % 2 != 0) {
         backgroundColor = [UIColor colorWithWhite:0.950 alpha:0.750];
     }
@@ -219,11 +219,11 @@ static const CGFloat kColumnMargin = 1;
         for (int i = 0 ; i < cell.labels.count; i++) {
             
             UILabel *label  = cell.labels[i];
-            label.textColor = [UIColor blackColor];
+            label.textColor = UIColor.blackColor;
             
             NSString *content = [NSString stringWithFormat:@"%@",self.rowData[i]];
             if ([content isEqualToString:@"<null>"]) {
-                label.textColor = [UIColor lightGrayColor];
+                label.textColor = UIColor.lightGrayColor;
                 content = @"NULL";
             }
             label.text            = content;

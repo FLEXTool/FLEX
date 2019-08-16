@@ -30,7 +30,7 @@
         UIFont *cellFont = [FLEXUtility defaultTableViewCellLabelFont];
         self.textLabel.font = cellFont;
         self.detailTextLabel.font = cellFont;
-        self.detailTextLabel.textColor = [UIColor grayColor];
+        self.detailTextLabel.textColor = UIColor.grayColor;
     }
 
     return self;

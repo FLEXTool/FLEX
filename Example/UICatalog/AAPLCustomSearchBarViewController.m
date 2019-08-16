@@ -71,7 +71,7 @@
     self.searchBar.showsCancelButton = YES;
     self.searchBar.showsBookmarkButton = YES;
     
-    self.searchBar.tintColor = [UIColor aapl_applicationPurpleColor];
+    self.searchBar.tintColor = UIColor.aapl_applicationPurpleColor;
     
     self.searchBar.backgroundImage = [UIImage imageNamed:@"search_bar_background"];
 

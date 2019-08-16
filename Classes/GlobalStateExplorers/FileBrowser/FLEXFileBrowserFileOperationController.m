@@ -39,7 +39,7 @@
 - (void)show
 {
     BOOL isDirectory = NO;
-    BOOL stillExists = [[NSFileManager defaultManager] fileExistsAtPath:self.path isDirectory:&isDirectory];
+    BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:self.path isDirectory:&isDirectory];
 
     if (stillExists) {
         UIAlertView *deleteWarning = [[UIAlertView alloc]
@@ -61,7 +61,7 @@
     if (buttonIndex == alertView.cancelButtonIndex) {
         // Nothing, just cancel
     } else if (buttonIndex == alertView.firstOtherButtonIndex) {
-        [[NSFileManager defaultManager] removeItemAtPath:self.path error:NULL];
+        [NSFileManager.defaultManager removeItemAtPath:self.path error:NULL];
     }
 }
 
@@ -102,7 +102,7 @@
 - (void)show
 {
     BOOL isDirectory = NO;
-    BOOL stillExists = [[NSFileManager defaultManager] fileExistsAtPath:self.path isDirectory:&isDirectory];
+    BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:self.path isDirectory:&isDirectory];
 
     if (stillExists) {
         UIAlertView *renameDialog = [[UIAlertView alloc]
@@ -130,7 +130,7 @@
     } else if (buttonIndex == alertView.firstOtherButtonIndex) {
         NSString *newFileName = [alertView textFieldAtIndex:0].text;
         NSString *newPath = [[self.path stringByDeletingLastPathComponent] stringByAppendingPathComponent:newFileName];
-        [[NSFileManager defaultManager] moveItemAtPath:self.path toPath:newPath error:NULL];
+        [NSFileManager.defaultManager moveItemAtPath:self.path toPath:newPath error:NULL];
     }
 }
 

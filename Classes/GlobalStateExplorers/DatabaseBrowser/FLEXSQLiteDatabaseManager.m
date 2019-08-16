@@ -33,7 +33,7 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
     if (_db) {
         return YES;
     }
-    int err = sqlite3_open([_databasePath UTF8String], &_db);
+    int err = sqlite3_open(_databasePath.UTF8String, &_db);
 
 #if SQLITE_HAS_CODEC
     NSString *defaultSqliteDatabasePassword = [FLEXManager sharedManager].defaultSqliteDatabasePassword;
@@ -117,7 +117,7 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
     [self open];
     NSMutableArray<NSDictionary<NSString *, id> *> *resultArray = [NSMutableArray array];
     sqlite3_stmt *pstmt;
-    if (sqlite3_prepare_v2(_db, [sql UTF8String], -1, &pstmt, 0) == SQLITE_OK) {
+    if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &pstmt, 0) == SQLITE_OK) {
         while (sqlite3_step(pstmt) == SQLITE_ROW) {
             NSUInteger num_cols = (NSUInteger)sqlite3_data_count(pstmt);
             if (num_cols > 0) {

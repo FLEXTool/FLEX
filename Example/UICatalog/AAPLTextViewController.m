@@ -71,15 +71,15 @@
     [super viewWillAppear:animated];
     
     // Listen for changes to keyboard visibility so that we can adjust the text view accordingly.
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardNotification:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleKeyboardNotification:) name:UIKeyboardWillHideNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleKeyboardNotification:) name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleKeyboardNotification:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 
@@ -135,8 +135,8 @@
     UIFontDescriptor *bodyFontDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
     self.textView.font = [UIFont fontWithDescriptor:bodyFontDescriptor size:0];
 
-    self.textView.textColor = [UIColor blackColor];
-    self.textView.backgroundColor = [UIColor whiteColor];
+    self.textView.textColor = UIColor.blackColor;
+    self.textView.backgroundColor = UIColor.whiteColor;
     self.textView.scrollEnabled = YES;
 
     // Let's modify some of the attributes of the attributed string.
@@ -158,13 +158,13 @@
     [attributedText addAttribute:NSFontAttributeName value:boldFont range:boldRange];
 
     // Add highlight.
-    [attributedText addAttribute:NSBackgroundColorAttributeName value:[UIColor aapl_applicationGreenColor] range:highlightedRange];
+    [attributedText addAttribute:NSBackgroundColorAttributeName value:UIColor.aapl_applicationGreenColor range:highlightedRange];
 
     // Add underline.
     [attributedText addAttribute:NSUnderlineStyleAttributeName value:@(NSUnderlineStyleSingle) range:underlinedRange];
 
     // Add tint.
-    [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor aapl_applicationBlueColor] range:tintedRange];
+    [attributedText addAttribute:NSForegroundColorAttributeName value:UIColor.aapl_applicationBlueColor range:tintedRange];
     
     // Add an image attachment.
     NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];

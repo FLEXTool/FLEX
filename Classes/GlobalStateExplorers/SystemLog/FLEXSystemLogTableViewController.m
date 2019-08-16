@@ -175,7 +175,7 @@
 {
     if (action == @selector(copy:)) {
         // We usually only want to copy the log message itself, not any metadata associated with it.
-        [UIPasteboard generalPasteboard].string = [self logMessageAtIndexPath:indexPath].messageText;
+        UIPasteboard.generalPasteboard.string = [self logMessageAtIndexPath:indexPath].messageText;
     }
 }
 

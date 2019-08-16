@@ -82,7 +82,7 @@
 }
 
 - (void)configureTintedSegmentedControl {
-    self.tintedSegmentedControl.tintColor = [UIColor aapl_applicationBlueColor];
+    self.tintedSegmentedControl.tintColor = UIColor.aapl_applicationBlueColor;
 
     self.tintedSegmentedControl.selectedSegmentIndex = 1;
 
@@ -97,7 +97,7 @@
     };
     
     // Guarantee that the segments show up in the same order.
-    NSArray *sortedSegmentImageNames = [[imageToAccessibilityLabelMappings allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    NSArray *sortedSegmentImageNames = [imageToAccessibilityLabelMappings.allKeys sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
 
     [sortedSegmentImageNames enumerateObjectsUsingBlock:^(NSString *segmentImageName, NSUInteger idx, BOOL *stop) {
         UIImage *image = [UIImage imageNamed:segmentImageName];
@@ -126,10 +126,10 @@
     UIFontDescriptor *captionFontDescriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleCaption1];
     UIFont *font = [UIFont fontWithDescriptor:captionFontDescriptor size:0];
 
-    NSDictionary *normalTextAttributes = @{NSForegroundColorAttributeName:[UIColor aapl_applicationPurpleColor], NSFontAttributeName:font};
+    NSDictionary *normalTextAttributes = @{NSForegroundColorAttributeName:UIColor.aapl_applicationPurpleColor, NSFontAttributeName:font};
     [self.customBackgroundSegmentedControl setTitleTextAttributes:normalTextAttributes forState:UIControlStateNormal];
 
-    NSDictionary *highlightedTextAttributes = @{NSForegroundColorAttributeName:[UIColor aapl_applicationGreenColor], NSFontAttributeName:font};
+    NSDictionary *highlightedTextAttributes = @{NSForegroundColorAttributeName:UIColor.aapl_applicationGreenColor, NSFontAttributeName:font};
     [self.customBackgroundSegmentedControl setTitleTextAttributes:highlightedTextAttributes forState:UIControlStateHighlighted];
     
     [self.customBackgroundSegmentedControl addTarget:self action:@selector(selectedSegmentDidChange:) forControlEvents:UIControlEventValueChanged];

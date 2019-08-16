@@ -27,7 +27,7 @@
         self.inputTextView = [UITextView new];
         self.inputTextView.font = [[self class] inputFont];
         self.inputTextView.backgroundColor = [FLEXColor primaryBackgroundColor];
-        self.inputTextView.layer.borderColor = [[FLEXColor borderColor] CGColor];
+        self.inputTextView.layer.borderColor = [FLEXColor borderColor].CGColor;
         self.inputTextView.layer.borderWidth = 1.f;
         self.inputTextView.layer.cornerRadius = 5.f;
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -144,7 +144,7 @@
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
         if (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle) {
-            self.inputTextView.layer.borderColor = [[FLEXColor borderColor] CGColor];
+            self.inputTextView.layer.borderColor = [FLEXColor borderColor].CGColor;
         }
     }
 #endif

@@ -109,8 +109,8 @@ const NSUInteger kProgressViewControllerMaxProgress = 100;
 - (void)configureTintedProgressView {
     self.tintedProgressView.progressViewStyle = UIProgressViewStyleDefault;
 
-    self.tintedProgressView.trackTintColor = [UIColor aapl_applicationBlueColor];
-    self.tintedProgressView.progressTintColor = [UIColor aapl_applicationPurpleColor];
+    self.tintedProgressView.trackTintColor = UIColor.aapl_applicationBlueColor;
+    self.tintedProgressView.progressTintColor = UIColor.aapl_applicationPurpleColor;
 }
 
 

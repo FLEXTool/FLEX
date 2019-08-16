@@ -83,13 +83,13 @@
 }
 
 - (void)configureSystemContactAddButton {
-    self.systemContactAddButton.backgroundColor = [UIColor clearColor];
+    self.systemContactAddButton.backgroundColor = UIColor.clearColor;
     
     [self.systemContactAddButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)configureSystemDetailDisclosureButton {
-    self.systemDetailDisclosureButton.backgroundColor = [UIColor clearColor];
+    self.systemDetailDisclosureButton.backgroundColor = UIColor.clearColor;
     
     [self.systemDetailDisclosureButton addTarget:self action:@selector(buttonClicked:) forControlEvents:UIControlEventTouchUpInside];
 }
@@ -100,7 +100,7 @@
     // Remove the title text.
     [self.imageButton setTitle:@"" forState:UIControlStateNormal];
 
-    self.imageButton.tintColor = [UIColor aapl_applicationPurpleColor];
+    self.imageButton.tintColor = UIColor.aapl_applicationPurpleColor;
     
     [self.imageButton setImage:[UIImage imageNamed:@"x_icon"] forState:UIControlStateNormal];
 
@@ -111,11 +111,11 @@
 }
 
 - (void)configureAttributedTextSystemButton {
-    NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: [UIColor aapl_applicationBlueColor], NSStrikethroughStyleAttributeName: @(NSUnderlineStyleSingle)};
+    NSDictionary *titleAttributes = @{NSForegroundColorAttributeName: UIColor.aapl_applicationBlueColor, NSStrikethroughStyleAttributeName: @(NSUnderlineStyleSingle)};
     NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Button", nil) attributes:titleAttributes];
     [self.attributedTextButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
 
-    NSDictionary *highlightedTitleAttributes = @{NSForegroundColorAttributeName : [UIColor aapl_applicationGreenColor], NSStrikethroughStyleAttributeName: @(NSUnderlineStyleThick)};
+    NSDictionary *highlightedTitleAttributes = @{NSForegroundColorAttributeName : UIColor.aapl_applicationGreenColor, NSStrikethroughStyleAttributeName: @(NSUnderlineStyleThick)};
     NSAttributedString *highlightedAttributedTitle = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Button", nil) attributes:highlightedTitleAttributes];
     [self.attributedTextButton setAttributedTitle:highlightedAttributedTitle forState:UIControlStateHighlighted];
 

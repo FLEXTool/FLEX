@@ -65,7 +65,7 @@
     [super viewDidLoad];
 
     // Set a list of colors that correspond to the selected page.
-    self.colors = @[[UIColor blackColor], [UIColor grayColor], [UIColor redColor], [UIColor greenColor], [UIColor blueColor], [UIColor cyanColor], [UIColor yellowColor], [UIColor magentaColor], [UIColor orangeColor], [UIColor purpleColor]];
+    self.colors = @[UIColor.blackColor, UIColor.grayColor, UIColor.redColor, UIColor.greenColor, UIColor.blueColor, UIColor.cyanColor, UIColor.yellowColor, UIColor.magentaColor, UIColor.orangeColor, UIColor.purpleColor];
 
     [self configurePageControl];
     [self pageControlValueDidChange];
@@ -76,12 +76,12 @@
 
 - (void)configurePageControl {
     // The total number of pages that are available is based on how many available colors we have.
-    self.pageControl.numberOfPages = [self.colors count];
+    self.pageControl.numberOfPages = self.colors.count;
     self.pageControl.currentPage = 2;
 
-    self.pageControl.tintColor = [UIColor aapl_applicationBlueColor];
-    self.pageControl.pageIndicatorTintColor = [UIColor aapl_applicationGreenColor];
-    self.pageControl.currentPageIndicatorTintColor = [UIColor aapl_applicationPurpleColor];
+    self.pageControl.tintColor = UIColor.aapl_applicationBlueColor;
+    self.pageControl.pageIndicatorTintColor = UIColor.aapl_applicationGreenColor;
+    self.pageControl.currentPageIndicatorTintColor = UIColor.aapl_applicationPurpleColor;
 
     [self.pageControl addTarget:self action:@selector(pageControlValueDidChange) forControlEvents:UIControlEventValueChanged];
 }

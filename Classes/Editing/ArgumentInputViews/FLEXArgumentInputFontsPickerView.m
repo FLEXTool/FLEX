@@ -40,7 +40,7 @@
 
 - (id)inputValue
 {
-    return [self.inputTextView.text length] > 0 ? [self.inputTextView.text copy] : nil;
+    return self.inputTextView.text.length > 0 ? [self.inputTextView.text copy] : nil;
 }
 
 #pragma mark - private
@@ -74,7 +74,7 @@
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    return [self.availableFonts count];
+    return self.availableFonts.count;
 }
 
 #pragma mark - UIPickerViewDelegate
@@ -84,7 +84,7 @@
     UILabel *fontLabel;
     if (!view) {
         fontLabel = [UILabel new];
-        fontLabel.backgroundColor = [UIColor clearColor];
+        fontLabel.backgroundColor = UIColor.clearColor;
         fontLabel.textAlignment = NSTextAlignmentCenter;
     } else {
         fontLabel = (UILabel*)view;

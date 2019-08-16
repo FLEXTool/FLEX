@@ -52,7 +52,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
                 collectionViewLayout:layout
             ];
             cv.showsHorizontalScrollIndicator = NO;
-            cv.backgroundColor = [UIColor clearColor];
+            cv.backgroundColor = UIColor.clearColor;
             cv.delegate = self;
             cv.dataSource = self;
             [cv registerClass:[FLEXCarouselCell class] forCellWithReuseIdentifier:kCarouselCellReuseIdentifier];
@@ -68,7 +68,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 
         // Dynamic type
         __weak __typeof(self) weakSelf = self;
-        _dynamicTypeObserver = [[NSNotificationCenter defaultCenter]
+        _dynamicTypeObserver = [NSNotificationCenter.defaultCenter
             addObserverForName:UIContentSizeCategoryDidChangeNotification
             object:nil queue:nil usingBlock:^(NSNotification *note) {
                 [self.collectionView setNeedsLayout];
@@ -87,7 +87,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self.dynamicTypeObserver];
+    [NSNotificationCenter.defaultCenter removeObserver:self.dynamicTypeObserver];
 }
 
 #pragma mark - Overrides
@@ -95,7 +95,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
 
-    CGFloat width = 1.f / [UIScreen mainScreen].scale;
+    CGFloat width = 1.f / UIScreen.mainScreen.scale;
 
     // Draw hairline
     CGContextRef context = UIGraphicsGetCurrentContext();

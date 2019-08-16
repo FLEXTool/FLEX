@@ -67,7 +67,7 @@
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     
     // If the image does not have the same aspect ratio as imageView's bounds, then imageView's backgroundColor will be applied to the "empty" space.
-    imageView.backgroundColor = [UIColor whiteColor];
+    imageView.backgroundColor = UIColor.whiteColor;
     
     imageView.animationDuration = 5;
     [imageView startAnimating];

@@ -82,7 +82,7 @@
 - (void)configureTintedActivityIndicatorView {
     self.tintedActivityIndicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
 
-    self.tintedActivityIndicatorView.color = [UIColor aapl_applicationPurpleColor];
+    self.tintedActivityIndicatorView.color = UIColor.aapl_applicationPurpleColor;
 
     [self.tintedActivityIndicatorView startAnimating];
 }

@@ -17,7 +17,7 @@
 
 - (id)flex_pop
 {
-    id anObject = [self lastObject];
+    id anObject = self.lastObject;
     [self removeLastObject];
     return anObject;
 }
@@ -37,7 +37,7 @@
 
 - (uint64_t)totalSizeAtPath:(NSString *)path
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSFileManager *fileManager = NSFileManager.defaultManager;
     NSDictionary<NSString *, id> *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
     uint64_t totalSize = [attributes fileSize];
     
@@ -64,7 +64,7 @@
 
 - (void)main
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSFileManager *fileManager = NSFileManager.defaultManager;
     NSMutableArray<NSString *> *searchPaths = [NSMutableArray array];
     NSMutableDictionary<NSString *, NSNumber *> *sizeMapping = [NSMutableDictionary dictionary];
     uint64_t totalSize = 0;
@@ -72,7 +72,7 @@
     [stack flex_push:self.path];
     
     //recursive found all match searchString paths, and precomputing there size
-    while ([stack count]) {
+    while (stack.count) {
         NSString *currentPath = [stack flex_pop];
         NSArray<NSString *> *directoryPath = [fileManager contentsOfDirectoryAtPath:currentPath error:nil];
         

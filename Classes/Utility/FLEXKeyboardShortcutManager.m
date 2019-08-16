@@ -86,7 +86,7 @@
     }
     
     // Fudging to get easy columns with tabs
-    if ([prettyFlags length] < 2) {
+    if (prettyFlags.length < 2) {
         prettyKey = [prettyKey stringByAppendingString:@"\t"];
     }
     
@@ -239,9 +239,9 @@ static const long kFLEXCommandKeyCode = 0xe3;
         isKeyDown = [event _isKeyDown];
     }
     
-    BOOL interactionEnabled = ![[UIApplication sharedApplication] isIgnoringInteractionEvents];
+    BOOL interactionEnabled = ![UIApplication.sharedApplication isIgnoringInteractionEvents];
     BOOL hasFirstResponder = NO;
-    if (isKeyDown && [modifiedInput length] > 0 && interactionEnabled) {
+    if (isKeyDown && modifiedInput.length > 0 && interactionEnabled) {
         UIResponder *firstResponder = nil;
         for (UIWindow *window in [FLEXUtility allWindows]) {
             firstResponder = [window valueForKey:@"firstResponder"];
@@ -294,7 +294,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
 - (NSString *)keyboardShortcutsDescription
 {
     NSMutableString *description = [NSMutableString string];
-    NSArray<FLEXKeyInput *> *keyInputs = [[self.actionsForKeyInputs allKeys] sortedArrayUsingComparator:^NSComparisonResult(FLEXKeyInput *_Nonnull input1, FLEXKeyInput *_Nonnull input2) {
+    NSArray<FLEXKeyInput *> *keyInputs = [self.actionsForKeyInputs.allKeys sortedArrayUsingComparator:^NSComparisonResult(FLEXKeyInput *_Nonnull input1, FLEXKeyInput *_Nonnull input2) {
         return [input1.key caseInsensitiveCompare:input2.key];
     }];
     for (FLEXKeyInput *keyInput in keyInputs) {

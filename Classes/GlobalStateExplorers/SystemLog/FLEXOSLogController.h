@@ -8,7 +8,7 @@
 
 #import "FLEXLogController.h"
 
-#define FLEXOSLogAvailable() ([NSProcessInfo processInfo].operatingSystemVersion.majorVersion >= 10)
+#define FLEXOSLogAvailable() (NSProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 10)
 
 extern NSString * const kFLEXiOSPersistentOSLogKey;
 

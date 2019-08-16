@@ -121,7 +121,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (BOOL)showScopeBar
 {
-    return [self.viewsAtTap count] > 0;
+    return self.viewsAtTap.count > 0;
 }
 
 - (void)updateSearchResults:(NSString *)newText
@@ -143,7 +143,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.displayedViews count];
+    return self.displayedViews.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -177,7 +177,7 @@ static const NSInteger kFLEXHierarchyScopeFullHierarchyIndex = 1;
     });
     
     UIColor *viewColour = view.backgroundColor;
-    if (!viewColour || [viewColour isEqual:[UIColor clearColor]]) {
+    if (!viewColour || [viewColour isEqual:UIColor.clearColor]) {
         cell.viewBackgroundColorView.backgroundColor = checkerPatternColour;
     } else {
         cell.viewBackgroundColorView.backgroundColor = viewColour;

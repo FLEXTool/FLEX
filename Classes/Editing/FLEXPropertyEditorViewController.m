@@ -39,7 +39,7 @@
     id currentValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
     self.setterButton.enabled = [[self class] canEditProperty:self.property onObject:self.target currentValue:currentValue];
     
-    const char *typeEncoding = [[FLEXRuntimeUtility typeEncodingForProperty:self.property] UTF8String];
+    const char *typeEncoding = [FLEXRuntimeUtility typeEncodingForProperty:self.property].UTF8String;
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:typeEncoding];
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
@@ -92,7 +92,7 @@
 
 + (BOOL)canEditProperty:(objc_property_t)property onObject:(id)object currentValue:(id)value
 {
-    const char *typeEncoding = [[FLEXRuntimeUtility typeEncodingForProperty:property] UTF8String];
+    const char *typeEncoding = [FLEXRuntimeUtility typeEncodingForProperty:property].UTF8String;
     BOOL canEditType = [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:typeEncoding currentValue:value];
     SEL setterSelector = [FLEXRuntimeUtility setterSelectorForProperty:property];
     BOOL isReadonly = [FLEXRuntimeUtility isReadonlyProperty:property] && (!setterSelector || ![object respondsToSelector:setterSelector]);

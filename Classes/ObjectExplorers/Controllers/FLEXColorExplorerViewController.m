@@ -42,7 +42,7 @@
 - (UIView *)customViewForRowCookie:(id)rowCookie
 {
     if ([rowCookie isKindOfClass:[NSNumber class]]) {
-        CGFloat width = [UIScreen mainScreen].bounds.size.width;
+        CGFloat width = UIScreen.mainScreen.bounds.size.width;
         switch ([rowCookie integerValue]) {
             case 0: {
                 UIView *square = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, 44)];

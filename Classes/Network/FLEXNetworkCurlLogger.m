@@ -18,7 +18,7 @@
         [curlCommandString appendFormat:@"-H \'%@: %@\' ", key, val];
     }];
 
-    NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:request.URL];
+    NSArray<NSHTTPCookie *> *cookies = [NSHTTPCookieStorage.sharedHTTPCookieStorage cookiesForURL:request.URL];
     if (cookies) {
         [curlCommandString appendFormat:@"-H \'Cookie:"];
         for (NSHTTPCookie *cookie in cookies) {

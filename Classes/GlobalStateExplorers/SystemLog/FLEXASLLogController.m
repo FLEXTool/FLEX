@@ -120,7 +120,7 @@
 {
     static NSString *pidString = nil;
     if (!pidString) {
-        pidString = @([[NSProcessInfo processInfo] processIdentifier]).stringValue;
+        pidString = @([NSProcessInfo.processInfo processIdentifier]).stringValue;
     }
 
     // Create system log query object.

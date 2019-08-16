@@ -50,7 +50,7 @@
         //computing path size
         FLEXFileBrowserTableViewController *__weak weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSFileManager *fileManager = NSFileManager.defaultManager;
             NSDictionary<NSString *, id> *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
             uint64_t totalSize = [attributes fileSize];
 
@@ -144,7 +144,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.searchController.isActive ? [self.searchPaths count] : [self.childPaths count];
+    return self.searchController.isActive ? self.searchPaths.count : self.childPaths.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -160,17 +160,17 @@
         sizeString = [NSByteCountFormatter stringFromByteCount:[currentSize longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
     }
 
-    return [NSString stringWithFormat:@"%lu files (%@)", (unsigned long)[currentPaths count], sizeString];
+    return [NSString stringWithFormat:@"%lu files (%@)", (unsigned long)currentPaths.count, sizeString];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
-    NSDictionary<NSString *, id> *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:NULL];
+    NSDictionary<NSString *, id> *attributes = [NSFileManager.defaultManager attributesOfItemAtPath:fullPath error:NULL];
     BOOL isDirectory = [attributes.fileType isEqual:NSFileTypeDirectory];
     NSString *subtitle = nil;
     if (isDirectory) {
-        NSUInteger count = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:fullPath error:NULL] count];
+        NSUInteger count = [NSFileManager.defaultManager contentsOfDirectoryAtPath:fullPath error:NULL].count;
         subtitle = [NSString stringWithFormat:@"%lu item%@", (unsigned long)count, (count == 1 ? @"" : @"s")];
     } else {
         NSString *sizeString = [NSByteCountFormatter stringFromByteCount:attributes.fileSize countStyle:NSByteCountFormatterCountStyleFile];
@@ -189,7 +189,7 @@
         cell = [[FLEXFileBrowserTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         cell.detailTextLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
-        cell.detailTextLabel.textColor = [UIColor grayColor];
+        cell.detailTextLabel.textColor = UIColor.grayColor;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     NSString *cellTitle = [fullPath lastPathComponent];
@@ -213,7 +213,7 @@
     NSString *pathExtension = subpath.pathExtension;
 
     BOOL isDirectory = NO;
-    BOOL stillExists = [[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory];
+    BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:fullPath isDirectory:&isDirectory];
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     UIImage *image = cell.imageView.image;
 
@@ -293,7 +293,7 @@
     UIMenuItem *copyPath = [[UIMenuItem alloc] initWithTitle:@"Copy Path" action:@selector(fileBrowserCopyPath:)];
     UIMenuItem *share = [[UIMenuItem alloc] initWithTitle:@"Share" action:@selector(fileBrowserShare:)];
 
-    [UIMenuController sharedMenuController].menuItems = @[rename, delete, copyPath, share];
+    UIMenuController.sharedMenuController.menuItems = @[rename, delete, copyPath, share];
 
     return YES;
 }
@@ -353,7 +353,7 @@
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
-    [UIPasteboard generalPasteboard].string = fullPath;
+    UIPasteboard.generalPasteboard.string = fullPath;
 }
 
 - (void)fileBrowserShare:(UITableViewCell *)sender
@@ -363,7 +363,7 @@
     NSURL *filePath = [NSURL fileURLWithPath:pathString];
 
     BOOL isDirectory = NO;
-    [[NSFileManager defaultManager] fileExistsAtPath:pathString isDirectory:&isDirectory];
+    [NSFileManager.defaultManager fileExistsAtPath:pathString isDirectory:&isDirectory];
 
     if (isDirectory) {
         // UIDocumentInteractionController for folders
@@ -388,7 +388,7 @@
 - (void)reloadCurrentPath
 {
     NSMutableArray<NSString *> *childPaths = [NSMutableArray array];
-    NSArray<NSString *> *subpaths = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.path error:NULL];
+    NSArray<NSString *> *subpaths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.path error:NULL];
     for (NSString *subpath in subpaths) {
         [childPaths addObject:[self.path stringByAppendingPathComponent:subpath]];
     }
@@ -420,7 +420,7 @@
 - (void)forwardAction:(SEL)action withSender:(id)sender
 {
     id target = [self.nextResponder targetForAction:action withSender:sender];
-    [[UIApplication sharedApplication] sendAction:action to:target from:self forEvent:nil];
+    [UIApplication.sharedApplication sendAction:action to:target from:self forEvent:nil];
 }
 
 - (void)fileBrowserRename:(UIMenuController *)sender

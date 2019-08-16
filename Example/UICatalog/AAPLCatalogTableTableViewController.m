@@ -44,7 +44,7 @@
     infoLabel.textAlignment = NSTextAlignmentCenter;
 
     UIView *view = viewController.view;
-    view.backgroundColor = [UIColor whiteColor];
+    view.backgroundColor = UIColor.whiteColor;
     [view addSubview:infoLabel];
 
     [view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[infoLabel]-0-|"

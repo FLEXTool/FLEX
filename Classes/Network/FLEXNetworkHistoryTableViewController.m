@@ -34,10 +34,10 @@
 {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNewTransactionRecordedNotification:) name:kFLEXNetworkRecorderNewTransactionNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleTransactionsClearedNotification:) name:kFLEXNetworkRecorderTransactionsClearedNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetworkObserverEnabledStateChangedNotification:) name:kFLEXNetworkObserverEnabledStateChangedNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleNewTransactionRecordedNotification:) name:kFLEXNetworkRecorderNewTransactionNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleTransactionsClearedNotification:) name:kFLEXNetworkRecorderTransactionsClearedNotification object:nil];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleNetworkObserverEnabledStateChangedNotification:) name:kFLEXNetworkObserverEnabledStateChangedNotification object:nil];
         self.title = @"📡  Network";
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(settingsButtonTapped:)];
 
@@ -50,7 +50,7 @@
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void)viewDidLoad
@@ -140,10 +140,10 @@
         NSInteger totalRequests = 0;
         if (self.searchController.isActive) {
             bytesReceived = self.filteredBytesReceived;
-            totalRequests = [self.filteredNetworkTransactions count];
+            totalRequests = self.filteredNetworkTransactions.count;
         } else {
             bytesReceived = self.bytesReceived;
-            totalRequests = [self.networkTransactions count];
+            totalRequests = self.networkTransactions.count;
         }
         NSString *byteCountText = [NSByteCountFormatter stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary];
         NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
@@ -185,9 +185,9 @@
         return;
     }
 
-    NSInteger existingRowCount = [self.networkTransactions count];
+    NSInteger existingRowCount = self.networkTransactions.count;
     [self updateTransactions];
-    NSInteger newRowCount = [self.networkTransactions count];
+    NSInteger newRowCount = self.networkTransactions.count;
     NSInteger addedRowCount = newRowCount - existingRowCount;
 
     if (addedRowCount != 0 && !self.isPresentingSearch) {
@@ -259,7 +259,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.searchController.isActive ? [self.filteredNetworkTransactions count] : [self.networkTransactions count];
+    return self.searchController.isActive ? self.filteredNetworkTransactions.count : self.networkTransactions.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
@@ -315,7 +315,7 @@
     if (action == @selector(copy:)) {
         FLEXNetworkTransaction *transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
         NSString *requestURLString = transaction.request.URL.absoluteString ?: @"";
-        [[UIPasteboard generalPasteboard] setString:requestURLString];
+        [UIPasteboard.generalPasteboard setString:requestURLString];
     }
 }
 

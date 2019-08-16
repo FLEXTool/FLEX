@@ -83,8 +83,8 @@
 }
 
 - (void)configureTintedTextField {
-    self.tintedTextField.tintColor = [UIColor aapl_applicationBlueColor];
-    self.tintedTextField.textColor = [UIColor aapl_applicationGreenColor];
+    self.tintedTextField.tintColor = UIColor.aapl_applicationBlueColor;
+    self.tintedTextField.textColor = UIColor.aapl_applicationGreenColor;
 
     self.tintedTextField.placeholder = NSLocalizedString(@"Placeholder text", nil);
     self.tintedTextField.returnKeyType = UIReturnKeyDone;
@@ -127,7 +127,7 @@
 
     // Add an empty view as the left view to ensure inset between the text and the bounding rectangle.
     UIView *leftPaddingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 0)];
-    leftPaddingView.backgroundColor = [UIColor clearColor];
+    leftPaddingView.backgroundColor = UIColor.clearColor;
     self.customTextField.leftView = leftPaddingView;
     self.customTextField.leftViewMode = UITextFieldViewModeAlways;
 
@@ -149,7 +149,7 @@
 #pragma mark - Actions
 
 - (void)customTextFieldPurpleButtonClicked {
-    self.customTextField.textColor = [UIColor aapl_applicationPurpleColor];
+    self.customTextField.textColor = UIColor.aapl_applicationPurpleColor;
 
     NSLog(@"The custom text field's purple right view button was clicked.");
 }

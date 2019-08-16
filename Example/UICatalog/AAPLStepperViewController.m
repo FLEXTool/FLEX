@@ -86,7 +86,7 @@
 }
 
 - (void)configureTintedStepper {
-    self.tintedStepper.tintColor = [UIColor aapl_applicationBlueColor];
+    self.tintedStepper.tintColor = UIColor.aapl_applicationBlueColor;
 
     self.tintedStepperLabel.text = [NSString stringWithFormat:@"%ld", (long)self.tintedStepper.value];
     [self.tintedStepper addTarget:self action:@selector(stepperValueDidChange:) forControlEvents:UIControlEventValueChanged];

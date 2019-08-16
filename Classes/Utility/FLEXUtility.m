@@ -26,7 +26,7 @@
     NSString *description = [[view class] description];
     
     NSString *viewControllerDescription = [[[self viewControllerForView:view] class] description];
-    if ([viewControllerDescription length] > 0) {
+    if (viewControllerDescription.length > 0) {
         description = [description stringByAppendingFormat:@" (%@)", viewControllerDescription];
     }
     
@@ -34,7 +34,7 @@
         description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:view.frame]];
     }
     
-    if ([view.accessibilityLabel length] > 0) {
+    if (view.accessibilityLabel.length > 0) {
         description = [description stringByAppendingFormat:@" · %@", view.accessibilityLabel];
     }
     
@@ -82,7 +82,7 @@
     CGFloat diameter = radius * 2.0;
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(diameter, diameter), NO, 0.0);
     CGContextRef imageContext = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(imageContext, [color CGColor]);
+    CGContextSetFillColorWithColor(imageContext, color.CGColor);
     CGContextFillEllipseInRect(imageContext, CGRectMake(0, 0, diameter, diameter));
     UIImage *circularImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -192,7 +192,7 @@
     
     NSMutableString *mutableString = [originalString mutableCopy];
     
-    NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:mutableString options:0 range:NSMakeRange(0, [mutableString length])];
+    NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:mutableString options:0 range:NSMakeRange(0, mutableString.length)];
     for (NSTextCheckingResult *result in [matches reverseObjectEnumerator]) {
         NSString *foundString = [mutableString substringWithRange:result.range];
         NSString *replacementString = escapingDictionary[foundString];
@@ -295,9 +295,9 @@
     for (NSString *keyValueString in queryComponents) {
         // [a, 1]
         NSArray<NSString *> *components = [keyValueString componentsSeparatedByString:@"="];
-        if ([components count] == 2) {
-            NSString *key = [[components firstObject] stringByRemovingPercentEncoding];
-            id value = [[components lastObject] stringByRemovingPercentEncoding];
+        if (components.count == 2) {
+            NSString *key = [components.firstObject stringByRemovingPercentEncoding];
+            id value = [components.lastObject stringByRemovingPercentEncoding];
 
             // Handle multiple entries under the same key as an array
             id existingEntry = queryDictionary[key];
@@ -343,13 +343,13 @@
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData
 {
     NSData *inflatedData = nil;
-    NSUInteger compressedDataLength = [compressedData length];
+    NSUInteger compressedDataLength = compressedData.length;
     if (compressedDataLength > 0) {
         z_stream stream;
         stream.zalloc = Z_NULL;
         stream.zfree = Z_NULL;
         stream.avail_in = (uInt)compressedDataLength;
-        stream.next_in = (void *)[compressedData bytes];
+        stream.next_in = (void *)compressedData.bytes;
         stream.total_out = 0;
         stream.avail_out = 0;
 
@@ -357,11 +357,11 @@
         if (inflateInit2(&stream, 15 + 32) == Z_OK) {
             int status = Z_OK;
             while (status == Z_OK) {
-                if (stream.total_out >= [mutableData length]) {
+                if (stream.total_out >= mutableData.length) {
                     mutableData.length += compressedDataLength / 2;
                 }
                 stream.next_out = (uint8_t *)[mutableData mutableBytes] + stream.total_out;
-                stream.avail_out = (uInt)([mutableData length] - stream.total_out);
+                stream.avail_out = (uInt)(mutableData.length - stream.total_out);
                 status = inflate(&stream, Z_SYNC_FLUSH);
             }
             if (inflateEnd(&stream) == Z_OK) {

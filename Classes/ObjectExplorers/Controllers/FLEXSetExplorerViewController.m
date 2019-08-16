@@ -33,7 +33,7 @@
 
 - (NSArray *)customSectionRowCookies
 {
-    return [self.set allObjects];
+    return self.set.allObjects;
 }
 
 - (NSString *)customSectionTitleForRowCookie:(id)rowCookie

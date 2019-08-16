@@ -131,7 +131,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (UIViewController *)viewControllerForRotationAndOrientation
 {
-    UIWindow *window = self.previousKeyWindow ?: [[UIApplication sharedApplication] keyWindow];
+    UIWindow *window = self.previousKeyWindow ?: [UIApplication.sharedApplication keyWindow];
     UIViewController *viewController = window.rootViewController;
     // Obfuscating selector _viewControllerForSupportedInterfaceOrientations
     NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
@@ -175,7 +175,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        for (UIView *outlineView in [self.outlineViewsForVisibleViews allValues]) {
+        for (UIView *outlineView in self.outlineViewsForVisibleViews.allValues) {
             outlineView.hidden = YES;
         }
         self.selectedViewOverlay.hidden = YES;
@@ -221,7 +221,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             }
             UIColor *outlineColor = [FLEXUtility consistentRandomColorForObject:selectedView];
             self.selectedViewOverlay.backgroundColor = [outlineColor colorWithAlphaComponent:0.2];
-            self.selectedViewOverlay.layer.borderColor = [outlineColor CGColor];
+            self.selectedViewOverlay.layer.borderColor = outlineColor.CGColor;
             self.selectedViewOverlay.frame = [self.view convertRect:selectedView.bounds fromView:selectedView];
             
             // Make sure the selected overlay is in front of all the other subviews except the toolbar, which should always stay on top.
@@ -397,7 +397,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (UIWindow *)statusWindow
 {
     NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
-    return [[UIApplication sharedApplication] valueForKey:statusBarString];
+    return [UIApplication.sharedApplication valueForKey:statusBarString];
 }
 
 - (void)moveButtonTapped:(FLEXToolbarItem *)sender
@@ -562,8 +562,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     CGRect outlineFrame = [self frameInLocalCoordinatesForView:view];
     UIView *outlineView = [[UIView alloc] initWithFrame:outlineFrame];
-    outlineView.backgroundColor = [UIColor clearColor];
-    outlineView.layer.borderColor = [[FLEXUtility consistentRandomColorForObject:view] CGColor];
+    outlineView.backgroundColor = UIColor.clearColor;
+    outlineView.layer.borderColor = [FLEXUtility consistentRandomColorForObject:view].CGColor;
     outlineView.layer.borderWidth = 1.0;
     return outlineView;
 }
@@ -594,7 +594,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     // Select in the window that would handle the touch, but don't just use the result of hitTest:withEvent: so we can still select views with interaction disabled.
     // Default to the the application's key window if none of the windows want the touch.
-    UIWindow *windowForSelection = [[UIApplication sharedApplication] keyWindow];
+    UIWindow *windowForSelection = [UIApplication.sharedApplication keyWindow];
     for (UIWindow *window in [[FLEXUtility allWindows] reverseObjectEnumerator]) {
         // Ignore the explorer's own window.
         if (window != self.view.window) {
@@ -606,7 +606,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     
     // Select the deepest visible view at the tap point. This generally corresponds to what the user wants to select.
-    return [[self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES] lastObject];
+    return [self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES].lastObject;
 }
 
 - (NSArray<UIView *> *)recursiveSubviewsAtPoint:(CGPoint)pointInView inView:(UIView *)view skipHiddenViews:(BOOL)skipHidden
@@ -791,7 +791,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)makeKeyAndPresentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
 {
     // Save the current key window so we can restore it following dismissal.
-    self.previousKeyWindow = [[UIApplication sharedApplication] keyWindow];
+    self.previousKeyWindow = [UIApplication.sharedApplication keyWindow];
     
     // Make our window key to correctly handle input.
     [self.view.window makeKeyWindow];
@@ -802,8 +802,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // If this app doesn't use view controller based status bar management and we're on iOS 7+,
     // make sure the status bar style is UIStatusBarStyleDefault. We don't actually have to check
     // for view controller based management because the global methods no-op if that is turned on.
-    self.previousStatusBarStyle = [[UIApplication sharedApplication] statusBarStyle];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    self.previousStatusBarStyle = [UIApplication.sharedApplication statusBarStyle];
+    [UIApplication.sharedApplication setStatusBarStyle:UIStatusBarStyleDefault];
     
     // Show the view controller.
     [self presentViewController:viewController animated:animated completion:completion];
@@ -821,7 +821,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [[self statusWindow] setWindowLevel:UIWindowLevelStatusBar];
     
     // Restore the status bar style if the app is using global status bar management.
-    [[UIApplication sharedApplication] setStatusBarStyle:self.previousStatusBarStyle];
+    [UIApplication.sharedApplication setStatusBarStyle:self.previousStatusBarStyle];
     
     [self dismissViewControllerAnimated:animated completion:completion];
 }
@@ -885,7 +885,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self toggleToolWithViewControllerProvider:^UIViewController *{
         FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
         globalsViewController.delegate = self;
-        [FLEXGlobalsTableViewController setApplicationWindow:[[UIApplication sharedApplication] keyWindow]];
+        [FLEXGlobalsTableViewController setApplicationWindow:[UIApplication.sharedApplication keyWindow]];
         return [[UINavigationController alloc] initWithRootViewController:globalsViewController];
     } completion:nil];
 }
@@ -894,9 +894,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
-        frame.origin.y += 1.0 / [[UIScreen mainScreen] scale];
+        frame.origin.y += 1.0 / UIScreen.mainScreen.scale;
         self.selectedView.frame = frame;
-    } else if (self.currentMode == FLEXExplorerModeSelect && [self.viewsAtTapPoint count] > 0) {
+    } else if (self.currentMode == FLEXExplorerModeSelect && self.viewsAtTapPoint.count > 0) {
         NSInteger selectedViewIndex = [self.viewsAtTapPoint indexOfObject:self.selectedView];
         if (selectedViewIndex > 0) {
             self.selectedView = [self.viewsAtTapPoint objectAtIndex:selectedViewIndex - 1];
@@ -908,11 +908,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
-        frame.origin.y -= 1.0 / [[UIScreen mainScreen] scale];
+        frame.origin.y -= 1.0 / UIScreen.mainScreen.scale;
         self.selectedView.frame = frame;
-    } else if (self.currentMode == FLEXExplorerModeSelect && [self.viewsAtTapPoint count] > 0) {
+    } else if (self.currentMode == FLEXExplorerModeSelect && self.viewsAtTapPoint.count > 0) {
         NSInteger selectedViewIndex = [self.viewsAtTapPoint indexOfObject:self.selectedView];
-        if (selectedViewIndex < [self.viewsAtTapPoint count] - 1) {
+        if (selectedViewIndex < self.viewsAtTapPoint.count - 1) {
             self.selectedView = [self.viewsAtTapPoint objectAtIndex:selectedViewIndex + 1];
         }
     }
@@ -922,7 +922,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
-        frame.origin.x += 1.0 / [[UIScreen mainScreen] scale];
+        frame.origin.x += 1.0 / UIScreen.mainScreen.scale;
         self.selectedView.frame = frame;
     }
 }
@@ -931,7 +931,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
-        frame.origin.x -= 1.0 / [[UIScreen mainScreen] scale];
+        frame.origin.x -= 1.0 / UIScreen.mainScreen.scale;
         self.selectedView.frame = frame;
     }
 }

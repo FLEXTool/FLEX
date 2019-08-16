@@ -83,7 +83,7 @@ static const u_int8_t FLEXBinaryIcon2x[] = {0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 
 
 #pragma mark - Images
 
-#define FLEXImage(base) (([[UIScreen mainScreen] scale] > 1.5) ? \
+#define FLEXImage(base) ((UIScreen.mainScreen.scale > 1.5) ? \
     [self imageWithBytesNoCopy:(void *)base##2x length:sizeof(base##2x) scale:2.0] : \
     [self imageWithBytesNoCopy:(void *)base length:sizeof(base) scale:1.0])
 

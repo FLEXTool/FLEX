@@ -40,7 +40,7 @@
                            CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         
         _multiColumnView.autoresizingMask          = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin;
-        _multiColumnView.backgroundColor           = [UIColor whiteColor];
+        _multiColumnView.backgroundColor           = UIColor.whiteColor;
         _multiColumnView.dataSource                = self;
         _multiColumnView.delegate                  = self;
     }
@@ -152,7 +152,7 @@
     }];
     if (sortType == FLEXTableColumnHeaderSortTypeDesc) {
         NSEnumerator *contentReverseEnumerator = [sortContentData reverseObjectEnumerator];
-        sortContentData = [NSArray arrayWithArray:[contentReverseEnumerator allObjects]];
+        sortContentData = [NSArray arrayWithArray:contentReverseEnumerator.allObjects];
     }
     
     self.contentsArray = sortContentData;

@@ -68,7 +68,7 @@
 
 - (BOOL)showsTitle
 {
-    return [self.title length] > 0;
+    return self.title.length > 0;
 }
 
 - (CGFloat)topInputFieldVerticalLayoutGuide
@@ -114,7 +114,7 @@
 {
     CGFloat height = 0;
     
-    if ([self.title length] > 0) {
+    if (self.title.length > 0) {
         CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
         height += ceil([self.titleLabel sizeThatFits:constrainSize].height);
         height += [[self class] titleBottomPadding];

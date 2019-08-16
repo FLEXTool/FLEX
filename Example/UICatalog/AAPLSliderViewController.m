@@ -81,8 +81,8 @@
 }
 
 - (void)configureTintedSlider {
-    self.tintedSlider.minimumTrackTintColor = [UIColor aapl_applicationBlueColor];
-    self.tintedSlider.maximumTrackTintColor = [UIColor aapl_applicationPurpleColor];
+    self.tintedSlider.minimumTrackTintColor = UIColor.aapl_applicationBlueColor;
+    self.tintedSlider.maximumTrackTintColor = UIColor.aapl_applicationPurpleColor;
 
     [self.tintedSlider addTarget:self action:@selector(sliderValueDidChange:) forControlEvents:UIControlEventValueChanged];
 }

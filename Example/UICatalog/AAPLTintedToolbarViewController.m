@@ -71,8 +71,8 @@
     // See the UIBarStyle enum for more styles, including UIBarStyleDefault.
     self.toolbar.barStyle = UIBarStyleBlackTranslucent;
 
-    self.toolbar.tintColor = [UIColor aapl_applicationGreenColor];
-    self.toolbar.backgroundColor = [UIColor aapl_applicationBlueColor];
+    self.toolbar.tintColor = UIColor.aapl_applicationGreenColor;
+    self.toolbar.backgroundColor = UIColor.aapl_applicationBlueColor;
     
     NSArray *toolbarButtonItems = @[[self refreshBarButtonItem], [self flexibleSpaceBarButtonItem], [self actionBarButtonItem]];
     [self.toolbar setItems:toolbarButtonItems animated:YES];
