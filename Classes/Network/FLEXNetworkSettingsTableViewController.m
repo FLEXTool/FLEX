@@ -108,12 +108,12 @@
 
 - (UITableViewCell *)switchCellWithTitle:(NSString *)title toggleAction:(SEL)toggleAction isOn:(BOOL)isOn
 {
-    UITableViewCell *cell = [[UITableViewCell alloc] init];
+    UITableViewCell *cell = [UITableViewCell new];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = title;
     cell.textLabel.font = [[self class] cellTitleFont];
 
-    UISwitch *theSwitch = [[UISwitch alloc] init];
+    UISwitch *theSwitch = [UISwitch new];
     theSwitch.on = isOn;
     [theSwitch addTarget:self action:toggleAction forControlEvents:UIControlEventValueChanged];
 
@@ -128,7 +128,7 @@
 
 - (UITableViewCell *)buttonCellWithTitle:(NSString *)title touchUpAction:(SEL)action isDestructive:(BOOL)isDestructive
 {
-    UITableViewCell *buttonCell = [[UITableViewCell alloc] init];
+    UITableViewCell *buttonCell = [UITableViewCell new];
     buttonCell.selectionStyle = UITableViewCellSelectionStyleNone;
 
     UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -156,12 +156,12 @@
 
 - (UITableViewCell *)sliderCellWithTitle:(NSString *)title changedAction:(SEL)changedAction minimum:(CGFloat)minimum maximum:(CGFloat)maximum initialValue:(CGFloat)initialValue
 {
-    UITableViewCell *sliderCell = [[UITableViewCell alloc] init];
+    UITableViewCell *sliderCell = [UITableViewCell new];
     sliderCell.selectionStyle = UITableViewCellSelectionStyleNone;
     sliderCell.textLabel.text = title;
     sliderCell.textLabel.font = [[self class] cellTitleFont];
 
-    UISlider *slider = [[UISlider alloc] init];
+    UISlider *slider = [UISlider new];
     slider.minimumValue = minimum;
     slider.maximumValue = maximum;
     slider.value = initialValue;

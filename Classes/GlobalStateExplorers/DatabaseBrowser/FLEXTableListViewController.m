@@ -88,7 +88,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXTableContentViewController *contentViewController = [[FLEXTableContentViewController alloc] init];
+    FLEXTableContentViewController *contentViewController = [FLEXTableContentViewController new];
     
     contentViewController.contentsArray = [_dbm queryAllDataWithTableName:self.tables[indexPath.row]];
     contentViewController.columnsArray = [_dbm queryAllColumnsWithTableName:self.tables[indexPath.row]];

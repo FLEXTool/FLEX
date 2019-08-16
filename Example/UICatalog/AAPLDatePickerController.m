@@ -65,7 +65,7 @@
     [super viewDidLoad];
 
     // Create a date formatter to be used to format the "date" property of "datePicker".
-    self.dateFormatter = [[NSDateFormatter alloc] init];
+    self.dateFormatter = [NSDateFormatter new];
     self.dateFormatter.dateStyle = NSDateFormatterMediumStyle;
     self.dateFormatter.timeStyle = NSDateFormatterShortStyle;
 
@@ -85,7 +85,7 @@
 
     NSCalendar *currentCalendar = [NSCalendar currentCalendar];
 
-    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+    NSDateComponents *dateComponents = [NSDateComponents new];
     dateComponents.day = 7;
 
     NSDate *sevenDaysFromNow = [currentCalendar dateByAddingComponents:dateComponents toDate:now options:0];

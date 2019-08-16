@@ -37,7 +37,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     self.showsCarousel = YES;
     self.carousel.items = @[@"A→Z", @"Count", @"Size"];
     
-    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];
     
     [self reloadTableData];

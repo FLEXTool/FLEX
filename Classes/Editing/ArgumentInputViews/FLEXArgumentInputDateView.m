@@ -21,7 +21,7 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        self.datePicker = [[UIDatePicker alloc] init];
+        self.datePicker = [UIDatePicker new];
         self.datePicker.datePickerMode = UIDatePickerModeDateAndTime;
         // Using UTC, because that's what the NSDate description prints
         self.datePicker.calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];

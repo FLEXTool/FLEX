@@ -68,7 +68,7 @@
 
 - (void)settingsButtonTapped:(id)sender
 {
-    FLEXNetworkSettingsTableViewController *settingsViewController = [[FLEXNetworkSettingsTableViewController alloc] init];
+    FLEXNetworkSettingsTableViewController *settingsViewController = [FLEXNetworkSettingsTableViewController new];
     settingsViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(settingsViewControllerDoneTapped:)];
     settingsViewController.title = @"Network Debugging Settings";
     UINavigationController *wrapperNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
@@ -293,7 +293,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXNetworkTransactionDetailTableViewController *detailViewController = [[FLEXNetworkTransactionDetailTableViewController alloc] init];
+    FLEXNetworkTransactionDetailTableViewController *detailViewController = [FLEXNetworkTransactionDetailTableViewController new];
     detailViewController.transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
     [self.navigationController pushViewController:detailViewController animated:YES];
 }

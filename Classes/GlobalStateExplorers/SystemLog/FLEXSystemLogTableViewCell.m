@@ -24,7 +24,7 @@ NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableView
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.logMessageLabel = [[UILabel alloc] init];
+        self.logMessageLabel = [UILabel new];
         self.logMessageLabel.numberOfLines = 0;
         self.separatorInset = UIEdgeInsetsZero;
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -118,7 +118,7 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
     static NSDateFormatter *formatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        formatter = [[NSDateFormatter alloc] init];
+        formatter = [NSDateFormatter new];
         formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
     });
 

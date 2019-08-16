@@ -83,7 +83,7 @@
     self.scrollView.delegate = self;
     [self.view addSubview:self.scrollView];
     
-    self.fieldEditorView = [[FLEXFieldEditorView alloc] init];
+    self.fieldEditorView = [FLEXFieldEditorView new];
     self.fieldEditorView.backgroundColor = self.view.backgroundColor;
     self.fieldEditorView.targetDescription = [NSString stringWithFormat:@"%@ %p", [self.target class], self.target];
     [self.scrollView addSubview:self.fieldEditorView];

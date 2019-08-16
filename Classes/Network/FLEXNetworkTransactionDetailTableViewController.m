@@ -219,7 +219,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
     NSString *title = [NSString stringWithFormat:@"%@: ", row.title];
     NSString *detailText = row.detailText ?: @"";
-    NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] init];
+    NSMutableAttributedString *attributedText = [NSMutableAttributedString new];
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:title attributes:titleAttributes]];
     [attributedText appendAttributedString:[[NSAttributedString alloc] initWithString:detailText attributes:detailAttributes]];
 
@@ -232,7 +232,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 {
     NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray array];
 
-    FLEXNetworkDetailRow *requestURLRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *requestURLRow = [FLEXNetworkDetailRow new];
     requestURLRow.title = @"Request URL";
     NSURL *url = transaction.request.URL;
     requestURLRow.detailText = url.absoluteString;
@@ -243,18 +243,18 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     };
     [rows addObject:requestURLRow];
 
-    FLEXNetworkDetailRow *requestMethodRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *requestMethodRow = [FLEXNetworkDetailRow new];
     requestMethodRow.title = @"Request Method";
     requestMethodRow.detailText = transaction.request.HTTPMethod;
     [rows addObject:requestMethodRow];
 
     if (transaction.cachedRequestBody.length > 0) {
-        FLEXNetworkDetailRow *postBodySizeRow = [[FLEXNetworkDetailRow alloc] init];
+        FLEXNetworkDetailRow *postBodySizeRow = [FLEXNetworkDetailRow new];
         postBodySizeRow.title = @"Request Body Size";
         postBodySizeRow.detailText = [NSByteCountFormatter stringFromByteCount:transaction.cachedRequestBody.length countStyle:NSByteCountFormatterCountStyleBinary];
         [rows addObject:postBodySizeRow];
 
-        FLEXNetworkDetailRow *postBodyRow = [[FLEXNetworkDetailRow alloc] init];
+        FLEXNetworkDetailRow *postBodyRow = [FLEXNetworkDetailRow new];
         postBodyRow.title = @"Request Body";
         postBodyRow.detailText = @"tap to view";
         postBodyRow.selectionFuture = ^{
@@ -273,20 +273,20 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
     NSString *statusCodeString = [FLEXUtility statusCodeStringFromURLResponse:transaction.response];
     if (statusCodeString.length > 0) {
-        FLEXNetworkDetailRow *statusCodeRow = [[FLEXNetworkDetailRow alloc] init];
+        FLEXNetworkDetailRow *statusCodeRow = [FLEXNetworkDetailRow new];
         statusCodeRow.title = @"Status Code";
         statusCodeRow.detailText = statusCodeString;
         [rows addObject:statusCodeRow];
     }
 
     if (transaction.error) {
-        FLEXNetworkDetailRow *errorRow = [[FLEXNetworkDetailRow alloc] init];
+        FLEXNetworkDetailRow *errorRow = [FLEXNetworkDetailRow new];
         errorRow.title = @"Error";
         errorRow.detailText = transaction.error.localizedDescription;
         [rows addObject:errorRow];
     }
 
-    FLEXNetworkDetailRow *responseBodyRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *responseBodyRow = [FLEXNetworkDetailRow new];
     responseBodyRow.title = @"Response Body";
     NSData *responseData = [[FLEXNetworkRecorder defaultRecorder] cachedResponseBodyForTransaction:transaction];
     if (responseData.length > 0) {
@@ -315,52 +315,52 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     }
     [rows addObject:responseBodyRow];
 
-    FLEXNetworkDetailRow *responseSizeRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *responseSizeRow = [FLEXNetworkDetailRow new];
     responseSizeRow.title = @"Response Size";
     responseSizeRow.detailText = [NSByteCountFormatter stringFromByteCount:transaction.receivedDataLength countStyle:NSByteCountFormatterCountStyleBinary];
     [rows addObject:responseSizeRow];
 
-    FLEXNetworkDetailRow *mimeTypeRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *mimeTypeRow = [FLEXNetworkDetailRow new];
     mimeTypeRow.title = @"MIME Type";
     mimeTypeRow.detailText = transaction.response.MIMEType;
     [rows addObject:mimeTypeRow];
 
-    FLEXNetworkDetailRow *mechanismRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *mechanismRow = [FLEXNetworkDetailRow new];
     mechanismRow.title = @"Mechanism";
     mechanismRow.detailText = transaction.requestMechanism;
     [rows addObject:mechanismRow];
 
-    NSDateFormatter *startTimeFormatter = [[NSDateFormatter alloc] init];
+    NSDateFormatter *startTimeFormatter = [NSDateFormatter new];
     startTimeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
 
-    FLEXNetworkDetailRow *localStartTimeRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *localStartTimeRow = [FLEXNetworkDetailRow new];
     localStartTimeRow.title = [NSString stringWithFormat:@"Start Time (%@)", [[NSTimeZone localTimeZone] abbreviationForDate:transaction.startTime]];
     localStartTimeRow.detailText = [startTimeFormatter stringFromDate:transaction.startTime];
     [rows addObject:localStartTimeRow];
 
     startTimeFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
 
-    FLEXNetworkDetailRow *utcStartTimeRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *utcStartTimeRow = [FLEXNetworkDetailRow new];
     utcStartTimeRow.title = @"Start Time (UTC)";
     utcStartTimeRow.detailText = [startTimeFormatter stringFromDate:transaction.startTime];
     [rows addObject:utcStartTimeRow];
 
-    FLEXNetworkDetailRow *unixStartTime = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *unixStartTime = [FLEXNetworkDetailRow new];
     unixStartTime.title = @"Unix Start Time";
     unixStartTime.detailText = [NSString stringWithFormat:@"%f", [transaction.startTime timeIntervalSince1970]];
     [rows addObject:unixStartTime];
 
-    FLEXNetworkDetailRow *durationRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *durationRow = [FLEXNetworkDetailRow new];
     durationRow.title = @"Total Duration";
     durationRow.detailText = [FLEXUtility stringFromRequestDuration:transaction.duration];
     [rows addObject:durationRow];
 
-    FLEXNetworkDetailRow *latencyRow = [[FLEXNetworkDetailRow alloc] init];
+    FLEXNetworkDetailRow *latencyRow = [FLEXNetworkDetailRow new];
     latencyRow.title = @"Latency";
     latencyRow.detailText = [FLEXUtility stringFromRequestDuration:transaction.latency];
     [rows addObject:latencyRow];
 
-    FLEXNetworkDetailSection *generalSection = [[FLEXNetworkDetailSection alloc] init];
+    FLEXNetworkDetailSection *generalSection = [FLEXNetworkDetailSection new];
     generalSection.title = @"General";
     generalSection.rows = rows;
 
@@ -369,7 +369,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (FLEXNetworkDetailSection *)requestHeadersSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    FLEXNetworkDetailSection *requestHeadersSection = [[FLEXNetworkDetailSection alloc] init];
+    FLEXNetworkDetailSection *requestHeadersSection = [FLEXNetworkDetailSection new];
     requestHeadersSection.title = @"Request Headers";
     requestHeadersSection.rows = [self networkDetailRowsFromDictionary:transaction.request.allHTTPHeaderFields];
 
@@ -378,12 +378,12 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (FLEXNetworkDetailSection *)postBodySectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    FLEXNetworkDetailSection *postBodySection = [[FLEXNetworkDetailSection alloc] init];
+    FLEXNetworkDetailSection *postBodySection = [FLEXNetworkDetailSection new];
     postBodySection.title = @"Request Body Parameters";
     if (transaction.cachedRequestBody.length > 0) {
         NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
         if ([contentType hasPrefix:@"application/x-www-form-urlencoded"]) {
-            NSString *bodyString = [[NSString alloc] initWithData:[self postBodyDataForTransaction:transaction] encoding:NSUTF8StringEncoding];
+            NSString *bodyString = [NSString stringWithCString:[self postBodyDataForTransaction:transaction].bytes encoding:NSUTF8StringEncoding];
             postBodySection.rows = [self networkDetailRowsFromDictionary:[FLEXUtility dictionaryFromQuery:bodyString]];
         }
     }
@@ -393,7 +393,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 + (FLEXNetworkDetailSection *)queryParametersSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
     NSDictionary<NSString *, id> *queryDictionary = [FLEXUtility dictionaryFromQuery:transaction.request.URL.query];
-    FLEXNetworkDetailSection *querySection = [[FLEXNetworkDetailSection alloc] init];
+    FLEXNetworkDetailSection *querySection = [FLEXNetworkDetailSection new];
     querySection.title = @"Query Parameters";
     querySection.rows = [self networkDetailRowsFromDictionary:queryDictionary];
 
@@ -402,7 +402,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (FLEXNetworkDetailSection *)responseHeadersSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    FLEXNetworkDetailSection *responseHeadersSection = [[FLEXNetworkDetailSection alloc] init];
+    FLEXNetworkDetailSection *responseHeadersSection = [FLEXNetworkDetailSection new];
     responseHeadersSection.title = @"Response Headers";
     if ([transaction.response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)transaction.response;
@@ -417,7 +417,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     NSArray<NSString *> *sortedKeys = [dictionary.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     for (NSString *key in sortedKeys) {
         id value = dictionary[key];
-        FLEXNetworkDetailRow *row = [[FLEXNetworkDetailRow alloc] init];
+        FLEXNetworkDetailRow *row = [FLEXNetworkDetailRow new];
         row.title = key;
         row.detailText = [value description];
         [rows addObject:row];

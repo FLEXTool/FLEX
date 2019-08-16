@@ -172,7 +172,7 @@
         objectExplorer.object = self.foundClass;
         [self.navigationController pushViewController:objectExplorer animated:YES];
     } else {
-        FLEXClassesTableViewController *classesViewController = [[FLEXClassesTableViewController alloc] init];
+        FLEXClassesTableViewController *classesViewController = [FLEXClassesTableViewController new];
         classesViewController.binaryImageName = self.filteredImageNames[self.foundClass ? indexPath.row-1 : indexPath.row];
         [self.navigationController pushViewController:classesViewController animated:YES];
     }

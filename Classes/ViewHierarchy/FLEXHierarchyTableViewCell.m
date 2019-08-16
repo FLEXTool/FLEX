@@ -27,7 +27,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.depthIndicatorView = [[UIView alloc] init];
+        self.depthIndicatorView = [UIView new];
         self.depthIndicatorView.backgroundColor = [FLEXUtility hierarchyIndentPatternColor];
         [self.contentView addSubview:self.depthIndicatorView];
         
@@ -39,7 +39,7 @@
         self.detailTextLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         self.accessoryType = UITableViewCellAccessoryDetailButton;
         
-        self.viewBackgroundColorView = [[UIView alloc] init];
+        self.viewBackgroundColorView = [UIView new];
         self.viewBackgroundColorView.clipsToBounds = YES;
         self.viewBackgroundColorView.layer.borderColor = UIColor.blackColor.CGColor;
         self.viewBackgroundColorView.layer.borderWidth = 1.0f;

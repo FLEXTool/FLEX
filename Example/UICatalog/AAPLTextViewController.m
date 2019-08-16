@@ -167,7 +167,7 @@
     [attributedText addAttribute:NSForegroundColorAttributeName value:UIColor.aapl_applicationBlueColor range:tintedRange];
     
     // Add an image attachment.
-    NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];
+    NSTextAttachment *textAttachment = [NSTextAttachment new];
     UIImage *image = [UIImage imageNamed:@"text_view_attachment"];
     textAttachment.image = image;
     textAttachment.bounds = CGRectMake(0, 0, image.size.width, image.size.height);

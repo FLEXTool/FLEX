@@ -169,7 +169,7 @@
     for (NSString *urlString in requestURLStrings) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
-            [self.connections addObject:[[NSURLConnection alloc] initWithRequest:request delegate:self]];
+            [self.connections addObject:[NSURLConnection connectionWithRequest:request delegate:self]];
         });
         delayTime += stagger;
     }

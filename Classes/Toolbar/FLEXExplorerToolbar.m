@@ -38,11 +38,11 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundView = [[UIView alloc] init];
+        self.backgroundView = [UIView new];
         self.backgroundView.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
         [self addSubview:self.backgroundView];
 
-        self.dragHandle = [[UIView alloc] init];
+        self.dragHandle = [UIView new];
         self.dragHandle.backgroundColor = UIColor.clearColor;
         [self addSubview:self.dragHandle];
         
@@ -66,20 +66,20 @@
         UIImage *closeIcon = [FLEXResources closeIcon];
         self.closeItem = [FLEXToolbarItem toolbarItemWithTitle:@"close" image:closeIcon];
 
-        self.selectedViewDescriptionContainer = [[UIView alloc] init];
+        self.selectedViewDescriptionContainer = [UIView new];
         self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor tertiaryBackgroundColorWithAlpha:0.95];
         self.selectedViewDescriptionContainer.hidden = YES;
         [self addSubview:self.selectedViewDescriptionContainer];
 
-        self.selectedViewDescriptionSafeAreaContainer = [[UIView alloc] init];
+        self.selectedViewDescriptionSafeAreaContainer = [UIView new];
         self.selectedViewDescriptionSafeAreaContainer.backgroundColor = UIColor.clearColor;
         [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionSafeAreaContainer];
         
-        self.selectedViewColorIndicator = [[UIView alloc] init];
+        self.selectedViewColorIndicator = [UIView new];
         self.selectedViewColorIndicator.backgroundColor = UIColor.redColor;
         [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewColorIndicator];
         
-        self.selectedViewDescriptionLabel = [[UILabel alloc] init];
+        self.selectedViewDescriptionLabel = [UILabel new];
         self.selectedViewDescriptionLabel.backgroundColor = UIColor.clearColor;
         self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
         [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewDescriptionLabel];

@@ -118,7 +118,7 @@ const NSUInteger kProgressViewControllerMaxProgress = 100;
 
 - (void)simulateProgress {
     // In this example we will simulate progress with a "sleep operation".
-    self.operationQueue = [[NSOperationQueue alloc] init];
+    self.operationQueue = [NSOperationQueue new];
     
     for (NSUInteger count = 0; count < kProgressViewControllerMaxProgress; count++) {
         [self.operationQueue addOperationWithBlock:^{

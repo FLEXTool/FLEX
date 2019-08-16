@@ -100,7 +100,7 @@
 
 + (instancetype)keyInputForKey:(NSString *)key flags:(UIKeyModifierFlags)flags helpDescription:(NSString *)helpDescription
 {
-    FLEXKeyInput *keyInput = [[self alloc] init];
+    FLEXKeyInput *keyInput = [self new];
     if (keyInput) {
         keyInput->_key = key;
         keyInput->_flags = flags;
@@ -128,7 +128,7 @@
     static FLEXKeyboardShortcutManager *sharedManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedManager = [[[self class] alloc] init];
+        sharedManager = [self new];
     });
     return sharedManager;
 }

@@ -116,7 +116,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
     static FLEXNetworkObserver *sharedObserver = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedObserver = [[[self class] alloc] init];
+        sharedObserver = [self new];
     });
     return sharedObserver;
 }
@@ -888,7 +888,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 {
     self = [super init];
     if (self) {
-        self.requestStatesForRequestIDs = [[NSMutableDictionary alloc] init];
+        self.requestStatesForRequestIDs = [NSMutableDictionary new];
         self.queue = dispatch_queue_create("com.flex.FLEXNetworkObserver", DISPATCH_QUEUE_SERIAL);
     }
     return self;
@@ -907,7 +907,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 {
     FLEXInternalRequestState *requestState = self.requestStatesForRequestIDs[requestID];
     if (!requestState) {
-        requestState = [[FLEXInternalRequestState alloc] init];
+        requestState = [FLEXInternalRequestState new];
         [self.requestStatesForRequestIDs setObject:requestState forKey:requestID];
     }
     return requestState;
@@ -943,7 +943,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 
         NSMutableData *dataAccumulator = nil;
         if (response.expectedContentLength < 0) {
-            dataAccumulator = [[NSMutableData alloc] init];
+            dataAccumulator = [NSMutableData new];
         } else if (response.expectedContentLength < 52428800) {
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
         }
@@ -1022,7 +1022,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
 
         NSMutableData *dataAccumulator = nil;
         if (response.expectedContentLength < 0) {
-            dataAccumulator = [[NSMutableData alloc] init];
+            dataAccumulator = [NSMutableData new];
         } else {
             dataAccumulator = [[NSMutableData alloc] initWithCapacity:(NSUInteger)response.expectedContentLength];
         }

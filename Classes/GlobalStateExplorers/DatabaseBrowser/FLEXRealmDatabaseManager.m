@@ -51,7 +51,7 @@
     }
     
     NSError *error = nil;
-    id configuration = [[configurationClass alloc] init];
+    id configuration = [configurationClass new];
     [(RLMRealmConfiguration *)configuration setFileURL:[NSURL fileURLWithPath:self.path]];
     self.realm = [realmClass realmWithConfiguration:configuration error:&error];
     return (error == nil);

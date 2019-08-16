@@ -61,7 +61,7 @@
         }
     }
     
-    FLEXObjectExplorerViewController *explorerViewController = [[explorerClass alloc] init];
+    FLEXObjectExplorerViewController *explorerViewController = [explorerClass new];
     explorerViewController.object = object;
     
     return explorerViewController;

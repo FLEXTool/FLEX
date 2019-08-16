@@ -31,22 +31,22 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     if (self) {
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
-        self.nameLabel = [[UILabel alloc] init];
+        self.nameLabel = [UILabel new];
         self.nameLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         [self.contentView addSubview:self.nameLabel];
 
-        self.pathLabel = [[UILabel alloc] init];
+        self.pathLabel = [UILabel new];
         self.pathLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         self.pathLabel.textColor = [UIColor colorWithWhite:0.4 alpha:1.0];
         [self.contentView addSubview:self.pathLabel];
 
-        self.thumbnailImageView = [[UIImageView alloc] init];
+        self.thumbnailImageView = [UIImageView new];
         self.thumbnailImageView.layer.borderColor = UIColor.blackColor.CGColor;
         self.thumbnailImageView.layer.borderWidth = 1.0;
         self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFit;
         [self.contentView addSubview:self.thumbnailImageView];
 
-        self.transactionDetailsLabel = [[UILabel alloc] init];
+        self.transactionDetailsLabel = [UILabel new];
         self.transactionDetailsLabel.font = [FLEXUtility defaultFontOfSize:10.0];
         self.transactionDetailsLabel.textColor = [UIColor colorWithWhite:0.65 alpha:1.0];
         [self.contentView addSubview:self.transactionDetailsLabel];
@@ -167,7 +167,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     static NSDateFormatter *dateFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter = [NSDateFormatter new];
         dateFormatter.dateFormat = @"HH:mm:ss";
     });
     return [dateFormatter stringFromDate:date];

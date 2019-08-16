@@ -97,7 +97,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     self.showsCarousel = YES;
     [self refreshScopeTitles];
     
-    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];
 }
 
@@ -245,7 +245,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     objc_property_t *propertyList = class_copyPropertyList(class, &propertyCount);
     if (propertyList) {
         for (unsigned int i = 0; i < propertyCount; i++) {
-            FLEXPropertyBox *propertyBox = [[FLEXPropertyBox alloc] init];
+            FLEXPropertyBox *propertyBox = [FLEXPropertyBox new];
             propertyBox.property = propertyList[i];
             [boxedProperties addObject:propertyBox];
         }
@@ -321,7 +321,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     Ivar *ivarList = class_copyIvarList(class, &ivarCount);
     if (ivarList) {
         for (unsigned int i = 0; i < ivarCount; i++) {
-            FLEXIvarBox *ivarBox = [[FLEXIvarBox alloc] init];
+            FLEXIvarBox *ivarBox = [FLEXIvarBox new];
             ivarBox.ivar = ivarList[i];
             [boxedIvars addObject:ivarBox];
         }
@@ -409,7 +409,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     Method *methodList = class_copyMethodList(class, &methodCount);
     if (methodList) {
         for (unsigned int i = 0; i < methodCount; i++) {
-            FLEXMethodBox *methodBox = [[FLEXMethodBox alloc] init];
+            FLEXMethodBox *methodBox = [FLEXMethodBox new];
             methodBox.method = methodList[i];
             [boxedMethods addObject:methodBox];
         }

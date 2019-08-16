@@ -37,7 +37,7 @@
     static FLEXManager *sharedManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedManager = [[[self class] alloc] init];
+        sharedManager = [self new];
     });
     return sharedManager;
 }
@@ -68,7 +68,7 @@
 - (FLEXExplorerViewController *)explorerViewController
 {
     if (!_explorerViewController) {
-        _explorerViewController = [[FLEXExplorerViewController alloc] init];
+        _explorerViewController = [FLEXExplorerViewController new];
         _explorerViewController.delegate = self;
     }
 
@@ -393,7 +393,7 @@
     {
         [[topViewController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     } else {
-        id viewController = [[class alloc] init];
+        id viewController = [class new];
         UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
         [topViewController presentViewController:navigationController animated:YES completion:nil];
     }

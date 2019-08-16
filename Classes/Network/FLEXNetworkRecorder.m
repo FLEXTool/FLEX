@@ -34,7 +34,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 {
     self = [super init];
     if (self) {
-        self.responseCache = [[NSCache alloc] init];
+        self.responseCache = [NSCache new];
         NSUInteger responseCacheLimit = [[[NSUserDefaults standardUserDefaults] objectForKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey] unsignedIntegerValue];
         if (responseCacheLimit) {
             [self.responseCache setTotalCostLimit:responseCacheLimit];
@@ -56,7 +56,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     static FLEXNetworkRecorder *defaultRecorder = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        defaultRecorder = [[[self class] alloc] init];
+        defaultRecorder = [self new];
     });
     return defaultRecorder;
 }
@@ -118,7 +118,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     }
 
     dispatch_async(self.queue, ^{
-        FLEXNetworkTransaction *transaction = [[FLEXNetworkTransaction alloc] init];
+        FLEXNetworkTransaction *transaction = [FLEXNetworkTransaction new];
         transaction.requestID = requestID;
         transaction.request = request;
         transaction.startTime = startDate;

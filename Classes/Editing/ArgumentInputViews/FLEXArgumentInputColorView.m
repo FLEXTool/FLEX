@@ -34,12 +34,12 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.slider = [[UISlider alloc] init];
+        self.slider = [UISlider new];
         self.slider.backgroundColor = self.backgroundColor;
         [self.slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.slider];
         
-        self.valueLabel = [[UILabel alloc] init];
+        self.valueLabel = [UILabel new];
         self.valueLabel.backgroundColor = self.backgroundColor;
         self.valueLabel.font = [FLEXUtility defaultFontOfSize:14.0];
         self.valueLabel.textAlignment = NSTextAlignmentRight;
@@ -168,31 +168,31 @@
 {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        self.colorPreviewBox = [[FLEXColorPreviewBox alloc] init];
+        self.colorPreviewBox = [FLEXColorPreviewBox new];
         [self addSubview:self.colorPreviewBox];
         
-        self.hexLabel = [[UILabel alloc] init];
+        self.hexLabel = [UILabel new];
         self.hexLabel.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
         self.hexLabel.textAlignment = NSTextAlignmentCenter;
         self.hexLabel.font = [FLEXUtility defaultFontOfSize:12.0];
         [self addSubview:self.hexLabel];
         
-        self.alphaInput = [[FLEXColorComponentInputView alloc] init];
+        self.alphaInput = [FLEXColorComponentInputView new];
         self.alphaInput.slider.minimumTrackTintColor = UIColor.blackColor;
         self.alphaInput.delegate = self;
         [self addSubview:self.alphaInput];
         
-        self.redInput = [[FLEXColorComponentInputView alloc] init];
+        self.redInput = [FLEXColorComponentInputView new];
         self.redInput.slider.minimumTrackTintColor = UIColor.redColor;
         self.redInput.delegate = self;
         [self addSubview:self.redInput];
         
-        self.greenInput = [[FLEXColorComponentInputView alloc] init];
+        self.greenInput = [FLEXColorComponentInputView new];
         self.greenInput.slider.minimumTrackTintColor = UIColor.greenColor;
         self.greenInput.delegate = self;
         [self addSubview:self.greenInput];
         
-        self.blueInput = [[FLEXColorComponentInputView alloc] init];
+        self.blueInput = [FLEXColorComponentInputView new];
         self.blueInput.slider.minimumTrackTintColor = UIColor.blueColor;
         self.blueInput.delegate = self;
         [self addSubview:self.blueInput];

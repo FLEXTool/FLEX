@@ -553,7 +553,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSValue *)valueForNumberWithObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString
 {
-    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    NSNumberFormatter *formatter = [NSNumberFormatter new];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber *number = [formatter numberFromString:inputString];
     

@@ -95,7 +95,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [super viewDidLoad];
 
     // Toolbar
-    self.explorerToolbar = [[FLEXExplorerToolbar alloc] init];
+    self.explorerToolbar = [FLEXExplorerToolbar new];
 
     // Start the toolbar off below any bars that may be at the top of the view.
     id toolbarOriginYDefault = [[NSUserDefaults standardUserDefaults] objectForKey:kFLEXToolbarTopMarginDefaultsKey];
@@ -215,7 +215,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
         if (selectedView) {
             if (!self.selectedViewOverlay) {
-                self.selectedViewOverlay = [[UIView alloc] init];
+                self.selectedViewOverlay = [UIView new];
                 [self.view addSubview:self.selectedViewOverlay];
                 self.selectedViewOverlay.layer.borderWidth = 1.0;
             }
@@ -883,7 +883,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleMenuTool
 {
     [self toggleToolWithViewControllerProvider:^UIViewController *{
-        FLEXGlobalsTableViewController *globalsViewController = [[FLEXGlobalsTableViewController alloc] init];
+        FLEXGlobalsTableViewController *globalsViewController = [FLEXGlobalsTableViewController new];
         globalsViewController.delegate = self;
         [FLEXGlobalsTableViewController setApplicationWindow:[UIApplication.sharedApplication keyWindow]];
         return [[UINavigationController alloc] initWithRootViewController:globalsViewController];

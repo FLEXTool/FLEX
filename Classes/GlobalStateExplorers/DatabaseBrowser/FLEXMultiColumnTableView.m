@@ -91,7 +91,7 @@ static const CGFloat kColumnMargin = 1;
 
 - (void)loadHeaderScrollView
 {
-    UIScrollView *headerScrollView = [[UIScrollView alloc] init];
+    UIScrollView *headerScrollView = [UIScrollView new];
     headerScrollView.delegate      = self;
     self.headerScrollView          = headerScrollView;
     self.headerScrollView.backgroundColor =  [UIColor colorWithWhite:0.803 alpha:0.850];
@@ -102,11 +102,11 @@ static const CGFloat kColumnMargin = 1;
 - (void)loadContentScrollView
 {
     
-    UIScrollView *scrollView = [[UIScrollView alloc] init];
+    UIScrollView *scrollView = [UIScrollView new];
     scrollView.bounces       = NO;
     scrollView.delegate      = self;
     
-    UITableView *tableView   = [[UITableView alloc] init];
+    UITableView *tableView   = [UITableView new];
     tableView.delegate       = self;
     tableView.dataSource     = self;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -121,14 +121,14 @@ static const CGFloat kColumnMargin = 1;
 
 - (void)loadLeftView
 {
-    UITableView *leftTableView = [[UITableView alloc] init];
+    UITableView *leftTableView = [UITableView new];
     leftTableView.delegate       = self;
     leftTableView.dataSource     = self;
     leftTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.leftTableView           = leftTableView;
     [self addSubview:leftTableView];
     
-    UIView *leftHeader = [[UIView alloc] init];
+    UIView *leftHeader = [UIView new];
     leftHeader.backgroundColor = [UIColor colorWithWhite:0.950 alpha:0.668];
     self.leftHeader            = leftHeader;
     [self addSubview:leftHeader];
