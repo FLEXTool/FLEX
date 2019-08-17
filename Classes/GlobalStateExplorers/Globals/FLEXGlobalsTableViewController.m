@@ -11,6 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXLibrariesTableViewController.h"
 #import "FLEXClassesTableViewController.h"
+#import "FLEXKeyChainTableViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXLiveObjectsTableViewController.h"
@@ -56,6 +57,8 @@ static __weak UIWindow *s_applicationWindow = nil;
     switch (row) {
         case FLEXGlobalsRowAppClasses:
             return [FLEXClassesTableViewController flex_concreteGlobalsEntry:row];
+        case FLEXGlobalsRowAppKeyChainItems:
+            return [FLEXKeyChainTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowAddressInspector:
             return [FLEXAddressExplorerCoordinator flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowSystemLibraries:
@@ -121,6 +124,7 @@ static __weak UIWindow *s_applicationWindow = nil;
             @[ // FLEXGlobalsSectionAppShortcuts
                 [self globalsEntryForRow:FLEXGlobalsRowMainBundle],
                 [self globalsEntryForRow:FLEXGlobalsRowUserDefaults],
+                [self globalsEntryForRow:FLEXGlobalsRowAppKeyChainItems],
                 [self globalsEntryForRow:FLEXGlobalsRowApplication],
                 [self globalsEntryForRow:FLEXGlobalsRowAppDelegate],
                 [self globalsEntryForRow:FLEXGlobalsRowKeyWindow],

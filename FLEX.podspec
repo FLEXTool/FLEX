@@ -32,7 +32,7 @@ Pod::Spec.new do |spec|
   spec.platform         = :ios, "9.0"
   spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,m,mm}"
-  spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit" ]
+  spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
   spec.public_header_files = [ "Classes/**/FLEXManager.h", "Classes/FLEX.h" ]
