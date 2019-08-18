@@ -104,12 +104,6 @@
     }
 }
 
-#pragma mark - Misc
-
-- (void)alert:(NSString *)title message:(NSString *)message {
-    [[[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
-}
-
 #pragma mark - FLEXFileBrowserSearchOperationDelegate
 
 - (void)fileBrowserSearchOperationResult:(NSArray<NSString *> *)searchResult size:(uint64_t)size
@@ -218,7 +212,7 @@
     UIImage *image = cell.imageView.image;
 
     if (!stillExists) {
-        [self alert:@"File Not Found" message:@"The file at the specified path no longer exists."];
+        [FLEXUtility alert:@"File Not Found" message:@"The file at the specified path no longer exists." from:self];
         [self reloadDisplayedPaths];
         return;
     }
@@ -231,7 +225,7 @@
     } else {
         NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
         if (!fileData.length) {
-            [self alert:@"Empty File" message:@"No data returned from the file."];
+            [FLEXUtility alert:@"Empty File" message:@"No data returned from the file." from:self];
             return;
         }
 

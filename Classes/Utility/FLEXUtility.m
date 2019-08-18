@@ -413,11 +413,9 @@
 
 + (void)alert:(NSString *)title message:(NSString *)message from:(UIViewController *)viewController
 {
-    [[[UIAlertView alloc] initWithTitle:title
-                                message:message
-                               delegate:nil
-                      cancelButtonTitle:nil
-                      otherButtonTitles:@"Dismiss", nil] show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:nil]];
+    [viewController presentViewController:alert animated:YES completion:nil];
 }
 
 + (SEL)swizzledSelectorForSelector:(SEL)selector
