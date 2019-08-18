@@ -624,13 +624,14 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                     // If the struct type encoding was successfully handled by NSGetSizeAndAlignment above, we *should* be ok with the field here.
                     const char *nextTypeStart = NSGetSizeAndAlignment(typeStart, &fieldSize, NULL);
                     NSString *typeEncoding = [@(structEncoding) substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)];
-                    typeBlock(structName, typeEncoding.UTF8String, [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
-                    runningFieldOffset += fieldSize;
                     // Padding to keep proper alignment. __attribute((packed)) structs will break here.
                     // The type encoding is no different for packed structs, so it's not clear there's anything we can do for those.
-                    if (runningFieldOffset % fieldAlignment != 0) {
-                        runningFieldOffset += fieldAlignment - runningFieldOffset % fieldAlignment;
+                    const NSUInteger currentSizeSum = runningFieldOffset % fieldAlignment;
+                    if (currentSizeSum != 0 && currentSizeSum + fieldSize > fieldAlignment) {
+                        runningFieldOffset += fieldAlignment - currentSizeSum;
                     }
+                    typeBlock(structName, typeEncoding.UTF8String, [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
+                    runningFieldOffset += fieldSize;
                     runningFieldIndex++;
                     typeStart = nextTypeStart;
                 }
