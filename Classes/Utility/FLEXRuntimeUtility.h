@@ -53,6 +53,7 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
     FLEXTypeEncodingStructEnd        = '}',
     FLEXTypeEncodingUnionBegin       = '(',
     FLEXTypeEncodingUnionEnd         = ')',
+    FLEXTypeEncodingQuote            = '\"',
     FLEXTypeEncodingBitField         = 'b',
     FLEXTypeEncodingPointer          = '^',
     FLEXTypeEncodingConst            = 'r'
@@ -67,6 +68,9 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 + (BOOL)pointerIsValidObjcObject:(const void *)pointer;
 /// Unwraps raw pointers to objects stored in NSValue, and re-boxes C strings into NSStrings.
 + (id)potentiallyUnwrapBoxedPointer:(id)returnedObjectOrNil type:(const FLEXTypeEncoding *)returnType;
+/// Some fields have a name in their encoded string (e.g. \"width\"d)
+/// @return the offset to skip the field name, 0 if there is no name
++ (NSUInteger)fieldNameOffsetForTypeEncoding:(const FLEXTypeEncoding *)typeEncoding;
 
 /// @return The class hierarchy for the given object or class,
 /// from the current class to the root-most class.
