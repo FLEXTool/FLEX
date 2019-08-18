@@ -7,7 +7,6 @@
 //
 
 #import "FLEXFileBrowserTableViewController.h"
-#import "FLEXFileBrowserFileOperationController.h"
 #import "FLEXUtility.h"
 #import "FLEXWebViewController.h"
 #import "FLEXImagePreviewViewController.h"
@@ -18,7 +17,7 @@
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end
 
-@interface FLEXFileBrowserTableViewController () <FLEXFileBrowserFileOperationControllerDelegate, FLEXFileBrowserSearchOperationDelegate>
+@interface FLEXFileBrowserTableViewController () <FLEXFileBrowserSearchOperationDelegate>
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, copy) NSArray<NSString *> *childPaths;
@@ -27,7 +26,6 @@
 @property (nonatomic) NSNumber *searchPathsSize;
 @property (nonatomic) NSOperationQueue *operationQueue;
 @property (nonatomic) UIDocumentInteractionController *documentController;
-@property (nonatomic) id<FLEXFileBrowserFileOperationController> fileOperationController;
 
 @end
 
@@ -307,13 +305,6 @@
     // Since our actions are outside of that protocol, we need to manually handle the action forwarding from the cells.
 }
 
-#pragma mark - FLEXFileBrowserFileOperationControllerDelegate
-
-- (void)fileOperationControllerDidDismiss:(id<FLEXFileBrowserFileOperationController>)controller
-{
-    [self reloadDisplayedPaths];
-}
-
 - (void)openFileController:(NSString *)fullPath
 {
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
@@ -328,9 +319,27 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
 
-    self.fileOperationController = [[FLEXFileBrowserFileRenameOperationController alloc] initWithPath:fullPath];
-    self.fileOperationController.delegate = self;
-    [self.fileOperationController show];
+    BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:self.path isDirectory:NULL];
+    if (stillExists) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Rename %@?", fullPath.lastPathComponent]
+                                                                       message:nil
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            textField.placeholder = @"New file name";
+            textField.text = fullPath.lastPathComponent;
+        }];
+        __weak typeof(alert) weakAlert = alert;
+        [alert addAction:[UIAlertAction actionWithTitle:@"Rename" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            NSString *newFileName = weakAlert.textFields.firstObject.text;
+            NSString *newPath = [[fullPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:newFileName];
+            [NSFileManager.defaultManager moveItemAtPath:fullPath toPath:newPath error:NULL];
+            [self reloadDisplayedPaths];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [FLEXUtility alert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
+    }
 }
 
 - (void)fileBrowserDelete:(UITableViewCell *)sender
@@ -338,9 +347,21 @@
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
 
-    self.fileOperationController = [[FLEXFileBrowserFileDeleteOperationController alloc] initWithPath:fullPath];
-    self.fileOperationController.delegate = self;
-    [self.fileOperationController show];
+    BOOL isDirectory = NO;
+    BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:fullPath isDirectory:&isDirectory];
+    if (stillExists) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Delete %@?", fullPath.lastPathComponent]
+                                                                       message:[NSString stringWithFormat:@"The %@ will be deleted. This operation cannot be undone", isDirectory ? @"directory" : @"file"]
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+            [NSFileManager.defaultManager removeItemAtPath:fullPath error:NULL];
+            [self reloadDisplayedPaths];
+        }]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [FLEXUtility alert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
+    }
 }
 
 - (void)fileBrowserCopyPath:(UITableViewCell *)sender
