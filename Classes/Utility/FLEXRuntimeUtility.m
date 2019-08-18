@@ -49,18 +49,18 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     if (!returnedObjectOrNil) {
         return nil;
     }
-    
+
     NSInteger i = 0;
     if (returnType[i] == FLEXTypeEncodingConst) {
         i++;
     }
-    
+
     BOOL returnsObjectOrClass = returnType[i] == FLEXTypeEncodingObjcObject ||
                                 returnType[i] == FLEXTypeEncodingObjcClass;
     BOOL returnsVoidPointer   = returnType[i] == FLEXTypeEncodingPointer &&
                                 returnType[i+1] == FLEXTypeEncodingVoid;
     BOOL returnsCString       = returnType[i] == FLEXTypeEncodingCString;
-    
+
     // If we got back an NSValue and the return type is not an object,
     // we check to see if the pointer is of a valid object. If not,
     // we just display the NSValue.
@@ -70,9 +70,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         if (![returnedObjectOrNil isKindOfClass:[NSValue class]]) {
             return returnedObjectOrNil;
         }
-        
+
         NSValue *value = (NSValue *)returnedObjectOrNil;
-        
+
         if (returnsCString) {
             // Wrap char * in NSString
             const char *string = (const char *)value.pointerValue;
@@ -84,7 +84,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             }
         }
     }
-    
+
     return returnedObjectOrNil;
 }
 
@@ -138,14 +138,14 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 {
     NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesDictionaryForProperty:property];
     NSMutableArray<NSString *> *attributesStrings = [NSMutableArray array];
-    
+
     // Atomicity
     if (attributesDictionary[kFLEXUtilityAttributeNonAtomic]) {
         [attributesStrings addObject:@"nonatomic"];
     } else {
         [attributesStrings addObject:@"atomic"];
     }
-    
+
     // Storage
     if (attributesDictionary[kFLEXUtilityAttributeRetain]) {
         [attributesStrings addObject:@"strong"];
@@ -156,14 +156,14 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     } else {
         [attributesStrings addObject:@"assign"];
     }
-    
+
     // Mutability
     if (attributesDictionary[kFLEXUtilityAttributeReadOnly]) {
         [attributesStrings addObject:@"readonly"];
     } else {
         [attributesStrings addObject:@"readwrite"];
     }
-    
+
     // Custom getter/setter
     NSString *customGetter = attributesDictionary[kFLEXUtilityAttributeCustomGetter];
     NSString *customSetter = attributesDictionary[kFLEXUtilityAttributeCustomSetter];
@@ -173,22 +173,22 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     if (customSetter) {
         [attributesStrings addObject:[NSString stringWithFormat:@"setter=%@", customSetter]];
     }
-    
+
     NSString *attributesString = [attributesStrings componentsJoinedByString:@", "];
     NSString *shortName = [self prettyNameForProperty:property];
-    
+
     return [NSString stringWithFormat:@"@property (%@) %@", attributesString, shortName];
 }
 
 + (id)valueForProperty:(objc_property_t)property onObject:(id)object
 {
     NSString *customGetterString = nil;
-    char *customGetterName = property_copyAttributeValue(property, "G");
+    char *customGetterName = property_copyAttributeValue(property, kFLEXUtilityAttributeCustomGetter.UTF8String);
     if (customGetterName) {
         customGetterString = @(customGetterName);
         free(customGetterName);
     }
-    
+
     SEL getterSelector;
     if (customGetterString.length > 0) {
         getterSelector = NSSelectorFromString(customGetterString);
@@ -196,14 +196,14 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSString *propertyName = @(property_getName(property));
         getterSelector = NSSelectorFromString(propertyName);
     }
-    
+
     return [self performSelector:getterSelector onObject:object withArguments:nil error:NULL];
 }
 
 + (NSString *)descriptionForIvarOrPropertyValue:(id)value
 {
     NSString *description = nil;
-    
+
     // Special case BOOL for better readability.
     if ([value isKindOfClass:[NSValue class]]) {
         const char *type = [value objCType];
@@ -217,7 +217,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             description = NSStringFromSelector(selector);
         }
     }
-    
+
     @try {
         if (!description) {
             // Single line display - replace newlines and tabs with spaces.
@@ -227,11 +227,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     } @catch (NSException *e) {
         description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"];
     }
-    
+
     if (!description) {
         description = @"nil";
     }
-    
+
     return description;
 }
 
@@ -249,7 +249,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 attribute.value = attributePairs[attributeName].UTF8String;
                 attributes[attributeIndex++] = attribute;
             }
-            
+
             class_addProperty(theClass, name, attributes, totalAttributesCount);
             free(attributes);
         }
@@ -276,11 +276,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 #ifdef __arm64__
     // See http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html
     const char *name = ivar_getName(ivar);
-    if (type[0] == @encode(Class)[0] && strcmp(name, "isa") == 0) {
+    if (type[0] == FLEXTypeEncodingObjcClass && strcmp(name, "isa") == 0) {
         value = object_getClass(object);
     } else
 #endif
-    if (type[0] == @encode(id)[0] || type[0] == @encode(Class)[0]) {
+    if (type[0] == FLEXTypeEncodingObjcObject || type[0] == FLEXTypeEncodingObjcClass) {
         value = object_getIvar(object, ivar);
     } else {
         ptrdiff_t offset = ivar_getOffset(ivar);
@@ -293,15 +293,15 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 + (void)setValue:(id)value forIvar:(Ivar)ivar onObject:(id)object
 {
     const char *typeEncodingCString = ivar_getTypeEncoding(ivar);
-    if (typeEncodingCString[0] == '@') {
+    if (typeEncodingCString[0] == FLEXTypeEncodingObjcObject) {
         object_setIvar(object, ivar, value);
     } else if ([value isKindOfClass:[NSValue class]]) {
         // Primitive - unbox the NSValue.
         NSValue *valueValue = (NSValue *)value;
-        
+
         // Make sure that the box contained the correct type.
         NSAssert(strcmp([valueValue objCType], typeEncodingCString) == 0, @"Type encoding mismatch (value: %s; ivar: %s) in setting ivar named: %s on object: %@", [valueValue objCType], typeEncodingCString, ivar_getName(ivar), object);
-        
+
         NSUInteger bufferSize = 0;
         @try {
             // NSGetSizeAndAlignment barfs on type encoding for bitfields.
@@ -335,26 +335,26 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     } else {
         prettyName = [prettyName stringByAppendingString:selectorName];
     }
-    
+
     return prettyName;
 }
 
 + (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method
 {
     NSMutableArray<NSString *> *components = [NSMutableArray array];
-    
+
     NSString *selectorName = NSStringFromSelector(method_getName(method));
     NSMutableArray<NSString *> *selectorComponents = [[selectorName componentsSeparatedByString:@":"] mutableCopy];
-    
+
     // this is a workaround cause method_getNumberOfArguments() returns wrong number for some methods
     if (selectorComponents.count == 1) {
         return @[];
     }
-    
+
     if ([selectorComponents.lastObject isEqualToString:@""]) {
         [selectorComponents removeLastObject];
     }
-    
+
     for (unsigned int argIndex = 0; argIndex < selectorComponents.count; argIndex++) {
         char *argType = method_copyArgumentType(method, argIndex + kFLEXNumberOfImplicitArgs);
         NSString *readableArgType = (argType != NULL) ? [self readableTypeForEncoding:@(argType)] : nil;
@@ -362,7 +362,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSString *prettyComponent = [NSString stringWithFormat:@"%@:(%@) ", [selectorComponents objectAtIndex:argIndex], readableArgType];
         [components addObject:prettyComponent];
     }
-    
+
     return components;
 }
 
@@ -384,24 +384,24 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         }
         return nil;
     }
-    
+
     // Build the invocation
     NSMethodSignature *methodSignature = [object methodSignatureForSelector:selector];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
     [invocation setSelector:selector];
     [invocation setTarget:object];
     [invocation retainArguments];
-    
+
     // Always self and _cmd
     NSUInteger numberOfArguments = [methodSignature numberOfArguments];
     for (NSUInteger argumentIndex = kFLEXNumberOfImplicitArgs; argumentIndex < numberOfArguments; argumentIndex++) {
         NSUInteger argumentsArrayIndex = argumentIndex - kFLEXNumberOfImplicitArgs;
         id argumentObject = arguments.count > argumentsArrayIndex ? arguments[argumentsArrayIndex] : nil;
-        
+
         // NSNull in the arguments array can be passed as a placeholder to indicate nil. We only need to set the argument if it will be non-nil.
         if (argumentObject && ![argumentObject isKindOfClass:[NSNull class]]) {
             const char *typeEncodingCString = [methodSignature getArgumentTypeAtIndex:argumentIndex];
-            if (typeEncodingCString[0] == @encode(id)[0] || typeEncodingCString[0] == @encode(Class)[0] || [self isTollFreeBridgedValue:argumentObject forCFType:typeEncodingCString]) {
+            if (typeEncodingCString[0] == FLEXTypeEncodingObjcObject || typeEncodingCString[0] == FLEXTypeEncodingObjcClass || [self isTollFreeBridgedValue:argumentObject forCFType:typeEncodingCString]) {
                 // Object
                 [invocation setArgument:&argumentObject atIndex:argumentIndex];
             } else if (strcmp(typeEncodingCString, @encode(CGColorRef)) == 0 && [argumentObject isKindOfClass:[UIColor class]]) {
@@ -411,7 +411,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             } else if ([argumentObject isKindOfClass:[NSValue class]]) {
                 // Primitive boxed in NSValue
                 NSValue *argumentValue = (NSValue *)argumentObject;
-                
+
                 // Ensure that the type encoding on the NSValue matches the type encoding of the argument in the method signature
                 if (strcmp([argumentValue objCType], typeEncodingCString) != 0) {
                     if (error) {
@@ -420,13 +420,13 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                     }
                     return nil;
                 }
-                
+
                 @try {
                     NSUInteger bufferSize = 0;
-                    
+
                     // NSGetSizeAndAlignment barfs on type encoding for bitfields.
                     NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
-                    
+
                     if (bufferSize > 0) {
                         void *buffer = calloc(bufferSize, 1);
                         [argumentValue getValue:buffer];
@@ -437,26 +437,26 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             }
         }
     }
-    
+
     // Try to invoke the invocation but guard against an exception being thrown.
     id returnObject = nil;
     @try {
         // Some methods are not fit to be called...
         // Looking at you -[UIResponder(UITextInputAdditions) _caretRect]
         [invocation invoke];
-        
+
         // Retrieve the return value and box if necessary.
         const char *returnType = methodSignature.methodReturnType;
-        
-        if (returnType[0] == @encode(id)[0] || returnType[0] == @encode(Class)[0]) {
+
+        if (returnType[0] == FLEXTypeEncodingObjcObject || returnType[0] == FLEXTypeEncodingObjcClass) {
             // Return value is an object.
             __unsafe_unretained id objectReturnedFromMethod = nil;
             [invocation getReturnValue:&objectReturnedFromMethod];
             returnObject = objectReturnedFromMethod;
-        } else if (returnType[0] != @encode(void)[0]) {
+        } else if (returnType[0] != FLEXTypeEncodingVoid) {
             // Will use arbitrary buffer for return value and box it.
             void *returnValue = malloc(methodSignature.methodReturnLength);
-            
+
             if (returnValue) {
                 [invocation getReturnValue:returnValue];
                 returnObject = [self valueForPrimitivePointer:returnValue objCType:returnType];
@@ -469,19 +469,19 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             // "… on <class>" / "… on instance of <class>"
             NSString *class = NSStringFromClass([object class]);
             NSString *calledOn = object == [object class] ? class : [@"an instance of " stringByAppendingString:class];
-            
+
             NSString *message = [NSString stringWithFormat:@"Exception '%@' thrown while performing selector '%@' on %@.\nReason:\n\n%@",
                                  exception.name,
                                  NSStringFromSelector(selector),
                                  calledOn,
                                  exception.reason];
-            
+
             *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain
                                          code:FLEXRuntimeUtilityErrorCodeInvocationFailed
                                      userInfo:@{ NSLocalizedDescriptionKey : message }];
         }
     }
-    
+
     return returnObject;
 }
 
@@ -492,7 +492,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     if(strcmp(typeEncoding, @encode(cftype)) == 0) { \
         return [value isKindOfClass:[foundationClass class]]; \
     }
-    
+
     CASE(CFArrayRef, NSArray);
     CASE(CFAttributedStringRef, NSAttributedString);
     CASE(CFCalendarRef, NSCalendar);
@@ -517,16 +517,16 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     CASE(CFTimeZoneRef, NSTimeZone);
     CASE(CFURLRef, NSURL);
     CASE(CFWriteStreamRef, NSOutputStream);
-    
+
 #undef CASE
-    
+
     return NO;
 }
 
 + (NSString *)editableJSONStringForObject:(id)object
 {
     NSString *editableDescription = nil;
-    
+
     if (object) {
         // This is a hack to use JSON serialization for our editable objects.
         // NSJSONSerialization doesn't allow writing fragments - the top level object must be an array or dictionary.
@@ -537,7 +537,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             editableDescription = [wrappedDescription substringWithRange:NSMakeRange(1, wrappedDescription.length - 2)];
         }
     }
-    
+
     return editableDescription;
 }
 
@@ -556,7 +556,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSNumberFormatter *formatter = [NSNumberFormatter new];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber *number = [formatter numberFromString:inputString];
-    
+
     // Make sure we box the number with the correct type encoding so it can be properly unboxed later via getValue:
     NSValue *value = nil;
     if (strcmp(typeEncoding, @encode(char)) == 0) {
@@ -596,30 +596,30 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         double primitiveValue = [number doubleValue];
         value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
     }
-    
+
     return value;
 }
 
 + (void)enumerateTypesInStructEncoding:(const char *)structEncoding usingBlock:(void (^)(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset))typeBlock
 {
-    if (structEncoding && structEncoding[0] == '{') {
+    if (structEncoding && structEncoding[0] == FLEXTypeEncodingStructBegin) {
         const char *equals = strchr(structEncoding, '=');
         if (equals) {
             const char *nameStart = structEncoding + 1;
             NSString *structName = [@(structEncoding) substringWithRange:NSMakeRange(nameStart - structEncoding, equals - nameStart)];
-            
+
             NSUInteger fieldAlignment = 0;
             NSUInteger structSize = 0;
             @try {
                 // NSGetSizeAndAlignment barfs on type encoding for bitfields.
                 NSGetSizeAndAlignment(structEncoding, &structSize, &fieldAlignment);
             } @catch (NSException *exception) { }
-            
+
             if (structSize > 0) {
                 NSUInteger runningFieldIndex = 0;
                 NSUInteger runningFieldOffset = 0;
                 const char *typeStart = equals + 1;
-                while (*typeStart != '}') {
+                while (*typeStart != FLEXTypeEncodingStructEnd) {
                     NSUInteger fieldSize = 0;
                     // If the struct type encoding was successfully handled by NSGetSizeAndAlignment above, we *should* be ok with the field here.
                     const char *nextTypeStart = NSGetSizeAndAlignment(typeStart, &fieldSize, NULL);
@@ -670,32 +670,32 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     if (!encodingString) {
         return nil;
     }
-    
+
     // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
     // class-dump has a much nicer and much more complete implementation for this task, but it is distributed under GPLv2 :/
     // See https://github.com/nygard/class-dump/blob/master/Source/CDType.m
     // Warning: this method uses multiple middle returns and macros to cut down on boilerplate.
     // The use of macros here was inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
     const char *encodingCString = encodingString.UTF8String;
-    
+
     // Objects
-    if (encodingCString[0] == '@') {
+    if (encodingCString[0] == FLEXTypeEncodingObjcObject) {
         NSString *class = [encodingString substringFromIndex:1];
         class = [class stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-        if (class.length == 0 || [class isEqual:@"?"]) {
+        if (class.length == 0 || (class.length == 1 && [class characterAtIndex:0] == FLEXTypeEncodingUnknown)) {
             class = @"id";
         } else {
             class = [class stringByAppendingString:@" *"];
         }
         return class;
     }
-    
+
     // C Types
 #define TRANSLATE(ctype) \
     if (strcmp(encodingCString, @encode(ctype)) == 0) { \
         return (NSString *)CFSTR(#ctype); \
     }
-    
+
     // Order matters here since some of the cocoa types are typedefed to c types.
     // We can't recover the exact mapping, but we choose to prefer the cocoa types.
     // This is not an exhaustive list, but it covers the most common types
@@ -735,9 +735,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     TRANSLATE(NSZone *);
     TRANSLATE(SEL);
     TRANSLATE(void);
-    
+
 #undef TRANSLATE
-    
+
     // Qualifier Prefixes
     // Do this after the checks above since some of the direct translations (i.e. Method) contain a prefix.
 #define RECURSIVE_TRANSLATE(prefix, formatString) \
@@ -745,7 +745,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSString *recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:1]]; \
         return [NSString stringWithFormat:formatString, recursiveType]; \
     }
-    
+
     // If there's a qualifier prefix on the encoding, translate it and then
     // recursively call this method with the rest of the encoding string.
     RECURSIVE_TRANSLATE('^', @"%@ *");
@@ -757,9 +757,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     RECURSIVE_TRANSLATE('R', @"byref %@");
     RECURSIVE_TRANSLATE('V', @"oneway %@");
     RECURSIVE_TRANSLATE('b', @"bitfield(%@)");
-    
+
 #undef RECURSIVE_TRANSLATE
-    
+
     // If we couldn't translate, just return the original encoding string
     return encodingString;
 }
@@ -771,7 +771,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     if(strcmp(type, @encode(ctype)) == 0) { \
         return [NSNumber numberWith ## selectorpart: *(ctype *)pointer]; \
     }
-    
+
     CASE(BOOL, Bool);
     CASE(unsigned char, UnsignedChar);
     CASE(short, Short);
@@ -784,16 +784,16 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     CASE(unsigned long long, UnsignedLongLong);
     CASE(float, Float);
     CASE(double, Double);
-    
+
 #undef CASE
-    
+
     NSValue *value = nil;
     @try {
         value = [NSValue valueWithBytes:pointer objCType:type];
     } @catch (NSException *exception) {
         // Certain type encodings are not supported by valueWithBytes:objCType:. Just fail silently if an exception is thrown.
     }
-    
+
     return value;
 }
 

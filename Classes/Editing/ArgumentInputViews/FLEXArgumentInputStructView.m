@@ -74,7 +74,7 @@
                     void *fieldPointer = unboxedValue + fieldOffset;
                     FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
                     
-                    if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
+                    if (fieldTypeEncoding[0] == FLEXTypeEncodingObjcObject || fieldTypeEncoding[0] == FLEXTypeEncodingObjcClass) {
                         inputView.inputValue = (__bridge id)fieldPointer;
                     } else {
                         NSValue *boxedField = [FLEXRuntimeUtility valueForPrimitivePointer:fieldPointer objCType:fieldTypeEncoding];
@@ -104,7 +104,7 @@
             void *fieldPointer = unboxedStruct + fieldOffset;
             FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
             
-            if (fieldTypeEncoding[0] == @encode(id)[0] || fieldTypeEncoding[0] == @encode(Class)[0]) {
+            if (fieldTypeEncoding[0] == FLEXTypeEncodingObjcObject || fieldTypeEncoding[0] == FLEXTypeEncodingObjcClass) {
                 // Object fields
                 memcpy(fieldPointer, (__bridge void *)inputView.inputValue, sizeof(id));
             } else {
@@ -176,7 +176,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    return type && type[0] == '{';
+    return type && type[0] == FLEXTypeEncodingStructBegin;
 }
 
 + (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding
