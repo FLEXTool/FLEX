@@ -88,6 +88,19 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return returnedObjectOrNil;
 }
 
++ (NSUInteger)fieldNameOffsetForTypeEncoding:(const FLEXTypeEncoding *)typeEncoding
+{
+    NSUInteger beginIndex = 0;
+    while (typeEncoding[beginIndex] == FLEXTypeEncodingQuote) {
+        NSUInteger endIndex = beginIndex + 1;
+        while (typeEncoding[endIndex] != FLEXTypeEncodingQuote) {
+            ++endIndex;
+        }
+        beginIndex = endIndex + 1;
+    }
+    return beginIndex;
+}
+
 + (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass
 {
     NSMutableArray<Class> *superClasses = [NSMutableArray new];
@@ -678,10 +691,30 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // The use of macros here was inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
     const char *encodingCString = encodingString.UTF8String;
 
+    // Some fields have a name, such as {Size=\"width\"d\"height\"d}, we need to extract the name out and recursive
+    const NSUInteger fieldNameOffset = [FLEXRuntimeUtility fieldNameOffsetForTypeEncoding:encodingCString];
+    if (fieldNameOffset > 0) {
+        // According to https://github.com/nygard/class-dump/commit/33fb5ed221810685f57c192e1ce8ab6054949a7c,
+        // there are some consecutive quoted strings, so use `_` to concatenate the names.
+        NSString *const fieldNamesString = [encodingString substringWithRange:NSMakeRange(0, fieldNameOffset)];
+        NSArray<NSString *> *const fieldNames = [fieldNamesString componentsSeparatedByString:[NSString stringWithFormat:@"%c", FLEXTypeEncodingQuote]];
+        NSMutableString *finalFieldNamesString = [NSMutableString string];
+        for (NSString *const fieldName in fieldNames) {
+            if (fieldName.length > 0) {
+                if (finalFieldNamesString.length > 0) {
+                    [finalFieldNamesString appendString:@"_"];
+                }
+                [finalFieldNamesString appendString:fieldName];
+            }
+        }
+        NSString *const recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:fieldNameOffset]];
+        return [NSString stringWithFormat:@"%@ %@", recursiveType, finalFieldNamesString];
+    }
+
     // Objects
     if (encodingCString[0] == FLEXTypeEncodingObjcObject) {
         NSString *class = [encodingString substringFromIndex:1];
-        class = [class stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        class = [class stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%c", FLEXTypeEncodingQuote] withString:@""];
         if (class.length == 0 || (class.length == 1 && [class characterAtIndex:0] == FLEXTypeEncodingUnknown)) {
             class = @"id";
         } else {
@@ -690,7 +723,29 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         return class;
     }
 
-    // C Types
+    // Qualifier Prefixes
+    // Do this first since some of the direct translations (i.e. Method) contain a prefix.
+#define RECURSIVE_TRANSLATE(prefix, formatString) \
+    if (encodingCString[0] == prefix) { \
+        NSString *recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:1]]; \
+        return [NSString stringWithFormat:formatString, recursiveType]; \
+    }
+
+    // If there's a qualifier prefix on the encoding, translate it and then
+    // recursively call this method with the rest of the encoding string.
+    RECURSIVE_TRANSLATE('^', @"%@ *");
+    RECURSIVE_TRANSLATE('r', @"const %@");
+    RECURSIVE_TRANSLATE('n', @"in %@");
+    RECURSIVE_TRANSLATE('N', @"inout %@");
+    RECURSIVE_TRANSLATE('o', @"out %@");
+    RECURSIVE_TRANSLATE('O', @"bycopy %@");
+    RECURSIVE_TRANSLATE('R', @"byref %@");
+    RECURSIVE_TRANSLATE('V', @"oneway %@");
+    RECURSIVE_TRANSLATE('b', @"bitfield(%@)");
+
+#undef RECURSIVE_TRANSLATE
+
+  // C Types
 #define TRANSLATE(ctype) \
     if (strcmp(encodingCString, @encode(ctype)) == 0) { \
         return (NSString *)CFSTR(#ctype); \
@@ -738,27 +793,20 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #undef TRANSLATE
 
-    // Qualifier Prefixes
-    // Do this after the checks above since some of the direct translations (i.e. Method) contain a prefix.
-#define RECURSIVE_TRANSLATE(prefix, formatString) \
-    if (encodingCString[0] == prefix) { \
-        NSString *recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:1]]; \
-        return [NSString stringWithFormat:formatString, recursiveType]; \
+    // For structs, we only use the name of the structs
+    if (encodingCString[0] == FLEXTypeEncodingStructBegin) {
+        const char *equals = strchr(encodingCString, '=');
+        if (equals) {
+            const char *nameStart = encodingCString + 1;
+            // For anonymous structs
+            if (nameStart[0] == FLEXTypeEncodingUnknown) {
+                return @"anonymous struct";
+            } else {
+                NSString *const structName = [encodingString substringWithRange:NSMakeRange(nameStart - encodingCString, equals - nameStart)];
+                return structName;
+            }
+        }
     }
-
-    // If there's a qualifier prefix on the encoding, translate it and then
-    // recursively call this method with the rest of the encoding string.
-    RECURSIVE_TRANSLATE('^', @"%@ *");
-    RECURSIVE_TRANSLATE('r', @"const %@");
-    RECURSIVE_TRANSLATE('n', @"in %@");
-    RECURSIVE_TRANSLATE('N', @"inout %@");
-    RECURSIVE_TRANSLATE('o', @"out %@");
-    RECURSIVE_TRANSLATE('O', @"bycopy %@");
-    RECURSIVE_TRANSLATE('R', @"byref %@");
-    RECURSIVE_TRANSLATE('V', @"oneway %@");
-    RECURSIVE_TRANSLATE('b', @"bitfield(%@)");
-
-#undef RECURSIVE_TRANSLATE
 
     // If we couldn't translate, just return the original encoding string
     return encodingString;
@@ -766,6 +814,12 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type
 {
+    // Remove the field name if there is any (e.g. \"width\"d -> d)
+    const NSUInteger fieldNameOffset = [FLEXRuntimeUtility fieldNameOffsetForTypeEncoding:type];
+    if (fieldNameOffset > 0) {
+        return [self valueForPrimitivePointer:pointer objCType:type + fieldNameOffset];
+    }
+
     // CASE macro inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
 #define CASE(ctype, selectorpart) \
     if(strcmp(type, @encode(ctype)) == 0) { \
