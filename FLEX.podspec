@@ -29,7 +29,7 @@ Pod::Spec.new do |spec|
   spec.license          = { :type => "BSD", :file => "LICENSE" }
   spec.author           = { "Tanner Bennett" => "tannerbennett@me.com" }
   spec.social_media_url = "https://twitter.com/NSExceptional"
-  spec.platform         = :ios, "8.0"
+  spec.platform         = :ios, "9.0"
   spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,m,mm}"
   spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit" ]
