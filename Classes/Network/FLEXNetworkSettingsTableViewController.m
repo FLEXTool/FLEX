@@ -74,8 +74,14 @@
 
 - (void)clearRequestsTapped:(UIButton *)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Clear Recorded Requests" otherButtonTitles:nil];
-    [actionSheet showInView:self.view];
+    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Clear Recorded Requests" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [[FLEXNetworkRecorder defaultRecorder] clearRecordedActivity];
+    }]];
+    self.popoverPresentationController.sourceView = sender;
+    self.popoverPresentationController.sourceRect = sender.bounds;
+    [self presentViewController:actionSheet animated:YES completion:nil];
 }
 
 #pragma mark - Table view data source
@@ -93,15 +99,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     return self.cells[indexPath.row];
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex != actionSheet.cancelButtonIndex) {
-        [[FLEXNetworkRecorder defaultRecorder] clearRecordedActivity];
-    }
 }
 
 #pragma mark - Helpers
