@@ -121,14 +121,14 @@ The code injection is left as an exercise for the reader. :innocent:
 
 ## Installation
 
-FLEX requires an app that targets iOS 7 or higher.
+FLEX requires an app that targets iOS 9 or higher.
 
 ### CocoaPods
 
 FLEX is available on [CocoaPods](https://cocoapods.org/pods/FLEX). Simply add the following line to your podfile:
 
 ```ruby
-pod 'FLEX', '~> 2.0', :configurations => ['Debug']
+pod 'FLEX', '~> 3.0', :configurations => ['Debug']
 ```
 
 ### Carthage
@@ -136,7 +136,7 @@ pod 'FLEX', '~> 2.0', :configurations => ['Debug']
 Add the following to your Cartfile:
 
 ```
-github "flipboard/FLEX" ~> 2.0
+github "flipboard/FLEX" ~> 3.0
 ```
 
 ### Manual
