@@ -188,6 +188,8 @@
         customTitles = @[@"CGFloat x", @"CGFloat y"];
     } else if (strcmp(typeEncoding, @encode(CGSize)) == 0) {
         customTitles = @[@"CGFloat width", @"CGFloat height"];
+    } else if (strcmp(typeEncoding, @encode(CGVector)) == 0) {
+        customTitles = @[@"CGFloat dx", @"CGFloat dy"];
     } else if (strcmp(typeEncoding, @encode(UIEdgeInsets)) == 0) {
         customTitles = @[@"CGFloat top", @"CGFloat left", @"CGFloat bottom", @"CGFloat right"];
     } else if (strcmp(typeEncoding, @encode(UIOffset)) == 0) {
@@ -203,6 +205,13 @@
         customTitles = @[@"CGFloat a", @"CGFloat b",
                          @"CGFloat c", @"CGFloat d",
                          @"CGFloat tx", @"CGFloat ty"];
+    } else {
+        if (@available(iOS 11.0, *)) {
+            if (strcmp(typeEncoding, @encode(NSDirectionalEdgeInsets)) == 0) {
+                customTitles = @[@"CGFloat top", @"CGFloat leading",
+                                 @"CGFloat bottom", @"CGFloat trailing"];
+            }
+        }
     }
     return customTitles;
 }

@@ -702,7 +702,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     TRANSLATE(CGRect);
     TRANSLATE(CGPoint);
     TRANSLATE(CGSize);
+    TRANSLATE(CGVector);
     TRANSLATE(UIEdgeInsets);
+    if (@available(iOS 11.0, *)) {
+      TRANSLATE(NSDirectionalEdgeInsets);
+    }
     TRANSLATE(UIOffset);
     TRANSLATE(NSRange);
     TRANSLATE(CGAffineTransform);
