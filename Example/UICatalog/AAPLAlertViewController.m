@@ -71,9 +71,9 @@ typedef NS_ENUM(NSInteger, AAPLAlertsViewControllerTableRow) {
     NSString *message = NSLocalizedString(@"A message should be a short, complete sentence.", nil);
     NSString *cancelButtonTitle = NSLocalizedString(@"OK", nil);
 
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
 
-	[alert show];
+    [alert show];
 }
 
 // Show an alert with an "Okay" and "Cancel" button.
@@ -83,9 +83,9 @@ typedef NS_ENUM(NSInteger, AAPLAlertsViewControllerTableRow) {
     NSString *cancelButtonTitle = NSLocalizedString(@"Cancel", nil);
     NSString *otherButtonTitle = NSLocalizedString(@"OK", nil);
 
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitle, nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitle, nil];
 
-	[alert show];
+    [alert show];
 }
 
 // Show an alert with two custom buttons.
@@ -96,9 +96,9 @@ typedef NS_ENUM(NSInteger, AAPLAlertsViewControllerTableRow) {
     NSString *otherButtonTitleOne = NSLocalizedString(@"Choice One", nil);
     NSString *otherButtonTitleTwo = NSLocalizedString(@"Choice Two", nil);
 
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitleOne, otherButtonTitleTwo, nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitleOne, otherButtonTitleTwo, nil];
 
-	[alert show];
+    [alert show];
 }
 
 // Show a text entry alert with two custom buttons.
@@ -108,7 +108,7 @@ typedef NS_ENUM(NSInteger, AAPLAlertsViewControllerTableRow) {
     NSString *cancelButtonTitle = NSLocalizedString(@"Cancel", nil);
     NSString *otherButtonTitle = NSLocalizedString(@"OK", nil);
     
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitle, nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitle, nil];
 
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
 
@@ -122,9 +122,9 @@ typedef NS_ENUM(NSInteger, AAPLAlertsViewControllerTableRow) {
     NSString *cancelButtonTitle = NSLocalizedString(@"Cancel", nil);
     NSString *otherButtonTitle = NSLocalizedString(@"OK", nil);
 
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitle, nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:otherButtonTitle, nil];
 
-	alert.alertViewStyle = UIAlertViewStyleSecureTextInput;
+    alert.alertViewStyle = UIAlertViewStyleSecureTextInput;
     
     [alert show];
 }
