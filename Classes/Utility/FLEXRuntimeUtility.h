@@ -40,6 +40,7 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
     FLEXTypeEncodingUnsignedLongLong = 'Q',
     FLEXTypeEncodingFloat            = 'f',
     FLEXTypeEncodingDouble           = 'd',
+    FLEXTypeEncodingLongDouble       = 'D',
     FLEXTypeEncodingCBool            = 'B',
     FLEXTypeEncodingVoid             = 'v',
     FLEXTypeEncodingCString          = '*',
