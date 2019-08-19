@@ -36,10 +36,13 @@
     [super viewDidLoad];
     
     self.fieldEditorView.fieldDescription = [FLEXRuntimeUtility prettyNameForIvar:self.ivar];
-    
-    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:ivar_getTypeEncoding(self.ivar)];
+
+    const char *typeEncoding = ivar_getTypeEncoding(self.ivar);
+    id currentValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
+    currentValue = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:currentValue type:typeEncoding];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:typeEncoding currentValue:currentValue];
     inputView.backgroundColor = self.view.backgroundColor;
-    inputView.inputValue = [FLEXRuntimeUtility valueForIvar:self.ivar onObject:self.target];
+    inputView.inputValue = currentValue;
     inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
     

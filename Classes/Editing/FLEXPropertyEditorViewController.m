@@ -36,16 +36,18 @@
     [super viewDidLoad];
     
     self.fieldEditorView.fieldDescription = [FLEXRuntimeUtility fullDescriptionForProperty:self.property];
-    id currentValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
-    self.setterButton.enabled = [[self class] canEditProperty:self.property onObject:self.target currentValue:currentValue];
-    
+
     const char *typeEncoding = [FLEXRuntimeUtility typeEncodingForProperty:self.property].UTF8String;
-    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:typeEncoding];
+    id currentValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    currentValue = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:currentValue type:typeEncoding];
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:typeEncoding currentValue:currentValue];
     inputView.backgroundColor = self.view.backgroundColor;
-    inputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
+    inputView.inputValue = currentValue;
     inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
-    
+
+    self.setterButton.enabled = [[self class] canEditProperty:self.property onObject:self.target currentValue:currentValue];
+
     // Don't show a "set" button for switches - just call the setter immediately after the switch toggles.
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         self.navigationItem.rightBarButtonItem = nil;
