@@ -76,7 +76,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         if (returnsCString) {
             // Wrap char * in NSString
             const char *string = (const char *)value.pointerValue;
-            returnedObjectOrNil = [NSString stringWithCString:string encoding:NSUTF8StringEncoding];
+            returnedObjectOrNil = string ? [NSString stringWithCString:string encoding:NSUTF8StringEncoding] : NULL;
         } else if (returnsVoidPointer) {
             // Cast valid objects disguised as void * to id
             if ([FLEXRuntimeUtility pointerIsValidObjcObject:value.pointerValue]) {
@@ -489,7 +489,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 {
     // See https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html
 #define CASE(cftype, foundationClass) \
-    if(strcmp(typeEncoding, @encode(cftype)) == 0) { \
+    if (strcmp(typeEncoding, @encode(cftype)) == 0) { \
         return [value isKindOfClass:[foundationClass class]]; \
     }
 
@@ -657,7 +657,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 + (NSString *)appendName:(NSString *)name toType:(NSString *)type
 {
     NSString *combined = nil;
-    if ([type characterAtIndex:type.length - 1] == '*') {
+    if ([type characterAtIndex:type.length - 1] == FLEXTypeEncodingCString) {
         combined = [type stringByAppendingString:name];
     } else {
         combined = [type stringByAppendingFormat:@" %@", name];
@@ -768,7 +768,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 {
     // CASE macro inspired by https://www.mikeash.com/pyblog/friday-qa-2013-02-08-lets-build-key-value-coding.html
 #define CASE(ctype, selectorpart) \
-    if(strcmp(type, @encode(ctype)) == 0) { \
+    if (strcmp(type, @encode(ctype)) == 0) { \
         return [NSNumber numberWith ## selectorpart: *(ctype *)pointer]; \
     }
 
