@@ -67,11 +67,11 @@ typedef NS_ENUM(NSInteger, AAPLActionSheetsViewControllerTableRow) {
     NSString *cancelButtonTitle = NSLocalizedString(@"Cancel", nil);
     NSString *destructiveButtonTitle = NSLocalizedString(@"OK", nil);
     
-	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:cancelButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:cancelButtonTitle destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:nil];
     
-	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
+    actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
     
-	[actionSheet showInView:self.view];
+    [actionSheet showInView:self.view];
 }
 
 // Show a dialog with two custom buttons.
@@ -79,11 +79,11 @@ typedef NS_ENUM(NSInteger, AAPLActionSheetsViewControllerTableRow) {
     NSString *destructiveButtonTitle = NSLocalizedString(@"Destructive Choice", nil);
     NSString *otherButtonTitle = NSLocalizedString(@"Safe Choice", nil);
 
-	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitle, nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:destructiveButtonTitle otherButtonTitles:otherButtonTitle, nil];
     
-	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
+    actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
     
-	[actionSheet showInView:self.view];
+    [actionSheet showInView:self.view];
 }
 
 

@@ -1,5 +1,5 @@
 //
-//  FLEXKeyChainTableViewController.m
+//  FLEXKeychainTableViewController.m
 //  FLEX
 //
 //  Created by ray on 2019/8/17.
@@ -8,44 +8,41 @@
 
 #import "FLEXKeychain.h"
 #import "FLEXKeychainQuery.h"
-#import "FLEXKeyChainTableViewController.h"
+#import "FLEXKeychainTableViewController.h"
 #import "FLEXUtility.h"
 
-@interface FLEXKeyChainTableViewController ()
+@interface FLEXKeychainTableViewController ()
 
 @property (nonatomic) NSArray<NSDictionary *> *keyChainItems;
 
 @end
 
-@implementation FLEXKeyChainTableViewController
+@implementation FLEXKeychainTableViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(clearKeyChain)];
-
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(clearKeychain)];
     
-    _keyChainItems = [FLEXKeychain allAccounts];
-    self.title = [NSString stringWithFormat:@"🔑 KeyChains (%lu)", (unsigned long)self.keyChainItems.count];
+    self.keyChainItems = [FLEXKeychain allAccounts];
+    self.title = [NSString stringWithFormat:@"🔑 Keychain Items (%lu)", (unsigned long)self.keyChainItems.count];
 }
 
-- (void)clearKeyChain
+- (void)clearKeychain
 {
     
-    for (id account in _keyChainItems) {
-
-        FLEXKeychainQuery *query = [[FLEXKeychainQuery alloc] init];
-
-        query.service = [account valueForKey:kSSKeychainWhereKey];
-        query.account = [account valueForKey:kSSKeychainAccountKey];
+    for (id account in self.keyChainItems) {
+        FLEXKeychainQuery *query = [FLEXKeychainQuery new];
+        query.service = account[kFLEXKeychainWhereKey];
+        query.account = account[kFLEXKeychainAccountKey];
         
-        if(![query deleteItem:nil]) {
+        if (![query deleteItem:nil]) {
             NSLog(@"Delete Keychin Item Failed.");
         }
     }
     
-    _keyChainItems = [FLEXKeychain allAccounts];
+    self.keyChainItems = [FLEXKeychain allAccounts];
     [self.tableView reloadData];
 }
 
@@ -53,23 +50,16 @@
 
 + (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row
 {
-    return [NSString stringWithFormat:@"🔑  %@ KeyChain", [FLEXUtility applicationName]];
+    return @"🔑  Keychain";
 }
 
 + (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row
 {
-    FLEXKeyChainTableViewController *keyChainViewController = [self new];
-    
-    return keyChainViewController;
+    return [self new];
 }
 
 
 #pragma mark - Table View Data Source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -87,7 +77,7 @@
     }
     
     NSDictionary *item = self.keyChainItems[indexPath.row];
-    cell.textLabel.text = item[kSSKeychainAccountKey];
+    cell.textLabel.text = item[kFLEXKeychainAccountKey];
     
     return cell;
 }
@@ -99,34 +89,27 @@
 {
     NSDictionary *item = self.keyChainItems[indexPath.row];
     
-    FLEXKeychainQuery *query = [[FLEXKeychainQuery alloc] init];
-    query.service = [item valueForKey:kSSKeychainWhereKey];
-    query.account = [item valueForKey:kSSKeychainAccountKey];
+    FLEXKeychainQuery *query = [FLEXKeychainQuery new];
+    query.service = [item valueForKey:kFLEXKeychainWhereKey];
+    query.account = [item valueForKey:kFLEXKeychainAccountKey];
     [query fetch:nil];
     
     NSString *msg = nil;
     
-    if ([query.password length])
-    {
+    if (query.password.length) {
         msg = query.password;
-    }
-    
-    else if ([query.passwordData length])
-    {
-        msg = [query.passwordData description];
-    }
-    
-    else
-    {
-        msg = @"NO Data!";
+    } else if (query.passwordData.length) {
+        msg = query.passwordData.description;
+    } else {
+        msg = @"No data";
     }
     
     UIAlertController *cv = [UIAlertController alertControllerWithTitle:@"Password" message:msg preferredStyle:UIAlertControllerStyleAlert];
-    [cv addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    [cv addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         [cv dismissViewControllerAnimated:YES completion:nil];
     }]];
     
-    [cv addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [cv addAction:[UIAlertAction actionWithTitle:@"Copy" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = msg;
     }]];
