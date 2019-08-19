@@ -595,6 +595,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     } else if (strcmp(typeEncoding, @encode(double)) == 0) {
         double primitiveValue = [number doubleValue];
         value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    } else if (strcmp(typeEncoding, @encode(long double)) == 0) {
+      long double primitiveValue = [number doubleValue];
+      value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
     }
 
     return value;
@@ -789,6 +792,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     CASE(unsigned long long, UnsignedLongLong);
     CASE(float, Float);
     CASE(double, Double);
+    CASE(long double, Double);
 
 #undef CASE
 

@@ -49,7 +49,8 @@
                            @(@encode(unsigned long)),
                            @(@encode(unsigned long long)),
                            @(@encode(float)),
-                           @(@encode(double))];
+                           @(@encode(double)),
+                           @(@encode(long double))];
     });
     return type && [primitiveTypes containsObject:@(type)];
 }
