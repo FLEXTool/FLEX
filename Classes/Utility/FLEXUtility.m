@@ -276,19 +276,17 @@
 
 + (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response
 {
-    NSIndexSet *errorStatusCodes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(400, 200)];
-    
     if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-        return [errorStatusCodes containsIndex:httpResponse.statusCode];
+        return httpResponse.statusCode >= 400;
     }
     
     return NO;
 }
 
-+ (NSDictionary<NSString *, id> *)dictionaryFromQuery:(NSString *)query
++ (NSArray<NSURLQueryItem *> *)itemsFromQueryString:(NSString *)query
 {
-    NSMutableDictionary<NSString *, id> *queryDictionary = [NSMutableDictionary dictionary];
+    NSMutableArray<NSURLQueryItem *> *items = [NSMutableArray new];
 
     // [a=1, b=2, c=3]
     NSArray<NSString *> *queryComponents = [query componentsSeparatedByString:@"&"];
@@ -296,24 +294,14 @@
         // [a, 1]
         NSArray<NSString *> *components = [keyValueString componentsSeparatedByString:@"="];
         if (components.count == 2) {
-            NSString *key = [components.firstObject stringByRemovingPercentEncoding];
-            id value = [components.lastObject stringByRemovingPercentEncoding];
+            NSString *key = components.firstObject.stringByRemovingPercentEncoding;
+            NSString *value = components.lastObject.stringByRemovingPercentEncoding;
 
-            // Handle multiple entries under the same key as an array
-            id existingEntry = queryDictionary[key];
-            if (existingEntry) {
-                if ([existingEntry isKindOfClass:[NSArray class]]) {
-                    value = [existingEntry arrayByAddingObject:value];
-                } else {
-                    value = @[existingEntry, value];
-                }
-            }
-            
-            [queryDictionary setObject:value forKey:key];
+            [items addObject:[NSURLQueryItem queryItemWithName:key value:value]];
         }
     }
 
-    return queryDictionary;
+    return items.copy;
 }
 
 + (NSString *)prettyJSONStringFromData:(NSData *)data

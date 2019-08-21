@@ -403,7 +403,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
         if ([contentType hasPrefix:@"application/x-www-form-urlencoded"]) {
             NSString *bodyString = [NSString stringWithCString:[self postBodyDataForTransaction:transaction].bytes encoding:NSUTF8StringEncoding];
-            postBodySection.rows = [self networkDetailRowsFromDictionary:[FLEXUtility dictionaryFromQuery:bodyString]];
+            postBodySection.rows = [self networkDetailRowsFromQueryItems:[FLEXUtility itemsFromQueryString:bodyString]];
         }
     }
     return postBodySection;
@@ -411,10 +411,10 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (FLEXNetworkDetailSection *)queryParametersSectionForTransaction:(FLEXNetworkTransaction *)transaction
 {
-    NSDictionary<NSString *, id> *queryDictionary = [FLEXUtility dictionaryFromQuery:transaction.request.URL.query];
+    NSArray<NSURLQueryItem *> *queries = [FLEXUtility itemsFromQueryString:transaction.request.URL.query];
     FLEXNetworkDetailSection *querySection = [FLEXNetworkDetailSection new];
     querySection.title = @"Query Parameters";
-    querySection.rows = [self networkDetailRowsFromDictionary:queryDictionary];
+    querySection.rows = [self networkDetailRowsFromQueryItems:queries];
 
     return querySection;
 }
@@ -432,8 +432,9 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 + (NSArray<FLEXNetworkDetailRow *> *)networkDetailRowsFromDictionary:(NSDictionary<NSString *, id> *)dictionary
 {
-    NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray arrayWithCapacity:dictionary.count];
+    NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray new];
     NSArray<NSString *> *sortedKeys = [dictionary.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    
     for (NSString *key in sortedKeys) {
         id value = dictionary[key];
         FLEXNetworkDetailRow *row = [FLEXNetworkDetailRow new];
@@ -441,6 +442,25 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         row.detailText = [value description];
         [rows addObject:row];
     }
+
+    return rows.copy;
+}
+
++ (NSArray<FLEXNetworkDetailRow *> *)networkDetailRowsFromQueryItems:(NSArray<NSURLQueryItem *> *)items
+{
+    // Sort the items by name
+    items = [items sortedArrayUsingComparator:^NSComparisonResult(NSURLQueryItem *item1, NSURLQueryItem *item2) {
+        return [item1.name caseInsensitiveCompare:item2.name];
+    }];
+
+    NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray new];
+    for (NSURLQueryItem *item in items) {
+        FLEXNetworkDetailRow *row = [FLEXNetworkDetailRow new];
+        row.title = item.name;
+        row.detailText = item.value;
+        [rows addObject:row];
+    }
+
     return [rows copy];
 }
 

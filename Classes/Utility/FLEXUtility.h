@@ -44,7 +44,7 @@
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
 + (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response;
-+ (NSDictionary<NSString *, id> *)dictionaryFromQuery:(NSString *)query;
++ (NSArray<NSURLQueryItem *> *)itemsFromQueryString:(NSString *)query;
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
