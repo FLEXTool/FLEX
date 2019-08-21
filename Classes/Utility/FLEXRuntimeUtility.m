@@ -398,8 +398,21 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         return nil;
     }
 
-    // Build the invocation
+    // Probably an unsupported type encoding, like bitfields
+    // or inline arrays. In the future, we could calculate
+    // the return length on our own. For now, we abort.
+    //
+    // For future reference, the code here will get the true type encoding.
+    // NSMethodSignature will convert {?=b8b4b1b1b18[8S]} to {?}
+    // A solution might involve hooking NSGetSizeAndAlignment.
+    //
+    // returnType = method_getTypeEncoding(class_getInstanceMethod([object class], selector));
     NSMethodSignature *methodSignature = [object methodSignatureForSelector:selector];
+    if (!methodSignature.methodReturnLength) {
+        return nil;
+    }
+
+    // Build the invocation
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:methodSignature];
     [invocation setSelector:selector];
     [invocation setTarget:object];
@@ -454,9 +467,6 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // Try to invoke the invocation but guard against an exception being thrown.
     id returnObject = nil;
     @try {
-        // Some methods are not fit to be called...
-        // Looking at you -[UIResponder(UITextInputAdditions) _caretRect]
-        [invocation invoke];
 
         // Retrieve the return value and box if necessary.
         const char *returnType = methodSignature.methodReturnType;
@@ -467,6 +477,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             [invocation getReturnValue:&objectReturnedFromMethod];
             returnObject = objectReturnedFromMethod;
         } else if (returnType[0] != FLEXTypeEncodingVoid) {
+            NSAssert(methodSignature.methodReturnLength, @"Memory corruption lies ahead");
             // Will use arbitrary buffer for return value and box it.
             void *returnValue = malloc(methodSignature.methodReturnLength);
 
