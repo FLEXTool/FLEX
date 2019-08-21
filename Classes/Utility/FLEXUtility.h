@@ -11,6 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import "FLEXAlert.h"
 
 #define FLEXFloor(x) (floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale)
 
@@ -53,8 +54,6 @@
 + (NSArray *)map:(NSArray *)array block:(id(^)(id obj, NSUInteger idx))mapFunc;
 
 + (NSArray<UIWindow *> *)allWindows;
-
-+ (void)alert:(NSString *)title message:(NSString *)message from:(UIViewController *)viewController;
 
 // Swizzling utilities
 

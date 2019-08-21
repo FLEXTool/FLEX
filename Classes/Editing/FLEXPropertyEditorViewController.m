@@ -63,7 +63,7 @@
     NSError *error = nil;
     [FLEXRuntimeUtility performSelector:setterSelector onObject:self.target withArguments:arguments error:&error];
     if (error) {
-        [FLEXUtility alert:@"Property Setter Failed" message:[error localizedDescription] from:self];
+        [FLEXAlert showAlert:@"Property Setter Failed" message:[error localizedDescription] from:self];
         self.firstInputView.inputValue = [FLEXRuntimeUtility valueForProperty:self.property onObject:self.target];
     } else {
         // If the setter was called without error, pop the view controller to indicate that and make the user's life easier.

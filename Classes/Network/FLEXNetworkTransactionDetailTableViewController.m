@@ -259,7 +259,8 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         FLEXNetworkDetailRow *postBodyRow = [FLEXNetworkDetailRow new];
         postBodyRow.title = @"Request Body";
         postBodyRow.detailText = @"tap to view";
-        postBodyRow.selectionFuture = ^UIViewController * (void){
+        postBodyRow.selectionFuture = ^UIViewController * () {
+            // Show the body if we can
             NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
             UIViewController *detailViewController = [self detailViewControllerForMIMEType:contentType data:[self postBodyDataForTransaction:transaction]];
             if (detailViewController) {
@@ -267,13 +268,15 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
                 return detailViewController;
             }
 
-            NSString *alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for request body data with MIME type: %@", [transaction.request valueForHTTPHeaderField:@"Content-Type"]];
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Can't View Body Data"
-                                                                           message:alertMessage
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
-            return alert;
+            // We can't show the body, alert user
+            return [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                make.title(@"Can't View HTTP Body Data");
+                make.message(@"FLEX does not have a viewer for request body data with MIME type: ");
+                make.message(contentType);
+                make.button(@"Dismiss").cancelStyle();
+            }];
         };
+
         [rows addObject:postBodyRow];
     }
 
@@ -297,33 +300,38 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     NSData *responseData = [[FLEXNetworkRecorder defaultRecorder] cachedResponseBodyForTransaction:transaction];
     if (responseData.length > 0) {
         responseBodyRow.detailText = @"tap to view";
+
         // Avoid a long lived strong reference to the response data in case we need to purge it from the cache.
         __weak NSData *weakResponseData = responseData;
-        responseBodyRow.selectionFuture = ^UIViewController * (void){
-            NSString *alertMessage = nil;
+        responseBodyRow.selectionFuture = ^UIViewController * () {
+
+            // Show the response if we can
+            NSString *contentType = transaction.response.MIMEType;
             NSData *strongResponseData = weakResponseData;
             if (strongResponseData) {
-                UIViewController *responseBodyDetailViewController = [self detailViewControllerForMIMEType:transaction.response.MIMEType data:strongResponseData];
-                if (responseBodyDetailViewController) {
-                    responseBodyDetailViewController.title = @"Response";
-                    return responseBodyDetailViewController;
+                UIViewController *bodyDetailController = [self detailViewControllerForMIMEType:contentType data:strongResponseData];
+                if (bodyDetailController) {
+                    bodyDetailController.title = @"Response";
+                    return bodyDetailController;
                 }
-
-                alertMessage = [NSString stringWithFormat:@"FLEX does not have a viewer for responses with MIME type: %@", transaction.response.MIMEType];
-            } else {
-                alertMessage = @"The response has been purged from the cache";
             }
 
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Can't View Response"
-                                                                           message:alertMessage
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
-            return alert;
+            // We can't show the response, alert user
+            return [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                make.title(@"Unable to View Response");
+                if (strongResponseData) {
+                    make.message(@"No viewer content type: ").message(contentType);
+                } else {
+                    make.message(@"The response has been purged from the cache");
+                }
+                make.button(@"OK").cancelStyle();
+            }];
         };
     } else {
         BOOL emptyResponse = transaction.receivedDataLength == 0;
         responseBodyRow.detailText = emptyResponse ? @"empty" : @"not in cache";
     }
+
     [rows addObject:responseBodyRow];
 
     FLEXNetworkDetailRow *responseSizeRow = [FLEXNetworkDetailRow new];

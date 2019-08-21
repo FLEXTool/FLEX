@@ -28,40 +28,32 @@
 
 + (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
     return ^(FLEXGlobalsTableViewController *host) {
+
         NSString *title = @"Explore Object at Address";
         NSString *message = @"Paste a hexadecimal address below, starting with '0x'. "
         "Use the unsafe option if you need to bypass pointer validation, "
         "but know that it may crash the app if the address is invalid.";
 
-        UIAlertController *addressInput = [UIAlertController alertControllerWithTitle:title
-                                                                              message:message
-                                                                       preferredStyle:UIAlertControllerStyleAlert];
-        void (^handler)(UIAlertAction *) = ^(UIAlertAction *action) {
-            if (action.style == UIAlertActionStyleCancel) {
-                [host deselectSelectedRow]; return;
-            }
-            NSString *address = addressInput.textFields.firstObject.text;
-            [host tryExploreAddress:address safely:action.style == UIAlertActionStyleDefault];
-        };
-        [addressInput addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-            NSString *copied = UIPasteboard.generalPasteboard.string;
-            textField.placeholder = @"0x00000070deadbeef";
-            // Go ahead and paste our clipboard if we have an address copied
-            if ([copied hasPrefix:@"0x"]) {
-                textField.text = copied;
-                [textField selectAll:nil];
-            }
-        }];
-        [addressInput addAction:[UIAlertAction actionWithTitle:@"Explore"
-                                                         style:UIAlertActionStyleDefault
-                                                       handler:handler]];
-        [addressInput addAction:[UIAlertAction actionWithTitle:@"Unsafe Explore"
-                                                         style:UIAlertActionStyleDestructive
-                                                       handler:handler]];
-        [addressInput addAction:[UIAlertAction actionWithTitle:@"Cancel"
-                                                         style:UIAlertActionStyleCancel
-                                                       handler:handler]];
-        [host presentViewController:addressInput animated:YES completion:nil];
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title(title).message(message);
+            make.configuredTextField(^(UITextField *textField) {
+                NSString *copied = UIPasteboard.generalPasteboard.string;
+                textField.placeholder = @"0x00000070deadbeef";
+                // Go ahead and paste our clipboard if we have an address copied
+                if ([copied hasPrefix:@"0x"]) {
+                    textField.text = copied;
+                    [textField selectAll:nil];
+                }
+            });
+            make.button(@"Explore").handler(^(NSArray<NSString *> *strings) {
+                [host tryExploreAddress:strings.firstObject safely:YES];
+            });
+            make.button(@"Unsafe Explore").destructiveStyle().handler(^(NSArray *strings) {
+                [host tryExploreAddress:strings.firstObject safely:NO];
+            });
+            make.button(@"Cancel").cancelStyle();
+        } showFrom:host];
+
     };
 }
 
@@ -95,7 +87,7 @@
         FLEXObjectExplorerViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
         [self.navigationController pushViewController:explorer animated:YES];
     } else {
-        [FLEXUtility alert:@"Uh-oh" message:error from:self];
+        [FLEXAlert showAlert:@"Uh-oh" message:error from:self];
         [self deselectSelectedRow];
     }
 }

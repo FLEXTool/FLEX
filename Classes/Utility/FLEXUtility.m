@@ -411,11 +411,13 @@
     return windows;
 }
 
-+ (void)alert:(NSString *)title message:(NSString *)message from:(UIViewController *)viewController
++ (UIAlertController *)alert:(NSString *)title message:(NSString *)message
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"Dismiss" style:UIAlertActionStyleDefault handler:nil]];
-    [viewController presentViewController:alert animated:YES completion:nil];
+    return [UIAlertController
+        alertControllerWithTitle:title
+        message:message
+        preferredStyle:UIAlertControllerStyleAlert
+    ];
 }
 
 + (SEL)swizzledSelectorForSelector:(SEL)selector

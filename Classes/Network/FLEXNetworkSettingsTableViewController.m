@@ -74,14 +74,15 @@
 
 - (void)clearRequestsTapped:(UIButton *)sender
 {
-    UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [actionSheet addAction:[UIAlertAction actionWithTitle:@"Clear Recorded Requests" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        [[FLEXNetworkRecorder defaultRecorder] clearRecordedActivity];
-    }]];
+    [FLEXAlert makeSheet:^(FLEXAlert *make) {
+        make.button(@"Cancel").cancelStyle();
+        make.button(@"Clear Recorded Requests").destructiveStyle().handler(^(NSArray *strings) {
+            [[FLEXNetworkRecorder defaultRecorder] clearRecordedActivity];
+        });
+    } showFrom:self];
+
     self.popoverPresentationController.sourceView = sender;
     self.popoverPresentationController.sourceRect = sender.bounds;
-    [self presentViewController:actionSheet animated:YES completion:nil];
 }
 
 #pragma mark - Table view data source

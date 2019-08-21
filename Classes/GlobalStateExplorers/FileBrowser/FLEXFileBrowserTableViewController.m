@@ -210,7 +210,7 @@
     UIImage *image = cell.imageView.image;
 
     if (!stillExists) {
-        [FLEXUtility alert:@"File Not Found" message:@"The file at the specified path no longer exists." from:self];
+        [FLEXAlert showAlert:@"File Not Found" message:@"The file at the specified path no longer exists." from:self];
         [self reloadDisplayedPaths];
         return;
     }
@@ -223,7 +223,7 @@
     } else {
         NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
         if (!fileData.length) {
-            [FLEXUtility alert:@"Empty File" message:@"No data returned from the file." from:self];
+            [FLEXAlert showAlert:@"Empty File" message:@"No data returned from the file." from:self];
             return;
         }
 
@@ -321,24 +321,22 @@
 
     BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:self.path isDirectory:NULL];
     if (stillExists) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Rename %@?", fullPath.lastPathComponent]
-                                                                       message:nil
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = @"New file name";
-            textField.text = fullPath.lastPathComponent;
-        }];
-        __weak typeof(alert) weakAlert = alert;
-        [alert addAction:[UIAlertAction actionWithTitle:@"Rename" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            NSString *newFileName = weakAlert.textFields.firstObject.text;
-            NSString *newPath = [[fullPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:newFileName];
-            [NSFileManager.defaultManager moveItemAtPath:fullPath toPath:newPath error:NULL];
-            [self reloadDisplayedPaths];
-        }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title([NSString stringWithFormat:@"Rename %@?", fullPath.lastPathComponent]);
+            make.configuredTextField(^(UITextField *textField) {
+                textField.placeholder = @"New file name";
+                textField.text = fullPath.lastPathComponent;
+            });
+            make.button(@"Rename").handler(^(NSArray<NSString *> *strings) {
+                NSString *newFileName = strings.firstObject;
+                NSString *newPath = [fullPath.stringByDeletingLastPathComponent stringByAppendingPathComponent:newFileName];
+                [NSFileManager.defaultManager moveItemAtPath:fullPath toPath:newPath error:NULL];
+                [self reloadDisplayedPaths];
+            });
+            make.button(@"Cancel").cancelStyle();
+        } showFrom:self];
     } else {
-        [FLEXUtility alert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
+        [FLEXAlert showAlert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
     }
 }
 
@@ -350,17 +348,20 @@
     BOOL isDirectory = NO;
     BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:fullPath isDirectory:&isDirectory];
     if (stillExists) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Delete %@?", fullPath.lastPathComponent]
-                                                                       message:[NSString stringWithFormat:@"The %@ will be deleted. This operation cannot be undone", isDirectory ? @"directory" : @"file"]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            [NSFileManager.defaultManager removeItemAtPath:fullPath error:NULL];
-            [self reloadDisplayedPaths];
-        }]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title(@"Confirm Deletion");
+            make.message([NSString stringWithFormat:
+                @"The %@ '%@' will be deleted. This operation cannot be undone",
+                (isDirectory ? @"directory" : @"file"), fullPath.lastPathComponent
+            ]);
+            make.button(@"Delete").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+                [NSFileManager.defaultManager removeItemAtPath:fullPath error:NULL];
+                [self reloadDisplayedPaths];
+            });
+            make.button(@"Cancel").cancelStyle();
+        } showFrom:self];
     } else {
-        [FLEXUtility alert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
+        [FLEXAlert showAlert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
     }
 }
 

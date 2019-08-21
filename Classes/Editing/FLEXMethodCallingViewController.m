@@ -95,7 +95,7 @@
     id returnedObject = [FLEXRuntimeUtility performSelector:method_getName(self.method) onObject:self.target withArguments:arguments error:&error];
     
     if (error) {
-        [FLEXUtility alert:@"Method Call Failed" message:[error localizedDescription] from:self];
+        [FLEXAlert showAlert:@"Method Call Failed" message:[error localizedDescription] from:self];
     } else if (returnedObject) {
         // For non-nil (or void) return types, push an explorer view controller to display the returned object
         returnedObject = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:returnedObject type:self.returnType];
