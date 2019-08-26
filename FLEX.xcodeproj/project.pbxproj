@@ -223,7 +223,7 @@
 
 /* Begin PBXFileReference section */
 		04F1CA181C137CF1000A52B0 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		1C27A8B61F0E5A0300F0D02D /* FLEXTestsMethodsList.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FLEXTestsMethodsList.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C27A8B61F0E5A0300F0D02D /* FLEXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FLEXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTestsMethodsList.m; sourceTree = "<group>"; };
 		1C27A8BA1F0E5A0400F0D02D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		222C88211C7339DC007CA15F /* FLEXRealmDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXRealmDefines.h; sourceTree = "<group>"; };
@@ -452,20 +452,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1C27A8B71F0E5A0400F0D02D /* FLEXTestsMethodsList */ = {
+		1C27A8B71F0E5A0400F0D02D /* FLEXTests */ = {
 			isa = PBXGroup;
 			children = (
 				1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */,
 				1C27A8BA1F0E5A0400F0D02D /* Info.plist */,
 			);
-			path = FLEXTestsMethodsList;
+			path = FLEXTests;
 			sourceTree = "<group>";
 		};
 		3A4C94151B5B20570088C3F2 = {
 			isa = PBXGroup;
 			children = (
 				3A4C94211B5B20570088C3F2 /* FLEX */,
-				1C27A8B71F0E5A0400F0D02D /* FLEXTestsMethodsList */,
+				1C27A8B71F0E5A0400F0D02D /* FLEXTests */,
 				3A4C95451B5B216C0088C3F2 /* Frameworks */,
 				3A4C94201B5B20570088C3F2 /* Products */,
 			);
@@ -475,7 +475,7 @@
 			isa = PBXGroup;
 			children = (
 				3A4C941F1B5B20570088C3F2 /* FLEX.framework */,
-				1C27A8B61F0E5A0300F0D02D /* FLEXTestsMethodsList.xctest */,
+				1C27A8B61F0E5A0300F0D02D /* FLEXTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -980,9 +980,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1C27A8B51F0E5A0300F0D02D /* FLEXTestsMethodsList */ = {
+		1C27A8B51F0E5A0300F0D02D /* FLEXTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1C27A8C01F0E5A0400F0D02D /* Build configuration list for PBXNativeTarget "FLEXTestsMethodsList" */;
+			buildConfigurationList = 1C27A8C01F0E5A0400F0D02D /* Build configuration list for PBXNativeTarget "FLEXTests" */;
 			buildPhases = (
 				1C27A8B21F0E5A0300F0D02D /* Sources */,
 				1C27A8B31F0E5A0300F0D02D /* Frameworks */,
@@ -993,9 +993,9 @@
 			dependencies = (
 				1C27A8BD1F0E5A0400F0D02D /* PBXTargetDependency */,
 			);
-			name = FLEXTestsMethodsList;
+			name = FLEXTests;
 			productName = FLEXTestsMethodsList;
-			productReference = 1C27A8B61F0E5A0300F0D02D /* FLEXTestsMethodsList.xctest */;
+			productReference = 1C27A8B61F0E5A0300F0D02D /* FLEXTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		3A4C941E1B5B20570088C3F2 /* FLEX */ = {
@@ -1049,7 +1049,7 @@
 			projectRoot = "";
 			targets = (
 				3A4C941E1B5B20570088C3F2 /* FLEX */,
-				1C27A8B51F0E5A0300F0D02D /* FLEXTestsMethodsList */,
+				1C27A8B51F0E5A0300F0D02D /* FLEXTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1203,7 +1203,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = U3LST7M92S;
-				INFOPLIST_FILE = FLEXTestsMethodsList/Info.plist;
+				INFOPLIST_FILE = FLEXTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.FLEXTestsMethodsList;
@@ -1218,7 +1218,7 @@
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				DEVELOPMENT_TEAM = U3LST7M92S;
-				INFOPLIST_FILE = FLEXTestsMethodsList/Info.plist;
+				INFOPLIST_FILE = FLEXTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.FLEXTestsMethodsList;
@@ -1398,7 +1398,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1C27A8C01F0E5A0400F0D02D /* Build configuration list for PBXNativeTarget "FLEXTestsMethodsList" */ = {
+		1C27A8C01F0E5A0400F0D02D /* Build configuration list for PBXNativeTarget "FLEXTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1C27A8BE1F0E5A0400F0D02D /* Debug */,
