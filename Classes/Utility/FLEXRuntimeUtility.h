@@ -97,11 +97,19 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 + (FLEXTypeEncoding *)returnTypeForMethod:(Method)method;
 
 // Method Calling/Field Editing
-+ (id)performSelector:(SEL)selector onObject:(id)object withArguments:(NSArray *)arguments error:(NSError * __autoreleasing *)error;
++ (id)performSelector:(SEL)selector
+             onObject:(id)object
+        withArguments:(NSArray *)arguments
+                error:(NSError * __autoreleasing *)error;
 + (NSString *)editableJSONStringForObject:(id)object;
 + (id)objectValueFromEditableJSONString:(NSString *)string;
 + (NSValue *)valueForNumberWithObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString;
-+ (void)enumerateTypesInStructEncoding:(const char *)structEncoding usingBlock:(void (^)(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset))typeBlock;
++ (void)enumerateTypesInStructEncoding:(const char *)structEncoding
+                            usingBlock:(void (^)(NSString *structName,
+                                                 const char *fieldTypeEncoding,
+                                                 NSString *prettyTypeEncoding,
+                                                 NSUInteger fieldIndex,
+                                                 NSUInteger fieldOffset))typeBlock;
 + (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type;
 
 @end

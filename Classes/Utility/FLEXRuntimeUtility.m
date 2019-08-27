@@ -139,7 +139,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSString *setterSelectorString = [[self attributesDictionaryForProperty:property] objectForKey:kFLEXUtilityAttributeCustomSetter];
     if (!setterSelectorString) {
         NSString *propertyName = @(property_getName(property));
-        setterSelectorString = [NSString stringWithFormat:@"set%@%@:", [[propertyName substringToIndex:1] uppercaseString], [propertyName substringFromIndex:1]];
+        setterSelectorString = [NSString
+            stringWithFormat:@"set%@%@:",
+            [propertyName substringToIndex:1].uppercaseString,
+            [propertyName substringFromIndex:1]
+        ];
     }
     if (setterSelectorString) {
         setterSelector = NSSelectorFromString(setterSelectorString);
@@ -248,7 +252,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return description;
 }
 
-+ (void)tryAddPropertyWithName:(const char *)name attributes:(NSDictionary<NSString *, NSString *> *)attributePairs toClass:(__unsafe_unretained Class)theClass
++ (void)tryAddPropertyWithName:(const char *)name
+                    attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
+                       toClass:(__unsafe_unretained Class)theClass
 {
     objc_property_t property = class_getProperty(theClass, name);
     if (!property) {
@@ -313,13 +319,18 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSValue *valueValue = (NSValue *)value;
 
         // Make sure that the box contained the correct type.
-        NSAssert(strcmp([valueValue objCType], typeEncodingCString) == 0, @"Type encoding mismatch (value: %s; ivar: %s) in setting ivar named: %s on object: %@", [valueValue objCType], typeEncodingCString, ivar_getName(ivar), object);
+        NSAssert(
+            strcmp(valueValue.objCType, typeEncodingCString) == 0,
+            @"Type encoding mismatch (value: %s; ivar: %s) in setting ivar named: %s on object: %@",
+            valueValue.objCType, typeEncodingCString, ivar_getName(ivar), object
+        );
 
         NSUInteger bufferSize = 0;
         @try {
             // NSGetSizeAndAlignment barfs on type encoding for bitfields.
             NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
         } @catch (NSException *exception) { }
+
         if (bufferSize > 0) {
             void *buffer = calloc(bufferSize, 1);
             [valueValue getValue:buffer];
@@ -372,7 +383,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         char *argType = method_copyArgumentType(method, argIndex + kFLEXNumberOfImplicitArgs);
         NSString *readableArgType = (argType != NULL) ? [self readableTypeForEncoding:@(argType)] : nil;
         free(argType);
-        NSString *prettyComponent = [NSString stringWithFormat:@"%@:(%@) ", [selectorComponents objectAtIndex:argIndex], readableArgType];
+        NSString *prettyComponent = [NSString
+            stringWithFormat:@"%@:(%@) ",
+            selectorComponents[argIndex],
+            readableArgType
+        ];
         [components addObject:prettyComponent];
     }
 
@@ -387,13 +402,24 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Method Calling/Field Editing (Public)
 
-+ (id)performSelector:(SEL)selector onObject:(id)object withArguments:(NSArray *)arguments error:(NSError * __autoreleasing *)error
++ (id)performSelector:(SEL)selector
+             onObject:(id)object
+        withArguments:(NSArray *)arguments
+                error:(NSError * __autoreleasing *)error
 {
     // Bail if the object won't respond to this selector.
     if (![object respondsToSelector:selector]) {
         if (error) {
-            NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"%@ does not respond to the selector %@", object, NSStringFromSelector(selector)]};
-            *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector userInfo:userInfo];
+            NSString *msg = [NSString
+                stringWithFormat:@"%@ does not respond to the selector %@",
+                object, NSStringFromSelector(selector)
+            ];
+            NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : msg };
+            *error = [NSError
+                errorWithDomain:FLEXRuntimeUtilityErrorDomain
+                code:FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector
+                userInfo:userInfo
+            ];
         }
         return nil;
     }
@@ -424,13 +450,17 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSUInteger argumentsArrayIndex = argumentIndex - kFLEXNumberOfImplicitArgs;
         id argumentObject = arguments.count > argumentsArrayIndex ? arguments[argumentsArrayIndex] : nil;
 
-        // NSNull in the arguments array can be passed as a placeholder to indicate nil. We only need to set the argument if it will be non-nil.
+        // NSNull in the arguments array can be passed as a placeholder to indicate nil.
+        // We only need to set the argument if it will be non-nil.
         if (argumentObject && ![argumentObject isKindOfClass:[NSNull class]]) {
             const char *typeEncodingCString = [methodSignature getArgumentTypeAtIndex:argumentIndex];
-            if (typeEncodingCString[0] == FLEXTypeEncodingObjcObject || typeEncodingCString[0] == FLEXTypeEncodingObjcClass || [self isTollFreeBridgedValue:argumentObject forCFType:typeEncodingCString]) {
+            if (typeEncodingCString[0] == FLEXTypeEncodingObjcObject ||
+              typeEncodingCString[0] == FLEXTypeEncodingObjcClass ||
+              [self isTollFreeBridgedValue:argumentObject forCFType:typeEncodingCString]) {
                 // Object
                 [invocation setArgument:&argumentObject atIndex:argumentIndex];
-            } else if (strcmp(typeEncodingCString, @encode(CGColorRef)) == 0 && [argumentObject isKindOfClass:[UIColor class]]) {
+            } else if (strcmp(typeEncodingCString, @encode(CGColorRef)) == 0 &&
+                    [argumentObject isKindOfClass:[UIColor class]]) {
                 // Bridging UIColor to CGColorRef
                 CGColorRef colorRef = [argumentObject CGColor];
                 [invocation setArgument:&colorRef atIndex:argumentIndex];
@@ -441,8 +471,17 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 // Ensure that the type encoding on the NSValue matches the type encoding of the argument in the method signature
                 if (strcmp([argumentValue objCType], typeEncodingCString) != 0) {
                     if (error) {
-                        NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : [NSString stringWithFormat:@"Type encoding mismatch for argument at index %lu. Value type: %s; Method argument type: %s.", (unsigned long)argumentsArrayIndex, [argumentValue objCType], typeEncodingCString]};
-                        *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain code:FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch userInfo:userInfo];
+                        NSString *msg =  [NSString
+                            stringWithFormat:@"Type encoding mismatch for argument at index %lu. "
+                            "Value type: %s; Method argument type: %s.",
+                            (unsigned long)argumentsArrayIndex, argumentValue.objCType, typeEncodingCString
+                        ];
+                        NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : msg };
+                        *error = [NSError
+                            errorWithDomain:FLEXRuntimeUtilityErrorDomain
+                            code:FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch
+                            userInfo:userInfo
+                        ];
                     }
                     return nil;
                 }
@@ -494,11 +533,10 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             NSString *class = NSStringFromClass([object class]);
             NSString *calledOn = object == [object class] ? class : [@"an instance of " stringByAppendingString:class];
 
-            NSString *message = [NSString stringWithFormat:@"Exception '%@' thrown while performing selector '%@' on %@.\nReason:\n\n%@",
-                                 exception.name,
-                                 NSStringFromSelector(selector),
-                                 calledOn,
-                                 exception.reason];
+            NSString *message = [NSString
+                stringWithFormat:@"Exception '%@' thrown while performing selector '%@' on %@.\nReason:\n\n%@",
+                exception.name, NSStringFromSelector(selector), calledOn, exception.reason
+            ];
 
             *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain
                                          code:FLEXRuntimeUtilityErrorCodeInvocationFailed
@@ -557,7 +595,8 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         // We always wrap the object inside an array and then strip the outer square braces off the final string.
         NSArray *wrappedObject = @[object];
         if ([NSJSONSerialization isValidJSONObject:wrappedObject]) {
-            NSString *wrappedDescription = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:wrappedObject options:0 error:NULL] encoding:NSUTF8StringEncoding];
+            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:wrappedObject options:0 error:NULL];
+            NSString *wrappedDescription = [NSString stringWithUTF8String:jsonData.bytes];
             editableDescription = [wrappedDescription substringWithRange:NSMakeRange(1, wrappedDescription.length - 2)];
         }
     }
@@ -569,8 +608,12 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 {
     id value = nil;
     // nil for empty string/whitespace
-    if ([[string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 0) {
-        value = [NSJSONSerialization JSONObjectWithData:[string dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingAllowFragments error:NULL];
+    if ([string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) {
+        value = [NSJSONSerialization
+            JSONObjectWithData:[string dataUsingEncoding:NSUTF8StringEncoding]
+            options:NSJSONReadingAllowFragments
+            error:NULL
+        ];
     }
     return value;
 }
@@ -627,13 +670,20 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return value;
 }
 
-+ (void)enumerateTypesInStructEncoding:(const char *)structEncoding usingBlock:(void (^)(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset))typeBlock
++ (void)enumerateTypesInStructEncoding:(const char *)structEncoding
+                            usingBlock:(void (^)(NSString *structName,
+                                                 const char *fieldTypeEncoding,
+                                                 NSString *prettyTypeEncoding,
+                                                 NSUInteger fieldIndex,
+                                                 NSUInteger fieldOffset))typeBlock
 {
     if (structEncoding && structEncoding[0] == FLEXTypeEncodingStructBegin) {
         const char *equals = strchr(structEncoding, '=');
         if (equals) {
             const char *nameStart = structEncoding + 1;
-            NSString *structName = [@(structEncoding) substringWithRange:NSMakeRange(nameStart - structEncoding, equals - nameStart)];
+            NSString *structName = [@(structEncoding)
+                substringWithRange:NSMakeRange(nameStart - structEncoding, equals - nameStart)
+            ];
 
             NSUInteger fieldAlignment = 0;
             NSUInteger structSize = 0;
@@ -650,14 +700,22 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                     NSUInteger fieldSize = 0;
                     // If the struct type encoding was successfully handled by NSGetSizeAndAlignment above, we *should* be ok with the field here.
                     const char *nextTypeStart = NSGetSizeAndAlignment(typeStart, &fieldSize, NULL);
-                    NSString *typeEncoding = [@(structEncoding) substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)];
+                    NSString *typeEncoding = [@(structEncoding)
+                        substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)
+                    ];
                     // Padding to keep proper alignment. __attribute((packed)) structs will break here.
                     // The type encoding is no different for packed structs, so it's not clear there's anything we can do for those.
                     const NSUInteger currentSizeSum = runningFieldOffset % fieldAlignment;
                     if (currentSizeSum != 0 && currentSizeSum + fieldSize > fieldAlignment) {
                         runningFieldOffset += fieldAlignment - currentSizeSum;
                     }
-                    typeBlock(structName, typeEncoding.UTF8String, [self readableTypeForEncoding:typeEncoding], runningFieldIndex, runningFieldOffset);
+                    typeBlock(
+                        structName,
+                        typeEncoding.UTF8String,
+                        [self readableTypeForEncoding:typeEncoding],
+                        runningFieldIndex,
+                        runningFieldOffset
+                    );
                     runningFieldOffset += fieldSize;
                     runningFieldIndex++;
                     typeStart = nextTypeStart;
@@ -712,7 +770,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         // According to https://github.com/nygard/class-dump/commit/33fb5ed221810685f57c192e1ce8ab6054949a7c,
         // there are some consecutive quoted strings, so use `_` to concatenate the names.
         NSString *const fieldNamesString = [encodingString substringWithRange:NSMakeRange(0, fieldNameOffset)];
-        NSArray<NSString *> *const fieldNames = [fieldNamesString componentsSeparatedByString:[NSString stringWithFormat:@"%c", FLEXTypeEncodingQuote]];
+        NSArray<NSString *> *const fieldNames = [fieldNamesString
+            componentsSeparatedByString:[NSString stringWithFormat:@"%c", FLEXTypeEncodingQuote]
+        ];
         NSMutableString *finalFieldNamesString = [NSMutableString string];
         for (NSString *const fieldName in fieldNames) {
             if (fieldName.length > 0) {
@@ -729,7 +789,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // Objects
     if (encodingCString[0] == FLEXTypeEncodingObjcObject) {
         NSString *class = [encodingString substringFromIndex:1];
-        class = [class stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%c", FLEXTypeEncodingQuote] withString:@""];
+        class = [class stringByReplacingOccurrencesOfString:@"\"" withString:@""];
         if (class.length == 0 || (class.length == 1 && [class characterAtIndex:0] == FLEXTypeEncodingUnknown)) {
             class = @"id";
         } else {
@@ -821,7 +881,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             if (nameStart[0] == FLEXTypeEncodingUnknown) {
                 return @"anonymous struct";
             } else {
-                NSString *const structName = [encodingString substringWithRange:NSMakeRange(nameStart - encodingCString, equals - nameStart)];
+                NSString *const structName = [encodingString
+                    substringWithRange:NSMakeRange(nameStart - encodingCString, equals - nameStart)
+                ];
                 return structName;
             }
         }
