@@ -72,24 +72,24 @@
 + (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row 
 {
     switch (row) {
-        case FLEXGlobalsRowAppDelegate: {
-            Class cls = [UIApplication.sharedApplication.delegate class];
-            return [NSString stringWithFormat:@"👉  %@", cls];
-        }
+        case FLEXGlobalsRowAppDelegate:
+            return @"👉  App delegate";
+        case FLEXGlobalsRowRootViewController:
+            return @"🌴  Root view controller";
         case FLEXGlobalsRowProcessInfo:
-            return @"🚦  +NSProcessInfo.processInfo";
+            return @"🚦  NSProcessInfo.processInfo";
         case FLEXGlobalsRowUserDefaults:
-            return @"💾  +[NSUserDefaults standardUserDefaults]";
+            return @"💾  Preferences (NSUserDefaults)";
         case FLEXGlobalsRowMainBundle:
-            return @"📦  +[NSBundle mainBundle]";
+            return @"📦  NSBundle.mainBundle";
         case FLEXGlobalsRowApplication:
-            return @"🚀  +UIApplication.sharedApplication";
+            return @"🚀  UIApplication.sharedApplication";
         case FLEXGlobalsRowMainScreen:
-            return @"💻  +UIScreen.mainScreen";
+            return @"💻  UIScreen.mainScreen";
         case FLEXGlobalsRowCurrentDevice:
-            return @"📱  +[UIDevice currentDevice]";
+            return @"📱  UIDevice.currentDevice";
         case FLEXGlobalsRowPasteboard:
-            return @"📋  +UIPasteboard.generalPastboard";
+            return @"📋  UIPasteboard.generalPastboard";
         default: return nil;
     }
 }
@@ -102,9 +102,9 @@
             return [self explorerViewControllerForObject:appDelegate];
         }
         case FLEXGlobalsRowProcessInfo:
-            return [self explorerViewControllerForObject:NSProcessInfo.processInfo];;
+            return [self explorerViewControllerForObject:NSProcessInfo.processInfo];
         case FLEXGlobalsRowUserDefaults:
-            return [self explorerViewControllerForObject:[NSUserDefaults standardUserDefaults]];
+            return [self explorerViewControllerForObject:NSUserDefaults.standardUserDefaults];
         case FLEXGlobalsRowMainBundle:
             return [self explorerViewControllerForObject:NSBundle.mainBundle];
         case FLEXGlobalsRowApplication:
@@ -112,7 +112,7 @@
         case FLEXGlobalsRowMainScreen:
             return [self explorerViewControllerForObject:UIScreen.mainScreen];
         case FLEXGlobalsRowCurrentDevice:
-            return [self explorerViewControllerForObject:[UIDevice currentDevice]];
+            return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
         default: return nil;

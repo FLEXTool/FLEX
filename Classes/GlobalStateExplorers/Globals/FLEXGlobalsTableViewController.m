@@ -74,15 +74,6 @@ static __weak UIWindow *s_applicationWindow = nil;
             return [FLEXSystemLogTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowNetworkHistory:
             return [FLEXNetworkHistoryTableViewController flex_concreteGlobalsEntry:row];
-        case FLEXGlobalsRowRootViewController:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return [NSString stringWithFormat:@"🌴  %@", [s_applicationWindow.rootViewController class]];
-                } viewControllerFuture:^UIViewController *{
-                    UIViewController *rootViewController = s_applicationWindow.rootViewController;
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:rootViewController];
-                }
-            ];
         case FLEXGlobalsRowKeyWindow:
             return [FLEXGlobalsEntry
                 entryWithNameFuture:^NSString *{
@@ -91,6 +82,7 @@ static __weak UIWindow *s_applicationWindow = nil;
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:s_applicationWindow];
                 }
             ];
+        case FLEXGlobalsRowRootViewController:
         case FLEXGlobalsRowProcessInfo:
         case FLEXGlobalsRowAppDelegate:
         case FLEXGlobalsRowUserDefaults:
@@ -102,7 +94,10 @@ static __weak UIWindow *s_applicationWindow = nil;
             return [FLEXObjectExplorerFactory flex_concreteGlobalsEntry:row];
 
         default:
-            @throw NSInternalInconsistencyException;
+            @throw [NSException
+                exceptionWithName:NSInternalInconsistencyException
+                reason:@"Missing globals case in switch" userInfo:nil
+            ];
     }
 }
 
@@ -113,15 +108,17 @@ static __weak UIWindow *s_applicationWindow = nil;
     dispatch_once(&onceToken, ^{
         NSArray *rows = @[
             @[
-                [self globalsEntryForRow:FLEXGlobalsRowProcessInfo],
                 [self globalsEntryForRow:FLEXGlobalsRowNetworkHistory],
                 [self globalsEntryForRow:FLEXGlobalsRowSystemLog],
+                [self globalsEntryForRow:FLEXGlobalsRowProcessInfo],
                 [self globalsEntryForRow:FLEXGlobalsRowLiveObjects],
                 [self globalsEntryForRow:FLEXGlobalsRowAddressInspector],
                 [self globalsEntryForRow:FLEXGlobalsRowSystemLibraries],
                 [self globalsEntryForRow:FLEXGlobalsRowAppClasses],
             ],
             @[ // FLEXGlobalsSectionAppShortcuts
+                [self globalsEntryForRow:FLEXGlobalsRowBrowseBundle],
+                [self globalsEntryForRow:FLEXGlobalsRowBrowseContainer],
                 [self globalsEntryForRow:FLEXGlobalsRowMainBundle],
                 [self globalsEntryForRow:FLEXGlobalsRowUserDefaults],
                 [self globalsEntryForRow:FLEXGlobalsRowAppKeychainItems],
@@ -130,8 +127,6 @@ static __weak UIWindow *s_applicationWindow = nil;
                 [self globalsEntryForRow:FLEXGlobalsRowKeyWindow],
                 [self globalsEntryForRow:FLEXGlobalsRowRootViewController],
                 [self globalsEntryForRow:FLEXGlobalsRowCookies],
-                [self globalsEntryForRow:FLEXGlobalsRowBrowseBundle],
-                [self globalsEntryForRow:FLEXGlobalsRowBrowseContainer],
             ],
             @[ // FLEXGlobalsSectionMisc
                 [self globalsEntryForRow:FLEXGlobalsRowPasteboard],
