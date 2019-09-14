@@ -48,7 +48,7 @@
     
     if (onlyShowKeysForAppPrefs) {
         // Read keys from preferences file
-        NSString *bundle = [NSBundle mainBundle].bundleIdentifier;
+        NSString *bundle = NSBundle.mainBundle.bundleIdentifier;
         NSString *prefsPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Preferences"];
         NSString *filePath = [NSString stringWithFormat:@"%@/%@.plist", prefsPath, bundle];
         self.keys = [NSDictionary dictionaryWithContentsOfFile:filePath].allKeys;

@@ -106,7 +106,7 @@
         case FLEXGlobalsRowUserDefaults:
             return [self explorerViewControllerForObject:[NSUserDefaults standardUserDefaults]];
         case FLEXGlobalsRowMainBundle:
-            return [self explorerViewControllerForObject:[NSBundle mainBundle]];
+            return [self explorerViewControllerForObject:NSBundle.mainBundle];
         case FLEXGlobalsRowApplication:
             return [self explorerViewControllerForObject:UIApplication.sharedApplication];
         case FLEXGlobalsRowMainScreen:

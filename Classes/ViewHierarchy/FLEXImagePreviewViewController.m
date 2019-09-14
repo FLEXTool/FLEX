@@ -89,7 +89,7 @@
             return;
         }
         
-        NSBundle *mainBundle = [NSBundle mainBundle];
+        NSBundle *mainBundle = NSBundle.mainBundle;
         if ([mainBundle.infoDictionary.allKeys containsObject:@"NSPhotoLibraryUsageDescription"]) {
             canSaveToCameraRoll = YES;
         }

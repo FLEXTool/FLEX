@@ -151,7 +151,7 @@
         return result;
     }];
     if (sortType == FLEXTableColumnHeaderSortTypeDesc) {
-        NSEnumerator *contentReverseEnumerator = [sortContentData reverseObjectEnumerator];
+        NSEnumerator *contentReverseEnumerator = sortContentData.reverseObjectEnumerator;
         sortContentData = [NSArray arrayWithArray:contentReverseEnumerator.allObjects];
     }
     

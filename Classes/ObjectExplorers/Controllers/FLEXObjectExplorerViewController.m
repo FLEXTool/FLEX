@@ -254,16 +254,6 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     return boxedProperties;
 }
 
-/// Skips NSObject
-+ (NSArray<FLEXPropertyBox *> *)inheritedPropertiesForClass:(Class)class
-{
-    NSMutableArray<FLEXPropertyBox *> *inheritedProperties = [NSMutableArray array];
-    while ((class = [class superclass]) && class != [NSObject class]) {
-        [inheritedProperties addObjectsFromArray:[self propertiesForClass:class]];
-    }
-    return inheritedProperties;
-}
-
 - (void)updateFilteredProperties
 {
     NSArray<FLEXPropertyBox *> *candidateProperties = [self metadata:FLEXMetadataKindProperties forClassAtIndex:self.selectedScope];
@@ -328,16 +318,6 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
         free(ivarList);
     }
     return boxedIvars;
-}
-
-/// Skips NSObject
-+ (NSArray<FLEXIvarBox *> *)inheritedIvarsForClass:(Class)class
-{
-    NSMutableArray<FLEXIvarBox *> *inheritedIvars = [NSMutableArray array];
-    while ((class = [class superclass]) && class != [NSObject class]) {
-        [inheritedIvars addObjectsFromArray:[self ivarsForClass:class]];
-    }
-    return inheritedIvars;
 }
 
 - (void)updateFilteredIvars
@@ -416,16 +396,6 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
         free(methodList);
     }
     return boxedMethods;
-}
-
-/// Skips NSObject
-+ (NSArray<FLEXMethodBox *> *)inheritedMethodsForClass:(Class)class
-{
-    NSMutableArray<FLEXMethodBox *> *inheritedMethods = [NSMutableArray array];
-    while ((class = [class superclass]) && class != [NSObject class]) {
-        [inheritedMethods addObjectsFromArray:[self methodsForClass:class]];
-    }
-    return inheritedMethods;
 }
 
 - (NSArray<FLEXMethodBox *> *)filteredMethodsFromMethods:(NSArray<FLEXMethodBox *> *)methods areClassMethods:(BOOL)areClassMethods

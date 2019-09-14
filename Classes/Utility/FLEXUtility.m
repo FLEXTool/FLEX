@@ -121,7 +121,7 @@
 
 + (NSString *)applicationImageName
 {
-    return [NSBundle mainBundle].executablePath;
+    return NSBundle.mainBundle.executablePath;
 }
 
 + (NSString *)applicationName
@@ -193,7 +193,7 @@
     NSMutableString *mutableString = [originalString mutableCopy];
     
     NSArray<NSTextCheckingResult *> *matches = [regex matchesInString:mutableString options:0 range:NSMakeRange(0, mutableString.length)];
-    for (NSTextCheckingResult *result in [matches reverseObjectEnumerator]) {
+    for (NSTextCheckingResult *result in matches.reverseObjectEnumerator) {
         NSString *foundString = [mutableString substringWithRange:result.range];
         NSString *replacementString = escapingDictionary[foundString];
         if (replacementString) {
@@ -206,7 +206,7 @@
 
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask
 {
-    NSArray<NSString *> *supportedOrientations = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UISupportedInterfaceOrientations"];
+    NSArray<NSString *> *supportedOrientations = NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"];
     UIInterfaceOrientationMask supportedOrientationsMask = 0;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"]) {
         supportedOrientationsMask |= UIInterfaceOrientationMaskPortrait;

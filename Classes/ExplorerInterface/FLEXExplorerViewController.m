@@ -589,7 +589,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Select in the window that would handle the touch, but don't just use the result of hitTest:withEvent: so we can still select views with interaction disabled.
     // Default to the the application's key window if none of the windows want the touch.
     UIWindow *windowForSelection = [UIApplication.sharedApplication keyWindow];
-    for (UIWindow *window in [[FLEXUtility allWindows] reverseObjectEnumerator]) {
+    for (UIWindow *window in [FLEXUtility allWindows].reverseObjectEnumerator) {
         // Ignore the explorer's own window.
         if (window != self.view.window) {
             if ([window hitTest:tapPointInWindow withEvent:nil]) {
