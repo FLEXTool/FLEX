@@ -163,6 +163,14 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+
+    if (self.searchController.active) {
+        self.searchController.active = NO;
+    }
+}
+
 #pragma mark - Private
 
 - (void)debounce:(void(^)())block {

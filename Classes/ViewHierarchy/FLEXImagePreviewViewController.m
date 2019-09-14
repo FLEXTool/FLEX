@@ -81,29 +81,36 @@
 
 - (void)actionButtonPressed:(id)sender
 {
-    static BOOL CanSaveToCameraRoll = NO;
+    static BOOL canSaveToCameraRoll = NO, didShowWarning = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if ([UIDevice currentDevice].systemVersion.floatValue < 10) {
-            CanSaveToCameraRoll = YES;
+            canSaveToCameraRoll = YES;
             return;
         }
         
         NSBundle *mainBundle = [NSBundle mainBundle];
         if ([mainBundle.infoDictionary.allKeys containsObject:@"NSPhotoLibraryUsageDescription"]) {
-            CanSaveToCameraRoll = YES;
-        } else {
-            NSLog(@"Add NSPhotoLibraryUsageDescription in app's Info.plist for saving captured image into camera roll.");
+            canSaveToCameraRoll = YES;
         }
     });
     
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.image] applicationActivities:@[]];
     
-    if (!CanSaveToCameraRoll) {
+    if (!canSaveToCameraRoll && !didShowWarning) {
         activityVC.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
+
+        didShowWarning = YES;
+        NSString *msg = @"Add 'NSPhotoLibraryUsageDescription' to this app's Info.plist to save images.";
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title(@"Reminder").message(msg);
+            make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
+                [self presentViewController:activityVC animated:YES completion:nil];
+            });
+        } showFrom:self];
+    } else {
+        [self presentViewController:activityVC animated:YES completion:nil];
     }
-    
-    [self presentViewController:activityVC animated:YES completion:nil];
 }
 
 @end
