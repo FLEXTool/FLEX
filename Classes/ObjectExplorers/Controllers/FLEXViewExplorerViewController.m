@@ -164,29 +164,45 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
 
 #pragma mark - Runtime Adjustment
 
+#define PropertyKey(suffix) kFLEXPropertyAttributeKey##suffix : @""
+#define PropertyKeyGetter(getter) kFLEXPropertyAttributeKeyCustomGetter : NSStringFromSelector(@selector(getter))
+#define PropertyKeySetter(setter) kFLEXPropertyAttributeKeyCustomSetter : NSStringFromSelector(@selector(setter))
+
+#define FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, type, ...) ({ \
+    if (@available(iOS iOS_atLeast, *)) { \
+        NSMutableDictionary *attrs = [NSMutableDictionary dictionaryWithDictionary:@{ \
+            kFLEXPropertyAttributeKeyTypeEncoding : @(type), \
+            __VA_ARGS__ \
+        }]; \
+        [FLEXRuntimeUtility \
+            tryAddPropertyWithName:#name \
+            attributes:attrs \
+            toClass:[cls class] \
+        ]; \
+    } \
+})
+#define FLEXRuntimeUtilityTryAddNonatomicProperty(iOS_atLeast, name, cls, type, ...) \
+    FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, @encode(type), PropertyKey(NonAtomic), __VA_ARGS__);
+#define FLEXRuntimeUtilityTryAddObjectProperty(iOS_atLeast, name, cls, type, ...) \
+    FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, FLEXEncodeClass(type), PropertyKey(NonAtomic), __VA_ARGS__);
+
 + (void)initialize
 {
-    // A quirk of UIView: a lot of the "@property"s are not actually properties from the perspective of the runtime.
+    // A quirk of UIView and some other classes: a lot of the `@property`s are
+    // not actually properties from the perspective of the runtime.
+    //
     // We add these properties to the class at runtime if they haven't been added yet.
     // This way, we can use our property editor to access and change them.
-    // The property attributes match the declared attributes in UIView.h
-    NSDictionary<NSString *, NSString *> *frameAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGRect)), kFLEXUtilityAttributeNonAtomic : @""};
-    [FLEXRuntimeUtility tryAddPropertyWithName:"frame" attributes:frameAttributes toClass:[UIView class]];
-    
-    NSDictionary<NSString *, NSString *> *alphaAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(CGFloat)), kFLEXUtilityAttributeNonAtomic : @""};
-    [FLEXRuntimeUtility tryAddPropertyWithName:"alpha" attributes:alphaAttributes toClass:[UIView class]];
-    
-    NSDictionary<NSString *, NSString *> *clipsAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @""};
-    [FLEXRuntimeUtility tryAddPropertyWithName:"clipsToBounds" attributes:clipsAttributes toClass:[UIView class]];
-    
-    NSDictionary<NSString *, NSString *> *opaqueAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isOpaque"};
-    [FLEXRuntimeUtility tryAddPropertyWithName:"opaque" attributes:opaqueAttributes toClass:[UIView class]];
-    
-    NSDictionary<NSString *, NSString *> *hiddenAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(@encode(BOOL)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCustomGetter : @"isHidden"};
-    [FLEXRuntimeUtility tryAddPropertyWithName:"hidden" attributes:hiddenAttributes toClass:[UIView class]];
-    
-    NSDictionary<NSString *, NSString *> *backgroundColorAttributes = @{kFLEXUtilityAttributeTypeEncoding : @(FLEXEncodeClass(UIColor)), kFLEXUtilityAttributeNonAtomic : @"", kFLEXUtilityAttributeCopy : @""};
-    [FLEXRuntimeUtility tryAddPropertyWithName:"backgroundColor" attributes:backgroundColorAttributes toClass:[UIView class]];
+    // The property attributes match the declared attributes in their headers.
+
+    // UIView
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, frame, UIView, CGRect);
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, alpha, UIView, CGFloat);
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, clipsToBounds, UIView, BOOL);
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, opaque, UIView, BOOL, PropertyKeyGetter(isOpaque));
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, hidden, UIView, BOOL, PropertyKeyGetter(isHidden));
+    FLEXRuntimeUtilityTryAddObjectProperty(2, backgroundColor, UIView, UIColor, PropertyKey(Copy));
+    FLEXRuntimeUtilityTryAddObjectProperty(6, constraints, UIView, NSArray, PropertyKey(ReadOnly));
 }
 
 @end
