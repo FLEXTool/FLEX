@@ -434,7 +434,8 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     //
     // returnType = method_getTypeEncoding(class_getInstanceMethod([object class], selector));
     NSMethodSignature *methodSignature = [object methodSignatureForSelector:selector];
-    if (!methodSignature.methodReturnLength) {
+    if (!methodSignature.methodReturnLength &&
+        methodSignature.methodReturnType[0] != FLEXTypeEncodingVoid) {
         return nil;
     }
 
@@ -493,10 +494,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                     NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
 
                     if (bufferSize > 0) {
-                        void *buffer = calloc(bufferSize, 1);
+                        void *buffer = alloca(bufferSize);
                         [argumentValue getValue:buffer];
                         [invocation setArgument:buffer atIndex:argumentIndex];
-                        free(buffer);
                     }
                 } @catch (NSException *exception) { }
             }
@@ -506,6 +506,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // Try to invoke the invocation but guard against an exception being thrown.
     id returnObject = nil;
     @try {
+        [invocation invoke];
 
         // Retrieve the return value and box if necessary.
         const char *returnType = methodSignature.methodReturnType;
