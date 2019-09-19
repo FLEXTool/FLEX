@@ -18,7 +18,7 @@
 
 @interface UITableViewCell (Internal)
 // Exists at least since iOS 5
-@property (nonatomic, readonly) FLEXTableView *_tableView;
+@property (nonatomic, readonly) FLEXTableView *tableView;
 @end
 
 @implementation FLEXTableViewCell
@@ -38,7 +38,7 @@
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
-    return [self._tableView canPerformAction:action withSender:sender];
+    return [self.tableView canPerformAction:action withSender:sender];
 }
 
 /// We use this to allow our table view to allow its delegate
@@ -62,13 +62,13 @@
     [invocation setArgument:&action atIndex:2];
     [invocation setArgument:(void *)&self atIndex:3];
     [invocation setArgument:(void *)&sender atIndex:4];
-    [invocation invokeWithTarget:self._tableView];
+    [invocation invokeWithTarget:self.tableView];
 }
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
 {
     if ([self canPerformAction:selector withSender:nil]) {
-        return [self._tableView methodSignatureForSelector:@selector(performAction:forCell:sender:)];
+        return [self.tableView methodSignatureForSelector:@selector(performAction:forCell:sender:)];
     }
 
     return [super methodSignatureForSelector:selector];
