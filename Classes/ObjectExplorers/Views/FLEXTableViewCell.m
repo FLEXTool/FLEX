@@ -12,8 +12,8 @@
 
 @interface UITableView (Internal)
 // Exists at least since iOS 5
-- (BOOL)_canPerformAction:(SEL)action forCell:(UITableViewCell *)cell sender:(id)sender;
-- (void)_performAction:(SEL)action forCell:(UITableViewCell *)cell sender:(id)sender;
+- (BOOL)canPerformAction:(SEL)action forCell:(UITableViewCell *)cell sender:(id)sender;
+- (void)performAction:(SEL)action forCell:(UITableViewCell *)cell sender:(id)sender;
 @end
 
 @interface UITableViewCell (Internal)
@@ -38,7 +38,7 @@
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
-    return [self._tableView _canPerformAction:action forCell:self sender:sender];
+    return [self._tableView canPerformAction:action withSender:sender];
 }
 
 /// We use this to allow our table view to allow its delegate
@@ -58,7 +58,7 @@
     SEL action = invocation.selector;
 
     // [self._tableView _performAction:action forCell:[self retain] sender:[sender retain]];
-    invocation.selector = @selector(_performAction:forCell:sender:);
+    invocation.selector = @selector(performAction:forCell:sender:);
     [invocation setArgument:&action atIndex:2];
     [invocation setArgument:(void *)&self atIndex:3];
     [invocation setArgument:(void *)&sender atIndex:4];
@@ -68,7 +68,7 @@
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
 {
     if ([self canPerformAction:selector withSender:nil]) {
-        return [self._tableView methodSignatureForSelector:@selector(_performAction:forCell:sender:)];
+        return [self._tableView methodSignatureForSelector:@selector(performAction:forCell:sender:)];
     }
 
     return [super methodSignatureForSelector:selector];
