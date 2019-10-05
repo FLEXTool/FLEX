@@ -1146,7 +1146,10 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
     
     [alert addAction:dismiss];
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *window = [[UIApplication sharedApplication].windows firstObject];
+        UIWindow *window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+        window.rootViewController = [[UIViewController alloc]init];
+        window.windowLevel = window.windowLevel + 1;
+        [window makeKeyAndVisible];
         [window.rootViewController presentViewController:alert animated:YES completion:nil];
     });
 }
