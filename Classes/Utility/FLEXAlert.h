@@ -10,14 +10,14 @@
 
 @class FLEXAlert, FLEXAlertAction;
 
-typedef void (^FLEXAlertReveal)();
+typedef void (^FLEXAlertReveal)(void);
 typedef void (^FLEXAlertBuilder)(FLEXAlert *make);
 typedef FLEXAlert *(^FLEXAlertStringProperty)(NSString *);
 typedef FLEXAlert *(^FLEXAlertStringArg)(NSString *);
 typedef FLEXAlert *(^FLEXAlertTextField)(void(^configurationHandler)(UITextField *textField));
 typedef FLEXAlertAction *(^FLEXAlertAddAction)(NSString *title);
 typedef FLEXAlertAction *(^FLEXAlertActionStringProperty)(NSString *);
-typedef FLEXAlertAction *(^FLEXAlertActionProperty)();
+typedef FLEXAlertAction *(^FLEXAlertActionProperty)(void);
 typedef FLEXAlertAction *(^FLEXAlertActionBOOLProperty)(BOOL);
 typedef FLEXAlertAction *(^FLEXAlertActionHandler)(void(^handler)(NSArray<NSString *> *strings));
 

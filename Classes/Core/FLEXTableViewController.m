@@ -127,7 +127,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 - (void)updateSearchResults:(NSString *)newText { }
 
-- (void)onBackgroundQueue:(NSArray *(^)())backgroundBlock thenOnMainQueue:(void(^)(NSArray *))mainBlock {
+- (void)onBackgroundQueue:(NSArray *(^)(void))backgroundBlock thenOnMainQueue:(void(^)(NSArray *))mainBlock {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSArray *items = backgroundBlock();
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -173,7 +173,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 #pragma mark - Private
 
-- (void)debounce:(void(^)())block {
+- (void)debounce:(void(^)(void))block {
     [self.debounceTimer invalidate];
     
     self.debounceTimer = [NSTimer

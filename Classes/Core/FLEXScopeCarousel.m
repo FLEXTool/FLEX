@@ -76,7 +76,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 
                 // Notify observers
                 __typeof(self) self = weakSelf;
-                for (void (^block)() in self.dynamicTypeHandlers) {
+                for (void (^block)(FLEXScopeCarousel *) in self.dynamicTypeHandlers) {
                     block(self);
                 }
             }
