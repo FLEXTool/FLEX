@@ -182,7 +182,7 @@
 #ifdef FLEXKEYCHAIN_SYNCHRONIZATION_AVAILABLE
 + (BOOL)isSynchronizationAvailable {
 #if TARGET_OS_IPHONE
-    return @available(iOS 7.0, *);
+    return YES;
 #else
     return floor(NSFoundationVersionNumber) > NSFoundationVersionNumber10_8_4;
 #endif
