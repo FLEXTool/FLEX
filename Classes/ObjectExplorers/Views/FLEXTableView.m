@@ -18,11 +18,13 @@
 
 - (CGFloat)_heightForHeaderInSection:(NSInteger)section {
     CGFloat height = [super _heightForHeaderInSection:section];
-    if (section == 0 && self.tableHeaderView) {
-        if (@available(iOS 13.0, *)) {} else {
-            return height - self.tableHeaderView.frame.size.height + 8;
-        }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunsupported-availability-guard"
+    if (section == 0 && self.tableHeaderView && !@available(iOS 13.0, *)) {
+        return height - self.tableHeaderView.frame.size.height + 8;
     }
+#pragma clang diagnostic pop
 
     return height;
 }
