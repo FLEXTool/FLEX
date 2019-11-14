@@ -33,6 +33,11 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
         self.backgroundColor = [FLEXColor primaryBackgroundColor];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         _dynamicTypeHandlers = [NSMutableArray new];
+        
+        CGSize itemSize = CGSizeZero;
+        if (@available(iOS 10.0, *)) {
+            itemSize = UICollectionViewFlowLayoutAutomaticSize;
+        }
 
         // Collection view layout
         UICollectionViewFlowLayout *layout = ({
@@ -40,8 +45,8 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
             layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
             layout.sectionInset = UIEdgeInsetsZero;
             layout.minimumLineSpacing = kCarouselItemSpacing;
-            layout.itemSize = UICollectionViewFlowLayoutAutomaticSize;
-            layout.estimatedItemSize = UICollectionViewFlowLayoutAutomaticSize;
+            layout.itemSize = itemSize;
+            layout.estimatedItemSize = itemSize;
             layout;
         });
 
@@ -161,6 +166,10 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 #pragma mark - UICollectionView
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+//    if (@available(iOS 10.0, *)) {
+//        return UICollectionViewFlowLayoutAutomaticSize;
+//    }
+    
     self.sizingCell.title = self.items[indexPath.item];
     return [self.sizingCell systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
 }
