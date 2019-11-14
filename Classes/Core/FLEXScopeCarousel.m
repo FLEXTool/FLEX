@@ -9,7 +9,7 @@
 #import "FLEXScopeCarousel.h"
 #import "FLEXCarouselCell.h"
 #import "FLEXColor.h"
-#import "UIView+Layout.h"
+#import "UIView+FLEX_Layout.h"
 
 const CGFloat kCarouselItemSpacing = 0;
 NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";

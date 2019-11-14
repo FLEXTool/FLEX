@@ -1,14 +1,14 @@
 //
-//  UIView+Layout.m
+//  UIView+FLEX_Layout.m
 //  FLEX
 //
 //  Created by Tanner Bennett on 7/18/19.
 //Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "UIView+Layout.h"
+#import "UIView+FLEX_Layout.h"
 
-@implementation UIView (Layout)
+@implementation UIView (FLEX_Layout)
 
 - (void)centerInView:(UIView *)view {
     [self.centerXAnchor constraintEqualToAnchor:view.centerXAnchor].active = YES;

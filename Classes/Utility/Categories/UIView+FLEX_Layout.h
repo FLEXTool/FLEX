@@ -1,5 +1,5 @@
 //
-//  UIView+Layout.h
+//  UIView+FLEX_Layout.h
 //  FLEX
 //
 //  Created by Tanner Bennett on 7/18/19.
@@ -10,7 +10,7 @@
 
 #define Padding(p) UIEdgeInsetsMake(p, p, p, p)
 
-@interface UIView (Layout)
+@interface UIView (FLEX_Layout)
 
 - (void)centerInView:(UIView *)view;
 - (void)pinEdgesTo:(UIView *)view;
