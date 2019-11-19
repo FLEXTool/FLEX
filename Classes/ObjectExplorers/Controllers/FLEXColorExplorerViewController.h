@@ -6,7 +6,7 @@
 //  Copyright © 2018 Flipboard. All rights reserved.
 //
 
-#import "FLEXObjectExplorerViewController.h"
+#import <FLEX/FLEXObjectExplorerViewController.h>
 
 @interface FLEXColorExplorerViewController : FLEXObjectExplorerViewController
 

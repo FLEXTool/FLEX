@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXGlobalsEntry.h"
+#import <FLEX/FLEXGlobalsEntry.h>
 
 @class FLEXObjectExplorerViewController;
 

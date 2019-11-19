@@ -12,6 +12,7 @@
 #import "FLEXASLLogController.h"
 #import "FLEXOSLogController.h"
 #import "FLEXSystemLogTableViewCell.h"
+#import "FLEXSystemLogMessage.h"
 
 @interface FLEXSystemLogTableViewController ()
 

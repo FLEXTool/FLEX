@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXMutableFieldEditorViewController.h"
+#import <FLEX/FLEXMutableFieldEditorViewController.h>
 #import <objc/runtime.h>
 
 @interface FLEXPropertyEditorViewController : FLEXMutableFieldEditorViewController

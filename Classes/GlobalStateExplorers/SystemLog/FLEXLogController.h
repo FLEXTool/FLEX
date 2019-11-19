@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FLEXSystemLogMessage.h"
+@class FLEXSystemLogMessage;
 
 @protocol FLEXLogController <NSObject>
 

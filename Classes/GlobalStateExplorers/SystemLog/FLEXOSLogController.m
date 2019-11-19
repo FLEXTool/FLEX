@@ -7,6 +7,8 @@
 //
 
 #import "FLEXOSLogController.h"
+
+#import "FLEXSystemLogMessage.h"
 #include <dlfcn.h>
 #include "ActivityStreamAPI.h"
 

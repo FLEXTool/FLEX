@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FLEXDatabaseManager.h"
+#import <FLEX/FLEXDatabaseManager.h>
 
 @interface FLEXRealmDatabaseManager : NSObject <FLEXDatabaseManager>
 

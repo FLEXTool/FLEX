@@ -7,6 +7,7 @@
 //
 
 #import "FLEXFileBrowserTableViewController.h"
+#import "FLEXFileBrowserSearchOperation.h"
 #import "FLEXUtility.h"
 #import "FLEXWebViewController.h"
 #import "FLEXImagePreviewViewController.h"

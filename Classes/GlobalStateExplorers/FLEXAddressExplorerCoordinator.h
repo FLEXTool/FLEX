@@ -6,7 +6,7 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXGlobalsEntry.h"
+#import <FLEX/FLEXGlobalsEntry.h>
 
 @interface FLEXAddressExplorerCoordinator : NSObject <FLEXGlobalsEntry>
 

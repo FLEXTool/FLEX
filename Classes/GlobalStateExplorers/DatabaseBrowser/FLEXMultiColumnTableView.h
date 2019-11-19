@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXTableColumnHeader.h"
+#import <FLEX/FLEXTableColumnHeader.h>
 
 @class FLEXMultiColumnTableView;
 

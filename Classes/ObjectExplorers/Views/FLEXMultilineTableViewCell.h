@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 f. All rights reserved.
 //
 
-#import "FLEXTableViewCell.h"
+#import <FLEX/FLEXTableViewCell.h>
 
 extern NSString *const kFLEXMultilineTableViewCellIdentifier;
 

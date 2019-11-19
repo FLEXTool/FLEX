@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Pebble Technology. All rights reserved.
 //
 
-#import "FLEXManager.h"
+#import <FLEX/FLEXManager.h>
 
 @class FLEXGlobalsEntry;
 

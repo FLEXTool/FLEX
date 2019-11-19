@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 f. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
-#import "FLEXGlobalsEntry.h"
+#import <FLEX/FLEXTableViewController.h>
+#import <FLEX/FLEXGlobalsEntry.h>
 
 @interface FLEXSystemLogTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
 

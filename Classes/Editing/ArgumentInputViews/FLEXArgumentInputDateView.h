@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Flipboard. All rights reserved.
 //
 
-#import "FLEXArgumentInputView.h"
+#import <FLEX/FLEXArgumentInputView.h>
 
 @interface FLEXArgumentInputDateView : FLEXArgumentInputView
 

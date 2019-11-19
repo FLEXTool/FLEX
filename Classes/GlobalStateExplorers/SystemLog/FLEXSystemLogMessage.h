@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <asl.h>
-#import "ActivityStreamAPI.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

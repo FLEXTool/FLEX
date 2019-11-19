@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 f. All rights reserved.
 //
 
-#import "FLEXObjectExplorerViewController.h"
+#import <FLEX/FLEXObjectExplorerViewController.h>
 
 @interface FLEXLayerExplorerViewController : FLEXObjectExplorerViewController
 

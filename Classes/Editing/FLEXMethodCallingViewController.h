@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXFieldEditorViewController.h"
+#import <FLEX/FLEXFieldEditorViewController.h>
 #import <objc/runtime.h>
 
 @interface FLEXMethodCallingViewController : FLEXFieldEditorViewController

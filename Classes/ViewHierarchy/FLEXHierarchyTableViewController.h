@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
+#import <FLEX/FLEXTableViewController.h>
 
 @protocol FLEXHierarchyTableViewControllerDelegate;
 

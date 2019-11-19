@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXObjectExplorerViewController.h"
+#import <FLEX/FLEXObjectExplorerViewController.h>
 
 @interface FLEXViewExplorerViewController : FLEXObjectExplorerViewController
 

@@ -7,6 +7,7 @@
 //
 
 #import "FLEXASLLogController.h"
+#import "FLEXSystemLogMessage.h"
 #import <asl.h>
 
 // Querying the ASL is much slower in the simulator. We need a longer polling interval to keep things responsive.

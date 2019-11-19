@@ -6,7 +6,7 @@
 //
 //
 
-#import "FLEXArgumentInputView.h"
+#import <FLEX/FLEXArgumentInputView.h>
 
 @interface FLEXArgumentInputTextView : FLEXArgumentInputView <UITextViewDelegate>
 

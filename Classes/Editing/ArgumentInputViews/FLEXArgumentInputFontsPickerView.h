@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 f. All rights reserved.
 //
 
-#import "FLEXArgumentInputTextView.h"
+#import <FLEX/FLEXArgumentInputTextView.h>
 
 @interface FLEXArgumentInputFontsPickerView : FLEXArgumentInputTextView <UIPickerViewDataSource, UIPickerViewDelegate>
 @end

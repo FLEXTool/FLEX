@@ -6,8 +6,8 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXGlobalsEntry.h"
-#import "FLEXTableViewController.h"
+#import <FLEX/FLEXGlobalsEntry.h>
+#import <FLEX/FLEXTableViewController.h>
 
 @interface FLEXKeychainTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
