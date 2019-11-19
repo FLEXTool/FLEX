@@ -30,7 +30,7 @@
     if (self) {
         self.method = method;
         self.returnType = [FLEXRuntimeUtility returnTypeForMethod:method];
-        self.title = [self isClassMethod] ? @"Class Method" : @"Method";;
+        self.title = [self isClassMethod] ? @"Class Method" : @"Method";
     }
     return self;
 }

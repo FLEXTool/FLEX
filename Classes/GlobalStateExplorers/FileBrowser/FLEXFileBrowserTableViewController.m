@@ -305,6 +305,45 @@
     // Since our actions are outside of that protocol, we need to manually handle the action forwarding from the cells.
 }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
+{
+    __weak typeof(self) weakSelf = self;
+    return [UIContextMenuConfiguration configurationWithIdentifier:NSUUID.UUID.UUIDString
+                                                   previewProvider:nil
+                                                    actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
+        UITableViewCell * const cell = [tableView cellForRowAtIndexPath:indexPath];
+        UIAction *rename = [UIAction actionWithTitle:@"Rename"
+                                               image:nil
+                                          identifier:@"Rename"
+                                             handler:^(__kindof UIAction * _Nonnull action) {
+            [weakSelf fileBrowserRename:cell];
+        }];
+        UIAction *delete = [UIAction actionWithTitle:@"Delete"
+                                               image:nil
+                                          identifier:@"Delete"
+                                             handler:^(__kindof UIAction * _Nonnull action) {
+            [weakSelf fileBrowserDelete:cell];
+        }];
+        UIAction *copyPath = [UIAction actionWithTitle:@"Copy Path"
+                                                 image:nil
+                                            identifier:@"Copy Path"
+                                               handler:^(__kindof UIAction * _Nonnull action) {
+            [weakSelf fileBrowserCopyPath:cell];
+        }];
+        UIAction *share = [UIAction actionWithTitle:@"Share"
+                                              image:nil
+                                         identifier:@"Share"
+                                            handler:^(__kindof UIAction * _Nonnull action) {
+            [weakSelf fileBrowserShare:cell];
+        }];
+        return [UIMenu menuWithTitle:@"Manage File" image:nil identifier:@"Manage File" options:UIMenuOptionsDisplayInline children:@[rename, delete, copyPath, share]];
+    }];
+}
+
+#endif
+
 - (void)openFileController:(NSString *)fullPath
 {
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];

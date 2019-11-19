@@ -293,6 +293,14 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         Method originalResume = class_getInstanceMethod(class, selector);
 
         void (^swizzleBlock)(NSURLSessionTask *) = ^(NSURLSessionTask *slf) {
+            
+             // iOS's internal HTTP parser finalization code is mysteriously not thread safe,
+             // invoke it asynchronously has a chance to cause a `double free` crash.
+             // This line below will ask for HTTPBody synchronously, make the HTTPParser parse the request and cache them in advance,
+             // After that the HTTPParser will be finalized,
+             // make sure other threads inspecting the request won't trigger a race to finalize the parser.
+             [slf.currentRequest HTTPBody];
+
             [[FLEXNetworkObserver sharedObserver] URLSessionTaskWillResume:slf];
             ((void(*)(id, SEL))objc_msgSend)(slf, swizzledSelector);
         };

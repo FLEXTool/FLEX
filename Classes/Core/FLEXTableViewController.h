@@ -89,6 +89,6 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 
 /// Convenient for doing some async processor-intensive searching
 /// in the background before updating the UI back on the main queue.
-- (void)onBackgroundQueue:(NSArray *(^)())backgroundBlock thenOnMainQueue:(void(^)(NSArray *))mainBlock;
+- (void)onBackgroundQueue:(NSArray *(^)(void))backgroundBlock thenOnMainQueue:(void(^)(NSArray *))mainBlock;
 
 @end
