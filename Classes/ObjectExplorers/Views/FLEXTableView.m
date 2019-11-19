@@ -18,10 +18,13 @@
 
 - (CGFloat)_heightForHeaderInSection:(NSInteger)section {
     CGFloat height = [super _heightForHeaderInSection:section];
-    if (section == 0 && self.tableHeaderView && !@available(iOS 13.0, *)) {
+    if(@available(iOS 13.0, *)) {
+      return height;
+    }
+      
+    if (section == 0 && self.tableHeaderView) {
         return height - self.tableHeaderView.frame.size.height + 8;
     }
-
     return height;
 }
 
