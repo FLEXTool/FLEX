@@ -9,6 +9,7 @@
 #import "FLEXTableViewController.h"
 #import "FLEXScopeCarousel.h"
 #import "FLEXTableView.h"
+#import "FLEXUtility.h"
 #import <objc/runtime.h>
 
 @interface Block : NSObject

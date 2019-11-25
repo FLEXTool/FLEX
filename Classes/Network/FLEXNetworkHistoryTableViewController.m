@@ -7,6 +7,7 @@
 //
 
 #import "FLEXColor.h"
+#import "FLEXUtility.h"
 #import "FLEXNetworkHistoryTableViewController.h"
 #import "FLEXNetworkTransaction.h"
 #import "FLEXNetworkTransactionTableViewCell.h"
@@ -252,11 +253,6 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return self.searchController.isActive ? self.filteredNetworkTransactions.count : self.networkTransactions.count;
@@ -278,7 +274,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXNetworkTransactionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
-    cell.transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
+    cell.transaction = [self transactionAtIndexPath:indexPath];
 
     // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
     NSInteger totalRows = [tableView numberOfRowsInSection:indexPath.section];
@@ -294,7 +290,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXNetworkTransactionDetailTableViewController *detailViewController = [FLEXNetworkTransactionDetailTableViewController new];
-    detailViewController.transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
+    detailViewController.transaction = [self transactionAtIndexPath:indexPath];
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
@@ -313,13 +309,40 @@
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
     if (action == @selector(copy:)) {
-        FLEXNetworkTransaction *transaction = [self transactionAtIndexPath:indexPath inTableView:tableView];
-        NSString *requestURLString = transaction.request.URL.absoluteString ?: @"";
-        [UIPasteboard.generalPasteboard setString:requestURLString];
+        NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
+        UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
     }
 }
 
-- (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath inTableView:(UITableView *)tableView
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
+{
+    return [UIContextMenuConfiguration
+        configurationWithIdentifier:nil
+        previewProvider:nil
+        actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
+            UIAction *copy = [UIAction
+                actionWithTitle:@"Copy"
+                image:nil
+                identifier:nil
+                handler:^(__kindof UIAction *action) {
+                    NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
+                    UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
+                }
+            ];
+            return [UIMenu
+                menuWithTitle:@"" image:nil identifier:nil
+                options:UIMenuOptionsDisplayInline
+                children:@[copy]
+            ];
+        }
+    ];
+}
+
+#endif
+
+- (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath
 {
     return self.searchController.isActive ? self.filteredNetworkTransactions[indexPath.row] : self.networkTransactions[indexPath.row];
 }

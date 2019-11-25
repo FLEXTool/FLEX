@@ -310,7 +310,7 @@
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
 {
     __weak typeof(self) weakSelf = self;
-    return [UIContextMenuConfiguration configurationWithIdentifier:NSUUID.UUID.UUIDString
+    return [UIContextMenuConfiguration configurationWithIdentifier:nil
                                                    previewProvider:nil
                                                     actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
         UITableViewCell * const cell = [tableView cellForRowAtIndexPath:indexPath];

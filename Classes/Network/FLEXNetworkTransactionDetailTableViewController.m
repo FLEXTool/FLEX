@@ -206,9 +206,37 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 {
     if (action == @selector(copy:)) {
         FLEXNetworkDetailRow *row = [self rowModelAtIndexPath:indexPath];
-        [UIPasteboard.generalPasteboard setString:row.detailText];
+        UIPasteboard.generalPasteboard.string = row.detailText;
     }
 }
+
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
+{
+    return [UIContextMenuConfiguration
+        configurationWithIdentifier:nil
+        previewProvider:nil
+        actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
+            UIAction *copy = [UIAction
+                actionWithTitle:@"Copy"
+                image:nil
+                identifier:nil
+                handler:^(__kindof UIAction *action) {
+                    FLEXNetworkDetailRow *row = [self rowModelAtIndexPath:indexPath];
+                    UIPasteboard.generalPasteboard.string = row.detailText;
+                }
+            ];
+            return [UIMenu
+                menuWithTitle:@"" image:nil identifier:nil
+                options:UIMenuOptionsDisplayInline
+                children:@[copy]
+            ];
+        }
+    ];
+}
+
+#endif
 
 #pragma mark - View Configuration
 
