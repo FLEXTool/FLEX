@@ -6,7 +6,7 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import <FLEX/FLEXTableViewController.h>
+#import "FLEXTableViewController.h"
 
 @interface FLEXTableListViewController : FLEXTableViewController
 

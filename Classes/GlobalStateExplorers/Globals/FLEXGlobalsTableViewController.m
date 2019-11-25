@@ -162,7 +162,6 @@ static __weak UIWindow *s_applicationWindow = nil;
 
     self.title = @"💪  FLEX";
     self.showsSearchBar = YES;
-    self.hideSearchBarInitially = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
 
     // Table view data
@@ -179,7 +178,11 @@ static __weak UIWindow *s_applicationWindow = nil;
     }
 
     // Done button
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed:)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+        initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+        target:self
+        action:@selector(donePressed:)
+    ];
 }
 
 #pragma mark - Search Bar

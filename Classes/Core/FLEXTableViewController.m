@@ -147,19 +147,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // Make the search bar re-appear instead of hiding
-    if (@available(iOS 11.0, *)) if (!self.hideSearchBarInitially) {
+    // When going back, make the search bar reappear instead of hiding
+    if (@available(iOS 11.0, *)) if (self.pinSearchBar) {
         self.navigationItem.hidesSearchBarWhenScrolling = NO;
-    }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    // Allow scrolling to collapse the search bar,
-    // only if we don't want it pinned
-    if (@available(iOS 11.0, *)) if (!self.hideSearchBarInitially) {
-        self.navigationItem.hidesSearchBarWhenScrolling = !self.pinSearchBar;
     }
 }
 
