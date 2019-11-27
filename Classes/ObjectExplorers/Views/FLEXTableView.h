@@ -10,6 +10,8 @@
 
 @interface FLEXTableView : UITableView
 
++ (instancetype)flexDefaultTableView;
+
 @property (nonatomic, readonly) NSString *defaultReuseIdentifier;
 @property (nonatomic, readonly) NSString *subtitleReuseIdentifier;
 @property (nonatomic, readonly) NSString *multilineReuseIdentifier;
