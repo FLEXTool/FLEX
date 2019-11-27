@@ -16,6 +16,7 @@
 
 @property (nonatomic) NSArray<NSString *> *imageNames;
 @property (nonatomic) NSArray<NSString *> *filteredImageNames;
+@property (nonatomic) NSString *headerTitle;
 
 @property (nonatomic) Class foundClass;
 
@@ -37,6 +38,22 @@
     [super viewDidLoad];
     
     self.showsSearchBar = YES;
+    [self updateHeaderTitle];
+}
+
+- (void)updateHeaderTitle
+{
+    if (self.foundClass) {
+        self.headerTitle = @"Looking for this?";
+    } else if (self.imageNames.count == self.filteredImageNames.count) {
+        // Unfiltered
+        self.headerTitle = [NSString stringWithFormat:@"%@ libraries", @(self.imageNames.count)];
+    } else {
+        self.headerTitle = [NSString
+            stringWithFormat:@"%@ of %@ libraries",
+            @(self.filteredImageNames.count), @(self.imageNames.count)
+        ];
+    }
 }
 
 
@@ -120,16 +137,12 @@
     }
     
     self.foundClass = NSClassFromString(searchText);
+    [self updateHeaderTitle];
     [self.tableView reloadData];
 }
 
 
 #pragma mark - Table View Data Source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -160,6 +173,11 @@
     
     cell.textLabel.text = [self shortNameForImageName:executablePath];
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return self.headerTitle;
 }
 
 

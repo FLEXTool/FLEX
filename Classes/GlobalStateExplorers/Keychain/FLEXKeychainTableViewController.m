@@ -13,7 +13,8 @@
 
 @interface FLEXKeychainTableViewController ()
 
-@property (nonatomic) NSArray<NSDictionary *> *keyChainItems;
+@property (nonatomic) NSArray<NSDictionary *> *keychainItems;
+@property (nonatomic) NSString *headerTitle;
 
 @end
 
@@ -32,14 +33,20 @@
         ],
     ];
 
-    [self refreshKeychainItems];
+    [self refreshkeychainItems];
+    [self updateHeaderTitle];
 }
 
-- (void)refreshKeychainItems
+- (void)refreshkeychainItems
 {
-    self.keyChainItems = [FLEXKeychain allAccounts];
-    self.title = [NSString stringWithFormat:@"🔑 Keychain Items (%lu)", (unsigned long)self.keyChainItems.count];
+    self.keychainItems = [FLEXKeychain allAccounts];
 }
+
+- (void)updateHeaderTitle
+{
+    self.headerTitle = [NSString stringWithFormat:@"%@ items", @(self.keychainItems.count)];
+}
+
 
 #pragma mark Buttons
 
@@ -50,7 +57,7 @@
         make.message(@"This will remove all keychain items for this app.\n");
         make.message(@"This action cannot be undone. Are you sure?");
         make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
-            for (id account in self.keyChainItems) {
+            for (id account in self.keychainItems) {
                 FLEXKeychainQuery *query = [FLEXKeychainQuery new];
                 query.service = account[kFLEXKeychainWhereKey];
                 query.account = account[kFLEXKeychainAccountKey];
@@ -65,7 +72,7 @@
                 }
             }
 
-            [self refreshKeychainItems];
+            [self refreshkeychainItems];
             [self.tableView reloadData];
         });
         make.button(@"Cancel").cancelStyle();
@@ -87,12 +94,11 @@
                 [FLEXAlert showAlert:@"Error" message:error.localizedDescription from:self];
             }
 
-            [self refreshKeychainItems];
+            [self refreshkeychainItems];
             [self.tableView reloadData];
         });
     } showFrom:self];
 }
-
 
 
 #pragma mark - FLEXGlobalsEntry
@@ -102,9 +108,11 @@
     return @"🔑  Keychain";
 }
 
-+ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row
-{
-    return [self new];
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
+    FLEXKeychainTableViewController *viewController = [self new];
+    viewController.title = [self globalsEntryTitle:row];
+
+    return viewController;
 }
 
 
@@ -112,7 +120,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.keyChainItems.count;
+    return self.keychainItems.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -125,10 +133,15 @@
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
     }
     
-    NSDictionary *item = self.keyChainItems[indexPath.row];
+    NSDictionary *item = self.keychainItems[indexPath.row];
     cell.textLabel.text = item[kFLEXKeychainAccountKey];
     
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return self.headerTitle;
 }
 
 
@@ -136,7 +149,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *item = self.keyChainItems[indexPath.row];
+    NSDictionary *item = self.keychainItems[indexPath.row];
     
     FLEXKeychainQuery *query = [FLEXKeychainQuery new];
     query.service = item[kFLEXKeychainWhereKey];
