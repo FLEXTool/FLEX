@@ -70,6 +70,12 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.searchController.searchBar.delegate = self;
 
     self.automaticallyShowsSearchBarCancelButton = YES;
+
+#if FLEX_AT_LEAST_IOS13_SDK
+    if (@available(iOS 13, *)) {
+        self.searchController.automaticallyShowsScopeBar = NO;
+    }
+#endif
     
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = self.searchController;
