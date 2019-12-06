@@ -883,6 +883,32 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     return [self sectionHasActions:indexPath.section];
 }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
+{
+    __weak typeof(self) weakSelf = self;
+    return [UIContextMenuConfiguration configurationWithIdentifier:NSUUID.UUID.UUIDString
+                                                   previewProvider:nil
+                                                    actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
+        UIAction *copy = [UIAction actionWithTitle:@"Copy"
+                                               image:nil
+                                          identifier:@"Copy"
+                                             handler:^(__kindof UIAction * _Nonnull action) {
+            [weakSelf copy:indexPath];
+        }];
+        UIAction *copyAddress = [UIAction actionWithTitle:@"Copy Address"
+                                               image:nil
+                                          identifier:@"Copy Address"
+                                             handler:^(__kindof UIAction * _Nonnull action) {
+            [weakSelf copyObjectAddress:indexPath];
+        }];
+        return [UIMenu menuWithTitle:@"Object Info" image:nil identifier:@"Object Info" options:UIMenuOptionsDisplayInline children:@[copy, copyAddress]];
+    }];
+}
+
+#endif
+
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
     FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
