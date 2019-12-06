@@ -10,6 +10,7 @@
 #import "FLEXKeychainQuery.h"
 #import "FLEXKeychainTableViewController.h"
 #import "FLEXUtility.h"
+#import "UIPasteboard+FLEX.h"
 
 @interface FLEXKeychainTableViewController ()
 
@@ -47,6 +48,17 @@
     self.headerTitle = [NSString stringWithFormat:@"%@ items", @(self.keychainItems.count)];
 }
 
+- (FLEXKeychainQuery *)queryForItemAtIndex:(NSInteger)idx
+{
+    NSDictionary *item = self.keychainItems[idx];
+
+    FLEXKeychainQuery *query = [FLEXKeychainQuery new];
+    query.service = item[kFLEXKeychainWhereKey];
+    query.account = item[kFLEXKeychainAccountKey];
+    [query fetch:nil];
+
+    return query;
+}
 
 #pragma mark Buttons
 
@@ -134,7 +146,16 @@
     }
     
     NSDictionary *item = self.keychainItems[indexPath.row];
-    cell.textLabel.text = item[kFLEXKeychainAccountKey];
+    id account = item[kFLEXKeychainAccountKey];
+    if ([account isKindOfClass:[NSString class]]) {
+        cell.textLabel.text = account;
+    } else {
+        cell.textLabel.text = [NSString stringWithFormat:
+            @"[%@]\n\n%@",
+            NSStringFromClass([account class]),
+            [account description]
+        ];
+    }
     
     return cell;
 }
@@ -149,13 +170,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *item = self.keychainItems[indexPath.row];
+    FLEXKeychainQuery *query = [self queryForItemAtIndex:indexPath.row];
     
-    FLEXKeychainQuery *query = [FLEXKeychainQuery new];
-    query.service = item[kFLEXKeychainWhereKey];
-    query.account = item[kFLEXKeychainAccountKey];
-    [query fetch:nil];
-
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(query.service);
         make.message(@"Service: ").message(query.service);
@@ -163,16 +179,19 @@
         make.message(@"\nPassword: ").message(query.password);
 
         make.button(@"Copy Service").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = query.service;
+            [UIPasteboard.generalPasteboard flex_copy:query.service];
         });
         make.button(@"Copy Account").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = query.account;
+            [UIPasteboard.generalPasteboard flex_copy:query.account];
         });
         make.button(@"Copy Password").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = query.password;
+            [UIPasteboard.generalPasteboard flex_copy:query.password];
         });
         make.button(@"Dismiss").cancelStyle();
+        
     } showFrom:self];
+
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

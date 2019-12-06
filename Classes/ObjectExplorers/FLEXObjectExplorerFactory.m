@@ -115,6 +115,8 @@
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
+        case FLEXGlobalsRowRootViewController:
+            return [self explorerViewControllerForObject:UIApplication.sharedApplication.delegate.window.rootViewController];
         default: return nil;
     }
 }

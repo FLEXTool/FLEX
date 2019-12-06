@@ -209,6 +209,8 @@
 		C3F31D422267D883003C991A /* FLEXTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F31D392267D883003C991A /* FLEXTableViewCell.m */; };
 		C3F31D432267D883003C991A /* FLEXTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F31D3B2267D883003C991A /* FLEXTableView.h */; };
 		C3F31D442267D883003C991A /* FLEXTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F31D3C2267D883003C991A /* FLEXTableView.m */; };
+		C3F646C1239EAA8F00D4A011 /* UIPasteboard+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F646BF239EAA8F00D4A011 /* UIPasteboard+FLEX.h */; };
+		C3F646C2239EAA8F00D4A011 /* UIPasteboard+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F646C0239EAA8F00D4A011 /* UIPasteboard+FLEX.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -429,6 +431,8 @@
 		C3F31D392267D883003C991A /* FLEXTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTableViewCell.m; sourceTree = "<group>"; };
 		C3F31D3B2267D883003C991A /* FLEXTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXTableView.h; sourceTree = "<group>"; };
 		C3F31D3C2267D883003C991A /* FLEXTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTableView.m; sourceTree = "<group>"; };
+		C3F646BF239EAA8F00D4A011 /* UIPasteboard+FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIPasteboard+FLEX.h"; sourceTree = "<group>"; };
+		C3F646C0239EAA8F00D4A011 /* UIPasteboard+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIPasteboard+FLEX.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -799,6 +803,8 @@
 			children = (
 				C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */,
 				C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */,
+				C3F646BF239EAA8F00D4A011 /* UIPasteboard+FLEX.h */,
+				C3F646C0239EAA8F00D4A011 /* UIPasteboard+FLEX.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -885,6 +891,7 @@
 				3A4C951E1B5B21410088C3F2 /* FLEXClassesTableViewController.h in Headers */,
 				779B1ED21C0C4D7C001F5E49 /* FLEXTableColumnHeader.h in Headers */,
 				3A4C94FD1B5B21410088C3F2 /* FLEXArgumentInputStructView.h in Headers */,
+				C3F646C1239EAA8F00D4A011 /* UIPasteboard+FLEX.h in Headers */,
 				94A515141C4CA1C00063292F /* FLEXManager.h in Headers */,
 				C37A0C93218BAC9600848CA7 /* FLEXObjcInternal.h in Headers */,
 				3A4C953E1B5B21410088C3F2 /* FLEXNetworkTransactionDetailTableViewController.h in Headers */,
@@ -1096,6 +1103,7 @@
 				3A4C950E1B5B21410088C3F2 /* FLEXIvarEditorViewController.m in Sources */,
 				C3DC287C223ED5F200F48AA6 /* FLEXOSLogController.m in Sources */,
 				3A4C95101B5B21410088C3F2 /* FLEXMethodCallingViewController.m in Sources */,
+				C3F646C2239EAA8F00D4A011 /* UIPasteboard+FLEX.m in Sources */,
 				3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputObjectView.m in Sources */,
 				3A4C94EC1B5B21410088C3F2 /* FLEXImagePreviewViewController.m in Sources */,
 				3A4C94F21B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m in Sources */,
