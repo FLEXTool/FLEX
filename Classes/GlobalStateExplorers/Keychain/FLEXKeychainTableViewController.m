@@ -14,7 +14,7 @@
 
 @interface FLEXKeychainTableViewController ()
 
-@property (nonatomic) NSArray<NSDictionary *> *keychainItems;
+@property (nonatomic) NSMutableArray<NSDictionary *> *keychainItems;
 @property (nonatomic) NSString *headerTitle;
 
 @end
@@ -40,7 +40,7 @@
 
 - (void)refreshkeychainItems
 {
-    self.keychainItems = [FLEXKeychain allAccounts];
+    self.keychainItems = [FLEXKeychain allAccounts].mutableCopy;
 }
 
 - (void)updateHeaderTitle
@@ -60,6 +60,24 @@
     return query;
 }
 
+- (void)deleteItem:(NSDictionary *)item
+{
+    NSError *error = nil;
+    BOOL success = [FLEXKeychain
+        deletePasswordForService:item[kFLEXKeychainWhereKey]
+        account:item[kFLEXKeychainAccountKey]
+        error:&error
+    ];
+
+    if (!success) {
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title(@"Error Deleting Item");
+            make.message(error.localizedDescription);
+        } showFrom:self];
+    }
+}
+
+
 #pragma mark Buttons
 
 - (void)trashPressed
@@ -70,18 +88,7 @@
         make.message(@"This action cannot be undone. Are you sure?");
         make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
             for (id account in self.keychainItems) {
-                FLEXKeychainQuery *query = [FLEXKeychainQuery new];
-                query.service = account[kFLEXKeychainWhereKey];
-                query.account = account[kFLEXKeychainAccountKey];
-
-                // Delete item or display error
-                NSError *error = nil;
-                if (![query deleteItem:&error]) {
-                    [FLEXAlert makeAlert:^(FLEXAlert *make) {
-                        make.title(@"Error Deleting Item");
-                        make.message(error.localizedDescription);
-                    } showFrom:self];
-                }
+                [self deleteItem:account];
             }
 
             [self refreshkeychainItems];
@@ -163,6 +170,15 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     return self.headerTitle;
+}
+
+- (void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)style forRowAtIndexPath:(NSIndexPath *)ip
+{
+    if (style == UITableViewCellEditingStyleDelete) {
+        [self deleteItem:self.keychainItems[ip.row]];
+        [self.keychainItems removeObjectAtIndex:ip.row];
+        [tv deleteRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 
