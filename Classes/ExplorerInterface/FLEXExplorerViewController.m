@@ -785,11 +785,18 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)makeKeyAndPresentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
 {
     // Save the current key window so we can restore it following dismissal.
-    self.previousKeyWindow = [UIApplication.sharedApplication keyWindow];
-    
+    self.previousKeyWindow = UIApplication.sharedApplication.keyWindow;
+
     // Make our window key to correctly handle input.
     [self.view.window makeKeyWindow];
-    
+
+    // Fix for iOS 13, regarding custom UIMenu callouts not appearing because
+    // the UITextEffectsWindow has a lower level than the FLEX window by default
+    // until a text field is activated, bringing it above the FLEX window.
+    if (@available(iOS 13, *)) {
+        UIApplication.sharedApplication.windows[1].windowLevel = self.view.window.windowLevel + 1;
+    }
+
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
     [[self statusWindow] setWindowLevel:self.view.window.windowLevel + 1.0];
     
