@@ -794,7 +794,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // the UITextEffectsWindow has a lower level than the FLEX window by default
     // until a text field is activated, bringing it above the FLEX window.
     if (@available(iOS 13, *)) {
-        UIApplication.sharedApplication.windows[1].windowLevel = self.view.window.windowLevel + 1;
+        for (UIWindow *window in UIApplication.sharedApplication.windows) {
+            if ([window isKindOfClass:NSClassFromString(@"UITextEffectsWindow")]) {
+                if (window.windowLevel <= self.view.window.windowLevel) {
+                    window.windowLevel = self.view.window.windowLevel + 1;
+                    break;
+                }
+            }
+        }
     }
 
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
