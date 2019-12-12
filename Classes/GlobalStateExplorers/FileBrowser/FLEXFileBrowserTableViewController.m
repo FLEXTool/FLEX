@@ -31,6 +31,11 @@
 
 @implementation FLEXFileBrowserTableViewController
 
++ (instancetype)path:(NSString *)path
+{
+    return [[self alloc] initWithPath:path];
+}
+
 - (id)init
 {
     return [self initWithPath:NSHomeDirectory()];

@@ -9,7 +9,7 @@
 #import "FLEXLibrariesTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXClassesTableViewController.h"
-#import "FLEXClassExplorerViewController.h"
+#import "FLEXObjectExplorerFactory.h"
 #import <objc/runtime.h>
 
 @interface FLEXLibrariesTableViewController ()
@@ -186,13 +186,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 0 && self.foundClass) {
-        FLEXClassExplorerViewController *objectExplorer = [FLEXClassExplorerViewController new];
-        objectExplorer.object = self.foundClass;
-        [self.navigationController pushViewController:objectExplorer animated:YES];
+        [self.navigationController pushViewController:[FLEXObjectExplorerFactory
+            explorerViewControllerForObject:self.foundClass
+        ] animated:YES];
     } else {
-        FLEXClassesTableViewController *classesViewController = [FLEXClassesTableViewController new];
-        classesViewController.binaryImageName = self.filteredImageNames[self.foundClass ? indexPath.row-1 : indexPath.row];
-        [self.navigationController pushViewController:classesViewController animated:YES];
+        [self.navigationController pushViewController:[FLEXClassesTableViewController
+            binaryImageName:self.filteredImageNames[self.foundClass ? 0 : indexPath.row]
+        ] animated:YES];
     }
 }
 

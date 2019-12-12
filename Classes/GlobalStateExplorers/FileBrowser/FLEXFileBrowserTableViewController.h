@@ -12,6 +12,7 @@
 
 @interface FLEXFileBrowserTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
++ (instancetype)path:(NSString *)path;
 - (id)initWithPath:(NSString *)path;
 
 @end
