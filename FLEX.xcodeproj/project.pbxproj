@@ -640,6 +640,8 @@
 				C3E5D9FF2317007F00E655DB /* Sections */,
 				3A4C944A1B5B21410088C3F2 /* FLEXObjectExplorerFactory.h */,
 				3A4C944B1B5B21410088C3F2 /* FLEXObjectExplorerFactory.m */,
+				3A4C944C1B5B21410088C3F2 /* FLEXObjectExplorerViewController.h */,
+				3A4C944D1B5B21410088C3F2 /* FLEXObjectExplorerViewController.m */,
 				C3F31D3A2267D883003C991A /* Views */,
 				C3F31D452267D8A2003C991A /* Controllers */,
 			);
@@ -1043,8 +1045,6 @@
 		C3F31D452267D8A2003C991A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				3A4C944C1B5B21410088C3F2 /* FLEXObjectExplorerViewController.h */,
-				3A4C944D1B5B21410088C3F2 /* FLEXObjectExplorerViewController.m */,
 				3A4C943C1B5B21410088C3F2 /* FLEXArrayExplorerViewController.h */,
 				3A4C943D1B5B21410088C3F2 /* FLEXArrayExplorerViewController.m */,
 				3A4C943E1B5B21410088C3F2 /* FLEXClassExplorerViewController.h */,
