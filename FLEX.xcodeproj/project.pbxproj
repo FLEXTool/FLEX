@@ -182,8 +182,6 @@
 		C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */; };
 		C387C87A22DFCD6A00750E58 /* FLEXCarouselCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C387C87822DFCD6A00750E58 /* FLEXCarouselCell.h */; };
 		C387C87B22DFCD6A00750E58 /* FLEXCarouselCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C387C87922DFCD6A00750E58 /* FLEXCarouselCell.m */; };
-		C387C87E22DFD71A00750E58 /* FLEXClassTreeViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C387C87C22DFD71A00750E58 /* FLEXClassTreeViewController.h */; };
-		C387C87F22DFD71A00750E58 /* FLEXClassTreeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C387C87D22DFD71A00750E58 /* FLEXClassTreeViewController.m */; };
 		C387C88322E0D24A00750E58 /* UIView+FLEX_Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */; };
 		C387C88422E0D24A00750E58 /* UIView+FLEX_Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */; };
 		C38DF0EA22CFE4370077B4AD /* FLEXTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C38DF0E822CFE4370077B4AD /* FLEXTableViewController.h */; };
@@ -405,8 +403,6 @@
 		C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXObjcInternal.mm; sourceTree = "<group>"; };
 		C387C87822DFCD6A00750E58 /* FLEXCarouselCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXCarouselCell.h; sourceTree = "<group>"; };
 		C387C87922DFCD6A00750E58 /* FLEXCarouselCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXCarouselCell.m; sourceTree = "<group>"; };
-		C387C87C22DFD71A00750E58 /* FLEXClassTreeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXClassTreeViewController.h; sourceTree = "<group>"; };
-		C387C87D22DFD71A00750E58 /* FLEXClassTreeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXClassTreeViewController.m; sourceTree = "<group>"; };
 		C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+FLEX_Layout.h"; sourceTree = "<group>"; };
 		C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+FLEX_Layout.m"; sourceTree = "<group>"; };
 		C38DF0E822CFE4370077B4AD /* FLEXTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXTableViewController.h; sourceTree = "<group>"; };
@@ -844,8 +840,6 @@
 			children = (
 				3A4C944C1B5B21410088C3F2 /* FLEXObjectExplorerViewController.h */,
 				3A4C944D1B5B21410088C3F2 /* FLEXObjectExplorerViewController.m */,
-				C387C87C22DFD71A00750E58 /* FLEXClassTreeViewController.h */,
-				C387C87D22DFD71A00750E58 /* FLEXClassTreeViewController.m */,
 				3A4C943C1B5B21410088C3F2 /* FLEXArrayExplorerViewController.h */,
 				3A4C943D1B5B21410088C3F2 /* FLEXArrayExplorerViewController.m */,
 				3A4C943E1B5B21410088C3F2 /* FLEXClassExplorerViewController.h */,
@@ -919,7 +913,6 @@
 				3A4C94F11B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.h in Headers */,
 				779B1ED61C0C4D7C001F5E49 /* FLEXTableContentViewController.h in Headers */,
 				3A4C94C91B5B21410088C3F2 /* FLEXDefaultsExplorerViewController.h in Headers */,
-				C387C87E22DFD71A00750E58 /* FLEXClassTreeViewController.h in Headers */,
 				3A4C95221B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h in Headers */,
 				C33E46AF223B02CD004BD0E6 /* FLEXASLLogController.h in Headers */,
 				C34EE30821CB23CC00BD3A7C /* FLEXOSLogController.h in Headers */,
@@ -1096,7 +1089,6 @@
 				224D49A91C673AB5000EAB86 /* FLEXRealmDatabaseManager.m in Sources */,
 				C39ED92922D63F3200B5773A /* FLEXAddressExplorerCoordinator.m in Sources */,
 				2EF6B04D1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m in Sources */,
-				C387C87F22DFD71A00750E58 /* FLEXClassTreeViewController.m in Sources */,
 				94A515201C4CA1F10063292F /* FLEXWindow.m in Sources */,
 				3A4C95121B5B21410088C3F2 /* FLEXPropertyEditorViewController.m in Sources */,
 				3A4C95391B5B21410088C3F2 /* FLEXNetworkRecorder.m in Sources */,
