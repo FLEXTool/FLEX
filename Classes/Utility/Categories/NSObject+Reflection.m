@@ -84,16 +84,22 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
     return class_getInstanceSize(self.class);
 }
 
-#ifdef __clang__
-#pragma clang diagnostic push
-#endif
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 + (Class)flex_setSuperclass:(Class)superclass {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     return class_setSuperclass(self, superclass);
+    #pragma clang diagnostic pop
 }
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
+
++ (NSArray<Class> *)flex_classHierarchy {
+    NSMutableArray *classes = [NSMutableArray array];
+    Class cls = self;
+    do {
+        [classes addObject:cls];
+    } while ((cls = [cls superclass]));
+
+    return classes.copy;
+}
 
 @end
 

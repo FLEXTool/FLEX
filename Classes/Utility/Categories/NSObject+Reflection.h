@@ -42,6 +42,10 @@ extern NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger coun
 /// @return The old superclass.
 + (Class)flex_setSuperclass:(Class)superclass;
 
+/// @return a list of classes going up the class hierarchy,
+/// starting with the receiver and ending with the root class.
++ (NSArray<Class> *)flex_classHierarchy;
+
 @end
 
 
