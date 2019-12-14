@@ -215,7 +215,7 @@
 
     FLEXObjectRef *row = self.sections[indexPath.section][indexPath.row];
     cell.textLabel.text = row.reference;
-    cell.detailTextLabel.text = [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:row.object];
+    cell.detailTextLabel.text = [FLEXRuntimeUtility summaryForObject:row.object];
     
     return cell;
 }

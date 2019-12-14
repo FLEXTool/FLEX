@@ -12,6 +12,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "FLEXAlert.h"
+#import "NSArray+Functional.h"
 
 #define FLEXFloor(x) (floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale)
 
@@ -52,10 +53,6 @@
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
-
-/// Actually more like flatmap, but it seems like the objc way to allow returning nil to omit objects.
-/// So, return nil from the block to omit objects, and return an object to include it in the new array.
-+ (NSArray *)map:(NSArray *)array block:(id(^)(id obj, NSUInteger idx))mapFunc;
 
 + (NSArray<UIWindow *> *)allWindows;
 

@@ -12,18 +12,34 @@
 extern const unsigned int kFLEXNumberOfImplicitArgs;
 
 // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
-extern NSString *const kFLEXUtilityAttributeTypeEncoding;
-extern NSString *const kFLEXUtilityAttributeBackingIvar;
-extern NSString *const kFLEXUtilityAttributeReadOnly;
-extern NSString *const kFLEXUtilityAttributeCopy;
-extern NSString *const kFLEXUtilityAttributeRetain;
-extern NSString *const kFLEXUtilityAttributeNonAtomic;
-extern NSString *const kFLEXUtilityAttributeCustomGetter;
-extern NSString *const kFLEXUtilityAttributeCustomSetter;
-extern NSString *const kFLEXUtilityAttributeDynamic;
-extern NSString *const kFLEXUtilityAttributeWeak;
-extern NSString *const kFLEXUtilityAttributeGarbageCollectable;
-extern NSString *const kFLEXUtilityAttributeOldStyleTypeEncoding;
+extern NSString *const kFLEXPropertyAttributeKeyTypeEncoding;
+extern NSString *const kFLEXPropertyAttributeKeyBackingIvarName;
+extern NSString *const kFLEXPropertyAttributeKeyReadOnly;
+extern NSString *const kFLEXPropertyAttributeKeyCopy;
+extern NSString *const kFLEXPropertyAttributeKeyRetain;
+extern NSString *const kFLEXPropertyAttributeKeyNonAtomic;
+extern NSString *const kFLEXPropertyAttributeKeyCustomGetter;
+extern NSString *const kFLEXPropertyAttributeKeyCustomSetter;
+extern NSString *const kFLEXPropertyAttributeKeyDynamic;
+extern NSString *const kFLEXPropertyAttributeKeyWeak;
+extern NSString *const kFLEXPropertyAttributeKeyGarbageCollectable;
+extern NSString *const kFLEXPropertyAttributeKeyOldStyleTypeEncoding;
+
+typedef NS_ENUM(NSUInteger, FLEXPropertyAttribute)
+{
+    FLEXPropertyAttributeTypeEncoding       = 'T',
+    FLEXPropertyAttributeBackingIvarName    = 'V',
+    FLEXPropertyAttributeCopy               = 'C',
+    FLEXPropertyAttributeCustomGetter       = 'G',
+    FLEXPropertyAttributeCustomSetter       = 'S',
+    FLEXPropertyAttributeDynamic            = 'D',
+    FLEXPropertyAttributeGarbageCollectible = 'P',
+    FLEXPropertyAttributeNonAtomic          = 'N',
+    FLEXPropertyAttributeOldTypeEncoding    = 't',
+    FLEXPropertyAttributeReadOnly           = 'R',
+    FLEXPropertyAttributeRetain             = '&',
+    FLEXPropertyAttributeWeak               = 'W'
+};
 
 typedef NS_ENUM(char, FLEXTypeEncoding)
 {
@@ -71,6 +87,9 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 /// Some fields have a name in their encoded string (e.g. \"width\"d)
 /// @return the offset to skip the field name, 0 if there is no name
 + (NSUInteger)fieldNameOffsetForTypeEncoding:(const FLEXTypeEncoding *)typeEncoding;
+/// Given name "foo" and type "int" this would return "int foo", but
+/// given name "foo" and type "T *" it would return "T *foo"
++ (NSString *)appendName:(NSString *)name toType:(NSString *)typeEncoding;
 
 /// @return The class hierarchy for the given object or class,
 /// from the current class to the root-most class.
@@ -83,8 +102,10 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 + (SEL)setterSelectorForProperty:(objc_property_t)property;
 + (NSString *)fullDescriptionForProperty:(objc_property_t)property;
 + (id)valueForProperty:(objc_property_t)property onObject:(id)object;
-+ (NSString *)descriptionForIvarOrPropertyValue:(id)value;
-+ (void)tryAddPropertyWithName:(const char *)name attributes:(NSDictionary<NSString *, NSString *> *)attributePairs toClass:(__unsafe_unretained Class)theClass;
++ (NSString *)summaryForObject:(id)value;
++ (void)tryAddPropertyWithName:(const char *)name
+                    attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
+                       toClass:(__unsafe_unretained Class)theClass;
 
 // Ivar Helpers
 + (NSString *)prettyNameForIvar:(Ivar)ivar;
@@ -111,5 +132,9 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
                                                  NSUInteger fieldIndex,
                                                  NSUInteger fieldOffset))typeBlock;
 + (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type;
+
+#pragma mark - Metadata Helpers
+
++ (NSString *)readableTypeForEncoding:(NSString *)encodingString;
 
 @end

@@ -123,34 +123,6 @@
     return [FLEXUtility applicationImageName].lastPathComponent;
 }
 
-+ (NSString *)safeDescriptionForObject:(id)object
-{
-    // Don't assume that we have an NSObject subclass.
-    // Check to make sure the object responds to the description methods.
-    NSString *description = nil;
-    if ([object respondsToSelector:@selector(debugDescription)]) {
-        description = [object debugDescription];
-    } else if ([object respondsToSelector:@selector(description)]) {
-        description = [object description];
-    }
-    return description;
-}
-
-+ (NSString *)safeDebugDescriptionForObject:(id)object
-{
-    NSString *description = [self safeDescriptionForObject:object];
-    if (!description) {
-        NSString *cls = NSStringFromClass(object_getClass(object));
-        if (object_isClass(object)) {
-            description = [cls stringByAppendingString:@" class (no description)"];
-       } else {
-           description = [cls stringByAppendingString:@" instance (no description)"];
-       }
-    }
-
-    return description;
-}
-
 + (NSString *)addressOfObject:(id)object
 {
     return [NSString stringWithFormat:@"%p", object];
@@ -163,7 +135,13 @@
 
 + (UIFont *)defaultTableViewCellLabelFont
 {
-    return [self defaultFontOfSize:12.0];
+    static UIFont *defaultTableViewCellLabelFont = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        defaultTableViewCellLabelFont = [self defaultFontOfSize:12.0];
+    });
+
+    return defaultTableViewCellLabelFont;
 }
 
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString
@@ -355,19 +333,6 @@
         }
     }
     return inflatedData;
-}
-
-+ (NSArray *)map:(NSArray *)array block:(id(^)(id obj, NSUInteger idx))mapFunc
-{
-    NSMutableArray *map = [NSMutableArray new];
-    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        id ret = mapFunc(obj, idx);
-        if (ret) {
-            [map addObject:ret];
-        }
-    }];
-
-    return map;
 }
 
 + (NSArray<UIWindow *> *)allWindows

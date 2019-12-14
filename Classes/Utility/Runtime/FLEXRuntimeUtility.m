@@ -11,18 +11,18 @@
 #import "FLEXObjcInternal.h"
 
 // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
-NSString *const kFLEXUtilityAttributeTypeEncoding = @"T";
-NSString *const kFLEXUtilityAttributeBackingIvar = @"V";
-NSString *const kFLEXUtilityAttributeReadOnly = @"R";
-NSString *const kFLEXUtilityAttributeCopy = @"C";
-NSString *const kFLEXUtilityAttributeRetain = @"&";
-NSString *const kFLEXUtilityAttributeNonAtomic = @"N";
-NSString *const kFLEXUtilityAttributeCustomGetter = @"G";
-NSString *const kFLEXUtilityAttributeCustomSetter = @"S";
-NSString *const kFLEXUtilityAttributeDynamic = @"D";
-NSString *const kFLEXUtilityAttributeWeak = @"W";
-NSString *const kFLEXUtilityAttributeGarbageCollectable = @"P";
-NSString *const kFLEXUtilityAttributeOldStyleTypeEncoding = @"t";
+NSString *const kFLEXPropertyAttributeKeyTypeEncoding = @"T";
+NSString *const kFLEXPropertyAttributeKeyBackingIvarName = @"V";
+NSString *const kFLEXPropertyAttributeKeyReadOnly = @"R";
+NSString *const kFLEXPropertyAttributeKeyCopy = @"C";
+NSString *const kFLEXPropertyAttributeKeyRetain = @"&";
+NSString *const kFLEXPropertyAttributeKeyNonAtomic = @"N";
+NSString *const kFLEXPropertyAttributeKeyCustomGetter = @"G";
+NSString *const kFLEXPropertyAttributeKeyCustomSetter = @"S";
+NSString *const kFLEXPropertyAttributeKeyDynamic = @"D";
+NSString *const kFLEXPropertyAttributeKeyWeak = @"W";
+NSString *const kFLEXPropertyAttributeKeyGarbageCollectable = @"P";
+NSString *const kFLEXPropertyAttributeKeyOldStyleTypeEncoding = @"t";
 
 static NSString *const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
@@ -117,6 +117,43 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return superClasses;
 }
 
+/// Could be nil
++ (NSString *)safeDescriptionForObject:(id)object
+{
+    // Don't assume that we have an NSObject subclass.
+    // Check to make sure the object responds to the description method
+    if ([object respondsToSelector:@selector(description)]) {
+        return [object description];
+    }
+
+    return nil;
+}
+
+/// Never nil
++ (NSString *)safeDebugDescriptionForObject:(id)object
+{
+    NSString *description = nil;
+
+    // Don't assume that we have an NSObject subclass.
+    // Check to make sure the object responds to the description method
+    if ([object respondsToSelector:@selector(debugDescription)]) {
+        description = [object debugDescription];
+    } else {
+        description = [self safeDescriptionForObject:object];
+    }
+
+    if (!description.length) {
+        NSString *cls = NSStringFromClass(object_getClass(object));
+        if (object_isClass(object)) {
+            description = [cls stringByAppendingString:@" class (no description)"];
+        } else {
+            description = [cls stringByAppendingString:@" instance (no description)"];
+        }
+    }
+
+    return description;
+}
+
 #pragma mark - Property Helpers (Public)
 
 + (NSString *)prettyNameForProperty:(objc_property_t)property
@@ -129,19 +166,19 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)typeEncodingForProperty:(objc_property_t)property
 {
-    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesDictionaryForProperty:property];
-    return attributesDictionary[kFLEXUtilityAttributeTypeEncoding];
+    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesForProperty:property];
+    return attributesDictionary[kFLEXPropertyAttributeKeyTypeEncoding];
 }
 
 + (BOOL)isReadonlyProperty:(objc_property_t)property
 {
-    return [[self attributesDictionaryForProperty:property] objectForKey:kFLEXUtilityAttributeReadOnly] != nil;
+    return [self attributesForProperty:property][kFLEXPropertyAttributeKeyReadOnly] != nil;
 }
 
 + (SEL)setterSelectorForProperty:(objc_property_t)property
 {
     SEL setterSelector = NULL;
-    NSString *setterSelectorString = [[self attributesDictionaryForProperty:property] objectForKey:kFLEXUtilityAttributeCustomSetter];
+    NSString *setterSelectorString = [self attributesForProperty:property][kFLEXPropertyAttributeKeyCustomSetter];
     if (!setterSelectorString) {
         NSString *propertyName = @(property_getName(property));
         setterSelectorString = [NSString
@@ -158,37 +195,37 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)fullDescriptionForProperty:(objc_property_t)property
 {
-    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesDictionaryForProperty:property];
+    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesForProperty:property];
     NSMutableArray<NSString *> *attributesStrings = [NSMutableArray array];
 
     // Atomicity
-    if (attributesDictionary[kFLEXUtilityAttributeNonAtomic]) {
+    if (attributesDictionary[kFLEXPropertyAttributeKeyNonAtomic]) {
         [attributesStrings addObject:@"nonatomic"];
     } else {
         [attributesStrings addObject:@"atomic"];
     }
 
     // Storage
-    if (attributesDictionary[kFLEXUtilityAttributeRetain]) {
+    if (attributesDictionary[kFLEXPropertyAttributeKeyRetain]) {
         [attributesStrings addObject:@"strong"];
-    } else if (attributesDictionary[kFLEXUtilityAttributeCopy]) {
+    } else if (attributesDictionary[kFLEXPropertyAttributeKeyCopy]) {
         [attributesStrings addObject:@"copy"];
-    } else if (attributesDictionary[kFLEXUtilityAttributeWeak]) {
+    } else if (attributesDictionary[kFLEXPropertyAttributeKeyWeak]) {
         [attributesStrings addObject:@"weak"];
     } else {
         [attributesStrings addObject:@"assign"];
     }
 
     // Mutability
-    if (attributesDictionary[kFLEXUtilityAttributeReadOnly]) {
+    if (attributesDictionary[kFLEXPropertyAttributeKeyReadOnly]) {
         [attributesStrings addObject:@"readonly"];
     } else {
         [attributesStrings addObject:@"readwrite"];
     }
 
     // Custom getter/setter
-    NSString *customGetter = attributesDictionary[kFLEXUtilityAttributeCustomGetter];
-    NSString *customSetter = attributesDictionary[kFLEXUtilityAttributeCustomSetter];
+    NSString *customGetter = attributesDictionary[kFLEXPropertyAttributeKeyCustomGetter];
+    NSString *customSetter = attributesDictionary[kFLEXPropertyAttributeKeyCustomSetter];
     if (customGetter) {
         [attributesStrings addObject:[NSString stringWithFormat:@"getter=%@", customGetter]];
     }
@@ -205,7 +242,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 + (id)valueForProperty:(objc_property_t)property onObject:(id)object
 {
     NSString *customGetterString = nil;
-    char *customGetterName = property_copyAttributeValue(property, kFLEXUtilityAttributeCustomGetter.UTF8String);
+    char *customGetterName = property_copyAttributeValue(property, kFLEXPropertyAttributeKeyCustomGetter.UTF8String);
     if (customGetterName) {
         customGetterString = @(customGetterName);
         free(customGetterName);
@@ -222,7 +259,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return [self performSelector:getterSelector onObject:object withArguments:nil error:NULL];
 }
 
-+ (NSString *)descriptionForIvarOrPropertyValue:(id)value
++ (NSString *)summaryForObject:(id)value
 {
     NSString *description = nil;
 
@@ -232,20 +269,18 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         if (strcmp(type, @encode(BOOL)) == 0) {
             BOOL boolValue = NO;
             [value getValue:&boolValue];
-            description = boolValue ? @"YES" : @"NO";
+            return boolValue ? @"YES" : @"NO";
         } else if (strcmp(type, @encode(SEL)) == 0) {
             SEL selector = NULL;
             [value getValue:&selector];
-            description = NSStringFromSelector(selector);
+            return NSStringFromSelector(selector);
         }
     }
 
     @try {
-        if (!description) {
-            // Single line display - replace newlines and tabs with spaces.
-            description = [[value description] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-            description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
-        }
+        // Single line display - replace newlines and tabs with spaces.
+        description = [[self safeDescriptionForObject:value] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+        description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
     } @catch (NSException *e) {
         description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"];
     }
@@ -282,16 +317,6 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 
 #pragma mark - Ivar Helpers (Public)
-
-+ (NSString *)prettyNameForIvar:(Ivar)ivar
-{
-    const char *nameCString = ivar_getName(ivar);
-    NSString *name = nameCString ? @(nameCString) : nil;
-    const char *encodingCString = ivar_getTypeEncoding(ivar);
-    NSString *encoding = encodingCString ? @(encodingCString) : nil;
-    NSString *readableType = [self readableTypeForEncoding:encoding];
-    return [self appendName:name toType:readableType];
-}
 
 + (id)valueForIvar:(Ivar)ivar onObject:(id)object
 {
@@ -732,16 +757,16 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 }
 
 
-#pragma mark - Internal Helpers
+#pragma mark - Metadata Helpers
 
-+ (NSDictionary<NSString *, NSString *> *)attributesDictionaryForProperty:(objc_property_t)property
++ (NSDictionary<NSString *, NSString *> *)attributesForProperty:(objc_property_t)property
 {
     NSString *attributes = @(property_getAttributes(property));
     // Thanks to MAObjcRuntime for inspiration here.
     NSArray<NSString *> *attributePairs = [attributes componentsSeparatedByString:@","];
-    NSMutableDictionary<NSString *, NSString *> *attributesDictionary = [NSMutableDictionary dictionaryWithCapacity:attributePairs.count];
+    NSMutableDictionary<NSString *, NSString *> *attributesDictionary = [NSMutableDictionary new];
     for (NSString *attributePair in attributePairs) {
-        [attributesDictionary setObject:[attributePair substringFromIndex:1] forKey:[attributePair substringToIndex:1]];
+        attributesDictionary[[attributePair substringToIndex:1]] = [attributePair substringFromIndex:1];
     }
     return attributesDictionary;
 }
@@ -901,6 +926,20 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
     // If we couldn't translate, just return the original encoding string
     return encodingString;
+}
+
+
+#pragma mark - Internal Helpers
+
++ (NSString *)appendName:(NSString *)name toType:(NSString *)type
+{
+    NSString *combined = nil;
+    if ([type characterAtIndex:type.length - 1] == FLEXTypeEncodingCString) {
+        combined = [type stringByAppendingString:name];
+    } else {
+        combined = [type stringByAppendingFormat:@" %@", name];
+    }
+    return combined;
 }
 
 + (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type

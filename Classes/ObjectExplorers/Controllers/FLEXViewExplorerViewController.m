@@ -164,15 +164,15 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
 
 #pragma mark - Runtime Adjustment
 
-#define PropertyKey(suffix) kFLEXUtilityAttribute##suffix : @""
-#define PropertyKeyGetter(getter) kFLEXUtilityAttributeCustomGetter : NSStringFromSelector(@selector(getter))
-#define PropertyKeySetter(setter) kFLEXUtilityAttributeCustomSetter : NSStringFromSelector(@selector(setter))
+#define PropertyKey(suffix) kFLEXPropertyAttributeKey##suffix : @""
+#define PropertyKeyGetter(getter) kFLEXPropertyAttributeKeyCustomGetter : NSStringFromSelector(@selector(getter))
+#define PropertyKeySetter(setter) kFLEXPropertyAttributeKeyCustomSetter : NSStringFromSelector(@selector(setter))
 
 /// Takes: min iOS version, property name, target class, property type, and a list of attributes
 #define FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, type, ...) ({ \
     if (@available(iOS iOS_atLeast, *)) { \
         NSMutableDictionary *attrs = [NSMutableDictionary dictionaryWithDictionary:@{ \
-            kFLEXUtilityAttributeTypeEncoding : @(type), \
+            kFLEXPropertyAttributeKeyTypeEncoding : @(type), \
             __VA_ARGS__ \
         }]; \
         [FLEXRuntimeUtility \
