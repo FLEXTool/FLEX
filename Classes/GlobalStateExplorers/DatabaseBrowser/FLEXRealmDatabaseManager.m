@@ -62,12 +62,18 @@
     NSMutableArray<NSDictionary<NSString *, id> *> *allTables = [NSMutableArray array];
     RLMSchema *schema = [self.realm schema];
     
+    NSMutableArray<NSString *> *tableNames = [NSMutableArray array];
     for (RLMObjectSchema *objectSchema in schema.objectSchema) {
         if (objectSchema.className == nil) {
             continue;
         }
-        
-        NSDictionary<NSString *, id> *dictionary = @{@"name":objectSchema.className};
+        [tableNames addObject:objectSchema.className];
+    }
+    
+    NSArray<NSString *> *sortedTableNames = [tableNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    
+    for (NSString *tableName in sortedTableNames) {
+        NSDictionary<NSString *, id> *dictionary = @{@"name":tableName};
         [allTables addObject:dictionary];
     }
     
