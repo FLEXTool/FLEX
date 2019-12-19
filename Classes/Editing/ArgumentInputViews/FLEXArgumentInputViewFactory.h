@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@class FLEXArgumentInputView;
+#import "FLEXArgumentInputSwitchView.h"
 
 @interface FLEXArgumentInputViewFactory : NSObject
 

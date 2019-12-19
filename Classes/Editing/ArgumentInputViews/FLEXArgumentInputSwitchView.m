@@ -80,8 +80,9 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
+    NSParameterAssert(type);
     // Only BOOLs. Current value is irrelevant.
-    return type && strcmp(type, @encode(BOOL)) == 0;
+    return strcmp(type, @encode(BOOL)) == 0;
 }
 
 @end

@@ -248,6 +248,8 @@
             UIColor *color = [[UIColor alloc] initWithCGColor:colorRef];
             [self updateWithColor:color];
         }
+    } else {
+        [self updateWithColor:[UIColor clearColor]];
     }
 }
 
@@ -323,7 +325,10 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    return (type && (strcmp(type, @encode(CGColorRef)) == 0 || strcmp(type, FLEXEncodeClass(UIColor)) == 0)) || [value isKindOfClass:[UIColor class]];
+    NSParameterAssert(type);
+
+    // We don't care if currentValue is a color or not; we will default to +clearColor
+    return (strcmp(type, @encode(CGColorRef)) == 0) || (strcmp(type, FLEXEncodeClass(UIColor)) == 0);
 }
 
 @end

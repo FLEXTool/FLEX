@@ -22,7 +22,11 @@
 
 - (void)setInputValue:(id)inputValue
 {
-    self.inputTextView.text = inputValue;
+    if ([inputValue isKindOfClass:[NSString class]]) {
+        self.inputTextView.text = inputValue;
+    }
+
+    // TODO: support NSValue coontaining char *
 }
 
 - (id)inputValue
@@ -38,9 +42,10 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    BOOL supported = type && strcmp(type, FLEXEncodeClass(NSString)) == 0;
-    supported = supported || (value && [value isKindOfClass:[NSString class]]);
-    return supported;
+    NSParameterAssert(type);
+    BOOL typeIsString = strcmp(type, FLEXEncodeClass(NSString)) == 0;
+    BOOL valueIsNilOrString = (!value || [value isKindOfClass:[NSString class]]);
+    return typeIsString && valueIsNilOrString;
 }
 
 @end

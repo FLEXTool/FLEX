@@ -11,7 +11,7 @@
 #import "FLEXUtility.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXImagePreviewViewController.h"
-#import "FLEXPropertyEditorViewController.h"
+#import "FLEXFieldEditorViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     FLEXViewExplorerRowViewController,

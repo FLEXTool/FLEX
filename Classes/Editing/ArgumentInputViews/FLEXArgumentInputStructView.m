@@ -176,7 +176,20 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    return type && type[0] == FLEXTypeEncodingStructBegin;
+    NSParameterAssert(type);
+    if (type[0] == FLEXTypeEncodingStructBegin) {
+        // We cannot support anything with bitfields or structs,
+        // and this will throw an exception if it does
+        @try {
+            NSGetSizeAndAlignment(type, nil, nil);
+        } @catch (NSException *exception) {
+            return NO;
+        }
+
+        return YES;
+    }
+
+    return NO;
 }
 
 + (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding

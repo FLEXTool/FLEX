@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXMutableFieldEditorViewController.h"
+#import "FLEXFieldEditorViewController.h"
 
-@interface FLEXDefaultEditorViewController : FLEXMutableFieldEditorViewController
+@interface FLEXDefaultEditorViewController : FLEXFieldEditorViewController
 
 - (id)initWithDefaults:(NSUserDefaults *)defaults key:(NSString *)key;
 

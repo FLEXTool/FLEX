@@ -113,9 +113,8 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
-    BOOL supported = type && strcmp(type, FLEXEncodeClass(UIFont)) == 0;
-    supported = supported || (value && [value isKindOfClass:[UIFont class]]);
-    return supported;
+    NSParameterAssert(type);
+    return strcmp(type, FLEXEncodeClass(UIFont)) == 0;
 }
 
 @end

@@ -35,6 +35,8 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
 {
+    NSParameterAssert(type);
+    
     static NSArray<NSString *> *primitiveTypes = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
