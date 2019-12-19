@@ -10,4 +10,9 @@
 
 @interface FLEXTableViewCell : UITableViewCell
 
+/// Use this instead of .textLabel
+@property (nonatomic, readonly) UILabel *titleLabel;
+/// Use this instead of .detailTextLabel
+@property (nonatomic, readonly) UILabel *subtitleLabel;
+
 @end

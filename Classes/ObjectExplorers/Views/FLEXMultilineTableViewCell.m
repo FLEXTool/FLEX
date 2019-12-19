@@ -7,33 +7,34 @@
 //
 
 #import "FLEXMultilineTableViewCell.h"
+#import "UIView+FLEX_Layout.h"
+
+@interface FLEXMultilineTableViewCell ()
+@property (nonatomic, readonly) UILabel *_titleLabel;
+@property (nonatomic, readonly) UILabel *_subtitleLabel;
+@property (nonatomic) BOOL constraintsUpdated;
+@end
 
 @implementation FLEXMultilineTableViewCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.textLabel.numberOfLines = 0;
-        self.detailTextLabel.numberOfLines = 0;
+        self.titleLabel.numberOfLines = 0;
+        self.subtitleLabel.numberOfLines = 0;
     }
+
     return self;
 }
 
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-
-    self.textLabel.frame = UIEdgeInsetsInsetRect(self.contentView.bounds, [[self class] labelInsets]);
-}
-
-+ (UIEdgeInsets)labelInsets
-{
++ (UIEdgeInsets)labelInsets {
     return UIEdgeInsetsMake(10.0, 15.0, 10.0, 15.0);
 }
 
-+ (CGFloat)preferredHeightWithAttributedText:(NSAttributedString *)attributedText inTableViewWidth:(CGFloat)tableViewWidth style:(UITableViewStyle)style showsAccessory:(BOOL)showsAccessory
-{
++ (CGFloat)preferredHeightWithAttributedText:(NSAttributedString *)attributedText
+                            inTableViewWidth:(CGFloat)tableViewWidth
+                                       style:(UITableViewStyle)style
+                              showsAccessory:(BOOL)showsAccessory {
     CGFloat labelWidth = tableViewWidth;
 
     // Content view inset due to accessory view observed on iOS 8.1 iPhone 6.
@@ -53,10 +54,10 @@
 
 @end
 
+
 @implementation FLEXMultilineDetailTableViewCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     return [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
 }
 

@@ -8,6 +8,7 @@
 
 #import "FLEXTableViewCell.h"
 #import "FLEXUtility.h"
+#import "FLEXColor.h"
 #import "FLEXTableView.h"
 
 @interface UITableView (Internal)
@@ -28,12 +29,23 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         UIFont *cellFont = [FLEXUtility defaultTableViewCellLabelFont];
-        self.textLabel.font = cellFont;
-        self.detailTextLabel.font = cellFont;
-        self.detailTextLabel.textColor = UIColor.grayColor;
+        self.titleLabel.font = cellFont;
+        self.subtitleLabel.font = cellFont;
+        self.subtitleLabel.textColor = [FLEXColor deemphasizedTextColor];
+        
+        self.titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+        self.subtitleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     }
 
     return self;
+}
+
+- (UILabel *)titleLabel {
+    return self.textLabel;
+}
+
+- (UILabel *)subtitleLabel {
+    return self.detailTextLabel;
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
