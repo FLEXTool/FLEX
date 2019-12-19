@@ -213,9 +213,32 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
 }
 
++ (NSArray<NSString *> *)allPropertyAttributeKeys
 {
+    static NSArray<NSString *> *allPropertyAttributeKeys = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        allPropertyAttributeKeys = @[
+            kFLEXPropertyAttributeKeyTypeEncoding,
+            kFLEXPropertyAttributeKeyBackingIvarName,
+            kFLEXPropertyAttributeKeyReadOnly,
+            kFLEXPropertyAttributeKeyCopy,
+            kFLEXPropertyAttributeKeyRetain,
+            kFLEXPropertyAttributeKeyNonAtomic,
+            kFLEXPropertyAttributeKeyCustomGetter,
+            kFLEXPropertyAttributeKeyCustomSetter,
+            kFLEXPropertyAttributeKeyDynamic,
+            kFLEXPropertyAttributeKeyWeak,
+            kFLEXPropertyAttributeKeyGarbageCollectable,
+            kFLEXPropertyAttributeKeyOldStyleTypeEncoding,
+        ];
+    });
 
+    return allPropertyAttributeKeys;
 }
+
+
+#pragma mark - Method Helpers (Public)
 
 + (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method
 {

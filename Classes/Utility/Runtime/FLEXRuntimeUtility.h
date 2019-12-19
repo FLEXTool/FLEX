@@ -104,6 +104,7 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 + (void)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
                        toClass:(__unsafe_unretained Class)theClass;
++ (NSArray<NSString *> *)allPropertyAttributeKeys;
 
 // Method Helpers
 + (NSArray *)prettyArgumentComponentsForMethod:(Method)method;

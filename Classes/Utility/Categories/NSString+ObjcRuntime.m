@@ -30,6 +30,7 @@
         FLEXPropertyAttribute c = (FLEXPropertyAttribute)[attribute characterAtIndex:0];
         switch (c) {
             case FLEXPropertyAttributeTypeEncoding:
+                // Note: the type encoding here is not always correct. Radar: FB7499230
                 attributes[kFLEXPropertyAttributeKeyTypeEncoding] = [attribute stringbyDeletingCharacterAtIndex:0];
                 break;
             case FLEXPropertyAttributeBackingIvarName:

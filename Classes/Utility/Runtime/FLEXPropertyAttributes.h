@@ -29,8 +29,6 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (instancetype)attributesForProperty:(objc_property_t)property;
-/// @warning Raises an exception if \e attributes is invalid or \c nil.
-+ (instancetype)attributesFromString:(NSString *)attributes;
 /// @warning Raises an exception if \e attributes is invalid, \c nil, or contains unsupported keys.
 + (instancetype)attributesFromDictionary:(NSDictionary *)attributes;
 

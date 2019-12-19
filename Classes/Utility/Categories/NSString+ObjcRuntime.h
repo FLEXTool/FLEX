@@ -15,6 +15,9 @@
 /// Values are either a string or \c @YES. Boolean attributes which are false will not be
 /// present in the dictionary. See this link on how to construct a proper attributes string:
 /// https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
+///
+/// Note: this method doesn't work properly for certain type encodings, and neither does
+/// the property_copyAttributeValue function in the runtime itself. Radar: FB7499230
 - (NSDictionary *)propertyAttributes;
 
 @end

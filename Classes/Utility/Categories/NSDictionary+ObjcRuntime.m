@@ -86,4 +86,22 @@
     return attributes.copy;
 }
 
++ (instancetype)attributesDictionaryForProperty:(objc_property_t)property {
+    NSMutableDictionary *attrs = [NSMutableDictionary new];
+
+    for (NSString *key in [FLEXRuntimeUtility allPropertyAttributeKeys]) {
+        char *value = property_copyAttributeValue(property, key.UTF8String);
+        if (value) {
+            attrs[key] = [[NSString alloc]
+                initWithBytesNoCopy:value
+                length:strlen(value)
+                encoding:NSUTF8StringEncoding
+                freeWhenDone:YES
+            ];
+        }
+    }
+
+    return attrs.copy;
+}
+
 @end

@@ -38,47 +38,32 @@
 #pragma mark Initializers
 
 + (instancetype)attributesForProperty:(objc_property_t)property {
-    return [self attributesFromString:@(property_getAttributes(property))];
+    return [self attributesFromDictionary:[NSDictionary attributesDictionaryForProperty:property]];
 }
 
 + (instancetype)attributesFromDictionary:(NSDictionary *)attributes {
-    NSString *attrs = attributes.propertyAttributesString;
-    if (!attrs) {
-        [NSException raise:NSInternalInconsistencyException
-                    format:@"Invalid property attributes dictionary: %@", attributes];
-    }
-    return [self attributesFromString:attrs];
+    return [[self alloc] initWithAttributesDictionary:attributes];
 }
 
-+ (instancetype)attributesFromString:(NSString *)attributes {
-    return [[self alloc] initWithstring:attributes];
-}
-
-- (id)initWithstring:(NSString *)string {
-    NSParameterAssert(string);
+- (id)initWithAttributesDictionary:(NSDictionary *)attributes {
+    NSParameterAssert(attributes);
     
     self = [super init];
     if (self) {
-        _string = string;
-        
-        _dictionary = string.propertyAttributes;
-        if (!_dictionary) {
-            [NSException raise:NSInternalInconsistencyException
-                        format:@"Invalid property attributes string: %@", string];
-        }
-        
-        _count                = _dictionary.count;
-        _typeEncoding         = _dictionary[kFLEXPropertyAttributeKeyTypeEncoding];
-        _backingIvar          = _dictionary[kFLEXPropertyAttributeKeyBackingIvarName];
-        _oldTypeEncoding      = _dictionary[kFLEXPropertyAttributeKeyOldStyleTypeEncoding];
-        _customGetter         = NSSelectorFromString(_dictionary[kFLEXPropertyAttributeKeyCustomGetter]);
-        _customSetter         = NSSelectorFromString(_dictionary[kFLEXPropertyAttributeKeyCustomSetter]);
-        _isReadOnly           = [_dictionary[kFLEXPropertyAttributeKeyReadOnly] boolValue];
-        _isCopy               = [_dictionary[kFLEXPropertyAttributeKeyCopy] boolValue];
-        _isRetained           = [_dictionary[kFLEXPropertyAttributeKeyRetain] boolValue];
-        _isNonatomic          = [_dictionary[kFLEXPropertyAttributeKeyNonAtomic] boolValue];
-        _isWeak               = [_dictionary[kFLEXPropertyAttributeKeyWeak] boolValue];
-        _isGarbageCollectable = [_dictionary[kFLEXPropertyAttributeKeyGarbageCollectable] boolValue];
+        _dictionary           = attributes;
+        _string               = attributes.propertyAttributesString;
+        _count                = attributes.count;
+        _typeEncoding         = attributes[kFLEXPropertyAttributeKeyTypeEncoding];
+        _backingIvar          = attributes[kFLEXPropertyAttributeKeyBackingIvarName];
+        _oldTypeEncoding      = attributes[kFLEXPropertyAttributeKeyOldStyleTypeEncoding];
+        _customGetter         = NSSelectorFromString(attributes[kFLEXPropertyAttributeKeyCustomGetter]);
+        _customSetter         = NSSelectorFromString(attributes[kFLEXPropertyAttributeKeyCustomSetter]);
+        _isReadOnly           = attributes[kFLEXPropertyAttributeKeyReadOnly] != nil;
+        _isCopy               = attributes[kFLEXPropertyAttributeKeyCopy] != nil;
+        _isRetained           = attributes[kFLEXPropertyAttributeKeyRetain] != nil;
+        _isNonatomic          = attributes[kFLEXPropertyAttributeKeyNonAtomic] != nil;
+        _isWeak               = attributes[kFLEXPropertyAttributeKeyWeak] != nil;
+        _isGarbageCollectable = attributes[kFLEXPropertyAttributeKeyGarbageCollectable] != nil;
     }
     
     return self;
@@ -88,14 +73,14 @@
 
 - (NSString *)description {
     return [NSString
-        stringWithFormat:@"<%@ ivar=%@, readonly=%d, nonatomic=%d, getter=%@, setter=%@>\n%@",
+        stringWithFormat:@"<%@ \"%@\", ivar=%@, readonly=%d, nonatomic=%d, getter=%@, setter=%@>",
         NSStringFromClass(self.class),
+        self.string,
         self.backingIvar ?: @"none",
         self.isReadOnly,
         self.isNonatomic,
-        NSStringFromSelector(self.customGetter) ?: @" ",
-        NSStringFromSelector(self.customSetter) ?: @" ",
-        self.string
+        NSStringFromSelector(self.customGetter) ?: @"none",
+        NSStringFromSelector(self.customSetter) ?: @"none"
     ];
 }
 
@@ -211,11 +196,11 @@
 #pragma mark Copying
 
 - (id)copyWithZone:(NSZone *)zone {
-    return [[FLEXPropertyAttributes class] attributesFromString:self.string];
+    return [[FLEXPropertyAttributes class] attributesFromDictionary:self.dictionary];
 }
 
 - (id)mutableCopyWithZone:(NSZone *)zone {
-    return [[FLEXMutablePropertyAttributes class] attributesFromString:self.string];
+    return [[FLEXMutablePropertyAttributes class] attributesFromDictionary:self.dictionary];
 }
 
 @end
