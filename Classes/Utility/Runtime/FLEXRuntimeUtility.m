@@ -279,6 +279,12 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         withArguments:(NSArray *)arguments
                 error:(NSError * __autoreleasing *)error
 {
+    static dispatch_once_t onceToken;
+    static SEL stdStringExclusion = nil;
+    dispatch_once(&onceToken, ^{
+        stdStringExclusion = NSSelectorFromString(@"stdString");
+    });
+
     // Bail if the object won't respond to this selector.
     if (![object respondsToSelector:selector]) {
         if (error) {
@@ -293,6 +299,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 userInfo:userInfo
             ];
         }
+
         return nil;
     }
 
@@ -390,14 +397,27 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
             returnObject = objectReturnedFromMethod;
         } else if (returnType[0] != FLEXTypeEncodingVoid) {
             NSAssert(methodSignature.methodReturnLength, @"Memory corruption lies ahead");
+
+            if (returnType[0] == FLEXTypeEncodingStructBegin) {
+                if (selector == stdStringExclusion && [object isKindOfClass:[NSString class]]) {
+                    // stdString is a C++ object and we will crash if we try to access it
+                    if (error) {
+                        *error = [NSError
+                            errorWithDomain:FLEXRuntimeUtilityErrorDomain
+                            code:FLEXRuntimeUtilityErrorCodeInvocationFailed
+                            userInfo:@{ NSLocalizedDescriptionKey : @"Skipping -[NSString stdString]" }
+                        ];
+                    }
+
+                    return nil;
+                }
+            }
+
             // Will use arbitrary buffer for return value and box it.
             void *returnValue = malloc(methodSignature.methodReturnLength);
-
-            if (returnValue) {
-                [invocation getReturnValue:returnValue];
-                returnObject = [self valueForPrimitivePointer:returnValue objCType:returnType];
-                free(returnValue);
-            }
+            [invocation getReturnValue:returnValue];
+            returnObject = [self valueForPrimitivePointer:returnValue objCType:returnType];
+            free(returnValue);
         }
     } @catch (NSException *exception) {
         // Bummer...
@@ -411,9 +431,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 exception.name, NSStringFromSelector(selector), calledOn, exception.reason
             ];
 
-            *error = [NSError errorWithDomain:FLEXRuntimeUtilityErrorDomain
-                                         code:FLEXRuntimeUtilityErrorCodeInvocationFailed
-                                     userInfo:@{ NSLocalizedDescriptionKey : message }];
+            *error = [NSError
+                errorWithDomain:FLEXRuntimeUtilityErrorDomain
+                code:FLEXRuntimeUtilityErrorCodeInvocationFailed
+                userInfo:@{ NSLocalizedDescriptionKey : message }
+            ];
         }
     }
 
@@ -631,7 +653,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 + (NSString *)readableTypeForEncoding:(NSString *)encodingString
 {
     if (!encodingString) {
-        return nil;
+        return @"???";
     }
 
     // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
@@ -751,6 +773,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
     // For structs, we only use the name of the structs
     if (encodingCString[0] == FLEXTypeEncodingStructBegin) {
+        // Special case: std::string
+        if ([encodingString hasPrefix:@"{basic_string<char"]) {
+            return @"std::string";
+        }
+
         const char *equals = strchr(encodingCString, '=');
         if (equals) {
             const char *nameStart = encodingCString + 1;

@@ -421,14 +421,22 @@
     IMP implementation = imp_implementationWithBlock((id)([cls instancesRespondToSelector:selector] ? implementationBlock : undefinedBlock));
     
     Method oldMethod = class_getInstanceMethod(cls, selector);
+    const char *types = methodDescription.types;
     if (oldMethod) {
-        class_addMethod(cls, swizzledSelector, implementation, methodDescription.types);
-        
+        if (!types) {
+            types = method_getTypeEncoding(oldMethod);
+        }
+
+        class_addMethod(cls, swizzledSelector, implementation, types);
         Method newMethod = class_getInstanceMethod(cls, swizzledSelector);
-        
         method_exchangeImplementations(oldMethod, newMethod);
     } else {
-        class_addMethod(cls, selector, implementation, methodDescription.types);
+        if (!types) {
+            // Some protocol method descriptions don't have .types populated
+            // Set the return type to void and ignore arguments
+            types = "v@:";
+        }
+        class_addMethod(cls, selector, implementation, types);
     }
 }
 
