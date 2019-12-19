@@ -34,4 +34,23 @@
     return self;
 }
 
+- (NSUInteger)hash {
+    return self.name.hash ^ @(self.age).hash ^ self.numberOfKids.hash;
+}
+
+- (BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:[Person class]])
+        return [self isEqualToPerson:object];
+
+    return [super isEqual:object];
+}
+
+- (BOOL)isEqualToPerson:(Person *)person {
+    return [self.name isEqualToString:person.name];
+}
+
++ (NSInteger)version {
+    return 2;
+}
+
 @end
