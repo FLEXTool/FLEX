@@ -1,0 +1,423 @@
+//
+//  FLEXShortcutsSection.m
+//  FLEX
+//
+//  Created by Tanner Bennett on 8/29/19.
+//  Copyright © 2019 Flipboard. All rights reserved.
+//
+
+#import "FLEXShortcutsSection.h"
+#import "FLEXTableView.h"
+#import "FLEXTableViewCell.h"
+#import "FLEXUtility.h"
+#import "FLEXShortcut.h"
+#import "FLEXProperty.h"
+#import "FLEXPropertyAttributes.h"
+#import "FLEXIvar.h"
+#import "FLEXMethod.h"
+#import "FLEXRuntime+UIKitHelpers.h"
+
+#pragma mark Private
+
+@interface FLEXShortcutsSection ()
+@property (nonatomic, copy) NSArray<NSString *> *titles;
+@property (nonatomic, copy) NSArray<NSString *> *subtitles;
+
+@property (nonatomic, copy) NSArray<NSString *> *allTitles;
+@property (nonatomic, copy) NSArray<NSString *> *allSubtitles;
+
+// Shortcuts are not used if initialized with static titles and subtitles
+@property (nonatomic, copy) NSArray<id<FLEXShortcut>> *shortcuts;
+@property (nonatomic, readonly) NSArray<id<FLEXShortcut>> *allShortcuts;
+@end
+
+@implementation FLEXShortcutsSection
+
+#pragma mark Initialization
+
++ (instancetype)forObject:(id)objectOrClass rowTitles:(NSArray<NSString *> *)titles {
+    return [self forObject:objectOrClass rowTitles:titles rowSubtitles:nil];
+}
+
++ (instancetype)forObject:(id)objectOrClass
+                rowTitles:(NSArray<NSString *> *)titles
+             rowSubtitles:(NSArray<NSString *> *)subtitles {
+    return [[self alloc] initWithObject:objectOrClass titles:titles subtitles:subtitles];
+}
+
++ (instancetype)forObject:(id)objectOrClass rows:(NSArray *)rows {
+    return [[self alloc] initWithObject:objectOrClass rows:rows];
+}
+
++ (instancetype)forObject:(id)objectOrClass additionalRows:(NSArray *)toPrepend {
+    NSArray *rows = [FLEXShortcutsFactory shortcutsForObjectOrClass:objectOrClass];
+    NSArray *allRows = [toPrepend arrayByAddingObjectsFromArray:rows] ?: rows;
+    return [self forObject:objectOrClass rows:allRows];
+}
+
++ (instancetype)forObject:(id)objectOrClass {
+    return [self forObject:objectOrClass additionalRows:nil];
+}
+
+- (id)initWithObject:(id)object
+              titles:(NSArray<NSString *> *)titles
+           subtitles:(NSArray<NSString *> *)subtitles {
+
+    NSParameterAssert(titles.count == subtitles.count || !subtitles);
+    NSParameterAssert(titles.count);
+
+    self = [super init];
+    if (self) {
+        _object = object;
+        _allTitles = titles.copy;
+        _allSubtitles = subtitles.copy;
+        _numberOfLines = 1;
+    }
+
+    return self;
+}
+
+- (id)initWithObject:object rows:(NSArray *)rows {
+    self = [super init];
+    if (self) {
+        _object = object;
+        
+        _allShortcuts = [rows flex_mapped:^id(id obj, NSUInteger idx) {
+            return [FLEXShortcut shortcutFor:obj];
+        }];
+        _numberOfLines = 1;
+        // Populate titles and subtitles
+        [self reloadData];
+    }
+
+    return self;
+}
+
+
+#pragma mark - Public
+
+- (void)setCacheSubtitles:(BOOL)cacheSubtitles {
+    if (_cacheSubtitles == cacheSubtitles) return;
+
+    // cacheSubtitles only applies if we have shortcut objects
+    if (self.allShortcuts) {
+        _cacheSubtitles = cacheSubtitles;
+        [self reloadData];
+    } else {
+        NSLog(@"Warning: setting 'cacheSubtitles' on a shortcut section with static subtitles");
+    }
+}
+
+
+#pragma mark - Overrides
+
+- (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row {
+    if (_allShortcuts) {
+        return [self.shortcuts[row] accessoryTypeWith:self.object];
+    }
+    
+    return UITableViewCellAccessoryNone;
+}
+
+- (void)setFilterText:(NSString *)filterText {
+    super.filterText = filterText;
+
+    if (filterText.length) {
+        // Tally up indexes of titles and subtitles matching the filter
+        NSMutableIndexSet *filterMatches = [NSMutableIndexSet new];
+        id filterBlock = ^BOOL(NSString *obj, NSUInteger idx) {
+            if ([obj localizedCaseInsensitiveContainsString:filterText]) {
+                [filterMatches addIndex:idx];
+                return YES;
+            }
+
+            return NO;
+        };
+
+        // Get all matching indexes, including subtitles
+        [self.allTitles flex_forEach:filterBlock];
+        [self.allSubtitles flex_forEach:filterBlock];
+        // Filter to matching indexes only
+        self.titles    = [self.allTitles objectsAtIndexes:filterMatches];
+        self.subtitles = [self.allSubtitles objectsAtIndexes:filterMatches];
+        self.shortcuts = [self.allShortcuts objectsAtIndexes:filterMatches];
+    } else {
+        self.titles    = self.allTitles;
+        self.subtitles = self.allSubtitles;
+        self.shortcuts = self.allShortcuts;
+    }
+}
+
+- (void)reloadData {
+    // Generate all (sub)titles from shortcuts
+    if (self.allShortcuts) {
+        self.allTitles = [self.allShortcuts flex_mapped:^id(FLEXShortcut *s, NSUInteger idx) {
+            return [s titleWith:self.object];
+        }];
+        self.allSubtitles = [self.allShortcuts flex_mapped:^id(FLEXShortcut *s, NSUInteger idx) {
+            return [s subtitleWith:self.object];
+        }];
+    }
+
+    // Re-generate filtered (sub)titles and shortcuts
+    self.filterText = self.filterText;
+}
+
+- (NSString *)title {
+    return @"Shortcuts";
+}
+
+- (NSInteger)numberOfRows {
+    return self.titles.count;
+}
+
+- (BOOL)canSelectRow:(NSInteger)row {
+    UITableViewCellAccessoryType type = [self.shortcuts[row] accessoryTypeWith:self.object];
+    BOOL hasDisclosure = NO;
+    hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;	
+    hasDisclosure |= type == UITableViewCellAccessoryDetailDisclosureButton;
+    return hasDisclosure;
+}
+
+- (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
+    /// Nil if shortcuts is nil, i.e. if initialized with forObject:rowTitles:rowSubtitles:
+    return [self.shortcuts[row] viewerWith:self.object];
+}
+
+- (void (^)(UIViewController *))didPressInfoButtonAction:(NSInteger)row {
+    id<FLEXShortcut> shortcut = self.shortcuts[row];
+    if ([shortcut respondsToSelector:@selector(editorWith:)]) {
+        id object = self.object;
+        return ^(UIViewController *host) {
+            UIViewController *editor = [shortcut editorWith:object];
+            [host.navigationController pushViewController:editor animated:YES];
+        };
+    }
+
+    return nil;
+}
+
+- (NSString *)reuseIdentifierForRow:(NSInteger)row {
+    if (self.subtitles[row].length) {
+        // Title+subtitle: properties, ivars, methods, custom
+        return kFLEXMultilineDetailCell;
+    }
+
+    // Just a title string
+    return kFLEXMultilineCell;
+}
+
+- (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
+    cell.titleLabel.text = self.titles[row];
+    cell.titleLabel.numberOfLines = self.numberOfLines;
+    cell.subtitleLabel.text = self.subtitles[row];
+    cell.subtitleLabel.numberOfLines = self.numberOfLines;
+    cell.accessoryType = [self accessoryTypeForRow:row];
+}
+
+- (NSString *)titleForRow:(NSInteger)row {
+    return self.titles[row];
+}
+
+- (NSString *)subtitleForRow:(NSInteger)row {
+    // Case: dynamic, uncached subtitles
+    if (!self.cacheSubtitles) {
+        return [self.shortcuts[row] subtitleWith:self.object];
+    }
+
+    // Case: static subtitles, or cached subtitles
+    return self.subtitles[row];
+}
+
+// Not sure what this was for, maybe I added filterText after the fact?
+//- (BOOL)row:(NSInteger)row matchesFilter:(NSString *)query {
+//    if ([self.titles[row] localizedCaseInsensitiveContainsString:query]) {
+//        return YES;
+//    }
+//
+//    return [self.subtitles[row] localizedCaseInsensitiveContainsString:query];
+//}
+
+@end
+
+
+#pragma mark - Global shortcut registration
+
+@interface FLEXShortcutsFactory () {
+    BOOL _append, _prepend, _replace, _notInstance;
+    NSArray<NSString *> *_properties, *_ivars, *_methods;
+}
+@end
+
+#define NewAndSet(ivar) ({ FLEXShortcutsFactory *r = [self new]; r->ivar = YES; r; })
+#define SetIvar(ivar) ({ self->ivar = YES; self; })
+#define SetParamBlock(ivar) ^(NSArray *p) { self->ivar = p; return self; }
+
+@implementation FLEXShortcutsFactory
+
+typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> RegistrationBuckets;
+// Class buckets
+static RegistrationBuckets *cProperties = nil;
+static RegistrationBuckets *cIvars = nil;
+static RegistrationBuckets *cMethods = nil;
+// Metaclass buckets
+static RegistrationBuckets *mProperties = nil;
+static RegistrationBuckets *mMethods = nil;
+
++ (void)load {
+    cProperties = [NSMutableDictionary new];
+    cIvars = [NSMutableDictionary new];
+    cMethods = [NSMutableDictionary new];
+
+    mProperties = [NSMutableDictionary new];
+    mMethods = [NSMutableDictionary new];
+}
+
++ (NSArray<id<FLEXRuntimeMetadata>> *)shortcutsForObjectOrClass:(id)objectOrClass {
+    if (object_isClass(objectOrClass)) {
+        NSLog(@"+[FLEXShortcutsFactory shortcutsForObjectOrClass:] does not accept classes yet");
+        return nil;
+    }
+
+    NSMutableArray<id<FLEXRuntimeMetadata>> *shortcuts = [NSMutableArray new];
+    Class classKey = [objectOrClass class];
+
+    BOOL stop = NO;
+    while (!stop && classKey) {
+        NSArray *properties = cProperties[classKey];
+        NSArray *ivars = cIvars[classKey];
+        NSArray *methods = cMethods[classKey];
+
+        // Stop if we found anything
+        stop = properties || ivars || methods;
+        if (stop) {
+            // Add things we found to the list
+            [shortcuts addObjectsFromArray:properties];
+            [shortcuts addObjectsFromArray:ivars];
+            [shortcuts addObjectsFromArray:methods];
+        } else {
+            classKey = [classKey superclass];
+        }
+    }
+
+    // .tag is used to cache whether the value of .isEditable;
+    // This could change at runtime so it is important that
+    // it is cached every time shortcuts are requeted and not
+    // just once at as shortcuts are initially registered
+    for (id<FLEXRuntimeMetadata> metadata in shortcuts) {
+        metadata.tag = metadata.isEditable ? @YES : nil;
+    }
+
+    return shortcuts;
+}
+
++ (FLEXShortcutsFactory *)append {
+    return NewAndSet(_append);
+}
+
++ (FLEXShortcutsFactory *)prepend {
+    return NewAndSet(_prepend);
+}
+
++ (FLEXShortcutsFactory *)replace {
+    return NewAndSet(_replace);
+}
+
+- (void)_register:(NSArray<id<FLEXRuntimeMetadata>> *)items to:(RegistrationBuckets *)global class:(Class)key {
+    // Get (or initialize) the bucket for this class
+    NSMutableArray *bucket = ({
+        id bucket = global[key];
+        if (!bucket) {
+            bucket = [NSMutableArray new];
+            global[(id)key] = bucket;
+        }
+        bucket;
+    });
+
+    if (self->_append)  { [bucket addObjectsFromArray:items]; }
+    if (self->_replace) { [bucket setArray:items]; }
+    if (self->_prepend) {
+        if (bucket.count) {
+            // Set new items as array, add old items behind them
+            id copy = bucket.copy;
+            [bucket setArray:items];
+            [bucket addObjectsFromArray:copy];
+        } else {
+            [bucket addObjectsFromArray:items];
+        }
+    }
+}
+
+- (FLEXShortcutsFactory *)class {
+    return SetIvar(_notInstance);
+}
+
+- (FLEXShortcutsFactoryNames)properties {
+    NSAssert(!_notInstance, @"Do not try to set properties+classProperties at the same time");
+    return SetParamBlock(_properties);
+}
+
+- (FLEXShortcutsFactoryNames)classProperties {
+    _notInstance = YES;
+    return SetParamBlock(_properties);
+}
+
+- (FLEXShortcutsFactoryNames)ivars {
+    return SetParamBlock(_ivars);
+}
+
+- (FLEXShortcutsFactoryNames)methods {
+    NSAssert(!_notInstance, @"Do not try to set methods+classMethods at the same time");
+    return SetParamBlock(_methods);
+}
+
+- (FLEXShortcutsFactoryNames)classMethods {
+    _notInstance = YES;
+    return SetParamBlock(_methods);
+}
+
+- (FLEXShortcutsFactoryTarget)forClass {
+    return ^(Class cls) {
+        NSAssert(
+            ( self->_append && !self->_prepend && !self->_replace) ||
+            (!self->_append &&  self->_prepend && !self->_replace) ||
+            (!self->_append && !self->_prepend &&  self->_replace),
+            @"You can only do one of [append, prepend, replace]"
+        );
+
+        BOOL onInstance = !self->_notInstance;
+
+        BOOL isMeta = class_isMetaClass(cls);
+        RegistrationBuckets *propertyBucket = isMeta ? mProperties : cProperties;
+        RegistrationBuckets *methodBucket = isMeta ? mMethods : cMethods;
+        RegistrationBuckets *ivarBucket = isMeta ? nil : cIvars;
+
+        // Pass the metaclass to the runtime wrappers if !onInstance
+        Class targetClass = onInstance ? cls : object_getClass(cls);
+
+        if (self->_properties) {
+            NSArray *items = [self->_properties flex_mapped:^id(NSString *name, NSUInteger idx) {
+                return [FLEXProperty named:name onClass:targetClass];
+            }];
+            [self _register:items to:propertyBucket class:cls];
+        }
+
+        if (self->_methods) {
+            NSArray *items = [self->_methods flex_mapped:^id(NSString *name, NSUInteger idx) {
+                return [FLEXMethod selector:NSSelectorFromString(name) class:targetClass];
+            }];
+            [self _register:items to:methodBucket class:cls];
+        }
+
+        if (self->_ivars) {
+            NSAssert(onInstance, @"Cannot register ivar shortcuts for classes (%@)", cls);
+            NSAssert(!isMeta, @"Cannot register ivar shortcuts for metaclasses (%@)", cls);
+            NSArray *items = [self->_ivars flex_mapped:^id(NSString *name, NSUInteger idx) {
+                return [FLEXIvar named:name onClass:cls];
+            }];
+            [self _register:items to:ivarBucket class:cls];
+        }
+    };
+}
+
+@end

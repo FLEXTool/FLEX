@@ -1,0 +1,34 @@
+//
+//  FLEXMetadataSection.h
+//  FLEX
+//
+//  Created by Tanner Bennett on 9/19/19.
+//  Copyright © 2019 Flipboard. All rights reserved.
+//
+
+#import "FLEXExplorerSection.h"
+#import "FLEXObjectExplorer.h"
+
+#warning Missing ClassProperties
+typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
+    FLEXMetadataKindProperties = 1,
+    FLEXMetadataKindIvars,
+    FLEXMetadataKindMethods,
+    FLEXMetadataKindClassMethods
+};
+
+/// This section is used for displaying ObjC runtime metadata
+/// about a class or object, such as listing methods, properties, etc.
+@interface FLEXMetadataSection : FLEXExplorerSection
+
++ (instancetype)explorer:(FLEXObjectExplorer *)explorer kind:(FLEXMetadataKind)metadataKind;
+
+@property (nonatomic, readonly) FLEXMetadataKind metadataKind;
+
+/// The names of metadata to exclude. Useful if you wish to group specific
+/// properties or methods together in their own section outside of this one.
+///
+/// Setting this property calls \c reloadData on this section.
+@property (nonatomic) NSSet<NSString *> *excludedMetadata;
+
+@end
