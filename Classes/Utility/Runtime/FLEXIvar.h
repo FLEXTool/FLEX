@@ -33,6 +33,7 @@
 @property (nonatomic) id tag;
 
 - (id)getValue:(id)target;
+- (void)setValue:(id)value onObject:(id)target;
 
 /// Calls into -getValue: and passes that value into
 /// -[FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:type:]

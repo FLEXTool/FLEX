@@ -95,27 +95,18 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 /// from the current class to the root-most class.
 + (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass;
 
-// Property Helpers
-+ (NSString *)prettyNameForProperty:(objc_property_t)property;
-+ (NSString *)typeEncodingForProperty:(objc_property_t)property;
-+ (BOOL)isReadonlyProperty:(objc_property_t)property;
-+ (SEL)setterSelectorForProperty:(objc_property_t)property;
-+ (NSString *)fullDescriptionForProperty:(objc_property_t)property;
-+ (id)valueForProperty:(objc_property_t)property onObject:(id)object;
+/// Used to describe an object in brief within an explorer row
 + (NSString *)summaryForObject:(id)value;
++ (NSString *)safeDescriptionForObject:(id)object;
++ (NSString *)safeDebugDescriptionForObject:(id)object;
+
+// Property Helpers
 + (void)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
                        toClass:(__unsafe_unretained Class)theClass;
 
-// Ivar Helpers
-+ (NSString *)prettyNameForIvar:(Ivar)ivar;
-+ (id)valueForIvar:(Ivar)ivar onObject:(id)object;
-+ (void)setValue:(id)value forIvar:(Ivar)ivar onObject:(id)object;
-
 // Method Helpers
-+ (NSString *)prettyNameForMethod:(Method)method isClassMethod:(BOOL)isClassMethod;
 + (NSArray *)prettyArgumentComponentsForMethod:(Method)method;
-+ (FLEXTypeEncoding *)returnTypeForMethod:(Method)method;
 
 // Method Calling/Field Editing
 + (id)performSelector:(SEL)selector

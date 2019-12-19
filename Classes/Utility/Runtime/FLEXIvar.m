@@ -72,7 +72,55 @@
 }
 
 - (id)getValue:(id)target {
-    return [FLEXRuntimeUtility valueForIvar:self.objc_ivar onObject:target];
+    id value = nil;
+#ifdef __arm64__
+    // See http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html
+    if (self.type == FLEXTypeEncodingObjcClass && [self.name isEqualToString:@"isa"]) {
+        value = object_getClass(target);
+    } else
+#endif
+    if (self.type == FLEXTypeEncodingObjcObject || self.type == FLEXTypeEncodingObjcClass) {
+        value = object_getIvar(target, self.objc_ivar);
+    } else {
+        void *pointer = (__bridge void *)target + self.offset;
+        value = [FLEXRuntimeUtility
+            valueForPrimitivePointer:pointer
+            objCType:self.typeEncoding.UTF8String
+        ];
+    }
+
+    return value;
+}
+
+- (void)setValue:(id)value onObject:(id)target {
+    const char *typeEncodingCString = self.typeEncoding.UTF8String;
+    if (self.type == FLEXTypeEncodingObjcObject) {
+        object_setIvar(target, self.objc_ivar, value);
+    } else if ([value isKindOfClass:[NSValue class]]) {
+        // Primitive - unbox the NSValue.
+        NSValue *valueValue = (NSValue *)value;
+
+        // Make sure that the box contained the correct type.
+        NSAssert(
+            strcmp(valueValue.objCType, typeEncodingCString) == 0,
+            @"Type encoding mismatch (value: %s; ivar: %s) in setting ivar named: %@ on object: %@",
+            valueValue.objCType, typeEncodingCString, self.name, target
+        );
+
+        NSUInteger bufferSize = 0;
+        @try {
+            // NSGetSizeAndAlignment barfs on type encoding for bitfields.
+            NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
+        } @catch (NSException *exception) { }
+
+        if (bufferSize > 0) {
+            void *buffer = calloc(bufferSize, 1);
+            [valueValue getValue:buffer];
+            void *pointer = (__bridge void *)target + self.offset;
+            memcpy(pointer, buffer, bufferSize);
+            free(buffer);
+        }
+    }
 }
 
 - (id)getPotentiallyUnboxedValue:(id)target {

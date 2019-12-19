@@ -156,8 +156,59 @@
     return _imageName;
 }
 
+- (NSString *)fullDescription {
+    NSMutableArray<NSString *> *attributesStrings = [NSMutableArray array];
+    FLEXPropertyAttributes *attributes = self.attributes;
+
+    // Atomicity
+    if (attributes.isNonatomic) {
+        [attributesStrings addObject:@"nonatomic"];
+    } else {
+        [attributesStrings addObject:@"atomic"];
+    }
+
+    // Storage
+    if (attributes.isRetained) {
+        [attributesStrings addObject:@"strong"];
+    } else if (attributes.isCopy) {
+        [attributesStrings addObject:@"copy"];
+    } else if (attributes.isWeak) {
+        [attributesStrings addObject:@"weak"];
+    } else {
+        [attributesStrings addObject:@"assign"];
+    }
+
+    // Mutability
+    if (attributes.isReadOnly) {
+        [attributesStrings addObject:@"readonly"];
+    } else {
+        [attributesStrings addObject:@"readwrite"];
+    }
+
+    // Custom getter/setter
+    SEL customGetter = attributes.customGetter;
+    SEL customSetter = attributes.customSetter;
+    if (customGetter) {
+        [attributesStrings addObject:[NSString stringWithFormat:@"getter=%s", sel_getName(customGetter)]];
+    }
+    if (customSetter) {
+        [attributesStrings addObject:[NSString stringWithFormat:@"setter=%s", sel_getName(customSetter)]];
+    }
+
+    NSString *attributesString = [attributesStrings componentsJoinedByString:@", "];
+    return [NSString stringWithFormat:@"@property (%@) %@", attributesString, self.description];
+}
+
 - (id)getValue:(id)target {
-    return [FLEXRuntimeUtility valueForProperty:self.objc_property onObject:target];
+    // Try custom getter first, then property name
+    SEL customGetter = self.attributes.customGetter;
+    if (customGetter && [target respondsToSelector:customGetter]) {
+        return [target valueForKey:NSStringFromSelector(customGetter)];
+    } else if ([target respondsToSelector:NSSelectorFromString(self.name)]) {
+        return [target valueForKey:self.name];
+    }
+
+    return nil;
 }
 
 - (id)getPotentiallyUnboxedValue:(id)target {

@@ -154,111 +154,6 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return description;
 }
 
-#pragma mark - Property Helpers (Public)
-
-+ (NSString *)prettyNameForProperty:(objc_property_t)property
-{
-    NSString *name = @(property_getName(property));
-    NSString *encoding = [self typeEncodingForProperty:property];
-    NSString *readableType = [self readableTypeForEncoding:encoding];
-    return [self appendName:name toType:readableType];
-}
-
-+ (NSString *)typeEncodingForProperty:(objc_property_t)property
-{
-    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesForProperty:property];
-    return attributesDictionary[kFLEXPropertyAttributeKeyTypeEncoding];
-}
-
-+ (BOOL)isReadonlyProperty:(objc_property_t)property
-{
-    return [self attributesForProperty:property][kFLEXPropertyAttributeKeyReadOnly] != nil;
-}
-
-+ (SEL)setterSelectorForProperty:(objc_property_t)property
-{
-    SEL setterSelector = NULL;
-    NSString *setterSelectorString = [self attributesForProperty:property][kFLEXPropertyAttributeKeyCustomSetter];
-    if (!setterSelectorString) {
-        NSString *propertyName = @(property_getName(property));
-        setterSelectorString = [NSString
-            stringWithFormat:@"set%@%@:",
-            [propertyName substringToIndex:1].uppercaseString,
-            [propertyName substringFromIndex:1]
-        ];
-    }
-    if (setterSelectorString) {
-        setterSelector = NSSelectorFromString(setterSelectorString);
-    }
-    return setterSelector;
-}
-
-+ (NSString *)fullDescriptionForProperty:(objc_property_t)property
-{
-    NSDictionary<NSString *, NSString *> *attributesDictionary = [self attributesForProperty:property];
-    NSMutableArray<NSString *> *attributesStrings = [NSMutableArray array];
-
-    // Atomicity
-    if (attributesDictionary[kFLEXPropertyAttributeKeyNonAtomic]) {
-        [attributesStrings addObject:@"nonatomic"];
-    } else {
-        [attributesStrings addObject:@"atomic"];
-    }
-
-    // Storage
-    if (attributesDictionary[kFLEXPropertyAttributeKeyRetain]) {
-        [attributesStrings addObject:@"strong"];
-    } else if (attributesDictionary[kFLEXPropertyAttributeKeyCopy]) {
-        [attributesStrings addObject:@"copy"];
-    } else if (attributesDictionary[kFLEXPropertyAttributeKeyWeak]) {
-        [attributesStrings addObject:@"weak"];
-    } else {
-        [attributesStrings addObject:@"assign"];
-    }
-
-    // Mutability
-    if (attributesDictionary[kFLEXPropertyAttributeKeyReadOnly]) {
-        [attributesStrings addObject:@"readonly"];
-    } else {
-        [attributesStrings addObject:@"readwrite"];
-    }
-
-    // Custom getter/setter
-    NSString *customGetter = attributesDictionary[kFLEXPropertyAttributeKeyCustomGetter];
-    NSString *customSetter = attributesDictionary[kFLEXPropertyAttributeKeyCustomSetter];
-    if (customGetter) {
-        [attributesStrings addObject:[NSString stringWithFormat:@"getter=%@", customGetter]];
-    }
-    if (customSetter) {
-        [attributesStrings addObject:[NSString stringWithFormat:@"setter=%@", customSetter]];
-    }
-
-    NSString *attributesString = [attributesStrings componentsJoinedByString:@", "];
-    NSString *shortName = [self prettyNameForProperty:property];
-
-    return [NSString stringWithFormat:@"@property (%@) %@", attributesString, shortName];
-}
-
-+ (id)valueForProperty:(objc_property_t)property onObject:(id)object
-{
-    NSString *customGetterString = nil;
-    char *customGetterName = property_copyAttributeValue(property, kFLEXPropertyAttributeKeyCustomGetter.UTF8String);
-    if (customGetterName) {
-        customGetterString = @(customGetterName);
-        free(customGetterName);
-    }
-
-    SEL getterSelector;
-    if (customGetterString.length > 0) {
-        getterSelector = NSSelectorFromString(customGetterString);
-    } else {
-        NSString *propertyName = @(property_getName(property));
-        getterSelector = NSSelectorFromString(propertyName);
-    }
-
-    return [self performSelector:getterSelector onObject:object withArguments:nil error:NULL];
-}
-
 + (NSString *)summaryForObject:(id)value
 {
     NSString *description = nil;
@@ -292,6 +187,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return description;
 }
 
+
+#pragma mark - Property Helpers (Public)
+
 + (void)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
                        toClass:(__unsafe_unretained Class)theClass
@@ -315,82 +213,8 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
 }
 
-
-#pragma mark - Ivar Helpers (Public)
-
-+ (id)valueForIvar:(Ivar)ivar onObject:(id)object
 {
-    id value = nil;
-    const char *type = ivar_getTypeEncoding(ivar);
-#ifdef __arm64__
-    // See http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html
-    const char *name = ivar_getName(ivar);
-    if (type[0] == FLEXTypeEncodingObjcClass && strcmp(name, "isa") == 0) {
-        value = object_getClass(object);
-    } else
-#endif
-    if (type[0] == FLEXTypeEncodingObjcObject || type[0] == FLEXTypeEncodingObjcClass) {
-        value = object_getIvar(object, ivar);
-    } else {
-        ptrdiff_t offset = ivar_getOffset(ivar);
-        void *pointer = (__bridge void *)object + offset;
-        value = [self valueForPrimitivePointer:pointer objCType:type];
-    }
-    return value;
-}
 
-+ (void)setValue:(id)value forIvar:(Ivar)ivar onObject:(id)object
-{
-    const char *typeEncodingCString = ivar_getTypeEncoding(ivar);
-    if (typeEncodingCString[0] == FLEXTypeEncodingObjcObject) {
-        object_setIvar(object, ivar, value);
-    } else if ([value isKindOfClass:[NSValue class]]) {
-        // Primitive - unbox the NSValue.
-        NSValue *valueValue = (NSValue *)value;
-
-        // Make sure that the box contained the correct type.
-        NSAssert(
-            strcmp(valueValue.objCType, typeEncodingCString) == 0,
-            @"Type encoding mismatch (value: %s; ivar: %s) in setting ivar named: %s on object: %@",
-            valueValue.objCType, typeEncodingCString, ivar_getName(ivar), object
-        );
-
-        NSUInteger bufferSize = 0;
-        @try {
-            // NSGetSizeAndAlignment barfs on type encoding for bitfields.
-            NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
-        } @catch (NSException *exception) { }
-
-        if (bufferSize > 0) {
-            void *buffer = calloc(bufferSize, 1);
-            [valueValue getValue:buffer];
-            ptrdiff_t offset = ivar_getOffset(ivar);
-            void *pointer = (__bridge void *)object + offset;
-            memcpy(pointer, buffer, bufferSize);
-            free(buffer);
-        }
-    }
-}
-
-
-#pragma mark - Method Helpers (Public)
-
-+ (NSString *)prettyNameForMethod:(Method)method isClassMethod:(BOOL)isClassMethod
-{
-    NSString *selectorName = NSStringFromSelector(method_getName(method));
-    NSString *methodTypeString = isClassMethod ? @"+" : @"-";
-    char *returnType = method_copyReturnType(method);
-    NSString *readableReturnType = [self readableTypeForEncoding:@(returnType)];
-    free(returnType);
-    NSString *prettyName = [NSString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
-    NSArray<NSString *> *components = [self prettyArgumentComponentsForMethod:method];
-    if (components.count > 0) {
-        prettyName = [prettyName stringByAppendingString:[components componentsJoinedByString:@" "]];
-    } else {
-        prettyName = [prettyName stringByAppendingString:selectorName];
-    }
-
-    return prettyName;
 }
 
 + (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method
@@ -422,11 +246,6 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
 
     return components;
-}
-
-+ (FLEXTypeEncoding *)returnTypeForMethod:(Method)method
-{
-    return (FLEXTypeEncoding *)method_copyReturnType(method);
 }
 
 
@@ -930,17 +749,6 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 
 #pragma mark - Internal Helpers
-
-+ (NSString *)appendName:(NSString *)name toType:(NSString *)type
-{
-    NSString *combined = nil;
-    if ([type characterAtIndex:type.length - 1] == FLEXTypeEncodingCString) {
-        combined = [type stringByAppendingString:name];
-    } else {
-        combined = [type stringByAppendingFormat:@" %@", name];
-    }
-    return combined;
-}
 
 + (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type
 {

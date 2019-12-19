@@ -29,7 +29,7 @@
 #pragma mark - Initialization
 
 + (instancetype)target:(id)target property:(FLEXProperty *)property {
-    id value = [FLEXRuntimeUtility valueForProperty:property.objc_property onObject:target];
+    id value = [property getValue:target];
     if (![self canEditProperty:property onObject:target currentValue:value]) {
         return nil;
     }
@@ -92,8 +92,7 @@
     } else {
         // TODO: check mutability and use mutableCopy if necessary;
         // this currently could and would assign NSArray to NSMutableArray
-
-        [FLEXRuntimeUtility setValue:self.firstInputView.inputValue forIvar:self.ivar.objc_ivar onObject:self.target];
+        [self.ivar setValue:self.firstInputView.inputValue onObject:self.target];
     }
 
     // Go back after setting, but not for switches.
@@ -120,9 +119,9 @@
 
 - (id)currentValue {
     if (self.property) {
-        return [FLEXRuntimeUtility valueForProperty:self.property.objc_property onObject:self.target];
+        return [self.property getValue:self.target];
     } else {
-        return [FLEXRuntimeUtility valueForIvar:self.ivar.objc_ivar onObject:self.target];
+        return [self.ivar getValue:self.target];
     }
 }
 
@@ -136,9 +135,9 @@
 
 - (NSString *)fieldDescription {
     if (self.property) {
-        return [FLEXRuntimeUtility fullDescriptionForProperty:self.property.objc_property];
+        return self.property.fullDescription;
     } else {
-        return [FLEXRuntimeUtility prettyNameForIvar:self.ivar.objc_ivar];
+        return self.ivar.description;
     }
 }
 

@@ -66,6 +66,9 @@
 @property (nonatomic) id tag;
 
 /// @return The value of this property on \c target as given by \c -valueForKey:
+/// A source-like description of the property, with all of its attributes.
+@property (nonatomic, readonly) NSString *fullDescription;
+
 - (id)getValue:(id)target;
 /// Calls into -getValue: and passes that value into
 /// -[FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:type:]

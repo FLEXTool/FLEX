@@ -38,8 +38,6 @@
 + (UIColor *)hierarchyIndentPatternColor;
 + (NSString *)applicationImageName;
 + (NSString *)applicationName;
-+ (NSString *)safeDescriptionForObject:(id)object;
-+ (NSString *)safeDebugDescriptionForObject:(id)object;
 + (NSString *)addressOfObject:(id)object;
 + (UIFont *)defaultFontOfSize:(CGFloat)size;
 + (UIFont *)defaultTableViewCellLabelFont;

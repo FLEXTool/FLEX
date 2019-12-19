@@ -83,7 +83,7 @@
 
 - (NSString *)description {
     if (!_flex_description) {
-        _flex_description = [FLEXMethod prettyNameForMethod:self.objc_method isClassMethod:!_isInstanceMethod];
+        _flex_description = [self prettyName];
     }
     
     return _flex_description;
@@ -98,43 +98,35 @@
     return string;
 }
 
-+ (NSString *)prettyNameForMethod:(Method)method isClassMethod:(BOOL)isClassMethod {
-    NSString *selectorName = NSStringFromSelector(method_getName(method));
-    NSString *methodTypeString = isClassMethod ? @"+" : @"-";
-    NSString *readableReturnType = ({
-        char *returnType = method_copyReturnType(method);
-        NSString *ret = [FLEXRuntimeUtility readableTypeForEncoding:@(returnType)];
-        free(returnType);
-        ret;
-    });
+- (NSString *)prettyName {
+    NSString *methodTypeString = self.isInstanceMethod ? @"-" : @"+";
+    NSString *readableReturnType = [FLEXRuntimeUtility readableTypeForEncoding:@(self.signature.methodReturnType ?: "")];
     
     NSString *prettyName = [NSString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
-    NSArray *components = [self prettyArgumentComponentsForMethod:method];
+    NSArray *components = [self prettyArgumentComponents];
+
     if (components.count) {
-        prettyName = [prettyName stringByAppendingString:[components componentsJoinedByString:@" "]];
+        return [prettyName stringByAppendingString:[components componentsJoinedByString:@" "]];
     } else {
-        prettyName = [prettyName stringByAppendingString:selectorName];
+        return [prettyName stringByAppendingString:self.selectorString];
     }
-    
-    return prettyName;
 }
 
-+ (NSArray *)prettyArgumentComponentsForMethod:(Method)method {
-    NSMutableArray *components = [NSMutableArray array];
+- (NSArray *)prettyArgumentComponents {
+    NSMutableArray *components = [NSMutableArray new];
+
+    NSArray *selectorComponents = [self.selectorString componentsSeparatedByString:@":"];
+    NSUInteger numberOfArguments = self.numberOfArguments;
     
-    NSString *selectorName = NSStringFromSelector(method_getName(method));
-    NSArray *selectorComponents = [selectorName componentsSeparatedByString:@":"];
-    unsigned int numberOfArguments = method_getNumberOfArguments(method);
-    
-    for (unsigned int argIndex = 2; argIndex < numberOfArguments; argIndex++) {
-        char *argType = method_copyArgumentType(method, argIndex);
+    for (NSUInteger argIndex = 2; argIndex < numberOfArguments; argIndex++) {
+        const char *argType = [self.signature getArgumentTypeAtIndex:argIndex];
         NSString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
-        free(argType);
         NSString *prettyComponent = [NSString
             stringWithFormat:@"%@:(%@) ",
             selectorComponents[argIndex - 2],
             readableArgType
         ];
+
         [components addObject:prettyComponent];
     }
     
