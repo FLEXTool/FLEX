@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Tanner Bennett on 7/18/19.
-//Copyright © 2019 Flipboard. All rights reserved.
+//  Copyright © 2019 Flipboard. All rights reserved.
 //
 
 #import "UIView+FLEX_Layout.h"
@@ -35,6 +35,22 @@
 
 - (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets {
     [self pinEdgesTo:self.superview withInsets:insets];
+}
+
+- (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)i aboveView:(UIView *)sibling {
+    UIView *view = self.superview;
+    [self.topAnchor constraintEqualToAnchor:view.topAnchor constant:i.top].active = YES;
+    [self.leftAnchor constraintEqualToAnchor:view.leftAnchor constant:i.left].active = YES;
+    [self.bottomAnchor constraintEqualToAnchor:sibling.topAnchor constant:-i.bottom].active = YES;
+    [self.rightAnchor constraintEqualToAnchor:view.rightAnchor constant:-i.right].active = YES;
+}
+
+- (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)i belowView:(UIView *)sibling {
+    UIView *view = self.superview;
+    [self.topAnchor constraintEqualToAnchor:sibling.bottomAnchor constant:i.top].active = YES;
+    [self.leftAnchor constraintEqualToAnchor:view.leftAnchor constant:i.left].active = YES;
+    [self.bottomAnchor constraintEqualToAnchor:view.bottomAnchor constant:-i.bottom].active = YES;
+    [self.rightAnchor constraintEqualToAnchor:view.rightAnchor constant:-i.right].active = YES;
 }
 
 @end
