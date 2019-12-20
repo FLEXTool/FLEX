@@ -69,10 +69,13 @@
 /// A source-like description of the property, with all of its attributes.
 @property (nonatomic, readonly) NSString *fullDescription;
 
+/// If this is a class property, you must class the class object.
 - (id)getValue:(id)target;
 /// Calls into -getValue: and passes that value into
 /// -[FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:type:]
-/// and returns the result
+/// and returns the result.
+///
+/// If this is a class property, you must class the class object.
 - (id)getPotentiallyUnboxedValue:(id)target;
 
 /// Safe to use regardless of how the \c FLEXProperty instance was initialized.

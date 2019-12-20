@@ -61,6 +61,11 @@
     id target = self.explorer.object;
 
     switch (self.metadataKind) {
+        case FLEXMetadataKindClassProperties:
+            if (self.explorer.objectIsInstance) {
+                target = [target class];
+            }
+            // Fallthrough
         case FLEXMetadataKindProperties:
         case FLEXMetadataKindIvars: {
             // This works for both properties and ivars, we just
@@ -70,11 +75,10 @@
             return [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
         }
         case FLEXMetadataKindClassMethods:
-            // Make sure the target is a class
-            // for class methods, then fall through
-            if (self.explorer.objectIsInstance && ![metadata isInstanceMethod]) {
+            if (self.explorer.objectIsInstance) {
                 target = [target class];
             }
+            // Fallthrough
         case FLEXMetadataKindMethods: {
             return [FLEXMethodCallingViewController target:target method:metadata];
         }
@@ -90,6 +94,8 @@
     // a void * or something and we're given an NSValue back from getValue:
     switch (self.metadataKind) {
         case FLEXMetadataKindProperties:
+            return [self.explorer valueForProperty:metadata];
+        case FLEXMetadataKindClassProperties:
             return [self.explorer valueForProperty:metadata];
         case FLEXMetadataKindIvars:
             return [self.explorer valueForIvar:metadata];
@@ -125,25 +131,17 @@
     // because we want to "preview" what object is being stored if this is
     // a void * or something and we're given an NSValue back from getValue:
     switch (self.metadataKind) {
+        case FLEXMetadataKindClassProperties:
+            return [FLEXRuntimeUtility summaryForObject:[self valueForRow:row]];
         case FLEXMetadataKindProperties:
         case FLEXMetadataKindIvars:
-            #warning TODO: fix this logic for class properties
             if (!self.explorer.objectIsInstance) {
-                if (self.metadataKind == FLEXMetadataKindProperties) {
-                    if (![metadata isClassProperty]) {
-                        return nil;
-                    }
-                } else {
-                    return nil;
-                }
+                return nil;
             }
             return [FLEXRuntimeUtility summaryForObject:[self valueForRow:row]];
         case FLEXMetadataKindMethods:
         case FLEXMetadataKindClassMethods:
             return [metadata selectorString];
-
-        default:
-            return nil;
     }
 }
 
@@ -151,14 +149,14 @@
     switch (self.metadataKind) {
         case FLEXMetadataKindProperties:
             return [self titleWithBaseName:@"Properties"];
+        case FLEXMetadataKindClassProperties:
+            return [self titleWithBaseName:@"Class Properties"];
         case FLEXMetadataKindIvars:
             return [self titleWithBaseName:@"Ivars"];
         case FLEXMetadataKindMethods:
             return [self titleWithBaseName:@"Methods"];
         case FLEXMetadataKindClassMethods:
-            return [self titleWithBaseName:@"Class methods"];
-
-        default: return nil;
+            return [self titleWithBaseName:@"Class Methods"];
     }
 }
 
@@ -182,6 +180,9 @@
     switch (self.metadataKind) {
         case FLEXMetadataKindProperties:
             self.allMetadata = self.explorer.properties;
+            break;
+        case FLEXMetadataKindClassProperties:
+            self.allMetadata = self.explorer.classProperties;
             break;
         case FLEXMetadataKindIvars:
             self.allMetadata = self.explorer.ivars;
@@ -220,9 +221,8 @@
         case FLEXMetadataKindMethods:
             return self.explorer.objectIsInstance;
         case FLEXMetadataKindClassMethods:
+        case FLEXMetadataKindClassProperties:
             return YES;
-
-        default: return NO;
     }
 }
 
@@ -243,21 +243,33 @@
 - (UIViewController *)editorForRow:(NSInteger)row {
     NSAssert(
         self.metadataKind == FLEXMetadataKindIvars ||
-        self.metadataKind == FLEXMetadataKindProperties, // ||,
-//        self.metadataKind == FLEXMetadataKindClassProperties,
+        self.metadataKind == FLEXMetadataKindProperties ||
+        self.metadataKind == FLEXMetadataKindClassProperties,
         @"Only ivars or properties can be edited"
     );
 
     id metadata = self.metadata[row];
 
     // Nil editor means unsupported ivar or property type, or nil value
-    if (self.metadataKind == FLEXMetadataKindProperties) {
-        return [FLEXFieldEditorViewController target:self.explorer.object property:metadata];
-    } else if (self.metadataKind == FLEXMetadataKindIvars) {
-        return [FLEXFieldEditorViewController target:self.explorer.object ivar:metadata];
+    switch (self.metadataKind) {
+        case FLEXMetadataKindProperties:
+            NSAssert(self.explorer.objectIsInstance, @"Unreachable state: class object editing instance property");
+            return [FLEXFieldEditorViewController target:self.explorer.object property:metadata];
+        case FLEXMetadataKindClassProperties:
+            if (self.explorer.objectIsInstance) {
+                return [FLEXFieldEditorViewController target:[self.explorer.object class] property:metadata];
+            } else {
+                return [FLEXFieldEditorViewController target:self.explorer.object property:metadata];
+            }
+        case FLEXMetadataKindIvars:
+            NSAssert(self.explorer.objectIsInstance, @"Unreachable state: class object editing ivar");
+            return [FLEXFieldEditorViewController target:self.explorer.object ivar:metadata];
+
+        default:
+            break;
     }
 
-    // TODO: support class properties
+    // Methods can't be edited
     @throw NSInternalInconsistencyException;
     return nil;
 }

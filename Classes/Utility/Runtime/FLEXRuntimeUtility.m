@@ -274,6 +274,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Method Calling/Field Editing (Public)
 
++ (id)performSelector:(SEL)selector onObject:(id)object
+{
+    return [self performSelector:selector onObject:object withArguments:@[] error:nil];
+}
+
 + (id)performSelector:(SEL)selector
              onObject:(id)object
         withArguments:(NSArray *)arguments

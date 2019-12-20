@@ -110,6 +110,7 @@ typedef NS_ENUM(char, FLEXTypeEncoding)
 + (NSArray *)prettyArgumentComponentsForMethod:(Method)method;
 
 // Method Calling/Field Editing
++ (id)performSelector:(SEL)selector onObject:(id)object;
 + (id)performSelector:(SEL)selector
              onObject:(id)object
         withArguments:(NSArray *)arguments

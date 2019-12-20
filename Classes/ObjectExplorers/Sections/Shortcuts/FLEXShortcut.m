@@ -39,8 +39,11 @@
     shortcut->_item = item;
 
     if ([item isKindOfClass:[FLEXProperty class]]) {
-        // We don't care if it's a class property or not
-        shortcut->_metadataKind = FLEXMetadataKindProperties;
+        if (shortcut.property.isClassProperty) {
+            shortcut->_metadataKind =  FLEXMetadataKindClassProperties;
+        } else {
+            shortcut->_metadataKind =  FLEXMetadataKindProperties;
+        }
     }
     if ([item isKindOfClass:[FLEXIvar class]]) {
         shortcut->_metadataKind = FLEXMetadataKindIvars;
@@ -53,15 +56,41 @@
     return shortcut;
 }
 
-- (id)propertyOrIvarValue:(id)fromObject {
+- (id)propertyOrIvarValue:(id)object {
+    BOOL objectIsInstance = !object_isClass(object);
+
     // We use -[FLEXObjectExplorer valueFor...:] instead of getValue: below
     // because we want to "preview" what object is being stored if this is
     // a void * or something and we're given an NSValue back from getValue:
     switch (self.metadataKind) {
         case FLEXMetadataKindProperties:
-            return [self.property getPotentiallyUnboxedValue:fromObject];
-        case FLEXMetadataKindIvars:
-            return [self.ivar getPotentiallyUnboxedValue:fromObject];
+        case FLEXMetadataKindClassProperties: {
+            // Decide whether to use object or [object class] to check for a potential value
+            id targetForValueCheck = nil;
+            if (objectIsInstance) {
+                if (self.property.isClassProperty) {
+                    targetForValueCheck = [object class];
+                } else {
+                    targetForValueCheck = object;
+                }
+            } else {
+                if (self.property.isClassProperty) {
+                    targetForValueCheck = object;
+                } else {
+                    // Instance property with a class object
+                    return nil;
+                }
+            }
+
+            return [self.property getPotentiallyUnboxedValue:targetForValueCheck];
+        }
+        case FLEXMetadataKindIvars: {
+            if (objectIsInstance) {
+                return [self.ivar getPotentiallyUnboxedValue:object];
+            }
+
+            return nil;
+        }
 
         // Methods: nil
         case FLEXMetadataKindMethods:
@@ -72,6 +101,7 @@
 
 - (NSString *)titleWith:(id)object {
     switch (self.metadataKind) {
+        case FLEXMetadataKindClassProperties:
         case FLEXMetadataKindProperties:
             // Since we're outside of the "properties" section, prepend @property for clarity.
             return [@"@property " stringByAppendingString:[_item description]];
@@ -146,13 +176,27 @@
 }
 
 - (UIViewController *)editorWith:(id)object {
-    // Nil editor means unsupported ivar or property type, or nil value
-    if (self.metadataKind == FLEXMetadataKindProperties) {
-        return [FLEXFieldEditorViewController target:object property:self.property];
-    } else if (self.metadataKind == FLEXMetadataKindIvars) {
-        return [FLEXFieldEditorViewController target:object ivar:self.ivar];
+    BOOL objectIsInstance = !object_isClass(object);
+    switch (self.metadataKind) {
+        case FLEXMetadataKindProperties:
+            NSAssert(objectIsInstance, @"Unreachable state: class object editing instance property");
+            return [FLEXFieldEditorViewController target:object property:self.property];
+        case FLEXMetadataKindClassProperties:
+            if (objectIsInstance) {
+                return [FLEXFieldEditorViewController target:[object class] property:self.property];
+            } else {
+                return [FLEXFieldEditorViewController target:object property:self.property];
+            }
+        case FLEXMetadataKindIvars:
+            NSAssert(objectIsInstance, @"Unreachable state: class object editing ivar");
+            return [FLEXFieldEditorViewController target:object ivar:self.ivar];
+
+        default:
+            break;
     }
 
+    // Methods can't be edited
+    @throw NSInternalInconsistencyException;
     return nil;
 }
 

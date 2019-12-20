@@ -9,9 +9,9 @@
 #import "FLEXExplorerSection.h"
 #import "FLEXObjectExplorer.h"
 
-#warning Missing ClassProperties
 typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     FLEXMetadataKindProperties = 1,
+    FLEXMetadataKindClassProperties,
     FLEXMetadataKindIvars,
     FLEXMetadataKindMethods,
     FLEXMetadataKindClassMethods

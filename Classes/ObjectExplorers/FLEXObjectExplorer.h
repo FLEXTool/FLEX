@@ -34,6 +34,9 @@
 @property (nonatomic, readonly) NSArray<NSArray<FLEXProperty *> *> *allProperties;
 @property (nonatomic, readonly) NSArray<FLEXProperty *> *properties;
 
+@property (nonatomic, readonly) NSArray<NSArray<FLEXProperty *> *> *allClassProperties;
+@property (nonatomic, readonly) NSArray<FLEXProperty *> *classProperties;
+
 @property (nonatomic, readonly) NSArray<NSArray<FLEXIvar *> *> *allIvars;
 @property (nonatomic, readonly) NSArray<FLEXIvar *> *ivars;
 

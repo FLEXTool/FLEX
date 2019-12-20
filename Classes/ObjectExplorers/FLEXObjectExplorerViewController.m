@@ -164,6 +164,7 @@
     _referencesSection = [FLEXSingleRowSection
         title:@"Object Graph" reuse:kFLEXDefaultCell cell:^(FLEXTableViewCell *cell) {
             cell.titleLabel.text = @"Other objects with ivars referencing this object";
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
     ];
     self.referencesSection.selectionAction = ^(UIViewController *host) {
@@ -175,7 +176,7 @@
 
     NSMutableArray *sections = [NSMutableArray arrayWithArray:@[
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindProperties],
-//        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassProperties],
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassProperties],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindIvars],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindMethods],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassMethods],

@@ -89,18 +89,34 @@
 - (void)examine {
     _type = (FLEXTypeEncoding)[self.attributes.typeEncoding characterAtIndex:0];
 
-    _likelyGetter = self.attributes.customGetter ?: NSSelectorFromString(self.name);
-    _likelySetter = self.attributes.customSetter ?: NSSelectorFromString([NSString
+    // Return the given selector if the class responds to it
+    Class cls = _cls;
+    SEL (^selectorIfValid)() = ^SEL(SEL sel) {
+        if (!sel || !cls) return nil;
+        return [cls instancesRespondToSelector:sel] ? sel : nil;
+    };
+
+    SEL customGetter = self.attributes.customGetter;
+    SEL customSetter = self.attributes.customSetter;
+    SEL defaultGetter = NSSelectorFromString(self.name);
+    SEL defaultSetter = NSSelectorFromString([NSString
         stringWithFormat:@"set%c%@:",
         (char)toupper([self.name characterAtIndex:0]),
         [self.name substringFromIndex:1]
     ]);
 
-    if (_cls) {
-        _likelySetterExists = [_cls instancesRespondToSelector:_likelySetter];
-        _likelyGetterExists = [_cls instancesRespondToSelector:_likelyGetter];
-        _isClassProperty = class_isMetaClass(_cls);
-    }
+    // Check if the likely getters/setters exist
+    SEL validGetter = selectorIfValid(customGetter) ?: selectorIfValid(defaultGetter);
+    SEL validSetter = selectorIfValid(customSetter) ?: selectorIfValid(defaultSetter);
+    _likelyGetterExists = validGetter != nil;
+    _likelySetterExists = validSetter != nil;
+
+    // Assign likely getters and setters to the valid one,
+    // or the default, regardless of whether the default exists
+    _likelyGetter = validGetter ?: defaultGetter;
+    _likelySetter = validSetter ?: defaultSetter;
+
+    _isClassProperty = _cls ? class_isMetaClass(_cls) : NO;
 }
 
 #pragma mark Overrides
@@ -200,12 +216,18 @@
 }
 
 - (id)getValue:(id)target {
-    // Try custom getter first, then property name
-    SEL customGetter = self.attributes.customGetter;
-    if (customGetter && [target respondsToSelector:customGetter]) {
-        return [target valueForKey:NSStringFromSelector(customGetter)];
-    } else if ([target respondsToSelector:NSSelectorFromString(self.name)]) {
-        return [target valueForKey:self.name];
+    // We don't care about checking dynamically whether the getter
+    // _now_ exists on this object. If the getter doesn't exist
+    // when this property is initialized, it will never call it.
+    // Just re-create the property object if you need to call it.
+    if (self.likelyGetterExists) {
+        BOOL objectIsClass = object_isClass(target);
+        BOOL instanceAndInstanceProperty = !objectIsClass && !self.isClassProperty;
+        BOOL classAndClassProperty = objectIsClass && self.isClassProperty;
+
+        if (instanceAndInstanceProperty || classAndClassProperty) {
+            return [FLEXRuntimeUtility performSelector:self.likelyGetter onObject:target];
+        }
     }
 
     return nil;

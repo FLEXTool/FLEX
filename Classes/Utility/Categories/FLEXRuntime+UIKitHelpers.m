@@ -27,13 +27,28 @@
 }
 
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
-    if (object_isClass(object) && !self.isClassProperty) {
-        return UITableViewCellAccessoryNone;
+    BOOL objectIsInstance = !object_isClass(object);
+
+    // Decide whether to use object or [object class] to check for a potential value
+    id targetForValueCheck = nil;
+    if (objectIsInstance) {
+        if (self.isClassProperty) {
+            targetForValueCheck = [object class];
+        } else {
+            targetForValueCheck = object;
+        }
+    } else {
+        if (self.isClassProperty) {
+            targetForValueCheck = object;
+        } else {
+            // Instance property with a class object
+            return UITableViewCellAccessoryNone;
+        }
     }
 
     // We use .tag to store the cached value of .isEditable that is
     // initialized by FLEXObjectExplorer in -reloadMetada
-    if ([self getPotentiallyUnboxedValue:object]) {
+    if ([self getPotentiallyUnboxedValue:targetForValueCheck]) {
         if (self.tag) {
             // Editable non-nil value, both
             return UITableViewCellAccessoryDetailDisclosureButton;

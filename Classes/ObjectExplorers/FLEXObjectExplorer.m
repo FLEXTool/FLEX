@@ -18,6 +18,7 @@
 
 @interface FLEXObjectExplorer () {
     NSMutableArray<NSArray<FLEXProperty *> *> *_allProperties;
+    NSMutableArray<NSArray<FLEXProperty *> *> *_allClassProperties;
     NSMutableArray<NSArray<FLEXIvar *> *> *_allIvars;
     NSMutableArray<NSArray<FLEXMethod *> *> *_allMethods;
     NSMutableArray<NSArray<FLEXMethod *> *> *_allClassMethods;
@@ -82,6 +83,7 @@
 
 - (void)reloadMetadata {
     _allProperties = [NSMutableArray new];
+    _allClassProperties = [NSMutableArray new];
     _allIvars = [NSMutableArray new];
     _allMethods = [NSMutableArray new];
     _allClassMethods = [NSMutableArray new];
@@ -101,6 +103,11 @@
             metadataUniquedByName:[cls flex_allInstanceProperties]
             superclass:superclass
             kind:FLEXMetadataKindProperties
+        ]];
+        [_allClassProperties addObject:[self
+            metadataUniquedByName:[cls flex_allClassProperties]
+            superclass:superclass
+            kind:FLEXMetadataKindClassProperties
         ]];
         [_allIvars addObject:[self
             metadataUniquedByName:[cls flex_allIvars]
@@ -136,6 +143,7 @@
 
 - (void)reloadScopedMetadata {
     _properties = self.allProperties[self.classScope];
+    _classProperties = self.allClassProperties[self.classScope];
     _ivars = self.allIvars[self.classScope];
     _methods = self.allMethods[self.classScope];
     _classMethods = self.allClassMethods[self.classScope];
@@ -161,11 +169,11 @@
                         return nil;
                     }
                     break;
-//                case FLEXMetadataKindClassProperties:
-//                    if ([superclass instancesRespondToSelector:[obj likelyGetter]]) {
-//                        return nil;
-//                    }
-//                    break;
+                case FLEXMetadataKindClassProperties:
+                    if ([superclass respondsToSelector:[obj likelyGetter]]) {
+                        return nil;
+                    }
+                    break;
                 case FLEXMetadataKindMethods:
                     if ([superclass instancesRespondToSelector:NSSelectorFromString(name)]) {
                         return nil;
@@ -191,10 +199,18 @@
 
 - (id)valueForProperty:(FLEXProperty *)property {
     if (self.objectIsInstance) {
+        if (property.isClassProperty) {
+            return [property getPotentiallyUnboxedValue:[self.object class]];
+        }
         return [property getPotentiallyUnboxedValue:self.object];
+    } else {
+        if (property.isClassProperty) {
+            return [property getPotentiallyUnboxedValue:self.object];
+        } else {
+            // Instance property with a class object
+            return nil;
+        }
     }
-    
-    return nil;
 }
 
 - (id)valueForIvar:(FLEXIvar *)ivar {
