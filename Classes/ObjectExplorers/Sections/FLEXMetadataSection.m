@@ -57,56 +57,6 @@
     }
 }
 
-- (__kindof UIViewController *)detailScreenForMetadata:(id)metadata {
-    id target = self.explorer.object;
-
-    switch (self.metadataKind) {
-        case FLEXMetadataKindClassProperties:
-            if (self.explorer.objectIsInstance) {
-                target = [target class];
-            }
-            // Fallthrough
-        case FLEXMetadataKindProperties:
-        case FLEXMetadataKindIvars: {
-            // This works for both properties and ivars, we just
-            // cast so the compiler knows what return type to expect since
-            // this method has the same name as -[NSValue getValue:] (void *)
-            id currentValue = [(FLEXIvar *)metadata getPotentiallyUnboxedValue:target];
-            return [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
-        }
-        case FLEXMetadataKindClassMethods:
-            if (self.explorer.objectIsInstance) {
-                target = [target class];
-            }
-            // Fallthrough
-        case FLEXMetadataKindMethods: {
-            return [FLEXMethodCallingViewController target:target method:metadata];
-        }
-    }
-}
-
-// Only for properties or ivars
-- (id)valueForRow:(NSInteger)row {
-    id metadata = self.metadata[row];
-
-    // We use -[FLEXObjectExplorer valueFor...:] instead of getValue: below
-    // because we want to "preview" what object is being stored if this is
-    // a void * or something and we're given an NSValue back from getValue:
-    switch (self.metadataKind) {
-        case FLEXMetadataKindProperties:
-            return [self.explorer valueForProperty:metadata];
-        case FLEXMetadataKindClassProperties:
-            return [self.explorer valueForProperty:metadata];
-        case FLEXMetadataKindIvars:
-            return [self.explorer valueForIvar:metadata];
-
-        // Methods: nil
-        case FLEXMetadataKindMethods:
-        case FLEXMetadataKindClassMethods:
-            return nil;
-    }
-}
-
 - (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row {
     return [self.metadata[row] suggestedAccessoryTypeWithTarget:self.explorer.object];
 }
@@ -125,24 +75,7 @@
 }
 
 - (NSString *)subtitleForRow:(NSInteger)row {
-    id metadata = self.metadata[row];
-
-    // We use -[FLEXObjectExplorer valueFor...:] instead of getValue: below
-    // because we want to "preview" what object is being stored if this is
-    // a void * or something and we're given an NSValue back from getValue:
-    switch (self.metadataKind) {
-        case FLEXMetadataKindClassProperties:
-            return [FLEXRuntimeUtility summaryForObject:[self valueForRow:row]];
-        case FLEXMetadataKindProperties:
-        case FLEXMetadataKindIvars:
-            if (!self.explorer.objectIsInstance) {
-                return nil;
-            }
-            return [FLEXRuntimeUtility summaryForObject:[self valueForRow:row]];
-        case FLEXMetadataKindMethods:
-        case FLEXMetadataKindClassMethods:
-            return [metadata selectorString];
-    }
+    return [self.metadata[row] previewWithTarget:self.explorer.object];
 }
 
 - (NSString *)title {
@@ -212,18 +145,9 @@
 }
 
 - (BOOL)canSelectRow:(NSInteger)row {
-    switch (self.metadataKind) {
-        case FLEXMetadataKindProperties:
-        case FLEXMetadataKindIvars:
-            if (![self valueForRow:row]) {
-                return NO;
-            }
-        case FLEXMetadataKindMethods:
-            return self.explorer.objectIsInstance;
-        case FLEXMetadataKindClassMethods:
-        case FLEXMetadataKindClassProperties:
-            return YES;
-    }
+    UITableViewCellAccessoryType accessory = [self accessoryTypeForRow:row];
+    return accessory == UITableViewCellAccessoryDisclosureIndicator ||
+        accessory == UITableViewCellAccessoryDetailDisclosureButton;
 }
 
 - (NSString *)reuseIdentifierForRow:(NSInteger)row {
@@ -231,7 +155,7 @@
 }
 
 - (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
-    return [self detailScreenForMetadata:self.metadata[row]];
+    return [self.metadata[row] viewerWithTarget:self.explorer.object];
 }
 
 - (void (^)(UIViewController *))didPressInfoButtonAction:(NSInteger)row {
@@ -241,37 +165,7 @@
 }
 
 - (UIViewController *)editorForRow:(NSInteger)row {
-    NSAssert(
-        self.metadataKind == FLEXMetadataKindIvars ||
-        self.metadataKind == FLEXMetadataKindProperties ||
-        self.metadataKind == FLEXMetadataKindClassProperties,
-        @"Only ivars or properties can be edited"
-    );
-
-    id metadata = self.metadata[row];
-
-    // Nil editor means unsupported ivar or property type, or nil value
-    switch (self.metadataKind) {
-        case FLEXMetadataKindProperties:
-            NSAssert(self.explorer.objectIsInstance, @"Unreachable state: class object editing instance property");
-            return [FLEXFieldEditorViewController target:self.explorer.object property:metadata];
-        case FLEXMetadataKindClassProperties:
-            if (self.explorer.objectIsInstance) {
-                return [FLEXFieldEditorViewController target:[self.explorer.object class] property:metadata];
-            } else {
-                return [FLEXFieldEditorViewController target:self.explorer.object property:metadata];
-            }
-        case FLEXMetadataKindIvars:
-            NSAssert(self.explorer.objectIsInstance, @"Unreachable state: class object editing ivar");
-            return [FLEXFieldEditorViewController target:self.explorer.object ivar:metadata];
-
-        default:
-            break;
-    }
-
-    // Methods can't be edited
-    @throw NSInternalInconsistencyException;
-    return nil;
+    return [self.metadata[row] editorWithTarget:self.explorer.object];
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {

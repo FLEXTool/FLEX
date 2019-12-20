@@ -52,7 +52,4 @@
 - (void)reloadMetadata;
 - (void)reloadClassHierarchy;
 
-- (id)valueForProperty:(FLEXProperty *)property;
-- (id)valueForIvar:(FLEXIvar *)ivar;
-
 @end

@@ -198,19 +198,13 @@
 }
 
 - (NSString *)reuseIdentifierForRow:(NSInteger)row {
-    if (self.subtitles[row].length) {
-        // Title+subtitle: properties, ivars, methods, custom
-        return kFLEXMultilineDetailCell;
-    }
-
-    // Just a title string
-    return kFLEXMultilineCell;
+    return kFLEXMultilineDetailCell;
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
-    cell.titleLabel.text = self.titles[row];
+    cell.titleLabel.text = [self titleForRow:row];
     cell.titleLabel.numberOfLines = self.numberOfLines;
-    cell.subtitleLabel.text = self.subtitles[row];
+    cell.subtitleLabel.text = [self subtitleForRow:row];
     cell.subtitleLabel.numberOfLines = self.numberOfLines;
     cell.accessoryType = [self accessoryTypeForRow:row];
 }
@@ -228,15 +222,6 @@
     // Case: static subtitles, or cached subtitles
     return self.subtitles[row];
 }
-
-// Not sure what this was for, maybe I added filterText after the fact?
-//- (BOOL)row:(NSInteger)row matchesFilter:(NSString *)query {
-//    if ([self.titles[row] localizedCaseInsensitiveContainsString:query]) {
-//        return YES;
-//    }
-//
-//    return [self.subtitles[row] localizedCaseInsensitiveContainsString:query];
-//}
 
 @end
 

@@ -195,33 +195,6 @@
 }
 
 
-#pragma mark Values
-
-- (id)valueForProperty:(FLEXProperty *)property {
-    if (self.objectIsInstance) {
-        if (property.isClassProperty) {
-            return [property getPotentiallyUnboxedValue:[self.object class]];
-        }
-        return [property getPotentiallyUnboxedValue:self.object];
-    } else {
-        if (property.isClassProperty) {
-            return [property getPotentiallyUnboxedValue:self.object];
-        } else {
-            // Instance property with a class object
-            return nil;
-        }
-    }
-}
-
-- (id)valueForIvar:(FLEXIvar *)ivar {
-    if (self.objectIsInstance) {
-        return [ivar getPotentiallyUnboxedValue:self.object];
-    }
-    
-    return nil;
-}
-
-
 #pragma mark - Superclasses
 
 - (void)reloadClassHierarchy {

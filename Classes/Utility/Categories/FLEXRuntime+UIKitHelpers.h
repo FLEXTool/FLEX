@@ -20,7 +20,17 @@
 /// For internal use
 @property (nonatomic) id tag;
 
+/// Should return \c nil if not applicable
+- (id)currentValueWithTarget:(id)object;
+/// Used as the subtitle or description of a property, ivar, or method
+- (NSString *)previewWithTarget:(id)object;
+/// For methods, a method calling screen. For all else, an object explorer.
+- (UIViewController *)viewerWithTarget:(id)object;
+/// For methods, nil. For all else, an a field editor screen.
+- (UIViewController *)editorWithTarget:(id)object;
+/// Used to determine present which interactions are possible to the user
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object;
+
 @end
 
 // Even if a property is readonly, it still may be editable

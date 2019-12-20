@@ -216,6 +216,8 @@
 }
 
 - (id)getValue:(id)target {
+    if (!target) return nil;
+    
     // We don't care about checking dynamically whether the getter
     // _now_ exists on this object. If the getter doesn't exist
     // when this property is initialized, it will never call it.
@@ -234,6 +236,8 @@
 }
 
 - (id)getPotentiallyUnboxedValue:(id)target {
+    if (!target) return nil;
+
     return [FLEXRuntimeUtility
         potentiallyUnwrapBoxedPointer:[self getValue:target]
         type:self.attributes.typeEncoding.UTF8String

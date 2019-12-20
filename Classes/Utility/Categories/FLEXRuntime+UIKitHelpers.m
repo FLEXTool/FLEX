@@ -10,8 +10,29 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXPropertyAttributes.h"
 #import "FLEXArgumentInputViewFactory.h"
+#import "FLEXObjectExplorerFactory.h"
+#import "FLEXFieldEditorViewController.h"
+#import "FLEXMethodCallingViewController.h"
 
 @implementation FLEXProperty (UIKitHelpers)
+
+/// Decide whether to use object or [object class] to get or set property
+- (id)targetForPropertyTypeGivenObject:(id)object {
+    if (!object_isClass(object)) {
+        if (self.isClassProperty) {
+            return [object class];
+        } else {
+            return object;
+        }
+    } else {
+        if (self.isClassProperty) {
+            return object;
+        } else {
+            // Instance property with a class object
+            return nil;
+        }
+    }
+}
 
 - (BOOL)isEditable {
     if (self.attributes.isReadOnly) {
@@ -26,24 +47,33 @@
     return YES;
 }
 
-- (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
-    BOOL objectIsInstance = !object_isClass(object);
+- (id)currentValueWithTarget:(id)object {
+    return [self getPotentiallyUnboxedValue:
+        [self targetForPropertyTypeGivenObject:object]
+    ];
+}
 
-    // Decide whether to use object or [object class] to check for a potential value
-    id targetForValueCheck = nil;
-    if (objectIsInstance) {
-        if (self.isClassProperty) {
-            targetForValueCheck = [object class];
-        } else {
-            targetForValueCheck = object;
-        }
-    } else {
-        if (self.isClassProperty) {
-            targetForValueCheck = object;
-        } else {
-            // Instance property with a class object
-            return UITableViewCellAccessoryNone;
-        }
+- (NSString *)previewWithTarget:(id)object {
+    return [FLEXRuntimeUtility
+        summaryForObject:[self currentValueWithTarget:object]
+    ];
+}
+
+- (UIViewController *)viewerWithTarget:(id)object {
+    id value = [self currentValueWithTarget:object];
+    return [FLEXObjectExplorerFactory explorerViewControllerForObject:value];
+}
+
+- (UIViewController *)editorWithTarget:(id)object {
+    id target = [self targetForPropertyTypeGivenObject:object];
+    return [FLEXFieldEditorViewController target:target property:self];
+}
+
+- (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
+    id targetForValueCheck = [self targetForPropertyTypeGivenObject:object];
+    if (!targetForValueCheck) {
+        // Instance property with a class object
+        return UITableViewCellAccessoryNone;
     }
 
     // We use .tag to store the cached value of .isEditable that is
@@ -79,6 +109,31 @@
 
 - (BOOL)isCallable {
     return NO;
+}
+
+- (id)currentValueWithTarget:(id)object {
+    if (!object_isClass(object)) {
+        return [self getPotentiallyUnboxedValue:object];
+    }
+
+    return nil;
+}
+
+- (NSString *)previewWithTarget:(id)object {
+    return [FLEXRuntimeUtility
+        summaryForObject:[self currentValueWithTarget:object]
+    ];
+}
+
+- (UIViewController *)viewerWithTarget:(id)object {
+    NSAssert(!object_isClass(object), @"Unreachable state: viewing ivar on class object");
+    id value = [self currentValueWithTarget:object];
+    return [FLEXObjectExplorerFactory explorerViewControllerForObject:value];
+}
+
+- (UIViewController *)editorWithTarget:(id)object {
+    NSAssert(!object_isClass(object), @"Unreachable state: editing ivar on class object");
+    return [FLEXFieldEditorViewController target:object ivar:self];
 }
 
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
@@ -119,6 +174,27 @@
     return NO;
 }
 
+- (id)currentValueWithTarget:(id)object {
+    // Methods can't be "edited" and have no "value"
+    return nil;
+}
+
+- (NSString *)previewWithTarget:(id)object {
+    return self.selectorString;
+}
+
+- (UIViewController *)viewerWithTarget:(id)object {
+    // We disallow calling of FLEXMethodBase methods
+    @throw NSInternalInconsistencyException;
+    return nil;
+}
+
+- (UIViewController *)editorWithTarget:(id)object {
+    // Methods cannot be edited
+    @throw NSInternalInconsistencyException;
+    return nil;
+}
+
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
     // We shouldn't be using any FLEXMethodBase objects for this
     @throw NSInternalInconsistencyException;
@@ -131,6 +207,11 @@
 
 - (BOOL)isCallable {
     return self.signature != nil;
+}
+
+- (UIViewController *)viewerWithTarget:(id)object {
+    object = self.isInstanceMethod ? object : (object_isClass(object) ? object : [object class]);
+    return [FLEXMethodCallingViewController target:object method:self];
 }
 
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
