@@ -25,7 +25,7 @@
     toolbarItem.title = title;
     toolbarItem.backgroundColor = [self defaultBackgroundColor];
     toolbarItem.image = image;
-    toolbarItem.titleLabel.font = [FLEXUtility defaultFontOfSize:12.0];
+    toolbarItem.titleLabel.font = [UIFont systemFontOfSize:12.0];
     [toolbarItem setTitle:title forState:UIControlStateNormal];
     [toolbarItem setImage:image forState:UIControlStateNormal];
     [toolbarItem setTitleColor:[FLEXColor primaryTextColor] forState:UIControlStateNormal];
@@ -39,7 +39,7 @@
 
 + (NSDictionary<NSString *, id> *)titleAttributes
 {
-    return @{NSFontAttributeName : [FLEXUtility defaultFontOfSize:12.0]};
+    return @{NSFontAttributeName : [UIFont systemFontOfSize:12.0]};
 }
 
 + (UIColor *)highlightedBackgroundColor

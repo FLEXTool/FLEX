@@ -207,7 +207,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        UIFont *cellFont = [FLEXUtility defaultTableViewCellLabelFont];
+        UIFont *cellFont = UIFont.flex_defaultTableCellFont;
         cell.textLabel.font = cellFont;
         cell.detailTextLabel.font = cellFont;
         cell.detailTextLabel.textColor = UIColor.grayColor;

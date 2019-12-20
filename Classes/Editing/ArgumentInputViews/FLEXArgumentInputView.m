@@ -99,7 +99,7 @@
 
 + (UIFont *)titleFont
 {
-    return [FLEXUtility defaultFontOfSize:12.0];
+    return [UIFont systemFontOfSize:12.0];
 }
 
 + (CGFloat)titleBottomPadding

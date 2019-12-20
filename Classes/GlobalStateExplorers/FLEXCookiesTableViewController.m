@@ -52,8 +52,8 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-        cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
-        cell.detailTextLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        cell.textLabel.font = UIFont.flex_defaultTableCellFont;
+        cell.detailTextLabel.font = UIFont.flex_defaultTableCellFont;
         cell.detailTextLabel.textColor = UIColor.grayColor;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }

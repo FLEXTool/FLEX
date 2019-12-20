@@ -128,22 +128,6 @@
     return [NSString stringWithFormat:@"%p", object];
 }
 
-+ (UIFont *)defaultFontOfSize:(CGFloat)size
-{
-    return [UIFont fontWithName:@"HelveticaNeue" size:size];
-}
-
-+ (UIFont *)defaultTableViewCellLabelFont
-{
-    static UIFont *defaultTableViewCellLabelFont = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        defaultTableViewCellLabelFont = [self defaultFontOfSize:12.0];
-    });
-
-    return defaultTableViewCellLabelFont;
-}
-
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString
 {
     static NSDictionary<NSString *, NSString *> *escapingDictionary = nil;

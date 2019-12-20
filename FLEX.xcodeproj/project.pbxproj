@@ -204,6 +204,8 @@
 		C38EF26323A2FCD20047A7EC /* FLEXViewControllerShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C38EF26123A2FCD20047A7EC /* FLEXViewControllerShortcuts.h */; };
 		C38F3F31230C958F004E3731 /* FLEXAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = C38F3F2F230C958F004E3731 /* FLEXAlert.h */; };
 		C38F3F32230C958F004E3731 /* FLEXAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = C38F3F30230C958F004E3731 /* FLEXAlert.m */; };
+		C398625D23AD6E90007E6793 /* UIFont+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C398625B23AD6E90007E6793 /* UIFont+FLEX.h */; };
+		C398625E23AD6E90007E6793 /* UIFont+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C398625C23AD6E90007E6793 /* UIFont+FLEX.m */; };
 		C398682523AC359600E9E391 /* FLEXShortcutsFactory+Defaults.m in Sources */ = {isa = PBXBuildFile; fileRef = C398682323AC359600E9E391 /* FLEXShortcutsFactory+Defaults.m */; };
 		C398682623AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h in Headers */ = {isa = PBXBuildFile; fileRef = C398682423AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h */; };
 		C398682823AC36EC00E9E391 /* FLEXViewShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F527C4231891F6009CBA07 /* FLEXViewShortcuts.m */; };
@@ -462,6 +464,8 @@
 		C38EF26123A2FCD20047A7EC /* FLEXViewControllerShortcuts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXViewControllerShortcuts.h; sourceTree = "<group>"; };
 		C38F3F2F230C958F004E3731 /* FLEXAlert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXAlert.h; sourceTree = "<group>"; };
 		C38F3F30230C958F004E3731 /* FLEXAlert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXAlert.m; sourceTree = "<group>"; };
+		C398625B23AD6E90007E6793 /* UIFont+FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIFont+FLEX.h"; sourceTree = "<group>"; };
+		C398625C23AD6E90007E6793 /* UIFont+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIFont+FLEX.m"; sourceTree = "<group>"; };
 		C398682323AC359600E9E391 /* FLEXShortcutsFactory+Defaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FLEXShortcutsFactory+Defaults.m"; sourceTree = "<group>"; };
 		C398682423AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FLEXShortcutsFactory+Defaults.h"; sourceTree = "<group>"; };
 		C39ED92622D63F3200B5773A /* FLEXAddressExplorerCoordinator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXAddressExplorerCoordinator.h; sourceTree = "<group>"; };
@@ -901,6 +905,8 @@
 				C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */,
 				C3F646BF239EAA8F00D4A011 /* UIPasteboard+FLEX.h */,
 				C3F646C0239EAA8F00D4A011 /* UIPasteboard+FLEX.m */,
+				C398625B23AD6E90007E6793 /* UIFont+FLEX.h */,
+				C398625C23AD6E90007E6793 /* UIFont+FLEX.m */,
 				C3BFD06E233C23ED0015FB82 /* NSArray+Functional.h */,
 				C3BFD06F233C23ED0015FB82 /* NSArray+Functional.m */,
 				C3F977812311B38F0032776D /* NSObject+Reflection.h */,
@@ -1030,6 +1036,7 @@
 				C3F646F223A045DB00D4A011 /* FLEXClassShortcuts.h in Headers */,
 				C387C87A22DFCD6A00750E58 /* FLEXCarouselCell.h in Headers */,
 				C3511B9122D7C99E0057BAB7 /* FLEXTableViewSection.h in Headers */,
+				C398625D23AD6E90007E6793 /* UIFont+FLEX.h in Headers */,
 				3A4C953A1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.h in Headers */,
 				779B1ED01C0C4D7C001F5E49 /* FLEXMultiColumnTableView.h in Headers */,
 				3A4C94D31B5B21410088C3F2 /* FLEXObjectExplorerFactory.h in Headers */,
@@ -1302,6 +1309,7 @@
 				3A4C95271B5B21410088C3F2 /* FLEXGlobalsTableViewController.m in Sources */,
 				71E1C2172307FBB800F5032A /* FLEXKeychain.m in Sources */,
 				C3F646F323A045DB00D4A011 /* FLEXClassShortcuts.m in Sources */,
+				C398625E23AD6E90007E6793 /* UIFont+FLEX.m in Sources */,
 				C387C88422E0D24A00750E58 /* UIView+FLEX_Layout.m in Sources */,
 				C32A195F231732E800EB02AC /* FLEXCollectionContentSection.m in Sources */,
 				C36FBFCD230F3B98008D95D5 /* FLEXMethod.m in Sources */,

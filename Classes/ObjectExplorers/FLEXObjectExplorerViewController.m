@@ -151,7 +151,7 @@
     if (self.explorer.objectIsInstance) {
         _descriptionSection = [FLEXSingleRowSection
              title:@"Description" reuse:kFLEXMultilineCell cell:^(FLEXTableViewCell *cell) {
-                 cell.titleLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+                 cell.titleLabel.font = UIFont.flex_defaultTableCellFont;
                  cell.titleLabel.text = explorer.objectDescription;
              }
         ];
@@ -304,7 +304,7 @@
     FLEXExplorerSection *section = self.sections[indexPath.section];
     if (section == self.descriptionSection) {
         NSString *text = self.explorer.objectDescription;
-        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSFontAttributeName : [FLEXUtility defaultTableViewCellLabelFont] }];
+        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSFontAttributeName : UIFont.flex_defaultTableCellFont }];
         return [FLEXMultilineTableViewCell preferredHeightWithAttributedText:attributedText inTableViewWidth:self.tableView.frame.size.width style:tableView.style showsAccessory:NO];
     }
 

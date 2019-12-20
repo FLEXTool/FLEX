@@ -184,8 +184,8 @@
 
     if (!cell) {
         cell = [[FLEXFileBrowserTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-        cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
-        cell.detailTextLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        cell.textLabel.font = UIFont.flex_defaultTableCellFont;
+        cell.detailTextLabel.font = UIFont.flex_defaultTableCellFont;
         cell.detailTextLabel.textColor = UIColor.grayColor;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }

@@ -32,11 +32,11 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 
         self.nameLabel = [UILabel new];
-        self.nameLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        self.nameLabel.font = UIFont.flex_defaultTableCellFont;
         [self.contentView addSubview:self.nameLabel];
 
         self.pathLabel = [UILabel new];
-        self.pathLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        self.pathLabel.font = UIFont.flex_defaultTableCellFont;
         self.pathLabel.textColor = [UIColor colorWithWhite:0.4 alpha:1.0];
         [self.contentView addSubview:self.pathLabel];
 
@@ -47,7 +47,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
         [self.contentView addSubview:self.thumbnailImageView];
 
         self.transactionDetailsLabel = [UILabel new];
-        self.transactionDetailsLabel.font = [FLEXUtility defaultFontOfSize:10.0];
+        self.transactionDetailsLabel.font = [UIFont systemFontOfSize:10.0];
         self.transactionDetailsLabel.textColor = [UIColor colorWithWhite:0.65 alpha:1.0];
         [self.contentView addSubview:self.transactionDetailsLabel];
     }

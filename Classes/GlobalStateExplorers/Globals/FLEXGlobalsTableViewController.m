@@ -264,7 +264,7 @@ static __weak UIWindow *s_applicationWindow = nil;
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = [FLEXUtility defaultFontOfSize:14.0];
+        cell.textLabel.font = [UIFont systemFontOfSize:14.0];
     }
 
     cell.textLabel.text = [self titleForRowAtIndexPath:indexPath];

@@ -40,7 +40,7 @@
         
         self.valueLabel = [UILabel new];
         self.valueLabel.backgroundColor = self.backgroundColor;
-        self.valueLabel.font = [FLEXUtility defaultFontOfSize:14.0];
+        self.valueLabel.font = [UIFont systemFontOfSize:14.0];
         self.valueLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:self.valueLabel];
         
@@ -173,7 +173,7 @@
         self.hexLabel = [UILabel new];
         self.hexLabel.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
         self.hexLabel.textAlignment = NSTextAlignmentCenter;
-        self.hexLabel.font = [FLEXUtility defaultFontOfSize:12.0];
+        self.hexLabel.font = [UIFont systemFontOfSize:12.0];
         [self addSubview:self.hexLabel];
         
         self.alphaInput = [FLEXColorComponentInputView new];

@@ -156,7 +156,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        cell.textLabel.font = UIFont.flex_defaultTableCellFont;
     }
     
     NSString *executablePath;

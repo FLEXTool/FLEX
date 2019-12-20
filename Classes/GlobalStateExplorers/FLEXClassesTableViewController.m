@@ -130,7 +130,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        cell.textLabel.font = UIFont.flex_defaultTableCellFont;
     }
     
     cell.textLabel.text = self.filteredClassNames[indexPath.row];

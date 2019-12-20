@@ -178,7 +178,7 @@
 
 + (UIFont *)cellTitleFont
 {
-    return [FLEXUtility defaultFontOfSize:14.0];
+    return [UIFont systemFontOfSize:14.0];
 }
 
 @end

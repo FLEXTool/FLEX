@@ -28,7 +28,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        UIFont *cellFont = [FLEXUtility defaultTableViewCellLabelFont];
+        UIFont *cellFont = UIFont.flex_defaultTableCellFont;
         self.titleLabel.font = cellFont;
         self.subtitleLabel.font = cellFont;
         self.subtitleLabel.textColor = [FLEXColor deemphasizedTextColor];

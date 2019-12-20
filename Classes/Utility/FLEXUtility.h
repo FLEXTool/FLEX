@@ -13,6 +13,7 @@
 #import <objc/runtime.h>
 #import "FLEXAlert.h"
 #import "NSArray+Functional.h"
+#import "UIFont+FLEX.h"
 
 #define FLEXFloor(x) (floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale)
 
@@ -39,8 +40,6 @@
 + (NSString *)applicationImageName;
 + (NSString *)applicationName;
 + (NSString *)addressOfObject:(id)object;
-+ (UIFont *)defaultFontOfSize:(CGFloat)size;
-+ (UIFont *)defaultTableViewCellLabelFont;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;

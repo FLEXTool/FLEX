@@ -149,7 +149,7 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+        cell.textLabel.font = UIFont.flex_defaultTableCellFont;
     }
     
     NSDictionary *item = self.keychainItems[indexPath.row];
