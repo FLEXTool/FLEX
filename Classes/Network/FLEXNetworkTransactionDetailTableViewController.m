@@ -16,6 +16,7 @@
 #import "FLEXMultilineTableViewCell.h"
 #import "FLEXUtility.h"
 #import "FLEXManager+Private.h"
+#import "FLEXTableView.h"
 
 typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
@@ -65,7 +66,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 {
     [super viewDidLoad];
 
-    [self.tableView registerClass:[FLEXMultilineTableViewCell class] forCellReuseIdentifier:kFLEXMultilineTableViewCellIdentifier];
+    [self.tableView registerClass:[FLEXMultilineTableViewCell class] forCellReuseIdentifier:kFLEXMultilineCell];
 }
 
 - (void)setTransaction:(FLEXNetworkTransaction *)transaction
@@ -147,7 +148,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXMultilineTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXMultilineTableViewCellIdentifier forIndexPath:indexPath];
+    FLEXMultilineTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXMultilineCell forIndexPath:indexPath];
 
     FLEXNetworkDetailRow *rowModel = [self rowModelAtIndexPath:indexPath];
 

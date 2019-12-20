@@ -8,7 +8,11 @@
 
 #import "FLEXGlobalsEntry.h"
 
+#ifndef _FLEXObjectExplorerViewController_h
+#import "FLEXObjectExplorerViewController.h"
+#else
 @class FLEXObjectExplorerViewController;
+#endif
 
 @interface FLEXObjectExplorerFactory : NSObject <FLEXGlobalsEntry>
 
