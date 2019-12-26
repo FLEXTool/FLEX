@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name             = "FLEX"
-  spec.version          = "3.1.1"
+  spec.version          = "3.1.2"
   spec.summary          = "A set of in-app debugging and exploration tools for iOS"
   spec.description      = <<-DESC
                         - Inspect and modify views in the hierarchy.
