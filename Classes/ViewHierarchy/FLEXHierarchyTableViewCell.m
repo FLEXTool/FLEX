@@ -75,7 +75,7 @@
 {
     [super layoutSubviews];
     
-    const CGFloat kContentPadding = 10.0;
+    const CGFloat kContentPadding = 12.0;
     const CGFloat kDepthIndicatorWidthMultiplier = 4.0;
     const CGFloat kViewBackgroundColourDimension = 20;
     
@@ -102,7 +102,7 @@
     CGRect viewBackgroundColourViewFrame = self.textLabel.frame;
     viewBackgroundColourViewFrame.size.width = kViewBackgroundColourDimension;
     viewBackgroundColourViewFrame.size.height = kViewBackgroundColourDimension;
-    viewBackgroundColourViewFrame.origin.x = CGRectGetMaxX(self.textLabel.frame) + kContentPadding;
+    viewBackgroundColourViewFrame.origin.x = CGRectGetMaxX(self.textLabel.frame) + kContentPadding / 2;
     viewBackgroundColourViewFrame.origin.y = ABS(CGRectGetHeight(self.contentView.frame) -  CGRectGetHeight(viewBackgroundColourViewFrame)) / 2;
     
     self.viewBackgroundColorView.frame = viewBackgroundColourViewFrame;
