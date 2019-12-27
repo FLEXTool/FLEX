@@ -35,7 +35,7 @@
         self.colorCircleImageView = [[UIImageView alloc] initWithImage:defaultCircleImage];
         [self.contentView addSubview:self.colorCircleImageView];
         
-        self.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:14.0];
+        self.textLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightMedium];
         self.detailTextLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
         self.accessoryType = UITableViewCellAccessoryDetailButton;
         
