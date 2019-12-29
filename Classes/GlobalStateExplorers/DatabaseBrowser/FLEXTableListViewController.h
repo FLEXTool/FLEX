@@ -6,9 +6,9 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXTableViewController.h"
 
-@interface FLEXTableListViewController : UITableViewController
+@interface FLEXTableListViewController : FLEXTableViewController
 
 + (BOOL)supportsExtension:(NSString *)extension;
 - (instancetype)initWithPath:(NSString *)path;

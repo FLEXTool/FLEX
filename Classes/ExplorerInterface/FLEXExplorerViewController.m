@@ -131,11 +131,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
     SEL viewControllerSelector = NSSelectorFromString(viewControllerSelectorString);
     if ([viewController respondsToSelector:viewControllerSelector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        viewController = [viewController performSelector:viewControllerSelector];
-#pragma clang diagnostic pop
+        viewController = [viewController valueForKey:viewControllerSelectorString];
     }
+    
     return viewController;
 }
 
@@ -148,7 +146,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     
     // The UIViewController docs state that this method must not return zero.
-    // If we weren't able to get a valid value for the supported interface orientations, default to all supported.
+    // If we weren't able to get a valid value for the supported interface
+    // orientations, default to all supported.
     if (supportedOrientations == 0) {
         supportedOrientations = UIInterfaceOrientationMaskAll;
     }
@@ -785,11 +784,25 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)makeKeyAndPresentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
 {
     // Save the current key window so we can restore it following dismissal.
-    self.previousKeyWindow = [UIApplication.sharedApplication keyWindow];
-    
+    self.previousKeyWindow = UIApplication.sharedApplication.keyWindow;
+
     // Make our window key to correctly handle input.
     [self.view.window makeKeyWindow];
-    
+
+    // Fix for iOS 13, regarding custom UIMenu callouts not appearing because
+    // the UITextEffectsWindow has a lower level than the FLEX window by default
+    // until a text field is activated, bringing it above the FLEX window.
+    if (@available(iOS 13, *)) {
+        for (UIWindow *window in UIApplication.sharedApplication.windows) {
+            if ([window isKindOfClass:NSClassFromString(@"UITextEffectsWindow")]) {
+                if (window.windowLevel <= self.view.window.windowLevel) {
+                    window.windowLevel = self.view.window.windowLevel + 1;
+                    break;
+                }
+            }
+        }
+    }
+
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
     [[self statusWindow] setWindowLevel:self.view.window.windowLevel + 1.0];
     

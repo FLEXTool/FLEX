@@ -9,6 +9,7 @@
 #import "FLEXTableViewController.h"
 #import "FLEXScopeCarousel.h"
 #import "FLEXTableView.h"
+#import "FLEXUtility.h"
 #import <objc/runtime.h>
 
 @interface Block : NSObject
@@ -22,10 +23,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 @interface FLEXTableViewController ()
 @property (nonatomic) NSTimer *debounceTimer;
-
+@property (nonatomic) BOOL didInitiallyRevealSearchBar;
 @end
 
 @implementation FLEXTableViewController
+@synthesize automaticallyShowsSearchBarCancelButton = _automaticallyShowsSearchBarCancelButton;
 
 #pragma mark - Public
 
@@ -46,7 +48,8 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self = [super initWithStyle:style];
     
     if (self) {
-        self.searchBarDebounceInterval = kFLEXDebounceFast;
+        _searchBarDebounceInterval = kFLEXDebounceFast;
+        _showSearchBarInitially = YES;
     }
     
     return self;
@@ -63,8 +66,16 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.searchController.delegate = (id)self;
     self.searchController.dimsBackgroundDuringPresentation = NO;
     self.searchController.hidesNavigationBarDuringPresentation = NO;
-    /// Not necessary in iOS 13; remove this when iOS 13 is the deployment target
+    /// Not necessary in iOS 13; remove this when iOS 13 is the minimum deployment target
     self.searchController.searchBar.delegate = self;
+
+    self.automaticallyShowsSearchBarCancelButton = YES;
+
+#if FLEX_AT_LEAST_IOS13_SDK
+    if (@available(iOS 13, *)) {
+        self.searchController.automaticallyShowsScopeBar = NO;
+    }
+#endif
     
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = self.searchController;
@@ -113,16 +124,24 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     return self.searchController.searchBar.text;
 }
 
-- (void)setAutomaticallyShowsSearchBarCancelButton:(BOOL)autoShowCancel {
+- (BOOL)automaticallyShowsSearchBarCancelButton {
 #if FLEX_AT_LEAST_IOS13_SDK
-    if (@available(iOS 13.0, *)) {
-        self.searchController.automaticallyShowsCancelButton = autoShowCancel;
-    } else {
-        _automaticallyShowsSearchBarCancelButton = autoShowCancel;
+    if (@available(iOS 13, *)) {
+        return self.searchController.automaticallyShowsCancelButton;
     }
-#else
-    _automaticallyShowsSearchBarCancelButton = autoShowCancel;
 #endif
+
+    return _automaticallyShowsSearchBarCancelButton;
+}
+
+- (void)setAutomaticallyShowsSearchBarCancelButton:(BOOL)value {
+#if FLEX_AT_LEAST_IOS13_SDK
+    if (@available(iOS 13, *)) {
+        self.searchController.automaticallyShowsCancelButton = value;
+    }
+#endif
+
+    _automaticallyShowsSearchBarCancelButton = value;
 }
 
 - (void)updateSearchResults:(NSString *)newText { }
@@ -142,33 +161,57 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     [super viewDidLoad];
     
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+
+    // On iOS 13, the root view controller shows it's search bar no matter what.
+    // Turning this off avoids some weird flash the navigation bar does when we
+    // toggle navigationItem.hidesSearchBarWhenScrolling on and off. The flash
+    // will still happen on subsequent view controllers, but we can at least
+    // avoid it for the root view controller
+    if (@available(iOS 13, *)) {
+        if (self.navigationController.viewControllers.firstObject == self) {
+            _showSearchBarInitially = NO;
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // Make the search bar re-appear instead of hiding
-    if (@available(iOS 11.0, *)) if (!self.hideSearchBarInitially) {
-        self.navigationItem.hidesSearchBarWhenScrolling = NO;
+    // When going back, make the search bar reappear instead of hiding
+    if (@available(iOS 11.0, *)) {
+        if ((self.pinSearchBar || self.showSearchBarInitially) && !self.didInitiallyRevealSearchBar) {
+            self.navigationItem.hidesSearchBarWhenScrolling = NO;
+        }
     }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    // Allow scrolling to collapse the search bar,
-    // only if we don't want it pinned
-    if (@available(iOS 11.0, *)) if (!self.hideSearchBarInitially) {
-        self.navigationItem.hidesSearchBarWhenScrolling = !self.pinSearchBar;
+
+    // Allow scrolling to collapse the search bar, only if we don't want it pinned
+    if (@available(iOS 11.0, *)) {
+        if (self.showSearchBarInitially && !self.pinSearchBar && !self.didInitiallyRevealSearchBar) {
+            // All this mumbo jumbo is necessary to work around a bug in iOS 13 up to 13.2
+            // wherein quickly toggling navigationItem.hidesSearchBarWhenScrolling to make
+            // the search bar appear initially results in a bugged search bar that
+            // becomes transparent and floats over the screen as you scroll
+            [UIView animateWithDuration:0.2 animations:^{
+                self.navigationItem.hidesSearchBarWhenScrolling = YES;
+                [self.navigationController.view setNeedsLayout];
+                [self.navigationController.view layoutIfNeeded];
+            }];
+        }
     }
+
+    // We only want to reveal the search bar when the view controller first appears.
+    self.didInitiallyRevealSearchBar = YES;
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-
-    if (self.searchController.active) {
-        self.searchController.active = NO;
-    }
+- (void)willMoveToParentViewController:(UIViewController *)parent {
+    [super willMoveToParentViewController:parent];
+    // Reset this since we are re-appearing under a new
+    // parent view controller and need to show it again
+    self.didInitiallyRevealSearchBar = NO;
 }
 
 #pragma mark - Private
@@ -208,13 +251,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 #pragma mark UISearchControllerDelegate
 
 - (void)willPresentSearchController:(UISearchController *)searchController {
-    if (self.automaticallyShowsSearchBarCancelButton) {
+    // Manually show cancel button for < iOS 13
+    if (!@available(iOS 13, *) && self.automaticallyShowsSearchBarCancelButton) {
         [searchController.searchBar setShowsCancelButton:YES animated:YES];
     }
 }
 
 - (void)willDismissSearchController:(UISearchController *)searchController {
-    if (self.automaticallyShowsSearchBarCancelButton) {
+    // Manually hide cancel button for < iOS 13
+    if (!@available(iOS 13, *) && self.automaticallyShowsSearchBarCancelButton) {
         [searchController.searchBar setShowsCancelButton:NO animated:YES];
     }
 }
@@ -224,6 +269,17 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 /// Not necessary in iOS 13; remove this when iOS 13 is the deployment target
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     [self updateSearchResultsForSearchController:self.searchController];
+}
+
+#pragma mark Table view
+
+/// Not having a title in the first section looks weird with a rounded-corner table view style
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (@available(iOS 13, *)) {
+        return @" "; // For inset grouped style
+    }
+
+    return nil; // For plain/gropued style
 }
 
 @end

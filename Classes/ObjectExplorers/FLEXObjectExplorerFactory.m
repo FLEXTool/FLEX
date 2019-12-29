@@ -89,7 +89,7 @@
         case FLEXGlobalsRowCurrentDevice:
             return @"📱  UIDevice.currentDevice";
         case FLEXGlobalsRowPasteboard:
-            return @"📋  UIPasteboard.generalPastboard";
+            return @"📋  UIPasteboard.generalPasteboard";
         default: return nil;
     }
 }
@@ -115,6 +115,8 @@
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
+        case FLEXGlobalsRowRootViewController:
+            return [self explorerViewControllerForObject:UIApplication.sharedApplication.delegate.window.rootViewController];
         default: return nil;
     }
 }

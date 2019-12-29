@@ -10,10 +10,12 @@
 #import "FLEXKeychainQuery.h"
 #import "FLEXKeychainTableViewController.h"
 #import "FLEXUtility.h"
+#import "UIPasteboard+FLEX.h"
 
 @interface FLEXKeychainTableViewController ()
 
-@property (nonatomic) NSArray<NSDictionary *> *keyChainItems;
+@property (nonatomic) NSMutableArray<NSDictionary *> *keychainItems;
+@property (nonatomic) NSString *headerTitle;
 
 @end
 
@@ -32,14 +34,49 @@
         ],
     ];
 
-    [self refreshKeychainItems];
+    [self refreshkeychainItems];
+    [self updateHeaderTitle];
 }
 
-- (void)refreshKeychainItems
+- (void)refreshkeychainItems
 {
-    self.keyChainItems = [FLEXKeychain allAccounts];
-    self.title = [NSString stringWithFormat:@"🔑 Keychain Items (%lu)", (unsigned long)self.keyChainItems.count];
+    self.keychainItems = [FLEXKeychain allAccounts].mutableCopy;
 }
+
+- (void)updateHeaderTitle
+{
+    self.headerTitle = [NSString stringWithFormat:@"%@ items", @(self.keychainItems.count)];
+}
+
+- (FLEXKeychainQuery *)queryForItemAtIndex:(NSInteger)idx
+{
+    NSDictionary *item = self.keychainItems[idx];
+
+    FLEXKeychainQuery *query = [FLEXKeychainQuery new];
+    query.service = item[kFLEXKeychainWhereKey];
+    query.account = item[kFLEXKeychainAccountKey];
+    [query fetch:nil];
+
+    return query;
+}
+
+- (void)deleteItem:(NSDictionary *)item
+{
+    NSError *error = nil;
+    BOOL success = [FLEXKeychain
+        deletePasswordForService:item[kFLEXKeychainWhereKey]
+        account:item[kFLEXKeychainAccountKey]
+        error:&error
+    ];
+
+    if (!success) {
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title(@"Error Deleting Item");
+            make.message(error.localizedDescription);
+        } showFrom:self];
+    }
+}
+
 
 #pragma mark Buttons
 
@@ -50,22 +87,11 @@
         make.message(@"This will remove all keychain items for this app.\n");
         make.message(@"This action cannot be undone. Are you sure?");
         make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
-            for (id account in self.keyChainItems) {
-                FLEXKeychainQuery *query = [FLEXKeychainQuery new];
-                query.service = account[kFLEXKeychainWhereKey];
-                query.account = account[kFLEXKeychainAccountKey];
-
-                // Delete item or display error
-                NSError *error = nil;
-                if (![query deleteItem:&error]) {
-                    [FLEXAlert makeAlert:^(FLEXAlert *make) {
-                        make.title(@"Error Deleting Item");
-                        make.message(error.localizedDescription);
-                    } showFrom:self];
-                }
+            for (id account in self.keychainItems) {
+                [self deleteItem:account];
             }
 
-            [self refreshKeychainItems];
+            [self refreshkeychainItems];
             [self.tableView reloadData];
         });
         make.button(@"Cancel").cancelStyle();
@@ -87,12 +113,11 @@
                 [FLEXAlert showAlert:@"Error" message:error.localizedDescription from:self];
             }
 
-            [self refreshKeychainItems];
+            [self refreshkeychainItems];
             [self.tableView reloadData];
         });
     } showFrom:self];
 }
-
 
 
 #pragma mark - FLEXGlobalsEntry
@@ -102,9 +127,11 @@
     return @"🔑  Keychain";
 }
 
-+ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row
-{
-    return [self new];
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
+    FLEXKeychainTableViewController *viewController = [self new];
+    viewController.title = [self globalsEntryTitle:row];
+
+    return viewController;
 }
 
 
@@ -112,7 +139,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.keyChainItems.count;
+    return self.keychainItems.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -125,10 +152,33 @@
         cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
     }
     
-    NSDictionary *item = self.keyChainItems[indexPath.row];
-    cell.textLabel.text = item[kFLEXKeychainAccountKey];
+    NSDictionary *item = self.keychainItems[indexPath.row];
+    id account = item[kFLEXKeychainAccountKey];
+    if ([account isKindOfClass:[NSString class]]) {
+        cell.textLabel.text = account;
+    } else {
+        cell.textLabel.text = [NSString stringWithFormat:
+            @"[%@]\n\n%@",
+            NSStringFromClass([account class]),
+            [account description]
+        ];
+    }
     
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return self.headerTitle;
+}
+
+- (void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)style forRowAtIndexPath:(NSIndexPath *)ip
+{
+    if (style == UITableViewCellEditingStyleDelete) {
+        [self deleteItem:self.keychainItems[ip.row]];
+        [self.keychainItems removeObjectAtIndex:ip.row];
+        [tv deleteRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
 }
 
 
@@ -136,13 +186,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *item = self.keyChainItems[indexPath.row];
+    FLEXKeychainQuery *query = [self queryForItemAtIndex:indexPath.row];
     
-    FLEXKeychainQuery *query = [FLEXKeychainQuery new];
-    query.service = item[kFLEXKeychainWhereKey];
-    query.account = item[kFLEXKeychainAccountKey];
-    [query fetch:nil];
-
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(query.service);
         make.message(@"Service: ").message(query.service);
@@ -150,16 +195,19 @@
         make.message(@"\nPassword: ").message(query.password);
 
         make.button(@"Copy Service").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = query.service;
+            [UIPasteboard.generalPasteboard flex_copy:query.service];
         });
         make.button(@"Copy Account").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = query.account;
+            [UIPasteboard.generalPasteboard flex_copy:query.account];
         });
         make.button(@"Copy Password").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = query.password;
+            [UIPasteboard.generalPasteboard flex_copy:query.password];
         });
         make.button(@"Dismiss").cancelStyle();
+        
     } showFrom:self];
+
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

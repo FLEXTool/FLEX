@@ -43,7 +43,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 ///
 /// Setting this to YES will make the search bar appear whenever the view appears.
 /// Otherwise, iOS will only show the search bar when you scroll up.
-@property (nonatomic) BOOL hideSearchBarInitially;
+@property (nonatomic) BOOL showSearchBarInitially;
 
 /// nil unless showsSearchBar is set to YES.
 /// 
@@ -71,7 +71,9 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// search becomes active and hide it when search is dismissed.
 /// 
 /// Do not set the showsCancelButton property on the searchController's
-/// searchBar manually.
+/// searchBar manually. Set this property after turning on showsSearchBar.
+///
+/// Does nothing pre-iOS 13, safe to call on any version.
 @property (nonatomic) BOOL automaticallyShowsSearchBarCancelButton;
 
 /// If using the scope bar, self.searchController.searchBar.selectedScopeButtonIndex.

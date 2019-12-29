@@ -8,8 +8,6 @@
 
 #import "FLEXMultilineTableViewCell.h"
 
-NSString *const kFLEXMultilineTableViewCellIdentifier = @"kFLEXMultilineTableViewCellIdentifier";
-
 @implementation FLEXMultilineTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -17,6 +15,7 @@ NSString *const kFLEXMultilineTableViewCellIdentifier = @"kFLEXMultilineTableVie
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.textLabel.numberOfLines = 0;
+        self.detailTextLabel.numberOfLines = 0;
     }
     return self;
 }
@@ -50,6 +49,15 @@ NSString *const kFLEXMultilineTableViewCellIdentifier = @"kFLEXMultilineTableVie
     CGFloat preferredCellHeight = preferredLabelHeight + labelInsets.top + labelInsets.bottom + 1.0;
 
     return preferredCellHeight;
+}
+
+@end
+
+@implementation FLEXMultilineDetailTableViewCell
+
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    return [super initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:reuseIdentifier];
 }
 
 @end

@@ -6,6 +6,10 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
+#ifndef _FLEXObjectExplorerViewController_h
+#define _FLEXObjectExplorerViewController_h
+#endif
+
 #import "FLEXTableViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {

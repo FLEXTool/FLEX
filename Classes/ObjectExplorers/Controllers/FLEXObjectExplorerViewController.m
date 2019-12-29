@@ -810,7 +810,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
     BOOL isCustomSection = explorerSection == FLEXObjectExplorerSectionCustom;
     BOOL useDescriptionCell = explorerSection == FLEXObjectExplorerSectionDescription;
-    NSString *cellIdentifier = useDescriptionCell ? kFLEXMultilineTableViewCellIdentifier : @"cell";
+    NSString *cellIdentifier = useDescriptionCell ? kFLEXMultilineCell : @"cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (!cell) {
         if (useDescriptionCell) {

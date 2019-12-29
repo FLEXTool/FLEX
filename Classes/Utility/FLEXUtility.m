@@ -48,28 +48,22 @@
 
 + (UIViewController *)viewControllerForView:(UIView *)view
 {
-    UIViewController *viewController = nil;
-    SEL viewDelSel = NSSelectorFromString(@"_viewDelegate");
-    if ([view respondsToSelector:viewDelSel]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        viewController = [view performSelector:viewDelSel];
-#pragma clang diagnostic pop
+    NSString *viewDelegate = @"viewDelegate";
+    if ([view respondsToSelector:NSSelectorFromString(viewDelegate)]) {
+        return [view valueForKey:viewDelegate];
     }
-    return viewController;
+
+    return nil;
 }
 
 + (UIViewController *)viewControllerForAncestralView:(UIView *)view
 {
-    UIViewController *viewController = nil;
-    SEL viewDelSel = NSSelectorFromString([NSString stringWithFormat:@"%@ewControllerForAncestor", @"_vi"]);
-    if ([view respondsToSelector:viewDelSel]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        viewController = [view performSelector:viewDelSel];
-#pragma clang diagnostic pop
+    NSString *_viewControllerForAncestor = @"_viewControllerForAncestor";
+    if ([view respondsToSelector:NSSelectorFromString(_viewControllerForAncestor)]) {
+        return [view valueForKey:_viewControllerForAncestor];
     }
-    return viewController;
+
+    return nil;
 }
 
 + (NSString *)detailDescriptionForView:(UIView *)view

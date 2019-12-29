@@ -9,13 +9,14 @@
 #import "FLEXLibrariesTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXClassesTableViewController.h"
-#import "FLEXClassExplorerViewController.h"
+#import "FLEXObjectExplorerFactory.h"
 #import <objc/runtime.h>
 
 @interface FLEXLibrariesTableViewController ()
 
 @property (nonatomic) NSArray<NSString *> *imageNames;
 @property (nonatomic) NSArray<NSString *> *filteredImageNames;
+@property (nonatomic) NSString *headerTitle;
 
 @property (nonatomic) Class foundClass;
 
@@ -37,6 +38,22 @@
     [super viewDidLoad];
     
     self.showsSearchBar = YES;
+    [self updateHeaderTitle];
+}
+
+- (void)updateHeaderTitle
+{
+    if (self.foundClass) {
+        self.headerTitle = @"Looking for this?";
+    } else if (self.imageNames.count == self.filteredImageNames.count) {
+        // Unfiltered
+        self.headerTitle = [NSString stringWithFormat:@"%@ libraries", @(self.imageNames.count)];
+    } else {
+        self.headerTitle = [NSString
+            stringWithFormat:@"%@ of %@ libraries",
+            @(self.filteredImageNames.count), @(self.imageNames.count)
+        ];
+    }
 }
 
 
@@ -120,16 +137,12 @@
     }
     
     self.foundClass = NSClassFromString(searchText);
+    [self updateHeaderTitle];
     [self.tableView reloadData];
 }
 
 
 #pragma mark - Table View Data Source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -162,19 +175,24 @@
     return cell;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return self.headerTitle;
+}
+
 
 #pragma mark - Table View Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.row == 0 && self.foundClass) {
-        FLEXClassExplorerViewController *objectExplorer = [FLEXClassExplorerViewController new];
-        objectExplorer.object = self.foundClass;
-        [self.navigationController pushViewController:objectExplorer animated:YES];
+        [self.navigationController pushViewController:[FLEXObjectExplorerFactory
+            explorerViewControllerForObject:self.foundClass
+        ] animated:YES];
     } else {
-        FLEXClassesTableViewController *classesViewController = [FLEXClassesTableViewController new];
-        classesViewController.binaryImageName = self.filteredImageNames[self.foundClass ? indexPath.row-1 : indexPath.row];
-        [self.navigationController pushViewController:classesViewController animated:YES];
+        [self.navigationController pushViewController:[FLEXClassesTableViewController
+            binaryImageName:self.filteredImageNames[self.foundClass ? 0 : indexPath.row]
+        ] animated:YES];
     }
 }
 

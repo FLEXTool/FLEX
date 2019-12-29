@@ -8,10 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
+/// A cell initialized with \c UITableViewCellStyleSubtitle
 @interface FLEXSubtitleTableViewCell : UITableViewCell
 
 @end
-
-NS_ASSUME_NONNULL_END

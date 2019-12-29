@@ -11,6 +11,7 @@
 #import "FLEXInstancesTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXScopeCarousel.h"
+#import "FLEXTableView.h"
 #import <objc/runtime.h>
 
 static const NSInteger kFLEXLiveObjectsSortAlphabeticallyIndex = 0;
@@ -23,15 +24,22 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 @property (nonatomic) NSDictionary<NSString *, NSNumber *> *instanceSizesForClassNames;
 @property (nonatomic, readonly) NSArray<NSString *> *allClassNames;
 @property (nonatomic) NSArray<NSString *> *filteredClassNames;
+@property (nonatomic) NSString *headerTitle;
 
 @end
 
 @implementation FLEXLiveObjectsTableViewController
 
+- (void)loadView
+{
+    self.tableView = [FLEXTableView flexDefaultTableView];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
+//    self.title = @"Live Objects";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.showsCarousel = YES;
@@ -96,35 +104,42 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     [self.refreshControl endRefreshing];
 }
 
-- (void)updateTitle
+- (void)updateHeaderTitle
 {
-    NSString *title = @"Live Objects";
-    
     NSUInteger totalCount = 0;
     NSUInteger totalSize = 0;
     for (NSString *className in self.allClassNames) {
-        NSUInteger count = [self.instanceCountsForClassNames[className] unsignedIntegerValue];
+        NSUInteger count = self.instanceCountsForClassNames[className].unsignedIntegerValue;
         totalCount += count;
-        totalSize += count * [self.instanceSizesForClassNames[className] unsignedIntegerValue];
+        totalSize += count * self.instanceSizesForClassNames[className].unsignedIntegerValue;
     }
+
     NSUInteger filteredCount = 0;
     NSUInteger filteredSize = 0;
     for (NSString *className in self.filteredClassNames) {
-        NSUInteger count = [self.instanceCountsForClassNames[className] unsignedIntegerValue];
+        NSUInteger count = self.instanceCountsForClassNames[className].unsignedIntegerValue;
         filteredCount += count;
-        filteredSize += count * [self.instanceSizesForClassNames[className] unsignedIntegerValue];
+        filteredSize += count * self.instanceSizesForClassNames[className].unsignedIntegerValue;
     }
     
     if (filteredCount == totalCount) {
         // Unfiltered
-        title = [title stringByAppendingFormat:@" (%lu, %@)", (unsigned long)totalCount,
-              [NSByteCountFormatter stringFromByteCount:totalSize countStyle:NSByteCountFormatterCountStyleFile]];
+        self.headerTitle = [NSString
+            stringWithFormat:@"%@ objects, %@",
+            @(totalCount), [NSByteCountFormatter
+                stringFromByteCount:totalSize
+                countStyle:NSByteCountFormatterCountStyleFile
+            ]
+        ];
     } else {
-        title = [title stringByAppendingFormat:@" (filtered, %lu, %@)", (unsigned long)filteredCount,
-              [NSByteCountFormatter stringFromByteCount:filteredSize countStyle:NSByteCountFormatterCountStyleFile]];
+        self.headerTitle = [NSString
+            stringWithFormat:@"%@ of %@ objects, %@",
+            @(filteredCount), @(totalCount), [NSByteCountFormatter
+                stringFromByteCount:filteredSize
+                countStyle:NSByteCountFormatterCountStyleFile
+            ]
+        ];
     }
-    
-    self.title = title;
 }
 
 
@@ -135,7 +150,10 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 }
 
 + (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
-    return [self new];
+    FLEXLiveObjectsTableViewController *liveObjectsViewController = [self new];
+    liveObjectsViewController.title = [self globalsEntryTitle:row];
+
+    return liveObjectsViewController;
 }
 
 
@@ -172,7 +190,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
         }];
     }
     
-    [self updateTitle];
+    [self updateHeaderTitle];
     [self.tableView reloadData];
 }
 
@@ -189,24 +207,32 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     return self.filteredClassNames.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(__kindof UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
-    }
-    
+    UITableViewCell *cell = [tableView
+        dequeueReusableCellWithIdentifier:kFLEXDefaultCell
+        forIndexPath:indexPath
+    ];
+
     NSString *className = self.filteredClassNames[indexPath.row];
     NSNumber *count = self.instanceCountsForClassNames[className];
     NSNumber *size = self.instanceSizesForClassNames[className];
     unsigned long totalSize = count.unsignedIntegerValue * size.unsignedIntegerValue;
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld, %@)", className, (long)[count integerValue],
-        [NSByteCountFormatter stringFromByteCount:totalSize countStyle:NSByteCountFormatterCountStyleFile]];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ (%ld, %@)",
+        className, (long)[count integerValue],
+        [NSByteCountFormatter
+            stringFromByteCount:totalSize
+            countStyle:NSByteCountFormatterCountStyleFile
+        ]
+    ];
     
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return self.headerTitle;
 }
 
 

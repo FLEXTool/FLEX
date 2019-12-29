@@ -65,6 +65,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // we check to see if the pointer is of a valid object. If not,
     // we just display the NSValue.
     if (!returnsObjectOrClass) {
+        // Skip NSNumber instances
+        if ([returnedObjectOrNil isKindOfClass:[NSNumber class]]) {
+            return returnedObjectOrNil;
+        }
+        
         // Can only be NSValue since return type is not an object,
         // so we bail if this doesn't add up
         if (![returnedObjectOrNil isKindOfClass:[NSValue class]]) {
@@ -743,6 +748,10 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)appendName:(NSString *)name toType:(NSString *)type
 {
+    if (!type.length) {
+        type = @"(?)";
+    }
+    
     NSString *combined = nil;
     if ([type characterAtIndex:type.length - 1] == FLEXTypeEncodingCString) {
         combined = [type stringByAppendingString:name];

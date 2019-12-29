@@ -10,6 +10,7 @@
 
 @interface FLEXImagePreviewViewController : UIViewController
 
++ (instancetype)forImage:(UIImage *)image;
 - (id)initWithImage:(UIImage *)image;
 
 @end
