@@ -1,6 +1,6 @@
 //
-//  TBToken.h
-//  TBTweakViewController
+//  FLEXToken.h
+//  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
@@ -21,6 +21,7 @@ typedef NS_OPTIONS(NSUInteger, TBWildcardOptions)
 /// but not in the middle of the token (as of now).
 @interface TBToken : NSObject
 
++ (instancetype)any;
 + (instancetype)string:(NSString *)string options:(TBWildcardOptions)options;
 
 /// Will not contain the wildcard (*) symbol

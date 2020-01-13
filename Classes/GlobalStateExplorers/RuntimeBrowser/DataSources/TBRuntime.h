@@ -1,6 +1,6 @@
 //
-//  TBRuntime.h
-//  TBTweakViewController
+//  FLEXRuntime.h
+//  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
@@ -23,17 +23,22 @@
 /// An array of strings representing the currently loaded libraries.
 @property (nonatomic, readonly) NSArray<NSString*> *imageDisplayNames;
 
+/// "Image name" is the path of the bundle
 - (NSString *)shortNameForImageName:(NSString *)imageName;
+/// "Image name" is the path of the bundle
+- (NSString *)imageNameForShortName:(NSString *)imageName;
 
 /// @return Bundle names for the UI
-- (NSMutableArray<NSString*> *)bundleNamesForToken:(TBToken *)token;
+- (NSMutableArray<NSString *> *)bundleNamesForToken:(TBToken *)token;
 /// @return Bundle paths for more queries
-- (NSMutableArray<NSString*> *)bundlePathsForToken:(TBToken *)token;
+- (NSMutableArray<NSString *> *)bundlePathsForToken:(TBToken *)token;
 /// @return Class names
-- (NSMutableArray<NSString*> *)classesForToken:(TBToken *)token inBundles:(NSMutableArray<NSString*> *)bundlePaths;
-/// @return Actual methods
-- (NSMutableArray<FLEXMethod*> *)methodsForToken:(TBToken *)token
+- (NSMutableArray<NSString *> *)classesForToken:(TBToken *)token
+                                      inBundles:(NSMutableArray<NSString *> *)bundlePaths;
+/// @return A list of lists of \c FLEXMethods where
+/// each list corresponds to one of the given classes
+- (NSArray<NSMutableArray<FLEXMethod *> *> *)methodsForToken:(TBToken *)token
                                       instance:(NSNumber *)onlyInstanceMethods
-                                     inClasses:(NSMutableArray<NSString*> *)classes;
+                                     inClasses:(NSArray<NSString*> *)classes;
 
 @end

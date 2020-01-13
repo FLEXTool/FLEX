@@ -1,17 +1,21 @@
 //
-//  TBToolbarButton.m
+//  FLEXToolbarButton.m
 //
-//  Created by Rudd Fawcett on 12/3/13.
-//  Copyright (c) 2013 Rudd Fawcett. All rights reserved.
+//  Created by Tanner on 6/11/17.
 //
 
 #import "TBToolbarButton.h"
 #import "UIFont+FLEX.h"
-
+#import "FLEXUtility.h"
 
 @interface TBToolbarButton ()
 @property (nonatomic      ) NSString *title;
 @property (nonatomic, copy) TBToolbarAction buttonPressBlock;
+@property (nonatomic      ) UIView *backgroundView;
+/// YES if appearance is set to `default`
+@property (nonatomic, readonly) BOOL useSystemAppearance;
+/// YES if the current trait collection is set to dark mode and \c useSystemAppearance is YES
+@property (nonatomic, readonly) BOOL usingDarkMode;
 @end
 
 @implementation TBToolbarButton
@@ -34,16 +38,26 @@
     self = [super init];
     if (self) {
         _title = title;
-        self.layer.cornerRadius = 5.0f;
-        self.layer.borderWidth  = 1.0f;
-        self.titleLabel.font    = [UIFont flex_codeFont];
+        self.layer.shadowOffset = CGSizeMake(0, 1);
+        self.layer.shadowOpacity = 0.25f;
+        self.layer.shadowRadius  = 0.f;
+        self.layer.cornerRadius  = 5.f;
+        self.layer.borderWidth   = 1.f;
+        self.clipsToBounds       = NO;
+        self.titleLabel.font     = [UIFont flex_codeFont];
         [self setTitle:self.title forState:UIControlStateNormal];
         [self sizeToFit];
+        
+        if (@available(iOS 13, *)) {
+            self.appearance = UIKeyboardTypeDefault;
+        } else {
+            self.appearance = UIKeyboardAppearanceLight;
+        }
+        
         CGRect frame = self.frame;
         frame.size.width  += 40;
         frame.size.height += 10;
         self.frame = frame;
-        self.appearance = UIKeyboardAppearanceLight;
     }
     
     return self;
@@ -61,28 +75,55 @@
 - (void)setAppearance:(UIKeyboardAppearance)appearance {
     _appearance = appearance;
     
+    if (self.backgroundView.superview) {
+        [self.backgroundView removeFromSuperview];
+    }
+    
+    UIColor *titleColor = nil, *borderColor = nil;
+    UIBlurEffectStyle style;
+    
     switch (_appearance) {
+        default:
         case UIKeyboardAppearanceDefault:
+            #if FLEX_AT_LEAST_IOS13_SDK
+            if (@available(iOS 13, *)) {
+                borderColor = [UIColor clearColor];
+                titleColor = [UIColor labelColor];
+                
+                if (self.usingDarkMode) {
+                    style = UIBlurEffectStyleSystemUltraThinMaterialLight;
+                } else {
+                    style = UIBlurEffectStyleSystemMaterialLight;
+                }
+                break;
+            }
+            #endif
         case UIKeyboardAppearanceLight:
-            self.backgroundColor      = [UIColor whiteColor];
-            self.layer.borderColor    = [UIColor colorWithWhite:1.000 alpha:0.500].CGColor;
-            self.titleLabel.textColor = [UIColor blackColor];
-            [self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            borderColor = [UIColor colorWithWhite:1.000 alpha:0.500];
+            titleColor = [UIColor blackColor];
+            style = UIBlurEffectStyleRegular;
             break;
         case UIKeyboardAppearanceDark:
-            self.backgroundColor      = [UIColor colorWithWhite:0.336 alpha:1.000];
-            self.layer.borderColor    = [UIColor clearColor].CGColor;
-            self.titleLabel.textColor = [UIColor whiteColor];
-            [self setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            break;
-            
-        default:
-            self.backgroundColor      = [UIColor colorWithWhite:0.9 alpha:1.0];
-            self.layer.borderColor    = [UIColor colorWithWhite:0.8 alpha:1.0].CGColor;
-            self.titleLabel.textColor = [UIColor colorWithWhite:0.5 alpha:1.0];
-            [self setTitleColor:[UIColor colorWithWhite:0.5 alpha:1.0] forState:UIControlStateNormal];
+            borderColor = [UIColor clearColor];
+            titleColor = [UIColor whiteColor];
+            style = UIBlurEffectStyleDark;
             break;
     }
+    
+    self.layer.borderColor = borderColor.CGColor;
+    [self setTitleColor:titleColor forState:UIControlStateNormal];
+    
+    UIVisualEffect *blur = [UIBlurEffect effectWithStyle:style];
+    self.backgroundView = [[UIVisualEffectView alloc] initWithEffect:blur];
+    self.backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.backgroundView.layer.cornerRadius = self.layer.cornerRadius;
+    self.backgroundView.clipsToBounds = YES;
+    // Without these, the background view blocks the button's touches
+    self.backgroundView.userInteractionEnabled = NO;
+    self.backgroundView.exclusiveTouch = NO;
+    
+    [self insertSubview:self.backgroundView atIndex:0];
+    self.backgroundView.frame = self.bounds;
 }
 
 - (BOOL)isEqual:(id)object {
@@ -95,6 +136,30 @@
 
 - (NSUInteger)hash {
     return self.title.hash;
+}
+
+- (BOOL)useSystemAppearance {
+    return self.appearance == UIKeyboardAppearanceDefault;
+}
+
+- (BOOL)usingDarkMode {
+    if (@available(iOS 12, *)) {
+        return self.useSystemAppearance && self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+    }
+    
+    return self.appearance == UIKeyboardAppearanceDark;
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previous {
+    if (@available(iOS 12, *)) {
+        // Was darkmode toggled?
+        if (previous.userInterfaceStyle != self.traitCollection.userInterfaceStyle) {
+            if (self.useSystemAppearance) {
+                // Recreate the background view with the proper colors
+                self.appearance = self.appearance;
+            }
+        }
+    }
 }
 
 @end

@@ -41,16 +41,6 @@
 
 #pragma mark - Initialization
 
-+ (void)initialize
-{
-    if (self == [FLEXObjectExplorerViewController class]) {
-        // Initialize custom menu items for entire app
-        UIMenuItem *copyObjectAddress = [[UIMenuItem alloc] initWithTitle:@"Copy Address" action:@selector(copyObjectAddress:)];
-        UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
-        [UIMenuController.sharedMenuController update];
-    }
-}
-
 + (instancetype)exploringObject:(id)target
 {
     return [self exploringObject:target customSection:[FLEXShortcutsSection forObject:target]];
@@ -124,6 +114,14 @@
     self.carousel.items = [self.explorer.classHierarchy flex_mapped:^id(Class cls, NSUInteger idx) {
         return NSStringFromClass(cls);
     }];
+    
+    // Initialize custom menu items for explorer screen
+    UIMenuItem *copyObjectAddress = [[UIMenuItem alloc]
+        initWithTitle:@"Copy Address"
+        action:@selector(copyObjectAddress:)
+    ];
+    UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
+    [UIMenuController.sharedMenuController update];
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -17,14 +17,11 @@
 
 @implementation FLEXMultilineTableViewCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        self.titleLabel.numberOfLines = 0;
-        self.subtitleLabel.numberOfLines = 0;
-    }
-
-    return self;
+- (void)postInit {
+    [super postInit];
+    
+    self.titleLabel.numberOfLines = 0;
+    self.subtitleLabel.numberOfLines = 0;
 }
 
 + (UIEdgeInsets)labelInsets {

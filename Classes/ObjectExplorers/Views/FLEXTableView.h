@@ -20,6 +20,8 @@ extern FLEXTableViewCellReuseIdentifier const kFLEXDetailCell;
 extern FLEXTableViewCellReuseIdentifier const kFLEXMultilineCell;
 /// A \c FLEXMultilineTableViewCell initialized with \c UITableViewCellStyleSubtitle
 extern FLEXTableViewCellReuseIdentifier const kFLEXMultilineDetailCell;
+/// A \c FLEXSubtitleTableViewCell which uses monospaced fonts for both labels
+extern FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell;
 
 #pragma mark - FLEXTableView
 @interface FLEXTableView : UITableView
@@ -27,6 +29,7 @@ extern FLEXTableViewCellReuseIdentifier const kFLEXMultilineDetailCell;
 + (instancetype)flexDefaultTableView;
 + (instancetype)groupedTableView;
 + (instancetype)plainTableView;
++ (instancetype)style:(UITableViewStyle)style;
 
 /// You do not need to register classes for any of the default reuse identifiers above
 /// (annotated as \c FLEXTableViewCellReuseIdentifier types) unless you wish to provide

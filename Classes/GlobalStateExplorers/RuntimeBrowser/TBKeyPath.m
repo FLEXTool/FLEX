@@ -1,6 +1,6 @@
 //
-//  TBKeyPath.m
-//  TBTweakViewController
+//  FLEXKeyPath.m
+//  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
@@ -15,6 +15,20 @@
 @end
 
 @implementation TBKeyPath
+
++ (instancetype)empty {
+    static TBKeyPath *empty = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        TBToken *any = [TBToken any];
+
+        empty = [self new];
+        empty->_bundleKey = any;
+        empty->tb_description = @"";
+    });
+
+    return empty;
+}
 
 + (instancetype)bundle:(TBToken *)bundle
                  class:(TBToken *)cls

@@ -19,7 +19,14 @@ extern CGFloat const kFLEXDebounceForAsyncSearch;
 /// The least frequent, at just over once per second; for I/O or other expensive operations
 extern CGFloat const kFLEXDebounceForExpensiveIO;
 
-@interface FLEXTableViewController : UITableViewController <UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate>
+@protocol FLEXSearchResultsUpdating <NSObject>
+- (void)updateSearchResults:(NSString *)newText;
+@end
+
+@interface FLEXTableViewController : UITableViewController <
+    UISearchResultsUpdating, UISearchControllerDelegate,
+    UISearchBarDelegate, FLEXSearchResultsUpdating
+>
 
 /// A grouped table view. Inset on iOS 13.
 /// 
@@ -48,7 +55,6 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// nil unless showsSearchBar is set to YES.
 /// 
 /// self is used as the default search results updater and delegate.
-/// Make sure your subclass conforms to UISearchControllerDelegate.
 /// The search bar will not dim the background or hide the navigation bar by default.
 /// On iOS 11 and up, the search bar will appear in the navigation bar below the title.
 @property (nonatomic) UISearchController *searchController;
@@ -81,6 +87,10 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 @property (nonatomic, readonly) NSInteger selectedScope;
 /// self.searchController.searchBar.text
 @property (nonatomic, readonly) NSString *searchText;
+
+/// A totally optional delegate to forward search results updater calls to.
+/// If a delegate is set, updateSearchResults: is not called on this view controller. 
+@property (nonatomic, weak    ) id<FLEXSearchResultsUpdating> searchResultsUpdater;
 
 /// Subclasses should override to handle search query update events.
 /// 

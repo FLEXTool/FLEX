@@ -24,6 +24,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @interface FLEXTableViewController ()
 @property (nonatomic) NSTimer *debounceTimer;
 @property (nonatomic) BOOL didInitiallyRevealSearchBar;
+@property (nonatomic) UITableViewStyle style;
 @end
 
 @implementation FLEXTableViewController
@@ -50,6 +51,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     if (self) {
         _searchBarDebounceInterval = kFLEXDebounceFast;
         _showSearchBarInitially = YES;
+        _style = style;
     }
     
     return self;
@@ -157,6 +159,12 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 #pragma mark - View Controller Lifecycle
 
+- (void)loadView {
+    self.view = [FLEXTableView style:self.style];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -237,14 +245,20 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     [self.debounceTimer invalidate];
     NSString *text = searchController.searchBar.text;
     
+    void (^updateSearchResults)() = ^{
+        if (self.searchResultsUpdater) {
+            [self.searchResultsUpdater updateSearchResults:text];
+        } else {
+            [self updateSearchResults:text];
+        }
+    };
+    
     // Only debounce if we want to, and if we have a non-empty string
     // Empty string events are sent instantly
     if (text.length && self.searchBarDebounceInterval > kFLEXDebounceInstant) {
-        [self debounce:^{
-            [self updateSearchResults:text];
-        }];
+        [self debounce:updateSearchResults];
     } else {
-        [self updateSearchResults:text];
+        updateSearchResults();
     }
 }
 

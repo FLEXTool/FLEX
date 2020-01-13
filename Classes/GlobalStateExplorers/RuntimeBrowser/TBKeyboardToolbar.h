@@ -1,8 +1,7 @@
 //
-//  TBKeyboardToolbar.h
+//  FLEXKeyboardToolbar.h
 //
-//  Created by Rudd Fawcett on 12/3/13.
-//  Copyright (c) 2013 Rudd Fawcett. All rights reserved.
+//  Created by Tanner on 6/11/17.
 //
 
 #import <UIKit/UIKit.h>

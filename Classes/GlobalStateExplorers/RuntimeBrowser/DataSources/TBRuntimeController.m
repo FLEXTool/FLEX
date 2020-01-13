@@ -1,9 +1,8 @@
 //
-//  TBRuntimeController.m
-//  TBTweakViewController
+//  FLEXRuntimeController.m
+//  FLEX
 //
 //  Created by Tanner on 3/23/17.
-//  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
 #import "TBRuntimeController.h"
@@ -52,7 +51,7 @@ static TBRuntimeController *controller = nil;
             if (keyPath.methodKey) {
                 return [[self shared] methodsForKeyPath:keyPath];
             } else {
-                return [[self shared] classesForClassToken:keyPath.classKey andBundleToken:keyPath.bundleKey];
+                return [[self shared] classesForKeyPath:keyPath];
             }
         } else {
             return [[self shared] bundleNamesForToken:keyPath.bundleKey];
@@ -62,23 +61,27 @@ static TBRuntimeController *controller = nil;
     }
 }
 
-+ (NSDictionary *)methodsForToken:(TBToken *)token
++ (NSArray<NSArray<FLEXMethod *> *> *)methodsForToken:(TBToken *)token
                          instance:(NSNumber *)inst
                         inClasses:(NSArray<NSString*> *)classes {
-    NSMutableDictionary *methods = [NSMutableDictionary dictionary];
-    for (NSString *className in classes) {
-        NSMutableArray *target = [NSMutableArray arrayWithObject:className];
-        methods[className] = [[TBRuntime runtime] methodsForToken:token
-                                                         instance:inst
-                                                        inClasses:target];
-    }
+    return [[TBRuntime runtime]
+        methodsForToken:token
+        instance:inst
+        inClasses:classes
+    ];
+}
 
-    return methods;
++ (NSMutableArray<NSString *> *)classesForKeyPath:(TBKeyPath *)keyPath {
+    return [[self shared] classesForKeyPath:keyPath];
 }
 
 + (NSString *)shortBundleNameForClass:(NSString *)name {
     NSString *imagePath = @(class_getImageName(NSClassFromString(name)));
     return [[TBRuntime runtime] shortNameForImageName:imagePath];
+}
+
++ (NSString *)imagePathWithShortName:(NSString *)suffix {
+    return [[TBRuntime runtime] imageNameForShortName:suffix];
 }
 
 + (NSArray *)allBundleNames {
@@ -106,7 +109,7 @@ static TBRuntimeController *controller = nil;
     }
 }
 
-- (NSMutableArray<NSString*> *)bundleNamesForToken:(TBToken *)token {
+- (NSMutableArray<NSString *> *)bundleNamesForToken:(TBToken *)token {
     // Only cache if no wildcard
     BOOL shouldCache = token == TBWildcardOptionsNone;
 
@@ -125,21 +128,24 @@ static TBRuntimeController *controller = nil;
     }
 }
 
-- (NSMutableArray<NSString*> *)classesForClassToken:(TBToken *)clsToken andBundleToken:(TBToken *)bundleToken {
+- (NSMutableArray<NSString *> *)classesForKeyPath:(TBKeyPath *)keyPath {
+    TBToken *classToken = keyPath.classKey;
+    TBToken *bundleToken = keyPath.bundleKey;
+    
     // Only cache if no wildcard
-    BOOL shouldCache = bundleToken.options == 0 && clsToken.options == 0;
+    BOOL shouldCache = bundleToken.options == 0 && classToken.options == 0;
     NSString *key = nil;
 
     if (shouldCache) {
-        key = [@[bundleToken.description, clsToken.description] componentsJoinedByString:@"+"];
+        key = [@[bundleToken.description, classToken.description] componentsJoinedByString:@"+"];
         NSMutableArray<NSString*> *cached = [self.classNamesCache objectForKey:key];
         if (cached) {
             return cached;
         }
     }
 
-    NSMutableArray<NSString*> *bundles = [self bundlePathsForToken:bundleToken];
-    NSMutableArray<NSString*> *classes = [[TBRuntime runtime] classesForToken:clsToken inBundles:bundles];
+    NSMutableArray *bundles = [self bundlePathsForToken:bundleToken];
+    NSMutableArray *classes = [[TBRuntime runtime] classesForToken:classToken inBundles:bundles];
 
     if (shouldCache) {
         [self.classNamesCache setObject:classes forKey:key];
@@ -148,29 +154,33 @@ static TBRuntimeController *controller = nil;
     return classes;
 }
 
-- (NSMutableArray<FLEXMethod*> *)methodsForKeyPath:(TBKeyPath *)keyPath {
+- (NSArray<NSMutableArray<FLEXMethod *> *> *)methodsForKeyPath:(TBKeyPath *)keyPath {
     // Only cache if no wildcard, but check cache anyway bc I'm lazy
-    NSMutableArray<FLEXMethod*> *cached = [self.methodsCache objectForKey:keyPath];
+    NSArray<NSMutableArray *> *cached = [self.methodsCache objectForKey:keyPath];
     if (cached) {
         return cached;
     }
 
-    NSMutableArray<NSString*> *classes = [self classesForClassToken:keyPath.classKey andBundleToken:keyPath.bundleKey];
-    NSMutableArray<FLEXMethod*> *methods = [[TBRuntime runtime] methodsForToken:keyPath.methodKey
-                                                                     instance:keyPath.instanceMethods
-                                                                    inClasses:classes];
+    NSArray<NSString *> *classes = [self classesForKeyPath:keyPath];
+    NSArray<NSMutableArray<FLEXMethod *> *> *methodLists = [[TBRuntime runtime]
+        methodsForToken:keyPath.methodKey
+        instance:keyPath.instanceMethods
+        inClasses:classes
+    ];
 
-    [methods sortUsingComparator:^NSComparisonResult(FLEXMethod *m1, FLEXMethod *m2) {
-        return [m1.description caseInsensitiveCompare:m2.description];
-    }];
-
-    // Only cache if no wildcard
-    if (keyPath.bundleKey.isAbsolute &&
-        keyPath.classKey.isAbsolute) {
-        [self.methodsCache setObject:methods forKey:keyPath];
+    for (NSMutableArray<FLEXMethod *> *methods in methodLists) {
+        [methods sortUsingComparator:^NSComparisonResult(FLEXMethod *m1, FLEXMethod *m2) {
+            return [m1.description caseInsensitiveCompare:m2.description];
+        }];
     }
 
-    return methods;
+    // Only cache if no wildcard, otherwise the cache could grow very large
+    if (keyPath.bundleKey.isAbsolute &&
+        keyPath.classKey.isAbsolute) {
+        [self.methodsCache setObject:methodLists forKey:keyPath];
+    }
+
+    return methodLists;
 }
 
 @end

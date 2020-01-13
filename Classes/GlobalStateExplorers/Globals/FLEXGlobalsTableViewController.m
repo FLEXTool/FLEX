@@ -9,8 +9,7 @@
 #import "FLEXGlobalsTableViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
-#import "FLEXLibrariesTableViewController.h"
-#import "FLEXClassesTableViewController.h"
+#import "FLEXObjcRuntimeViewController.h"
 #import "FLEXKeychainTableViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
@@ -55,14 +54,12 @@ static __weak UIWindow *s_applicationWindow = nil;
 + (FLEXGlobalsEntry *)globalsEntryForRow:(FLEXGlobalsRow)row
 {
     switch (row) {
-        case FLEXGlobalsRowAppClasses:
-            return [FLEXClassesTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowAppKeychainItems:
             return [FLEXKeychainTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowAddressInspector:
             return [FLEXAddressExplorerCoordinator flex_concreteGlobalsEntry:row];
-        case FLEXGlobalsRowSystemLibraries:
-            return [FLEXLibrariesTableViewController flex_concreteGlobalsEntry:row];
+        case FLEXGlobalsRowBrowseRuntime:
+            return [FLEXObjcRuntimeViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowLiveObjects:
             return [FLEXLiveObjectsTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowCookies:
@@ -113,8 +110,7 @@ static __weak UIWindow *s_applicationWindow = nil;
                 [self globalsEntryForRow:FLEXGlobalsRowProcessInfo],
                 [self globalsEntryForRow:FLEXGlobalsRowLiveObjects],
                 [self globalsEntryForRow:FLEXGlobalsRowAddressInspector],
-                [self globalsEntryForRow:FLEXGlobalsRowSystemLibraries],
-                [self globalsEntryForRow:FLEXGlobalsRowAppClasses],
+                [self globalsEntryForRow:FLEXGlobalsRowBrowseRuntime],
             ],
             @[ // FLEXGlobalsSectionAppShortcuts
                 [self globalsEntryForRow:FLEXGlobalsRowBrowseBundle],

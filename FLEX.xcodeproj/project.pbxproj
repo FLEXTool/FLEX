@@ -20,7 +20,7 @@
 		3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94241B5B20570088C3F2 /* FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A4C94CD1B5B21410088C3F2 /* FLEXGlobalsEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94441B5B21410088C3F2 /* FLEXGlobalsEntry.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C94CE1B5B21410088C3F2 /* FLEXGlobalsEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94451B5B21410088C3F2 /* FLEXGlobalsEntry.m */; };
-		3A4C94D31B5B21410088C3F2 /* FLEXObjectExplorerFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C944A1B5B21410088C3F2 /* FLEXObjectExplorerFactory.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		3A4C94D31B5B21410088C3F2 /* FLEXObjectExplorerFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C944A1B5B21410088C3F2 /* FLEXObjectExplorerFactory.h */; };
 		3A4C94D41B5B21410088C3F2 /* FLEXObjectExplorerFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C944B1B5B21410088C3F2 /* FLEXObjectExplorerFactory.m */; };
 		3A4C94D51B5B21410088C3F2 /* FLEXObjectExplorerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C944C1B5B21410088C3F2 /* FLEXObjectExplorerViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C94D61B5B21410088C3F2 /* FLEXObjectExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C944D1B5B21410088C3F2 /* FLEXObjectExplorerViewController.m */; };
@@ -70,8 +70,6 @@
 		3A4C950A1B5B21410088C3F2 /* FLEXFieldEditorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94851B5B21410088C3F2 /* FLEXFieldEditorView.m */; };
 		3A4C950F1B5B21410088C3F2 /* FLEXMethodCallingViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C948A1B5B21410088C3F2 /* FLEXMethodCallingViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C95101B5B21410088C3F2 /* FLEXMethodCallingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C948B1B5B21410088C3F2 /* FLEXMethodCallingViewController.m */; };
-		3A4C951E1B5B21410088C3F2 /* FLEXClassesTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C949B1B5B21410088C3F2 /* FLEXClassesTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		3A4C951F1B5B21410088C3F2 /* FLEXClassesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C949C1B5B21410088C3F2 /* FLEXClassesTableViewController.m */; };
 		3A4C95221B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C949F1B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C95231B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94A01B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m */; };
 		3A4C95241B5B21410088C3F2 /* FLEXFileBrowserTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94A11B5B21410088C3F2 /* FLEXFileBrowserTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -80,8 +78,6 @@
 		3A4C95271B5B21410088C3F2 /* FLEXGlobalsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94A41B5B21410088C3F2 /* FLEXGlobalsTableViewController.m */; };
 		3A4C95281B5B21410088C3F2 /* FLEXInstancesTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94A51B5B21410088C3F2 /* FLEXInstancesTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C95291B5B21410088C3F2 /* FLEXInstancesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94A61B5B21410088C3F2 /* FLEXInstancesTableViewController.m */; };
-		3A4C952A1B5B21410088C3F2 /* FLEXLibrariesTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94A71B5B21410088C3F2 /* FLEXLibrariesTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		3A4C952B1B5B21410088C3F2 /* FLEXLibrariesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94A81B5B21410088C3F2 /* FLEXLibrariesTableViewController.m */; };
 		3A4C952C1B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94A91B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C952D1B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94AA1B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.m */; };
 		3A4C952E1B5B21410088C3F2 /* FLEXWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94AB1B5B21410088C3F2 /* FLEXWebViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -190,6 +186,14 @@
 		C36FBFDC230F3B98008D95D5 /* FLEXIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = C36FBFCA230F3B98008D95D5 /* FLEXIvar.m */; };
 		C37A0C93218BAC9600848CA7 /* FLEXObjcInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */; };
 		C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */; };
+		C383C3B923B6A62A007A321B /* FLEXRuntimeSafety.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3B723B6A62A007A321B /* FLEXRuntimeSafety.h */; };
+		C383C3BA23B6A62A007A321B /* FLEXRuntimeSafety.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */; };
+		C383C3BD23B6B398007A321B /* UITextField+Range.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3BB23B6B398007A321B /* UITextField+Range.m */; };
+		C383C3BE23B6B398007A321B /* UITextField+Range.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3BC23B6B398007A321B /* UITextField+Range.h */; };
+		C383C3C123B6B429007A321B /* NSTimer+Blocks.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3BF23B6B429007A321B /* NSTimer+Blocks.m */; };
+		C383C3C223B6B429007A321B /* NSTimer+Blocks.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3C023B6B429007A321B /* NSTimer+Blocks.h */; };
+		C383C3C523B6BB81007A321B /* FLEXCodeFontCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3C323B6BB81007A321B /* FLEXCodeFontCell.h */; };
+		C383C3C623B6BB81007A321B /* FLEXCodeFontCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3C423B6BB81007A321B /* FLEXCodeFontCell.m */; };
 		C3878DBA23A749960038FDBE /* FLEXVariableEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3878DB823A749960038FDBE /* FLEXVariableEditorViewController.m */; };
 		C3878DBB23A749960038FDBE /* FLEXVariableEditorViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C3878DB923A749960038FDBE /* FLEXVariableEditorViewController.h */; };
 		C3878DBC23A749F70038FDBE /* FLEXFieldEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94871B5B21410088C3F2 /* FLEXFieldEditorViewController.m */; };
@@ -207,12 +211,12 @@
 		C398624D23AD6C67007E6793 /* TBKeyPathSearchController.h in Headers */ = {isa = PBXBuildFile; fileRef = C398624323AD6C67007E6793 /* TBKeyPathSearchController.h */; };
 		C398624E23AD6C67007E6793 /* TBKeyPath.m in Sources */ = {isa = PBXBuildFile; fileRef = C398624423AD6C67007E6793 /* TBKeyPath.m */; };
 		C398624F23AD6C67007E6793 /* TBKeyPathTokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = C398624523AD6C67007E6793 /* TBKeyPathTokenizer.h */; };
-		C398625023AD6C67007E6793 /* TBKeyPathViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C398624623AD6C67007E6793 /* TBKeyPathViewController.m */; };
+		C398625023AD6C67007E6793 /* FLEXObjcRuntimeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C398624623AD6C67007E6793 /* FLEXObjcRuntimeViewController.m */; };
 		C398625123AD6C67007E6793 /* TBKeyPath.h in Headers */ = {isa = PBXBuildFile; fileRef = C398624723AD6C67007E6793 /* TBKeyPath.h */; };
 		C398625223AD6C67007E6793 /* TBKeyPathSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C398624823AD6C67007E6793 /* TBKeyPathSearchController.m */; };
 		C398625323AD6C67007E6793 /* TBKeyPathTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = C398624923AD6C67007E6793 /* TBKeyPathTokenizer.m */; };
 		C398625423AD6C67007E6793 /* TBKeyPathToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = C398624A23AD6C67007E6793 /* TBKeyPathToolbar.h */; };
-		C398625523AD6C67007E6793 /* TBKeyPathViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C398624B23AD6C67007E6793 /* TBKeyPathViewController.h */; };
+		C398625523AD6C67007E6793 /* FLEXObjcRuntimeViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C398624B23AD6C67007E6793 /* FLEXObjcRuntimeViewController.h */; };
 		C398625623AD6C67007E6793 /* TBKeyPathToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C398624C23AD6C67007E6793 /* TBKeyPathToolbar.m */; };
 		C398625923AD6C88007E6793 /* TBToken.h in Headers */ = {isa = PBXBuildFile; fileRef = C398625723AD6C88007E6793 /* TBToken.h */; };
 		C398625A23AD6C88007E6793 /* TBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = C398625823AD6C88007E6793 /* TBToken.m */; };
@@ -352,8 +356,6 @@
 		3A4C94871B5B21410088C3F2 /* FLEXFieldEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFieldEditorViewController.m; sourceTree = "<group>"; };
 		3A4C948A1B5B21410088C3F2 /* FLEXMethodCallingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXMethodCallingViewController.h; sourceTree = "<group>"; };
 		3A4C948B1B5B21410088C3F2 /* FLEXMethodCallingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMethodCallingViewController.m; sourceTree = "<group>"; };
-		3A4C949B1B5B21410088C3F2 /* FLEXClassesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXClassesTableViewController.h; sourceTree = "<group>"; };
-		3A4C949C1B5B21410088C3F2 /* FLEXClassesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXClassesTableViewController.m; sourceTree = "<group>"; };
 		3A4C949F1B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFileBrowserSearchOperation.h; sourceTree = "<group>"; };
 		3A4C94A01B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFileBrowserSearchOperation.m; sourceTree = "<group>"; };
 		3A4C94A11B5B21410088C3F2 /* FLEXFileBrowserTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFileBrowserTableViewController.h; sourceTree = "<group>"; };
@@ -362,8 +364,6 @@
 		3A4C94A41B5B21410088C3F2 /* FLEXGlobalsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXGlobalsTableViewController.m; sourceTree = "<group>"; };
 		3A4C94A51B5B21410088C3F2 /* FLEXInstancesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXInstancesTableViewController.h; sourceTree = "<group>"; };
 		3A4C94A61B5B21410088C3F2 /* FLEXInstancesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXInstancesTableViewController.m; sourceTree = "<group>"; };
-		3A4C94A71B5B21410088C3F2 /* FLEXLibrariesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXLibrariesTableViewController.h; sourceTree = "<group>"; };
-		3A4C94A81B5B21410088C3F2 /* FLEXLibrariesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXLibrariesTableViewController.m; sourceTree = "<group>"; };
 		3A4C94A91B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXLiveObjectsTableViewController.h; sourceTree = "<group>"; };
 		3A4C94AA1B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXLiveObjectsTableViewController.m; sourceTree = "<group>"; };
 		3A4C94AB1B5B21410088C3F2 /* FLEXWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXWebViewController.h; sourceTree = "<group>"; };
@@ -476,6 +476,14 @@
 		C36FBFCA230F3B98008D95D5 /* FLEXIvar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXIvar.m; sourceTree = "<group>"; };
 		C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXObjcInternal.h; sourceTree = "<group>"; };
 		C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXObjcInternal.mm; sourceTree = "<group>"; };
+		C383C3B723B6A62A007A321B /* FLEXRuntimeSafety.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXRuntimeSafety.h; sourceTree = "<group>"; };
+		C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXRuntimeSafety.m; sourceTree = "<group>"; };
+		C383C3BB23B6B398007A321B /* UITextField+Range.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Range.m"; sourceTree = "<group>"; };
+		C383C3BC23B6B398007A321B /* UITextField+Range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+Range.h"; sourceTree = "<group>"; };
+		C383C3BF23B6B429007A321B /* NSTimer+Blocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Blocks.m"; sourceTree = "<group>"; };
+		C383C3C023B6B429007A321B /* NSTimer+Blocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+Blocks.h"; sourceTree = "<group>"; };
+		C383C3C323B6BB81007A321B /* FLEXCodeFontCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXCodeFontCell.h; sourceTree = "<group>"; };
+		C383C3C423B6BB81007A321B /* FLEXCodeFontCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXCodeFontCell.m; sourceTree = "<group>"; };
 		C3878DB823A749960038FDBE /* FLEXVariableEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXVariableEditorViewController.m; sourceTree = "<group>"; };
 		C3878DB923A749960038FDBE /* FLEXVariableEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXVariableEditorViewController.h; sourceTree = "<group>"; };
 		C387C87822DFCD6A00750E58 /* FLEXCarouselCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXCarouselCell.h; sourceTree = "<group>"; };
@@ -491,12 +499,12 @@
 		C398624323AD6C67007E6793 /* TBKeyPathSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBKeyPathSearchController.h; sourceTree = "<group>"; };
 		C398624423AD6C67007E6793 /* TBKeyPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBKeyPath.m; sourceTree = "<group>"; };
 		C398624523AD6C67007E6793 /* TBKeyPathTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBKeyPathTokenizer.h; sourceTree = "<group>"; };
-		C398624623AD6C67007E6793 /* TBKeyPathViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBKeyPathViewController.m; sourceTree = "<group>"; };
+		C398624623AD6C67007E6793 /* FLEXObjcRuntimeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXObjcRuntimeViewController.m; sourceTree = "<group>"; };
 		C398624723AD6C67007E6793 /* TBKeyPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBKeyPath.h; sourceTree = "<group>"; };
 		C398624823AD6C67007E6793 /* TBKeyPathSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBKeyPathSearchController.m; sourceTree = "<group>"; };
 		C398624923AD6C67007E6793 /* TBKeyPathTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBKeyPathTokenizer.m; sourceTree = "<group>"; };
 		C398624A23AD6C67007E6793 /* TBKeyPathToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBKeyPathToolbar.h; sourceTree = "<group>"; };
-		C398624B23AD6C67007E6793 /* TBKeyPathViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBKeyPathViewController.h; sourceTree = "<group>"; };
+		C398624B23AD6C67007E6793 /* FLEXObjcRuntimeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXObjcRuntimeViewController.h; sourceTree = "<group>"; };
 		C398624C23AD6C67007E6793 /* TBKeyPathToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBKeyPathToolbar.m; sourceTree = "<group>"; };
 		C398625723AD6C88007E6793 /* TBToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TBToken.h; sourceTree = "<group>"; };
 		C398625823AD6C88007E6793 /* TBToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TBToken.m; sourceTree = "<group>"; };
@@ -757,14 +765,10 @@
 				779B1EBF1C0C4D7C001F5E49 /* DatabaseBrowser */,
 				3A4C94AD1B5B21410088C3F2 /* SystemLog */,
 				C33CF16B22D664E600F9C6C0 /* FileBrowser */,
-				3A4C949B1B5B21410088C3F2 /* FLEXClassesTableViewController.h */,
-				3A4C949C1B5B21410088C3F2 /* FLEXClassesTableViewController.m */,
 				3A4C94A51B5B21410088C3F2 /* FLEXInstancesTableViewController.h */,
 				3A4C94A61B5B21410088C3F2 /* FLEXInstancesTableViewController.m */,
 				C3DB9F622107FC9600B46809 /* FLEXObjectRef.h */,
 				C3DB9F632107FC9600B46809 /* FLEXObjectRef.m */,
-				3A4C94A71B5B21410088C3F2 /* FLEXLibrariesTableViewController.h */,
-				3A4C94A81B5B21410088C3F2 /* FLEXLibrariesTableViewController.m */,
 				3A4C94A91B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.h */,
 				3A4C94AA1B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.m */,
 				679F64841BD53B7B00A8C94C /* FLEXCookiesTableViewController.h */,
@@ -921,6 +925,8 @@
 		C36FBFB8230F3B52008D95D5 /* Runtime */ = {
 			isa = PBXGroup;
 			children = (
+				C383C3B723B6A62A007A321B /* FLEXRuntimeSafety.h */,
+				C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */,
 				C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */,
 				C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */,
 				3A4C945B1B5B21410088C3F2 /* FLEXRuntimeUtility.h */,
@@ -958,6 +964,10 @@
 				C3F646C0239EAA8F00D4A011 /* UIPasteboard+FLEX.m */,
 				C398625B23AD6E90007E6793 /* UIFont+FLEX.h */,
 				C398625C23AD6E90007E6793 /* UIFont+FLEX.m */,
+				C383C3BC23B6B398007A321B /* UITextField+Range.h */,
+				C383C3BB23B6B398007A321B /* UITextField+Range.m */,
+				C383C3C023B6B429007A321B /* NSTimer+Blocks.h */,
+				C383C3BF23B6B429007A321B /* NSTimer+Blocks.m */,
 				C3BFD06E233C23ED0015FB82 /* NSArray+Functional.h */,
 				C3BFD06F233C23ED0015FB82 /* NSArray+Functional.m */,
 				C3F977812311B38F0032776D /* NSObject+Reflection.h */,
@@ -1005,8 +1015,8 @@
 				C398624923AD6C67007E6793 /* TBKeyPathTokenizer.m */,
 				C398624A23AD6C67007E6793 /* TBKeyPathToolbar.h */,
 				C398624C23AD6C67007E6793 /* TBKeyPathToolbar.m */,
-				C398624B23AD6C67007E6793 /* TBKeyPathViewController.h */,
-				C398624623AD6C67007E6793 /* TBKeyPathViewController.m */,
+				C398624B23AD6C67007E6793 /* FLEXObjcRuntimeViewController.h */,
+				C398624623AD6C67007E6793 /* FLEXObjcRuntimeViewController.m */,
 				C398625F23AD70DF007E6793 /* TBKeyboardToolbar.h */,
 				C398626023AD70DF007E6793 /* TBKeyboardToolbar.m */,
 				C398626323AD70F5007E6793 /* TBToolbarButton.h */,
@@ -1082,6 +1092,8 @@
 				C3F31D372267D883003C991A /* FLEXSubtitleTableViewCell.m */,
 				C3F31D362267D883003C991A /* FLEXMultilineTableViewCell.h */,
 				C3F31D382267D883003C991A /* FLEXMultilineTableViewCell.m */,
+				C383C3C323B6BB81007A321B /* FLEXCodeFontCell.h */,
+				C383C3C423B6BB81007A321B /* FLEXCodeFontCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1101,10 +1113,10 @@
 				C398624D23AD6C67007E6793 /* TBKeyPathSearchController.h in Headers */,
 				3A4C95381B5B21410088C3F2 /* FLEXNetworkRecorder.h in Headers */,
 				3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */,
+				C383C3C523B6BB81007A321B /* FLEXCodeFontCell.h in Headers */,
 				C3F527C12318670F009CBA07 /* FLEXImageShortcuts.h in Headers */,
 				3A4C95051B5B21410088C3F2 /* FLEXArgumentInputViewFactory.h in Headers */,
 				222C88221C7339DC007CA15F /* FLEXRealmDefines.h in Headers */,
-				3A4C951E1B5B21410088C3F2 /* FLEXClassesTableViewController.h in Headers */,
 				779B1ED21C0C4D7C001F5E49 /* FLEXTableColumnHeader.h in Headers */,
 				3A4C94FD1B5B21410088C3F2 /* FLEXArgumentInputStructView.h in Headers */,
 				C3F646C1239EAA8F00D4A011 /* UIPasteboard+FLEX.h in Headers */,
@@ -1112,7 +1124,7 @@
 				C37A0C93218BAC9600848CA7 /* FLEXObjcInternal.h in Headers */,
 				3A4C953E1B5B21410088C3F2 /* FLEXNetworkTransactionDetailTableViewController.h in Headers */,
 				3A4C95301B5B21410088C3F2 /* FLEXSystemLogMessage.h in Headers */,
-				C398625523AD6C67007E6793 /* TBKeyPathViewController.h in Headers */,
+				C398625523AD6C67007E6793 /* FLEXObjcRuntimeViewController.h in Headers */,
 				C3E5DA02231700EE00E655DB /* FLEXExplorerSection.h in Headers */,
 				C34D4EB023A2ABD900C1F903 /* FLEXLayerShortcuts.h in Headers */,
 				C3F646F623A04A7500D4A011 /* FLEXShortcut.h in Headers */,
@@ -1173,7 +1185,6 @@
 				C32A19622317378C00EB02AC /* FLEXDefaultsContentSection.h in Headers */,
 				3A4C94D51B5B21410088C3F2 /* FLEXObjectExplorerViewController.h in Headers */,
 				3A4C95011B5B21410088C3F2 /* FLEXArgumentInputTextView.h in Headers */,
-				3A4C952A1B5B21410088C3F2 /* FLEXLibrariesTableViewController.h in Headers */,
 				C36FBFCC230F3B98008D95D5 /* FLEXProtocolBuilder.h in Headers */,
 				C36FBFDB230F3B98008D95D5 /* FLEXClassBuilder.h in Headers */,
 				779B1ED41C0C4D7C001F5E49 /* FLEXTableContentCell.h in Headers */,
@@ -1190,6 +1201,7 @@
 				94A515251C4CA2080063292F /* FLEXExplorerToolbar.h in Headers */,
 				C387C88322E0D24A00750E58 /* UIView+FLEX_Layout.h in Headers */,
 				3A4C953C1B5B21410088C3F2 /* FLEXNetworkTransaction.h in Headers */,
+				C383C3C223B6B429007A321B /* NSTimer+Blocks.h in Headers */,
 				3A4C952E1B5B21410088C3F2 /* FLEXWebViewController.h in Headers */,
 				C3EE76BF22DFC63600EC0AA0 /* FLEXScopeCarousel.h in Headers */,
 				C398627223AD7951007E6793 /* UIGestureRecognizer+Blocks.h in Headers */,
@@ -1199,6 +1211,7 @@
 				C398625923AD6C88007E6793 /* TBToken.h in Headers */,
 				C33C825E2316DC8600DD2451 /* FLEXObjectExplorer.h in Headers */,
 				C34D4EB423A2AF2A00C1F903 /* FLEXColorPreviewSection.h in Headers */,
+				C383C3BE23B6B398007A321B /* UITextField+Range.h in Headers */,
 				224D49A81C673AB5000EAB86 /* FLEXRealmDatabaseManager.h in Headers */,
 				C398682623AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h in Headers */,
 				7349FD6A22B93CDF00051810 /* FLEXColor.h in Headers */,
@@ -1220,6 +1233,7 @@
 				C398626123AD70DF007E6793 /* TBKeyboardToolbar.h in Headers */,
 				94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */,
 				94A515181C4CA1D70063292F /* FLEXManager+Private.h in Headers */,
+				C383C3B923B6A62A007A321B /* FLEXRuntimeSafety.h in Headers */,
 				C39ED92822D63F3200B5773A /* FLEXAddressExplorerCoordinator.h in Headers */,
 				C32A195E231732E800EB02AC /* FLEXCollectionContentSection.h in Headers */,
 				3A4C94E11B5B21410088C3F2 /* FLEXResources.h in Headers */,
@@ -1356,12 +1370,12 @@
 				C3F646C2239EAA8F00D4A011 /* UIPasteboard+FLEX.m in Sources */,
 				3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputObjectView.m in Sources */,
 				3A4C94EC1B5B21410088C3F2 /* FLEXImagePreviewViewController.m in Sources */,
+				C383C3BA23B6A62A007A321B /* FLEXRuntimeSafety.m in Sources */,
 				3A4C94F21B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.m in Sources */,
 				C3BFD071233C23ED0015FB82 /* NSArray+Functional.m in Sources */,
 				7349FD6B22B93CDF00051810 /* FLEXColor.m in Sources */,
 				C3878DBA23A749960038FDBE /* FLEXVariableEditorViewController.m in Sources */,
 				94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */,
-				3A4C951F1B5B21410088C3F2 /* FLEXClassesTableViewController.m in Sources */,
 				C398624E23AD6C67007E6793 /* TBKeyPath.m in Sources */,
 				C36FBFD4230F3B98008D95D5 /* FLEXProtocol.m in Sources */,
 				C34D4EB123A2ABD900C1F903 /* FLEXLayerShortcuts.m in Sources */,
@@ -1402,6 +1416,7 @@
 				3A4C95411B5B21410088C3F2 /* FLEXNetworkTransactionTableViewCell.m in Sources */,
 				C3F527BE2318603F009CBA07 /* FLEXShortcutsSection.m in Sources */,
 				3A4C94D61B5B21410088C3F2 /* FLEXObjectExplorerViewController.m in Sources */,
+				C383C3BD23B6B398007A321B /* UITextField+Range.m in Sources */,
 				3A4C94DE1B5B21410088C3F2 /* FLEXHeapEnumerator.m in Sources */,
 				3A4C95251B5B21410088C3F2 /* FLEXFileBrowserTableViewController.m in Sources */,
 				C36FBFD1230F3B98008D95D5 /* FLEXClassBuilder.m in Sources */,
@@ -1415,6 +1430,7 @@
 				3A4C94FC1B5B21410088C3F2 /* FLEXArgumentInputStringView.m in Sources */,
 				3A4C94F81B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.m in Sources */,
 				3A4C95351B5B21410088C3F2 /* FLEXSystemLogTableViewController.m in Sources */,
+				C383C3C623B6BB81007A321B /* FLEXCodeFontCell.m in Sources */,
 				3A4C95271B5B21410088C3F2 /* FLEXGlobalsTableViewController.m in Sources */,
 				71E1C2172307FBB800F5032A /* FLEXKeychain.m in Sources */,
 				C3F646F323A045DB00D4A011 /* FLEXClassShortcuts.m in Sources */,
@@ -1432,6 +1448,7 @@
 				C3F977882311B38F0032776D /* NSObject+Reflection.m in Sources */,
 				94A515261C4CA2080063292F /* FLEXExplorerToolbar.m in Sources */,
 				C33C825F2316DC8600DD2451 /* FLEXObjectExplorer.m in Sources */,
+				C383C3C123B6B429007A321B /* NSTimer+Blocks.m in Sources */,
 				3A4C94FA1B5B21410088C3F2 /* FLEXArgumentInputNumberView.m in Sources */,
 				779B1ED71C0C4D7C001F5E49 /* FLEXTableContentViewController.m in Sources */,
 				C36FBFCB230F3B98008D95D5 /* FLEXMirror.m in Sources */,
@@ -1448,14 +1465,13 @@
 				C34D4EB923A2B17900C1F903 /* FLEXBundleShortcuts.m in Sources */,
 				3A4C952D1B5B21410088C3F2 /* FLEXLiveObjectsTableViewController.m in Sources */,
 				C33E46B0223B02CD004BD0E6 /* FLEXASLLogController.m in Sources */,
-				C398625023AD6C67007E6793 /* TBKeyPathViewController.m in Sources */,
+				C398625023AD6C67007E6793 /* FLEXObjcRuntimeViewController.m in Sources */,
 				C398626E23AD71C1007E6793 /* TBRuntime.m in Sources */,
 				3A4C953D1B5B21410088C3F2 /* FLEXNetworkTransaction.m in Sources */,
 				3A4C94E81B5B21410088C3F2 /* FLEXHierarchyTableViewCell.m in Sources */,
 				3A4C950A1B5B21410088C3F2 /* FLEXFieldEditorView.m in Sources */,
 				3A4C95061B5B21410088C3F2 /* FLEXArgumentInputViewFactory.m in Sources */,
 				3A4C95291B5B21410088C3F2 /* FLEXInstancesTableViewController.m in Sources */,
-				3A4C952B1B5B21410088C3F2 /* FLEXLibrariesTableViewController.m in Sources */,
 				71E1C2182307FBB800F5032A /* FLEXKeychainTableViewController.m in Sources */,
 				94A5151E1C4CA1F10063292F /* FLEXExplorerViewController.m in Sources */,
 				C398625A23AD6C88007E6793 /* TBToken.m in Sources */,

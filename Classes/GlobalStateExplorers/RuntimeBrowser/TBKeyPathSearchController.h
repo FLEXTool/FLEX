@@ -1,6 +1,6 @@
 //
-//  TBKeyPathSearchController.h
-//  TBTweakViewController
+//  FLEXKeyPathSearchController.h
+//  FLEX
 //
 //  Created by Tanner on 3/23/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
@@ -10,17 +10,18 @@
 #import "TBKeyPathToolbar.h"
 #import "FLEXMethod.h"
 
+@protocol TBKeyPathSearchControllerDelegate <UITableViewDataSource>
 
-@protocol TBKeyPathSearchControllerDelegate <NSObject>
 @property (nonatomic, readonly) UITableView *tableView;
-@property (nonatomic, readonly) UISearchBar *searchBar;
-@property (nonatomic, readonly) UINavigationController *navigationController;
+@property (nonatomic, readonly) UISearchController *searchController;
 
-@property (nonatomic, readonly) NSString *longPressItemSELPrefix;
-
-- (void)didSelectMethod:(FLEXMethod *)method;
+/// For loaded images which don't have an NSBundle
+- (void)didSelectImagePath:(NSString *)message shortName:(NSString *)shortName;
+- (void)didSelectBundle:(NSBundle *)bundle;
+- (void)didSelectClass:(Class)cls;
 
 @end
+
 
 @interface TBKeyPathSearchController : NSObject <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
@@ -28,9 +29,7 @@
 
 @property (nonatomic) TBKeyPathToolbar *toolbar;
 
-- (void)longPressedRect:(CGRect)rect at:(NSIndexPath *)indexPath;
 - (void)didSelectKeyPathOption:(NSString *)text;
-- (void)didSelectSuperclass:(NSString *)name;
 - (void)didPressButton:(NSString *)text insertInto:(UISearchBar *)searchBar;
 
 @end

@@ -113,13 +113,21 @@
 }
 
 - (NSArray *)prettyArgumentComponents {
+    // NSMethodSignature can't handle some type encodings
+    // like ^AI@:ir* which happen to very much exist
+    if (self.signature.numberOfArguments < self.numberOfArguments) {
+        return nil;
+    }
+    
     NSMutableArray *components = [NSMutableArray new];
 
     NSArray *selectorComponents = [self.selectorString componentsSeparatedByString:@":"];
     NSUInteger numberOfArguments = self.numberOfArguments;
     
     for (NSUInteger argIndex = 2; argIndex < numberOfArguments; argIndex++) {
-        const char *argType = [self.signature getArgumentTypeAtIndex:argIndex];
+        assert(argIndex < self.signature.numberOfArguments);
+        
+        const char *argType = [self.signature getArgumentTypeAtIndex:argIndex] ?: "?";
         NSString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
         NSString *prettyComponent = [NSString
             stringWithFormat:@"%@:(%@) ",

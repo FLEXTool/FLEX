@@ -1,8 +1,7 @@
 //
-//  TBToolbarButton.h
+//  FLEXToolbarButton.h
 //
-//  Created by Rudd Fawcett on 12/3/13.
-//  Copyright (c) 2013 Rudd Fawcett. All rights reserved.
+//  Created by Tanner on 6/11/17.
 //
 
 #import <UIKit/UIKit.h>
@@ -12,6 +11,7 @@ typedef void (^TBToolbarAction)(NSString *buttonTitle);
 
 @interface TBToolbarButton : UIButton
 
+/// Set to `default` to use the system appearance on iOS 13+
 @property (nonatomic) UIKeyboardAppearance appearance;
 
 + (instancetype)buttonWithTitle:(NSString *)title;

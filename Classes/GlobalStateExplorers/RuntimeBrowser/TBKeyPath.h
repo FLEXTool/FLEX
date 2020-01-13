@@ -1,6 +1,6 @@
 //
-//  TBKeyPath.h
-//  TBTweakViewController
+//  FLEXKeyPath.h
+//  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// The @code TBKeyPathTokenizer @endcode class is used to create
 /// a key path from a string.
 @interface TBKeyPath : NSObject
+
++ (instancetype)empty;
 
 /// @param method must start with either a wildcard or a + or -.
 + (instancetype)bundle:(TBToken *)bundle

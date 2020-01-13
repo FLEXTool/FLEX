@@ -158,7 +158,7 @@
     return [list flex_filtered:^BOOL(id obj, NSUInteger idx) {
         NSString *name = [obj name];
         if ([names containsObject:name]) {
-            return nil;
+            return NO;
         } else {
             [names addObject:name];
 
@@ -166,22 +166,22 @@
             switch (kind) {
                 case FLEXMetadataKindProperties:
                     if ([superclass instancesRespondToSelector:[obj likelyGetter]]) {
-                        return nil;
+                        return NO;
                     }
                     break;
                 case FLEXMetadataKindClassProperties:
                     if ([superclass respondsToSelector:[obj likelyGetter]]) {
-                        return nil;
+                        return NO;
                     }
                     break;
                 case FLEXMetadataKindMethods:
                     if ([superclass instancesRespondToSelector:NSSelectorFromString(name)]) {
-                        return nil;
+                        return NO;
                     }
                     break;
                 case FLEXMetadataKindClassMethods:
                     if ([superclass respondsToSelector:NSSelectorFromString(name)]) {
-                        return nil;
+                        return NO;
                     }
                     break;
                     
@@ -189,7 +189,7 @@
                 case FLEXMetadataKindIvars: break;
             }
 
-            return obj;
+            return YES;
         }
     }];
 }

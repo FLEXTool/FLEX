@@ -8,11 +8,13 @@
 //
 
 #import "NSObject+Reflection.h"
+#import "FLEXClassBuilder.h"
 #import "FLEXMirror.h"
 #import "FLEXProperty.h"
 #import "FLEXMethod.h"
 #import "FLEXIvar.h"
 #import "FLEXPropertyAttributes.h"
+#import "NSArray+Functional.h"
 
 
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...) {
@@ -31,6 +33,33 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
     
     return encoding.copy;
 }
+
+
+#pragma mark NSProxy
+
+@interface NSProxy (AnyObjectAdditions) @end
+@implementation NSProxy (AnyObjectAdditions)
+
++ (void)load {
+    // We need to get all of the methods in this file and add them to NSProxy. 
+    // To do this we we need the class itself and it's metaclass.
+    Class NSProxyClass = [NSProxy class];
+    Class NSProxy_meta = object_getClass(NSProxyClass);
+    
+    // Copy all of the "flex_" methods from NSObject
+    id filterFunc = ^BOOL(FLEXMethod *method, NSUInteger idx) {
+        return [method.name hasPrefix:@"flex_"];
+    };
+    NSArray *instanceMethods = [[NSObject flex_allInstanceMethods] flex_filtered:filterFunc];
+    NSArray *classMethods = [[NSObject flex_allClassMethods] flex_filtered:filterFunc];
+    
+    FLEXClassBuilder *proxy = [FLEXClassBuilder builderForClass:NSProxyClass];
+    FLEXClassBuilder *meta  = [FLEXClassBuilder builderForClass:NSProxy_meta];
+    [proxy addMethods:instanceMethods];
+    [meta addMethods:classMethods];
+}
+
+@end
 
 #pragma mark Reflection
 

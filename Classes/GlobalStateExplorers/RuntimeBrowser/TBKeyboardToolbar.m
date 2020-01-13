@@ -1,14 +1,13 @@
 //
-//  TBKeyboardToolbar.m
+//  FLEXKeyboardToolbar.m
 //
-//  Created by Rudd Fawcett on 12/3/13.
-//  Copyright (c) 2013 Rudd Fawcett. All rights reserved.
+//  Created by Tanner on 6/11/17.
 //
 
 #import "TBKeyboardToolbar.h"
+#import "FLEXUtility.h"
 
 #define kToolbarHeight 44
-
 
 @interface TBKeyboardToolbar ()
 
@@ -17,6 +16,10 @@
 @property (nonatomic) UIView       *toolbarView;
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) UIVisualEffectView *blurView;
+/// YES if appearance is set to `default`
+@property (nonatomic, readonly) BOOL useSystemAppearance;
+/// YES if the current trait collection is set to dark mode and \c useSystemAppearance is YES
+@property (nonatomic, readonly) BOOL usingDarkMode;
 @end
 
 @implementation TBKeyboardToolbar
@@ -30,8 +33,13 @@
     if (self) {
         _buttons = [buttons copy];
         
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
-        self.appearance = UIKeyboardAppearanceLight;
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        
+        if (@available(iOS 13, *)) {
+            self.appearance = UIKeyboardTypeDefault;
+        } else {
+            self.appearance = UIKeyboardAppearanceLight;
+        }
     }
     
     return self;
@@ -40,6 +48,7 @@
 - (void)setAppearance:(UIKeyboardAppearance)appearance {
     _appearance = appearance;
     
+    // Remove toolbar if it exits because it will be recreated below
     if (self.toolbarView) {
         [self.toolbarView removeFromSuperview];
     }
@@ -48,6 +57,8 @@
 }
 
 - (void)layoutSubviews {
+    [super layoutSubviews];
+    
     CGRect frame = _toolbarView.bounds;
     frame.size.height = 0.5f;
     
@@ -58,31 +69,49 @@
     _topBorder       = [CALayer layer];
     _topBorder.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, 0.5f);
     
+    UIColor *borderColor = nil;
+    UIBlurEffectStyle style;
+    
     switch (_appearance) {
         case UIKeyboardAppearanceDefault:
+            #if FLEX_AT_LEAST_IOS13_SDK
+            if (@available(iOS 13, *)) {
+                borderColor = [UIColor systemBackgroundColor];
+                
+                if (self.usingDarkMode) {
+                    style = UIBlurEffectStyleSystemThickMaterial;
+                    self.backgroundColor = nil;
+                } else {
+                    style = UIBlurEffectStyleSystemUltraThinMaterialLight;
+                    self.backgroundColor = [UIColor colorWithWhite:0.700 alpha:0.750];
+                }
+                break;
+            }
+            #endif
         case UIKeyboardAppearanceLight: {
-            _toolbarView = [UIView new];
-            _toolbarView.backgroundColor = [UIColor colorWithRed:0.799 green:0.814 blue:0.847 alpha:1.000];
-            _topBorder.backgroundColor   = [UIColor clearColor].CGColor;
-            [_toolbarView.layer addSublayer:_topBorder];
-            [_toolbarView addSubview:[self fakeToolbar]];
+            style = UIBlurEffectStyleLight;
+            borderColor = [UIColor clearColor];
             break;
         }
         case UIKeyboardAppearanceDark: {
-            UIVisualEffect *darkBlur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-            _blurView = [[UIVisualEffectView alloc] initWithEffect:darkBlur];
-            _toolbarView = _blurView;
-            _topBorder.backgroundColor = [UIColor colorWithWhite:0.100 alpha:1.000].CGColor;
-            [_blurView.contentView.layer addSublayer:_topBorder];
-            [_blurView.contentView addSubview:[self fakeToolbar]];
+            style = UIBlurEffectStyleDark;
+            borderColor = [UIColor colorWithWhite:0.100 alpha:1.000];
             break;
         }
     }
     
-    _toolbarView.frame = CGRectMake(0, 0, self.bounds.size.width, kToolbarHeight);
-    _toolbarView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    UIVisualEffect *blur = [UIBlurEffect effectWithStyle:style];
+    self.blurView = [[UIVisualEffectView alloc] initWithEffect:blur];
+    [self.blurView.contentView.layer addSublayer:self.topBorder];
+    [self.blurView.contentView addSubview:[self fakeToolbar]];
     
-    return _toolbarView;
+    self.toolbarView = self.blurView;
+    self.toolbarView.frame = CGRectMake(0, 0, self.bounds.size.width, kToolbarHeight);
+    self.toolbarView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    
+    self.topBorder.backgroundColor = borderColor.CGColor;
+    
+    return self.toolbarView;
 }
 
 - (UIScrollView *)fakeToolbar {
@@ -124,14 +153,14 @@
     _scrollView.contentSize = contentSize;
 }
 
-- (void)setButtons:(NSArray<TBToolbarButton*> *)buttons {
+- (void)setButtons:(NSArray<TBToolbarButton *> *)buttons {
     [_buttons makeObjectsPerformSelector:@selector(removeFromSuperview)];
     _buttons = buttons.copy;
     
     [self addButtons];
 }
 
-- (void)setButtons:(NSArray<TBToolbarButton*> *)buttons animated:(BOOL)animated {
+- (void)setButtons:(NSArray<TBToolbarButton *> *)buttons animated:(BOOL)animated {
     if (!animated) {
         self.buttons = buttons;
         return;
@@ -167,6 +196,30 @@
             }
         }];
     }];
+}
+
+- (BOOL)useSystemAppearance {
+    return self.appearance == UIKeyboardAppearanceDefault;
+}
+
+- (BOOL)usingDarkMode {
+    if (@available(iOS 12, *)) {
+        return self.useSystemAppearance && self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+    }
+    
+    return self.appearance == UIKeyboardAppearanceDark;
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previous {
+    if (@available(iOS 12, *)) {
+        // Was darkmode toggled?
+        if (previous.userInterfaceStyle != self.traitCollection.userInterfaceStyle) {
+            if (self.useSystemAppearance) {
+                // Recreate the background view with the proper colors
+                self.appearance = self.appearance;
+            }
+        }
+    }
 }
 
 @end

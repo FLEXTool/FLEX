@@ -10,11 +10,13 @@
 #import "FLEXUtility.h"
 #import "FLEXSubtitleTableViewCell.h"
 #import "FLEXMultilineTableViewCell.h"
+#import "FLEXCodeFontCell.h"
 
 FLEXTableViewCellReuseIdentifier const kFLEXDefaultCell = @"kFLEXDefaultCell";
 FLEXTableViewCellReuseIdentifier const kFLEXDetailCell = @"kFLEXDetailCell";
 FLEXTableViewCellReuseIdentifier const kFLEXMultilineCell = @"kFLEXMultilineCell";
 FLEXTableViewCellReuseIdentifier const kFLEXMultilineDetailCell = @"kFLEXMultilineDetailCell";
+FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell = @"kFLEXCodeFontCell";
 
 #pragma mark Private
 
@@ -69,6 +71,10 @@ FLEXTableViewCellReuseIdentifier const kFLEXMultilineDetailCell = @"kFLEXMultili
     return [[self alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
 }
 
++ (id)style:(UITableViewStyle)style {
+    return [[self alloc] initWithFrame:CGRectZero style:style];
+}
+
 - (id)initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
     self = [super initWithFrame:frame style:style];
     if (self) {
@@ -76,7 +82,8 @@ FLEXTableViewCellReuseIdentifier const kFLEXMultilineDetailCell = @"kFLEXMultili
             kFLEXDefaultCell : [FLEXTableViewCell class],
             kFLEXDetailCell : [FLEXSubtitleTableViewCell class],
             kFLEXMultilineCell : [FLEXMultilineTableViewCell class],
-            kFLEXMultilineDetailCell : [FLEXMultilineDetailTableViewCell class]
+            kFLEXMultilineDetailCell : [FLEXMultilineDetailTableViewCell class],
+            kFLEXCodeFontCell : [FLEXCodeFontCell class],
         }];
     }
 
