@@ -26,20 +26,26 @@
     if (self) {
         self.inputTextView = [UITextView new];
         self.inputTextView.font = [[self class] inputFont];
-        self.inputTextView.backgroundColor = [FLEXColor primaryBackgroundColor];
-        self.inputTextView.layer.borderColor = [FLEXColor borderColor].CGColor;
-        self.inputTextView.layer.borderWidth = 1.f;
-        self.inputTextView.layer.cornerRadius = 5.f;
+        self.inputTextView.backgroundColor = [FLEXColor secondaryGroupedBackgroundColor];
+        self.inputTextView.layer.cornerRadius = 10.f;
+        self.inputTextView.contentInset = UIEdgeInsetsMake(0, 5, 0, 0);
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextView.delegate = self;
         self.inputTextView.inputAccessoryView = [self createToolBar];
-        [self addSubview:self.inputTextView];
+        if (@available(iOS 11, *)) {
+            [self.inputTextView.layer setValue:@YES forKey:@"continuousCorners"];
+        } else {
+            self.inputTextView.layer.borderWidth = 1.f;
+            self.inputTextView.layer.borderColor = [FLEXColor borderColor].CGColor;
+        }
 
         self.placeholderLabel = [UILabel new];
         self.placeholderLabel.font = self.inputTextView.font;
         self.placeholderLabel.textColor = [FLEXColor deemphasizedTextColor];
         self.placeholderLabel.numberOfLines = 0;
+
+        [self addSubview:self.inputTextView];
         [self.inputTextView addSubview:self.placeholderLabel];
 
     }
@@ -52,15 +58,16 @@
 {
     UIToolbar *toolBar = [UIToolbar new];
     [toolBar sizeToFit];
-    UIBarButtonItem *spaceItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(textViewDone)];
+    UIBarButtonItem *spaceItem = [[UIBarButtonItem alloc]
+        initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+        target:nil action:nil
+    ];
+    UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
+        initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+        target:self.inputTextView action:@selector(resignFirstResponder)
+    ];
     toolBar.items = @[spaceItem, doneItem];
     return toolBar;
-}
-
-- (void)textViewDone
-{
-    [self.inputTextView resignFirstResponder];
 }
 
 - (void)setInputPlaceholderText:(NSString *)placeholder
@@ -134,20 +141,6 @@
     CGSize fitSize = [super sizeThatFits:size];
     fitSize.height += [self inputTextViewHeight];
     return fitSize;
-}
-
-
-#pragma mark - Trait collection changes
-
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection
-{
-#if FLEX_AT_LEAST_IOS13_SDK
-    if (@available(iOS 13.0, *)) {
-        if (previousTraitCollection.userInterfaceStyle != self.traitCollection.userInterfaceStyle) {
-            self.inputTextView.layer.borderColor = [FLEXColor borderColor].CGColor;
-        }
-    }
-#endif
 }
 
 

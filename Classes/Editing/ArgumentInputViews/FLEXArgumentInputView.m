@@ -8,6 +8,7 @@
 
 #import "FLEXArgumentInputView.h"
 #import "FLEXUtility.h"
+#import "FLEXColor.h"
 
 @interface FLEXArgumentInputView ()
 
@@ -58,8 +59,7 @@
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.font = [[self class] titleFont];
-        _titleLabel.backgroundColor = self.backgroundColor;
-        _titleLabel.textColor = [UIColor colorWithWhite:0.3 alpha:1.0];
+        _titleLabel.textColor = [FLEXColor primaryTextColor];
         _titleLabel.numberOfLines = 0;
         [self addSubview:_titleLabel];
     }

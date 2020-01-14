@@ -98,7 +98,6 @@
     [self.view addSubview:self.scrollView];
     
     _fieldEditorView = [FLEXFieldEditorView new];
-    self.fieldEditorView.backgroundColor = self.view.backgroundColor;
     self.fieldEditorView.targetDescription = [NSString stringWithFormat:@"%@ %p", [self.target class], self.target];
     [self.scrollView addSubview:self.fieldEditorView];
     

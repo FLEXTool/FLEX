@@ -11,6 +11,7 @@
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXPropertyAttributes.h"
 #import "FLEXUtility.h"
+#import "FLEXColor.h"
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
@@ -51,6 +52,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.view.backgroundColor = [FLEXColor groupedBackgroundColor];
+
     // Create getter button
     _getterButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Get"
@@ -64,7 +67,6 @@
     self.fieldEditorView.fieldDescription = self.fieldDescription;
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:self.typeEncoding];
     inputView.inputValue = self.currentValue;
-    inputView.backgroundColor = self.view.backgroundColor;
     inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
 

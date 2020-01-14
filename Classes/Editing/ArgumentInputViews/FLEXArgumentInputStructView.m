@@ -24,16 +24,21 @@
     if (self) {
         NSMutableArray<FLEXArgumentInputView *> *inputViews = [NSMutableArray array];
         NSArray<NSString *> *customTitles = [[self class] customFieldTitlesForTypeEncoding:typeEncoding];
-        [FLEXRuntimeUtility enumerateTypesInStructEncoding:typeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+        [FLEXRuntimeUtility enumerateTypesInStructEncoding:typeEncoding usingBlock:^(NSString *structName,
+                                                                                     const char *fieldTypeEncoding,
+                                                                                     NSString *prettyTypeEncoding,
+                                                                                     NSUInteger fieldIndex,
+                                                                                     NSUInteger fieldOffset) {
             
             FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:fieldTypeEncoding];
-            inputView.backgroundColor = self.backgroundColor;
             inputView.targetSize = FLEXArgumentInputViewSizeSmall;
             
             if (fieldIndex < customTitles.count) {
                 inputView.title = customTitles[fieldIndex];
             } else {
-                inputView.title = [NSString stringWithFormat:@"%@ field %lu (%@)", structName, (unsigned long)fieldIndex, prettyTypeEncoding];
+                inputView.title = [NSString stringWithFormat:@"%@ field %lu (%@)",
+                    structName, (unsigned long)fieldIndex, prettyTypeEncoding
+                ];
             }
 
             [inputViews addObject:inputView];
@@ -69,7 +74,11 @@
             if (valueSize > 0) {
                 void *unboxedValue = malloc(valueSize);
                 [inputValue getValue:unboxedValue];
-                [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+                [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName,
+                                                                                                   const char *fieldTypeEncoding,
+                                                                                                   NSString *prettyTypeEncoding,
+                                                                                                   NSUInteger fieldIndex,
+                                                                                                   NSUInteger fieldOffset) {
                     
                     void *fieldPointer = unboxedValue + fieldOffset;
                     FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
@@ -99,7 +108,11 @@
     
     if (structSize > 0) {
         void *unboxedStruct = malloc(structSize);
-        [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+        [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName,
+                                                                                           const char *fieldTypeEncoding,
+                                                                                           NSString *prettyTypeEncoding,
+                                                                                           NSUInteger fieldIndex,
+                                                                                           NSUInteger fieldOffset) {
             
             void *fieldPointer = unboxedStruct + fieldOffset;
             FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
