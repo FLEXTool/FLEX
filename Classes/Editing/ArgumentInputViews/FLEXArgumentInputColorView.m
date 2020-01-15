@@ -35,7 +35,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.slider = [UISlider new];
-        self.slider.backgroundColor = self.backgroundColor;
         [self.slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.slider];
         

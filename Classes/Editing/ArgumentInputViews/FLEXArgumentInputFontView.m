@@ -25,13 +25,11 @@
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.fontNameInput = [[FLEXArgumentInputFontsPickerView alloc] initWithArgumentTypeEncoding:FLEXEncodeClass(NSString)];
-        self.fontNameInput.backgroundColor = self.backgroundColor;
         self.fontNameInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.fontNameInput.title = @"Font Name:";
         [self addSubview:self.fontNameInput];
         
         self.pointSizeInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(CGFloat)];
-        self.pointSizeInput.backgroundColor = self.backgroundColor;
         self.pointSizeInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.pointSizeInput.title = @"Point Size:";
         [self addSubview:self.pointSizeInput];
