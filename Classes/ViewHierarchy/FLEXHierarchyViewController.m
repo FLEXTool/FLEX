@@ -112,8 +112,6 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
 
 - (void)setMode:(FLEXHierarchyViewMode)mode {
     if (mode != _mode) {
-        _mode = mode;
-
         // The tree view controller is our top stack view controller, and
         // changing the mode simply pushes the snapshot view. In the future,
         // I would like to have the 3D toggle button transparently switch
@@ -123,12 +121,17 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
             case FLEXHierarchyViewModeTree:
                 [self popViewControllerAnimated:NO];
                 self.toolbarHidden = YES;
+                self.treeViewController.selectedView = self.selectedView;
                 break;
             case FLEXHierarchyViewMode3DSnapshot:
                 [self pushViewController:self.snapshotViewController animated:NO];
                 self.toolbarHidden = NO;
+                self.snapshotViewController.selectedView = self.selectedView;
                 break;
         }
+
+        // Change this last so that self.selectedView works right above
+        _mode = mode;
     }
 }
 
@@ -140,15 +143,5 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
             return self.snapshotViewController.selectedView;
     }
 }
-
-
-//#pragma mark - FLEXSearchResultsUpdating
-//
-//- (void)updateSearchResults:(NSString *)newText {
-//    [self.treeViewController updateSearchResults:newText];
-//
-//    // TODO: switch between views at tap and full hierarchy
-//    [self.snapshotViewController updateSearchResults:newText];
-//}
 
 @end

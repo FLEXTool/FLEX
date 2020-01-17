@@ -290,7 +290,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 /// Not having a title in the first section looks weird with a rounded-corner table view style
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (@available(iOS 13, *)) {
-        return @" "; // For inset grouped style
+        if (self.style == UITableViewStyleInsetGrouped) {
+            return @" ";
+        }
     }
 
     return nil; // For plain/gropued style

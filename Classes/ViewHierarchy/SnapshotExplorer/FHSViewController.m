@@ -11,8 +11,8 @@
 #import "FLEXColor.h"
 #import "FLEXAlert.h"
 #import "NSArray+Functional.h"
-#import "FLEXHierarchyViewController.h"
 #import "FLEXWindow.h"
+#import "FLEXHierarchyViewController.h"
 
 BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 
@@ -197,7 +197,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 #pragma mark Helper
 
 - (FHSViewSnapshot *)snapshotForView:(UIView *)view {
-    if (!view) return nil;
+    if (!view || !self.snapshots.count) return nil;
 
     for (FHSViewSnapshot *snapshot in self.snapshots) {
         FHSViewSnapshot *found = [snapshot snapshotForView:view];
@@ -206,6 +206,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
         }
     }
 
+    // Error: we have snapshots but the view we requested is not in one
     @throw NSInternalInconsistencyException;
     return nil;
 }
