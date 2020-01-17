@@ -12,6 +12,9 @@
 @interface FLEXSingleRowSection ()
 @property (nonatomic, readonly) NSString *reuseIdentifier;
 @property (nonatomic, readonly) void (^cellConfiguration)(__kindof UITableViewCell *cell);
+
+@property (nonatomic) NSString *lastTitle;
+@property (nonatomic) NSString *lastSubitle;
 @end
 
 @implementation FLEXSingleRowSection
@@ -70,6 +73,16 @@
     cell.accessoryType = UITableViewCellAccessoryNone;
     
     self.cellConfiguration(cell);
+    self.lastTitle = cell.textLabel.text;
+    self.lastSubitle = cell.detailTextLabel.text;
+}
+
+- (NSString *)titleForRow:(NSInteger)row {
+    return self.lastTitle;
+}
+
+- (NSString *)subtitleForRow:(NSInteger)row {
+    return self.lastSubitle;
 }
 
 @end

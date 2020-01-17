@@ -381,7 +381,7 @@
         NSString *copy = [section titleForRow:indexPath.row];
         NSString *subtitle = [section subtitleForRow:indexPath.row];
 
-        if (subtitle) {
+        if (subtitle.length) {
             copy = [NSString stringWithFormat:@"%@\n\n%@", copy, subtitle];
         }
 
