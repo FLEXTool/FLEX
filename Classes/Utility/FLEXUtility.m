@@ -101,7 +101,7 @@
             UIGraphicsEndImageContext();
 
             // Create dynamic color provider
-            patternColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+            patternColor = [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traitCollection) {
                 return (traitCollection.userInterfaceStyle == UIUserInterfaceStyleLight
                         ? [UIColor colorWithPatternImage:indentationPatternImage]
                         : [UIColor colorWithPatternImage:darkModePatternImage]);

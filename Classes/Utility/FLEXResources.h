@@ -11,24 +11,29 @@
 
 @interface FLEXResources : NSObject
 
-+ (UIImage *)closeIcon;
-+ (UIImage *)dragHandle;
-+ (UIImage *)globeIcon;
-+ (UIImage *)hierarchyIndentPattern;
-+ (UIImage *)listIcon;
-+ (UIImage *)moveIcon;
-+ (UIImage *)selectIcon;
-+ (UIImage *)checkerPattern;
+@property (readonly, class) UIImage *closeIcon;
+@property (readonly, class) UIImage *dragHandle;
+@property (readonly, class) UIImage *globeIcon;
+@property (readonly, class) UIImage *hierarchyIndentPattern;
+@property (readonly, class) UIImage *listIcon;
+@property (readonly, class) UIImage *moveIcon;
+@property (readonly, class) UIImage *selectIcon;
+@property (readonly, class) UIImage *checkerPattern;
 
-+ (UIImage *)jsonIcon;
-+ (UIImage *)textPlainIcon;
-+ (UIImage *)htmlIcon;
-+ (UIImage *)audioIcon;
-+ (UIImage *)jsIcon;
-+ (UIImage *)plistIcon;
-+ (UIImage *)textIcon;
-+ (UIImage *)videoIcon;
-+ (UIImage *)xmlIcon;
-+ (UIImage *)binaryIcon;
+@property (readonly, class) UIImage *jsonIcon;
+@property (readonly, class) UIImage *textPlainIcon;
+@property (readonly, class) UIImage *htmlIcon;
+@property (readonly, class) UIImage *audioIcon;
+@property (readonly, class) UIImage *jsIcon;
+@property (readonly, class) UIImage *plistIcon;
+@property (readonly, class) UIImage *textIcon;
+@property (readonly, class) UIImage *videoIcon;
+@property (readonly, class) UIImage *xmlIcon;
+@property (readonly, class) UIImage *binaryIcon;
+
+@property (readonly, class) UIImage *rangeSliderLeftHandle;
+@property (readonly, class) UIImage *rangeSliderRightHandle;
+@property (readonly, class) UIImage *rangeSliderTrack;
+@property (readonly, class) UIImage *rangeSliderFill;
 
 @end

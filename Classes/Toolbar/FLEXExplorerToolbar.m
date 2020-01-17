@@ -48,7 +48,7 @@
         
         UIImage *dragHandle = [FLEXResources dragHandle];
         self.dragHandleImageView = [[UIImageView alloc] initWithImage:dragHandle];
-        self.dragHandleImageView.tintColor = [FLEXColor iconColor];
+        self.dragHandleImageView.tintColor = [[FLEXColor iconColor] colorWithAlphaComponent:0.666];
         [self.dragHandle addSubview:self.dragHandleImageView];
         
         UIImage *globalsIcon = [FLEXResources globeIcon];
@@ -224,7 +224,7 @@
 
 + (CGFloat)dragHandleWidth
 {
-    return 30.0;
+    return [FLEXResources dragHandle].size.width;
 }
 
 + (CGFloat)descriptionLabelHeight
