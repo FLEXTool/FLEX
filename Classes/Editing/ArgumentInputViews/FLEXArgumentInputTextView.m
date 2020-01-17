@@ -62,11 +62,15 @@
         initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
         target:nil action:nil
     ];
+    UIBarButtonItem *pasteItem = [[UIBarButtonItem alloc]
+        initWithTitle:@"Paste" style:UIBarButtonItemStyleDone
+        target:self.inputTextView action:@selector(paste:)
+    ];
     UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
         initWithBarButtonSystemItem:UIBarButtonSystemItemDone
         target:self.inputTextView action:@selector(resignFirstResponder)
     ];
-    toolBar.items = @[spaceItem, doneItem];
+    toolBar.items = @[spaceItem, pasteItem, doneItem];
     return toolBar;
 }
 
