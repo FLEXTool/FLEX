@@ -19,6 +19,8 @@
 #import "FLEXLayerExplorerViewController.h"
 #import "FLEXColorExplorerViewController.h"
 #import "FLEXBundleExplorerViewController.h"
+#import "FLEXGlobalsTableViewController.h"
+#import "FLEXAlert.h"
 #import <objc/runtime.h>
 
 @implementation FLEXObjectExplorerFactory

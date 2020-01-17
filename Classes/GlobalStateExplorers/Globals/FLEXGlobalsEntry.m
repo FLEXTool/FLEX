@@ -12,17 +12,21 @@
 
 + (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)cls row:(FLEXGlobalsRow)row
 {
+    BOOL providesVCs = [cls respondsToSelector:@selector(globalsEntryViewController:)];
+    BOOL providesActions = [cls respondsToSelector:@selector(globalsEntryRowAction:)];
     NSParameterAssert(cls);
-    NSParameterAssert(
-        [cls respondsToSelector:@selector(globalsEntryViewController:)] ||
-        [cls respondsToSelector:@selector(globalsEntryRowAction:)]
-    );
+    NSParameterAssert(providesVCs || providesActions);
 
     FLEXGlobalsEntry *entry = [self new];
     entry->_entryNameFuture = ^{ return [cls globalsEntryTitle:row]; };
 
-    if ([cls respondsToSelector:@selector(globalsEntryViewController:)]) {
-        entry->_viewControllerFuture = ^{ return [cls globalsEntryViewController:row]; };
+    if (providesVCs) {
+        id action = providesActions ? [cls globalsEntryRowAction:row] : nil;
+        if (action) {
+            entry->_rowAction = action;
+        } else {
+            entry->_viewControllerFuture = ^{ return [cls globalsEntryViewController:row]; };
+        }
     } else {
         entry->_rowAction = [cls globalsEntryRowAction:row];
     }
