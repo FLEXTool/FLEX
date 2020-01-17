@@ -117,8 +117,36 @@
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
-        case FLEXGlobalsRowRootViewController:
-            return [self explorerViewControllerForObject:UIApplication.sharedApplication.delegate.window.rootViewController];
+        case FLEXGlobalsRowRootViewController: {
+            id<UIApplicationDelegate> delegate = UIApplication.sharedApplication.delegate;
+            if ([delegate respondsToSelector:@selector(window)]) {
+                return [self explorerViewControllerForObject:delegate.window.rootViewController];
+            }
+
+            return nil;
+        }
+        default: return nil;
+    }
+}
+
++ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row
+{
+    switch (row) {
+        case FLEXGlobalsRowRootViewController: {
+            // Check if the app delegate responds to -window. If not, present an alert
+            return ^(FLEXGlobalsTableViewController *host) {
+                id<UIApplicationDelegate> delegate = UIApplication.sharedApplication.delegate;
+                if ([delegate respondsToSelector:@selector(window)]) {
+                    UIViewController *explorer = [self explorerViewControllerForObject:
+                        delegate.window.rootViewController
+                    ];
+                    [host.navigationController pushViewController:explorer animated:YES];
+                } else {
+                    NSString *msg = @"The app delegate doesn't respond to -window";
+                    [FLEXAlert showAlert:@":(" message:msg from:host];
+                }
+            };
+        }
         default: return nil;
     }
 }
