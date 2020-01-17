@@ -10,7 +10,7 @@
 #import "FLEXExplorerToolbar.h"
 #import "FLEXToolbarItem.h"
 #import "FLEXUtility.h"
-#import "FLEXHierarchyTableViewController.h"
+#import "FLEXHierarchyViewController.h"
 #import "FLEXGlobalsTableViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
-@interface FLEXExplorerViewController () <FLEXHierarchyTableViewControllerDelegate, FLEXGlobalsTableViewControllerDelegate>
+@interface FLEXExplorerViewController () <FLEXHierarchyDelegate, FLEXGlobalsTableViewControllerDelegate>
 
 @property (nonatomic) FLEXExplorerToolbar *explorerToolbar;
 
@@ -141,7 +141,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     UIInterfaceOrientationMask supportedOrientations = [FLEXUtility infoPlistSupportedInterfaceOrientationsMask];
-    if (viewControllerToAsk && viewControllerToAsk != self) {
+    if (viewControllerToAsk && ![viewControllerToAsk isKindOfClass:[self class]]) {
         supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
     }
     
@@ -167,6 +167,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         for (UIView *outlineView in self.outlineViewsForVisibleViews.allValues) {
             outlineView.hidden = YES;
@@ -372,19 +373,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)hierarchyButtonTapped:(FLEXToolbarItem *)sender
 {
     [self toggleViewsTool];
-}
-
-- (NSArray<UIView *> *)allViewsInHierarchy
-{
-    NSMutableArray<UIView *> *allViews = [NSMutableArray array];
-    NSArray<UIWindow *> *windows = [FLEXUtility allWindows];
-    for (UIWindow *window in windows) {
-        if (window != self.view.window) {
-            [allViews addObject:window];
-            [allViews addObjectsFromArray:[self allRecursiveSubviewsInView:window]];
-        }
-    }
-    return allViews;
 }
 
 - (UIWindow *)statusWindow
@@ -626,31 +614,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return subviewsAtPoint;
 }
 
-- (NSArray<UIView *> *)allRecursiveSubviewsInView:(UIView *)view
-{
-    NSMutableArray<UIView *> *subviews = [NSMutableArray array];
-    for (UIView *subview in view.subviews) {
-        [subviews addObject:subview];
-        [subviews addObjectsFromArray:[self allRecursiveSubviewsInView:subview]];
-    }
-    return subviews;
-}
-
-- (NSDictionary<NSValue *, NSNumber *> *)hierarchyDepthsForViews:(NSArray<UIView *> *)views
-{
-    NSMutableDictionary<NSValue *, NSNumber *> *hierarchyDepths = [NSMutableDictionary dictionary];
-    for (UIView *view in views) {
-        NSInteger depth = 0;
-        UIView *tryView = view;
-        while (tryView.superview) {
-            tryView = tryView.superview;
-            depth++;
-        }
-        [hierarchyDepths setObject:@(depth) forKey:[NSValue valueWithNonretainedObject:view]];
-    }
-    return hierarchyDepths;
-}
-
 
 #pragma mark - Selected View Moving
 
@@ -738,9 +701,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 
-#pragma mark - FLEXHierarchyTableViewControllerDelegate
+#pragma mark - FLEXHierarchyDelegate
 
-- (void)hierarchyViewController:(FLEXHierarchyTableViewController *)hierarchyViewController didFinishWithSelectedView:(UIView *)selectedView
+- (void)viewHierarchyDidDismiss:(UIView *)selectedView
 {
     // Note that we need to wait until the view controller is dismissed to calculated the frame of the outline view.
     // Otherwise the coordinate conversion doesn't give the correct result.
@@ -866,11 +829,15 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleViewsToolWithCompletion:(void(^)(void))completion
 {
     [self toggleToolWithViewControllerProvider:^UIViewController *{
-        NSArray<UIView *> *allViews = [self allViewsInHierarchy];
-        NSDictionary *depthsForViews = [self hierarchyDepthsForViews:allViews];
-        FLEXHierarchyTableViewController *hierarchyTVC = [[FLEXHierarchyTableViewController alloc] initWithViews:allViews viewsAtTap:self.viewsAtTapPoint selectedView:self.selectedView depths:depthsForViews];
-        hierarchyTVC.delegate = self;
-        return [[UINavigationController alloc] initWithRootViewController:hierarchyTVC];
+        if (self.selectedView) {
+            return [FLEXHierarchyViewController
+                delegate:self
+                viewsAtTap:self.viewsAtTapPoint
+                selectedView:self.selectedView
+            ];
+        } else {
+            return [FLEXHierarchyViewController delegate:self];
+        }
     } completion:^{
         if (completion) {
             completion();

@@ -103,8 +103,6 @@
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.image] applicationActivities:@[]];
     
     if (!canSaveToCameraRoll && !didShowWarning) {
-        activityVC.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
-
         didShowWarning = YES;
         NSString *msg = @"Add 'NSPhotoLibraryUsageDescription' to this app's Info.plist to save images.";
         [FLEXAlert makeAlert:^(FLEXAlert *make) {

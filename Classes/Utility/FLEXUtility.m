@@ -48,7 +48,7 @@
 
 + (UIViewController *)viewControllerForView:(UIView *)view
 {
-    NSString *viewDelegate = @"viewDelegate";
+    NSString *viewDelegate = @"_viewDelegate";
     if ([view respondsToSelector:NSSelectorFromString(viewDelegate)]) {
         return [view valueForKey:viewDelegate];
     }

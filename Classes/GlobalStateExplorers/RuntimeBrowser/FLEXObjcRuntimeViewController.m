@@ -75,7 +75,7 @@
         make.button(@"Copy Path").handler(^(NSArray<NSString *> *strings) {
             UIPasteboard.generalPasteboard.string = path;
         });
-        make.button(@"Dismiss");
+        make.button(@"Dismiss").cancelStyle();
     } showFrom:self];
 }
 

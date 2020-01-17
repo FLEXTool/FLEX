@@ -14,8 +14,17 @@
 #import "FLEXAlert.h"
 #import "NSArray+Functional.h"
 #import "UIFont+FLEX.h"
+#import "NSMapTable+FLEX_Subscripting.h"
 
-#define FLEXFloor(x) (floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale)
+/// Rounds down to the nearest "point" coordinate
+NS_INLINE CGFloat FLEXFloor(CGFloat x) {
+    return floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale;
+}
+
+/// Creates a CGRect with all members rounded down to the nearest "point" coordinate
+NS_INLINE CGRect FLEXRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {
+    return CGRectMake(FLEXFloor(x), FLEXFloor(y), FLEXFloor(width), FLEXFloor(height));
+}
 
 #ifdef __IPHONE_13_0
 #define FLEX_AT_LEAST_IOS13_SDK (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
