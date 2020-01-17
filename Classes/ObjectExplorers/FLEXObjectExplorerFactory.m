@@ -7,66 +7,70 @@
 //
 
 #import "FLEXObjectExplorerFactory.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "FLEXArrayExplorerViewController.h"
-#import "FLEXSetExplorerViewController.h"
-#import "FLEXDictionaryExplorerViewController.h"
-#import "FLEXDefaultsExplorerViewController.h"
-#import "FLEXViewControllerExplorerViewController.h"
-#import "FLEXViewExplorerViewController.h"
-#import "FLEXImageExplorerViewController.h"
-#import "FLEXClassExplorerViewController.h"
-#import "FLEXLayerExplorerViewController.h"
-#import "FLEXColorExplorerViewController.h"
-#import "FLEXBundleExplorerViewController.h"
 #import "FLEXGlobalsTableViewController.h"
 #import "FLEXAlert.h"
+#import "FLEXClassShortcuts.h"
+#import "FLEXViewShortcuts.h"
+#import "FLEXImageShortcuts.h"
+#import "FLEXLayerShortcuts.h"
+#import "FLEXColorPreviewSection.h"
+#import "FLEXDefaultsContentSection.h"
+#import "FLEXBundleShortcuts.h"
 #import <objc/runtime.h>
 
 @implementation FLEXObjectExplorerFactory
+static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
+
++ (void)initialize
+{
+    if (self == [FLEXObjectExplorerFactory class]) {
+        #define ClassKey(name) (Class<NSCopying>)[name class]
+        classesToRegisteredSections = [NSMutableDictionary dictionaryWithDictionary:@{
+            ClassKey(NSArray)          : [FLEXCollectionContentSection class],
+            ClassKey(NSSet)            : [FLEXCollectionContentSection class],
+            ClassKey(NSDictionary)     : [FLEXCollectionContentSection class],
+            ClassKey(NSUserDefaults)   : [FLEXDefaultsContentSection class],
+//            ClassKey(UIViewController) : [FLEXViewControllerExplorerViewController class],
+            ClassKey(UIView)           : [FLEXViewShortcuts class],
+            ClassKey(UIImage)          : [FLEXImageShortcuts class],
+            ClassKey(CALayer)          : [FLEXLayerShortcuts class],
+            ClassKey(UIColor)          : [FLEXColorPreviewSection class],
+            ClassKey(NSBundle)         : [FLEXBundleShortcuts class],
+        }];
+        #undef ClassKey
+    }
+}
 
 + (FLEXObjectExplorerViewController *)explorerViewControllerForObject:(id)object
 {
-    // Bail for nil object. We can't explore nil.
+    // Can't explore nil
     if (!object) {
         return nil;
     }
-    
-    static NSDictionary<NSString *, Class> *explorerSubclassesForObjectTypeStrings = nil;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        explorerSubclassesForObjectTypeStrings = @{NSStringFromClass([NSArray class])          : [FLEXArrayExplorerViewController class],
-                                                   NSStringFromClass([NSSet class])            : [FLEXSetExplorerViewController class],
-                                                   NSStringFromClass([NSDictionary class])     : [FLEXDictionaryExplorerViewController class],
-                                                   NSStringFromClass([NSUserDefaults class])   : [FLEXDefaultsExplorerViewController class],
-                                                   NSStringFromClass([UIViewController class]) : [FLEXViewControllerExplorerViewController class],
-                                                   NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class],
-                                                   NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class],
-                                                   NSStringFromClass([CALayer class])          : [FLEXLayerExplorerViewController class],
-                                                   NSStringFromClass([UIColor class])          : [FLEXColorExplorerViewController class],
-                                                   NSStringFromClass([NSBundle class])         : [FLEXBundleExplorerViewController class],
-                                                   };
-    });
-    
-    Class explorerClass = nil;
-    BOOL objectIsClass = class_isMetaClass(object_getClass(object));
-    if (objectIsClass) {
-        explorerClass = [FLEXClassExplorerViewController class];
-    } else {
-        explorerClass = [FLEXObjectExplorerViewController class];
-        for (NSString *objectTypeString in explorerSubclassesForObjectTypeStrings) {
-            Class objectClass = NSClassFromString(objectTypeString);
-            if ([object isKindOfClass:objectClass]) {
-                explorerClass = explorerSubclassesForObjectTypeStrings[objectTypeString];
-                break;
-            }
-        }
-    }
-    
-    FLEXObjectExplorerViewController *explorerViewController = [explorerClass new];
-    explorerViewController.object = object;
-    
-    return explorerViewController;
+
+    // If we're given an object, this will look up it's class hierarchy
+    // until it finds a registration. This will work for KVC classes,
+    // since they are children of the original class, and not siblings.
+    // If we are given an object, object_getClass will return a metaclass,
+    // and the same thing will happen. FLEXClassShortcuts is the default
+    // shortcut section for NSObject.
+    //
+    // TODO: rename it to FLEXNSObjectShortcuts or something?
+    Class sectionClass = nil;
+    Class cls = object_getClass(object);
+    do {
+        sectionClass = classesToRegisteredSections[(Class<NSCopying>)cls];
+    } while (!sectionClass && (cls = [cls superclass]));
+
+    return [FLEXObjectExplorerViewController
+        exploringObject:object
+        customSection:[sectionClass forObject:object]
+    ];
+}
+
++ (void)registerExplorerSection:(Class)explorerClass forClass:(Class)objectClass
+{
+    classesToRegisteredSections[(Class<NSCopying>)objectClass] = explorerClass;
 }
 
 #pragma mark - FLEXGlobalsEntry

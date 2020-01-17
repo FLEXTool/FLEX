@@ -11,67 +11,35 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXMultilineTableViewCell.h"
 #import "FLEXObjectExplorerFactory.h"
-#import "FLEXPropertyEditorViewController.h"
-#import "FLEXIvarEditorViewController.h"
+#import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXInstancesTableViewController.h"
 #import "FLEXTableView.h"
+#import "FLEXTableViewCell.h"
 #import "FLEXScopeCarousel.h"
+#import "FLEXMetadataSection.h"
+#import "FLEXSingleRowSection.h"
+#import "FLEXShortcutsSection.h"
 #import <objc/runtime.h>
 
-typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
-    FLEXMetadataKindProperties,
-    FLEXMetadataKindIvars,
-    FLEXMetadataKindMethods,
-    FLEXMetadataKindClassMethods
-};
-
-// Convenience boxes to keep runtime properties, ivars, and methods in foundation collections.
-@interface FLEXPropertyBox : NSObject
-@property (nonatomic) objc_property_t property;
-@end
-@implementation FLEXPropertyBox
-@end
-
-@interface FLEXIvarBox : NSObject
-@property (nonatomic) Ivar ivar;
-@end
-@implementation FLEXIvarBox
-@end
-
-@interface FLEXMethodBox : NSObject
-@property (nonatomic) Method method;
-@end
-@implementation FLEXMethodBox
-@end
-
+#pragma mark - Private properties
 @interface FLEXObjectExplorerViewController ()
 
-@property (nonatomic) NSMutableArray<NSArray<FLEXPropertyBox *> *> *properties;
-@property (nonatomic) NSArray<FLEXPropertyBox *> *filteredProperties;
-
-@property (nonatomic) NSMutableArray<NSArray<FLEXIvarBox *> *> *ivars;
-@property (nonatomic) NSArray<FLEXIvarBox *> *filteredIvars;
-
-@property (nonatomic) NSMutableArray<NSArray<FLEXMethodBox *> *> *methods;
-@property (nonatomic) NSArray<FLEXMethodBox *> *filteredMethods;
-
-@property (nonatomic) NSMutableArray<NSArray<FLEXMethodBox *> *> *classMethods;
-@property (nonatomic) NSArray<FLEXMethodBox *> *filteredClassMethods;
-
-@property (nonatomic, copy) NSArray<Class> *classHierarchy;
-@property (nonatomic, copy) NSArray<Class> *filteredSuperclasses;
-
-@property (nonatomic) NSArray *cachedCustomSectionRowCookies;
+@property (nonatomic, copy) NSString *filterText;
+/// Every section in the table view, regardless of whether or not a section is empty.
+@property (nonatomic, readonly) NSArray<FLEXExplorerSection *> *allSections;
+/// Only displayed sections of the table view; empty sections are purged from this array.
+@property (nonatomic) NSArray<FLEXExplorerSection *> *sections;
+@property (nonatomic, readonly) FLEXSingleRowSection *descriptionSection;
+@property (nonatomic, readonly) FLEXExplorerSection *customSection;
+@property (nonatomic, readonly) FLEXSingleRowSection *referencesSection;
 @property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
-
-@property (nonatomic) NSString *filterText;
-/// An index into the `classHierarchy` array
-@property (nonatomic) NSInteger classScope;
 
 @end
 
 @implementation FLEXObjectExplorerViewController
+
+#pragma mark - Initialization
 
 + (void)initialize
 {
@@ -83,798 +51,288 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     }
 }
 
++ (instancetype)exploringObject:(id)target
+{
+    return [self exploringObject:target customSection:[FLEXShortcutsSection forObject:target]];
+}
+
++ (instancetype)exploringObject:(id)target customSection:(FLEXExplorerSection *)section
+{
+    return [[self alloc]
+        initWithObject:target
+        explorer:[FLEXObjectExplorer forObject:target]
+        customSection:section
+    ];
+}
+
+- (id)initWithObject:(id)target
+            explorer:(__kindof FLEXObjectExplorer *)explorer
+       customSection:(FLEXExplorerSection *)customSection
+{
+    NSParameterAssert(target);
+    
+    self = [super init];
+    if (self) {
+        _object = target;
+        _explorer = explorer;
+        _customSection = customSection;
+        _allSections = [self makeSections];
+    }
+
+    return self;
+}
+
+#pragma mark - View controller lifecycle
+
 - (void)loadView
 {
-    self.tableView = [[FLEXTableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    // TODO: grouped with rounded corners or not?
+    FLEXTableView *tableView = [[FLEXTableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    self.tableView = tableView;
+
+    // Register cell classes
+    for (FLEXExplorerSection *section in self.allSections) {
+        if (section.cellRegistrationMapping) {
+            [tableView registerCells:section.cellRegistrationMapping];
+        }
+    }
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
+    // Use [object class] here rather than object_getClass
+    // to avoid the KVO prefix for observed objects
+    self.title = [[self.object class] description];
+
+    // Refresh
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl
+        addTarget:self
+        action:@selector(refreshControlDidRefresh:)
+        forControlEvents:UIControlEventValueChanged
+    ];
+
+    // Search
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.showsCarousel = YES;
-    [self refreshScopeTitles];
-    
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];
+
+    // Carousel scope bar
+    [self.explorer reloadClassHierarchy];
+    self.carousel.items = [self.explorer.classHierarchy flex_mapped:^id(Class cls, NSUInteger idx) {
+        return NSStringFromClass(cls);
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    // Reload the entire table view rather than just the visible cells because the filtered rows
+    // Reload the entire table view rather than just the visible cells, because the filtered rows
     // may have changed (i.e. a change in the description row that causes it to get filtered out).
-    [self updateTableData];
+    [self reloadData];
 }
+
+#pragma mark - Private
 
 - (void)refreshControlDidRefresh:(id)sender
 {
-    [self updateTableData];
+    [self reloadData];
     [self.refreshControl endRefreshing];
 }
 
+- (NSArray<FLEXExplorerSection *> *)makeSections
+{
+    FLEXObjectExplorer *explorer = self.explorer;
+    
+    // Description section is only for instances
+    if (self.explorer.objectIsInstance) {
+        _descriptionSection = [FLEXSingleRowSection
+             title:@"Description" reuse:kFLEXMultilineCell cell:^(FLEXTableViewCell *cell) {
+                 cell.titleLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
+                 cell.titleLabel.text = explorer.objectDescription;
+             }
+        ];
+        self.descriptionSection.filterMatcher = ^BOOL(NSString *filterText) {
+            return [explorer.objectDescription localizedCaseInsensitiveContainsString:filterText];
+        };
+    }
+
+    // Object graph section
+    _referencesSection = [FLEXSingleRowSection
+        title:@"Object Graph" reuse:kFLEXDefaultCell cell:^(FLEXTableViewCell *cell) {
+            cell.titleLabel.text = @"Other objects with ivars referencing this object";
+        }
+    ];
+    self.referencesSection.selectionAction = ^(UIViewController *host) {
+        UIViewController *references = [FLEXInstancesTableViewController
+            instancesTableViewControllerForInstancesReferencingObject:explorer.object
+        ];
+        [host.navigationController pushViewController:references animated:YES];
+    };
+
+    NSMutableArray *sections = [NSMutableArray arrayWithArray:@[
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindProperties],
+//        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassProperties],
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindIvars],
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindMethods],
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassMethods],
+        self.referencesSection
+//        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassHierarchy],
+    ]];
+
+    if (self.customSection) {
+        [sections insertObject:self.customSection atIndex:0];
+    }
+    if (self.descriptionSection) {
+        [sections insertObject:self.descriptionSection atIndex:0];
+    }
+
+    return sections.copy;
+}
+
+#pragma mark - Description
+
 - (BOOL)shouldShowDescription
 {
-    // Not if we have filter text that doesn't match the desctiption.
+    // Hide if we have filter text; it is rarely
+    // useful to see the description when searching
+    // since it's already at the top of the screen
     if (self.filterText.length) {
-        NSString *description = [self displayedObjectDescription];
-        return [description rangeOfString:self.filterText options:NSCaseInsensitiveSearch].length > 0;
+        return NO;
     }
 
     return YES;
 }
 
-- (NSString *)displayedObjectDescription
-{
-    NSString *desc = [FLEXUtility safeDescriptionForObject:self.object];
-
-    if (!desc.length) {
-        NSString *address = [FLEXUtility addressOfObject:self.object];
-        desc = [NSString stringWithFormat:@"Object at %@ returned empty description", address];
-    }
-
-    return desc;
-}
-
-
 #pragma mark - Search
-
-- (void)refreshScopeTitles
-{
-    [self updateSuperclasses];
-
-    self.carousel.items = [FLEXUtility map:self.classHierarchy block:^id(Class cls, NSUInteger idx) {
-        return NSStringFromClass(cls);
-    }];
-
-    [self updateTableData];
-}
 
 - (void)updateSearchResults:(NSString *)newText;
 {
     self.filterText = newText;
-    [self updateDisplayedData];
-}
 
-- (NSArray *)metadata:(FLEXMetadataKind)metadataKind forClassAtIndex:(NSUInteger)idx
-{
-    switch (metadataKind) {
-        case FLEXMetadataKindProperties:
-            return self.properties[idx];
-        case FLEXMetadataKindIvars:
-            return self.ivars[idx];
-        case FLEXMetadataKindMethods:
-            return self.methods[idx];
-        case FLEXMetadataKindClassMethods:
-            return self.classMethods[idx];
+    // Sections will adjust data based on this property
+    for (FLEXExplorerSection *section in self.allSections) {
+        section.filterText = newText;
     }
-}
 
-- (NSInteger)totalCountOfMetadata:(FLEXMetadataKind)metadataKind forClassAtIndex:(NSUInteger)idx
-{
-    return [self metadata:metadataKind forClassAtIndex:idx].count;
-}
-
-#pragma mark - Setter overrides
-
-- (void)setObject:(id)object
-{
-    _object = object;
-    // Use [object class] here rather than object_getClass because we don't want to show the KVO prefix for observed objects.
-    self.title = [[object class] description];
-
-    // Only refresh if the view has appeared
-    // TODO: make .object readonly so we don't have to deal with this...
-    if (self.showsCarousel) {
-        [self refreshScopeTitles];
+    // Check to see if class scope changed, update accordingly
+    if (self.explorer.classScope != self.selectedScope) {
+        self.explorer.classScope = self.selectedScope;
+        for (FLEXExplorerSection *section in self.allSections) {
+            [section reloadData];
+        }
     }
-}
 
-#pragma mark - Reloading
+    // Recalculate empty sections
+    self.sections = [self nonemptySections];
 
-- (void)updateTableData
-{
-    [self updateCustomData];
-    [self updateMetadata];
-    [self updateDisplayedData];
-}
-
-- (void)updateDisplayedData
-{
-    [self updateFilteredCustomData];
-    [self updateFilteredProperties];
-    [self updateFilteredIvars];
-    [self updateFilteredMethods];
-    [self updateFilteredClassMethods];
-    [self updateFilteredSuperclasses];
-    
+    // Refresh table view
     if (self.isViewLoaded) {
         [self.tableView reloadData];
     }
 }
 
-- (void)updateMetadata
-{
-    self.properties = [NSMutableArray new];
-    self.ivars = [NSMutableArray new];
-    self.methods = [NSMutableArray new];
-    self.classMethods = [NSMutableArray new];
+#pragma mark - Reloading
 
-    for (Class cls in self.classHierarchy) {
-        [self.properties addObject:[[self class] propertiesForClass:cls]];
-        [self.ivars addObject:[[self class] ivarsForClass:cls]];
-        [self.methods addObject:[[self class] methodsForClass:cls]];
-        [self.classMethods addObject:[[self class] methodsForClass:object_getClass(cls)]];
+- (void)reloadData
+{
+    // Reload explorer
+    [self.explorer reloadMetadata];
+
+    // Reload sections
+    for (FLEXExplorerSection *section in self.allSections) {
+        [section reloadData];
+    }
+
+    // Recalculate displayed sections
+    self.sections = [self nonemptySections];
+
+    // Refresh table view
+    if (self.isViewLoaded) {
+        [self.tableView reloadData];
     }
 }
 
+#pragma mark - Private
 
-#pragma mark - Properties
-
-+ (NSArray<FLEXPropertyBox *> *)propertiesForClass:(Class)class
+- (NSArray<FLEXExplorerSection *> *)nonemptySections
 {
-    if (!class) {
-        return @[];
-    }
-    
-    NSMutableArray<FLEXPropertyBox *> *boxedProperties = [NSMutableArray array];
-    unsigned int propertyCount = 0;
-    objc_property_t *propertyList = class_copyPropertyList(class, &propertyCount);
-    if (propertyList) {
-        for (unsigned int i = 0; i < propertyCount; i++) {
-            FLEXPropertyBox *propertyBox = [FLEXPropertyBox new];
-            propertyBox.property = propertyList[i];
-            [boxedProperties addObject:propertyBox];
-        }
-        free(propertyList);
-    }
-    return boxedProperties;
-}
-
-- (void)updateFilteredProperties
-{
-    NSArray<FLEXPropertyBox *> *candidateProperties = [self metadata:FLEXMetadataKindProperties forClassAtIndex:self.selectedScope];
-    
-    NSArray<FLEXPropertyBox *> *unsortedFilteredProperties = nil;
-    if (self.filterText.length > 0) {
-        NSMutableArray<FLEXPropertyBox *> *mutableUnsortedFilteredProperties = [NSMutableArray array];
-        for (FLEXPropertyBox *propertyBox in candidateProperties) {
-            NSString *prettyName = [FLEXRuntimeUtility prettyNameForProperty:propertyBox.property];
-            if ([prettyName rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                [mutableUnsortedFilteredProperties addObject:propertyBox];
-            }
-        }
-        unsortedFilteredProperties = mutableUnsortedFilteredProperties;
-    } else {
-        unsortedFilteredProperties = candidateProperties;
-    }
-    
-    self.filteredProperties = [unsortedFilteredProperties sortedArrayUsingComparator:^NSComparisonResult(FLEXPropertyBox *propertyBox1, FLEXPropertyBox *propertyBox2) {
-        NSString *name1 = [NSString stringWithUTF8String:property_getName(propertyBox1.property)];
-        NSString *name2 = [NSString stringWithUTF8String:property_getName(propertyBox2.property)];
-        return [name1 caseInsensitiveCompare:name2];
+    return [self.allSections flex_filtered:^BOOL(FLEXExplorerSection *section, NSUInteger idx) {
+        return section.numberOfRows > 0;
     }];
-}
-
-- (NSString *)titleForPropertyAtIndex:(NSInteger)index
-{
-    FLEXPropertyBox *propertyBox = self.filteredProperties[index];
-    return [FLEXRuntimeUtility prettyNameForProperty:propertyBox.property];
-}
-
-- (id)valueForPropertyAtIndex:(NSInteger)index
-{
-    id value = nil;
-    if ([self canHaveInstanceState]) {
-        FLEXPropertyBox *propertyBox = self.filteredProperties[index];
-        NSString *typeString = [FLEXRuntimeUtility typeEncodingForProperty:propertyBox.property];
-        const FLEXTypeEncoding *encoding = [typeString cStringUsingEncoding:NSUTF8StringEncoding];
-        value = [FLEXRuntimeUtility valueForProperty:propertyBox.property onObject:self.object];
-        value = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:value type:encoding];
-    }
-    return value;
-}
-
-
-#pragma mark - Ivars
-
-+ (NSArray<FLEXIvarBox *> *)ivarsForClass:(Class)class
-{
-    if (!class) {
-        return @[];
-    }
-    NSMutableArray<FLEXIvarBox *> *boxedIvars = [NSMutableArray array];
-    unsigned int ivarCount = 0;
-    Ivar *ivarList = class_copyIvarList(class, &ivarCount);
-    if (ivarList) {
-        for (unsigned int i = 0; i < ivarCount; i++) {
-            FLEXIvarBox *ivarBox = [FLEXIvarBox new];
-            ivarBox.ivar = ivarList[i];
-            [boxedIvars addObject:ivarBox];
-        }
-        free(ivarList);
-    }
-    return boxedIvars;
-}
-
-- (void)updateFilteredIvars
-{
-    NSArray<FLEXIvarBox *> *candidateIvars = [self metadata:FLEXMetadataKindIvars forClassAtIndex:self.selectedScope];
-    
-    NSArray<FLEXIvarBox *> *unsortedFilteredIvars = nil;
-    if (self.filterText.length > 0) {
-        NSMutableArray<FLEXIvarBox *> *mutableUnsortedFilteredIvars = [NSMutableArray array];
-        for (FLEXIvarBox *ivarBox in candidateIvars) {
-            NSString *prettyName = [FLEXRuntimeUtility prettyNameForIvar:ivarBox.ivar];
-            if ([prettyName rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                [mutableUnsortedFilteredIvars addObject:ivarBox];
-            }
-        }
-        unsortedFilteredIvars = mutableUnsortedFilteredIvars;
-    } else {
-        unsortedFilteredIvars = candidateIvars;
-    }
-    
-    self.filteredIvars = [unsortedFilteredIvars sortedArrayUsingComparator:^NSComparisonResult(FLEXIvarBox *ivarBox1, FLEXIvarBox *ivarBox2) {
-        NSString *name1 = [NSString stringWithUTF8String:ivar_getName(ivarBox1.ivar)];
-        NSString *name2 = [NSString stringWithUTF8String:ivar_getName(ivarBox2.ivar)];
-        return [name1 caseInsensitiveCompare:name2];
-    }];
-}
-
-- (NSString *)titleForIvarAtIndex:(NSInteger)index
-{
-    FLEXIvarBox *ivarBox = self.filteredIvars[index];
-    return [FLEXRuntimeUtility prettyNameForIvar:ivarBox.ivar];
-}
-
-- (id)valueForIvarAtIndex:(NSInteger)index
-{
-    id value = nil;
-    if ([self canHaveInstanceState]) {
-        FLEXIvarBox *ivarBox = self.filteredIvars[index];
-        const FLEXTypeEncoding *encoding = ivar_getTypeEncoding(ivarBox.ivar);
-        value = [FLEXRuntimeUtility valueForIvar:ivarBox.ivar onObject:self.object];
-        value = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:value type:encoding];
-    }
-    return value;
-}
-
-
-#pragma mark - Methods
-
-- (void)updateFilteredMethods
-{
-    NSArray<FLEXMethodBox *> *candidateMethods = [self metadata:FLEXMetadataKindMethods forClassAtIndex:self.selectedScope];
-    self.filteredMethods = [self filteredMethodsFromMethods:candidateMethods areClassMethods:NO];
-}
-
-- (void)updateFilteredClassMethods
-{
-    NSArray<FLEXMethodBox *> *candidateMethods = [self metadata:FLEXMetadataKindClassMethods forClassAtIndex:self.selectedScope];
-    self.filteredClassMethods = [self filteredMethodsFromMethods:candidateMethods areClassMethods:YES];
-}
-
-+ (NSArray<FLEXMethodBox *> *)methodsForClass:(Class)class
-{
-    if (!class) {
-        return @[];
-    }
-    
-    NSMutableArray<FLEXMethodBox *> *boxedMethods = [NSMutableArray array];
-    unsigned int methodCount = 0;
-    Method *methodList = class_copyMethodList(class, &methodCount);
-    if (methodList) {
-        for (unsigned int i = 0; i < methodCount; i++) {
-            FLEXMethodBox *methodBox = [FLEXMethodBox new];
-            methodBox.method = methodList[i];
-            [boxedMethods addObject:methodBox];
-        }
-        free(methodList);
-    }
-    return boxedMethods;
-}
-
-- (NSArray<FLEXMethodBox *> *)filteredMethodsFromMethods:(NSArray<FLEXMethodBox *> *)methods areClassMethods:(BOOL)areClassMethods
-{
-    NSArray<FLEXMethodBox *> *candidateMethods = methods;
-    NSArray<FLEXMethodBox *> *unsortedFilteredMethods = nil;
-    if (self.filterText.length > 0) {
-        NSMutableArray<FLEXMethodBox *> *mutableUnsortedFilteredMethods = [NSMutableArray array];
-        for (FLEXMethodBox *methodBox in candidateMethods) {
-            NSString *prettyName = [FLEXRuntimeUtility prettyNameForMethod:methodBox.method isClassMethod:areClassMethods];
-            if ([prettyName rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                [mutableUnsortedFilteredMethods addObject:methodBox];
-            }
-        }
-        unsortedFilteredMethods = mutableUnsortedFilteredMethods;
-    } else {
-        unsortedFilteredMethods = candidateMethods;
-    }
-    
-    NSArray<FLEXMethodBox *> *sortedFilteredMethods = [unsortedFilteredMethods sortedArrayUsingComparator:^NSComparisonResult(FLEXMethodBox *methodBox1, FLEXMethodBox *methodBox2) {
-        NSString *name1 = NSStringFromSelector(method_getName(methodBox1.method));
-        NSString *name2 = NSStringFromSelector(method_getName(methodBox2.method));
-        return [name1 caseInsensitiveCompare:name2];
-    }];
-    
-    return sortedFilteredMethods;
-}
-
-- (NSString *)titleForMethodAtIndex:(NSInteger)index
-{
-    FLEXMethodBox *methodBox = self.filteredMethods[index];
-    return [FLEXRuntimeUtility prettyNameForMethod:methodBox.method isClassMethod:NO];
-}
-
-- (NSString *)titleForClassMethodAtIndex:(NSInteger)index
-{
-    FLEXMethodBox *classMethodBox = self.filteredClassMethods[index];
-    return [FLEXRuntimeUtility prettyNameForMethod:classMethodBox.method isClassMethod:YES];
-}
-
-- (objc_property_t)viewPropertyForName:(NSString *)propertyName
-{
-    return class_getProperty([self.object class], propertyName.UTF8String);
-}
-
-
-#pragma mark - Superclasses
-
-- (void)updateSuperclasses
-{
-    self.classHierarchy = [FLEXRuntimeUtility classHierarchyOfObject:self.object];
-}
-
-- (void)updateFilteredSuperclasses
-{
-    if (self.filterText.length > 0) {
-        NSMutableArray<Class> *filteredSuperclasses = [NSMutableArray array];
-        for (Class superclass in self.classHierarchy) {
-            if ([NSStringFromClass(superclass) localizedCaseInsensitiveContainsString:self.filterText]) {
-                [filteredSuperclasses addObject:superclass];
-            }
-        }
-        self.filteredSuperclasses = filteredSuperclasses;
-    } else {
-        self.filteredSuperclasses = self.classHierarchy;
-    }
-}
-
-
-#pragma mark - Table View Data Helpers
-
-- (NSArray<NSNumber *> *)possibleExplorerSections
-{
-    static NSArray<NSNumber *> *possibleSections = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        possibleSections = @[@(FLEXObjectExplorerSectionDescription),
-                             @(FLEXObjectExplorerSectionCustom),
-                             @(FLEXObjectExplorerSectionProperties),
-                             @(FLEXObjectExplorerSectionIvars),
-                             @(FLEXObjectExplorerSectionMethods),
-                             @(FLEXObjectExplorerSectionClassMethods),
-                             @(FLEXObjectExplorerSectionSuperclasses),
-                             @(FLEXObjectExplorerSectionReferencingInstances)];
-    });
-    return possibleSections;
-}
-
-- (NSArray<NSNumber *> *)visibleExplorerSections
-{
-    NSMutableArray<NSNumber *> *visibleSections = [NSMutableArray array];
-    
-    for (NSNumber *possibleSection in [self possibleExplorerSections]) {
-        FLEXObjectExplorerSection explorerSection = [possibleSection unsignedIntegerValue];
-        if ([self numberOfRowsForExplorerSection:explorerSection] > 0) {
-            [visibleSections addObject:possibleSection];
-        }
-    }
-    
-    return visibleSections;
-}
-
-- (NSString *)sectionTitleWithBaseName:(NSString *)baseName totalCount:(NSUInteger)totalCount filteredCount:(NSUInteger)filteredCount
-{
-    NSString *sectionTitle = nil;
-    if (totalCount == filteredCount) {
-        sectionTitle = [baseName stringByAppendingFormat:@" (%lu)", (unsigned long)totalCount];
-    } else {
-        sectionTitle = [baseName stringByAppendingFormat:@" (%lu of %lu)", (unsigned long)filteredCount, (unsigned long)totalCount];
-    }
-    return sectionTitle;
-}
-
-- (FLEXObjectExplorerSection)explorerSectionAtIndex:(NSInteger)sectionIndex
-{
-    return [[[self visibleExplorerSections] objectAtIndex:sectionIndex] unsignedIntegerValue];
-}
-
-- (NSInteger)numberOfRowsForExplorerSection:(FLEXObjectExplorerSection)section
-{
-    NSInteger numberOfRows = 0;
-    switch (section) {
-        case FLEXObjectExplorerSectionDescription:
-            numberOfRows = [self shouldShowDescription] ? 1 : 0;
-            break;
-            
-        case FLEXObjectExplorerSectionCustom:
-            numberOfRows = self.customSectionVisibleIndexes.count;
-            break;
-            
-        case FLEXObjectExplorerSectionProperties:
-            numberOfRows = self.filteredProperties.count;
-            break;
-            
-        case FLEXObjectExplorerSectionIvars:
-            numberOfRows = self.filteredIvars.count;
-            break;
-            
-        case FLEXObjectExplorerSectionMethods:
-            numberOfRows = self.filteredMethods.count;
-            break;
-            
-        case FLEXObjectExplorerSectionClassMethods:
-            numberOfRows = self.filteredClassMethods.count;
-            break;
-            
-        case FLEXObjectExplorerSectionSuperclasses:
-            numberOfRows = self.filteredSuperclasses.count;
-            break;
-            
-        case FLEXObjectExplorerSectionReferencingInstances:
-            // Hide this section if there is fliter text since there's nothing searchable (only 1 row, always the same).
-            numberOfRows = self.filterText.length == 0 ? 1 : 0;
-            break;
-    }
-    return numberOfRows;
-}
-
-- (NSString *)titleForRow:(NSInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
-{
-    NSString *title = nil;
-    switch (section) {
-        case FLEXObjectExplorerSectionDescription:
-            title = [self displayedObjectDescription];
-            break;
-            
-        case FLEXObjectExplorerSectionCustom:
-            title = [self customSectionTitleForRowCookie:[self customSectionRowCookieForVisibleRow:row]];
-            break;
-            
-        case FLEXObjectExplorerSectionProperties:
-            title = [self titleForPropertyAtIndex:row];
-            break;
-            
-        case FLEXObjectExplorerSectionIvars:
-            title = [self titleForIvarAtIndex:row];
-            break;
-            
-        case FLEXObjectExplorerSectionMethods:
-            title = [self titleForMethodAtIndex:row];
-            break;
-            
-        case FLEXObjectExplorerSectionClassMethods:
-            title = [self titleForClassMethodAtIndex:row];
-            break;
-            
-        case FLEXObjectExplorerSectionSuperclasses:
-            title = NSStringFromClass(self.filteredSuperclasses[row]);
-            break;
-            
-        case FLEXObjectExplorerSectionReferencingInstances:
-            title = @"Other objects with ivars referencing this object";
-            break;
-    }
-    return title;
-}
-
-- (NSString *)subtitleForRow:(NSInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
-{
-    NSString *subtitle = nil;
-    switch (section) {
-        case FLEXObjectExplorerSectionDescription:
-            break;
-            
-        case FLEXObjectExplorerSectionCustom:
-            subtitle = [self customSectionSubtitleForRowCookie:[self customSectionRowCookieForVisibleRow:row]];
-            break;
-            
-        case FLEXObjectExplorerSectionProperties:
-            subtitle = [self canHaveInstanceState] ? [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self valueForPropertyAtIndex:row]] : nil;
-            break;
-            
-        case FLEXObjectExplorerSectionIvars:
-            subtitle = [self canHaveInstanceState] ? [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:[self valueForIvarAtIndex:row]] : nil;
-            break;
-            
-        case FLEXObjectExplorerSectionMethods:
-            break;
-            
-        case FLEXObjectExplorerSectionClassMethods:
-            break;
-            
-        case FLEXObjectExplorerSectionSuperclasses:
-            break;
-            
-        case FLEXObjectExplorerSectionReferencingInstances:
-            break;
-    }
-    return subtitle;
-}
-
-- (BOOL)canDrillInToRow:(NSInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
-{
-    BOOL canDrillIn = NO;
-    switch (section) {
-        case FLEXObjectExplorerSectionDescription:
-            break;
-            
-        case FLEXObjectExplorerSectionCustom:
-            canDrillIn = [self customSectionCanDrillIntoRowWithCookie:[self customSectionRowCookieForVisibleRow:row]];
-            break;
-            
-        case FLEXObjectExplorerSectionProperties: {
-            if ([self canHaveInstanceState]) {
-                FLEXPropertyBox *propertyBox = self.filteredProperties[row];
-                objc_property_t property = propertyBox.property;
-                id currentValue = [self valueForPropertyAtIndex:row];
-                BOOL canEdit = [FLEXPropertyEditorViewController canEditProperty:property onObject:self.object currentValue:currentValue];
-                BOOL canExplore = currentValue != nil;
-                canDrillIn = canEdit || canExplore;
-            }
-        }   break;
-            
-        case FLEXObjectExplorerSectionIvars: {
-            if ([self canHaveInstanceState]) {
-                FLEXIvarBox *ivarBox = self.filteredIvars[row];
-                Ivar ivar = ivarBox.ivar;
-                id currentValue = [self valueForIvarAtIndex:row];
-                BOOL canEdit = [FLEXIvarEditorViewController canEditIvar:ivar currentValue:currentValue];
-                BOOL canExplore = currentValue != nil;
-                canDrillIn = canEdit || canExplore;
-            }
-        }   break;
-            
-        case FLEXObjectExplorerSectionMethods:
-            canDrillIn = [self canCallInstanceMethods];
-            break;
-            
-        case FLEXObjectExplorerSectionClassMethods:
-            canDrillIn = YES;
-            break;
-            
-        case FLEXObjectExplorerSectionSuperclasses:
-            canDrillIn = YES;
-            break;
-            
-        case FLEXObjectExplorerSectionReferencingInstances:
-            canDrillIn = YES;
-            break;
-    }
-    return canDrillIn;
 }
 
 - (BOOL)sectionHasActions:(NSInteger)section
 {
-    return [self explorerSectionAtIndex:section] == FLEXObjectExplorerSectionDescription;
-}
-
-- (NSString *)titleForExplorerSection:(FLEXObjectExplorerSection)section
-{
-    NSString *title = nil;
-    switch (section) {
-        case FLEXObjectExplorerSectionDescription: {
-            title = @"Description";
-        } break;
-            
-        case FLEXObjectExplorerSectionCustom: {
-            title = [self customSectionTitle];
-        } break;
-            
-        case FLEXObjectExplorerSectionProperties: {
-            NSUInteger totalCount = [self totalCountOfMetadata:FLEXMetadataKindProperties forClassAtIndex:self.selectedScope];
-            title = [self sectionTitleWithBaseName:@"Properties" totalCount:totalCount filteredCount:self.filteredProperties.count];
-        } break;
-            
-        case FLEXObjectExplorerSectionIvars: {
-            NSUInteger totalCount = [self totalCountOfMetadata:FLEXMetadataKindIvars forClassAtIndex:self.selectedScope];
-            title = [self sectionTitleWithBaseName:@"Ivars" totalCount:totalCount filteredCount:self.filteredIvars.count];
-        } break;
-            
-        case FLEXObjectExplorerSectionMethods: {
-            NSUInteger totalCount = [self totalCountOfMetadata:FLEXMetadataKindMethods forClassAtIndex:self.selectedScope];
-            title = [self sectionTitleWithBaseName:@"Methods" totalCount:totalCount filteredCount:self.filteredMethods.count];
-        } break;
-            
-        case FLEXObjectExplorerSectionClassMethods: {
-            NSUInteger totalCount = [self totalCountOfMetadata:FLEXMetadataKindClassMethods forClassAtIndex:self.selectedScope];
-            title = [self sectionTitleWithBaseName:@"Class Methods" totalCount:totalCount filteredCount:self.filteredClassMethods.count];
-        } break;
-            
-        case FLEXObjectExplorerSectionSuperclasses: {
-            title = [self sectionTitleWithBaseName:@"Superclasses" totalCount:self.classHierarchy.count filteredCount:self.filteredSuperclasses.count];
-        } break;
-            
-        case FLEXObjectExplorerSectionReferencingInstances: {
-            title = @"Object Graph";
-        } break;
-    }
-    return title;
-}
-
-- (UIViewController *)drillInViewControllerForRow:(NSUInteger)row inExplorerSection:(FLEXObjectExplorerSection)section
-{
-    UIViewController *viewController = nil;
-    switch (section) {
-        case FLEXObjectExplorerSectionDescription:
-            break;
-            
-        case FLEXObjectExplorerSectionCustom:
-            viewController = [self customSectionDrillInViewControllerForRowCookie:[self customSectionRowCookieForVisibleRow:row]];
-            break;
-            
-        case FLEXObjectExplorerSectionProperties: {
-            FLEXPropertyBox *propertyBox = self.filteredProperties[row];
-            objc_property_t property = propertyBox.property;
-            id currentValue = [self valueForPropertyAtIndex:row];
-            if ([FLEXPropertyEditorViewController canEditProperty:property onObject:self.object currentValue:currentValue]) {
-                viewController = [[FLEXPropertyEditorViewController alloc] initWithTarget:self.object property:property];
-            } else if (currentValue) {
-                viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
-            }
-        } break;
-            
-        case FLEXObjectExplorerSectionIvars: {
-            FLEXIvarBox *ivarBox = self.filteredIvars[row];
-            Ivar ivar = ivarBox.ivar;
-            id currentValue = [self valueForIvarAtIndex:row];
-            if ([FLEXIvarEditorViewController canEditIvar:ivar currentValue:currentValue]) {
-                viewController = [[FLEXIvarEditorViewController alloc] initWithTarget:self.object ivar:ivar];
-            } else if (currentValue) {
-                viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
-            }
-        } break;
-            
-        case FLEXObjectExplorerSectionMethods: {
-            FLEXMethodBox *methodBox = self.filteredMethods[row];
-            Method method = methodBox.method;
-            viewController = [[FLEXMethodCallingViewController alloc] initWithTarget:self.object method:method];
-        } break;
-            
-        case FLEXObjectExplorerSectionClassMethods: {
-            FLEXMethodBox *methodBox = self.filteredClassMethods[row];
-            Method method = methodBox.method;
-            viewController = [[FLEXMethodCallingViewController alloc] initWithTarget:[self.object class] method:method];
-        } break;
-            
-        case FLEXObjectExplorerSectionSuperclasses: {
-            Class superclass = self.filteredSuperclasses[row];
-            viewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:superclass];
-        } break;
-            
-        case FLEXObjectExplorerSectionReferencingInstances: {
-            viewController = [FLEXInstancesTableViewController instancesTableViewControllerForInstancesReferencingObject:self.object];
-        } break;
-    }
-    return viewController;
+    return self.sections[section] == self.descriptionSection;
 }
 
 
-#pragma mark - Table View Data Source
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [self visibleExplorerSections].count;
+    return self.sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:section];
-    return [self numberOfRowsForExplorerSection:explorerSection];
+    return self.sections[section].numberOfRows;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:section];
-    return [self titleForExplorerSection:explorerSection];
+    return self.sections[section].title;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-
-    BOOL isCustomSection = explorerSection == FLEXObjectExplorerSectionCustom;
-    BOOL useDescriptionCell = explorerSection == FLEXObjectExplorerSectionDescription;
-    NSString *cellIdentifier = useDescriptionCell ? kFLEXMultilineCell : @"cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    if (!cell) {
-        if (useDescriptionCell) {
-            cell = [[FLEXMultilineTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-            cell.textLabel.font = [FLEXUtility defaultTableViewCellLabelFont];
-        } else {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-            UIFont *cellFont = [FLEXUtility defaultTableViewCellLabelFont];
-            cell.textLabel.font = cellFont;
-            cell.detailTextLabel.font = cellFont;
-            cell.detailTextLabel.textColor = UIColor.grayColor;
-        }
-    }
-
-
-    UIView *customView;
-    if (isCustomSection) {
-        customView = [self customViewForRowCookie:[self customSectionRowCookieForVisibleRow:indexPath.row]];
-        if (customView) {
-            [cell.contentView addSubview:customView];
-        }
-    }
-
-    cell.textLabel.text = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
-    cell.detailTextLabel.text = [self subtitleForRow:indexPath.row inExplorerSection:explorerSection];
-    cell.accessoryType = [self canDrillInToRow:indexPath.row inExplorerSection:explorerSection] ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
-    
+    NSString *reuse = [self.sections[indexPath.section] reuseIdentifierForRow:indexPath.row];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuse forIndexPath:indexPath];
+    [self.sections[indexPath.section] configureCell:cell forRow:indexPath.row];
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-    CGFloat height = self.tableView.rowHeight;
-    if (explorerSection == FLEXObjectExplorerSectionDescription) {
-        NSString *text = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
+    // For the description section, we want that nice slim looking row.
+    // Other rows use the automatic size.
+    FLEXExplorerSection *section = self.sections[indexPath.section];
+    if (section == self.descriptionSection) {
+        NSString *text = self.explorer.objectDescription;
         NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSFontAttributeName : [FLEXUtility defaultTableViewCellLabelFont] }];
-        CGFloat preferredHeight = [FLEXMultilineTableViewCell preferredHeightWithAttributedText:attributedText inTableViewWidth:self.tableView.frame.size.width style:tableView.style showsAccessory:NO];
-        height = MAX(height, preferredHeight);
-    } else if (explorerSection == FLEXObjectExplorerSectionCustom) {
-        id cookie = [self customSectionRowCookieForVisibleRow:indexPath.row];
-        height = [self heightForCustomViewRowForRowCookie:cookie];
+        return [FLEXMultilineTableViewCell preferredHeightWithAttributedText:attributedText inTableViewWidth:self.tableView.frame.size.width style:tableView.style showsAccessory:NO];
     }
-    
-    return height;
+
+    return UITableViewAutomaticDimension;
 }
 
 
-#pragma mark - Table View Delegate
+#pragma mark - UITableViewDelegate
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-    return [self canDrillInToRow:indexPath.row inExplorerSection:explorerSection];
+    return [self.sections[indexPath.section] canSelectRow:indexPath.row];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-    UIViewController *detailViewController = [self drillInViewControllerForRow:indexPath.row inExplorerSection:explorerSection];
-    if (detailViewController) {
-        [self.navigationController pushViewController:detailViewController animated:YES];
-    } else {
+    FLEXExplorerSection *section = self.sections[indexPath.section];
+
+    void (^action)(UIViewController *) = [section didSelectRowAction:indexPath.row];
+    UIViewController *details = [section viewControllerToPushForRow:indexPath.row];
+
+    if (action) {
+        action(self);
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else if (details) {
+        [self.navigationController pushViewController:details animated:YES];
+    } else {
+        [NSException raise:NSInternalInconsistencyException
+                    format:@"Row is selectable but has no action or view controller"];
     }
 }
 
@@ -885,14 +343,12 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-    switch (explorerSection) {
-        case FLEXObjectExplorerSectionDescription:
-            return action == @selector(copy:) || action == @selector(copyObjectAddress:);
-
-        default:
-            return NO;
+    // Only the description section has "actions"
+    if (self.sections[indexPath.section] == self.descriptionSection) {
+        return action == @selector(copy:) || action == @selector(copyObjectAddress:);
     }
+
+    return NO;
 }
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
@@ -901,6 +357,10 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [self performSelector:action withObject:indexPath];
 #pragma clang diagnostic pop
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    [self.sections[indexPath.section] didPressInfoButtonAction:indexPath.row](self);
 }
 
 
@@ -917,157 +377,23 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 - (void)copy:(NSIndexPath *)indexPath
 {
-    FLEXObjectExplorerSection explorerSection = [self explorerSectionAtIndex:indexPath.section];
-    NSString *stringToCopy = @"";
+    FLEXExplorerSection *section = self.sections[indexPath.section];
+    UIPasteboard.generalPasteboard.string = ({
+        NSString *copy = [section titleForRow:indexPath.row];
+        NSString *subtitle = [section subtitleForRow:indexPath.row];
 
-    NSString *title = [self titleForRow:indexPath.row inExplorerSection:explorerSection];
-    if (title.length) {
-        stringToCopy = [stringToCopy stringByAppendingString:title];
-    }
-
-    NSString *subtitle = [self subtitleForRow:indexPath.row inExplorerSection:explorerSection];
-    if (subtitle.length) {
-        if (stringToCopy.length) {
-            stringToCopy = [stringToCopy stringByAppendingString:@"\n\n"];
+        if (subtitle) {
+            copy = [NSString stringWithFormat:@"%@\n\n%@", copy, subtitle];
         }
-        stringToCopy = [stringToCopy stringByAppendingString:subtitle];
-    }
 
-    UIPasteboard.generalPasteboard.string = stringToCopy;
+        // If no string was provided, don't overwrite the pasteboard
+        copy.length > 2 ? copy : UIPasteboard.generalPasteboard.string;
+    });
 }
 
 - (void)copyObjectAddress:(NSIndexPath *)indexPath
 {
     UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
 }
-
-
-#pragma mark - Custom Section
-
-- (void)updateCustomData
-{
-    self.cachedCustomSectionRowCookies = [self customSectionRowCookies];
-}
-
-- (void)updateFilteredCustomData
-{
-    NSIndexSet *filteredIndexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.cachedCustomSectionRowCookies.count)];
-    if (self.filterText.length > 0) {
-        filteredIndexSet = [filteredIndexSet indexesPassingTest:^BOOL(NSUInteger index, BOOL *stop) {
-            BOOL matches = NO;
-            NSString *rowTitle = [self customSectionTitleForRowCookie:self.cachedCustomSectionRowCookies[index]];
-            if ([rowTitle rangeOfString:self.filterText options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                matches = YES;
-            }
-            return matches;
-        }];
-    }
-    self.customSectionVisibleIndexes = filteredIndexSet;
-}
-
-- (id)customSectionRowCookieForVisibleRow:(NSUInteger)row
-{
-    return [[self.cachedCustomSectionRowCookies objectsAtIndexes:self.customSectionVisibleIndexes] objectAtIndex:row];
-}
-
-
-#pragma mark - Subclasses Can Override
-
-- (NSString *)customSectionTitle
-{
-    return self.shortcutPropertyNames.count ? @"Shortcuts" : nil;
-}
-
-- (NSArray *)customSectionRowCookies
-{
-    return self.shortcutPropertyNames;
-}
-
-- (NSString *)customSectionTitleForRowCookie:(id)rowCookie
-{
-    if ([rowCookie isKindOfClass:[NSString class]]) {
-        objc_property_t property = [self viewPropertyForName:rowCookie];
-        if (property) {
-            NSString *prettyPropertyName = [FLEXRuntimeUtility prettyNameForProperty:property];
-            // Since we're outside of the "properties" section, prepend @property for clarity.
-            return [@"@property " stringByAppendingString:prettyPropertyName];
-        } else if ([rowCookie respondsToSelector:@selector(description)]) {
-            return [@"No property found for object: " stringByAppendingString:[rowCookie description]];
-        } else {
-            NSString *cls = NSStringFromClass([rowCookie class]);
-            return [@"No property found for object of class " stringByAppendingString:cls];
-        }
-    }
-
-    return nil;
-}
-
-- (NSString *)customSectionSubtitleForRowCookie:(id)rowCookie
-{
-    if ([rowCookie isKindOfClass:[NSString class]]) {
-        objc_property_t property = [self viewPropertyForName:rowCookie];
-        if (property) {
-            id value = [FLEXRuntimeUtility valueForProperty:property onObject:self.object];
-            return [FLEXRuntimeUtility descriptionForIvarOrPropertyValue:value];
-        } else {
-            return nil;
-        }
-    }
-
-    return nil;
-}
-
-- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie
-{
-    return YES;
-}
-
-- (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie
-{
-    if ([rowCookie isKindOfClass:[NSString class]]) {
-        objc_property_t property = [self viewPropertyForName:rowCookie];
-        if (property) {
-            id currentValue = [FLEXRuntimeUtility valueForProperty:property onObject:self.object];
-            if ([FLEXPropertyEditorViewController canEditProperty:property onObject:self.object currentValue:currentValue]) {
-                return [[FLEXPropertyEditorViewController alloc] initWithTarget:self.object property:property];
-            } else {
-                return [FLEXObjectExplorerFactory explorerViewControllerForObject:currentValue];
-            }
-        } else {
-            [NSException raise:NSInternalInconsistencyException
-                        format:@"Cannot drill into row for cookie: %@", rowCookie];
-            return nil;
-        }
-    }
-
-    return nil;
-}
-
-- (UIView *)customViewForRowCookie:(id)rowCookie
-{
-    return nil;
-}
-
-- (CGFloat)heightForCustomViewRowForRowCookie:(id)rowCookie
-{
-    return self.tableView.rowHeight;
-}
-
-- (BOOL)canHaveInstanceState
-{
-    return YES;
-}
-
-- (BOOL)canCallInstanceMethods
-{
-    return YES;
-}
-
-@end
-
-
-@implementation FLEXObjectExplorerViewController (Shortcuts)
-
-- (NSArray<NSString *> *)shortcutPropertyNames { return @[]; }
 
 @end
