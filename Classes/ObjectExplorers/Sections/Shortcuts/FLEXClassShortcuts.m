@@ -47,6 +47,10 @@
     return UITableViewCellAccessoryDisclosureIndicator;
 }
 
+- (NSString *)customReuseIdentifierWith:(id)object {
+    return nil;
+}
+
 
 @end
 

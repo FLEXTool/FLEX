@@ -16,6 +16,7 @@
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXMetadataSection.h"
+#import "FLEXTableView.h"
 
 
 #pragma mark - FLEXShortcut
@@ -111,6 +112,14 @@
     return UITableViewCellAccessoryDisclosureIndicator;
 }
 
+- (NSString *)customReuseIdentifierWith:(id)object {
+    if (self.metadataKind) {
+        return kFLEXCodeFontCell;
+    }
+
+    return nil;
+}
+
 #pragma mark - Helpers
 
 - (FLEXProperty *)property { return _item; }
@@ -171,6 +180,10 @@
 
 - (UITableViewCellAccessoryType)accessoryTypeWith:(id)object {
     return self.accessoryTypeFuture(object);
+}
+
+- (NSString *)customReuseIdentifierWith:(id)object {
+    return nil;
 }
 
 @end

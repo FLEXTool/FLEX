@@ -83,7 +83,7 @@
 }
 
 + (UIColor *)deemphasizedTextColor {
-    return FLEXDynamicColor(tertiaryLabelColor, lightGrayColor);
+    return FLEXDynamicColor(secondaryLabelColor, lightGrayColor);
 }
 
 #pragma mark - UI Element Colors

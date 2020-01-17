@@ -16,7 +16,12 @@
     
     self.titleLabel.font = UIFont.flex_codeFont;
     self.subtitleLabel.font = UIFont.flex_codeFont;
+
+    self.titleLabel.adjustsFontSizeToFitWidth = YES;
+    self.titleLabel.minimumScaleFactor = 0.9;
     self.subtitleLabel.adjustsFontSizeToFitWidth = YES;
+    self.subtitleLabel.minimumScaleFactor = 0.75;
+    self.subtitleLabel.numberOfLines = 5;
 }
 
 @end

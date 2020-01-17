@@ -27,6 +27,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable UIViewController *)viewerWith:(id)object;
 /// Basically, whether or not to show a detail disclosure indicator
 - (UITableViewCellAccessoryType)accessoryTypeWith:(id)object;
+/// If nil is returned, the default reuse identifier is used
+- (nullable NSString *)customReuseIdentifierWith:(id)object;
 
 @optional
 /// Called when the (i) button is pressed if the accessory type includes it

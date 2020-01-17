@@ -198,7 +198,7 @@
 }
 
 - (NSString *)reuseIdentifierForRow:(NSInteger)row {
-    return kFLEXMultilineDetailCell;
+    return [self.shortcuts[row] customReuseIdentifierWith:self.object] ?: kFLEXMultilineDetailCell;
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
