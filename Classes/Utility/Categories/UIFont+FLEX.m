@@ -8,6 +8,8 @@
 
 #import "UIFont+FLEX.h"
 
+#define kFLEXDefaultCellFontSize 12.0
+
 @implementation UIFont (FLEX)
 
 + (UIFont *)flex_defaultTableCellFont
@@ -15,18 +17,26 @@
     static UIFont *defaultTableCellFont = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        defaultTableCellFont = [UIFont systemFontOfSize:12.0];
+        defaultTableCellFont = [UIFont systemFontOfSize:kFLEXDefaultCellFontSize];
     });
 
     return defaultTableCellFont;
 }
 
 + (UIFont *)flex_codeFont {
-    return [self fontWithName:@"Menlo-Regular" size:self.systemFontSize];
+    if (@available(iOS 12, *)) {
+        return [self monospacedSystemFontOfSize:kFLEXDefaultCellFontSize weight:UIFontWeightRegular];
+    } else {
+        return [self fontWithName:@"Menlo-Regular" size:kFLEXDefaultCellFontSize];
+    }
 }
 
 + (UIFont *)flex_smallCodeFont {
-    return [self fontWithName:@"Menlo-Regular" size:self.smallSystemFontSize];
+    if (@available(iOS 12, *)) {
+        return [self monospacedSystemFontOfSize:self.smallSystemFontSize weight:UIFontWeightRegular];
+    } else {
+        return [self fontWithName:@"Menlo-Regular" size:self.smallSystemFontSize];
+    }
 }
 
 @end

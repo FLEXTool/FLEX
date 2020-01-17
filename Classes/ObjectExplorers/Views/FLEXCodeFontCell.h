@@ -6,11 +6,11 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXSubtitleTableViewCell.h"
+#import "FLEXMultilineTableViewCell.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLEXCodeFontCell : FLEXSubtitleTableViewCell
+@interface FLEXCodeFontCell : FLEXMultilineDetailTableViewCell
 
 @end
 
