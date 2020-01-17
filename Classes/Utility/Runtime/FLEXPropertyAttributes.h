@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 // These are necessary for the mutable subclass to function
 @protected
     NSUInteger _count;
-    NSString *_string, *_backingIvar, *_typeEncoding, *_oldTypeEncoding;
+    NSString *_string, *_backingIvar, *_typeEncoding, *_oldTypeEncoding, *_fullDeclaration;
     NSDictionary *_dictionary;
     objc_property_attribute_t *_list;
     SEL _customGetter, _customSetter;
@@ -43,6 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) objc_property_attribute_t *list;
 /// The string value of the property attributes.
 @property (nonatomic, readonly) NSString *string;
+/// A human-readable version of the property attributes.
+@property (nonatomic, readonly) NSString *fullDeclaration;
 /// A dictionary of the property attributes.
 /// Values are either a string or \c @YES. Boolean attributes
 /// which are false will not be present in the dictionary.

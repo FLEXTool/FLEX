@@ -30,6 +30,8 @@
 @property (nonatomic) BOOL isWeak;
 @property (nonatomic) BOOL isGarbageCollectable;
 
+- (NSString *)buildFullDeclaration;
+
 @end
 
 @implementation FLEXPropertyAttributes
@@ -64,6 +66,8 @@
         _isNonatomic          = attributes[kFLEXPropertyAttributeKeyNonAtomic] != nil;
         _isWeak               = attributes[kFLEXPropertyAttributeKeyWeak] != nil;
         _isGarbageCollectable = attributes[kFLEXPropertyAttributeKeyGarbageCollectable] != nil;
+
+        _fullDeclaration = [self buildFullDeclaration];
     }
     
     return self;
@@ -186,6 +190,42 @@
     return _list;
 }
 
+- (NSString *)buildFullDeclaration {
+    NSMutableString *decl = [NSMutableString new];
+
+    [decl appendFormat:@"%@, ", _isNonatomic ? @"nonatomic" : @"atomic"];
+    [decl appendFormat:@"%@, ", _isReadOnly ? @"readonly" : @"readwrite"];
+
+    BOOL noExplicitMemorySemantics = YES;
+    if (_isCopy) { noExplicitMemorySemantics = NO;
+        [decl appendString:@"copy, "];
+    }
+    if (_isRetained) { noExplicitMemorySemantics = NO;
+        [decl appendString:@"strong, "];
+    }
+    if (_isWeak) { noExplicitMemorySemantics = NO;
+        [decl appendString:@"weak, "];
+    }
+
+    if ([_typeEncoding hasPrefix:@"@"] && noExplicitMemorySemantics) {
+        // *probably* strong if this is an object; strong is the default.
+        [decl appendString:@"strong, "];
+    } else if (noExplicitMemorySemantics) {
+        // *probably* assign if this is not an object
+        [decl appendString:@"assign, "];
+    }
+
+    if (_customGetter) {
+        [decl appendFormat:@"getter=%@, ", NSStringFromSelector(_customGetter)];
+    }
+    if (_customSetter) {
+        [decl appendFormat:@"setter=%@, ", NSStringFromSelector(_customSetter)];
+    }
+
+    [decl deleteCharactersInRange:NSMakeRange(decl.length-2, 2)];
+    return decl.copy;
+}
+
 - (void)dealloc {
     if (_list) {
         free(_list);
@@ -214,12 +254,13 @@
 @property (nonatomic) BOOL stringDelta;
 @property (nonatomic) BOOL dictDelta;
 @property (nonatomic) BOOL listDelta;
+@property (nonatomic) BOOL declDelta;
 @end
 
 #define PropertyWithDeltaFlag(type, name, Name) @dynamic name; \
 - (void)set ## Name:(type)name { \
     if (name != _ ## name) { \
-        _countDelta = _stringDelta = _dictDelta = _listDelta = YES; \
+        _countDelta = _stringDelta = _dictDelta = _listDelta = _declDelta = YES; \
         _ ## name = name; \
     } \
 }
@@ -311,6 +352,15 @@ PropertyWithDeltaFlag(BOOL, isGarbageCollectable, IsGarbageCollectable);
     }
 
     return _dictionary;
+}
+
+- (NSString *)fullDeclaration {
+    if (self.declDelta || !_fullDeclaration) {
+        _declDelta = NO;
+        _fullDeclaration = [self buildFullDeclaration];
+    }
+
+    return _fullDeclaration;
 }
 
 @end

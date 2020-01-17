@@ -69,6 +69,15 @@
     _typeEncoding = @(ivar_getTypeEncoding(self.objc_ivar));
     _type         = (FLEXTypeEncoding)[_typeEncoding characterAtIndex:0];
     _offset       = ivar_getOffset(self.objc_ivar);
+
+    NSUInteger size = 0;
+    @try {
+        NSGetSizeAndAlignment(_typeEncoding.UTF8String, &size, nil);
+    } @catch (NSException *exception) { }
+    _details = [NSString stringWithFormat:
+        @"%@ bytes, offset %@  —  %@",
+        (size ? @(size) : @"?"), @(_offset), _typeEncoding
+    ];
 }
 
 - (id)getValue:(id)target {

@@ -54,9 +54,13 @@
 }
 
 - (NSString *)previewWithTarget:(id)object {
-    return [FLEXRuntimeUtility
-        summaryForObject:[self currentValueWithTarget:object]
-    ];
+    if (object_isClass(object) && !self.isClassProperty) {
+        return self.attributes.fullDeclaration;
+    } else {
+        return [FLEXRuntimeUtility
+            summaryForObject:[self currentValueWithTarget:object]
+        ];
+    }
 }
 
 - (UIViewController *)viewerWithTarget:(id)object {
@@ -120,6 +124,9 @@
 }
 
 - (NSString *)previewWithTarget:(id)object {
+    if (object_isClass(object)) {
+        return self.details;
+    }
     return [FLEXRuntimeUtility
         summaryForObject:[self currentValueWithTarget:object]
     ];
@@ -180,7 +187,7 @@
 }
 
 - (NSString *)previewWithTarget:(id)object {
-    return self.selectorString;
+    return [self.selectorString stringByAppendingFormat:@"  —  %@", self.typeEncoding];
 }
 
 - (UIViewController *)viewerWithTarget:(id)object {
