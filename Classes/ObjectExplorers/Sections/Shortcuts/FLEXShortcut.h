@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// Represents a row in a shortcut section.
 ///
 /// The purpsoe of this protocol is to allow delegating a small
@@ -18,21 +20,23 @@
 /// them to the existing list of shortcuts for a class.
 @protocol FLEXShortcut <NSObject>
 
-- (NSString *)titleWith:(id)object;
-- (NSString *)subtitleWith:(id)object;
+- (nonnull  NSString *)titleWith:(id)object;
+- (nullable NSString *)subtitleWith:(id)object;
 //- (void (^)(UIViewController *))didSelectAction:(id)object;
 /// Called when the row is selected
-- (UIViewController *)viewerWith:(id)object;
+- (nullable UIViewController *)viewerWith:(id)object;
 /// Basically, whether or not to show a detail disclosure indicator
 - (UITableViewCellAccessoryType)accessoryTypeWith:(id)object;
 
 @optional
-/// Called when the (i) button is pressed
+/// Called when the (i) button is pressed if the accessory type includes it
 - (UIViewController *)editorWith:(id)object;
 
 @end
 
-/// Provides default behavior for FLEX metadata objects.
+
+/// Provides default behavior for FLEX metadata objects. Also works in a limited way with strings.
+/// Used internally. If you wish to use this object, only pass in \c FLEX* metadata objects.
 @interface FLEXShortcut : NSObject <FLEXShortcut>
 
 /// @param item An \c NSString or \c FLEX* metadata object.
@@ -41,3 +45,20 @@
 + (id<FLEXShortcut>)shortcutFor:(id)item;
 
 @end
+
+
+/// Provides a quick and dirty implementation of the \c FLEXShortcut protocol,
+/// allowing you to specify a static title and dynamic atttributes for everything else.
+/// The object passed into each block is the object passed to each \c FLEXShortcut method.
+///
+/// Does not support the \c -editorWith: method.
+@interface FLEXActionShortcut : NSObject <FLEXShortcut>
+
++ (instancetype)title:(NSString *)title
+             subtitle:(nullable NSString *(^)(id object))subtitleFuture
+               viewer:(nullable UIViewController *(^)(id object))viewerFuture
+        accessoryType:(nullable UITableViewCellAccessoryType(^)(id object))accessoryTypeFuture;
+
+@end
+
+NS_ASSUME_NONNULL_END

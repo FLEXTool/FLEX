@@ -17,6 +17,9 @@
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXMetadataSection.h"
 
+
+#pragma mark - FLEXShortcut
+
 @interface FLEXShortcut () {
     id _item;
 }
@@ -114,5 +117,60 @@
 - (FLEXMethodBase *)method { return _item; }
 - (FLEXIvar *)ivar { return _item; }
 - (id<FLEXRuntimeMetadata>)metadata { return _item; }
+
+@end
+
+
+#pragma mark - FLEXActionShortcut
+
+@interface FLEXActionShortcut ()
+@property (nonatomic, readonly) NSString *title;
+@property (nonatomic, readonly) NSString *(^subtitleFuture)(id);
+@property (nonatomic, readonly) UIViewController *(^viewerFuture)(id);
+@property (nonatomic, readonly) UITableViewCellAccessoryType (^accessoryTypeFuture)(id);
+@end
+
+@implementation FLEXActionShortcut
+
++ (instancetype)title:(NSString *)title
+             subtitle:(NSString *(^)(id))subtitle
+               viewer:(UIViewController *(^)(id))viewer
+        accessoryType:(UITableViewCellAccessoryType (^)(id))type {
+    return [[self alloc] initWithTitle:title subtitle:subtitle viewer:viewer accessoryType:type];
+}
+
+- (id)initWithTitle:(NSString *)title
+           subtitle:(id)subtitleFuture
+             viewer:(id)viewerFuture
+      accessoryType:(id)accessoryTypeFuture {
+    NSParameterAssert(title.length);
+
+    self = [super init];
+    if (self) {
+        id nilBlock = ^id (id obj) { return nil; };
+        _title = title;
+        _subtitleFuture = subtitleFuture ?: nilBlock;
+        _viewerFuture = viewerFuture ?: nilBlock;
+        _accessoryTypeFuture = accessoryTypeFuture ?: nilBlock;
+    }
+
+    return self;
+}
+
+- (NSString *)titleWith:(id)object {
+    return self.title;
+}
+
+- (NSString *)subtitleWith:(id)object {
+    return self.subtitleFuture(object);
+}
+
+- (UIViewController *)viewerWith:(id)object {
+    return self.viewerFuture(object);
+}
+
+- (UITableViewCellAccessoryType)accessoryTypeWith:(id)object {
+    return self.accessoryTypeFuture(object);
+}
 
 @end

@@ -7,12 +7,13 @@
 //
 
 #import "FLEXViewShortcuts.h"
+#import "FLEXShortcut.h"
+#import "FLEXRuntimeUtility.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXImagePreviewViewController.h"
 
 @interface FLEXViewShortcuts ()
 @property (nonatomic, readonly) UIView *view;
-@property (nonatomic, readonly) BOOL showsViewControllerRow;
 @end
 
 @implementation FLEXViewShortcuts
@@ -41,16 +42,15 @@
     return nil;
 }
 
-- (UIViewController *)viewControllerForView {
-    return [[self class] viewControllerForView:self.view] ?:
-        [[self class] viewControllerForAncestralView:self.view];
++ (UIViewController *)nearestViewControllerForView:(UIView *)view {
+    return [self viewControllerForView:view] ?: [self viewControllerForAncestralView:view];
 }
 
-- (UIViewController *)imagePreviewViewController {
-    if (!CGRectIsEmpty(self.view.bounds)) {
-        CGSize viewSize = self.view.bounds.size;
++ (UIViewController *)imagePreviewViewControllerForView:(UIView *)view {
+    if (!CGRectIsEmpty(view.bounds)) {
+        CGSize viewSize = view.bounds.size;
         UIGraphicsBeginImageContextWithOptions(viewSize, NO, 0.0);
-        [self.view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
+        [view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
         UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return [FLEXImagePreviewViewController forImage:previewImage];
@@ -62,42 +62,39 @@
 #pragma mark - Overrides
 
 + (instancetype)forObject:(UIView *)view {
-    // Views without a superview don't need the "View Controller for Ancestor" row
-    BOOL hasViewController = [self viewControllerForView:view] != nil;
-    BOOL hasAncestralVC = [self viewControllerForAncestralView:view] != nil;
-    NSString *vcRowTitle = hasViewController ? @"View Controller" :
-        hasAncestralVC ? @"View Controller for Ancestor" : nil;
+    // In the past, FLEX would not hold a strong reference to something like this.
+    // After using FLEX for so long, I am certain it is more useful to eagerly
+    // reference something as useful as a view controller so that the reference
+    // is not lost and swept out from under you before you can access it.
+    //
+    // The alternative here is to use a future in place of `controller` which would
+    // dynamically grab a reference to the view controller. 99% of the time, however,
+    // it is not all that useful. If you need it to refresh, you can simply go back
+    // and go forward again and it will show if the view controller is nil or changed.
+    UIViewController *controller = [FLEXViewShortcuts nearestViewControllerForView:view];
 
-    // These additional rows will appear at the beginning of the shortcuts section.
-    // The methods below are written in such a way that they will not interfere
-    // with properties/etc being registered alongside these
-    FLEXViewShortcuts *shortcuts = [self forObject:view additionalRows:(
-        vcRowTitle ? @[vcRowTitle, @"Preview"] : @[@"Preview"]
-    )];
-    shortcuts->_showsViewControllerRow = hasViewController || hasAncestralVC;
-    return shortcuts;
-}
-
-- (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
-    switch (row) {
-        case 0:
-            if (self.showsViewControllerRow) {
-                return [FLEXObjectExplorerFactory
-                    explorerViewControllerForObject:[self viewControllerForView]
-                ];
-            } else {
-                return [self imagePreviewViewController];
+    return [self forObject:view additionalRows:@[
+        [FLEXActionShortcut title:@"Nearest View Controller"
+            subtitle:^NSString *(id view) {
+                return [FLEXRuntimeUtility safeDescriptionForObject:controller];
             }
-        case 1:
-            if (self.showsViewControllerRow) {
-                return [self imagePreviewViewController];
+            viewer:^UIViewController *(id view) {
+                return [FLEXObjectExplorerFactory explorerViewControllerForObject:controller];
             }
-
-        default:
-            return [super viewControllerToPushForRow:row];
-    }
+            accessoryType:^UITableViewCellAccessoryType(id view) {
+                return controller ? UITableViewCellAccessoryDisclosureIndicator : 0;
+            }
+        ],
+        [FLEXActionShortcut title:@"Preview Image" subtitle:nil
+            viewer:^UIViewController *(id view) {
+                return [FLEXViewShortcuts imagePreviewViewControllerForView:view];
+            }
+            accessoryType:^UITableViewCellAccessoryType(id view) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ]
+    ]];
 }
-
 
 #pragma mark - Runtime Adjustment
 
