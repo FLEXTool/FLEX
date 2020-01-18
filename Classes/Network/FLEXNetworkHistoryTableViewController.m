@@ -182,7 +182,7 @@
     
     if (self.searchController.isActive) {
         [self updateTransactions];
-        [self updateSearchResults:nil];
+//        [self updateSearchResults:nil];
         return;
     }
 
@@ -349,14 +349,14 @@
 
 #pragma mark - Search Bar
 
-- (void)updateSearchResults:(NSString *)searchString
+- (void)updateSearchResults:(NSString *)newText
 {
     [self onBackgroundQueue:^NSArray *{
         return [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary<NSString *, id> *bindings) {
-            return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
+            return [[transaction.request.URL absoluteString] rangeOfString:newText options:NSCaseInsensitiveSearch].length > 0;
         }]];
     } thenOnMainQueue:^(NSArray *filteredNetworkTransactions) {
-        if ([self.searchText isEqual:searchString]) {
+        if ([self.searchText isEqual:newText]) {
             self.filteredNetworkTransactions = filteredNetworkTransactions;
             [self.tableView reloadData];
         }
