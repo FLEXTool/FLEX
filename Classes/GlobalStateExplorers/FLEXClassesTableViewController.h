@@ -11,6 +11,6 @@
 
 @interface FLEXClassesTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
-@property (nonatomic, copy) NSString *binaryImageName;
++ (instancetype)binaryImageName:(NSString *)binaryImageName;
 
 @end

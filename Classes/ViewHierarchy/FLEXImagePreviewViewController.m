@@ -21,6 +21,11 @@
 
 @implementation FLEXImagePreviewViewController
 
++ (instancetype)forImage:(UIImage *)image
+{
+    return [[self alloc] initWithImage:image];
+}
+
 - (id)initWithImage:(UIImage *)image
 {
     self = [super initWithNibName:nil bundle:nil];

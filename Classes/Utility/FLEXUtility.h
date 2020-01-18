@@ -21,6 +21,10 @@
 #define FLEX_AT_LEAST_IOS13_SDK NO
 #endif
 
+#define FLEXPluralString(count, plural, singular) [NSString \
+    stringWithFormat:@"%@ %@", @(count), (count == 1 ? singular : plural) \
+]
+
 @interface FLEXUtility : NSObject
 
 + (UIColor *)consistentRandomColorForObject:(id)object;

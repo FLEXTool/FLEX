@@ -168,6 +168,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
 #define PropertyKeyGetter(getter) kFLEXUtilityAttributeCustomGetter : NSStringFromSelector(@selector(getter))
 #define PropertyKeySetter(setter) kFLEXUtilityAttributeCustomSetter : NSStringFromSelector(@selector(setter))
 
+/// Takes: min iOS version, property name, target class, property type, and a list of attributes
 #define FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, type, ...) ({ \
     if (@available(iOS iOS_atLeast, *)) { \
         NSMutableDictionary *attrs = [NSMutableDictionary dictionaryWithDictionary:@{ \
@@ -181,8 +182,11 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
         ]; \
     } \
 })
+
+/// Takes: min iOS version, property name, target class, property type, and a list of attributes
 #define FLEXRuntimeUtilityTryAddNonatomicProperty(iOS_atLeast, name, cls, type, ...) \
     FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, @encode(type), PropertyKey(NonAtomic), __VA_ARGS__);
+/// Takes: min iOS version, property name, target class, property type (class name), and a list of attributes
 #define FLEXRuntimeUtilityTryAddObjectProperty(iOS_atLeast, name, cls, type, ...) \
     FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, FLEXEncodeClass(type), PropertyKey(NonAtomic), __VA_ARGS__);
 
@@ -195,7 +199,7 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     // This way, we can use our property editor to access and change them.
     // The property attributes match the declared attributes in their headers.
 
-    // UIView
+    // UIView, public
     FLEXRuntimeUtilityTryAddNonatomicProperty(2, frame, UIView, CGRect);
     FLEXRuntimeUtilityTryAddNonatomicProperty(2, alpha, UIView, CGFloat);
     FLEXRuntimeUtilityTryAddNonatomicProperty(2, clipsToBounds, UIView, BOOL);
@@ -203,6 +207,8 @@ typedef NS_ENUM(NSUInteger, FLEXViewExplorerRow) {
     FLEXRuntimeUtilityTryAddNonatomicProperty(2, hidden, UIView, BOOL, PropertyKeyGetter(isHidden));
     FLEXRuntimeUtilityTryAddObjectProperty(2, backgroundColor, UIView, UIColor, PropertyKey(Copy));
     FLEXRuntimeUtilityTryAddObjectProperty(6, constraints, UIView, NSArray, PropertyKey(ReadOnly));
+    FLEXRuntimeUtilityTryAddObjectProperty(2, subviews, UIView, NSArray, PropertyKey(ReadOnly));
+    FLEXRuntimeUtilityTryAddObjectProperty(2, superview, UIView, UIView, PropertyKey(ReadOnly));
 }
 
 @end

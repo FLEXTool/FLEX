@@ -214,14 +214,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.didInitiallyRevealSearchBar = NO;
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-
-    if (self.searchController.active) {
-        self.searchController.active = NO;
-    }
-}
-
 #pragma mark - Private
 
 - (void)debounce:(void(^)(void))block {

@@ -210,7 +210,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 - (UITableViewCell *)tableView:(__kindof UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = [tableView
-        dequeueReusableCellWithIdentifier:[tableView defaultReuseIdentifier]
+        dequeueReusableCellWithIdentifier:kFLEXDefaultCell
         forIndexPath:indexPath
     ];
 

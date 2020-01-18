@@ -14,33 +14,56 @@
 
 @interface FLEXClassesTableViewController ()
 
-@property (nonatomic) NSArray<NSString *> *classNames;
-@property (nonatomic) NSArray<NSString *> *filteredClassNames;
+@property (nonatomic, copy) NSArray<NSString *> *classNames;
+@property (nonatomic, copy) NSArray<NSString *> *filteredClassNames;
+@property (nonatomic, copy) NSString *binaryImageName;
 
 @end
 
 @implementation FLEXClassesTableViewController
+
+#pragma mark - Initialization
+
++ (instancetype)binaryImageName:(NSString *)binaryImageName
+{
+    return [[self alloc] initWithBinaryImageName:binaryImageName];
+}
+
+- (id)initWithBinaryImageName:(NSString *)binaryImageName
+{
+    NSParameterAssert(binaryImageName);
+
+    self = [super init];
+    if (self) {
+        self.binaryImageName = binaryImageName;
+        [self loadClassNames];
+    }
+
+    return self;
+}
+
+
+#pragma mark - Internal
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.showsSearchBar = YES;
+    [self updateTitle];
 }
 
-- (void)setBinaryImageName:(NSString *)binaryImageName
+- (void)updateTitle
 {
-    if (![_binaryImageName isEqual:binaryImageName]) {
-        _binaryImageName = binaryImageName;
-        [self loadClassNames];
-        [self updateTitle];
-    }
+    NSString *shortImageName = self.binaryImageName.lastPathComponent;
+    self.title = [NSString stringWithFormat:@"%@ Classes (%lu)",
+        shortImageName, (unsigned long)self.filteredClassNames.count
+    ];
 }
 
 - (void)setClassNames:(NSArray<NSString *> *)classNames
 {
-    _classNames = classNames;
-    self.filteredClassNames = classNames;
+    _classNames = self.filteredClassNames = classNames.copy;
 }
 
 - (void)loadClassNames
@@ -61,12 +84,6 @@
     }
 }
 
-- (void)updateTitle
-{
-    NSString *shortImageName = self.binaryImageName.lastPathComponent;
-    self.title = [NSString stringWithFormat:@"%@ Classes (%lu)", shortImageName, (unsigned long)self.filteredClassNames.count];
-}
-
 
 #pragma mark - FLEXGlobalsEntry
 
@@ -75,10 +92,7 @@
 }
 
 + (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
-    FLEXClassesTableViewController *classesViewController = [self new];
-    classesViewController.binaryImageName = [FLEXUtility applicationImageName];
-
-    return classesViewController;
+    return [self binaryImageName:[FLEXUtility applicationImageName]];
 }
 
 
@@ -88,7 +102,7 @@
 {
     if (searchText.length > 0) {
         NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", searchText];
-        self.filteredClassNames = [self.classNames filteredArrayUsingPredicate:searchPredicate];
+        self.filteredClassNames = [self.classNames filteredArrayUsingPredicate:searchPredicate].reverseObjectEnumerator.allObjects;
     } else {
         self.filteredClassNames = self.classNames;
     }

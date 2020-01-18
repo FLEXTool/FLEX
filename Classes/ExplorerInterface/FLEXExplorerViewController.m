@@ -131,11 +131,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
     SEL viewControllerSelector = NSSelectorFromString(viewControllerSelectorString);
     if ([viewController respondsToSelector:viewControllerSelector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        viewController = [viewController performSelector:viewControllerSelector];
-#pragma clang diagnostic pop
+        viewController = [viewController valueForKey:viewControllerSelectorString];
     }
+    
     return viewController;
 }
 
@@ -148,7 +146,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     
     // The UIViewController docs state that this method must not return zero.
-    // If we weren't able to get a valid value for the supported interface orientations, default to all supported.
+    // If we weren't able to get a valid value for the supported interface
+    // orientations, default to all supported.
     if (supportedOrientations == 0) {
         supportedOrientations = UIInterfaceOrientationMaskAll;
     }
