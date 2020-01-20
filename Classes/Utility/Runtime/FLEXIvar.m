@@ -9,6 +9,7 @@
 
 #import "FLEXIvar.h"
 #import "FLEXRuntimeUtility.h"
+#import "FLEXRuntimeSafety.h"
 
 @interface FLEXIvar () {
     NSString *_flex_description;
@@ -82,6 +83,10 @@
 
 - (id)getValue:(id)target {
     id value = nil;
+    if (!FLEXIvarIsSafe(_objc_ivar)) {
+        return nil;
+    }
+
 #ifdef __arm64__
     // See http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html
     if (self.type == FLEXTypeEncodingObjcClass && [self.name isEqualToString:@"isa"]) {

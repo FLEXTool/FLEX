@@ -10,9 +10,13 @@
 NSUInteger const kFLEXKnownUnsafeClassCount = 19;
 Class * _UnsafeClasses = NULL;
 CFSetRef FLEXKnownUnsafeClasses = nil;
+CFSetRef FLEXKnownUnsafeIvars = nil;
 
 #define FLEXClassPointerOrCFNull(name) \
     (NSClassFromString(name) ?: (__bridge id)kCFNull)
+
+#define FLEXIvarOrCFNull(cls, name) \
+    (class_getInstanceVariable([cls class], name) ?: (void *)kCFNull)
 
 __attribute__((constructor))
 void FLEXRuntimeSafteyInit() {
@@ -20,6 +24,17 @@ void FLEXRuntimeSafteyInit() {
         kCFAllocatorDefault,
         (const void **)(uintptr_t)FLEXKnownUnsafeClassList(),
         kFLEXKnownUnsafeClassCount,
+        nil
+    );
+
+    Ivar unsafeIvars[] = {
+        FLEXIvarOrCFNull(NSURL, "_urlString"),
+        FLEXIvarOrCFNull(NSURL, "_baseURL"),
+    };
+    FLEXKnownUnsafeIvars = CFSetCreate(
+        kCFAllocatorDefault,
+        (const void **)unsafeIvars,
+        sizeof(unsafeIvars),
         nil
     );
 }
