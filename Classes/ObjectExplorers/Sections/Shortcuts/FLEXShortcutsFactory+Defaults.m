@@ -126,3 +126,20 @@
 }
 
 @end
+
+
+#pragma mark - Activities
+
+@implementation FLEXShortcutsFactory (Activities)
+
++ (void)load {
+    self.append.properties(@[
+        @"item", @"placeholderItem", @"activityType"
+    ]).forClass(UIActivityItemProvider.class);
+
+    self.append.properties(@[
+        @"activityItems", @"applicationActivities", @"excludedActivityTypes", @"completionHandler"
+    ]).forClass(UIActivityViewController.class);
+}
+
+@end

@@ -17,3 +17,5 @@
 @interface FLEXShortcutsFactory (NSBundle) @end
 
 @interface FLEXShortcutsFactory (Classes) @end
+
+@interface FLEXShortcutsFactory (Activities) @end
