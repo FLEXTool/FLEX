@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
+    /// 2 lines, medium-sized
     FLEXArgumentInputViewSizeDefault = 0,
+    /// One line
     FLEXArgumentInputViewSizeSmall,
+    /// Several lines
     FLEXArgumentInputViewSizeLarge
 };
 

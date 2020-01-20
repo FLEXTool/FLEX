@@ -111,12 +111,10 @@
     [super layoutSubviews];
     
     self.inputTextView.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.bounds.size.width, [self inputTextViewHeight]);
-    // Placeholder label is positioned by insetting origin,
-    // which is the line fragment padding for X and 0 for Y,
+    // Placeholder label is positioned by insetting then origin
     // by the content inset then the text container inset
-    CGFloat leading = self.inputTextView.textContainer.lineFragmentPadding;
     CGSize s = self.inputTextView.frame.size;
-    self.placeholderLabel.frame = CGRectMake(leading, 0, s.width, s.height);
+    self.placeholderLabel.frame = CGRectMake(0, 0, s.width, s.height);
     self.placeholderLabel.frame = UIEdgeInsetsInsetRect(
         UIEdgeInsetsInsetRect(self.placeholderLabel.frame, self.inputTextView.contentInset),
         self.inputTextView.textContainerInset
