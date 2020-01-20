@@ -7,6 +7,7 @@
 //
 
 #import "FLEXArgumentInputNotSupportedView.h"
+#import "FLEXColor.h"
 
 @implementation FLEXArgumentInputNotSupportedView
 
@@ -15,8 +16,8 @@
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.inputTextView.userInteractionEnabled = NO;
-        self.inputTextView.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1.0];
-        self.inputTextView.text = @"nil";
+        self.inputTextView.backgroundColor = [FLEXColor secondaryGroupedBackgroundColorWithAlpha:0.5];
+        self.inputPlaceholderText = @"nil  (type not supported)";
         self.targetSize = FLEXArgumentInputViewSizeSmall;
     }
     return self;
