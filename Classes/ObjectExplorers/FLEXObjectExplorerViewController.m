@@ -309,6 +309,12 @@
     return UITableViewAutomaticDimension;
 }
 
+- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    return [self.sections flex_mapped:^id(FLEXExplorerSection *obj, NSUInteger idx) {
+        return @"⦁";
+    }];
+}
+
 
 #pragma mark - UITableViewDelegate
 
