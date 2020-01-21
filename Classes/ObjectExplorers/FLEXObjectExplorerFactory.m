@@ -62,6 +62,10 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
         sectionClass = classesToRegisteredSections[(Class<NSCopying>)cls];
     } while (!sectionClass && (cls = [cls superclass]));
 
+    if (!sectionClass) {
+        sectionClass = [FLEXShortcutsSection class];
+    }
+
     return [FLEXObjectExplorerViewController
         exploringObject:object
         customSection:[sectionClass forObject:object]
