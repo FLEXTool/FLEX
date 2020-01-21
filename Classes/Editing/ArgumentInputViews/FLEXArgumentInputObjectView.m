@@ -173,12 +173,12 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
 {
     NSParameterAssert(type);
     // Must be object type
-    return type[0] == '@';
+    return type[0] == FLEXTypeEncodingObjcObject || type[0] == FLEXTypeEncodingObjcClass;
 }
 
 + (FLEXArgInputObjectType)preferredDefaultTypeForObjCType:(const char *)type withCurrentValue:(id)value
 {
-    NSParameterAssert(type[0] == '@');
+    NSParameterAssert(type[0] == FLEXTypeEncodingObjcObject || type[0] == FLEXTypeEncodingObjcClass);
 
     if (value) {
         // If there's a current value, it must be serializable to JSON
