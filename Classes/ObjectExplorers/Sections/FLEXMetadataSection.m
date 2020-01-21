@@ -90,6 +90,8 @@
             return [self titleWithBaseName:@"Methods"];
         case FLEXMetadataKindClassMethods:
             return [self titleWithBaseName:@"Class Methods"];
+        case FLEXMetadataKindProtocols:
+            return [self titleWithBaseName:@"Protocols"];
     }
 }
 
@@ -126,12 +128,14 @@
         case FLEXMetadataKindClassMethods:
             self.allMetadata = self.explorer.classMethods;
             break;
+        case FLEXMetadataKindProtocols:
+            self.allMetadata = self.explorer.conformedProtocols;
     }
 
     // Remove excluded metadata
     if (self.excludedMetadata.count) {
-        id filterBlock = ^BOOL(id obj, NSUInteger idx) {
-            return ![self.excludedMetadata containsObject:[obj name]];
+        id filterBlock = ^BOOL(id<FLEXRuntimeMetadata> obj, NSUInteger idx) {
+            return ![self.excludedMetadata containsObject:obj.name];
         };
 
         // Filter exclusions and sort

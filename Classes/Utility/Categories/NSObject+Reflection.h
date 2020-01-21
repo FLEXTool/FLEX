@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
-@class FLEXMirror, FLEXMethod, FLEXIvar, FLEXProperty, FLEXMethodBase, FLEXPropertyAttributes;
+@class FLEXMirror, FLEXMethod, FLEXIvar, FLEXProperty, FLEXMethodBase, FLEXPropertyAttributes, FLEXProtocol;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -44,7 +44,10 @@ extern NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger coun
 
 /// @return a list of classes going up the class hierarchy,
 /// starting with the receiver and ending with the root class.
-+ (NSArray<Class> *)flex_classHierarchy;
+@property (nonatomic, readonly, class) NSArray<Class> *flex_classHierarchy;
+
+/// @return a list of protocols this class itself conforms to.
+@property (nonatomic, readonly, class) NSArray<FLEXProtocol *> *flex_protocols;
 
 @end
 

@@ -100,6 +100,7 @@ FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell = @"kFLEXCodeFontCell";
     return self;
 }
 
+
 #pragma mark - Public
 
 - (void)registerCells:(NSDictionary<NSString*, Class> *)registrationMapping {

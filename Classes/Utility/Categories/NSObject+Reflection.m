@@ -13,6 +13,7 @@
 #import "FLEXProperty.h"
 #import "FLEXMethod.h"
 #import "FLEXIvar.h"
+#import "FLEXProtocol.h"
 #import "FLEXPropertyAttributes.h"
 #import "NSArray+Functional.h"
 
@@ -128,6 +129,16 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
     } while ((cls = [cls superclass]));
 
     return classes.copy;
+}
+
++ (NSArray<FLEXProtocol *> *)flex_protocols {
+    unsigned int count = 0;
+    Protocol *__unsafe_unretained *list = class_copyProtocolList(self, &count);
+    NSArray<Protocol *> *protocols = [NSArray arrayWithObjects:list count:count];
+    
+    return [protocols flex_mapped:^id(Protocol *pro, NSUInteger idx) {
+        return [FLEXProtocol protocol:pro];
+    }];
 }
 
 @end

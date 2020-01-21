@@ -55,6 +55,10 @@
 #pragma mark Other
 
 - (NSString *)description {
+    return self.name;
+}
+
+- (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%@ name=%@, %lu properties, %lu required methods, %lu optional methods, %lu protocols>",
             NSStringFromClass(self.class), self.name, (unsigned long)self.properties.count,
             (unsigned long)self.requiredMethods.count, (unsigned long)self.optionalMethods.count, (unsigned long)self.protocols.count];
@@ -132,6 +136,10 @@
 }
 
 - (NSString *)description {
+    return NSStringFromSelector(self.selector);
+}
+
+- (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%@ name=%@, type=%@>",
             NSStringFromClass(self.class), NSStringFromSelector(self.selector), self.typeEncoding];
 }

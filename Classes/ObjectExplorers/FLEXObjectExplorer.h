@@ -10,6 +10,7 @@
 #import "FLEXProperty.h"
 #import "FLEXIvar.h"
 #import "FLEXMethod.h"
+#import "FLEXProtocol.h"
 
 @interface FLEXObjectExplorer : NSObject
 
@@ -46,8 +47,9 @@
 @property (nonatomic, readonly) NSArray<NSArray<FLEXMethod *> *> *allClassMethods;
 @property (nonatomic, readonly) NSArray<FLEXMethod *> *classMethods;
 
+@property (nonatomic, readonly) NSArray<NSArray<FLEXProtocol *> *> *allConformedProtocols;
+@property (nonatomic, readonly) NSArray<FLEXProtocol *> *conformedProtocols;
 @property (nonatomic, readonly) NSArray<Class> *classHierarchy;
-@property (nonatomic, readonly) NSArray<Class> *filteredSuperclasses;
 
 - (void)reloadMetadata;
 - (void)reloadClassHierarchy;

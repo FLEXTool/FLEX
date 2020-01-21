@@ -37,3 +37,11 @@
 }
 
 @end
+
+@implementation FLEXProtocol (Compare)
+
+- (NSComparisonResult)compare:(FLEXProtocol *)other {
+    return [self.name caseInsensitiveCompare:other.name];
+}
+
+@end

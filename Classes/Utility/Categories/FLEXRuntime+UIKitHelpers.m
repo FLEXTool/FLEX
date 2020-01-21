@@ -236,3 +236,36 @@
 }
 
 @end
+
+
+@implementation FLEXProtocol (UIKitHelpers)
+
+- (BOOL)isEditable {
+    return NO;
+}
+
+- (BOOL)isCallable {
+    return NO;
+}
+
+- (id)currentValueWithTarget:(id)object {
+    return nil;
+}
+
+- (NSString *)previewWithTarget:(id)object {
+    return nil;
+}
+
+- (UIViewController *)viewerWithTarget:(id)object {
+    return [FLEXObjectExplorerFactory explorerViewControllerForObject:self];
+}
+
+- (UIViewController *)editorWithTarget:(id)object {
+    return nil;
+}
+
+- (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
+    return UITableViewCellAccessoryDisclosureIndicator;
+}
+
+@end

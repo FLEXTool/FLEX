@@ -32,6 +32,9 @@
 /// All protocols that this protocol conforms to, if any.
 @property (nonatomic, readonly) NSArray<FLEXProtocol *>  *protocols;
 
+/// For internal use
+@property (nonatomic) id tag;
+
 /// Not to be confused with \c -conformsToProtocol:, which refers to the current
 /// \c FLEXProtocol instance and not the underlying \c Protocol object.
 - (BOOL)conformsTo:(Protocol *)protocol;

@@ -10,6 +10,7 @@
 #import "FLEXProperty.h"
 #import "FLEXIvar.h"
 #import "FLEXMethodBase.h"
+#import "FLEXProtocol.h"
 
 @interface FLEXProperty (Compare)
 - (NSComparisonResult)compare:(FLEXProperty *)other;
@@ -21,4 +22,8 @@
 
 @interface FLEXMethodBase (Compare)
 - (NSComparisonResult)compare:(FLEXMethodBase *)other;
+@end
+
+@interface FLEXProtocol (Compare)
+- (NSComparisonResult)compare:(FLEXProtocol *)other;
 @end

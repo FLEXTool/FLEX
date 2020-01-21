@@ -14,7 +14,8 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     FLEXMetadataKindClassProperties,
     FLEXMetadataKindIvars,
     FLEXMetadataKindMethods,
-    FLEXMetadataKindClassMethods
+    FLEXMetadataKindClassMethods,
+    FLEXMetadataKindProtocols,
 };
 
 /// This section is used for displaying ObjC runtime metadata

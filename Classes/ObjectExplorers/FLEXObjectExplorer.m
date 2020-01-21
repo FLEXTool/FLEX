@@ -22,6 +22,7 @@
     NSMutableArray<NSArray<FLEXIvar *> *> *_allIvars;
     NSMutableArray<NSArray<FLEXMethod *> *> *_allMethods;
     NSMutableArray<NSArray<FLEXMethod *> *> *_allClassMethods;
+    NSMutableArray<NSArray<FLEXProtocol *> *> *_allConformedProtocols;
 }
 @end
 
@@ -87,6 +88,7 @@
     _allIvars = [NSMutableArray new];
     _allMethods = [NSMutableArray new];
     _allClassMethods = [NSMutableArray new];
+    _allConformedProtocols = [NSMutableArray new];
 
     [self reloadClassHierarchy];
 
@@ -124,10 +126,17 @@
             superclass:superclass
             kind:FLEXMetadataKindClassMethods
         ]];
+        [_allConformedProtocols addObject:[self
+            metadataUniquedByName:[cls flex_protocols]
+            superclass:superclass
+            kind:FLEXMetadataKindProtocols
+        ]];
     }
 
     // Set up UIKit helper data
-    for (NSArray *matrix in @[_allProperties, _allIvars, _allMethods, _allClassMethods]) {
+    // Really, we only need to call this on properties and ivars
+    // because no other metadata types support editing.
+    for (NSArray *matrix in @[_allProperties, _allIvars, /* _allMethods, _allClassMethods, _allConformedProtocols */]) {
         for (NSArray *metadataByClass in matrix) {
             for (id<FLEXRuntimeMetadata> metadata in metadataByClass) {
                 metadata.tag = metadata.isEditable ? @YES : nil;
@@ -147,6 +156,7 @@
     _ivars = self.allIvars[self.classScope];
     _methods = self.allMethods[self.classScope];
     _classMethods = self.allClassMethods[self.classScope];
+    _conformedProtocols = self.allConformedProtocols[self.classScope];
 }
 
 /// Accepts an array of flex metadata objects and discards objects
@@ -184,6 +194,10 @@
                         return NO;
                     }
                     break;
+
+                case FLEXMetadataKindProtocols:
+                    return YES; // Protocols are already uniqued
+                    break;
                     
                 // Ivars cannot be overidden
                 case FLEXMetadataKindIvars: break;
@@ -202,20 +216,5 @@
     // it is always the same for a given class and instances of it
     _classHierarchy = [[self.object class] flex_classHierarchy];
 }
-
-//- (void)updateFilteredSuperclasses {
-//    if (self.filterText.length > 0) {
-//        NSMutableArray<Class> *filteredSuperclasses = [NSMutableArray array];
-//        for (Class superclass in self.classHierarchy) {
-//            if ([NSStringFromClass(superclass) localizedCaseInsensitiveContainsString:self.filterText]) {
-//                [filteredSuperclasses addObject:superclass];
-//            }
-//        }
-//        _filteredSuperclasses = filteredSuperclasses;
-//    } else {
-//        _filteredSuperclasses = self.classHierarchy;
-//    }
-//}
-
 
 @end

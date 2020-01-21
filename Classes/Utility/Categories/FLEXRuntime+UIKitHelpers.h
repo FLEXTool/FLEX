@@ -10,8 +10,11 @@
 #import "FLEXProperty.h"
 #import "FLEXIvar.h"
 #import "FLEXMethod.h"
+#import "FLEXProtocol.h"
 
 @protocol FLEXRuntimeMetadata <NSObject>
+
+@property (nonatomic, readonly) NSString *name;
 /// YES for properties and ivars which surely support editing, NO for all methods.
 @property (nonatomic, readonly) BOOL isEditable;
 /// NO for ivars, YES for supported methods and properties
@@ -26,7 +29,7 @@
 - (NSString *)previewWithTarget:(id)object;
 /// For methods, a method calling screen. For all else, an object explorer.
 - (UIViewController *)viewerWithTarget:(id)object;
-/// For methods, nil. For all else, an a field editor screen.
+/// For methods and protocols, nil. For all else, an a field editor screen.
 - (UIViewController *)editorWithTarget:(id)object;
 /// Used to determine present which interactions are possible to the user
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object;
@@ -40,3 +43,4 @@
 @interface FLEXIvar (UIKitHelpers) <FLEXRuntimeMetadata> @end
 @interface FLEXMethodBase (UIKitHelpers) <FLEXRuntimeMetadata> @end
 @interface FLEXMethod (UIKitHelpers) <FLEXRuntimeMetadata> @end
+@interface FLEXProtocol (UIKitHelpers) <FLEXRuntimeMetadata> @end

@@ -32,7 +32,6 @@
 @property (nonatomic) NSArray<FLEXExplorerSection *> *sections;
 @property (nonatomic, readonly) FLEXSingleRowSection *descriptionSection;
 @property (nonatomic, readonly) FLEXExplorerSection *customSection;
-@property (nonatomic, readonly) FLEXSingleRowSection *referencesSection;
 @property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
 
 @end
@@ -133,6 +132,7 @@
     [self reloadData];
 }
 
+
 #pragma mark - Private
 
 - (void)refreshControlDidRefresh:(id)sender
@@ -159,13 +159,13 @@
     }
 
     // Object graph section
-    _referencesSection = [FLEXSingleRowSection
+    FLEXSingleRowSection *referencesSection = [FLEXSingleRowSection
         title:@"Object Graph" reuse:kFLEXDefaultCell cell:^(FLEXTableViewCell *cell) {
-            cell.titleLabel.text = @"Other objects with ivars referencing this object";
+            cell.titleLabel.text = @"See Objects with References to This Object";
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
     ];
-    self.referencesSection.selectionAction = ^(UIViewController *host) {
+    referencesSection.selectionAction = ^(UIViewController *host) {
         UIViewController *references = [FLEXInstancesTableViewController
             instancesTableViewControllerForInstancesReferencingObject:explorer.object
         ];
@@ -178,8 +178,9 @@
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindIvars],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindMethods],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassMethods],
-        self.referencesSection
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindProtocols],
 //        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassHierarchy],
+        referencesSection
     ]];
 
     if (self.customSection) {
