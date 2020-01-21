@@ -23,6 +23,8 @@
     NSMutableArray<NSArray<FLEXMethod *> *> *_allMethods;
     NSMutableArray<NSArray<FLEXMethod *> *> *_allClassMethods;
     NSMutableArray<NSArray<FLEXProtocol *> *> *_allConformedProtocols;
+    NSMutableArray<NSNumber *> *_allInstanceSizes;
+    NSMutableArray<NSString *> *_allImageNames;
 }
 @end
 
@@ -89,6 +91,8 @@
     _allMethods = [NSMutableArray new];
     _allClassMethods = [NSMutableArray new];
     _allConformedProtocols = [NSMutableArray new];
+    _allInstanceSizes = [NSMutableArray new];
+    _allImageNames = [NSMutableArray new];
 
     [self reloadClassHierarchy];
 
@@ -131,6 +135,8 @@
             superclass:superclass
             kind:FLEXMetadataKindProtocols
         ]];
+        [_allInstanceSizes addObject:@(class_getInstanceSize(cls))];
+        [_allImageNames addObject:@(class_getImageName(cls))];
     }
 
     // Set up UIKit helper data
@@ -157,6 +163,8 @@
     _methods = self.allMethods[self.classScope];
     _classMethods = self.allClassMethods[self.classScope];
     _conformedProtocols = self.allConformedProtocols[self.classScope];
+    _instanceSize = self.allInstanceSizes[self.classScope].unsignedIntegerValue;
+    _imageName = self.allImageNames[self.classScope];
 }
 
 /// Accepts an array of flex metadata objects and discards objects

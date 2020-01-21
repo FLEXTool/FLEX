@@ -51,6 +51,12 @@
 @property (nonatomic, readonly) NSArray<FLEXProtocol *> *conformedProtocols;
 @property (nonatomic, readonly) NSArray<Class> *classHierarchy;
 
+@property (nonatomic, readonly) NSArray<NSNumber *> *allInstanceSizes;
+@property (nonatomic, readonly) NSUInteger instanceSize;
+
+@property (nonatomic, readonly) NSArray<NSString *> *allImageNames;
+@property (nonatomic, readonly) NSString *imageName;
+
 - (void)reloadMetadata;
 - (void)reloadClassHierarchy;
 
