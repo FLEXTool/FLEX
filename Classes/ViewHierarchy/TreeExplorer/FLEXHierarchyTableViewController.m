@@ -239,7 +239,6 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     _selectedView = self.displayedViews[indexPath.row]; // Don't scroll, avoid setter
-    #warning does this get called when we programmatically select a view?
     if (self.didSelectRowAction) {
         self.didSelectRowAction(_selectedView);
     }
