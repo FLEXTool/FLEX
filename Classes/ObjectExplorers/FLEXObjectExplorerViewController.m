@@ -23,7 +23,7 @@
 #import <objc/runtime.h>
 
 #pragma mark - Private properties
-@interface FLEXObjectExplorerViewController ()
+@interface FLEXObjectExplorerViewController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, copy) NSString *filterText;
 /// Every section in the table view, regardless of whether or not a section is empty.
@@ -121,6 +121,20 @@
     ];
     UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
     [UIMenuController.sharedMenuController update];
+
+    // Swipe gestures to swipe between classes in the hierarchy
+    UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleSwipeGesture:)
+    ];
+    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+    UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleSwipeGesture:)
+    ];
+    rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    leftSwipe.delegate = self;
+    rightSwipe.delegate = self;
+    [self.tableView addGestureRecognizer:leftSwipe];
+    [self.tableView addGestureRecognizer:rightSwipe];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -193,6 +207,42 @@
     return sections.copy;
 }
 
+- (NSArray<FLEXExplorerSection *> *)nonemptySections
+{
+    return [self.allSections flex_filtered:^BOOL(FLEXExplorerSection *section, NSUInteger idx) {
+        return section.numberOfRows > 0;
+    }];
+}
+
+- (BOOL)sectionHasActions:(NSInteger)section
+{
+    return self.sections[section] == self.descriptionSection;
+}
+
+- (void)handleSwipeGesture:(UISwipeGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        switch (gesture.direction) {
+            case UISwipeGestureRecognizerDirectionRight:
+                if (self.selectedScope > 0) {
+                    self.selectedScope -= 1;
+                }
+                break;
+            case UISwipeGestureRecognizerDirectionLeft:
+                if (self.selectedScope != self.explorer.classHierarchy.count - 1) {
+                    self.selectedScope += 1;
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
+    return [g2 class] == [UIPanGestureRecognizer class];
+}
+
 #pragma mark - Description
 
 - (BOOL)shouldShowDescription
@@ -254,20 +304,6 @@
     if (self.isViewLoaded) {
         [self.tableView reloadData];
     }
-}
-
-#pragma mark - Private
-
-- (NSArray<FLEXExplorerSection *> *)nonemptySections
-{
-    return [self.allSections flex_filtered:^BOOL(FLEXExplorerSection *section, NSUInteger idx) {
-        return section.numberOfRows > 0;
-    }];
-}
-
-- (BOOL)sectionHasActions:(NSInteger)section
-{
-    return self.sections[section] == self.descriptionSection;
 }
 
 

@@ -84,7 +84,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 
 /// If using the scope bar, self.searchController.searchBar.selectedScopeButtonIndex.
 /// Otherwise, this is the selected index of the carousel, or NSNotFound if using neither.
-@property (nonatomic, readonly) NSInteger selectedScope;
+@property (nonatomic) NSInteger selectedScope;
 /// self.searchController.searchBar.text
 @property (nonatomic, readonly) NSString *searchText;
 

@@ -122,6 +122,16 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
+- (void)setSelectedScope:(NSInteger)selectedScope {
+    if (self.searchController.searchBar.showsScopeBar) {
+        self.searchController.searchBar.selectedScopeButtonIndex = selectedScope;
+    } else if (self.showsCarousel) {
+        self.carousel.selectedIndex = selectedScope;
+    }
+
+    [self updateSearchResults:self.searchText];
+}
+
 - (NSString *)searchText {
     return self.searchController.searchBar.text;
 }
