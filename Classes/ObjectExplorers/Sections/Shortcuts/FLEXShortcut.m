@@ -183,6 +183,11 @@
 }
 
 - (NSString *)customReuseIdentifierWith:(id)object {
+    if (!self.subtitleFuture(object)) {
+        // The text is more centered with this style if there is no subtitle
+        return kFLEXDefaultCell;
+    }
+
     return nil;
 }
 
