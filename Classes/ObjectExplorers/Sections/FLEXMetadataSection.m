@@ -92,6 +92,8 @@
             return [self titleWithBaseName:@"Class Methods"];
         case FLEXMetadataKindProtocols:
             return [self titleWithBaseName:@"Protocols"];
+        case FLEXMetadataKindOther:
+            return @"Miscellaneous";
     }
 }
 
@@ -130,6 +132,10 @@
             break;
         case FLEXMetadataKindProtocols:
             self.allMetadata = self.explorer.conformedProtocols;
+            break;
+        case FLEXMetadataKindOther:
+            self.allMetadata = @[self.explorer.instanceSize, self.explorer.imageName];
+            break;
     }
 
     // Remove excluded metadata
@@ -155,7 +161,7 @@
 }
 
 - (NSString *)reuseIdentifierForRow:(NSInteger)row {
-    return kFLEXCodeFontCell;
+    return [self.metadata[row] reuseIdentifierWithTarget:self.explorer.object] ?: kFLEXCodeFontCell;
 }
 
 - (UIViewController *)viewControllerToPushForRow:(NSInteger)row {

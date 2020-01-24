@@ -193,6 +193,7 @@
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindMethods],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassMethods],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindProtocols],
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindOther],
 //        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassHierarchy],
         referencesSection
     ]];

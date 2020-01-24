@@ -13,7 +13,9 @@
 #import "FLEXProtocol.h"
 
 @protocol FLEXRuntimeMetadata <NSObject>
-
+/// Used as the main title of the row
+- (NSString *)description;
+/// Used to compare metadata objects for uniqueness
 @property (nonatomic, readonly) NSString *name;
 /// YES for properties and ivars which surely support editing, NO for all methods.
 @property (nonatomic, readonly) BOOL isEditable;
@@ -33,6 +35,8 @@
 - (UIViewController *)editorWithTarget:(id)object;
 /// Used to determine present which interactions are possible to the user
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object;
+/// Return nil to use the default reuse identifier
+- (NSString *)reuseIdentifierWithTarget:(id)object;
 
 @end
 
@@ -44,3 +48,18 @@
 @interface FLEXMethodBase (UIKitHelpers) <FLEXRuntimeMetadata> @end
 @interface FLEXMethod (UIKitHelpers) <FLEXRuntimeMetadata> @end
 @interface FLEXProtocol (UIKitHelpers) <FLEXRuntimeMetadata> @end
+
+typedef NS_ENUM(NSUInteger, FLEXStaticMetadataRowStyle)
+{
+    FLEXStaticMetadataRowStyleSubtitle,
+    FLEXStaticMetadataRowStyleKeyValue,
+    FLEXStaticMetadataRowStyleDefault = FLEXStaticMetadataRowStyleSubtitle,
+};
+
+/// Displays a small row as a static key-value pair of information.
+@interface FLEXStaticMetadata : NSObject <FLEXRuntimeMetadata>
+
++ (instancetype)style:(FLEXStaticMetadataRowStyle)style title:(NSString *)title string:(NSString *)string;
++ (instancetype)style:(FLEXStaticMetadataRowStyle)style title:(NSString *)title number:(NSNumber *)number;
+
+@end

@@ -6,11 +6,7 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "FLEXProperty.h"
-#import "FLEXIvar.h"
-#import "FLEXMethod.h"
-#import "FLEXProtocol.h"
+#import "FLEXRuntime+UIKitHelpers.h"
 
 @interface FLEXObjectExplorer : NSObject
 
@@ -51,11 +47,11 @@
 @property (nonatomic, readonly) NSArray<FLEXProtocol *> *conformedProtocols;
 @property (nonatomic, readonly) NSArray<Class> *classHierarchy;
 
-@property (nonatomic, readonly) NSArray<NSNumber *> *allInstanceSizes;
-@property (nonatomic, readonly) NSUInteger instanceSize;
+@property (nonatomic, readonly) NSArray<FLEXStaticMetadata *> *allInstanceSizes;
+@property (nonatomic, readonly) FLEXStaticMetadata *instanceSize;
 
-@property (nonatomic, readonly) NSArray<NSString *> *allImageNames;
-@property (nonatomic, readonly) NSString *imageName;
+@property (nonatomic, readonly) NSArray<FLEXStaticMetadata *> *allImageNames;
+@property (nonatomic, readonly) FLEXStaticMetadata *imageName;
 
 - (void)reloadMetadata;
 - (void)reloadClassHierarchy;

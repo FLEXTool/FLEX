@@ -12,7 +12,7 @@
 
 typedef NSString * FLEXTableViewCellReuseIdentifier;
 
-/// A regular \c UITableViewCell initialized with \c UITableViewCellStyleDefault
+/// A regular \c FLEXTableViewCell initialized with \c UITableViewCellStyleDefault
 extern FLEXTableViewCellReuseIdentifier const kFLEXDefaultCell;
 /// A \c FLEXSubtitleTableViewCell initialized with \c UITableViewCellStyleSubtitle
 extern FLEXTableViewCellReuseIdentifier const kFLEXDetailCell;
@@ -20,6 +20,8 @@ extern FLEXTableViewCellReuseIdentifier const kFLEXDetailCell;
 extern FLEXTableViewCellReuseIdentifier const kFLEXMultilineCell;
 /// A \c FLEXMultilineTableViewCell initialized with \c UITableViewCellStyleSubtitle
 extern FLEXTableViewCellReuseIdentifier const kFLEXMultilineDetailCell;
+/// A \c FLEXTableViewCell initialized with \c UITableViewCellStyleValue1
+extern FLEXTableViewCellReuseIdentifier const kFLEXKeyValueCell;
 /// A \c FLEXSubtitleTableViewCell which uses monospaced fonts for both labels
 extern FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell;
 

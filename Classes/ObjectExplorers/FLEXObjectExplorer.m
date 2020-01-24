@@ -23,8 +23,8 @@
     NSMutableArray<NSArray<FLEXMethod *> *> *_allMethods;
     NSMutableArray<NSArray<FLEXMethod *> *> *_allClassMethods;
     NSMutableArray<NSArray<FLEXProtocol *> *> *_allConformedProtocols;
-    NSMutableArray<NSNumber *> *_allInstanceSizes;
-    NSMutableArray<NSString *> *_allImageNames;
+    NSMutableArray<FLEXStaticMetadata *> *_allInstanceSizes;
+    NSMutableArray<FLEXStaticMetadata *> *_allImageNames;
 }
 @end
 
@@ -135,8 +135,14 @@
             superclass:superclass
             kind:FLEXMetadataKindProtocols
         ]];
-        [_allInstanceSizes addObject:@(class_getInstanceSize(cls))];
-        [_allImageNames addObject:@(class_getImageName(cls))];
+        [_allInstanceSizes addObject:[FLEXStaticMetadata
+            style:FLEXStaticMetadataRowStyleKeyValue
+            title:@"Instance Size" number:@(class_getInstanceSize(cls))
+        ]];
+        [_allImageNames addObject:[FLEXStaticMetadata
+            style:FLEXStaticMetadataRowStyleDefault
+            title:@"Image Name" string:@(class_getImageName(cls))
+        ]];
     }
 
     // Set up UIKit helper data
@@ -163,7 +169,7 @@
     _methods = self.allMethods[self.classScope];
     _classMethods = self.allClassMethods[self.classScope];
     _conformedProtocols = self.allConformedProtocols[self.classScope];
-    _instanceSize = self.allInstanceSizes[self.classScope].unsignedIntegerValue;
+    _instanceSize = self.allInstanceSizes[self.classScope];
     _imageName = self.allImageNames[self.classScope];
 }
 
@@ -204,7 +210,8 @@
                     break;
 
                 case FLEXMetadataKindProtocols:
-                    return YES; // Protocols are already uniqued
+                case FLEXMetadataKindOther:
+                    return YES; // These types are already uniqued
                     break;
                     
                 // Ivars cannot be overidden

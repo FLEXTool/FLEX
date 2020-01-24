@@ -13,6 +13,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
+#import "FLEXTableView.h"
 
 @implementation FLEXProperty (UIKitHelpers)
 
@@ -101,6 +102,8 @@
     }
 }
 
+- (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
+
 @end
 
 
@@ -168,6 +171,8 @@
     }
 }
 
+- (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
+
 @end
 
 
@@ -207,6 +212,8 @@
     @throw NSInternalInconsistencyException;
     return UITableViewCellAccessoryNone;
 }
+
+- (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
 @end
 
@@ -266,6 +273,81 @@
 
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
     return UITableViewCellAccessoryDisclosureIndicator;
+}
+
+- (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
+
+@end
+
+
+@interface FLEXStaticMetadata ()
+@property (nonatomic, readonly) FLEXTableViewCellReuseIdentifier reuse;
+@property (nonatomic, readonly) NSString *subtitle;
+@property (nonatomic, readonly) id metadata;
+@end
+
+@implementation FLEXStaticMetadata
+@synthesize name = _name;
+@synthesize tag = _tag;
+
++ (instancetype)style:(FLEXStaticMetadataRowStyle)style title:(NSString *)title string:(NSString *)string {
+    return [[self alloc] initWithStyle:style title:title subtitle:string];
+}
+
++ (instancetype)style:(FLEXStaticMetadataRowStyle)style title:(NSString *)title number:(NSNumber *)number {
+    return [[self alloc] initWithStyle:style title:title subtitle:number.stringValue];
+}
+
+- (id)initWithStyle:(FLEXStaticMetadataRowStyle)style title:(NSString *)title subtitle:(NSString *)subtitle  {
+    self = [super init];
+    if (self) {
+        if (style == FLEXStaticMetadataRowStyleKeyValue) {
+            _reuse = kFLEXKeyValueCell;
+        } else {
+            _reuse = kFLEXMultilineDetailCell;
+        }
+
+        _name = title;
+        _subtitle = subtitle;
+    }
+
+    return self;
+}
+
+- (NSString *)description {
+    return self.name;
+}
+
+- (NSString *)reuseIdentifierWithTarget:(id)object {
+    return self.reuse;
+}
+
+- (BOOL)isEditable {
+    return NO;
+}
+
+- (BOOL)isCallable {
+    return NO;
+}
+
+- (id)currentValueWithTarget:(id)object {
+    return nil;
+}
+
+- (NSString *)previewWithTarget:(id)object {
+    return self.subtitle;
+}
+
+- (UIViewController *)viewerWithTarget:(id)object {
+    return nil;
+}
+
+- (UIViewController *)editorWithTarget:(id)object {
+    return nil;
+}
+
+- (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
+    return UITableViewCellAccessoryNone;
 }
 
 @end

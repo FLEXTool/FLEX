@@ -10,12 +10,14 @@
 #import "FLEXUtility.h"
 #import "FLEXSubtitleTableViewCell.h"
 #import "FLEXMultilineTableViewCell.h"
+#import "FLEXKeyValueTableViewCell.h"
 #import "FLEXCodeFontCell.h"
 
 FLEXTableViewCellReuseIdentifier const kFLEXDefaultCell = @"kFLEXDefaultCell";
 FLEXTableViewCellReuseIdentifier const kFLEXDetailCell = @"kFLEXDetailCell";
 FLEXTableViewCellReuseIdentifier const kFLEXMultilineCell = @"kFLEXMultilineCell";
 FLEXTableViewCellReuseIdentifier const kFLEXMultilineDetailCell = @"kFLEXMultilineDetailCell";
+FLEXTableViewCellReuseIdentifier const kFLEXKeyValueCell = @"kFLEXKeyValueCell";
 FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell = @"kFLEXCodeFontCell";
 
 #pragma mark Private
@@ -93,6 +95,7 @@ FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell = @"kFLEXCodeFontCell";
             kFLEXDetailCell : [FLEXSubtitleTableViewCell class],
             kFLEXMultilineCell : [FLEXMultilineTableViewCell class],
             kFLEXMultilineDetailCell : [FLEXMultilineDetailTableViewCell class],
+            kFLEXKeyValueCell : [FLEXKeyValueTableViewCell class],
             kFLEXCodeFontCell : [FLEXCodeFontCell class],
         }];
     }
