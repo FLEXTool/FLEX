@@ -85,7 +85,7 @@
 
 - (NSString *)subtitleWith:(id)object {
     if (self.metadataKind) {
-        return [self.metadata previewWithTarget:object];
+        return [self.metadata previewWithTarget:object] ?: @"nil";
     }
 
     // Item is probably a string; must return empty string since

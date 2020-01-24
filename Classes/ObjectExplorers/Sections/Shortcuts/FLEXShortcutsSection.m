@@ -122,6 +122,11 @@
 - (void)setFilterText:(NSString *)filterText {
     super.filterText = filterText;
 
+    NSAssert(
+        self.allTitles.count == self.allSubtitles.count,
+        @"Each title needs a (possibly empty) subtitle"
+    );
+
     if (filterText.length) {
         // Tally up indexes of titles and subtitles matching the filter
         NSMutableIndexSet *filterMatches = [NSMutableIndexSet new];
@@ -142,9 +147,11 @@
         self.subtitles = [self.allSubtitles objectsAtIndexes:filterMatches];
         self.shortcuts = [self.allShortcuts objectsAtIndexes:filterMatches];
     } else {
-        self.titles    = self.allTitles;
-        self.subtitles = self.allSubtitles;
         self.shortcuts = self.allShortcuts;
+        self.titles    = self.allTitles;
+        self.subtitles = [self.allSubtitles flex_filtered:^BOOL(NSString *sub, NSUInteger idx) {
+            return sub.length > 0;
+        }];
     }
 }
 
@@ -155,7 +162,7 @@
             return [s titleWith:self.object];
         }];
         self.allSubtitles = [self.allShortcuts flex_mapped:^id(FLEXShortcut *s, NSUInteger idx) {
-            return [s subtitleWith:self.object];
+            return [s subtitleWith:self.object] ?: @"";
         }];
     }
 
@@ -216,7 +223,8 @@
 - (NSString *)subtitleForRow:(NSInteger)row {
     // Case: dynamic, uncached subtitles
     if (!self.cacheSubtitles) {
-        return [self.shortcuts[row] subtitleWith:self.object];
+        NSString *subtitle = [self.shortcuts[row] subtitleWith:self.object];
+        return subtitle.length ? subtitle : nil;
     }
 
     // Case: static subtitles, or cached subtitles
