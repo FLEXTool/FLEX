@@ -259,19 +259,21 @@ static RegistrationBuckets *mMethods = nil;
 }
 
 + (NSArray<id<FLEXRuntimeMetadata>> *)shortcutsForObjectOrClass:(id)objectOrClass {
-    if (object_isClass(objectOrClass)) {
-        NSLog(@"+[FLEXShortcutsFactory shortcutsForObjectOrClass:] does not accept classes yet");
-        return nil;
-    }
-
     NSMutableArray<id<FLEXRuntimeMetadata>> *shortcuts = [NSMutableArray new];
-    Class classKey = [objectOrClass class];
+    BOOL isClass = object_isClass(objectOrClass);
+
+     // The -class does not give you a metaclass, and we want a metaclass if a class is passed in
+    Class classKey = object_getClass(objectOrClass);
+    RegistrationBuckets *propertyBucket = isClass ? mProperties : cProperties;
+    RegistrationBuckets *methodBucket = isClass ? mMethods : cMethods;
+    RegistrationBuckets *ivarBucket = isClass ? nil : cIvars;
 
     BOOL stop = NO;
     while (!stop && classKey) {
-        NSArray *properties = cProperties[classKey];
-        NSArray *ivars = cIvars[classKey];
-        NSArray *methods = cMethods[classKey];
+
+        NSArray *properties = propertyBucket[classKey];
+        NSArray *ivars = ivarBucket[classKey];
+        NSArray *methods = methodBucket[classKey];
 
         // Stop if we found anything
         stop = properties || ivars || methods;
@@ -281,7 +283,7 @@ static RegistrationBuckets *mMethods = nil;
             [shortcuts addObjectsFromArray:ivars];
             [shortcuts addObjectsFromArray:methods];
         } else {
-            classKey = [classKey superclass];
+            classKey = class_getSuperclass(classKey);
         }
     }
 
@@ -377,19 +379,16 @@ static RegistrationBuckets *mMethods = nil;
         RegistrationBuckets *methodBucket = isMeta ? mMethods : cMethods;
         RegistrationBuckets *ivarBucket = isMeta ? nil : cIvars;
 
-        // Pass the metaclass to the runtime wrappers if !onInstance
-        Class targetClass = onInstance ? cls : object_getClass(cls);
-
         if (self->_properties) {
             NSArray *items = [self->_properties flex_mapped:^id(NSString *name, NSUInteger idx) {
-                return [FLEXProperty named:name onClass:targetClass];
+                return [FLEXProperty named:name onClass:cls];
             }];
             [self _register:items to:propertyBucket class:cls];
         }
 
         if (self->_methods) {
             NSArray *items = [self->_methods flex_mapped:^id(NSString *name, NSUInteger idx) {
-                return [FLEXMethod selector:NSSelectorFromString(name) class:targetClass];
+                return [FLEXMethod selector:NSSelectorFromString(name) class:cls];
             }];
             [self _register:items to:methodBucket class:cls];
         }
