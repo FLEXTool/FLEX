@@ -77,6 +77,18 @@
     }
 }
 
+- (NSString *)stringFromObject:(id)object {
+    if ([object isKindOfClass:[NSString class]]) {
+        return object;
+    }
+
+    if ([object isKindOfClass:[NSData class]]) {
+        return [[NSString alloc] initWithData:object encoding:NSUTF8StringEncoding];
+    }
+
+    return [NSString stringWithFormat: @"[%@]\n\n%@", NSStringFromClass([object class]), [object description]];
+}
+
 
 #pragma mark Buttons
 
@@ -154,16 +166,9 @@
     
     NSDictionary *item = self.keychainItems[indexPath.row];
     id account = item[kFLEXKeychainAccountKey];
-    if ([account isKindOfClass:[NSString class]]) {
-        cell.textLabel.text = account;
-    } else {
-        cell.textLabel.text = [NSString stringWithFormat:
-            @"[%@]\n\n%@",
-            NSStringFromClass([account class]),
-            [account description]
-        ];
-    }
-    
+
+    cell.textLabel.text = [self stringFromObject:account];
+
     return cell;
 }
 
@@ -187,12 +192,12 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FLEXKeychainQuery *query = [self queryForItemAtIndex:indexPath.row];
-    
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(query.service);
-        make.message(@"Service: ").message(query.service);
-        make.message(@"\nAccount: ").message(query.account);
-        make.message(@"\nPassword: ").message(query.password);
+        make.message(@"Service: ").message([self stringFromObject:query.service]);
+        make.message(@"\nAccount: ").message([self stringFromObject:query.account]);
+        make.message(@"\nPassword: ").message([self stringFromObject:query.password]);
 
         make.button(@"Copy Service").handler(^(NSArray<NSString *> *strings) {
             [UIPasteboard.generalPasteboard flex_copy:query.service];
