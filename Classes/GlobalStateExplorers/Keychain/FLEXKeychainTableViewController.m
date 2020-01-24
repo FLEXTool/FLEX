@@ -83,10 +83,11 @@
     }
 
     if ([object isKindOfClass:[NSData class]]) {
-        return [[NSString alloc] initWithData:object encoding:NSUTF8StringEncoding];
+        return [NSString stringWithFormat: @"[NSData] %@", [[NSString alloc] initWithData:object
+                                                                                 encoding:NSUTF8StringEncoding]];
     }
 
-    return [NSString stringWithFormat: @"[%@]\n\n%@", NSStringFromClass([object class]), [object description]];
+    return [NSString stringWithFormat:@"[%@]\n\n%@", NSStringFromClass([object class]), [object description]];
 }
 
 
