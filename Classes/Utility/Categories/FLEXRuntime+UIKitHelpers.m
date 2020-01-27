@@ -14,7 +14,9 @@
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXTableView.h"
+#import "NSArray+Functional.h"
 
+#pragma mark FLEXProperty
 @implementation FLEXProperty (UIKitHelpers)
 
 /// Decide whether to use object or [object class] to get or set property
@@ -107,6 +109,7 @@
 @end
 
 
+#pragma mark FLEXIvar
 @implementation FLEXIvar (UIKitHelpers)
 
 - (BOOL)isEditable {
@@ -176,6 +179,7 @@
 @end
 
 
+#pragma mark FLEXMethod*
 @implementation FLEXMethodBase (UIKitHelpers)
 
 - (BOOL)isEditable {
@@ -245,6 +249,7 @@
 @end
 
 
+#pragma mark FLEXProtocol
 @implementation FLEXProtocol (UIKitHelpers)
 
 - (BOOL)isEditable {
@@ -280,15 +285,29 @@
 @end
 
 
-@interface FLEXStaticMetadata ()
-@property (nonatomic, readonly) FLEXTableViewCellReuseIdentifier reuse;
-@property (nonatomic, readonly) NSString *subtitle;
-@property (nonatomic, readonly) id metadata;
+#pragma mark FLEXStaticMetadata
+@interface FLEXStaticMetadata () {
+    @protected
+    NSString *_name;
+}
+@property (nonatomic) FLEXTableViewCellReuseIdentifier reuse;
+@property (nonatomic) NSString *subtitle;
+@property (nonatomic) id metadata;
+@end
+
+@interface FLEXStaticMetadata_Class : FLEXStaticMetadata
++ (instancetype)withClass:(Class)cls;
 @end
 
 @implementation FLEXStaticMetadata
 @synthesize name = _name;
 @synthesize tag = _tag;
+
++ (NSArray<FLEXStaticMetadata *> *)classHierarchy:(NSArray<Class> *)classes {
+    return [classes flex_mapped:^id(Class cls, NSUInteger idx) {
+        return [FLEXStaticMetadata_Class withClass:cls];
+    }];
+}
 
 + (instancetype)style:(FLEXStaticMetadataRowStyle)style title:(NSString *)title string:(NSString *)string {
     return [[self alloc] initWithStyle:style title:title subtitle:string];
@@ -348,6 +367,35 @@
 
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
     return UITableViewCellAccessoryNone;
+}
+
+@end
+
+
+#pragma mark FLEXStaticMetadata_Class
+@implementation FLEXStaticMetadata_Class
+
++ (instancetype)withClass:(Class)cls {
+    NSParameterAssert(cls);
+    
+    FLEXStaticMetadata_Class *metadata = [self new];
+    metadata.metadata = cls;
+    metadata->_name = NSStringFromClass(cls);
+    metadata.reuse = kFLEXDefaultCell;
+    return metadata;
+}
+
+- (id)initWithStyle:(FLEXStaticMetadataRowStyle)style title:(NSString *)title subtitle:(NSString *)subtitle {
+    @throw NSInternalInconsistencyException;
+    return nil;
+}
+
+- (UIViewController *)viewerWithTarget:(id)object {
+    return [FLEXObjectExplorerFactory explorerViewControllerForObject:self.metadata];
+}
+
+- (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
+    return UITableViewCellAccessoryDisclosureIndicator;
 }
 
 @end

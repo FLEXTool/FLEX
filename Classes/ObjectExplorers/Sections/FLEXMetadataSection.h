@@ -15,6 +15,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
     FLEXMetadataKindIvars,
     FLEXMetadataKindMethods,
     FLEXMetadataKindClassMethods,
+    FLEXMetadataKindClassHierarchy,
     FLEXMetadataKindProtocols,
     FLEXMetadataKindOther
 };

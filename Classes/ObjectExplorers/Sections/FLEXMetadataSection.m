@@ -90,6 +90,8 @@
             return [self titleWithBaseName:@"Methods"];
         case FLEXMetadataKindClassMethods:
             return [self titleWithBaseName:@"Class Methods"];
+        case FLEXMetadataKindClassHierarchy:
+            return [self titleWithBaseName:@"Class Hierarchy"];
         case FLEXMetadataKindProtocols:
             return [self titleWithBaseName:@"Protocols"];
         case FLEXMetadataKindOther:
@@ -132,6 +134,9 @@
             break;
         case FLEXMetadataKindProtocols:
             self.allMetadata = self.explorer.conformedProtocols;
+            break;
+        case FLEXMetadataKindClassHierarchy:
+            self.allMetadata = self.explorer.classHierarchy;
             break;
         case FLEXMetadataKindOther:
             self.allMetadata = @[self.explorer.instanceSize, self.explorer.imageName];

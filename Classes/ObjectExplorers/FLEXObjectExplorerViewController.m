@@ -110,7 +110,7 @@
 
     // Carousel scope bar
     [self.explorer reloadClassHierarchy];
-    self.carousel.items = [self.explorer.classHierarchy flex_mapped:^id(Class cls, NSUInteger idx) {
+    self.carousel.items = [self.explorer.classHierarchyClasses flex_mapped:^id(Class cls, NSUInteger idx) {
         return NSStringFromClass(cls);
     }];
     
@@ -192,9 +192,9 @@
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindIvars],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindMethods],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassMethods],
+        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassHierarchy],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindProtocols],
         [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindOther],
-//        [FLEXMetadataSection explorer:self.explorer kind:FLEXMetadataKindClassHierarchy],
         referencesSection
     ]];
 

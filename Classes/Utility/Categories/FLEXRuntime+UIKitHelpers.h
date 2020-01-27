@@ -62,4 +62,6 @@ typedef NS_ENUM(NSUInteger, FLEXStaticMetadataRowStyle)
 + (instancetype)style:(FLEXStaticMetadataRowStyle)style title:(NSString *)title string:(NSString *)string;
 + (instancetype)style:(FLEXStaticMetadataRowStyle)style title:(NSString *)title number:(NSNumber *)number;
 
++ (NSArray<FLEXStaticMetadata *> *)classHierarchy:(NSArray<Class> *)classes;
+
 @end

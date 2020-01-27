@@ -99,11 +99,11 @@
     // Loop over each class and each superclass, collect
     // the fresh and unique metadata in each category
     Class superclass = nil;
-    NSInteger count = self.classHierarchy.count;
+    NSInteger count = self.classHierarchyClasses.count;
     NSInteger rootIdx = count - 1;
     for (NSInteger i = 0; i < count; i++) {
-        Class cls = self.classHierarchy[i];
-        superclass = (i < rootIdx) ? self.classHierarchy[i+1] : nil;
+        Class cls = self.classHierarchyClasses[i];
+        superclass = (i < rootIdx) ? self.classHierarchyClasses[i+1] : nil;
 
         [_allProperties addObject:[self
             metadataUniquedByName:[cls flex_allInstanceProperties]
@@ -135,6 +135,9 @@
             superclass:superclass
             kind:FLEXMetadataKindProtocols
         ]];
+        
+        // TODO: join instance size, image name, and class hierarchy into a single model object
+        // This would greatly reduce the laziness that has begun to manifest itself here
         [_allInstanceSizes addObject:[FLEXStaticMetadata
             style:FLEXStaticMetadataRowStyleKeyValue
             title:@"Instance Size" number:@(class_getInstanceSize(cls))
@@ -144,6 +147,8 @@
             title:@"Image Name" string:@(class_getImageName(cls))
         ]];
     }
+    
+    _classHierarchy = [FLEXStaticMetadata classHierarchy:self.classHierarchyClasses];
 
     // Set up UIKit helper data
     // Really, we only need to call this on properties and ivars
@@ -210,6 +215,7 @@
                     break;
 
                 case FLEXMetadataKindProtocols:
+                case FLEXMetadataKindClassHierarchy:
                 case FLEXMetadataKindOther:
                     return YES; // These types are already uniqued
                     break;
@@ -229,7 +235,7 @@
 - (void)reloadClassHierarchy {
     // The class hierarchy will never contain metaclass objects by this logic;
     // it is always the same for a given class and instances of it
-    _classHierarchy = [[self.object class] flex_classHierarchy];
+    _classHierarchyClasses = [[self.object class] flex_classHierarchy];
 }
 
 @end
