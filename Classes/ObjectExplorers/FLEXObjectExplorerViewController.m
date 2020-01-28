@@ -347,7 +347,7 @@
         
         return [FLEXMultilineTableViewCell
             preferredHeightWithAttributedText:attributedText
-            maxWidth:tableView.frame.size.width
+            maxWidth:tableView.frame.size.width - tableView.separatorInset.right
             style:tableView.style
             showsAccessory:NO
         ];
