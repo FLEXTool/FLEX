@@ -42,6 +42,9 @@
     
     self.titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     self.subtitleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+    
+    self.titleLabel.numberOfLines = 1;
+    self.subtitleLabel.numberOfLines = 1;
 }
 
 - (UILabel *)titleLabel {

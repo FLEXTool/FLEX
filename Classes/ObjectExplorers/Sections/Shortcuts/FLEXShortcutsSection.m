@@ -205,7 +205,12 @@
 }
 
 - (NSString *)reuseIdentifierForRow:(NSInteger)row {
-    return [self.shortcuts[row] customReuseIdentifierWith:self.object] ?: kFLEXMultilineDetailCell;
+    FLEXTableViewCellReuseIdentifier defaultReuse = kFLEXDetailCell;
+    if (@available(iOS 11, *)) {
+        defaultReuse = kFLEXMultilineDetailCell;
+    }
+    
+    return [self.shortcuts[row] customReuseIdentifierWith:self.object] ?: defaultReuse;
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {

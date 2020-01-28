@@ -182,7 +182,12 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     FLEXNetworkDetailRow *row = [self rowModelAtIndexPath:indexPath];
     NSAttributedString *attributedText = [[self class] attributedTextForRow:row];
     BOOL showsAccessory = row.selectionFuture != nil;
-    return [FLEXMultilineTableViewCell preferredHeightWithAttributedText:attributedText inTableViewWidth:self.tableView.bounds.size.width style:UITableViewStyleGrouped showsAccessory:showsAccessory];
+    return [FLEXMultilineTableViewCell
+        preferredHeightWithAttributedText:attributedText
+        maxWidth:tableView.bounds.size.width
+        style:tableView.style
+        showsAccessory:showsAccessory
+    ];
 }
 
 - (FLEXNetworkDetailRow *)rowModelAtIndexPath:(NSIndexPath *)indexPath

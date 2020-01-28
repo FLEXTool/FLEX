@@ -8,6 +8,7 @@
 
 #import "FLEXMultilineTableViewCell.h"
 #import "UIView+FLEX_Layout.h"
+#import "FLEXUtility.h"
 
 @interface FLEXMultilineTableViewCell ()
 @property (nonatomic, readonly) UILabel *_titleLabel;
@@ -29,10 +30,10 @@
 }
 
 + (CGFloat)preferredHeightWithAttributedText:(NSAttributedString *)attributedText
-                            inTableViewWidth:(CGFloat)tableViewWidth
+                                    maxWidth:(CGFloat)contentViewWidth
                                        style:(UITableViewStyle)style
                               showsAccessory:(BOOL)showsAccessory {
-    CGFloat labelWidth = tableViewWidth;
+    CGFloat labelWidth = contentViewWidth;
 
     // Content view inset due to accessory view observed on iOS 8.1 iPhone 6.
     if (showsAccessory) {
@@ -43,7 +44,12 @@
     labelWidth -= (labelInsets.left + labelInsets.right);
 
     CGSize constrainSize = CGSizeMake(labelWidth, CGFLOAT_MAX);
-    CGFloat preferredLabelHeight = ceil([attributedText boundingRectWithSize:constrainSize options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height);
+    CGRect boundingBox = [attributedText
+        boundingRectWithSize:constrainSize
+        options:NSStringDrawingUsesLineFragmentOrigin
+        context:nil
+    ];
+    CGFloat preferredLabelHeight = FLEXFloor(boundingBox.size.height);
     CGFloat preferredCellHeight = preferredLabelHeight + labelInsets.top + labelInsets.bottom + 1.0;
 
     return preferredCellHeight;

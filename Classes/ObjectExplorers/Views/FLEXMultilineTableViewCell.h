@@ -11,7 +11,10 @@
 /// A cell with both labels set to be multi-line capable.
 @interface FLEXMultilineTableViewCell : FLEXTableViewCell
 
-+ (CGFloat)preferredHeightWithAttributedText:(NSAttributedString *)attributedText inTableViewWidth:(CGFloat)tableViewWidth style:(UITableViewStyle)style showsAccessory:(BOOL)showsAccessory;
++ (CGFloat)preferredHeightWithAttributedText:(NSAttributedString *)attributedText
+                                    maxWidth:(CGFloat)contentViewWidth
+                                       style:(UITableViewStyle)style
+                              showsAccessory:(BOOL)showsAccessory;
 
 @end
 

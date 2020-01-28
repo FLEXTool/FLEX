@@ -335,13 +335,22 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // For the description section, we want that nice slim looking row.
+    // For the description section, we want that nice slim/snug looking row.
     // Other rows use the automatic size.
     FLEXExplorerSection *section = self.sections[indexPath.section];
+    
     if (section == self.descriptionSection) {
-        NSString *text = self.explorer.objectDescription;
-        NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:@{ NSFontAttributeName : UIFont.flex_defaultTableCellFont }];
-        return [FLEXMultilineTableViewCell preferredHeightWithAttributedText:attributedText inTableViewWidth:self.tableView.frame.size.width style:tableView.style showsAccessory:NO];
+        NSAttributedString *attributedText = [[NSAttributedString alloc]
+            initWithString:self.explorer.objectDescription
+            attributes:@{ NSFontAttributeName : UIFont.flex_defaultTableCellFont }
+        ];
+        
+        return [FLEXMultilineTableViewCell
+            preferredHeightWithAttributedText:attributedText
+            maxWidth:tableView.frame.size.width
+            style:tableView.style
+            showsAccessory:NO
+        ];
     }
 
     return UITableViewAutomaticDimension;
