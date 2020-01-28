@@ -189,4 +189,44 @@
     cell.accessoryType = [self accessoryTypeForRow:row];
 }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (NSString *)menuSubtitleForRow:(NSInteger)row {
+    return [self.metadata[row] contextualSubtitleWithTarget:self.explorer.object];
+}
+
+- (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender {
+    NSArray<UIMenuElement *> *existingItems = [super menuItemsForRow:row sender:sender];
+    
+    // These two metadata kinds don't need an "Explore Metadata…" option
+    switch (self.metadataKind) {
+        case FLEXMetadataKindClassHierarchy:
+        case FLEXMetadataKindOther:
+            return existingItems;
+            
+        default: break;
+    }
+    
+    id metadata = self.metadata[row];
+    
+    UIAction *explore = [UIAction
+        actionWithTitle:@"Explore Metadata…"
+        image:nil
+        identifier:nil
+        handler:^(__kindof UIAction *action) {
+            [sender.navigationController pushViewController:[FLEXObjectExplorerFactory
+                explorerViewControllerForObject:metadata
+            ] animated:YES];
+        }
+    ];
+    
+    return [@[explore] arrayByAddingObjectsFromArray:existingItems];
+}
+
+- (NSArray<NSString *> *)copyMenuItemsForRow:(NSInteger)row {
+    return [self.metadata[row] copiableMetadataWithTarget:self.explorer.object];
+}
+
+#endif
+
 @end

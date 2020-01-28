@@ -48,6 +48,7 @@ NS_INLINE CGRect FLEXRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat heigh
 + (UIColor *)hierarchyIndentPatternColor;
 + (NSString *)applicationImageName;
 + (NSString *)applicationName;
++ (NSString *)pointerToString:(void *)ptr;
 + (NSString *)addressOfObject:(id)object;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;

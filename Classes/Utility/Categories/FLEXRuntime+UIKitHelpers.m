@@ -14,22 +14,24 @@
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXTableView.h"
+#import "FLEXUtility.h"
 #import "NSArray+Functional.h"
+#import "NSString+FLEX.h"
 
 #pragma mark FLEXProperty
 @implementation FLEXProperty (UIKitHelpers)
 
-/// Decide whether to use object or [object class] to get or set property
-- (id)targetForPropertyTypeGivenObject:(id)object {
-    if (!object_isClass(object)) {
+/// Decide whether to use potentialTarget or [potentialTarget class] to get or set property
+- (id)appropriateTargetForPropertyType:(id)potentialTarget {
+    if (!object_isClass(potentialTarget)) {
         if (self.isClassProperty) {
-            return [object class];
+            return [potentialTarget class];
         } else {
-            return object;
+            return potentialTarget;
         }
     } else {
         if (self.isClassProperty) {
-            return object;
+            return potentialTarget;
         } else {
             // Instance property with a class object
             return nil;
@@ -52,7 +54,13 @@
 
 - (id)currentValueWithTarget:(id)object {
     return [self getPotentiallyUnboxedValue:
-        [self targetForPropertyTypeGivenObject:object]
+        [self appropriateTargetForPropertyType:object]
+    ];
+}
+
+- (id)currentValueBeforeUnboxingWithTarget:(id)object {
+    return [self getValue:
+        [self appropriateTargetForPropertyType:object]
     ];
 }
 
@@ -72,12 +80,12 @@
 }
 
 - (UIViewController *)editorWithTarget:(id)object {
-    id target = [self targetForPropertyTypeGivenObject:object];
+    id target = [self appropriateTargetForPropertyType:object];
     return [FLEXFieldEditorViewController target:target property:self];
 }
 
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
-    id targetForValueCheck = [self targetForPropertyTypeGivenObject:object];
+    id targetForValueCheck = [self appropriateTargetForPropertyType:object];
     if (!targetForValueCheck) {
         // Instance property with a class object
         return UITableViewCellAccessoryNone;
@@ -105,6 +113,33 @@
 }
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
+
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
+    BOOL returnsObject = self.attributes.typeEncoding.typeIsObjectOrClass;
+    id value = [self currentValueBeforeUnboxingWithTarget:object];
+    return @[
+        @"Name",                        self.name ?: @"",
+        @"Type",                        self.attributes.typeEncoding ?: @"",
+        @"Declaration",                 self.fullDescription ?: @"",
+        @"Value Preview",               [self previewWithTarget:object],
+        @"Value Address",               returnsObject ? [FLEXUtility addressOfObject:value] : @"",
+        @"Getter",                      NSStringFromSelector(self.likelyGetter) ?: @"",
+        @"Setter",                      self.likelySetterExists ? NSStringFromSelector(self.likelySetter) : @"",
+        @"Image Name",                  self.imageName ?: @"",
+        @"Attributes",                  self.attributes.string ?: @"",
+        @"objc_property",             [FLEXUtility pointerToString:self.objc_property],
+        @"objc_property_attribute_t", [FLEXUtility pointerToString:self.attributes.list],
+    ];
+}
+
+- (NSString *)contextualSubtitleWithTarget:(id)object {
+    id target = [self appropriateTargetForPropertyType:object];
+    if (target && self.attributes.typeEncoding.typeIsObjectOrClass) {
+        return [FLEXUtility addressOfObject:[self currentValueBeforeUnboxingWithTarget:target]];
+    }
+    
+    return nil;
+}
 
 @end
 
@@ -176,6 +211,29 @@
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
+    BOOL returnsObject = self.typeEncoding.typeIsObjectOrClass;
+    id value = [self getValue:object];
+    return @[
+        @"Name",          self.name ?: @"",
+        @"Type",          self.typeEncoding ?: @"",
+        @"Declaration",   self.description ?: @"",
+        @"Value Preview", [self previewWithTarget:object],
+        @"Value Address", returnsObject ? [FLEXUtility addressOfObject:value] : @"",
+        @"Size",          @(self.size).stringValue,
+        @"Offset",        @(self.offset).stringValue,
+        @"objc_ivar",   [FLEXUtility pointerToString:self.objc_ivar],
+    ];
+}
+
+- (NSString *)contextualSubtitleWithTarget:(id)object {
+    if (!object_isClass(object) && self.typeEncoding.typeIsObjectOrClass) {
+        return [FLEXUtility addressOfObject:[self getValue:object]];
+    }
+    
+    return nil;
+}
+
 @end
 
 
@@ -219,6 +277,18 @@
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
+    return @[
+        @"Selector",      self.name ?: @"",
+        @"Type Encoding", self.typeEncoding ?: @"",
+        @"Declaration",   self.description ?: @"",
+    ];
+}
+
+- (NSString *)contextualSubtitleWithTarget:(id)object {
+    return nil;
+}
+
 @end
 
 @implementation FLEXMethod (UIKitHelpers)
@@ -244,6 +314,17 @@
     } else {
         return UITableViewCellAccessoryDisclosureIndicator;
     }
+}
+
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
+    return [[super copiableMetadataWithTarget:object] arrayByAddingObjectsFromArray:@[
+        @"NSMethodSignature *", [FLEXUtility addressOfObject:self.signature],
+        @"Signature String",    self.signatureString ?: @"",
+        @"Number of Arguments", @(self.numberOfArguments).stringValue,
+        @"Return Type",         @(self.returnType ?: ""),
+        @"Return Size",         @(self.returnSize).stringValue,
+        @"objc_method",       [FLEXUtility pointerToString:self.objc_method],
+    ]];
 }
 
 @end
@@ -281,6 +362,19 @@
 }
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
+
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
+    NSArray<NSString *> *conformanceNames = [self.protocols valueForKeyPath:@"name"];
+    NSString *conformances = [conformanceNames componentsJoinedByString:@"\n"];
+    return @[
+        @"Name",         self.name ?: @"",
+        @"Conformances", conformances,
+    ];
+}
+
+- (NSString *)contextualSubtitleWithTarget:(id)object {
+    return nil;
+}
 
 @end
 
@@ -369,6 +463,14 @@
     return UITableViewCellAccessoryNone;
 }
 
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
+    return @[self.name, self.subtitle];
+}
+
+- (NSString *)contextualSubtitleWithTarget:(id)object {
+    return nil;
+}
+
 @end
 
 
@@ -396,6 +498,17 @@
 
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
     return UITableViewCellAccessoryDisclosureIndicator;
+}
+
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
+    return @[
+        @"Class Name", self.name,
+        @"Class", [FLEXUtility addressOfObject:self.metadata]
+    ];
+}
+
+- (NSString *)contextualSubtitleWithTarget:(id)object {
+    return [FLEXUtility addressOfObject:self.metadata];
 }
 
 @end

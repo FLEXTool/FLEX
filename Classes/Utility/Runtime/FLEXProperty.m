@@ -200,6 +200,11 @@
     } else {
         [attributesStrings addObject:@"readwrite"];
     }
+    
+    // Class or not
+    if (self.isClassProperty) {
+        [attributesStrings addObject:@"class"];
+    }
 
     // Custom getter/setter
     SEL customGetter = attributes.customGetter;

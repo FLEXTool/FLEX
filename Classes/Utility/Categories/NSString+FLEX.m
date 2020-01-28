@@ -1,12 +1,12 @@
 //
-//  NSString+KeyPaths.m
+//  NSString+FLEX.m
 //  FLEX
 //
 //  Created by Tanner on 3/26/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "NSString+KeyPaths.h"
+#import "NSString+FLEX.h"
 
 @interface NSMutableString (Replacement)
 - (void)replaceOccurencesOfString:(NSString *)string with:(NSString *)replacement;
@@ -47,6 +47,30 @@
     if (putEscapesBack) {
         [self replaceOccurencesOfString:@"\\~" with:@"\\."];
     }
+}
+
+@end
+
+@implementation NSString (FLEXTypeEncoding)
+
+- (BOOL)typeIsConst {
+    return [self characterAtIndex:0] == FLEXTypeEncodingConst;
+}
+
+- (FLEXTypeEncoding)firstNonConstType {
+    return [self characterAtIndex:(self.typeIsConst ? 1 : 0)];
+}
+
+- (BOOL)typeIsObjectOrClass {
+    FLEXTypeEncoding type = self.firstNonConstType;
+    return type == FLEXTypeEncodingObjcObject || type == FLEXTypeEncodingObjcClass;
+}
+
+- (BOOL)typeIsNonObjcPointer {
+    FLEXTypeEncoding type = self.firstNonConstType;
+    return type == FLEXTypeEncodingPointer ||
+           type == FLEXTypeEncodingCString ||
+           type == FLEXTypeEncodingSelector;
 }
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLEXUtility.h"
 @class FLEXTableView;
 
 #pragma mark FLEXExplorerSection
@@ -36,7 +37,7 @@
 /// This is called before reloading the table view itself.
 - (void)reloadData;
 
-#pragma mark - Row selection
+#pragma mark - Row Selection
 
 /// Whether the given row should be selectable, such as if tapping the cell
 /// should take the user to a new screen or trigger an action.
@@ -64,7 +65,30 @@
 /// @return \c nil by default.
 - (void(^)(UIViewController *host))didPressInfoButtonAction:(NSInteger)row;
 
-#pragma mark - Cell configuration
+#pragma mark - Context Menus
+#if FLEX_AT_LEAST_IOS13_SDK
+
+/// By default, this is the title of the row.
+/// @return The title of the context menu, if any.
+- (NSString *)menuTitleForRow:(NSInteger)row API_AVAILABLE(ios(13.0));
+/// Protected, not intended for public use. \c menuTitleForRow:
+/// already includes the value returned from this method.
+/// 
+/// By default, this returns \c @"". Subclasses may override to
+/// provide a detailed description of the target of the context menu.
+- (NSString *)menuSubtitleForRow:(NSInteger)row API_AVAILABLE(ios(13.0));
+/// The context menu items, if any. Subclasses may override.
+/// By default, only inludes items for \c copyMenuItemsForRow:.
+- (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13.0));
+/// Subclasses may override to return a list of copiable items.
+/// 
+/// Every two elements in the list compose a key-value pair, where the key
+/// should be a description of what will be copied, and the values should be
+/// the strings to copy. Return an empty string as a value to show a disabled action.
+- (NSArray<NSString *> *)copyMenuItemsForRow:(NSInteger)row API_AVAILABLE(ios(13.0));
+#endif
+
+#pragma mark - Cell Configuration
 
 /// Provide a reuse identifier for the given row. Subclasses should override.
 ///

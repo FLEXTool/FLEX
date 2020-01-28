@@ -415,6 +415,27 @@
     [self.sections[indexPath.section] didPressInfoButtonAction:indexPath.row](self);
 }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
+    FLEXExplorerSection *section = self.sections[indexPath.section];
+    NSString *title = [section menuTitleForRow:indexPath.row];
+    NSArray<UIMenuElement *> *menuItems = [section menuItemsForRow:indexPath.row sender:self];
+    
+    if (menuItems.count) {
+        return [UIContextMenuConfiguration
+            configurationWithIdentifier:nil
+            previewProvider:nil
+            actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
+                return [UIMenu menuWithTitle:title children:menuItems];
+            }
+        ];
+    }
+    
+    return nil;
+}
+
+#endif
 
 #pragma mark - UIMenuController
 

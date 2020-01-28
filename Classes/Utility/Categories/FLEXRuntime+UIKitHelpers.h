@@ -37,6 +37,11 @@
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object;
 /// Return nil to use the default reuse identifier
 - (NSString *)reuseIdentifierWithTarget:(id)object;
+/// An array where every 2 elements are a key-value pair. The key is a description
+/// of what to copy like "Name" and the values are what will be copied.
+- (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object;
+/// Properties and ivars return the address of an object, if they hold one.
+- (NSString *)contextualSubtitleWithTarget:(id)object;
 
 @end
 

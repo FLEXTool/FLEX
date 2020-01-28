@@ -9,7 +9,7 @@
 #import "TBKeyPathSearchController.h"
 #import "TBKeyPathTokenizer.h"
 #import "TBRuntimeController.h"
-#import "NSString+KeyPaths.h"
+#import "NSString+FLEX.h"
 #import "NSArray+Functional.h"
 #import "UITextField+Range.h"
 #import "NSTimer+Blocks.h"

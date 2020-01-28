@@ -123,6 +123,11 @@
     return [FLEXUtility applicationImageName].lastPathComponent;
 }
 
++ (NSString *)pointerToString:(void *)ptr
+{
+    return [NSString stringWithFormat:@"%p", ptr];
+}
+
 + (NSString *)addressOfObject:(id)object
 {
     return [NSString stringWithFormat:@"%p", object];

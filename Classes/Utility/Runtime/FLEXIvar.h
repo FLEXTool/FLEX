@@ -28,6 +28,8 @@
 @property (nonatomic, readonly) NSString         *typeEncoding;
 /// The offset of the instance variable.
 @property (nonatomic, readonly) NSInteger        offset;
+/// The size of the instance variable. 0 if unknown.
+@property (nonatomic, readonly) NSUInteger       size;
 /// Describes the type encoding, size, offset, and objc_ivar
 @property (nonatomic, readonly) NSString        *details;
 
