@@ -113,14 +113,6 @@
     self.carousel.items = [self.explorer.classHierarchyClasses flex_mapped:^id(Class cls, NSUInteger idx) {
         return NSStringFromClass(cls);
     }];
-    
-    // Initialize custom menu items for explorer screen
-    UIMenuItem *copyObjectAddress = [[UIMenuItem alloc]
-        initWithTitle:@"Copy Address"
-        action:@selector(copyObjectAddress:)
-    ];
-    UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
-    [UIMenuController.sharedMenuController update];
 
     // Swipe gestures to swipe between classes in the hierarchy
     UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc]

@@ -64,6 +64,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// All views that we're KVOing. Used to help us clean up properly.
 @property (nonatomic) NSMutableSet<UIView *> *observedViews;
 
+/// Used to preserve the target app's UIMenuController items.
+@property (nonatomic) NSArray<UIMenuItem *> *appMenuItems;
+
 @end
 
 @implementation FLEXExplorerViewController
@@ -757,6 +760,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         [self statusWindow].windowLevel = self.view.window.windowLevel + 1.0;
     }
     
+    // Back up and replace the UIMenuController items
+    self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
+    // Initialize custom menu items for explorer screen
+    UIMenuItem *copyObjectAddress = [[UIMenuItem alloc]
+        initWithTitle:@"Copy Address"
+        action:NSSelectorFromString(@"copyObjectAddress:")
+    ];
+    UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
+    [UIMenuController.sharedMenuController update];
+    
     // Show the view controller.
     [self presentViewController:viewController animated:animated completion:completion];
 }
@@ -766,11 +779,17 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     UIWindow *previousKeyWindow = self.previousKeyWindow;
     self.previousKeyWindow = nil;
     [previousKeyWindow makeKeyWindow];
-    [[previousKeyWindow rootViewController] setNeedsStatusBarAppearanceUpdate];
+    [previousKeyWindow.rootViewController setNeedsStatusBarAppearanceUpdate];
+    
+    // Restore previous UIMenuController items
+    // Back up and replace the UIMenuController items
+    UIMenuController.sharedMenuController.menuItems = self.appMenuItems;
+    [UIMenuController.sharedMenuController update];
+    self.appMenuItems = nil;
     
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for scroll to top, but below FLEX otherwise for exploration.
-    [[self statusWindow] setWindowLevel:UIWindowLevelStatusBar];
+    [self statusWindow].windowLevel = UIWindowLevelStatusBar;
     
     [self dismissViewControllerAnimated:animated completion:completion];
 }
