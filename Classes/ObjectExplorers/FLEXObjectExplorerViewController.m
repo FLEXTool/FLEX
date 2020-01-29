@@ -27,11 +27,11 @@
 
 @property (nonatomic, copy) NSString *filterText;
 /// Every section in the table view, regardless of whether or not a section is empty.
-@property (nonatomic, readonly) NSArray<FLEXExplorerSection *> *allSections;
+@property (nonatomic, readonly) NSArray<FLEXTableViewSection *> *allSections;
 /// Only displayed sections of the table view; empty sections are purged from this array.
-@property (nonatomic) NSArray<FLEXExplorerSection *> *sections;
+@property (nonatomic) NSArray<FLEXTableViewSection *> *sections;
 @property (nonatomic, readonly) FLEXSingleRowSection *descriptionSection;
-@property (nonatomic, readonly) FLEXExplorerSection *customSection;
+@property (nonatomic, readonly) FLEXTableViewSection *customSection;
 @property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
 
 @end
@@ -45,7 +45,7 @@
     return [self exploringObject:target customSection:[FLEXShortcutsSection forObject:target]];
 }
 
-+ (instancetype)exploringObject:(id)target customSection:(FLEXExplorerSection *)section
++ (instancetype)exploringObject:(id)target customSection:(FLEXTableViewSection *)section
 {
     return [[self alloc]
         initWithObject:target
@@ -56,7 +56,7 @@
 
 - (id)initWithObject:(id)target
             explorer:(__kindof FLEXObjectExplorer *)explorer
-       customSection:(FLEXExplorerSection *)customSection
+       customSection:(FLEXTableViewSection *)customSection
 {
     NSParameterAssert(target);
     
@@ -80,7 +80,7 @@
     self.tableView = tableView;
 
     // Register cell classes
-    for (FLEXExplorerSection *section in self.allSections) {
+    for (FLEXTableViewSection *section in self.allSections) {
         if (section.cellRegistrationMapping) {
             [tableView registerCells:section.cellRegistrationMapping];
         }
@@ -155,7 +155,7 @@
     [self.refreshControl endRefreshing];
 }
 
-- (NSArray<FLEXExplorerSection *> *)makeSections
+- (NSArray<FLEXTableViewSection *> *)makeSections
 {
     FLEXObjectExplorer *explorer = self.explorer;
     
@@ -208,9 +208,9 @@
     return sections.copy;
 }
 
-- (NSArray<FLEXExplorerSection *> *)nonemptySections
+- (NSArray<FLEXTableViewSection *> *)nonemptySections
 {
-    return [self.allSections flex_filtered:^BOOL(FLEXExplorerSection *section, NSUInteger idx) {
+    return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
         return section.numberOfRows > 0;
     }];
 }
@@ -265,14 +265,14 @@
     self.filterText = newText;
 
     // Sections will adjust data based on this property
-    for (FLEXExplorerSection *section in self.allSections) {
+    for (FLEXTableViewSection *section in self.allSections) {
         section.filterText = newText;
     }
 
     // Check to see if class scope changed, update accordingly
     if (self.explorer.classScope != self.selectedScope) {
         self.explorer.classScope = self.selectedScope;
-        for (FLEXExplorerSection *section in self.allSections) {
+        for (FLEXTableViewSection *section in self.allSections) {
             [section reloadData];
         }
     }
@@ -294,7 +294,7 @@
     [self.explorer reloadMetadata];
 
     // Reload sections
-    for (FLEXExplorerSection *section in self.allSections) {
+    for (FLEXTableViewSection *section in self.allSections) {
         [section reloadData];
     }
 
@@ -337,7 +337,7 @@
 {
     // For the description section, we want that nice slim/snug looking row.
     // Other rows use the automatic size.
-    FLEXExplorerSection *section = self.sections[indexPath.section];
+    FLEXTableViewSection *section = self.sections[indexPath.section];
     
     if (section == self.descriptionSection) {
         NSAttributedString *attributedText = [[NSAttributedString alloc]
@@ -357,7 +357,7 @@
 }
 
 - (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    return [self.sections flex_mapped:^id(FLEXExplorerSection *obj, NSUInteger idx) {
+    return [self.sections flex_mapped:^id(FLEXTableViewSection *obj, NSUInteger idx) {
         return @"⦁";
     }];
 }
@@ -372,7 +372,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXExplorerSection *section = self.sections[indexPath.section];
+    FLEXTableViewSection *section = self.sections[indexPath.section];
 
     void (^action)(UIViewController *) = [section didSelectRowAction:indexPath.row];
     UIViewController *details = [section viewControllerToPushForRow:indexPath.row];
@@ -418,7 +418,7 @@
 #if FLEX_AT_LEAST_IOS13_SDK
 
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
-    FLEXExplorerSection *section = self.sections[indexPath.section];
+    FLEXTableViewSection *section = self.sections[indexPath.section];
     NSString *title = [section menuTitleForRow:indexPath.row];
     NSArray<UIMenuElement *> *menuItems = [section menuItemsForRow:indexPath.row sender:self];
     
@@ -450,7 +450,7 @@
 
 - (void)copy:(NSIndexPath *)indexPath
 {
-    FLEXExplorerSection *section = self.sections[indexPath.section];
+    FLEXTableViewSection *section = self.sections[indexPath.section];
     UIPasteboard.generalPasteboard.string = ({
         NSString *copy = [section titleForRow:indexPath.row];
         NSString *subtitle = [section subtitleForRow:indexPath.row];

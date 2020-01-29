@@ -6,7 +6,7 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXExplorerSection.h"
+#import "FLEXTableViewSection.h"
 #import "FLEXObjectExplorer.h"
 
 typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
@@ -22,7 +22,7 @@ typedef NS_ENUM(NSUInteger, FLEXMetadataKind) {
 
 /// This section is used for displaying ObjC runtime metadata
 /// about a class or object, such as listing methods, properties, etc.
-@interface FLEXMetadataSection : FLEXExplorerSection
+@interface FLEXMetadataSection : FLEXTableViewSection
 
 + (instancetype)explorer:(FLEXObjectExplorer *)explorer kind:(FLEXMetadataKind)metadataKind;
 

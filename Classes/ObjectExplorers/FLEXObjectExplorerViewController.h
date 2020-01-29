@@ -12,7 +12,7 @@
 
 #import "FLEXTableViewController.h"
 #import "FLEXObjectExplorer.h"
-@class FLEXExplorerSection;
+@class FLEXTableViewSection;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Uses the default \c FLEXShortcutsSection for this object as a custom section.
 + (instancetype)exploringObject:(id)objectOrClass;
 /// No custom section unless you provide one.
-+ (instancetype)exploringObject:(id)objectOrClass customSection:(nullable FLEXExplorerSection *)customSection;
++ (instancetype)exploringObject:(id)objectOrClass customSection:(nullable FLEXTableViewSection *)customSection;
 
 /// The object being explored, which may be an instance of a class or a class itself.
 @property (nonatomic, readonly) id object;
@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Called once to initialize the list of section objects.
 ///
 /// Subclasses can override this to add, remove, or rearrange sections of the explorer.
-- (NSArray<FLEXExplorerSection *> *)makeSections;
+- (NSArray<FLEXTableViewSection *> *)makeSections;
 
 /// Whether to allow showing/drilling in to current values for ivars and properties. Default is YES.
 @property (nonatomic, readonly) BOOL canHaveInstanceState;

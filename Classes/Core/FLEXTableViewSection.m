@@ -1,19 +1,19 @@
 //
-//  FLEXExplorerSection.m
+//  FLEXTableViewSection.m
 //  FLEX
 //
-//  Created by Tanner Bennett on 8/28/19.
-//  Copyright © 2019 Flipboard. All rights reserved.
+//  Created by Tanner on 1/29/20.
+//  Copyright © 2020 Flipboard. All rights reserved.
 //
 
-#import "FLEXExplorerSection.h"
+#import "FLEXTableViewSection.h"
 #import "FLEXTableView.h"
 #import "UIMenu+FLEX.h"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@implementation FLEXExplorerSection
+@implementation FLEXTableViewSection
 
 - (void)reloadData { }
 

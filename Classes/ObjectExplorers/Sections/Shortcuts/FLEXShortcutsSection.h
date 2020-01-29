@@ -6,7 +6,8 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXExplorerSection.h"
+#import "FLEXTableViewSection.h"
+#import "FLEXObjectInfoSection.h"
 @class FLEXProperty, FLEXIvar, FLEXMethod;
 
 /// An abstract base class for custom object "shortcuts" where every
@@ -21,7 +22,7 @@
 /// If you create the section using \c forObject:rows:numberOfLines:
 /// then it will provide a view controller from \c viewControllerToPushForRow:
 /// automatically for rows that are a property/ivar/method.
-@interface FLEXShortcutsSection : FLEXExplorerSection <FLEXObjectInfoSection>
+@interface FLEXShortcutsSection : FLEXTableViewSection <FLEXObjectInfoSection>
 
 /// Uses \c kFLEXDefaultCell
 + (instancetype)forObject:(id)objectOrClass rowTitles:(NSArray<NSString *> *)titles;

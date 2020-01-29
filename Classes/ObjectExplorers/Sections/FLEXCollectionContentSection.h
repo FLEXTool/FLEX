@@ -6,7 +6,8 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXExplorerSection.h"
+#import "FLEXTableViewSection.h"
+#import "FLEXObjectInfoSection.h"
 @class FLEXCollectionContentSection;
 @protocol FLEXCollection;
 
@@ -45,7 +46,7 @@ typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollection
 /// A custom section for viewing collection elements.
 ///
 /// Tapping on a row pushes an object explorer for that element.
-@interface FLEXCollectionContentSection : FLEXExplorerSection <FLEXObjectInfoSection>
+@interface FLEXCollectionContentSection : FLEXTableViewSection <FLEXObjectInfoSection>
 
 + (instancetype)forCollection:(id<FLEXCollection>)collection;
 /// The future given should be safe to call more than once.

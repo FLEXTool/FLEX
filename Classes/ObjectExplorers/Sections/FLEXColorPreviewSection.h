@@ -7,6 +7,7 @@
 //
 
 #import "FLEXSingleRowSection.h"
+#import "FLEXObjectInfoSection.h"
 
 @interface FLEXColorPreviewSection : FLEXSingleRowSection <FLEXObjectInfoSection>
 

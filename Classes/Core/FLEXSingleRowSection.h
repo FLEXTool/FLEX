@@ -6,14 +6,14 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXExplorerSection.h"
+#import "FLEXTableViewSection.h"
 
 /// A section providing a specific single row.
 ///
 /// You may optionally provide a view controller to push when the row
 /// is selected, or an action to perform when it is selected.
 /// Which one is used first is up to the table view data source.
-@interface FLEXSingleRowSection : FLEXExplorerSection
+@interface FLEXSingleRowSection : FLEXTableViewSection
 
 /// @param reuseIdentifier if nil, kFLEXDefaultCell is used.
 + (instancetype)title:(NSString *)sectionTitle

@@ -7,6 +7,7 @@
 //
 
 #import "FLEXCollectionContentSection.h"
+#import "FLEXObjectInfoSection.h"
 
 @interface FLEXDefaultsContentSection : FLEXCollectionContentSection <FLEXObjectInfoSection>
 

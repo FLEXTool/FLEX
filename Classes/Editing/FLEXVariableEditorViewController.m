@@ -17,11 +17,8 @@
 #import "FLEXObjectExplorerViewController.h"
 
 @interface FLEXVariableEditorViewController () <UIScrollViewDelegate>
-
 @property (nonatomic) UIScrollView *scrollView;
-
-@property (nonatomic, readwrite) id target;
-
+@property (nonatomic) id target;
 @end
 
 @implementation FLEXVariableEditorViewController
@@ -89,7 +86,7 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [FLEXColor scrollViewBackgroundColor];
+    self.view.backgroundColor = FLEXColor.scrollViewBackgroundColor;
     
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     self.scrollView.backgroundColor = self.view.backgroundColor;
@@ -131,7 +128,8 @@
     [self.fieldEditorView endEditing:YES];
 }
 
-- (void)exploreObjectOrPopViewController:(id)objectOrNil {
+- (void)exploreObjectOrPopViewController:(id)objectOrNil
+{
     if (objectOrNil) {
         // For non-nil (or void) return types, push an explorer view controller to display the object
         FLEXObjectExplorerViewController *explorerViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:objectOrNil];
