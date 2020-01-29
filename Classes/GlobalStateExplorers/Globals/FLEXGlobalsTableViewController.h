@@ -9,7 +9,7 @@
 #import "FLEXTableViewController.h"
 @protocol FLEXGlobalsTableViewControllerDelegate;
 
-typedef NS_ENUM(NSUInteger, FLEXGlobalsSection) {
+typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
     /// NSProcessInfo, Network history, system log,
     /// heap, address explorer, libraries, app classes
     FLEXGlobalsSectionProcessAndEvents,

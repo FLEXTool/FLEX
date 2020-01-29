@@ -21,20 +21,20 @@
 #import "FLEXSystemLogTableViewController.h"
 #import "FLEXNetworkHistoryTableViewController.h"
 #import "FLEXAddressExplorerCoordinator.h"
-#import "FLEXTableViewSection.h"
+#import "FLEXGlobalsSection.h"
 
 static __weak UIWindow *s_applicationWindow = nil;
 
 @interface FLEXGlobalsTableViewController ()
 
-@property (nonatomic, readonly) NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *sections;
-@property (nonatomic, copy) NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *filteredSections;
+@property (nonatomic, readonly) NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *sections;
+@property (nonatomic, copy) NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *filteredSections;
 
 @end
 
 @implementation FLEXGlobalsTableViewController
 
-+ (NSString *)globalsTitleForSection:(FLEXGlobalsSection)section
++ (NSString *)globalsTitleForSection:(FLEXGlobalsSectionKind)section
 {
     switch (section) {
         case FLEXGlobalsSectionProcessAndEvents:
@@ -98,9 +98,9 @@ static __weak UIWindow *s_applicationWindow = nil;
     }
 }
 
-+ (NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *)defaultGlobalSections
++ (NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *)defaultGlobalSections
 {
-    static NSArray<FLEXTableViewSection<FLEXGlobalsEntry *> *> *sections = nil;
+    static NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *sections = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSArray *rows = @[
@@ -134,7 +134,7 @@ static __weak UIWindow *s_applicationWindow = nil;
         NSMutableArray *tmp = [NSMutableArray array];
         for (NSInteger i = 0; i < FLEXGlobalsSectionCount - 1; i++) { // Skip custom
             NSString *title = [self globalsTitleForSection:i];
-            [tmp addObject:[FLEXTableViewSection section:i title:title rows:rows[i]]];
+            [tmp addObject:[FLEXGlobalsSection section:i title:title rows:rows[i]]];
         }
         
         sections = tmp.copy;
@@ -165,7 +165,7 @@ static __weak UIWindow *s_applicationWindow = nil;
     if ([FLEXManager sharedManager].userGlobalEntries.count) {
         // Make custom section
         NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
-        FLEXTableViewSection *custom = [FLEXTableViewSection
+        FLEXGlobalsSection *custom = [FLEXGlobalsSection
             section:FLEXGlobalsSectionCustom
             title:title
             rows:[FLEXManager sharedManager].userGlobalEntries
@@ -193,7 +193,7 @@ static __weak UIWindow *s_applicationWindow = nil;
     // Sections are a map of index to rows, since empty sections are omitted
     NSMutableArray *filteredSections = [NSMutableArray array];
 
-    [self.sections enumerateObjectsUsingBlock:^(FLEXTableViewSection<FLEXGlobalsEntry *> *section, NSUInteger idx, BOOL *stop) {
+    [self.sections enumerateObjectsUsingBlock:^(FLEXGlobalsSection<FLEXGlobalsEntry *> *section, NSUInteger idx, BOOL *stop) {
         section = [section newSectionWithRowsMatchingQuery:newText];
         if (section) {
             [filteredSections addObject:section];

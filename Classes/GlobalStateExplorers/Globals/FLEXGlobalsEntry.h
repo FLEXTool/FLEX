@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXTableViewSection.h"
+#import "FLEXGlobalsSection.h"
 @class FLEXGlobalsTableViewController;
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {

@@ -1,17 +1,17 @@
 //
-//  FLEXTableViewSection.m
+//  FLEXGlobalsSection.m
 //  FLEX
 //
 //  Created by Tanner Bennett on 7/11/19.
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "FLEXTableViewSection.h"
+#import "FLEXGlobalsSection.h"
 
-@implementation FLEXTableViewSection
+@implementation FLEXGlobalsSection
 
 + (instancetype)section:(NSInteger)section title:(NSString *)title rows:(NSArray *)rows {
-    FLEXTableViewSection *s = [self new];
+    FLEXGlobalsSection *s = [self new];
     s->_section = section;
     s->_title = title;
     s->_rows = rows.copy;
@@ -40,7 +40,7 @@
 
 @end
 
-@implementation FLEXTableViewSection (Subscripting)
+@implementation FLEXGlobalsSection (Subscripting)
 
 - (id)objectAtIndexedSubscript:(NSUInteger)idx {
     return self.rows[idx];

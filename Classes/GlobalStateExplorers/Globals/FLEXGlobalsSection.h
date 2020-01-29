@@ -1,5 +1,5 @@
 //
-//  FLEXTableViewSection.h
+//  FLEXGlobalsSection.h
 //  FLEX
 //
 //  Created by Tanner Bennett on 7/11/19.
@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)matches:(NSString *)query;
 @end
 
-@interface FLEXTableViewSection<__covariant ObjectType> : NSObject
+@interface FLEXGlobalsSection<__covariant ObjectType> : NSObject
 
 + (instancetype)section:(NSInteger)section title:(NSString *)title rows:(NSArray<ObjectType<FLEXPatternMatching>> *)rows;
 
@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface FLEXTableViewSection<__covariant ObjectType> (Subscripting)
+@interface FLEXGlobalsSection<__covariant ObjectType> (Subscripting)
 - (ObjectType)objectAtIndexedSubscript:(NSUInteger)idx;
 @end
 
