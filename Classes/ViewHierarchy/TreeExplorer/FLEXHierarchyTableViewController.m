@@ -75,7 +75,11 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     
     self.showsSearchBar = YES;
-    self.pinSearchBar = YES;
+    self.showSearchBarInitially = YES;
+    // Using pinSearchBar on this screen causes a weird visual
+    // thing on the next view controller that gets pushed.
+    //
+    // self.pinSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.automaticallyShowsSearchBarCancelButton = NO;
     if (self.showScopeBar) {

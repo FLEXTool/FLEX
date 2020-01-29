@@ -35,7 +35,11 @@
     
     // Search bar stuff, must be first because this creates self.searchController
     self.showsSearchBar = YES;
-    self.pinSearchBar = YES;
+    self.showSearchBarInitially = YES;
+    // Using pinSearchBar on this screen causes a weird visual
+    // thing on the next view controller that gets pushed.
+    //
+    // self.pinSearchBar = YES;
     self.searchController.searchBar.placeholder = @"UIKit*.UIView.-setFrame:";
 
     // Search controller stuff
