@@ -18,7 +18,6 @@
 @end
 
 @implementation FLEXSingleRowSection
-@synthesize title = _title;
 
 #pragma mark - Public
 
@@ -55,7 +54,7 @@
     return self.pushOnSelection || self.selectionAction;
 }
 
-- (void (^)(UIViewController *))didSelectRowAction:(NSInteger)row {
+- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
     return self.selectionAction;
 }
 

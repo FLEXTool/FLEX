@@ -173,7 +173,7 @@
     return [self.metadata[row] viewerWithTarget:self.explorer.object];
 }
 
-- (void (^)(UIViewController *))didPressInfoButtonAction:(NSInteger)row {
+- (void (^)(__kindof UIViewController *))didPressInfoButtonAction:(NSInteger)row {
     return ^(UIViewController *host) {
         [host.navigationController pushViewController:[self editorForRow:row] animated:YES];
     };

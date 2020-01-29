@@ -191,7 +191,7 @@
     return [self.shortcuts[row] viewerWith:self.object];
 }
 
-- (void (^)(UIViewController *))didPressInfoButtonAction:(NSInteger)row {
+- (void (^)(__kindof UIViewController *))didPressInfoButtonAction:(NSInteger)row {
     id<FLEXShortcut> shortcut = self.shortcuts[row];
     if ([shortcut respondsToSelector:@selector(editorWith:)]) {
         id object = self.object;

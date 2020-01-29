@@ -15,6 +15,10 @@
 
 @implementation FLEXTableViewSection
 
+- (NSInteger)numberOfRows {
+    return 0;
+}
+
 - (void)reloadData { }
 
 - (NSDictionary<NSString *,Class> *)cellRegistrationMapping {
@@ -23,7 +27,7 @@
 
 - (BOOL)canSelectRow:(NSInteger)row { return NO; }
 
-- (void (^)(UIViewController *))didSelectRowAction:(NSInteger)row {
+- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
     UIViewController *toPush = [self viewControllerToPushForRow:row];
     if (toPush) {
         return ^(UIViewController *host) {
@@ -38,7 +42,7 @@
     return nil;
 }
 
-- (void (^)(UIViewController *))didPressInfoButtonAction:(NSInteger)row {
+- (void (^)(__kindof UIViewController *))didPressInfoButtonAction:(NSInteger)row {
     return nil;
 }
 

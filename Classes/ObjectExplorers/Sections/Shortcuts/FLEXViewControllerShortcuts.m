@@ -42,7 +42,7 @@
     return [self forObject:viewController additionalRows:@[@"Push View Controoller"]];
 }
 
-- (void (^)(UIViewController *))didSelectRowAction:(NSInteger)row {
+- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
     if (row == 0) {
         return ^(UIViewController *host) {
             if (!self.viewControllerIsInUse) {

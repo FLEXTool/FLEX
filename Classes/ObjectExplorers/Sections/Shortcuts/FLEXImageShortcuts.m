@@ -42,7 +42,7 @@
 }
 
 /// Save image
-- (void (^)(UIViewController *))didSelectRowAction:(NSInteger)row {
+- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
     if (row == 1) {
         return ^(UIViewController *host) {
             UIImageWriteToSavedPhotosAlbum(self.image, nil, nil, nil);

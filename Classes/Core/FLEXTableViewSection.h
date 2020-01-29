@@ -18,13 +18,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// Many properties or methods here return nil or some logical equivalent by default.
 /// Even so, most of the methods with defaults are intended to be overriden by subclasses.
 /// Some methods are not implemented at all and MUST be implemented by a subclass.
-@interface FLEXTableViewSection : NSObject
+@interface FLEXTableViewSection : NSObject {
+    @protected
+    /// Unused by default, use if you want
+    NSString *_title;
+}
 
 #pragma mark - Data
 
-/// A title to be displayed for the custom section. Subclasses may override.
+/// A title to be displayed for the custom section.
+/// Subclasses may override or use the \c _title ivar.
 @property (nonatomic, readonly, nullable) NSString *title;
-/// The number of rows in this section.
+/// The number of rows in this section. Subclasses must override.
 /// This should not change until \c filterText is changed or \c reloadData is called.
 @property (nonatomic, readonly) NSInteger numberOfRows;
 /// A map of reuse identifiers to \c UITableViewCell (sub)class objects.
@@ -36,10 +41,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// The section should filter itself based on the contents of this property
 /// as it is set. If it is set to nil or an empty string, it should not filter.
 /// Subclasses should override or observe this property and react to changes.
+///
+/// It is common practice to use two arrays for the underlying model:
+/// One to hold all rows, and one to hold unfiltered rows. When \c setFilterText:
+/// is called, call \c super to store the new value, and re-filter your model accordingly.
 @property (nonatomic, nullable) NSString *filterText;
 
-/// Provides an avenue for the section to change the number of rows.
-/// This is called before reloading the table view itself.
+/// Provides an avenue for the section to refresh data or change the number of rows.
+///
+/// This is called before reloading the table view itself. If your section pulls data
+/// from an external data source, this is a good place to refresh that data entirely.
+/// If your section does not, then it might be simpler for you to just override
+/// \c setFilterText: to call \c super and call \c reloadData.
 - (void)reloadData;
 
 #pragma mark - Row Selection
@@ -57,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return This returns \c nil if no view controller is provided by
 /// \c viewControllerToPushForRow: — otherwise it pushes that view controller
 /// onto \c host.navigationController
-- (nullable void(^)(UIViewController *host))didSelectRowAction:(NSInteger)row;
+- (nullable void(^)(__kindof UIViewController *host))didSelectRowAction:(NSInteger)row;
 
 /// A view controller to display when the row is selected, if the row
 /// supports being selected as indicated by \c canSelectRow:. Subclasses
@@ -68,7 +81,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Called when the accessory view's detail button is pressed.
 /// @return \c nil by default.
-- (nullable void(^)(UIViewController *host))didPressInfoButtonAction:(NSInteger)row;
+- (nullable void(^)(__kindof UIViewController *host))didPressInfoButtonAction:(NSInteger)row;
 
 #pragma mark - Context Menus
 #if FLEX_AT_LEAST_IOS13_SDK
@@ -86,7 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// By default, only inludes items for \c copyMenuItemsForRow:.
 - (nullable NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13.0));
 /// Subclasses may override to return a list of copiable items.
-/// 
+///
 /// Every two elements in the list compose a key-value pair, where the key
 /// should be a description of what will be copied, and the values should be
 /// the strings to copy. Return an empty string as a value to show a disabled action.
