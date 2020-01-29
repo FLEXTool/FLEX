@@ -26,10 +26,10 @@
 static __weak UIWindow *s_applicationWindow = nil;
 
 @interface FLEXGlobalsTableViewController ()
-
-@property (nonatomic, readonly) NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *sections;
-@property (nonatomic, copy) NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *filteredSections;
-
+/// Only displayed sections of the table view; empty sections are purged from this array.
+@property (nonatomic, copy) NSArray<FLEXGlobalsSection *> *sections;
+/// Every section in the table view, regardless of whether or not a section is empty.
+@property (nonatomic, readonly) NSArray<FLEXGlobalsSection *> *allSections;
 @end
 
 @implementation FLEXGlobalsTableViewController
@@ -98,12 +98,12 @@ static __weak UIWindow *s_applicationWindow = nil;
     }
 }
 
-+ (NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *)defaultGlobalSections
++ (NSArray<FLEXGlobalsSection *> *)defaultGlobalSections
 {
-    static NSArray<FLEXGlobalsSection<FLEXGlobalsEntry *> *> *sections = nil;
+    static NSArray<FLEXGlobalsSection *> *sections = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSArray *rows = @[
+        NSArray *rowsBySection = @[
             @[
                 [self globalsEntryForRow:FLEXGlobalsRowNetworkHistory],
                 [self globalsEntryForRow:FLEXGlobalsRowSystemLog],
@@ -131,13 +131,10 @@ static __weak UIWindow *s_applicationWindow = nil;
             ]
         ];
         
-        NSMutableArray *tmp = [NSMutableArray array];
-        for (NSInteger i = 0; i < FLEXGlobalsSectionCount - 1; i++) { // Skip custom
+        sections = [NSArray flex_forEachUpTo:rowsBySection.count map:^FLEXGlobalsSection *(NSUInteger i) {
             NSString *title = [self globalsTitleForSection:i];
-            [tmp addObject:[FLEXGlobalsSection section:i title:title rows:rows[i]]];
-        }
-        
-        sections = tmp.copy;
+            return [FLEXGlobalsSection title:title rows:rowsBySection[i]];
+        }];
     });
     
     return sections;
@@ -161,17 +158,17 @@ static __weak UIWindow *s_applicationWindow = nil;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
 
     // Table view data
-    _sections = [[self class] defaultGlobalSections];
+    _allSections = [[self class] defaultGlobalSections];
     if ([FLEXManager sharedManager].userGlobalEntries.count) {
         // Make custom section
         NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
         FLEXGlobalsSection *custom = [FLEXGlobalsSection
-            section:FLEXGlobalsSectionCustom
             title:title
             rows:[FLEXManager sharedManager].userGlobalEntries
         ];
-        _sections = [_sections arrayByAddingObject:custom];
+        _allSections = [_allSections arrayByAddingObject:custom];
     }
+    self.sections = self.allSections;
 
     // Done button
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
@@ -184,73 +181,44 @@ static __weak UIWindow *s_applicationWindow = nil;
 #pragma mark - Search Bar
 
 - (void)updateSearchResults:(NSString *)newText {
-    if (!newText.length) {
-        self.filteredSections = nil;
-        [self.tableView reloadData];
-        return;
+    // Sections will adjust data based on this property
+    for (FLEXTableViewSection *section in self.allSections) {
+        section.filterText = newText;
     }
 
-    // Sections are a map of index to rows, since empty sections are omitted
-    NSMutableArray *filteredSections = [NSMutableArray array];
+    // Recalculate empty sections
+    self.sections = [self nonemptySections];
 
-    [self.sections enumerateObjectsUsingBlock:^(FLEXGlobalsSection<FLEXGlobalsEntry *> *section, NSUInteger idx, BOOL *stop) {
-        section = [section newSectionWithRowsMatchingQuery:newText];
-        if (section) {
-            [filteredSections addObject:section];
-        }
-    }];
-
-    self.filteredSections = filteredSections.copy;
-    [self.tableView reloadData];
+    // Refresh table view
+    if (self.isViewLoaded) {
+        [self.tableView reloadData];
+    }
 }
 
-#pragma mark - Misc
+#pragma mark - Private
 
 - (void)donePressed:(id)sender
 {
     [self.delegate globalsViewControllerDidFinish:self];
 }
 
-#pragma mark - Table Data Helpers
-
-- (FLEXGlobalsEntry *)globalEntryAtIndexPath:(NSIndexPath *)indexPath
+- (NSArray<FLEXGlobalsSection *> *)nonemptySections
 {
-    if (self.filteredSections) {
-        return self.filteredSections[indexPath.section][indexPath.row];
-    } else {
-        return self.sections[indexPath.section][indexPath.row];
-    }
-}
-
-- (NSString *)titleForSection:(NSInteger)section
-{
-    if (self.filteredSections) {
-        return self.filteredSections[section].title;
-    } else {
-        return self.sections[section].title;
-    }
-}
-
-- (NSString *)titleForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    FLEXGlobalsEntry *entry = [self globalEntryAtIndexPath:indexPath];
-    return entry.entryNameFuture();
+    return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
+        return section.numberOfRows > 0;
+    }];
 }
 
 #pragma mark - Table View Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return self.filteredSections ? self.filteredSections.count : self.sections.count;
+    return self.sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.filteredSections) {
-        return self.filteredSections[section].count;
-    } else {
-        return self.sections[section].count;
-    }
+    return self.sections[section].numberOfRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -262,26 +230,34 @@ static __weak UIWindow *s_applicationWindow = nil;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.font = [UIFont systemFontOfSize:14.0];
     }
-
-    cell.textLabel.text = [self titleForRowAtIndexPath:indexPath];
+    
+    [self.sections[indexPath.section] configureCell:cell forRow:indexPath.row];
     
     return cell;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [self titleForSection:section];
+    return self.sections[section].title;
 }
 
 #pragma mark - Table View Delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    FLEXGlobalsEntry *entry = [self globalEntryAtIndexPath:indexPath];
-    if (entry.viewControllerFuture) {
-        [self.navigationController pushViewController:entry.viewControllerFuture() animated:YES];
+    FLEXTableViewSection *section = self.sections[indexPath.section];
+
+    void (^action)(UIViewController *) = [section didSelectRowAction:indexPath.row];
+    UIViewController *details = [section viewControllerToPushForRow:indexPath.row];
+
+    if (action) {
+        action(self);
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else if (details) {
+        [self.navigationController pushViewController:details animated:YES];
     } else {
-        entry.rowAction(self);
+        [NSException raise:NSInternalInconsistencyException
+                    format:@"Row is selectable but has no action or view controller"];
     }
 }
 

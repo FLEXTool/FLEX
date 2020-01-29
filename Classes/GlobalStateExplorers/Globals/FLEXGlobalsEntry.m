@@ -60,13 +60,6 @@
     return entry;
 }
 
-#pragma mark FLEXPatternMatching
-
-- (BOOL)matches:(NSString *)query
-{
-    return [self.entryNameFuture() localizedCaseInsensitiveContainsString:query];
-}
-
 @end
 
 #pragma mark - flex_concreteGlobalsEntry

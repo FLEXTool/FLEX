@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXGlobalsSection.h"
 @class FLEXGlobalsTableViewController;
+
+NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowProcessInfo,
@@ -33,12 +34,12 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowCount
 };
 
-typedef NSString *(^FLEXGlobalsEntryNameFuture)(void);
+typedef NSString * _Nonnull (^FLEXGlobalsEntryNameFuture)(void);
 /// Simply return a view controller to be pushed on the navigation stack
-typedef UIViewController *(^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
+typedef UIViewController * _Nullable (^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
 /// Do something like present an alert, then use the host
 /// view controller to present or push another view controller.
-typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewController *host);
+typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewController * _Nonnull host);
 
 /// For view controllers to conform to to indicate they support being used
 /// in the globals table view controller. These methods help create concrete entries.
@@ -61,20 +62,24 @@ typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewCont
 // globalsEntryRowAction: takes precedence if both are implemented.
 @optional
 
-+ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row;
-+ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row;
++ (nullable UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row;
++ (nullable FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row;
 
 @end
 
-@interface FLEXGlobalsEntry : NSObject <FLEXPatternMatching>
+@interface FLEXGlobalsEntry : NSObject
 
-@property (nonatomic, readonly) FLEXGlobalsEntryNameFuture entryNameFuture;
-@property (nonatomic, readonly) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
-@property (nonatomic, readonly) FLEXGlobalsTableViewControllerRowAction rowAction;
+@property (nonatomic, readonly, nonnull)  FLEXGlobalsEntryNameFuture entryNameFuture;
+@property (nonatomic, readonly, nullable) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
+@property (nonatomic, readonly, nullable) FLEXGlobalsTableViewControllerRowAction rowAction;
 
 + (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)entry row:(FLEXGlobalsRow)row;
-+ (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
-+ (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction;
+
++ (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
+               viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
+
++ (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
+                             action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction;
 
 @end
 
@@ -83,6 +88,8 @@ typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewCont
 
 /// @return The result of passing self to +[FLEXGlobalsEntry entryWithEntry:]
 /// if the class conforms to FLEXGlobalsEntry, else, nil.
-+ (FLEXGlobalsEntry *)flex_concreteGlobalsEntry:(FLEXGlobalsRow)row;
++ (nullable FLEXGlobalsEntry *)flex_concreteGlobalsEntry:(FLEXGlobalsRow)row;
 
 @end
+
+NS_ASSUME_NONNULL_END
