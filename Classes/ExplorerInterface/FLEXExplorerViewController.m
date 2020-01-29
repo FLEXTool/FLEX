@@ -290,7 +290,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         return;
     }
     
-    for (NSString *keyPath in [[self class] viewKeyPathsToTrack]) {
+    for (NSString *keyPath in self.viewKeyPathsToTrack) {
         [view addObserver:self forKeyPath:keyPath options:0 context:NULL];
     }
     
@@ -303,14 +303,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         return;
     }
     
-    for (NSString *keyPath in [[self class] viewKeyPathsToTrack]) {
+    for (NSString *keyPath in self.viewKeyPathsToTrack) {
         [view removeObserver:self forKeyPath:keyPath];
     }
     
     [self.observedViews removeObject:view];
 }
 
-+ (NSArray<NSString *> *)viewKeyPathsToTrack
+- (NSArray<NSString *> *)viewKeyPathsToTrack
 {
     static NSArray<NSString *> *trackedViewKeyPaths = nil;
     static dispatch_once_t onceToken;
@@ -752,22 +752,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Make our window key to correctly handle input.
     [self.view.window makeKeyWindow];
 
-    // Fix for iOS 13, regarding custom UIMenu callouts not appearing because
-    // the UITextEffectsWindow has a lower level than the FLEX window by default
-    // until a text field is activated, bringing it above the FLEX window.
-    if (@available(iOS 13, *)) {
-        for (UIWindow *window in UIApplication.sharedApplication.windows) {
-            if ([window isKindOfClass:NSClassFromString(@"UITextEffectsWindow")]) {
-                if (window.windowLevel <= self.view.window.windowLevel) {
-                    window.windowLevel = self.view.window.windowLevel + 1;
-                    break;
-                }
-            }
-        }
-    }
-
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
-    [[self statusWindow] setWindowLevel:self.view.window.windowLevel + 1.0];
+    if (!@available(iOS 13, *)) {
+        [self statusWindow].windowLevel = self.view.window.windowLevel + 1.0;
+    }
     
     // Show the view controller.
     [self presentViewController:viewController animated:animated completion:completion];
