@@ -169,13 +169,6 @@ static __weak UIWindow *s_applicationWindow = nil;
         _allSections = [_allSections arrayByAddingObject:custom];
     }
     self.sections = self.allSections;
-
-    // Done button
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-        initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-        target:self
-        action:@selector(donePressed:)
-    ];
 }
 
 #pragma mark - Search Bar
@@ -196,11 +189,6 @@ static __weak UIWindow *s_applicationWindow = nil;
 }
 
 #pragma mark - Private
-
-- (void)donePressed:(id)sender
-{
-    [self.delegate globalsViewControllerDidFinish:self];
-}
 
 - (NSArray<FLEXGlobalsSection *> *)nonemptySections
 {

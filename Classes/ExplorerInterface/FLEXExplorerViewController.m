@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
-@interface FLEXExplorerViewController () <FLEXHierarchyDelegate, FLEXGlobalsTableViewControllerDelegate>
+@interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>
 
 @property (nonatomic) FLEXExplorerToolbar *explorerToolbar;
 
@@ -494,9 +494,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarDetailsTapGesture:(UITapGestureRecognizer *)tapGR
 {
     if (tapGR.state == UIGestureRecognizerStateRecognized && self.selectedView) {
-        FLEXObjectExplorerViewController *selectedViewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
-        selectedViewExplorer.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(selectedViewExplorerFinished:)];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:selectedViewExplorer];
+        UIViewController *topStackVC = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
+        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:topStackVC];
         [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
     }
 }
@@ -729,25 +728,21 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 
-#pragma mark - FLEXGlobalsViewControllerDelegate
+#pragma mark - Modal Dismissal
 
-- (void)globalsViewControllerDidFinish:(FLEXGlobalsTableViewController *)globalsViewController
+- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController
+{
+    [self presentedViewControllerDidDismiss];
+}
+
+- (void)presentedViewControllerDidDismiss
 {
     [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
 }
-
-
-#pragma mark - FLEXObjectExplorerViewController Done Action
-
-- (void)selectedViewExplorerFinished:(id)sender
-{
-    [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
-}
-
 
 #pragma mark - Modal Presentation and Window Management
 
-- (void)makeKeyAndPresentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
+- (void)makeKeyAndPresentViewController:(UINavigationController *)toPresent animated:(BOOL)animated completion:(void (^)(void))completion
 {
     // Save the current key window so we can restore it following dismissal.
     self.previousKeyWindow = UIApplication.sharedApplication.keyWindow;
@@ -770,8 +765,24 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
     [UIMenuController.sharedMenuController update];
     
+    // Add the "Done" button to the navigation controller's view controller if it doesn't have one
+    // (the hierarchy screen adds it's own done button in order to pass data between us)
+    if (!toPresent.topViewController.navigationItem.rightBarButtonItem) {
+        toPresent.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+            initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+            target:self
+            action:@selector(presentedViewControllerDidDismiss)
+        ];
+    }
+    
+    // Make myself the delegate for sheets presented modally so we can do the
+    // proper cleanup when sheets are dragged to dismiss without the done button
+    if (@available(iOS 13, *)) {
+        toPresent.presentationController.delegate = self;
+    }
+    
     // Show the view controller.
-    [self presentViewController:viewController animated:animated completion:completion];
+    [self presentViewController:toPresent animated:animated completion:completion];
 }
 
 - (void)resignKeyAndDismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion
@@ -799,7 +810,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return self.previousKeyWindow != nil;
 }
 
-- (void)toggleToolWithViewControllerProvider:(UIViewController *(^)(void))future completion:(void(^)(void))completion
+- (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future completion:(void(^)(void))completion
 {
     if (self.presentedViewController) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:completion];
@@ -835,7 +846,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)toggleViewsToolWithCompletion:(void(^)(void))completion
 {
-    [self toggleToolWithViewControllerProvider:^UIViewController *{
+    [self toggleToolWithViewControllerProvider:^UINavigationController *{
         if (self.selectedView) {
             return [FLEXHierarchyViewController
                 delegate:self
@@ -854,9 +865,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)toggleMenuTool
 {
-    [self toggleToolWithViewControllerProvider:^UIViewController *{
+    [self toggleToolWithViewControllerProvider:^UINavigationController *{
         FLEXGlobalsTableViewController *globalsViewController = [FLEXGlobalsTableViewController new];
-        globalsViewController.delegate = self;
         [FLEXGlobalsTableViewController setApplicationWindow:[UIApplication.sharedApplication keyWindow]];
         return [[UINavigationController alloc] initWithRootViewController:globalsViewController];
     } completion:nil];

@@ -84,7 +84,8 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    // Done button
+    // Done button: manually added here because the hierarhcy screens need to actually pass
+    // data back to the explorer view controller so that it can highlight selected views
     viewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
         initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed)
     ];
