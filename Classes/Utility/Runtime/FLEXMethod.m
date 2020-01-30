@@ -37,7 +37,7 @@
 }
 
 + (instancetype)selector:(SEL)selector class:(Class)cls {
-    BOOL instance = class_isMetaClass(cls);
+    BOOL instance = !class_isMetaClass(cls);
     // class_getInstanceMethod will return an instance method if not given
     // not given a metaclass, or a class method if given a metaclass, but
     // this isn't documented so we just want to be safe here.
