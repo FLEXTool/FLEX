@@ -84,7 +84,7 @@ static NSCharacterSet *methodAllowed     = nil;
 
 + (TBToken *)scanToken:(NSScanner *)scanner allowed:(NSCharacterSet *)allowedChars first:(NSCharacterSet *)first {
     if (scanner.isAtEnd) {
-        if ([scanner.string hasSuffix:@"."]) {
+        if ([scanner.string hasSuffix:@"."] && ![scanner.string hasSuffix:@"\\."]) {
             return [TBToken string:nil options:TBWildcardOptionsAny];
         }
         return nil;
@@ -99,12 +99,10 @@ static NSCharacterSet *methodAllowed     = nil;
     }
 
     if ([scanner scanString:@"*." intoString:nil]) {
-        options = TBWildcardOptionsAny;
         return [TBToken string:nil options:TBWildcardOptionsAny];
     } else if ([scanner scanString:@"*" intoString:nil]) {
         if (scanner.isAtEnd) {
-            options = TBWildcardOptionsAny;
-            return [TBToken string:nil options:TBWildcardOptionsAny];
+            return [TBToken any];
         }
         
         options |= TBWildcardOptionsPrefix;
@@ -115,23 +113,38 @@ static NSCharacterSet *methodAllowed     = nil;
     NSCharacterSet *disallowed = allowedChars.invertedSet;
     while (!stop && ![scanner scanString:@"." intoString:&tmp] && !scanner.isAtEnd) {
         // Scan word chars
+        // In this block, we have not scanned anything yet, except maybe leading '\' or '\.'
         if (!didScanFirstAllowed) {
             if ([scanner scanCharactersFromSet:first intoString:&tmp]) {
                 [token appendString:tmp];
                 didScanFirstAllowed = YES;
+            } else if ([scanner scanString:@"\\" intoString:nil]) {
+                if (options == TBWildcardOptionsPrefix && [scanner scanString:@"." intoString:nil]) {
+                    [token appendString:@"."];
+                } else if (scanner.isAtEnd && options == TBWildcardOptionsPrefix) {
+                    // Only allow standalone '\' if prefixed by '*'
+                    return [TBToken any];
+                } else {
+                    // Token starts with a number, period, or something else not allowed,
+                    // or token is a standalone '\' with no '*' prefix
+                    @throw NSInternalInconsistencyException;
+                }
             } else {
-                // Token starts with a number or something else not allowed
+                // Token starts with a number, period, or something else not allowed
                 @throw NSInternalInconsistencyException;
             }
         } else if ([scanner scanCharactersFromSet:allowedChars intoString:&tmp]) {
             [token appendString:tmp];
         }
-        // Scan '\.'
+        // Scan '\.' or trailing '\'
         else if ([scanner scanString:@"\\" intoString:nil]) {
             if ([scanner scanString:@"." intoString:nil]) {
                 [token appendString:@"."];
+            } else if (scanner.isAtEnd) {
+                // Ignore forward slash not followed by period if at end
+                return [TBToken string:token options:options | TBWildcardOptionsSuffix];
             } else {
-                // Invalid token, forward slash not followed by period
+                // Only periods can follow a forward slash
                 @throw NSInternalInconsistencyException;
             }
         }
@@ -153,6 +166,7 @@ static NSCharacterSet *methodAllowed     = nil;
         }
     }
 
+    // Did we scan a trailing, un-escsaped '.'?
     if ([tmp isEqualToString:@"."]) {
         didScanDelimiter = YES;
     }

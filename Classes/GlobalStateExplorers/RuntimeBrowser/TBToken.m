@@ -19,7 +19,7 @@
     static TBToken *any = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        any = [self string:@"" options:TBWildcardOptionsAny];
+        any = [self string:nil options:TBWildcardOptionsAny];
     });
 
     return any;
