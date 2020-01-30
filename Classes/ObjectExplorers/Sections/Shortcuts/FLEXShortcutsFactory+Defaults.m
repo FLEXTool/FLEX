@@ -17,9 +17,10 @@
 + (void)load {
     // Only available since iOS 3.2, but we never supported iOS 3, so who cares
     NSArray *ivars = @[@"_gestureRecognizers"];
+    NSArray *methods = @[@"sizeToFit", @"setNeedsLayout", @"removeFromSuperview"];
 
-    // UIVIew
-    self.append.ivars(ivars).properties(@[
+    // UIView
+    self.append.ivars(ivars).methods(methods).properties(@[
         @"frame", @"bounds", @"center", @"transform",
         @"backgroundColor", @"alpha", @"opaque", @"hidden",
         @"clipsToBounds", @"userInteractionEnabled", @"layer",
@@ -27,7 +28,7 @@
     ]).forClass(UIView.class);
 
     // UILabel
-    self.append.ivars(ivars).properties(@[
+    self.append.ivars(ivars).methods(methods).properties(@[
         @"text", @"attributedText", @"font", @"frame",
         @"textColor", @"textAlignment", @"numberOfLines",
         @"lineBreakMode", @"enabled", @"backgroundColor",
@@ -51,7 +52,7 @@
     ivars = @[@"_targetActions", @"_gestureRecognizers"];
 
     // UIControl
-    self.append.ivars(ivars).properties(@[
+    self.append.ivars(ivars).methods(methods).properties(@[
         @"enabled", @"allTargets", @"frame",
         @"backgroundColor", @"hidden", @"clipsToBounds",
         @"userInteractionEnabled", @"superview", @"subviews"
@@ -75,8 +76,11 @@
 + (void)load {
     // UIViewController
     self.append
-        .properties(@[@"view", @"title", @"navigationItem"])
-        .forClass(UIViewController.class);
+        .properties(@[
+            @"viewIfLoaded", @"title", @"navigationItem", @"toolbarItems", @"tabBarItem",
+            @"childViewControllers", @"navigationController", @"tabBarController", @"splitViewController",
+            @"parentViewController", @"presentedViewController", @"presentingViewController",
+        ]).methods(@[@"view"]).forClass(UIViewController.class);
 }
 
 @end

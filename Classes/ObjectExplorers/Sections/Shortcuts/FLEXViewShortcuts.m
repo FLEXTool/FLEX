@@ -145,6 +145,9 @@
 
     // UIButton, private
     FLEXRuntimeUtilityTryAddObjectProperty(2, font, UIButton, UIFont, PropertyKey(ReadOnly));
+    
+    // UIViewController, public
+    FLEXRuntimeUtilityTryAddObjectProperty(3, toolbarItems, UIViewController, NSArray);
 }
 
 @end

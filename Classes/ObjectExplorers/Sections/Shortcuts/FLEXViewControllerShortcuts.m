@@ -39,7 +39,7 @@
     // These additional rows will appear at the beginning of the shortcuts section.
     // The methods below are written in such a way that they will not interfere
     // with properties/etc being registered alongside these
-    return [self forObject:viewController additionalRows:@[@"Push View Controoller"]];
+    return [self forObject:viewController additionalRows:@[@"Push View Controller"]];
 }
 
 - (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
