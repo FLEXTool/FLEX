@@ -13,7 +13,7 @@
 - (id)initWithReuseIdentifier:(NSString *)reuseIdentifier;
 
 @property (nonatomic) NSInteger viewDepth;
-@property (nonatomic) UIColor *viewColor;
-@property (nonatomic) UIView *viewBackgroundColorView;
+@property (nonatomic) UIColor *randomColorTag;
+@property (nonatomic) UIColor *indicatedViewColor;
 
 @end

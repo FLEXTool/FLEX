@@ -213,8 +213,9 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 
     cell.textLabel.text = [FLEXUtility descriptionForView:view includingFrame:NO];
     cell.detailTextLabel.text = [FLEXUtility detailDescriptionForView:view];
-    cell.viewColor = [FLEXUtility consistentRandomColorForObject:view];
+    cell.randomColorTag = [FLEXUtility consistentRandomColorForObject:view];
     cell.viewDepth = self.depthsForViews[view].integerValue;
+    cell.indicatedViewColor = view.backgroundColor;
 
     if (view.isHidden || view.alpha < 0.01) {
         cell.textLabel.textColor = FLEXColor.deemphasizedTextColor;
@@ -222,20 +223,6 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     } else {
         cell.textLabel.textColor = FLEXColor.primaryTextColor;
         cell.detailTextLabel.textColor = FLEXColor.primaryTextColor;
-    }
-    
-    // Use a pattern-based color to simplify application of the checker pattern.
-    static UIColor *checkerPatternColor = nil;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        checkerPatternColor = [UIColor colorWithPatternImage:FLEXResources.checkerPattern];
-    });
-    
-    UIColor *viewColor = view.backgroundColor;
-    if (!viewColor || [viewColor isEqual:UIColor.clearColor]) {
-        cell.viewBackgroundColorView.backgroundColor = checkerPatternColor;
-    } else {
-        cell.viewBackgroundColorView.backgroundColor = viewColor;
     }
     
     return cell;
