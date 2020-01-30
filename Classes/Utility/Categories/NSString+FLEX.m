@@ -53,21 +53,60 @@
 
 @implementation NSString (FLEXTypeEncoding)
 
-- (BOOL)typeIsConst {
+- (NSCharacterSet *)flex_classNameAllowedCharactersSet {
+    static NSCharacterSet *classNameAllowedCharactersSet = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSMutableCharacterSet *temp = NSMutableCharacterSet.alphanumericCharacterSet;
+        [temp addCharactersInString:@"_"];
+        classNameAllowedCharactersSet = temp.copy;
+    });
+    
+    return classNameAllowedCharactersSet;
+}
+
+- (BOOL)flex_typeIsConst {
     return [self characterAtIndex:0] == FLEXTypeEncodingConst;
 }
 
-- (FLEXTypeEncoding)firstNonConstType {
-    return [self characterAtIndex:(self.typeIsConst ? 1 : 0)];
+- (FLEXTypeEncoding)flex_firstNonConstType {
+    return [self characterAtIndex:(self.flex_typeIsConst ? 1 : 0)];
 }
 
-- (BOOL)typeIsObjectOrClass {
-    FLEXTypeEncoding type = self.firstNonConstType;
+- (BOOL)flex_typeIsObjectOrClass {
+    FLEXTypeEncoding type = self.flex_firstNonConstType;
     return type == FLEXTypeEncodingObjcObject || type == FLEXTypeEncodingObjcClass;
 }
 
-- (BOOL)typeIsNonObjcPointer {
-    FLEXTypeEncoding type = self.firstNonConstType;
+- (Class)flex_typeClass {
+    if (!self.flex_typeIsObjectOrClass) {
+        return nil;
+    }
+    
+    NSScanner *scan = [NSScanner scannerWithString:self];
+    // Skip const
+    [scan scanString:@"r" intoString:nil];
+    // Scan leading @"
+    if (![scan scanString:@"@\"" intoString:nil]) {
+        return nil;
+    }
+    
+    // Scan class name
+    NSString *name = nil;
+    if (![scan scanCharactersFromSet:self.flex_classNameAllowedCharactersSet intoString:&name]) {
+        return nil;
+    }
+    // Scan trailing quote
+    if (![scan scanString:@"\"" intoString:nil]) {
+        return nil;
+    }
+    
+    // Return found class
+    return NSClassFromString(name);
+}
+
+- (BOOL)flex_typeIsNonObjcPointer {
+    FLEXTypeEncoding type = self.flex_firstNonConstType;
     return type == FLEXTypeEncodingPointer ||
            type == FLEXTypeEncodingCString ||
            type == FLEXTypeEncodingSelector;

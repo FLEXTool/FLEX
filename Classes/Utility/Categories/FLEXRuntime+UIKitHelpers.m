@@ -114,32 +114,63 @@
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
+    Class propertyClass = self.attributes.typeEncoding.flex_typeClass;
+    
+    // "Explore PropertyClass" for properties with a concrete class name
+    if (propertyClass) {
+        NSString *title = [NSString stringWithFormat:@"Explore %@", NSStringFromClass(propertyClass)];
+        return @[[UIAction actionWithTitle:title image:nil identifier:nil handler:^(UIAction *action) {
+            UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:propertyClass];
+            [sender.navigationController pushViewController:explorer animated:YES];
+        }]];
+    }
+    
+    return nil;
+}
+
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
-    BOOL returnsObject = self.attributes.typeEncoding.typeIsObjectOrClass;
-    id value = [self currentValueBeforeUnboxingWithTarget:object];
-    return @[
-        @"Name",                        self.name ?: @"",
-        @"Type",                        self.attributes.typeEncoding ?: @"",
-        @"Declaration",                 self.fullDescription ?: @"",
-        @"Value Preview",               [self previewWithTarget:object],
-        @"Value Address",               returnsObject ? [FLEXUtility addressOfObject:value] : @"",
-        @"Getter",                      NSStringFromSelector(self.likelyGetter) ?: @"",
-        @"Setter",                      self.likelySetterExists ? NSStringFromSelector(self.likelySetter) : @"",
-        @"Image Name",                  self.imageName ?: @"",
-        @"Attributes",                  self.attributes.string ?: @"",
+    BOOL returnsObject = self.attributes.typeEncoding.flex_typeIsObjectOrClass;
+    BOOL targetNotNil = [self appropriateTargetForPropertyType:object] != nil;
+    
+    NSMutableArray *items = [NSMutableArray arrayWithArray:@[
+        @"Name",                      self.name ?: @"",
+        @"Type",                      self.attributes.typeEncoding ?: @"",
+        @"Declaration",               self.fullDescription ?: @"",
+    ]];
+    
+    if (targetNotNil) {
+        id value = [self currentValueBeforeUnboxingWithTarget:object];
+        [items addObjectsFromArray:@[
+            @"Value Preview",         [self previewWithTarget:object],
+            @"Value Address",         returnsObject ? [FLEXUtility addressOfObject:value] : @"",
+        ]];
+    }
+    
+    [items addObjectsFromArray:@[
+        @"Getter",                    NSStringFromSelector(self.likelyGetter) ?: @"",
+        @"Setter",                    self.likelySetterExists ? NSStringFromSelector(self.likelySetter) : @"",
+        @"Image Name",                self.imageName ?: @"",
+        @"Attributes",                self.attributes.string ?: @"",
         @"objc_property",             [FLEXUtility pointerToString:self.objc_property],
         @"objc_property_attribute_t", [FLEXUtility pointerToString:self.attributes.list],
-    ];
+    ]];
+    
+    return items;
 }
 
 - (NSString *)contextualSubtitleWithTarget:(id)object {
     id target = [self appropriateTargetForPropertyType:object];
-    if (target && self.attributes.typeEncoding.typeIsObjectOrClass) {
+    if (target && self.attributes.typeEncoding.flex_typeIsObjectOrClass) {
         return [FLEXUtility addressOfObject:[self currentValueBeforeUnboxingWithTarget:target]];
     }
     
     return nil;
 }
+
+#endif
 
 @end
 
@@ -211,33 +242,64 @@
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
+    Class ivarClass = self.typeEncoding.flex_typeClass;
+    
+    // "Explore PropertyClass" for properties with a concrete class name
+    if (ivarClass) {
+        NSString *title = [NSString stringWithFormat:@"Explore %@", NSStringFromClass(ivarClass)];
+        return @[[UIAction actionWithTitle:title image:nil identifier:nil handler:^(UIAction *action) {
+            UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:ivarClass];
+            [sender.navigationController pushViewController:explorer animated:YES];
+        }]];
+    }
+    
+    return nil;
+}
+
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
-    BOOL returnsObject = self.typeEncoding.typeIsObjectOrClass;
-    id value = [self getValue:object];
-    return @[
+    BOOL isInstance = !object_isClass(object);
+    BOOL returnsObject = self.typeEncoding.flex_typeIsObjectOrClass;
+    id value = isInstance ? [self getValue:object] : nil;
+    
+    NSMutableArray *items = [NSMutableArray arrayWithArray:@[
         @"Name",          self.name ?: @"",
         @"Type",          self.typeEncoding ?: @"",
         @"Declaration",   self.description ?: @"",
-        @"Value Preview", [self previewWithTarget:object],
-        @"Value Address", returnsObject ? [FLEXUtility addressOfObject:value] : @"",
+    ]];
+    
+    if (isInstance) {
+        [items addObjectsFromArray:@[
+            @"Value Preview", isInstance ? [self previewWithTarget:object] : @"",
+            @"Value Address", returnsObject ? [FLEXUtility addressOfObject:value] : @"",
+        ]];
+    }
+    
+    [items addObjectsFromArray:@[
         @"Size",          @(self.size).stringValue,
         @"Offset",        @(self.offset).stringValue,
-        @"objc_ivar",   [FLEXUtility pointerToString:self.objc_ivar],
-    ];
+        @"objc_ivar",     [FLEXUtility pointerToString:self.objc_ivar],
+    ]];
+    
+    return items;
 }
 
 - (NSString *)contextualSubtitleWithTarget:(id)object {
-    if (!object_isClass(object) && self.typeEncoding.typeIsObjectOrClass) {
+    if (!object_isClass(object) && self.typeEncoding.flex_typeIsObjectOrClass) {
         return [FLEXUtility addressOfObject:[self getValue:object]];
     }
     
     return nil;
 }
 
+#endif
+
 @end
 
 
-#pragma mark FLEXMethod*
+#pragma mark FLEXMethod
 @implementation FLEXMethodBase (UIKitHelpers)
 
 - (BOOL)isEditable {
@@ -277,6 +339,12 @@
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
+    return nil;
+}
+
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
     return @[
         @"Selector",      self.name ?: @"",
@@ -288,6 +356,8 @@
 - (NSString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
+
+#endif
 
 @end
 
@@ -363,6 +433,12 @@
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
+    return nil;
+}
+
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
     NSArray<NSString *> *conformanceNames = [self.protocols valueForKeyPath:@"name"];
     NSString *conformances = [conformanceNames componentsJoinedByString:@"\n"];
@@ -375,6 +451,8 @@
 - (NSString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
+
+#endif
 
 @end
 
@@ -463,6 +541,12 @@
     return UITableViewCellAccessoryNone;
 }
 
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
+    return nil;
+}
+
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
     return @[self.name, self.subtitle];
 }
@@ -470,6 +554,8 @@
 - (NSString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
+
+#endif
 
 @end
 

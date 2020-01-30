@@ -198,7 +198,7 @@
 - (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender {
     NSArray<UIMenuElement *> *existingItems = [super menuItemsForRow:row sender:sender];
     
-    // These two metadata kinds don't need an "Explore Metadata…" option
+    // These two metadata kinds don't any of the additional options below
     switch (self.metadataKind) {
         case FLEXMetadataKindClassHierarchy:
         case FLEXMetadataKindOther:
@@ -207,10 +207,11 @@
         default: break;
     }
     
-    id metadata = self.metadata[row];
+    id<FLEXRuntimeMetadata> metadata = self.metadata[row];
+    NSMutableArray<UIMenuElement *> *menuItems = [NSMutableArray new];
     
-    UIAction *explore = [UIAction
-        actionWithTitle:@"Explore Metadata…"
+    [menuItems addObject:[UIAction
+        actionWithTitle:@"Explore Metadata"
         image:nil
         identifier:nil
         handler:^(__kindof UIAction *action) {
@@ -218,9 +219,13 @@
                 explorerViewControllerForObject:metadata
             ] animated:YES];
         }
-    ];
+    ]];
+    [menuItems addObjectsFromArray:[metadata
+        additionalActionsWithTarget:self.explorer.object sender:sender
+    ]];
+    [menuItems addObjectsFromArray:existingItems];
     
-    return [@[explore] arrayByAddingObjectsFromArray:existingItems];
+    return menuItems.copy;
 }
 
 - (NSArray<NSString *> *)copyMenuItemsForRow:(NSInteger)row {
