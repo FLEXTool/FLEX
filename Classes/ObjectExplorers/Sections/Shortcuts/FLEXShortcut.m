@@ -109,7 +109,7 @@
         return [self.metadata suggestedAccessoryTypeWithTarget:object];
     }
 
-    return UITableViewCellAccessoryDisclosureIndicator;
+    return UITableViewCellAccessoryNone;
 }
 
 - (NSString *)customReuseIdentifierWith:(id)object {
@@ -117,7 +117,7 @@
         return kFLEXCodeFontCell;
     }
 
-    return nil;
+    return kFLEXMultilineCell;
 }
 
 #pragma mark - Helpers
