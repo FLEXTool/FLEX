@@ -15,6 +15,7 @@
 /// a useful subtitle for the bundles of classes
 @interface FLEXBundleShortcut : NSObject <FLEXShortcut>
 @end
+#pragma mark - 
 @implementation FLEXBundleShortcut
 
 - (NSString *)titleWith:(id)object {
@@ -51,23 +52,27 @@
     return nil;
 }
 
+- (void (^)(UIViewController *))didSelectActionWith:(id)object { 
+    return nil;
+}
 
 @end
 
+#pragma mark - 
 @interface FLEXClassShortcuts ()
 @property (nonatomic, readonly) Class cls;
 @end
 
 @implementation FLEXClassShortcuts
 
-#pragma mark - Internal
+#pragma mark Internal
 
 - (Class)cls {
     return self.object;
 }
 
 
-#pragma mark - Overrides
+#pragma mark Overrides
 
 + (instancetype)forObject:(Class)cls {
     // These additional rows will appear at the beginning of the shortcuts section.

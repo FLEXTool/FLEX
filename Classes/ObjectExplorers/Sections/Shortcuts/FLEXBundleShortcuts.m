@@ -7,21 +7,24 @@
 //
 
 #import "FLEXBundleShortcuts.h"
+#import "FLEXShortcut.h"
 #import "FLEXFileBrowserTableViewController.h"
 
+#pragma mark -
 @implementation FLEXBundleShortcuts
-#pragma mark - Overrides
+#pragma mark Overrides
 
 + (instancetype)forObject:(NSBundle *)bundle {
-    return [self forObject:bundle additionalRows:@[@"Browse bundle directory"]];
-}
-
-- (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
-    if (row == 0) {
-        return [FLEXFileBrowserTableViewController path:[self.object bundlePath]];
-    }
-
-    return [super viewControllerToPushForRow:row];
+    return [self forObject:bundle additionalRows:@[
+        [FLEXActionShortcut title:@"Browse Bundle Directory" subtitle:nil
+            viewer:^UIViewController *(id view) {
+                return [FLEXFileBrowserTableViewController path:bundle.bundlePath];
+            }
+            accessoryType:^UITableViewCellAccessoryType(id view) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ]
+    ]];
 }
 
 @end

@@ -186,6 +186,10 @@
     return hasDisclosure;
 }
 
+- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
+    return [self.shortcuts[row] didSelectActionWith:self.object];
+}
+
 - (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
     /// Nil if shortcuts is nil, i.e. if initialized with forObject:rowTitles:rowSubtitles:
     return [self.shortcuts[row] viewerWith:self.object];

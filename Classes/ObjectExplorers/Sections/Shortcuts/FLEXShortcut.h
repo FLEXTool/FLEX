@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nonnull  NSString *)titleWith:(id)object;
 - (nullable NSString *)subtitleWith:(id)object;
-//- (void (^)(UIViewController *))didSelectAction:(id)object;
+- (nullable void (^)(UIViewController *host))didSelectActionWith:(id)object;
 /// Called when the row is selected
 - (nullable UIViewController *)viewerWith:(id)object;
 /// Basically, whether or not to show a detail disclosure indicator
@@ -59,6 +59,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)title:(NSString *)title
              subtitle:(nullable NSString *(^)(id object))subtitleFuture
                viewer:(nullable UIViewController *(^)(id object))viewerFuture
+        accessoryType:(nullable UITableViewCellAccessoryType(^)(id object))accessoryTypeFuture;
+
++ (instancetype)title:(NSString *)title
+             subtitle:(nullable NSString *(^)(id object))subtitleFuture
+     selectionHandler:(nullable void (^)(UIViewController *host, id object))tapAction
         accessoryType:(nullable UITableViewCellAccessoryType(^)(id object))accessoryTypeFuture;
 
 @end

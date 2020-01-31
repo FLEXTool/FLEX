@@ -94,6 +94,10 @@
     return @"";
 }
 
+- (void (^)(UIViewController *))didSelectActionWith:(id)object { 
+    return nil;
+}
+
 - (UIViewController *)viewerWith:(id)object {
     NSAssert(self.metadataKind, @"Static titles cannot be viewed");
     return [self.metadata viewerWithTarget:object];
@@ -136,6 +140,7 @@
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, readonly) NSString *(^subtitleFuture)(id);
 @property (nonatomic, readonly) UIViewController *(^viewerFuture)(id);
+@property (nonatomic, readonly) void (^selectionHandler)(UIViewController *, id);
 @property (nonatomic, readonly) UITableViewCellAccessoryType (^accessoryTypeFuture)(id);
 @end
 
@@ -145,21 +150,31 @@
              subtitle:(NSString *(^)(id))subtitle
                viewer:(UIViewController *(^)(id))viewer
         accessoryType:(UITableViewCellAccessoryType (^)(id))type {
-    return [[self alloc] initWithTitle:title subtitle:subtitle viewer:viewer accessoryType:type];
+    return [[self alloc] initWithTitle:title subtitle:subtitle viewer:viewer selectionHandler:nil accessoryType:type];
+}
+
++ (instancetype)title:(NSString *)title
+             subtitle:(NSString * (^)(id))subtitle
+     selectionHandler:(void (^)(UIViewController *, id))tapAction
+        accessoryType:(UITableViewCellAccessoryType (^)(id))type {
+    return [[self alloc] initWithTitle:title subtitle:subtitle viewer:nil selectionHandler:tapAction accessoryType:type];
 }
 
 - (id)initWithTitle:(NSString *)title
            subtitle:(id)subtitleFuture
              viewer:(id)viewerFuture
+   selectionHandler:(id)tapAction
       accessoryType:(id)accessoryTypeFuture {
     NSParameterAssert(title.length);
 
     self = [super init];
     if (self) {
         id nilBlock = ^id (id obj) { return nil; };
+        
         _title = title;
         _subtitleFuture = subtitleFuture ?: nilBlock;
         _viewerFuture = viewerFuture ?: nilBlock;
+        _selectionHandler = tapAction;
         _accessoryTypeFuture = accessoryTypeFuture ?: nilBlock;
     }
 
@@ -172,6 +187,16 @@
 
 - (NSString *)subtitleWith:(id)object {
     return self.subtitleFuture(object);
+}
+
+- (void (^)(UIViewController *))didSelectActionWith:(id)object {
+    if (self.selectionHandler) {
+        return ^(UIViewController *host) {
+            self.selectionHandler(host, object);
+        };
+    }
+    
+    return nil;
 }
 
 - (UIViewController *)viewerWith:(id)object {

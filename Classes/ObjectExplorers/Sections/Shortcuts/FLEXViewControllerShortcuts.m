@@ -7,6 +7,9 @@
 //
 
 #import "FLEXViewControllerShortcuts.h"
+#import "FLEXObjectExplorerFactory.h"
+#import "FLEXRuntimeUtility.h"
+#import "FLEXShortcut.h"
 #import "FLEXAlert.h"
 
 @interface FLEXViewControllerShortcuts ()
@@ -36,41 +39,39 @@
 #pragma mark - Overrides
 
 + (instancetype)forObject:(UIViewController *)viewController {
-    // These additional rows will appear at the beginning of the shortcuts section.
-    // The methods below are written in such a way that they will not interfere
-    // with properties/etc being registered alongside these
-    return [self forObject:viewController additionalRows:@[@"Push View Controller"]];
-}
+    BOOL (^vcIsInuse)(UIViewController *) = ^BOOL(UIViewController *controller) {
+        if (controller.view.window) {
+            return YES;
+        }
 
-- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
-    if (row == 0) {
-        return ^(UIViewController *host) {
-            if (!self.viewControllerIsInUse) {
-                [host.navigationController pushViewController:self.viewController animated:YES];
-            } else {
-                [FLEXAlert
-                    showAlert:@"Cannot Push View Controller"
-                    message:@"This view controller's view is currently in use."
-                    from:host
-                ];
+        return controller.navigationController != nil;
+    };
+    
+    return [self forObject:viewController additionalRows:@[
+        [FLEXActionShortcut title:@"Push View Controller"
+            subtitle:^NSString *(UIViewController *controller) {
+                return vcIsInuse(controller) ? @"In use, cannot push" : nil;
             }
-        };
-    }
-
-    return [super didSelectRowAction:row];
-}
-
-- (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row {
-    switch (row) {
-        case 0:
-            if (self.viewControllerIsInUse) {
-                return UITableViewCellAccessoryDisclosureIndicator;
-            } else {
-                return UITableViewCellAccessoryNone;
+            selectionHandler:^void(UIViewController *host, UIViewController *controller) {
+                if (!vcIsInuse(controller)) {
+                    [host.navigationController pushViewController:controller animated:YES];
+                } else {
+                    [FLEXAlert
+                        showAlert:@"Cannot Push View Controller"
+                        message:@"This view controller's view is currently in use."
+                        from:host
+                    ];
+                }
             }
-        default:
-            return [super accessoryTypeForRow:row];
-    }
+            accessoryType:^UITableViewCellAccessoryType(UIViewController *controller) {
+                if (!vcIsInuse(controller)) {
+                    return UITableViewCellAccessoryDisclosureIndicator;
+                } else {
+                    return UITableViewCellAccessoryNone;
+                }
+            }
+        ]
+    ]];
 }
 
 @end
