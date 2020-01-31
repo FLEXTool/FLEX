@@ -657,7 +657,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)readableTypeForEncoding:(NSString *)encodingString
 {
-    if (!encodingString) {
+    if (!encodingString.length) {
         return @"???";
     }
 
