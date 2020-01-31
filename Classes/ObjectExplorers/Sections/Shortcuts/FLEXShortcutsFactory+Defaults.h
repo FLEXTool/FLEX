@@ -19,3 +19,5 @@
 @interface FLEXShortcutsFactory (Classes) @end
 
 @interface FLEXShortcutsFactory (Activities) @end
+
+@interface FLEXShortcutsFactory (Blocks) @end

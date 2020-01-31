@@ -17,6 +17,7 @@
 #import "FLEXColorPreviewSection.h"
 #import "FLEXDefaultsContentSection.h"
 #import "FLEXBundleShortcuts.h"
+#import "FLEXBlockShortcuts.h"
 #import <objc/runtime.h>
 
 @implementation FLEXObjectExplorerFactory
@@ -26,6 +27,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
 {
     if (self == [FLEXObjectExplorerFactory class]) {
         #define ClassKey(name) (Class<NSCopying>)[name class]
+        #define ClassKeyByName(str) (Class<NSCopying>)NSClassFromString(@ #str)
         classesToRegisteredSections = [NSMutableDictionary dictionaryWithDictionary:@{
             ClassKey(NSArray)          : [FLEXCollectionContentSection class],
             ClassKey(NSSet)            : [FLEXCollectionContentSection class],
@@ -37,8 +39,10 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
             ClassKey(CALayer)          : [FLEXLayerShortcuts class],
             ClassKey(UIColor)          : [FLEXColorPreviewSection class],
             ClassKey(NSBundle)         : [FLEXBundleShortcuts class],
+            ClassKeyByName(NSBlock)    : [FLEXBlockShortcuts class],
         }];
         #undef ClassKey
+        #undef ClassKeyByName
     }
 }
 

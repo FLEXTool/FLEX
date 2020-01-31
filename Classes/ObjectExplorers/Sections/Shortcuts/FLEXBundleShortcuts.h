@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/// Provides a "Browse Bundle Directory" action
 @interface FLEXBundleShortcuts : FLEXShortcutsSection
 
 @end

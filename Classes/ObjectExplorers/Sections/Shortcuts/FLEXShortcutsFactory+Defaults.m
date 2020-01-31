@@ -147,3 +147,14 @@
 }
 
 @end
+
+
+#pragma mark - Activities
+
+@implementation FLEXShortcutsFactory (Blocks)
+
++ (void)load {
+    self.append.methods(@[@"invoke"]).forClass(NSClassFromString(@"NSBlock"));
+}
+
+@end
