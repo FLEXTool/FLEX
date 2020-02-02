@@ -35,7 +35,7 @@
 /// View image
 - (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
     if (row == 0) {
-        return [[FLEXImagePreviewViewController alloc] initWithImage:self.image];
+        return [FLEXImagePreviewViewController forImage:self.image];
     }
 
     return [super viewControllerToPushForRow:row];

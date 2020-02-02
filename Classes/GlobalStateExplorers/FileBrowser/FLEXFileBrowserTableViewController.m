@@ -224,7 +224,7 @@
     if (isDirectory) {
         drillInViewController = [[[self class] alloc] initWithPath:fullPath];
     } else if (image) {
-        drillInViewController = [[FLEXImagePreviewViewController alloc] initWithImage:image];
+        drillInViewController = [FLEXImagePreviewViewController forImage:image];
     } else {
         NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
         if (!fileData.length) {

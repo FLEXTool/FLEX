@@ -7,48 +7,22 @@
 //
 
 #import "FLEXLayerShortcuts.h"
+#import "FLEXShortcut.h"
 #import "FLEXImagePreviewViewController.h"
-
-@interface FLEXLayerShortcuts ()
-@property (nonatomic, readonly) CALayer *layer;
-@end
 
 @implementation FLEXLayerShortcuts
 
-#pragma mark - Internal
-
-- (CALayer *)layer {
-    return self.object;
-}
-
-#pragma mark - Internal
-
-- (UIViewController *)imagePreviewViewController {
-    if (!CGRectIsEmpty(self.layer.bounds)) {
-        UIGraphicsBeginImageContextWithOptions(self.layer.bounds.size, NO, 0.0);
-        CGContextRef imageContext = UIGraphicsGetCurrentContext();
-        [self.layer renderInContext:imageContext];
-        UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        return [FLEXImagePreviewViewController forImage:previewImage];
-    }
-
-    return nil;
-}
-
-
-#pragma mark - Overrides
-
 + (instancetype)forObject:(CALayer *)layer {
-    return [self forObject:layer additionalRows:@[@"Preview"]];
-}
-
-- (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
-    if (row == 0) {
-        return [self imagePreviewViewController];
-    }
-
-    return [super viewControllerToPushForRow:row];
+    return [self forObject:layer additionalRows:@[
+        [FLEXActionShortcut title:@"Preview Image" subtitle:nil
+            viewer:^UIViewController *(id layer) {
+                return [FLEXImagePreviewViewController previewForLayer:layer];
+            }
+            accessoryType:^UITableViewCellAccessoryType(id layer) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ]
+    ]];
 }
 
 @end

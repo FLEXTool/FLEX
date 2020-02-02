@@ -10,7 +10,8 @@
 
 @interface FLEXImagePreviewViewController : UIViewController
 
++ (instancetype)previewForView:(UIView *)view;
++ (instancetype)previewForLayer:(CALayer *)layer;
 + (instancetype)forImage:(UIImage *)image;
-- (id)initWithImage:(UIImage *)image;
 
 @end

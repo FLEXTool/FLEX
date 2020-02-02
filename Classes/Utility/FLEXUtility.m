@@ -66,6 +66,34 @@
     return nil;
 }
 
++ (UIImage *)previewImageForView:(UIView *)view
+{
+    if (CGRectIsEmpty(view.bounds)) {
+        return nil;
+    }
+    
+    CGSize viewSize = view.bounds.size;
+    UIGraphicsBeginImageContextWithOptions(viewSize, NO, 0.0);
+    [view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
+    UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return previewImage;
+}
+
++ (UIImage *)previewImageForLayer:(CALayer *)layer
+{
+    if (CGRectIsEmpty(layer.bounds)) {
+        return nil;
+    }
+    
+    UIGraphicsBeginImageContextWithOptions(layer.bounds.size, NO, 0.0);
+    CGContextRef imageContext = UIGraphicsGetCurrentContext();
+    [layer renderInContext:imageContext];
+    UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return previewImage;
+}
+
 + (NSString *)detailDescriptionForView:(UIView *)view
 {
     return [NSString stringWithFormat:@"frame %@", [self stringForCGRect:view.frame]];

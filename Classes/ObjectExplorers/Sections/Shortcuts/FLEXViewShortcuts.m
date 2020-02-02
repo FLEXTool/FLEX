@@ -46,18 +46,6 @@
     return [self viewControllerForView:view] ?: [self viewControllerForAncestralView:view];
 }
 
-+ (UIViewController *)imagePreviewViewControllerForView:(UIView *)view {
-    if (!CGRectIsEmpty(view.bounds)) {
-        CGSize viewSize = view.bounds.size;
-        UIGraphicsBeginImageContextWithOptions(viewSize, NO, 0.0);
-        [view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
-        UIImage *previewImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        return [FLEXImagePreviewViewController forImage:previewImage];
-    }
-
-    return nil;
-}
 
 #pragma mark - Overrides
 
@@ -87,7 +75,7 @@
         ],
         [FLEXActionShortcut title:@"Preview Image" subtitle:nil
             viewer:^UIViewController *(id view) {
-                return [FLEXViewShortcuts imagePreviewViewControllerForView:view];
+                return [FLEXImagePreviewViewController previewForView:view];
             }
             accessoryType:^UITableViewCellAccessoryType(id view) {
                 return UITableViewCellAccessoryDisclosureIndicator;
@@ -95,6 +83,7 @@
         ]
     ]];
 }
+
 
 #pragma mark - Runtime Adjustment
 

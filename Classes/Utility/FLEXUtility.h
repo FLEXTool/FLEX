@@ -73,6 +73,8 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
 + (NSString *)stringForCGRect:(CGRect)rect;
 + (UIViewController *)viewControllerForView:(UIView *)view;
 + (UIViewController *)viewControllerForAncestralView:(UIView *)view;
++ (UIImage *)previewImageForView:(UIView *)view;
++ (UIImage *)previewImageForLayer:(CALayer *)layer;
 + (NSString *)detailDescriptionForView:(UIView *)view;
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius;
 + (UIColor *)hierarchyIndentPatternColor;

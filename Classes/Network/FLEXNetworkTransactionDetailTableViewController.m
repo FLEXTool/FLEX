@@ -519,7 +519,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         }
     } else if ([mimeType hasPrefix:@"image/"]) {
         UIImage *image = [UIImage imageWithData:data];
-        detailViewController = [[FLEXImagePreviewViewController alloc] initWithImage:image];
+        detailViewController = [FLEXImagePreviewViewController forImage:image];
     } else if ([mimeType isEqual:@"application/x-plist"]) {
         id propertyList = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL];
         detailViewController = [[FLEXWebViewController alloc] initWithText:[propertyList description]];

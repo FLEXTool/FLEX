@@ -11,24 +11,33 @@
 #import "FLEXUtility.h"
 
 @interface FLEXImagePreviewViewController () <UIScrollViewDelegate>
-
 @property (nonatomic) UIImage *image;
-
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) UIImageView *imageView;
-
 @end
-
+#pragma mark -
 @implementation FLEXImagePreviewViewController
 
-+ (instancetype)forImage:(UIImage *)image
-{
+#pragma mark Initialization
+
++ (instancetype)previewForView:(UIView *)view {
+    return [self forImage:[FLEXUtility previewImageForView:view]];
+}
+
++ (instancetype)previewForLayer:(CALayer *)layer {
+    return [self forImage:[FLEXUtility previewImageForLayer:layer]];
+}
+
++ (instancetype)forImage:(UIImage *)image {
+    if (!image) {
+        return nil;
+    }
+    
     return [[self alloc] initWithImage:image];
 }
 
-- (id)initWithImage:(UIImage *)image
-{
-    self = [super initWithNibName:nil bundle:nil];
+- (id)initWithImage:(UIImage *)image {
+    self = [super init];
     if (self) {
         self.title = @"Preview";
         self.image = image;
@@ -36,11 +45,13 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+
+#pragma mark Lifecycle
+
+- (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [FLEXColor scrollViewBackgroundColor];
+    self.view.backgroundColor = FLEXColor.scrollViewBackgroundColor;
     
     self.imageView = [[UIImageView alloc] initWithImage:self.image];
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
@@ -56,23 +67,25 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButtonPressed:)];
 }
 
-- (void)viewDidLayoutSubviews
-{
+- (void)viewDidLayoutSubviews {
     [self centerContentInScrollViewIfNeeded];
 }
 
-- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
-{
+
+#pragma mark UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.imageView;
 }
 
-- (void)scrollViewDidZoom:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView {
     [self centerContentInScrollViewIfNeeded];
 }
 
-- (void)centerContentInScrollViewIfNeeded
-{
+
+#pragma mark Private
+
+- (void)centerContentInScrollViewIfNeeded {
     CGFloat horizontalInset = 0.0;
     CGFloat verticalInset = 0.0;
     if (self.scrollView.contentSize.width < self.scrollView.bounds.size.width) {
@@ -84,8 +97,7 @@
     self.scrollView.contentInset = UIEdgeInsetsMake(verticalInset, horizontalInset, verticalInset, horizontalInset);
 }
 
-- (void)actionButtonPressed:(id)sender
-{
+- (void)actionButtonPressed:(id)sender {
     static BOOL canSaveToCameraRoll = NO, didShowWarning = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
