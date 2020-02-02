@@ -17,7 +17,6 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 @interface FLEXScopeCarousel () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 @property (nonatomic, readonly) UICollectionView *collectionView;
 @property (nonatomic, readonly) FLEXCarouselCell *sizingCell;
-@property (nonatomic, readonly) NSLayoutConstraint *heightConstraint;
 
 @property (nonatomic, readonly) id dynamicTypeObserver;
 @property (nonatomic, readonly) NSMutableArray *dynamicTypeHandlers;
@@ -32,6 +31,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
     if (self) {
         self.backgroundColor = [FLEXColor primaryBackgroundColor];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        self.translatesAutoresizingMaskIntoConstraints = YES;
         _dynamicTypeHandlers = [NSMutableArray new];
         
         CGSize itemSize = CGSizeZero;
@@ -117,23 +117,20 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 
 - (void)updateConstraints {
     if (!self.constraintsInstalled) {
-        self.translatesAutoresizingMaskIntoConstraints = NO;
         self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-
-        [self.centerXAnchor constraintEqualToAnchor:self.superview.centerXAnchor].active = YES;
-        [self.widthAnchor constraintEqualToAnchor:self.superview.widthAnchor].active = YES;
-        [self.topAnchor constraintEqualToAnchor:self.superview.topAnchor].active = YES;
-
         [self.collectionView pinEdgesToSuperview];
-        _heightConstraint = [self.heightAnchor constraintEqualToConstant:100];
-        self.heightConstraint.active = YES;
-
+        
         self.constraintsInstalled = YES;
     }
-
-    self.heightConstraint.constant = [self.sizingCell systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height;
     
     [super updateConstraints];
+}
+
+- (CGSize)intrinsicContentSize {
+    return CGSizeMake(
+        UIViewNoIntrinsicMetric,
+        [self.sizingCell systemLayoutSizeFittingSize:UILayoutFittingCompressedSize].height
+    );
 }
 
 #pragma mark - Public

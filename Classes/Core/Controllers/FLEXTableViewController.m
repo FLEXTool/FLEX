@@ -25,9 +25,12 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @property (nonatomic) NSTimer *debounceTimer;
 @property (nonatomic) BOOL didInitiallyRevealSearchBar;
 @property (nonatomic) UITableViewStyle style;
+
+@property (nonatomic, readonly) UIView *tableHeaderViewContainer;
 @end
 
 @implementation FLEXTableViewController
+@synthesize tableHeaderViewContainer = _tableHeaderViewContainer;
 @synthesize automaticallyShowsSearchBarCancelButton = _automaticallyShowsSearchBarCancelButton;
 
 #pragma mark - Public
@@ -61,55 +64,59 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     if (_showsSearchBar == showsSearchBar) return;
     _showsSearchBar = showsSearchBar;
     
-    UIViewController *results = self.searchResultsController;
-    self.searchController = [[UISearchController alloc] initWithSearchResultsController:results];
-    self.searchController.searchBar.placeholder = @"Filter";
-    self.searchController.searchResultsUpdater = (id)self;
-    self.searchController.delegate = (id)self;
-    self.searchController.dimsBackgroundDuringPresentation = NO;
-    self.searchController.hidesNavigationBarDuringPresentation = NO;
-    /// Not necessary in iOS 13; remove this when iOS 13 is the minimum deployment target
-    self.searchController.searchBar.delegate = self;
+    if (showsSearchBar) {
+        UIViewController *results = self.searchResultsController;
+        self.searchController = [[UISearchController alloc] initWithSearchResultsController:results];
+        self.searchController.searchBar.placeholder = @"Filter";
+        self.searchController.searchResultsUpdater = (id)self;
+        self.searchController.delegate = (id)self;
+        self.searchController.dimsBackgroundDuringPresentation = NO;
+        self.searchController.hidesNavigationBarDuringPresentation = NO;
+        /// Not necessary in iOS 13; remove this when iOS 13 is the minimum deployment target
+        self.searchController.searchBar.delegate = self;
 
-    self.automaticallyShowsSearchBarCancelButton = YES;
+        self.automaticallyShowsSearchBarCancelButton = YES;
 
-#if FLEX_AT_LEAST_IOS13_SDK
-    if (@available(iOS 13, *)) {
-        self.searchController.automaticallyShowsScopeBar = NO;
-    }
-#endif
-    
-    if (@available(iOS 11.0, *)) {
-        self.navigationItem.searchController = self.searchController;
+        #if FLEX_AT_LEAST_IOS13_SDK
+        if (@available(iOS 13, *)) {
+            self.searchController.automaticallyShowsScopeBar = NO;
+        }
+        #endif
+        
+        [self addSearchController:self.searchController];
     } else {
-        self.tableView.tableHeaderView = self.searchController.searchBar;
+        // Search already shown and just set to NO, so remove it
+        [self removeSearchController:self.searchController];
     }
 }
 
 - (void)setShowsCarousel:(BOOL)showsCarousel {
     if (_showsCarousel == showsCarousel) return;
     _showsCarousel = showsCarousel;
+    
+    if (showsCarousel) {
+        _carousel = ({
+            __weak __typeof(self) weakSelf = self;
 
-    _carousel = ({
-        __weak __typeof(self) weakSelf = self;
+            FLEXScopeCarousel *carousel = [FLEXScopeCarousel new];
+            carousel.selectedIndexChangedAction = ^(NSInteger idx) {
+                __typeof(self) self = weakSelf;
+                [self updateSearchResults:self.searchText];
+            };
 
-        FLEXScopeCarousel *carousel = [FLEXScopeCarousel new];
-        carousel.selectedIndexChangedAction = ^(NSInteger idx) {
-            __typeof(self) self = weakSelf;
-            [self updateSearchResults:self.searchText];
-        };
+            // UITableView won't update the header size unless you reset the header view
+            [carousel registerBlockForDynamicTypeChanges:^(FLEXScopeCarousel *carousel) {
+                __typeof(self) self = weakSelf;
+                [self layoutTableHeaderIfNeeded];
+            }];
 
-        self.tableView.tableHeaderView = carousel;
-        [self.tableView layoutIfNeeded];
-        // UITableView won't update the header size unless you reset the header view
-        [carousel registerBlockForDynamicTypeChanges:^(FLEXScopeCarousel *carousel) {
-            __typeof(self) self = weakSelf;
-            self.tableView.tableHeaderView = carousel;
-            [self.tableView layoutIfNeeded];
-        }];
-
-        carousel;
-    });
+            carousel;
+        });
+        [self addCarousel:_carousel];
+    } else {
+        // Carousel already shown and just set to NO, so remove it
+        [self removeCarousel:_carousel];
+    }
 }
 
 - (NSInteger)selectedScope {
@@ -192,6 +199,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -244,6 +256,110 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         userInfo:nil
         repeats:NO
     ];
+}
+
+- (void)layoutTableHeaderIfNeeded {
+    if (self.showsCarousel) {
+        self.carousel.frame = FLEXRectSetHeight(
+            self.carousel.frame, self.carousel.intrinsicContentSize.height
+        );
+    }
+    
+    self.tableView.tableHeaderView = self.tableView.tableHeaderView;
+    [self.tableView layoutIfNeeded];
+}
+
+- (void)addCarousel:(FLEXScopeCarousel *)carousel {
+    if (@available(iOS 11.0, *)) {
+        self.tableView.tableHeaderView = carousel;
+    } else {
+        carousel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        
+        CGRect frame = self.tableHeaderViewContainer.frame;
+        CGRect subviewFrame = carousel.frame;
+        subviewFrame.origin.y = 0;
+        
+        // Put the carousel below the search bar if it's already there
+        if (self.showsSearchBar) {
+            carousel.frame = subviewFrame = FLEXRectSetY(
+                subviewFrame, self.searchController.searchBar.frame.size.height
+            );
+            frame.size.height += carousel.intrinsicContentSize.height;
+        } else {
+            frame.size.height = carousel.intrinsicContentSize.height;
+        }
+        
+        self.tableHeaderViewContainer.frame = frame;
+        [self.tableHeaderViewContainer addSubview:carousel];
+    }
+    
+    [self layoutTableHeaderIfNeeded];
+}
+
+- (void)removeCarousel:(FLEXScopeCarousel *)carousel {
+    [carousel removeFromSuperview];
+    
+    if (@available(iOS 11.0, *)) {
+        self.tableView.tableHeaderView = nil;
+    } else {
+        if (self.showsSearchBar) {
+            [self removeSearchController:self.searchController];
+            [self addSearchController:self.searchController];
+        } else {
+            self.tableView.tableHeaderView = nil;
+            _tableHeaderViewContainer = nil;
+        }
+    }
+}
+
+- (void)addSearchController:(UISearchController *)controller {
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.searchController = controller;
+    } else {
+        controller.searchBar.autoresizingMask |= UIViewAutoresizingFlexibleBottomMargin;
+        [self.tableHeaderViewContainer addSubview:controller.searchBar];
+        CGRect subviewFrame = controller.searchBar.frame;
+        CGRect frame = self.tableHeaderViewContainer.frame;
+        frame.size.width = MAX(frame.size.width, subviewFrame.size.width);
+        frame.size.height = subviewFrame.size.height;
+        
+        // Move the carousel down if it's already there
+        if (self.showsCarousel) {
+            self.carousel.frame = FLEXRectSetY(
+                self.carousel.frame, subviewFrame.size.height
+            );
+            frame.size.height += self.carousel.frame.size.height;
+        }
+        
+        self.tableHeaderViewContainer.frame = frame;
+        [self layoutTableHeaderIfNeeded];
+    }
+}
+
+- (void)removeSearchController:(UISearchController *)controller {
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.searchController = nil;
+    } else {
+        [controller.searchBar removeFromSuperview];
+        
+        if (self.showsCarousel) {
+//            self.carousel.frame = FLEXRectRemake(CGPointZero, self.carousel.frame.size);
+            [self removeCarousel:self.carousel];
+            [self addCarousel:self.carousel];
+        } else {
+            self.tableView.tableHeaderView = nil;
+            _tableHeaderViewContainer = nil;
+        }
+    }
+}
+
+- (UIView *)tableHeaderViewContainer {
+    if (!_tableHeaderViewContainer) {
+        _tableHeaderViewContainer = [UIView new];
+        self.tableView.tableHeaderView = self.tableHeaderViewContainer;
+    }
+    
+    return _tableHeaderViewContainer;
 }
 
 #pragma mark - Search Bar

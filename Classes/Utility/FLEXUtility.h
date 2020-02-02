@@ -26,6 +26,36 @@ NS_INLINE CGRect FLEXRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat heigh
     return CGRectMake(FLEXFloor(x), FLEXFloor(y), FLEXFloor(width), FLEXFloor(height));
 }
 
+/// Adjusts the origin of an existing rect
+NS_INLINE CGRect FLEXRectSetOrigin(CGRect r, CGPoint origin) {
+    r.origin = origin; return r;
+}
+
+/// Adjusts the size of an existing rect
+NS_INLINE CGRect FLEXRectSetSize(CGRect r, CGSize size) {
+    r.size = size; return r;
+}
+
+/// Adjusts the origin.x of an existing rect
+NS_INLINE CGRect FLEXRectSetX(CGRect r, CGFloat x) {
+    r.origin.x = x; return r;
+}
+
+/// Adjusts the origin.y of an existing rect
+NS_INLINE CGRect FLEXRectSetY(CGRect r, CGFloat y) {
+    r.origin.y = y ; return r;
+}
+
+/// Adjusts the size.width of an existing rect
+NS_INLINE CGRect FLEXRectSetWidth(CGRect r, CGFloat width) {
+    r.size.width = width; return r;
+}
+
+/// Adjusts the size.height of an existing rect
+NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
+    r.size.height = height; return r;
+}
+
 #ifdef __IPHONE_13_0
 #define FLEX_AT_LEAST_IOS13_SDK (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
 #else
