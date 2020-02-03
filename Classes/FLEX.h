@@ -7,3 +7,5 @@
 //
 
 #import <FLEX/FLEXManager.h>
+#import <FLEX/FLEXManager+Extensibility.h>
+#import <FLEX/FLEXManager+Networking.h>

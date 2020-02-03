@@ -8,17 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-#if TARGET_OS_SIMULATOR
-
 @interface FLEXKeyboardShortcutManager : NSObject
 
-+ (instancetype)sharedManager;
+@property (nonatomic, readonly, class) FLEXKeyboardShortcutManager *sharedManager;
 
-- (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description;
-- (NSString *)keyboardShortcutsDescription;
+- (void)registerSimulatorShortcutWithKey:(NSString *)key
+                               modifiers:(UIKeyModifierFlags)modifiers
+                                  action:(dispatch_block_t)action
+                             description:(NSString *)description;
 
 @property (nonatomic, getter=isEnabled) BOOL enabled;
+@property (nonatomic, readonly) NSString *keyboardShortcutsDescription;
 
 @end
-
-#endif

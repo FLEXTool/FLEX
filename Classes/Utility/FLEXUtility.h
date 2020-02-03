@@ -66,7 +66,17 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
     stringWithFormat:@"%@ %@", @(count), (count == 1 ? singular : plural) \
 ]
 
+#if !FLEX_AT_LEAST_IOS13_SDK
+@class UIWindowScene;
+#endif
+
 @interface FLEXUtility : NSObject
+
+/// The key window of the app, if it is not a \c FLEXWindow.
+/// If it is, then \c FLEXWindow.previousKeyWindow is returned.
+@property (nonatomic, readonly, class) UIWindow *appKeyWindow;
+/// The first active \c UIWindowScene of the app.
+@property (nonatomic, readonly, class) UIWindowScene *activeScene API_AVAILABLE(ios(13.0));
 
 + (UIColor *)consistentRandomColorForObject:(id)object;
 + (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame;

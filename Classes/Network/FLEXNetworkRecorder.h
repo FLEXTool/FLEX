@@ -19,7 +19,7 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 @interface FLEXNetworkRecorder : NSObject
 
 /// In general, it only makes sense to have one recorder for the entire application.
-+ (instancetype)defaultRecorder;
+@property (nonatomic, readonly, class) FLEXNetworkRecorder *defaultRecorder;
 
 /// Defaults to 25 MB if never set. Values set here are persisted across launches of the app.
 @property (nonatomic) NSUInteger responseCacheByteLimit;

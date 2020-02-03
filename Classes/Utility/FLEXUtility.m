@@ -9,11 +9,55 @@
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
+#import "FLEXWindow.h"
 #import <ImageIO/ImageIO.h>
 #import <zlib.h>
 #import <objc/runtime.h>
 
 @implementation FLEXUtility
+
++ (UIWindow *)appKeyWindow {
+    // First, check UIApplication.keyWindow
+    FLEXWindow *window = (id)UIApplication.sharedApplication.keyWindow;
+    if (window) {
+        if ([window isKindOfClass:[FLEXWindow class]]) {
+            return window.previousKeyWindow;
+        }
+        
+        return window;
+    }
+    
+    // As of iOS 13, UIApplication.keyWindow does not return nil,
+    // so this is more of a safeguard against it returning nil in the future.
+    //
+    // Also, these are obviously not all FLEXWindows; FLEXWindow is used
+    // so we can call window.previousKeyWindow without an ugly cast
+    for (FLEXWindow *window in UIApplication.sharedApplication.windows) {
+        if (window.isKeyWindow) {
+            if ([window isKindOfClass:[FLEXWindow class]]) {
+                return window.previousKeyWindow;
+            }
+            
+            return window;
+        }
+    }
+    
+    return nil;
+}
+
+#if FLEX_AT_LEAST_IOS13_SDK
++ (UIWindowScene *)activeScene {
+    for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+        // Look for an active UIWindowScene
+        if (scene.activationState == UISceneActivationStateForegroundActive &&
+            [scene isKindOfClass:[UIWindowScene class]]) {
+            return (UIWindowScene *)scene;
+        }
+    }
+    
+    return nil;
+}
+#endif
 
 + (UIColor *)consistentRandomColorForObject:(id)object
 {

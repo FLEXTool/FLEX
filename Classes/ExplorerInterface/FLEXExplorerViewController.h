@@ -14,9 +14,9 @@
 @interface FLEXExplorerViewController : UIViewController
 
 @property (nonatomic, weak) id <FLEXExplorerViewControllerDelegate> delegate;
+@property (nonatomic, readonly) BOOL wantsWindowToBecomeKey;
 
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates;
-- (BOOL)wantsWindowToBecomeKey;
 
 /// @brief Used to present (or dismiss) a modal view controller ("tool"), typically triggered by pressing a button in the toolbar.
 ///
@@ -37,8 +37,7 @@
 
 @end
 
+#pragma mark -
 @protocol FLEXExplorerViewControllerDelegate <NSObject>
-
 - (void)explorerViewControllerDidFinish:(FLEXExplorerViewController *)explorerViewController;
-
 @end
