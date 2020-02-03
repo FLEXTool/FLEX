@@ -84,7 +84,8 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     self.automaticallyShowsSearchBarCancelButton = NO;
     if (self.showScopeBar) {
         self.searchController.searchBar.showsScopeBar = YES;
-        self.searchController.searchBar.scopeButtonTitles = @[@"Views at Tap", @"Full Hierarchy"];
+        self.searchController.searchBar.scopeButtonTitles = @[@"Full Hierarchy", @"Views at Tap"];
+        self.selectedScope = FLEXHierarchyScopeViewsAtTap;
     }
     
     [self updateDisplayedViews];
