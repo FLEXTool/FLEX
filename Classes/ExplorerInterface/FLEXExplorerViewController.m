@@ -13,7 +13,7 @@
 #import "FLEXWindow.h"
 #import "FLEXNavigationController.h"
 #import "FLEXHierarchyViewController.h"
-#import "FLEXGlobalsTableViewController.h"
+#import "FLEXGlobalsViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXNetworkHistoryTableViewController.h"
@@ -871,7 +871,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleMenuTool
 {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
-        return [[FLEXNavigationController alloc] initWithRootViewController:[FLEXGlobalsTableViewController new]];
+        return [[FLEXNavigationController alloc] initWithRootViewController:[FLEXGlobalsViewController new]];
     } completion:nil];
 }
 

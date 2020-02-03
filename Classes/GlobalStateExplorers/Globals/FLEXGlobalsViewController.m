@@ -1,12 +1,12 @@
 //
-//  FLEXGlobalsTableViewController.m
+//  FLEXGlobalsViewController.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 2014-05-03.
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXGlobalsTableViewController.h"
+#import "FLEXGlobalsViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcRuntimeViewController.h"
@@ -23,14 +23,14 @@
 #import "FLEXAddressExplorerCoordinator.h"
 #import "FLEXGlobalsSection.h"
 
-@interface FLEXGlobalsTableViewController ()
+@interface FLEXGlobalsViewController ()
 /// Only displayed sections of the table view; empty sections are purged from this array.
 @property (nonatomic, copy) NSArray<FLEXGlobalsSection *> *sections;
 /// Every section in the table view, regardless of whether or not a section is empty.
 @property (nonatomic, readonly) NSArray<FLEXGlobalsSection *> *allSections;
 @end
 
-@implementation FLEXGlobalsTableViewController
+@implementation FLEXGlobalsViewController
 
 + (NSString *)globalsTitleForSection:(FLEXGlobalsSectionKind)section
 {

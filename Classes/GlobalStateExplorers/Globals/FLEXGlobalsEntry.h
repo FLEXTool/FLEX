@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@class FLEXGlobalsTableViewController;
+@class FLEXGlobalsViewController;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,7 +39,7 @@ typedef NSString * _Nonnull (^FLEXGlobalsEntryNameFuture)(void);
 typedef UIViewController * _Nullable (^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
 /// Do something like present an alert, then use the host
 /// view controller to present or push another view controller.
-typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsTableViewController * _Nonnull host);
+typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsViewController * _Nonnull host);
 
 /// For view controllers to conform to to indicate they support being used
 /// in the globals table view controller. These methods help create concrete entries.

@@ -1,5 +1,5 @@
 //
-//  FLEXGlobalsTableViewController.h
+//  FLEXGlobalsViewController.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 2014-05-03.
@@ -23,6 +23,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
     FLEXGlobalsSectionCount
 };
 
-@interface FLEXGlobalsTableViewController : FLEXTableViewController
+@interface FLEXGlobalsViewController : FLEXTableViewController
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "FLEXObjectExplorerFactory.h"
-#import "FLEXGlobalsTableViewController.h"
+#import "FLEXGlobalsViewController.h"
 #import "FLEXAlert.h"
 #import "FLEXClassShortcuts.h"
 #import "FLEXViewShortcuts.h"
@@ -153,7 +153,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
     switch (row) {
         case FLEXGlobalsRowRootViewController: {
             // Check if the app delegate responds to -window. If not, present an alert
-            return ^(FLEXGlobalsTableViewController *host) {
+            return ^(FLEXGlobalsViewController *host) {
                 id<UIApplicationDelegate> delegate = UIApplication.sharedApplication.delegate;
                 if ([delegate respondsToSelector:@selector(window)]) {
                     UIViewController *explorer = [self explorerViewControllerForObject:
