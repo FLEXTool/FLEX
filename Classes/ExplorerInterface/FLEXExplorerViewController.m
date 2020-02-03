@@ -876,7 +876,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     } completion:nil];
 }
 
-- (void)handleDownArrowKeyPressed
+- (BOOL)handleDownArrowKeyPressed
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
@@ -887,10 +887,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         if (selectedViewIndex > 0) {
             self.selectedView = [self.viewsAtTapPoint objectAtIndex:selectedViewIndex - 1];
         }
+    } else {
+        return NO;
     }
+    
+    return YES;
 }
 
-- (void)handleUpArrowKeyPressed
+- (BOOL)handleUpArrowKeyPressed
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
@@ -901,25 +905,35 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         if (selectedViewIndex < self.viewsAtTapPoint.count - 1) {
             self.selectedView = [self.viewsAtTapPoint objectAtIndex:selectedViewIndex + 1];
         }
+    } else {
+        return NO;
     }
+    
+    return YES;
 }
 
-- (void)handleRightArrowKeyPressed
+- (BOOL)handleRightArrowKeyPressed
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
         frame.origin.x += 1.0 / UIScreen.mainScreen.scale;
         self.selectedView.frame = frame;
+        return YES;
     }
+    
+    return NO;
 }
 
-- (void)handleLeftArrowKeyPressed
+- (BOOL)handleLeftArrowKeyPressed
 {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
         frame.origin.x -= 1.0 / UIScreen.mainScreen.scale;
         self.selectedView.frame = frame;
+        return YES;
     }
+    
+    return NO;
 }
 
 @end

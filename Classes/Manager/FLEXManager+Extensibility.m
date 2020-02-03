@@ -110,18 +110,14 @@
     } description:@"Toggle network history view"];
     
     [self registerSimulatorShortcutWithKey:UIKeyInputDownArrow modifiers:0 action:^{
-        if (self.isHidden) {
+        if (self.isHidden || ![self.explorerViewController handleDownArrowKeyPressed]) {
             [self tryScrollDown];
-        } else {
-            [self.explorerViewController handleDownArrowKeyPressed];
         }
     } description:@"Cycle view selection\n\t\tMove view down\n\t\tScroll down"];
     
     [self registerSimulatorShortcutWithKey:UIKeyInputUpArrow modifiers:0 action:^{
-        if (self.isHidden) {
+        if (self.isHidden || ![self.explorerViewController handleUpArrowKeyPressed]) {
             [self tryScrollUp];
-        } else {
-            [self.explorerViewController handleUpArrowKeyPressed];
         }
     } description:@"Cycle view selection\n\t\tMove view up\n\t\tScroll up"];
     
@@ -161,24 +157,29 @@
 
 #pragma mark - Private
 
+- (UIEdgeInsets)contentInsetsOfScrollView:(UIScrollView *)scrollView {
+    if (@available(iOS 11, *)) {
+        return scrollView.adjustedContentInset;
+    }
+    
+    return scrollView.contentInset;
+}
+
 - (void)tryScrollDown {
-    UIScrollView *firstScrollView = [self firstScrollView];
-    CGPoint contentOffset = firstScrollView.contentOffset;
-    CGFloat distance = floor(firstScrollView.frame.size.height / 2.0);
-    CGFloat maxContentOffsetY = firstScrollView.contentSize.height + firstScrollView.contentInset.bottom - firstScrollView.frame.size.height;
-    distance = MIN(maxContentOffsetY - firstScrollView.contentOffset.y, distance);
-    contentOffset.y += distance;
-    [firstScrollView setContentOffset:contentOffset animated:YES];
+    UIScrollView *scrollview = [self firstScrollView];
+    UIEdgeInsets insets = [self contentInsetsOfScrollView:scrollview];
+    CGPoint contentOffset = scrollview.contentOffset;
+    CGFloat maxYOffset = scrollview.contentSize.height - scrollview.bounds.size.height + insets.bottom;
+    contentOffset.y = MIN(contentOffset.y + 200, maxYOffset);
+    [scrollview setContentOffset:contentOffset animated:YES];
 }
 
 - (void)tryScrollUp {
-    UIScrollView *firstScrollView = [self firstScrollView];
-    CGPoint contentOffset = firstScrollView.contentOffset;
-    CGFloat distance = floor(firstScrollView.frame.size.height / 2.0);
-    CGFloat minContentOffsetY = -firstScrollView.contentInset.top;
-    distance = MIN(firstScrollView.contentOffset.y - minContentOffsetY, distance);
-    contentOffset.y -= distance;
-    [firstScrollView setContentOffset:contentOffset animated:YES];
+    UIScrollView *scrollview = [self firstScrollView];
+    UIEdgeInsets insets = [self contentInsetsOfScrollView:scrollview];
+    CGPoint contentOffset = scrollview.contentOffset;
+    contentOffset.y = MAX(contentOffset.y - 200, -insets.top);
+    [scrollview setContentOffset:contentOffset animated:YES];
 }
 
 - (UIScrollView *)firstScrollView {

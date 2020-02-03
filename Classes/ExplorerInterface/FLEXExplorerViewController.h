@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+@class FLEXWindow;
 @protocol FLEXExplorerViewControllerDelegate;
 
 /// A view controller that manages the FLEX toolbar.
@@ -30,10 +31,15 @@
 - (void)toggleMoveTool;
 - (void)toggleViewsTool;
 - (void)toggleMenuTool;
-- (void)handleDownArrowKeyPressed;
-- (void)handleUpArrowKeyPressed;
-- (void)handleRightArrowKeyPressed;
-- (void)handleLeftArrowKeyPressed;
+
+/// @return YES if the explorer used the key press to perform an action, NO otherwise
+- (BOOL)handleDownArrowKeyPressed;
+/// @return YES if the explorer used the key press to perform an action, NO otherwise
+- (BOOL)handleUpArrowKeyPressed;
+/// @return YES if the explorer used the key press to perform an action, NO otherwise
+- (BOOL)handleRightArrowKeyPressed;
+/// @return YES if the explorer used the key press to perform an action, NO otherwise
+- (BOOL)handleLeftArrowKeyPressed;
 
 @end
 
