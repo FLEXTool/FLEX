@@ -183,7 +183,7 @@
 }
 
 - (UIScrollView *)firstScrollView {
-    NSMutableArray<UIView *> *views = [UIApplication.sharedApplication.keyWindow.subviews mutableCopy];
+    NSMutableArray<UIView *> *views = FLEXUtility.appKeyWindow.subviews.copy;
     UIScrollView *scrollView = nil;
     while (views.count > 0) {
         UIView *view = views.firstObject;

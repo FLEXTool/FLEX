@@ -23,8 +23,6 @@
 #import "FLEXAddressExplorerCoordinator.h"
 #import "FLEXGlobalsSection.h"
 
-static __weak UIWindow *s_applicationWindow = nil;
-
 @interface FLEXGlobalsTableViewController ()
 /// Only displayed sections of the table view; empty sections are purged from this array.
 @property (nonatomic, copy) NSArray<FLEXGlobalsSection *> *sections;
@@ -72,13 +70,6 @@ static __weak UIWindow *s_applicationWindow = nil;
         case FLEXGlobalsRowNetworkHistory:
             return [FLEXNetworkHistoryTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowKeyWindow:
-            return [FLEXGlobalsEntry
-                entryWithNameFuture:^NSString *{
-                    return @"🔑  -[UIApplication keyWindow]";
-                } viewControllerFuture:^UIViewController *{
-                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:s_applicationWindow];
-                }
-            ];
         case FLEXGlobalsRowRootViewController:
         case FLEXGlobalsRowProcessInfo:
         case FLEXGlobalsRowAppDelegate:
@@ -138,13 +129,6 @@ static __weak UIWindow *s_applicationWindow = nil;
     });
     
     return sections;
-}
-
-#pragma mark - Public
-
-+ (void)setApplicationWindow:(UIWindow *)applicationWindow
-{
-    s_applicationWindow = applicationWindow;
 }
 
 #pragma mark - UIViewController

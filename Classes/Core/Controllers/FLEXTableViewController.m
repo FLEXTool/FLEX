@@ -60,6 +60,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     return self;
 }
 
+- (FLEXWindow *)window {
+    return (id)self.view.window;
+}
+
 - (void)setShowsSearchBar:(BOOL)showsSearchBar {
     if (_showsSearchBar == showsSearchBar) return;
     _showsSearchBar = showsSearchBar;

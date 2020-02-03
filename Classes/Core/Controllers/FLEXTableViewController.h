@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@class FLEXScopeCarousel;
+@class FLEXScopeCarousel, FLEXWindow;
 
 typedef CGFloat FLEXDebounceInterval;
 /// No delay, all events delivered
@@ -29,7 +29,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 >
 
 /// A grouped table view. Inset on iOS 13.
-/// 
+///
 /// Simply calls into initWithStyle:
 - (id)init;
 
@@ -43,7 +43,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 @property (nonatomic) FLEXScopeCarousel *carousel;
 
 /// Defaults to NO.
-/// 
+///
 /// Setting this to YES will initialize searchController and the view.
 @property (nonatomic) BOOL showsSearchBar;
 /// Defaults to NO.
@@ -53,7 +53,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 @property (nonatomic) BOOL showSearchBarInitially;
 
 /// nil unless showsSearchBar is set to YES.
-/// 
+///
 /// self is used as the default search results updater and delegate.
 /// The search bar will not dim the background or hide the navigation bar by default.
 /// On iOS 11 and up, the search bar will appear in the navigation bar below the title.
@@ -61,13 +61,13 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// Used to initialize the search controller. Defaults to nil.
 @property (nonatomic) UIViewController *searchResultsController;
 /// Defaults to "Fast"
-/// 
+///
 /// Determines how often search bar results will be "debounced."
 /// Empty query events are always sent instantly. Query events will
 /// be sent when the user has not changed the query for this interval.
 @property (nonatomic) FLEXDebounceInterval searchBarDebounceInterval;
 /// Whether the search bar stays at the top of the view while scrolling.
-/// 
+///
 /// Calls into self.navigationItem.hidesSearchBarWhenScrolling.
 /// Do not change self.navigationItem.hidesSearchBarWhenScrolling directly,
 /// or it will not be respsected. Use this instead.
@@ -75,7 +75,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 @property (nonatomic) BOOL pinSearchBar;
 /// By default, we will show the search bar's cancel button when 
 /// search becomes active and hide it when search is dismissed.
-/// 
+///
 /// Do not set the showsCancelButton property on the searchController's
 /// searchBar manually. Set this property after turning on showsSearchBar.
 ///
@@ -92,8 +92,11 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// If a delegate is set, updateSearchResults: is not called on this view controller. 
 @property (nonatomic, weak    ) id<FLEXSearchResultsUpdating> searchResultsUpdater;
 
+/// self.view.window as a \c FLEXWindow
+@property (nonatomic, readonly) FLEXWindow *window;
+
 /// Subclasses should override to handle search query update events.
-/// 
+///
 /// searchBarDebounceInterval is used to reduce the frequency at which this method is called.
 /// This method is also called when the search bar becomes the first responder,
 /// and when the selected search bar scope index changes.

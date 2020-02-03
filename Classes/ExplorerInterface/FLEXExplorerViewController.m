@@ -10,6 +10,7 @@
 #import "FLEXExplorerToolbar.h"
 #import "FLEXToolbarItem.h"
 #import "FLEXUtility.h"
+#import "FLEXWindow.h"
 #import "FLEXNavigationController.h"
 #import "FLEXHierarchyViewController.h"
 #import "FLEXGlobalsTableViewController.h"
@@ -57,10 +58,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// A colored transparent overlay to indicate that the view is selected.
 @property (nonatomic) UIView *selectedViewOverlay;
 
-/// Tracked so we can restore the key window after dismissing a modal.
-/// We need to become key after modal presentation so we can correctly capture input.
-/// If we're just showing the toolbar, we want the main app's window to remain key so that we don't interfere with input, status bar, etc.
-@property (nonatomic) UIWindow *previousKeyWindow;
+/// self.view.window as a \c FLEXWindow
+@property (nonatomic, readonly) FLEXWindow *window;
 
 /// All views that we're KVOing. Used to help us clean up properly.
 @property (nonatomic) NSMutableSet<UIView *> *observedViews;
@@ -129,8 +128,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (UIViewController *)viewControllerForRotationAndOrientation
 {
-    UIWindow *window = self.previousKeyWindow ?: [UIApplication.sharedApplication keyWindow];
-    UIViewController *viewController = window.rootViewController;
+    UIViewController *viewController = FLEXUtility.appKeyWindow.rootViewController;
     // Obfuscating selector _viewControllerForSupportedInterfaceOrientations
     NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
     SEL viewControllerSelector = NSSelectorFromString(viewControllerSelectorString);
@@ -790,10 +788,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)resignKeyAndDismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion
 {
-    UIWindow *previousKeyWindow = self.previousKeyWindow;
-    self.previousKeyWindow = nil;
-    [previousKeyWindow makeKeyWindow];
-    [previousKeyWindow.rootViewController setNeedsStatusBarAppearanceUpdate];
+    UIWindow *appWindow = self.window.previousKeyWindow;
+    [appWindow makeKeyWindow];
+    [appWindow.rootViewController setNeedsStatusBarAppearanceUpdate];
     
     // Restore previous UIMenuController items
     // Back up and replace the UIMenuController items
@@ -810,7 +807,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (BOOL)wantsWindowToBecomeKey
 {
-    return self.previousKeyWindow != nil;
+    return self.window.previousKeyWindow != nil;
 }
 
 - (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future completion:(void(^)(void))completion
@@ -820,6 +817,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     } else if (future) {
         [self makeKeyAndPresentViewController:future() animated:YES completion:completion];
     }
+}
+
+- (FLEXWindow *)window {
+    return (id)self.view.window;
 }
 
 
@@ -870,9 +871,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleMenuTool
 {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
-        FLEXGlobalsTableViewController *globalsViewController = [FLEXGlobalsTableViewController new];
-        [FLEXGlobalsTableViewController setApplicationWindow:[UIApplication.sharedApplication keyWindow]];
-        return [[FLEXNavigationController alloc] initWithRootViewController:globalsViewController];
+        return [[FLEXNavigationController alloc] initWithRootViewController:[FLEXGlobalsTableViewController new]];
     } completion:nil];
 }
 

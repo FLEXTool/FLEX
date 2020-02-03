@@ -7,6 +7,7 @@
 //
 
 #import "FLEXWindow.h"
+#import "FLEXUtility.h"
 #import <objc/runtime.h>
 
 @implementation FLEXWindow
@@ -41,6 +42,16 @@
 - (BOOL)canBecomeKeyWindow
 {
     return [self.eventDelegate canBecomeKeyWindow];
+}
+
+- (void)makeKeyWindow {
+    _previousKeyWindow = FLEXUtility.appKeyWindow;
+    [super makeKeyWindow];
+}
+
+- (void)resignKeyWindow {
+    [super resignKeyWindow];
+    _previousKeyWindow = nil;
 }
 
 + (void)initialize

@@ -88,13 +88,15 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
 {
     switch (row) {
         case FLEXGlobalsRowAppDelegate:
-            return @"👉  App delegate";
+            return @"🎟  App Delegate";
+        case FLEXGlobalsRowKeyWindow:
+            return @"🔑  Key Window";
         case FLEXGlobalsRowRootViewController:
-            return @"🌴  Root view controller";
+            return @"🌴  Root View Controller";
         case FLEXGlobalsRowProcessInfo:
             return @"🚦  NSProcessInfo.processInfo";
         case FLEXGlobalsRowUserDefaults:
-            return @"💾  Preferences (NSUserDefaults)";
+            return @"💾  Preferences";
         case FLEXGlobalsRowMainBundle:
             return @"📦  NSBundle.mainBundle";
         case FLEXGlobalsRowApplication:
@@ -130,6 +132,10 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
+        case FLEXGlobalsRowKeyWindow:
+            return [FLEXObjectExplorerFactory
+                explorerViewControllerForObject:FLEXUtility.appKeyWindow
+            ];
         case FLEXGlobalsRowRootViewController: {
             id<UIApplicationDelegate> delegate = UIApplication.sharedApplication.delegate;
             if ([delegate respondsToSelector:@selector(window)]) {
