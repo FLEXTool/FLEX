@@ -36,7 +36,7 @@
 
     NSMutableArray<UITableViewCell *> *mutableCells = [NSMutableArray array];
 
-    UITableViewCell *networkDebuggingCell = [self switchCellWithTitle:@"Network Debugging" toggleAction:@selector(networkDebuggingToggled:) isOn:[FLEXNetworkObserver isEnabled]];
+    UITableViewCell *networkDebuggingCell = [self switchCellWithTitle:@"Network Debugging" toggleAction:@selector(networkDebuggingToggled:) isOn:FLEXNetworkObserver.isEnabled];
     [mutableCells addObject:networkDebuggingCell];
 
     UITableViewCell *cacheMediaResponsesCell = [self switchCellWithTitle:@"Cache Media Responses" toggleAction:@selector(cacheMediaResponsesToggled:) isOn:NO];

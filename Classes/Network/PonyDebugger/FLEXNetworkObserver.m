@@ -323,7 +323,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
         typedef void (^NSURLConnectionAsyncCompletion)(NSURLResponse* response, NSData* data, NSError* connectionError);
 
         void (^asyncSwizzleBlock)(Class, NSURLRequest *, NSOperationQueue *, NSURLConnectionAsyncCompletion) = ^(Class slf, NSURLRequest *request, NSOperationQueue *queue, NSURLConnectionAsyncCompletion completion) {
-            if ([FLEXNetworkObserver isEnabled]) {
+            if (FLEXNetworkObserver.isEnabled) {
                 NSString *requestID = [self nextRequestID];
                 [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
                 NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
@@ -362,7 +362,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
         NSData *(^syncSwizzleBlock)(Class, NSURLRequest *, NSURLResponse **, NSError **) = ^NSData *(Class slf, NSURLRequest *request, NSURLResponse **response, NSError **error) {
             NSData *data = nil;
-            if ([FLEXNetworkObserver isEnabled]) {
+            if (FLEXNetworkObserver.isEnabled) {
                 NSString *requestID = [self nextRequestID];
                 [[FLEXNetworkRecorder defaultRecorder] recordRequestWillBeSentWithRequestID:requestID request:request redirectResponse:nil];
                 NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
@@ -426,7 +426,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
                 // If completion block was not provided sender expect to receive delegated methods or does not
                 // interested in callback at all. In this case we should just call original method implementation
                 // with nil completion block.
-                if ([FLEXNetworkObserver isEnabled] && completion) {
+                if (FLEXNetworkObserver.isEnabled && completion) {
                     NSString *requestID = [self nextRequestID];
                     NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
                     NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];
@@ -470,7 +470,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 
             NSURLSessionUploadTask *(^asyncUploadTaskSwizzleBlock)(Class, NSURLRequest *, id, NSURLSessionAsyncCompletion) = ^NSURLSessionUploadTask *(Class slf, NSURLRequest *request, id argument, NSURLSessionAsyncCompletion completion) {
                 NSURLSessionUploadTask *task = nil;
-                if ([FLEXNetworkObserver isEnabled] && completion) {
+                if (FLEXNetworkObserver.isEnabled && completion) {
                     NSString *requestID = [self nextRequestID];
                     NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
                     NSURLSessionAsyncCompletion completionWrapper = [self asyncCompletionWrapperForRequestID:requestID mechanism:mechanism completion:completion];

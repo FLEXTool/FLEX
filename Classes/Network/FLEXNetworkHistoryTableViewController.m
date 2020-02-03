@@ -60,7 +60,10 @@
 
     self.showsSearchBar = YES;
 
-    [self.tableView registerClass:[FLEXNetworkTransactionTableViewCell class] forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier];
+    [self.tableView
+        registerClass:[FLEXNetworkTransactionTableViewCell class]
+        forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier
+    ];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = [FLEXNetworkTransactionTableViewCell preferredCellHeight];
 
@@ -137,7 +140,7 @@
 - (NSString *)headerText
 {
     NSString *headerText = nil;
-    if ([FLEXNetworkObserver isEnabled]) {
+    if (FLEXNetworkObserver.isEnabled) {
         long long bytesReceived = 0;
         NSInteger totalRequests = 0;
         if (self.searchController.isActive) {
@@ -170,7 +173,9 @@
 
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
 {
-    [self tryUpdateTransactions];
+    if (self.viewIfLoaded.window) {
+        [self tryUpdateTransactions];
+    }
 }
 
 - (void)tryUpdateTransactions
