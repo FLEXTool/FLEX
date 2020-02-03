@@ -55,8 +55,7 @@
     return self;
 }
 
-+ (instancetype)instancesTableViewControllerForClassName:(NSString *)className
-{
++ (instancetype)instancesTableViewControllerForClassName:(NSString *)className {
     const char *classNameCString = className.UTF8String;
     NSMutableArray *instances = [NSMutableArray array];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
@@ -76,8 +75,7 @@
     return viewController;
 }
 
-+ (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object
-{
++ (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object {
     NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray array];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
         // Skip Swift objects
@@ -116,8 +114,7 @@
     return viewController;
 }
 
-+ (NSPredicate *)defaultPredicateForSection:(NSInteger)section
-{
++ (NSPredicate *)defaultPredicateForSection:(NSInteger)section {
     // These are the types of references that we typically don't care about.
     // We want this list of "object-ivar pairs" split into two sections.
     BOOL(^isObserver)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
@@ -171,8 +168,7 @@
     return @[@"", @"AutoLayout", @"Trivial"];
 }
 
-- (void)buildSections
-{
+- (void)buildSections {
     NSInteger maxSections = self.maxSections;
     NSMutableArray *sections = [NSMutableArray array];
     for (NSInteger i = 0; i < maxSections; i++) {
@@ -190,18 +186,15 @@
 
 #pragma mark - Table View Data Source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.maxSections;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.sections[section].count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
@@ -220,8 +213,7 @@
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.sectionTitles.count) {
         // Return nil instead of empty strings
         NSString *title = self.sectionTitles[section];
@@ -236,8 +228,7 @@
 
 #pragma mark - Table View Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     id instance = self.instances[indexPath.row].object;
     FLEXObjectExplorerViewController *drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:instance];
     [self.navigationController pushViewController:drillInViewController animated:YES];

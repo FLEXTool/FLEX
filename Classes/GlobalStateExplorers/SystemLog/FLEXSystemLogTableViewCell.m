@@ -20,8 +20,7 @@ NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableView
 
 @implementation FLEXSystemLogTableViewCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.logMessageLabel = [UILabel new];
@@ -33,8 +32,7 @@ NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableView
     return self;
 }
 
-- (void)setLogMessage:(FLEXSystemLogMessage *)logMessage
-{
+- (void)setLogMessage:(FLEXSystemLogMessage *)logMessage {
     if (![_logMessage isEqual:logMessage]) {
         _logMessage = logMessage;
         self.logMessageAttributedText = nil;
@@ -42,8 +40,7 @@ NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableView
     }
 }
 
-- (void)setHighlightedText:(NSString *)highlightedText
-{
+- (void)setHighlightedText:(NSString *)highlightedText {
     if (![_highlightedText isEqual:highlightedText]) {
         _highlightedText = highlightedText;
         self.logMessageAttributedText = nil;
@@ -51,8 +48,7 @@ NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableView
     }
 }
 
-- (NSAttributedString *)logMessageAttributedText
-{
+- (NSAttributedString *)logMessageAttributedText {
     if (!_logMessageAttributedText) {
         _logMessageAttributedText = [[self class] attributedTextForLogMessage:self.logMessage highlightedText:self.highlightedText];
     }
@@ -61,8 +57,7 @@ NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableView
 
 static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
 
     self.logMessageLabel.attributedText = self.logMessageAttributedText;
@@ -71,16 +66,15 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
 
 #pragma mark - Stateless helpers
 
-+ (NSAttributedString *)attributedTextForLogMessage:(FLEXSystemLogMessage *)logMessage highlightedText:(NSString *)highlightedText
-{
++ (NSAttributedString *)attributedTextForLogMessage:(FLEXSystemLogMessage *)logMessage highlightedText:(NSString *)highlightedText {
     NSString *text = [self displayedTextForLogMessage:logMessage];
     NSDictionary<NSString *, id> *attributes = @{ NSFontAttributeName : [UIFont fontWithName:@"CourierNewPSMT" size:12.0] };
     NSAttributedString *attributedText = [[NSAttributedString alloc] initWithString:text attributes:attributes];
 
     if (highlightedText.length > 0) {
-        NSMutableAttributedString *mutableAttributedText = [attributedText mutableCopy];
-        NSMutableDictionary<NSString *, id> *highlightAttributes = [@{ NSBackgroundColorAttributeName : UIColor.yellowColor } mutableCopy];
-        [highlightAttributes addEntriesFromDictionary:attributes];
+        NSMutableAttributedString *mutableAttributedText = attributedText.mutableCopy;
+        NSMutableDictionary<NSString *, id> *highlightAttributes = attributes.mutableCopy;
+        highlightAttributes[NSBackgroundColorAttributeName] = UIColor.yellowColor;
         
         NSRange remainingSearchRange = NSMakeRange(0, text.length);
         while (remainingSearchRange.location < text.length) {
@@ -99,13 +93,11 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
     return attributedText;
 }
 
-+ (NSString *)displayedTextForLogMessage:(FLEXSystemLogMessage *)logMessage
-{
++ (NSString *)displayedTextForLogMessage:(FLEXSystemLogMessage *)logMessage {
     return [NSString stringWithFormat:@"%@: %@", [self logTimeStringFromDate:logMessage.date], logMessage.messageText];
 }
 
-+ (CGFloat)preferredHeightForLogMessage:(FLEXSystemLogMessage *)logMessage inWidth:(CGFloat)width
-{
++ (CGFloat)preferredHeightForLogMessage:(FLEXSystemLogMessage *)logMessage inWidth:(CGFloat)width {
     UIEdgeInsets insets = kFLEXLogMessageCellInsets;
     CGFloat availableWidth = width - insets.left - insets.right;
     NSAttributedString *attributedLogText = [self attributedTextForLogMessage:logMessage highlightedText:nil];
@@ -113,8 +105,7 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
     return labelSize.height + insets.top + insets.bottom;
 }
 
-+ (NSString *)logTimeStringFromDate:(NSDate *)date
-{
++ (NSString *)logTimeStringFromDate:(NSDate *)date {
     static NSDateFormatter *formatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

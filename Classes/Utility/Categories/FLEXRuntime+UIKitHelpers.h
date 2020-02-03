@@ -62,8 +62,7 @@
 @interface FLEXMethod (UIKitHelpers) <FLEXRuntimeMetadata> @end
 @interface FLEXProtocol (UIKitHelpers) <FLEXRuntimeMetadata> @end
 
-typedef NS_ENUM(NSUInteger, FLEXStaticMetadataRowStyle)
-{
+typedef NS_ENUM(NSUInteger, FLEXStaticMetadataRowStyle) {
     FLEXStaticMetadataRowStyleSubtitle,
     FLEXStaticMetadataRowStyleKeyValue,
     FLEXStaticMetadataRowStyleDefault = FLEXStaticMetadataRowStyleSubtitle,

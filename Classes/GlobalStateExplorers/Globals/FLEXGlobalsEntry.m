@@ -10,8 +10,7 @@
 
 @implementation FLEXGlobalsEntry
 
-+ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)cls row:(FLEXGlobalsRow)row
-{
++ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)cls row:(FLEXGlobalsRow)row {
     BOOL providesVCs = [cls respondsToSelector:@selector(globalsEntryViewController:)];
     BOOL providesActions = [cls respondsToSelector:@selector(globalsEntryRowAction:)];
     NSParameterAssert(cls);
@@ -35,8 +34,7 @@
 }
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
-               viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture
-{
+               viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture {
     NSParameterAssert(nameFuture);
     NSParameterAssert(viewControllerFuture);
 
@@ -48,8 +46,7 @@
 }
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
-                             action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction
-{
+                             action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction {
     NSParameterAssert(nameFuture);
     NSParameterAssert(rowSelectedAction);
 

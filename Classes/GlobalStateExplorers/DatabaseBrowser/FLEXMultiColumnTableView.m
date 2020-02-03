@@ -28,8 +28,7 @@ static const CGFloat kColumnMargin = 1;
 @implementation FLEXMultiColumnTableView
 
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self loadUI];
@@ -37,14 +36,12 @@ static const CGFloat kColumnMargin = 1;
     return self;
 }
 
-- (void)didMoveToSuperview
-{
+- (void)didMoveToSuperview {
     [super didMoveToSuperview];
     [self reloadData];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat width  = self.frame.size.width;
@@ -73,15 +70,13 @@ static const CGFloat kColumnMargin = 1;
 }
 
 
-- (void)loadUI
-{
+- (void)loadUI {
     [self loadHeaderScrollView];
     [self loadContentScrollView];
     [self loadLeftView];
 }
 
-- (void)reloadData
-{
+- (void)reloadData {
     [self loadLeftViewData];
     [self loadContentData];
     [self loadHeaderData];
@@ -89,8 +84,7 @@ static const CGFloat kColumnMargin = 1;
 
 #pragma mark - UI
 
-- (void)loadHeaderScrollView
-{
+- (void)loadHeaderScrollView {
     UIScrollView *headerScrollView = [UIScrollView new];
     headerScrollView.delegate      = self;
     self.headerScrollView          = headerScrollView;
@@ -99,8 +93,7 @@ static const CGFloat kColumnMargin = 1;
     [self addSubview:headerScrollView];
 }
 
-- (void)loadContentScrollView
-{
+- (void)loadContentScrollView {
     
     UIScrollView *scrollView = [UIScrollView new];
     scrollView.bounces       = NO;
@@ -119,8 +112,7 @@ static const CGFloat kColumnMargin = 1;
     
 }
 
-- (void)loadLeftView
-{
+- (void)loadLeftView {
     UITableView *leftTableView = [UITableView new];
     leftTableView.delegate       = self;
     leftTableView.dataSource     = self;
@@ -138,8 +130,7 @@ static const CGFloat kColumnMargin = 1;
 
 #pragma mark - Data
 
-- (void)loadHeaderData
-{
+- (void)loadHeaderData {
     NSArray<UIView *> *subviews = self.headerScrollView.subviews;
     
     for (UIView *subview in subviews) {
@@ -166,8 +157,7 @@ static const CGFloat kColumnMargin = 1;
     }
 }
 
-- (void)contentHeaderTap:(UIGestureRecognizer *)gesture
-{
+- (void)contentHeaderTap:(UIGestureRecognizer *)gesture {
     FLEXTableColumnHeader *header = (FLEXTableColumnHeader *)gesture.view;
     NSString *string = header.label.text;
     FLEXTableColumnHeaderSortType currentType = [self.sortStatusDict[string] integerValue];
@@ -191,19 +181,16 @@ static const CGFloat kColumnMargin = 1;
     
 }
 
-- (void)loadContentData
-{
+- (void)loadContentData {
     [self.contentTableView reloadData];
 }
 
-- (void)loadLeftViewData
-{
+- (void)loadLeftViewData {
     [self.leftTableView reloadData];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UIColor *backgroundColor = UIColor.whiteColor;
     if (indexPath.row % 2 != 0) {
         backgroundColor = [UIColor colorWithWhite:0.950 alpha:0.750];
@@ -239,20 +226,17 @@ static const CGFloat kColumnMargin = 1;
     }
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.dataSource numberOfRowsInTableView:self];
 }
 
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self.dataSource multiColumnTableView:self heightForContentCellInRow:indexPath.row];
 }
 
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView == self.contentScrollView) {
         self.headerScrollView.contentOffset = scrollView.contentOffset;
     }
@@ -270,8 +254,7 @@ static const CGFloat kColumnMargin = 1;
 #pragma mark -
 #pragma mark UITableView Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.leftTableView) {
         [self.contentTableView selectRowAtIndexPath:indexPath
                                            animated:NO
@@ -287,59 +270,48 @@ static const CGFloat kColumnMargin = 1;
 #pragma mark -
 #pragma mark DataSource Accessor
 
-- (NSInteger)numberOfRows
-{
+- (NSInteger)numberOfRows {
     return [self.dataSource numberOfRowsInTableView:self];
 }
 
-- (NSInteger)numberOfColumns
-{
+- (NSInteger)numberOfColumns {
     return [self.dataSource numberOfColumnsInTableView:self];
 }
 
-- (NSString *)columnTitleForColumn:(NSInteger)column
-{
+- (NSString *)columnTitleForColumn:(NSInteger)column {
     return [self.dataSource columnNameInColumn:column];
 }
 
-- (NSString *)rowTitleForRow:(NSInteger)row
-{
+- (NSString *)rowTitleForRow:(NSInteger)row {
     return [self.dataSource rowNameInRow:row];
 }
 
-- (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row;
-{
+- (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row; {
     return [self.dataSource contentAtColumn:column row:row];
 }
 
-- (CGFloat)contentWidthForColumn:(NSInteger)column
-{
+- (CGFloat)contentWidthForColumn:(NSInteger)column {
     return [self.dataSource multiColumnTableView:self widthForContentCellInColumn:column];
 }
 
-- (CGFloat)contentHeightForRow:(NSInteger)row
-{
+- (CGFloat)contentHeightForRow:(NSInteger)row {
     return [self.dataSource multiColumnTableView:self heightForContentCellInRow:row];
 }
 
-- (CGFloat)topHeaderHeight
-{
+- (CGFloat)topHeaderHeight {
     return [self.dataSource heightForTopHeaderInTableView:self];
 }
 
-- (CGFloat)leftHeaderWidth
-{
+- (CGFloat)leftHeaderWidth {
     return [self.dataSource widthForLeftHeaderInTableView:self];
 }
 
-- (CGFloat)columnMargin
-{
+- (CGFloat)columnMargin {
     return kColumnMargin;
 }
 
 
-- (void)tableContentCell:(FLEXTableContentCell *)tableView labelDidTapWithText:(NSString *)text
-{
+- (void)tableContentCell:(FLEXTableContentCell *)tableView labelDidTapWithText:(NSString *)text {
     [self.delegate multiColumnTableView:self didTapLabelWithText:text];
 }
 

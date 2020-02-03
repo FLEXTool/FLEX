@@ -15,8 +15,7 @@
 
 @implementation FLEXTableContentCell
 
-+ (instancetype)cellWithTableView:(UITableView *)tableView columnNumber:(NSInteger)number;
-{
++ (instancetype)cellWithTableView:(UITableView *)tableView columnNumber:(NSInteger)number; {
     static NSString *identifier = @"FLEXTableContentCell";
     FLEXTableContentCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
@@ -43,8 +42,7 @@
     return cell;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     CGFloat labelWidth  = self.contentView.frame.size.width / self.labels.count;
     CGFloat labelHeight = self.contentView.frame.size.height;
@@ -55,8 +53,7 @@
 }
 
 
-- (void)labelDidTap:(UIGestureRecognizer *)gesture
-{
+- (void)labelDidTap:(UIGestureRecognizer *)gesture {
     UILabel *label = (UILabel *)gesture.view;
     if ([self.delegate respondsToSelector:@selector(tableContentCell:labelDidTapWithText:)]) {
         [self.delegate tableContentCell:self labelDidTapWithText:label.text];

@@ -8,14 +8,12 @@
 
 #import "FLEXTableColumnHeader.h"
 
-@implementation FLEXTableColumnHeader
-{
+@implementation FLEXTableColumnHeader {
     UILabel *_arrowLabel;
 }
 
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = UIColor.whiteColor;
@@ -38,8 +36,7 @@
     return self;
 }
 
-- (void)changeSortStatusWithType:(FLEXTableColumnHeaderSortType)type
-{
+- (void)changeSortStatusWithType:(FLEXTableColumnHeaderSortType)type {
     switch (type) {
         case FLEXTableColumnHeaderSortTypeNone:
             _arrowLabel.text = @"";

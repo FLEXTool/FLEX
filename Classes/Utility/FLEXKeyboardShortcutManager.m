@@ -33,8 +33,7 @@
 
 @implementation FLEXKeyInput
 
-- (BOOL)isEqual:(id)object
-{
+- (BOOL)isEqual:(id)object {
     BOOL isEqual = NO;
     if ([object isKindOfClass:[FLEXKeyInput class]]) {
         FLEXKeyInput *keyCommand = (FLEXKeyInput *)object;
@@ -45,24 +44,23 @@
     return isEqual;
 }
 
-- (NSUInteger)hash
-{
-    return [self.key hash] ^ self.flags;
+- (NSUInteger)hash {
+    return self.key.hash ^ self.flags;
 }
 
-- (id)copyWithZone:(NSZone *)zone
-{
+- (id)copyWithZone:(NSZone *)zone {
     return [[self class] keyInputForKey:self.key flags:self.flags helpDescription:self.helpDescription];
 }
 
-- (NSString *)description
-{
-    NSDictionary<NSString *, NSString *> *keyMappings = @{ UIKeyInputUpArrow : @"↑",
-                                                           UIKeyInputDownArrow : @"↓",
-                                                           UIKeyInputLeftArrow : @"←",
-                                                           UIKeyInputRightArrow : @"→",
-                                                           UIKeyInputEscape : @"␛",
-                                                           @" " : @"␠"};
+- (NSString *)description {
+    NSDictionary<NSString *, NSString *> *keyMappings = @{
+        UIKeyInputUpArrow : @"↑",
+        UIKeyInputDownArrow : @"↓",
+        UIKeyInputLeftArrow : @"←",
+        UIKeyInputRightArrow : @"→",
+        UIKeyInputEscape : @"␛",
+        @" " : @"␠"
+    };
     
     NSString *prettyKey = nil;
     if (self.key && keyMappings[self.key]) {
@@ -93,13 +91,13 @@
     return [NSString stringWithFormat:@"%@%@\t%@", prettyFlags, prettyKey, self.helpDescription];
 }
 
-+ (instancetype)keyInputForKey:(NSString *)key flags:(UIKeyModifierFlags)flags
-{
++ (instancetype)keyInputForKey:(NSString *)key flags:(UIKeyModifierFlags)flags {
     return [self keyInputForKey:key flags:flags helpDescription:nil];
 }
 
-+ (instancetype)keyInputForKey:(NSString *)key flags:(UIKeyModifierFlags)flags helpDescription:(NSString *)helpDescription
-{
++ (instancetype)keyInputForKey:(NSString *)key
+                         flags:(UIKeyModifierFlags)flags
+               helpDescription:(NSString *)helpDescription {
     FLEXKeyInput *keyInput = [self new];
     if (keyInput) {
         keyInput->_key = key;
@@ -123,8 +121,7 @@
 
 @implementation FLEXKeyboardShortcutManager
 
-+ (instancetype)sharedManager
-{
++ (instancetype)sharedManager {
     static FLEXKeyboardShortcutManager *sharedManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -133,8 +130,7 @@
     return sharedManager;
 }
 
-+ (void)load
-{
++ (void)load {
     SEL originalKeyEventSelector = NSSelectorFromString(@"handleKeyUIEvent:");
     SEL swizzledKeyEventSelector = [FLEXUtility swizzledSelectorForSelector:originalKeyEventSelector];
     
@@ -145,7 +141,11 @@
         ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledKeyEventSelector, event);
     };
     
-    [FLEXUtility replaceImplementationOfKnownSelector:originalKeyEventSelector onClass:[UIApplication class] withBlock:handleKeyUIEventSwizzleBlock swizzledSelector:swizzledKeyEventSelector];
+    [FLEXUtility replaceImplementationOfKnownSelector:originalKeyEventSelector
+        onClass:[UIApplication class]
+        withBlock:handleKeyUIEventSwizzleBlock
+        swizzledSelector:swizzledKeyEventSelector
+    ];
     
     if ([[UITouch class] instancesRespondToSelector:@selector(maximumPossibleForce)]) {
         SEL originalSendEventSelector = NSSelectorFromString(@"sendEvent:");
@@ -177,7 +177,11 @@
             ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledSendEventSelector, event);
         };
         
-        [FLEXUtility replaceImplementationOfKnownSelector:originalSendEventSelector onClass:[UIApplication class] withBlock:sendEventSwizzleBlock swizzledSelector:swizzledSendEventSelector];
+        [FLEXUtility replaceImplementationOfKnownSelector:originalSendEventSelector
+            onClass:[UIApplication class]
+            withBlock:sendEventSwizzleBlock
+            swizzledSelector:swizzledSendEventSelector
+        ];
         
         SEL originalSupportsTouchPressureSelector = NSSelectorFromString(@"_supportsForceTouch");
         SEL swizzledSupportsTouchPressureSelector = [FLEXUtility swizzledSelectorForSelector:originalSupportsTouchPressureSelector];
@@ -186,12 +190,15 @@
             return YES;
         };
         
-        [FLEXUtility replaceImplementationOfKnownSelector:originalSupportsTouchPressureSelector onClass:[UIDevice class] withBlock:supportsTouchPressureSwizzleBlock swizzledSelector:swizzledSupportsTouchPressureSelector];
+        [FLEXUtility replaceImplementationOfKnownSelector:originalSupportsTouchPressureSelector
+            onClass:[UIDevice class]
+            withBlock:supportsTouchPressureSwizzleBlock
+            swizzledSelector:swizzledSupportsTouchPressureSelector
+        ];
     }
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     
     if (self) {
@@ -202,8 +209,10 @@
     return self;
 }
 
-- (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description
-{
+- (void)registerSimulatorShortcutWithKey:(NSString *)key
+                               modifiers:(UIKeyModifierFlags)modifiers
+                                  action:(dispatch_block_t)action
+                             description:(NSString *)description {
     FLEXKeyInput *keyInput = [FLEXKeyInput keyInputForKey:key flags:modifiers helpDescription:description];
     [self.actionsForKeyInputs setObject:action forKey:keyInput];
 }
@@ -212,8 +221,7 @@ static const long kFLEXControlKeyCode = 0xe0;
 static const long kFLEXShiftKeyCode = 0xe1;
 static const long kFLEXCommandKeyCode = 0xe3;
 
-- (void)handleKeyboardEvent:(UIEvent *)event
-{
+- (void)handleKeyboardEvent:(UIEvent *)event {
     if (!self.enabled) {
         return;
     }
@@ -262,12 +270,16 @@ static const long kFLEXCommandKeyCode = 0xe3;
             dispatch_block_t actionBlock = self.actionsForKeyInputs[exactMatch];
             
             if (!actionBlock) {
-                FLEXKeyInput *shiftMatch = [FLEXKeyInput keyInputForKey:modifiedInput flags:flags&(~UIKeyModifierShift)];
+                FLEXKeyInput *shiftMatch = [FLEXKeyInput
+                    keyInputForKey:modifiedInput flags:flags&(~UIKeyModifierShift)
+                ];
                 actionBlock = self.actionsForKeyInputs[shiftMatch];
             }
             
             if (!actionBlock) {
-                FLEXKeyInput *capitalMatch = [FLEXKeyInput keyInputForKey:[unmodifiedInput uppercaseString] flags:flags];
+                FLEXKeyInput *capitalMatch = [FLEXKeyInput
+                    keyInputForKey:[unmodifiedInput uppercaseString] flags:flags
+                ];
                 actionBlock = self.actionsForKeyInputs[capitalMatch];
             }
             
@@ -291,12 +303,13 @@ static const long kFLEXCommandKeyCode = 0xe3;
     }
 }
 
-- (NSString *)keyboardShortcutsDescription
-{
+- (NSString *)keyboardShortcutsDescription {
     NSMutableString *description = [NSMutableString string];
-    NSArray<FLEXKeyInput *> *keyInputs = [self.actionsForKeyInputs.allKeys sortedArrayUsingComparator:^NSComparisonResult(FLEXKeyInput *_Nonnull input1, FLEXKeyInput *_Nonnull input2) {
-        return [input1.key caseInsensitiveCompare:input2.key];
-    }];
+    NSArray<FLEXKeyInput *> *keyInputs = [self.actionsForKeyInputs.allKeys
+        sortedArrayUsingComparator:^NSComparisonResult(FLEXKeyInput *input1, FLEXKeyInput *input2) {
+            return [input1.key caseInsensitiveCompare:input2.key];
+        }
+    ];
     for (FLEXKeyInput *keyInput in keyInputs) {
         [description appendFormat:@"%@\n", keyInput];
     }

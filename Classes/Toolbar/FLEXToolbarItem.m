@@ -19,8 +19,7 @@
 
 @implementation FLEXToolbarItem
 
-+ (instancetype)toolbarItemWithTitle:(NSString *)title image:(UIImage *)image
-{
++ (instancetype)toolbarItemWithTitle:(NSString *)title image:(UIImage *)image {
     FLEXToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeSystem];
     toolbarItem.title = title;
     toolbarItem.backgroundColor = [self defaultBackgroundColor];
@@ -37,50 +36,42 @@
 
 #pragma mark - Display Defaults
 
-+ (NSDictionary<NSString *, id> *)titleAttributes
-{
++ (NSDictionary<NSString *, id> *)titleAttributes {
     return @{NSFontAttributeName : [UIFont systemFontOfSize:12.0]};
 }
 
-+ (UIColor *)highlightedBackgroundColor
-{
++ (UIColor *)highlightedBackgroundColor {
     return [FLEXColor toolbarItemHighlightedColor];
 }
 
-+ (UIColor *)selectedBackgroundColor
-{
++ (UIColor *)selectedBackgroundColor {
     return [FLEXColor toolbarItemSelectedColor];
 }
 
-+ (UIColor *)defaultBackgroundColor
-{
++ (UIColor *)defaultBackgroundColor {
     return UIColor.clearColor;
 }
 
-+ (CGFloat)topMargin
-{
++ (CGFloat)topMargin {
     return 2.0;
 }
 
 
 #pragma mark - State Changes
 
-- (void)setHighlighted:(BOOL)highlighted
-{
+- (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
     [self updateColors];
 }
 
-- (void)setSelected:(BOOL)selected
-{
+- (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     [self updateColors];
 }
 
 + (id)_selectedIndicatorImage { return nil; }
 
-- (void)updateColors
-{
+- (void)updateColors {
     // Background color
     if (self.highlighted) {
         self.backgroundColor = [[self class] highlightedBackgroundColor];
@@ -94,8 +85,7 @@
 
 #pragma mark - UIButton Layout Overrides
 
-- (CGRect)titleRectForContentRect:(CGRect)contentRect
-{
+- (CGRect)titleRectForContentRect:(CGRect)contentRect {
     NSDictionary *attrs = [[self class] titleAttributes];
     // Bottom aligned and centered.
     CGRect titleRect = CGRectZero;
@@ -110,8 +100,7 @@
     return titleRect;
 }
 
-- (CGRect)imageRectForContentRect:(CGRect)contentRect
-{
+- (CGRect)imageRectForContentRect:(CGRect)contentRect {
     CGSize imageSize = self.image.size;
     CGRect titleRect = [self titleRectForContentRect:contentRect];
     CGFloat availableHeight = contentRect.size.height - titleRect.size.height - [[self class] topMargin];

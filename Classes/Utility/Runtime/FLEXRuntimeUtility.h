@@ -25,8 +25,7 @@ extern NSString *const kFLEXPropertyAttributeKeyWeak;
 extern NSString *const kFLEXPropertyAttributeKeyGarbageCollectable;
 extern NSString *const kFLEXPropertyAttributeKeyOldStyleTypeEncoding;
 
-typedef NS_ENUM(NSUInteger, FLEXPropertyAttribute)
-{
+typedef NS_ENUM(NSUInteger, FLEXPropertyAttribute) {
     FLEXPropertyAttributeTypeEncoding       = 'T',
     FLEXPropertyAttributeBackingIvarName    = 'V',
     FLEXPropertyAttributeCopy               = 'C',
@@ -41,8 +40,7 @@ typedef NS_ENUM(NSUInteger, FLEXPropertyAttribute)
     FLEXPropertyAttributeWeak               = 'W'
 };
 
-typedef NS_ENUM(char, FLEXTypeEncoding)
-{
+typedef NS_ENUM(char, FLEXTypeEncoding) {
     FLEXTypeEncodingUnknown          = '?',
     FLEXTypeEncodingChar             = 'c',
     FLEXTypeEncodingInt              = 'i',

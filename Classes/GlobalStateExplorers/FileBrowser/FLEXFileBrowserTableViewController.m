@@ -31,18 +31,15 @@
 
 @implementation FLEXFileBrowserTableViewController
 
-+ (instancetype)path:(NSString *)path
-{
++ (instancetype)path:(NSString *)path {
     return [[self alloc] initWithPath:path];
 }
 
-- (id)init
-{
+- (id)init {
     return [self initWithPath:NSHomeDirectory()];
 }
 
-- (id)initWithPath:(NSString *)path
-{
+- (id)initWithPath:(NSString *)path {
     self = [super init];
     if (self) {
         self.path = path;
@@ -81,8 +78,7 @@
 
 #pragma mark - UIViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.showsSearchBar = YES;
@@ -109,8 +105,7 @@
 
 #pragma mark - FLEXFileBrowserSearchOperationDelegate
 
-- (void)fileBrowserSearchOperationResult:(NSArray<NSString *> *)searchResult size:(uint64_t)size
-{
+- (void)fileBrowserSearchOperationResult:(NSArray<NSString *> *)searchResult size:(uint64_t)size {
     self.searchPaths = searchResult;
     self.searchPathsSize = @(size);
     [self.tableView reloadData];
@@ -118,15 +113,13 @@
 
 #pragma mark - Search bar
 
-- (void)updateSearchResults:(NSString *)newText
-{
+- (void)updateSearchResults:(NSString *)newText {
     [self reloadDisplayedPaths];
 }
 
 #pragma mark UISearchControllerDelegate
 
-- (void)willDismissSearchController:(UISearchController *)searchController
-{
+- (void)willDismissSearchController:(UISearchController *)searchController {
     [self.operationQueue cancelAllOperations];
     [self reloadCurrentPath];
     [self.tableView reloadData];
@@ -134,18 +127,15 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.searchController.isActive ? self.searchPaths.count : self.childPaths.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     BOOL isSearchActive = self.searchController.isActive;
     NSNumber *currentSize = isSearchActive ? self.searchPathsSize : self.recursiveSize;
     NSArray<NSString *> *currentPaths = isSearchActive ? self.searchPaths : self.childPaths;
@@ -160,8 +150,7 @@
     return [NSString stringWithFormat:@"%lu files (%@)", (unsigned long)currentPaths.count, sizeString];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
     NSDictionary<NSString *, id> *attributes = [NSFileManager.defaultManager attributesOfItemAtPath:fullPath error:NULL];
     BOOL isDirectory = [attributes.fileType isEqual:NSFileTypeDirectory];
@@ -201,8 +190,7 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
@@ -283,8 +271,7 @@
     }
 }
 
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     UIMenuItem *rename = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
     UIMenuItem *delete = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
     UIMenuItem *copyPath = [[UIMenuItem alloc] initWithTitle:@"Copy Path" action:@selector(fileBrowserCopyPath:)];
@@ -295,16 +282,14 @@
     return YES;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     return action == @selector(fileBrowserDelete:)
         || action == @selector(fileBrowserRename:)
         || action == @selector(fileBrowserCopyPath:)
         || action == @selector(fileBrowserShare:);
 }
 
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     // Empty, but has to exist for the menu to show
     // The table view only calls this method for actions in the UIResponderStandardEditActions informal protocol.
     // Since our actions are outside of that protocol, we need to manually handle the action forwarding from the cells.
@@ -312,8 +297,7 @@
 
 #if FLEX_AT_LEAST_IOS13_SDK
 
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
-{
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     __weak typeof(self) weakSelf = self;
     return [UIContextMenuConfiguration configurationWithIdentifier:nil
                                                    previewProvider:nil
@@ -349,8 +333,7 @@
 
 #endif
 
-- (void)openFileController:(NSString *)fullPath
-{
+- (void)openFileController:(NSString *)fullPath {
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
     controller.URL = [NSURL fileURLWithPath:fullPath];
 
@@ -358,8 +341,7 @@
     self.documentController = controller;
 }
 
-- (void)fileBrowserRename:(UITableViewCell *)sender
-{
+- (void)fileBrowserRename:(UITableViewCell *)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
 
@@ -384,8 +366,7 @@
     }
 }
 
-- (void)fileBrowserDelete:(UITableViewCell *)sender
-{
+- (void)fileBrowserDelete:(UITableViewCell *)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
 
@@ -409,15 +390,13 @@
     }
 }
 
-- (void)fileBrowserCopyPath:(UITableViewCell *)sender
-{
+- (void)fileBrowserCopyPath:(UITableViewCell *)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
     UIPasteboard.generalPasteboard.string = fullPath;
 }
 
-- (void)fileBrowserShare:(UITableViewCell *)sender
-{
+- (void)fileBrowserShare:(UITableViewCell *)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *pathString = [self filePathAtIndexPath:indexPath];
     NSURL *filePath = [NSURL fileURLWithPath:pathString];
@@ -435,8 +414,7 @@
     }
 }
 
-- (void)reloadDisplayedPaths
-{
+- (void)reloadDisplayedPaths {
     if (self.searchController.isActive) {
         [self updateSearchPaths];
     } else {
@@ -445,8 +423,7 @@
     }
 }
 
-- (void)reloadCurrentPath
-{
+- (void)reloadCurrentPath {
     NSMutableArray<NSString *> *childPaths = [NSMutableArray array];
     NSArray<NSString *> *subpaths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.path error:NULL];
     for (NSString *subpath in subpaths) {
@@ -455,8 +432,7 @@
     self.childPaths = childPaths;
 }
 
-- (void)updateSearchPaths
-{
+- (void)updateSearchPaths {
     self.searchPaths = nil;
     self.searchPathsSize = nil;
 
@@ -467,8 +443,7 @@
     [self.operationQueue addOperation:newOperation];
 }
 
-- (NSString *)filePathAtIndexPath:(NSIndexPath *)indexPath
-{
+- (NSString *)filePathAtIndexPath:(NSIndexPath *)indexPath {
     return self.searchController.isActive ? self.searchPaths[indexPath.row] : self.childPaths[indexPath.row];
 }
 
@@ -477,29 +452,24 @@
 
 @implementation FLEXFileBrowserTableViewCell
 
-- (void)forwardAction:(SEL)action withSender:(id)sender
-{
+- (void)forwardAction:(SEL)action withSender:(id)sender {
     id target = [self.nextResponder targetForAction:action withSender:sender];
     [UIApplication.sharedApplication sendAction:action to:target from:self forEvent:nil];
 }
 
-- (void)fileBrowserRename:(UIMenuController *)sender
-{
+- (void)fileBrowserRename:(UIMenuController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserDelete:(UIMenuController *)sender
-{
+- (void)fileBrowserDelete:(UIMenuController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserCopyPath:(UIMenuController *)sender
-{
+- (void)fileBrowserCopyPath:(UIMenuController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserShare:(UIMenuController *)sender
-{
+- (void)fileBrowserShare:(UIMenuController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 

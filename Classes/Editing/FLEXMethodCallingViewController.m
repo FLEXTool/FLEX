@@ -21,13 +21,11 @@
 
 @implementation FLEXMethodCallingViewController
 
-+ (instancetype)target:(id)target method:(FLEXMethod *)method
-{
++ (instancetype)target:(id)target method:(FLEXMethod *)method {
     return [[self alloc] initWithTarget:target method:method];
 }
 
-- (id)initWithTarget:(id)target method:(FLEXMethod *)method
-{
+- (id)initWithTarget:(id)target method:(FLEXMethod *)method {
     NSParameterAssert(method.isInstanceMethod == !object_isClass(target));
 
     self = [super initWithTarget:target];
@@ -39,8 +37,7 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     self.setterButton.title = @"Call";
@@ -73,8 +70,7 @@
     return argumentInputViews;
 }
 
-- (void)actionButtonPressed:(id)sender
-{
+- (void)actionButtonPressed:(id)sender {
     [super actionButtonPressed:sender];
 
     // Gather arguments

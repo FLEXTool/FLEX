@@ -183,7 +183,7 @@
 }
 
 - (UIScrollView *)firstScrollView {
-    NSMutableArray<UIView *> *views = FLEXUtility.appKeyWindow.subviews.copy;
+    NSMutableArray<UIView *> *views = FLEXUtility.appKeyWindow.subviews.mutableCopy;
     UIScrollView *scrollView = nil;
     while (views.count > 0) {
         UIView *view = views.firstObject;
@@ -223,9 +223,9 @@
         [topViewController.topViewController isKindOfClass:[class class]]) {
         [topViewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     } else {
-        id viewController = [class new];
-        UINavigationController *navigationController = [[FLEXNavigationController alloc] initWithRootViewController:viewController];
-        [topViewController presentViewController:navigationController animated:YES completion:nil];
+        [topViewController presentViewController:
+            [FLEXNavigationController withRootViewController:[class new]]
+        animated:YES completion:nil];
     }
 }
 

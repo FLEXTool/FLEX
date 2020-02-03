@@ -30,13 +30,11 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 @implementation FLEXLiveObjectsTableViewController
 
-- (void)loadView
-{
+- (void)loadView {
     self.tableView = [FLEXTableView flexDefaultTableView];
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
 //    self.title = @"Live Objects";
@@ -51,13 +49,11 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     [self reloadTableData];
 }
 
-- (NSArray<NSString *> *)allClassNames
-{
+- (NSArray<NSString *> *)allClassNames {
     return self.instanceCountsForClassNames.allKeys;
 }
 
-- (void)reloadTableData
-{
+- (void)reloadTableData {
     // Set up a CFMutableDictionary with class pointer keys and NSUInteger values.
     // We abuse CFMutableDictionary a little to have primitive keys through judicious casting, but it gets the job done.
     // The dictionary is intialized with a 0 count for each class so that it doesn't have to expand during enumeration.
@@ -98,14 +94,12 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     [self updateSearchResults:nil];
 }
 
-- (void)refreshControlDidRefresh:(id)sender
-{
+- (void)refreshControlDidRefresh:(id)sender {
     [self reloadTableData];
     [self.refreshControl endRefreshing];
 }
 
-- (void)updateHeaderTitle
-{
+- (void)updateHeaderTitle {
     NSUInteger totalCount = 0;
     NSUInteger totalSize = 0;
     for (NSString *className in self.allClassNames) {
@@ -159,8 +153,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 #pragma mark - Search bar
 
-- (void)updateSearchResults:(NSString *)filter
-{
+- (void)updateSearchResults:(NSString *)filter {
     NSInteger selectedScope = self.selectedScope;
     
     if (filter.length) {
@@ -197,18 +190,15 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.filteredClassNames.count;
 }
 
-- (UITableViewCell *)tableView:(__kindof UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(__kindof UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView
         dequeueReusableCellWithIdentifier:kFLEXDefaultCell
         forIndexPath:indexPath
@@ -230,16 +220,14 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return self.headerTitle;
 }
 
 
 #pragma mark - Table view delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *className = self.filteredClassNames[indexPath.row];
     FLEXInstancesTableViewController *instancesViewController = [FLEXInstancesTableViewController instancesTableViewControllerForClassName:className];
     [self.navigationController pushViewController:instancesViewController animated:YES];

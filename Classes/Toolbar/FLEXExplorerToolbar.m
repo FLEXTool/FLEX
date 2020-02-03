@@ -34,8 +34,7 @@
 
 @implementation FLEXExplorerToolbar
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundView = [UIView new];
@@ -90,8 +89,7 @@
     return self;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
 
 
@@ -191,16 +189,14 @@
     [self layoutIfNeeded];
 }
 
-- (void)setSelectedViewOverlayColor:(UIColor *)selectedViewOverlayColor
-{
+- (void)setSelectedViewOverlayColor:(UIColor *)selectedViewOverlayColor {
     if (![_selectedViewOverlayColor isEqual:selectedViewOverlayColor]) {
         _selectedViewOverlayColor = selectedViewOverlayColor;
         self.selectedViewColorIndicator.backgroundColor = selectedViewOverlayColor;
     }
 }
 
-- (void)setSelectedViewDescription:(NSString *)selectedViewDescription
-{
+- (void)setSelectedViewDescription:(NSString *)selectedViewDescription {
     if (![_selectedViewDescription isEqual:selectedViewDescription]) {
         _selectedViewDescription = selectedViewDescription;
         self.selectedViewDescriptionLabel.text = selectedViewDescription;
@@ -212,56 +208,46 @@
 
 #pragma mark - Sizing Convenience Methods
 
-+ (UIFont *)descriptionLabelFont
-{
++ (UIFont *)descriptionLabelFont {
     return [UIFont systemFontOfSize:12.0];
 }
 
-+ (CGFloat)toolbarItemHeight
-{
++ (CGFloat)toolbarItemHeight {
     return 44.0;
 }
 
-+ (CGFloat)dragHandleWidth
-{
++ (CGFloat)dragHandleWidth {
     return [FLEXResources dragHandle].size.width;
 }
 
-+ (CGFloat)descriptionLabelHeight
-{
++ (CGFloat)descriptionLabelHeight {
     return ceil([[self descriptionLabelFont] lineHeight]);
 }
 
-+ (CGFloat)descriptionVerticalPadding
-{
++ (CGFloat)descriptionVerticalPadding {
     return 2.0;
 }
 
-+ (CGFloat)descriptionContainerHeight
-{
++ (CGFloat)descriptionContainerHeight {
     return [self descriptionVerticalPadding] * 2.0 + [self descriptionLabelHeight];
 }
 
-+ (CGFloat)selectedViewColorIndicatorDiameter
-{
++ (CGFloat)selectedViewColorIndicatorDiameter {
     return ceil([self descriptionLabelHeight] / 2.0);
 }
 
-+ (CGFloat)horizontalPadding
-{
++ (CGFloat)horizontalPadding {
     return 11.0;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGFloat height = 0.0;
     height += [[self class] toolbarItemHeight];
     height += [[self class] descriptionContainerHeight];
     return CGSizeMake(size.width, height);
 }
 
-- (CGRect)safeArea
-{
+- (CGRect)safeArea {
     CGRect safeArea = self.bounds;
     if (@available(iOS 11.0, *)) {
         safeArea = UIEdgeInsetsInsetRect(self.bounds, self.safeAreaInsets);

@@ -9,8 +9,7 @@
 #import <Foundation/Foundation.h>
 
 
-typedef NS_OPTIONS(NSUInteger, TBWildcardOptions)
-{
+typedef NS_OPTIONS(NSUInteger, TBWildcardOptions) {
     TBWildcardOptionsNone   = 0,
     TBWildcardOptionsAny    = 1,
     TBWildcardOptionsPrefix = 1 << 1,

@@ -12,8 +12,7 @@
 
 @implementation UIFont (FLEX)
 
-+ (UIFont *)flex_defaultTableCellFont
-{
++ (UIFont *)flex_defaultTableCellFont {
     static UIFont *defaultTableCellFont = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

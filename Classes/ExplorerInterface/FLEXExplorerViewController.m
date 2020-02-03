@@ -71,8 +71,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 @implementation FLEXExplorerViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.observedViews = [NSMutableSet set];
@@ -80,15 +79,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     for (UIView *view in _observedViews) {
         [self stopObservingView:view];
     }
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     // Toolbar
@@ -99,15 +96,23 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     CGFloat toolbarOriginY = toolbarOriginYDefault ? [toolbarOriginYDefault doubleValue] : 100;
 
     CGRect safeArea = [self viewSafeArea];
-    CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea))];
-    [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(CGRectGetMinX(safeArea), toolbarOriginY, toolbarSize.width, toolbarSize.height)];
-    self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(
+        CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea)
+    )];
+    [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(
+        CGRectGetMinX(safeArea), toolbarOriginY, toolbarSize.width, toolbarSize.height
+    )];
+    self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth |
+                                            UIViewAutoresizingFlexibleBottomMargin |
+                                            UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.explorerToolbar];
     [self setupToolbarActions];
     [self setupToolbarGestures];
     
     // View selection
-    UITapGestureRecognizer *selectionTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSelectionTap:)];
+    UITapGestureRecognizer *selectionTapGR = [[UITapGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleSelectionTap:)
+    ];
     [self.view addGestureRecognizer:selectionTapGR];
     
     // View moving
@@ -116,8 +121,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.view addGestureRecognizer:self.movePanGR];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     [self updateButtonStates];
@@ -126,11 +130,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Rotation
 
-- (UIViewController *)viewControllerForRotationAndOrientation
-{
+- (UIViewController *)viewControllerForRotationAndOrientation {
     UIViewController *viewController = FLEXUtility.appKeyWindow.rootViewController;
     // Obfuscating selector _viewControllerForSupportedInterfaceOrientations
-    NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
+    NSString *viewControllerSelectorString = [@[
+        @"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"
+    ] componentsJoinedByString:@""];
     SEL viewControllerSelector = NSSelectorFromString(viewControllerSelectorString);
     if ([viewController respondsToSelector:viewControllerSelector]) {
         viewController = [viewController valueForKey:viewControllerSelectorString];
@@ -139,8 +144,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return viewController;
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     UIInterfaceOrientationMask supportedOrientations = [FLEXUtility infoPlistSupportedInterfaceOrientationsMask];
     if (viewControllerToAsk && ![viewControllerToAsk isKindOfClass:[self class]]) {
@@ -157,8 +161,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return supportedOrientations;
 }
 
-- (BOOL)shouldAutorotate
-{
+- (BOOL)shouldAutorotate {
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     BOOL shouldAutorotate = YES;
     if (viewControllerToAsk && viewControllerToAsk != self) {
@@ -167,8 +170,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return shouldAutorotate;
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
-{
+- (void)viewWillTransitionToSize:(CGSize)size
+       withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         for (UIView *outlineView in self.outlineViewsForVisibleViews.allValues) {
@@ -195,8 +198,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Setter Overrides
 
-- (void)setSelectedView:(UIView *)selectedView
-{
+- (void)setSelectedView:(UIView *)selectedView {
     if (![_selectedView isEqual:selectedView]) {
         if (![self.viewsAtTapPoint containsObject:_selectedView]) {
             [self stopObservingView:_selectedView];
@@ -207,8 +209,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         [self beginObservingView:selectedView];
 
         // Update the toolbar and selected overlay
-        self.explorerToolbar.selectedViewDescription = [FLEXUtility descriptionForView:selectedView includingFrame:YES];
-        self.explorerToolbar.selectedViewOverlayColor = [FLEXUtility consistentRandomColorForObject:selectedView];
+        self.explorerToolbar.selectedViewDescription = [FLEXUtility
+            descriptionForView:selectedView includingFrame:YES
+        ];
+        self.explorerToolbar.selectedViewOverlayColor = [FLEXUtility
+            consistentRandomColorForObject:selectedView
+        ];
 
         if (selectedView) {
             if (!self.selectedViewOverlay) {
@@ -221,7 +227,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             self.selectedViewOverlay.layer.borderColor = outlineColor.CGColor;
             self.selectedViewOverlay.frame = [self.view convertRect:selectedView.bounds fromView:selectedView];
             
-            // Make sure the selected overlay is in front of all the other subviews except the toolbar, which should always stay on top.
+            // Make sure the selected overlay is in front of all the other subviews
+            // except the toolbar, which should always stay on top.
             [self.view bringSubviewToFront:self.selectedViewOverlay];
             [self.view bringSubviewToFront:self.explorerToolbar];
         } else {
@@ -234,8 +241,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)setViewsAtTapPoint:(NSArray<UIView *> *)viewsAtTapPoint
-{
+- (void)setViewsAtTapPoint:(NSArray<UIView *> *)viewsAtTapPoint {
     if (![_viewsAtTapPoint isEqual:viewsAtTapPoint]) {
         for (UIView *view in _viewsAtTapPoint) {
             if (view != self.selectedView) {
@@ -251,8 +257,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)setCurrentMode:(FLEXExplorerMode)currentMode
-{
+- (void)setCurrentMode:(FLEXExplorerMode)currentMode {
     if (_currentMode != currentMode) {
         _currentMode = currentMode;
         switch (currentMode) {
@@ -271,7 +276,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
                 break;
                 
             case FLEXExplorerModeMove:
-                // Hide all the outline views to focus on the selected view, which is the only one that will move.
+                // Hide all the outline views to focus on the selected view,
+                // which is the only one that will move.
                 for (NSValue *key in self.outlineViewsForVisibleViews) {
                     UIView *outlineView = self.outlineViewsForVisibleViews[key];
                     outlineView.hidden = YES;
@@ -286,8 +292,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - View Tracking
 
-- (void)beginObservingView:(UIView *)view
-{
+- (void)beginObservingView:(UIView *)view {
     // Bail if we're already observing this view or if there's nothing to observe.
     if (!view || [self.observedViews containsObject:view]) {
         return;
@@ -300,8 +305,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.observedViews addObject:view];
 }
 
-- (void)stopObservingView:(UIView *)view
-{
+- (void)stopObservingView:(UIView *)view {
     if (!view) {
         return;
     }
@@ -313,8 +317,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.observedViews removeObject:view];
 }
 
-- (NSArray<NSString *> *)viewKeyPathsToTrack
-{
+- (NSArray<NSString *> *)viewKeyPathsToTrack {
     static NSArray<NSString *> *trackedViewKeyPaths = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -324,13 +327,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return trackedViewKeyPaths;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *, id> *)change context:(void *)context
-{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary<NSString *, id> *)change
+                       context:(void *)context {
     [self updateOverlayAndDescriptionForObjectIfNeeded:object];
 }
 
-- (void)updateOverlayAndDescriptionForObjectIfNeeded:(id)object
-{
+- (void)updateOverlayAndDescriptionForObjectIfNeeded:(id)object {
     NSUInteger indexOfView = [self.viewsAtTapPoint indexOfObject:object];
     if (indexOfView != NSNotFound) {
         UIView *view = self.viewsAtTapPoint[indexOfView];
@@ -342,66 +345,66 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     if (object == self.selectedView) {
         // Update the selected view description since we show the frame value there.
-        self.explorerToolbar.selectedViewDescription = [FLEXUtility descriptionForView:self.selectedView includingFrame:YES];
+        self.explorerToolbar.selectedViewDescription = [FLEXUtility
+            descriptionForView:self.selectedView includingFrame:YES
+        ];
         CGRect selectedViewOutlineFrame = [self frameInLocalCoordinatesForView:self.selectedView];
         self.selectedViewOverlay.frame = selectedViewOutlineFrame;
     }
 }
 
-- (CGRect)frameInLocalCoordinatesForView:(UIView *)view
-{
-    // First convert to window coordinates since the view may be in a different window than our view.
+- (CGRect)frameInLocalCoordinatesForView:(UIView *)view {
+    // Convert to window coordinates since the view may be in a different window than our view
     CGRect frameInWindow = [view convertRect:view.bounds toView:nil];
-    // Then convert from the window to our view's coordinate space.
+    // Convert from the window to our view's coordinate space
     return [self.view convertRect:frameInWindow fromView:nil];
 }
 
 
 #pragma mark - Toolbar Buttons
 
-- (void)setupToolbarActions
-{
-    [self.explorerToolbar.selectItem addTarget:self action:@selector(selectButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.explorerToolbar.hierarchyItem addTarget:self action:@selector(hierarchyButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.explorerToolbar.moveItem addTarget:self action:@selector(moveButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.explorerToolbar.globalsItem addTarget:self action:@selector(globalsButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
-    [self.explorerToolbar.closeItem addTarget:self action:@selector(closeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+- (void)setupToolbarActions {
+    FLEXExplorerToolbar *toolbar = self.explorerToolbar;
+    NSDictionary<NSString *, FLEXToolbarItem *> *actionsToItems = @{
+        NSStringFromSelector(@selector(selectButtonTapped:)):        toolbar.selectItem,
+        NSStringFromSelector(@selector(hierarchyButtonTapped:)):     toolbar.hierarchyItem,
+        NSStringFromSelector(@selector(moveButtonTapped:)):          toolbar.moveItem,
+        NSStringFromSelector(@selector(globalsButtonTapped:)):       toolbar.globalsItem,
+        NSStringFromSelector(@selector(closeButtonTapped:)):         toolbar.closeItem,
+    };
+    
+    [actionsToItems enumerateKeysAndObjectsUsingBlock:^(NSString *sel, FLEXToolbarItem *item, BOOL *stop) {
+        [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventTouchUpInside];
+    }];
 }
 
-- (void)selectButtonTapped:(FLEXToolbarItem *)sender
-{
+- (void)selectButtonTapped:(FLEXToolbarItem *)sender {
     [self toggleSelectTool];
 }
 
-- (void)hierarchyButtonTapped:(FLEXToolbarItem *)sender
-{
+- (void)hierarchyButtonTapped:(FLEXToolbarItem *)sender {
     [self toggleViewsTool];
 }
 
-- (UIWindow *)statusWindow
-{
+- (UIWindow *)statusWindow {
     NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
     return [UIApplication.sharedApplication valueForKey:statusBarString];
 }
 
-- (void)moveButtonTapped:(FLEXToolbarItem *)sender
-{
+- (void)moveButtonTapped:(FLEXToolbarItem *)sender {
     [self toggleMoveTool];
 }
 
-- (void)globalsButtonTapped:(FLEXToolbarItem *)sender
-{
+- (void)globalsButtonTapped:(FLEXToolbarItem *)sender {
     [self toggleMenuTool];
 }
 
-- (void)closeButtonTapped:(FLEXToolbarItem *)sender
-{
+- (void)closeButtonTapped:(FLEXToolbarItem *)sender {
     self.currentMode = FLEXExplorerModeDefault;
     [self.delegate explorerViewControllerDidFinish:self];
 }
 
-- (void)updateButtonStates
-{
+- (void)updateButtonStates {
     // Move and details only active when an object is selected.
     BOOL hasSelectedObject = self.selectedView != nil;
     self.explorerToolbar.moveItem.enabled = hasSelectedObject;
@@ -412,23 +415,27 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Toolbar Dragging
 
-- (void)setupToolbarGestures
-{
+- (void)setupToolbarGestures {
     // Pan gesture for dragging.
-    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleToolbarPanGesture:)];
+    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleToolbarPanGesture:)
+    ];
     [self.explorerToolbar.dragHandle addGestureRecognizer:panGR];
     
     // Tap gesture for hinting.
-    UITapGestureRecognizer *hintTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleToolbarHintTapGesture:)];
+    UITapGestureRecognizer *hintTapGR = [[UITapGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleToolbarHintTapGesture:)
+    ];
     [self.explorerToolbar.dragHandle addGestureRecognizer:hintTapGR];
     
     // Tap gesture for showing additional details
-    self.detailsTapGR = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleToolbarDetailsTapGesture:)];
+    self.detailsTapGR = [[UITapGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleToolbarDetailsTapGesture:)
+    ];
     [self.explorerToolbar.selectedViewDescriptionContainer addGestureRecognizer:self.detailsTapGR];
 }
 
-- (void)handleToolbarPanGesture:(UIPanGestureRecognizer *)panGR
-{
+- (void)handleToolbarPanGesture:(UIPanGestureRecognizer *)panGR {
     switch (panGR.state) {
         case UIGestureRecognizerStateBegan:
             self.toolbarFrameBeforeDragging = self.explorerToolbar.frame;
@@ -445,8 +452,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)updateToolbarPositionWithDragGesture:(UIPanGestureRecognizer *)panGR
-{
+- (void)updateToolbarPositionWithDragGesture:(UIPanGestureRecognizer *)panGR {
     CGPoint translation = [panGR translationInView:self.view];
     CGRect newToolbarFrame = self.toolbarFrameBeforeDragging;
     newToolbarFrame.origin.y += translation.y;
@@ -454,10 +460,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self updateToolbarPositionWithUnconstrainedFrame:newToolbarFrame];
 }
 
-- (void)updateToolbarPositionWithUnconstrainedFrame:(CGRect)unconstrainedFrame
-{
+- (void)updateToolbarPositionWithUnconstrainedFrame:(CGRect)unconstrainedFrame {
     CGRect safeArea = [self viewSafeArea];
-    // We only constrain the Y-axis because We want the toolbar to handle the X-axis safeArea layout by itself
+    // We only constrain the Y-axis because we want the toolbar
+    // to handle the X-axis safeArea layout by itself
     CGFloat minY = CGRectGetMinY(safeArea);
     CGFloat maxY = CGRectGetMaxY(safeArea) - unconstrainedFrame.size.height;
     if (unconstrainedFrame.origin.y < minY) {
@@ -468,11 +474,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
     self.explorerToolbar.frame = unconstrainedFrame;
 
-    [[NSUserDefaults standardUserDefaults] setDouble:unconstrainedFrame.origin.y forKey:kFLEXToolbarTopMarginDefaultsKey];
+    [NSUserDefaults.standardUserDefaults
+        setDouble:unconstrainedFrame.origin.y forKey:kFLEXToolbarTopMarginDefaultsKey
+    ];
 }
 
-- (void)handleToolbarHintTapGesture:(UITapGestureRecognizer *)tapGR
-{
+- (void)handleToolbarHintTapGesture:(UITapGestureRecognizer *)tapGR {
     // Bounce the toolbar to indicate that it is draggable.
     // TODO: make it bouncier.
     if (tapGR.state == UIGestureRecognizerStateRecognized) {
@@ -491,23 +498,23 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)handleToolbarDetailsTapGesture:(UITapGestureRecognizer *)tapGR
-{
+- (void)handleToolbarDetailsTapGesture:(UITapGestureRecognizer *)tapGR {
     if (tapGR.state == UIGestureRecognizerStateRecognized && self.selectedView) {
         UIViewController *topStackVC = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
-        UINavigationController *navigationController = [[FLEXNavigationController alloc] initWithRootViewController:topStackVC];
-        [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
+        [self makeKeyAndPresentViewController:
+            [FLEXNavigationController withRootViewController:topStackVC]
+        animated:YES completion:nil];
     }
 }
 
 
 #pragma mark - View Selection
 
-- (void)handleSelectionTap:(UITapGestureRecognizer *)tapGR
-{
+- (void)handleSelectionTap:(UITapGestureRecognizer *)tapGR {
     // Only if we're in selection mode
     if (self.currentMode == FLEXExplorerModeSelect && tapGR.state == UIGestureRecognizerStateRecognized) {
-        // Note that [tapGR locationInView:nil] is broken in iOS 8, so we have to do a two step conversion to window coordinates.
+        // Note that [tapGR locationInView:nil] is broken in iOS 8,
+        // so we have to do a two step conversion to window coordinates.
         // Thanks to @lascorbe for finding this: https://github.com/Flipboard/FLEX/pull/31
         CGPoint tapPointInView = [tapGR locationInView:self.view];
         CGPoint tapPointInWindow = [self.view convertPoint:tapPointInView toView:nil];
@@ -515,8 +522,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)updateOutlineViewsForSelectionPoint:(CGPoint)selectionPointInWindow
-{
+- (void)updateOutlineViewsForSelectionPoint:(CGPoint)selectionPointInWindow {
     [self removeAndClearOutlineViews];
     
     // Include hidden views in the "viewsAtTapPoint" array so we can show them in the hierarchy list.
@@ -525,7 +531,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // For outlined views and the selected view, only use visible views.
     // Outlining hidden views adds clutter and makes the selection behavior confusing.
     NSArray<UIView *> *visibleViewsAtTapPoint = [self viewsAtPoint:selectionPointInWindow skipHiddenViews:YES];
-    NSMutableDictionary<NSValue *, UIView *> *newOutlineViewsForVisibleViews = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSValue *, UIView *> *newOutlineViewsForVisibleViews = [NSMutableDictionary new];
     for (UIView *view in visibleViewsAtTapPoint) {
         UIView *outlineView = [self outlineViewForView:view];
         [self.view addSubview:outlineView];
@@ -541,8 +547,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self updateButtonStates];
 }
 
-- (UIView *)outlineViewForView:(UIView *)view
-{
+- (UIView *)outlineViewForView:(UIView *)view {
     CGRect outlineFrame = [self frameInLocalCoordinatesForView:view];
     UIView *outlineView = [[UIView alloc] initWithFrame:outlineFrame];
     outlineView.backgroundColor = UIColor.clearColor;
@@ -551,8 +556,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return outlineView;
 }
 
-- (void)removeAndClearOutlineViews
-{
+- (void)removeAndClearOutlineViews {
     for (NSValue *key in self.outlineViewsForVisibleViews) {
         UIView *outlineView = self.outlineViewsForVisibleViews[key];
         [outlineView removeFromSuperview];
@@ -560,22 +564,23 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     self.outlineViewsForVisibleViews = nil;
 }
 
-- (NSArray<UIView *> *)viewsAtPoint:(CGPoint)tapPointInWindow skipHiddenViews:(BOOL)skipHidden
-{
+- (NSArray<UIView *> *)viewsAtPoint:(CGPoint)tapPointInWindow skipHiddenViews:(BOOL)skipHidden {
     NSMutableArray<UIView *> *views = [NSMutableArray array];
     for (UIWindow *window in [FLEXUtility allWindows]) {
         // Don't include the explorer's own window or subviews.
         if (window != self.view.window && [window pointInside:tapPointInWindow withEvent:nil]) {
             [views addObject:window];
-            [views addObjectsFromArray:[self recursiveSubviewsAtPoint:tapPointInWindow inView:window skipHiddenViews:skipHidden]];
+            [views addObjectsFromArray:[self
+                recursiveSubviewsAtPoint:tapPointInWindow inView:window skipHiddenViews:skipHidden
+            ]];
         }
     }
     return views;
 }
 
-- (UIView *)viewForSelectionAtPoint:(CGPoint)tapPointInWindow
-{
-    // Select in the window that would handle the touch, but don't just use the result of hitTest:withEvent: so we can still select views with interaction disabled.
+- (UIView *)viewForSelectionAtPoint:(CGPoint)tapPointInWindow {
+    // Select in the window that would handle the touch, but don't just use the result of
+    // hitTest:withEvent: so we can still select views with interaction disabled.
     // Default to the the application's key window if none of the windows want the touch.
     UIWindow *windowForSelection = [UIApplication.sharedApplication keyWindow];
     for (UIWindow *window in [FLEXUtility allWindows].reverseObjectEnumerator) {
@@ -592,8 +597,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return [self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES].lastObject;
 }
 
-- (NSArray<UIView *> *)recursiveSubviewsAtPoint:(CGPoint)pointInView inView:(UIView *)view skipHiddenViews:(BOOL)skipHidden
-{
+- (NSArray<UIView *> *)recursiveSubviewsAtPoint:(CGPoint)pointInView
+                                         inView:(UIView *)view
+                                skipHiddenViews:(BOOL)skipHidden {
     NSMutableArray<UIView *> *subviewsAtPoint = [NSMutableArray array];
     for (UIView *subview in view.subviews) {
         BOOL isHidden = subview.hidden || subview.alpha < 0.01;
@@ -606,11 +612,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             [subviewsAtPoint addObject:subview];
         }
         
-        // If this view doesn't clip to its bounds, we need to check its subviews even if it doesn't contain the selection point.
-        // They may be visible and contain the selection point.
+        // If this view doesn't clip to its bounds, we need to check its subviews even if it
+        // doesn't contain the selection point. They may be visible and contain the selection point.
         if (subviewContainsPoint || !subview.clipsToBounds) {
             CGPoint pointInSubview = [view convertPoint:pointInView toView:subview];
-            [subviewsAtPoint addObjectsFromArray:[self recursiveSubviewsAtPoint:pointInSubview inView:subview skipHiddenViews:skipHidden]];
+            [subviewsAtPoint addObjectsFromArray:[self
+                recursiveSubviewsAtPoint:pointInSubview inView:subview skipHiddenViews:skipHidden
+            ]];
         }
     }
     return subviewsAtPoint;
@@ -619,8 +627,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Selected View Moving
 
-- (void)handleMovePan:(UIPanGestureRecognizer *)movePanGR
-{
+- (void)handleMovePan:(UIPanGestureRecognizer *)movePanGR {
     switch (movePanGR.state) {
         case UIGestureRecognizerStateBegan:
             self.selectedViewFrameBeforeDragging = self.selectedView.frame;
@@ -637,8 +644,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)updateSelectedViewPositionWithDragGesture:(UIPanGestureRecognizer *)movePanGR
-{
+- (void)updateSelectedViewPositionWithDragGesture:(UIPanGestureRecognizer *)movePanGR {
     CGPoint translation = [movePanGR translationInView:self.selectedView.superview];
     CGRect newSelectedViewFrame = self.selectedViewFrameBeforeDragging;
     newSelectedViewFrame.origin.x = FLEXFloor(newSelectedViewFrame.origin.x + translation.x);
@@ -649,8 +655,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Safe Area Handling
 
-- (CGRect)viewSafeArea
-{
+- (CGRect)viewSafeArea {
     CGRect safeArea = self.view.bounds;
     if (@available(iOS 11.0, *)) {
         safeArea = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
@@ -659,22 +664,27 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return safeArea;
 }
 
-- (void)viewSafeAreaInsetsDidChange
-{
+- (void)viewSafeAreaInsetsDidChange {
     if (@available(iOS 11.0, *)) {
         [super viewSafeAreaInsetsDidChange];
 
         CGRect safeArea = [self viewSafeArea];
-        CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea))];
-        [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(CGRectGetMinX(self.explorerToolbar.frame), CGRectGetMinY(self.explorerToolbar.frame), toolbarSize.width, toolbarSize.height)];
+        CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(
+            CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea)
+        )];
+        [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(
+            CGRectGetMinX(self.explorerToolbar.frame),
+            CGRectGetMinY(self.explorerToolbar.frame),
+            toolbarSize.width,
+            toolbarSize.height)
+        ];
     }
 }
 
 
 #pragma mark - Touch Handling
 
-- (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates
-{
+- (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates {
     BOOL shouldReceiveTouch = NO;
     
     CGPoint pointInLocalCoordinates = [self.view convertPoint:pointInWindowCoordinates fromView:nil];
@@ -705,10 +715,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - FLEXHierarchyDelegate
 
-- (void)viewHierarchyDidDismiss:(UIView *)selectedView
-{
-    // Note that we need to wait until the view controller is dismissed to calculated the frame of the outline view.
-    // Otherwise the coordinate conversion doesn't give the correct result.
+- (void)viewHierarchyDidDismiss:(UIView *)selectedView {
+    // Note that we need to wait until the view controller is dismissed to calculate the frame
+    // of the outline view, otherwise the coordinate conversion doesn't give the correct result.
     [self toggleViewsToolWithCompletion:^{
         // If the selected view is outside of the tap point array (selected from "Full Hierarchy"),
         // then clear out the tap point array and remove all the outline views.
@@ -730,24 +739,20 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Modal Dismissal
 
-- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController
-{
+- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController {
     [self presentedViewControllerDidDismiss];
 }
 
-- (void)presentedViewControllerDidDismiss
-{
+- (void)presentedViewControllerDidDismiss {
     [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
 }
 
 
 #pragma mark - Modal Presentation and Window Management
 
-- (void)makeKeyAndPresentViewController:(UINavigationController *)toPresent animated:(BOOL)animated completion:(void (^)(void))completion
-{
-    // Save the current key window so we can restore it following dismissal.
-    self.previousKeyWindow = UIApplication.sharedApplication.keyWindow;
-
+- (void)makeKeyAndPresentViewController:(UINavigationController *)toPresent
+                               animated:(BOOL)animated
+                             completion:(void (^)(void))completion {
     // Make our window key to correctly handle input.
     [self.view.window makeKeyWindow];
 
@@ -786,7 +791,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self presentViewController:toPresent animated:animated completion:completion];
 }
 
-- (void)resignKeyAndDismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion
+- (void)resignKeyAndDismissViewControllerAnimated:(BOOL)animated
+                                       completion:(void (^)(void))completion
 {
     UIWindow *appWindow = self.window.previousKeyWindow;
     [appWindow makeKeyWindow];
@@ -799,7 +805,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     self.appMenuItems = nil;
     
     // Restore the status bar window's normal window level.
-    // We want it above FLEX while a modal is presented for scroll to top, but below FLEX otherwise for exploration.
+    // We want it above FLEX while a modal is presented for
+    // scroll to top, but below FLEX otherwise for exploration.
     [self statusWindow].windowLevel = UIWindowLevelStatusBar;
     
     [self dismissViewControllerAnimated:animated completion:completion];
@@ -810,8 +817,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return self.window.previousKeyWindow != nil;
 }
 
-- (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future completion:(void(^)(void))completion
-{
+- (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future
+                                  completion:(void(^)(void))completion {
     if (self.presentedViewController) {
         [self resignKeyAndDismissViewControllerAnimated:YES completion:completion];
     } else if (future) {
@@ -826,8 +833,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Keyboard Shortcut Helpers
 
-- (void)toggleSelectTool
-{
+- (void)toggleSelectTool {
     if (self.currentMode == FLEXExplorerModeSelect) {
         self.currentMode = FLEXExplorerModeDefault;
     } else {
@@ -835,8 +841,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)toggleMoveTool
-{
+- (void)toggleMoveTool {
     if (self.currentMode == FLEXExplorerModeMove) {
         self.currentMode = FLEXExplorerModeDefault;
     } else {
@@ -844,13 +849,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)toggleViewsTool
-{
+- (void)toggleViewsTool {
     [self toggleViewsToolWithCompletion:nil];
 }
 
-- (void)toggleViewsToolWithCompletion:(void(^)(void))completion
-{
+- (void)toggleViewsToolWithCompletion:(void(^)(void))completion {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
         if (self.selectedView) {
             return [FLEXHierarchyViewController
@@ -868,15 +871,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }];
 }
 
-- (void)toggleMenuTool
-{
+- (void)toggleMenuTool {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
-        return [[FLEXNavigationController alloc] initWithRootViewController:[FLEXGlobalsViewController new]];
+        return [FLEXNavigationController withRootViewController:[FLEXGlobalsViewController new]];
     } completion:nil];
 }
 
-- (BOOL)handleDownArrowKeyPressed
-{
+- (BOOL)handleDownArrowKeyPressed {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
         frame.origin.y += 1.0 / UIScreen.mainScreen.scale;
@@ -893,8 +894,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return YES;
 }
 
-- (BOOL)handleUpArrowKeyPressed
-{
+- (BOOL)handleUpArrowKeyPressed {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
         frame.origin.y -= 1.0 / UIScreen.mainScreen.scale;
@@ -911,8 +911,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return YES;
 }
 
-- (BOOL)handleRightArrowKeyPressed
-{
+- (BOOL)handleRightArrowKeyPressed {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
         frame.origin.x += 1.0 / UIScreen.mainScreen.scale;
@@ -923,8 +922,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return NO;
 }
 
-- (BOOL)handleLeftArrowKeyPressed
-{
+- (BOOL)handleLeftArrowKeyPressed {
     if (self.currentMode == FLEXExplorerModeMove) {
         CGRect frame = self.selectedView.frame;
         frame.origin.x -= 1.0 / UIScreen.mainScreen.scale;

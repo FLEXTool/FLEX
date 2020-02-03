@@ -12,8 +12,7 @@
 
 @implementation FLEXWindow
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         // Some apps have windows at UIWindowLevelStatusBar + n.
@@ -25,8 +24,7 @@
     return self;
 }
 
-- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     BOOL pointInside = NO;
     if ([self.eventDelegate shouldHandleTouchAtPoint:point]) {
         pointInside = [super pointInside:point withEvent:event];
@@ -34,13 +32,11 @@
     return pointInside;
 }
 
-- (BOOL)shouldAffectStatusBarAppearance
-{
+- (BOOL)shouldAffectStatusBarAppearance {
     return [self isKeyWindow];
 }
 
-- (BOOL)canBecomeKeyWindow
-{
+- (BOOL)canBecomeKeyWindow {
     return [self.eventDelegate canBecomeKeyWindow];
 }
 
@@ -54,8 +50,7 @@
     _previousKeyWindow = nil;
 }
 
-+ (void)initialize
-{
++ (void)initialize {
     // This adds a method (superclass override) at runtime which gives us the status bar behavior we want.
     // The FLEX window is intended to be an overlay that generally doesn't affect the app underneath.
     // Most of the time, we want the app's main window(s) to be in control of status bar behavior.

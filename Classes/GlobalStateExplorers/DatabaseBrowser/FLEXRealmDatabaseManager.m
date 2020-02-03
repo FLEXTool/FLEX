@@ -26,8 +26,7 @@
 
 @implementation FLEXRealmDatabaseManager
 
-- (instancetype)initWithPath:(NSString*)aPath
-{
+- (instancetype)initWithPath:(NSString*)aPath {
     Class realmClass = NSClassFromString(@"RLMRealm");
     if (realmClass == nil) {
         return nil;
@@ -41,8 +40,7 @@
     return self;
 }
 
-- (BOOL)open
-{
+- (BOOL)open {
     Class realmClass = NSClassFromString(@"RLMRealm");
     Class configurationClass = NSClassFromString(@"RLMRealmConfiguration");
     
@@ -57,8 +55,7 @@
     return (error == nil);
 }
 
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables
-{
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables {
     NSMutableArray<NSDictionary<NSString *, id> *> *allTables = [NSMutableArray array];
     RLMSchema *schema = [self.realm schema];
     
@@ -74,8 +71,7 @@
     return allTables;
 }
 
-- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName
-{
+- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName {
     RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
     if (objectSchema == nil) {
         return nil;
@@ -89,8 +85,7 @@
     return columnNames;
 }
 
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName
-{
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName {
     RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
     RLMResults *results = [self.realm allObjects:tableName];
     if (results.count == 0 || objectSchema == nil) {

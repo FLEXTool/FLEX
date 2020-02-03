@@ -370,8 +370,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 #pragma mark UISearchResultsUpdating
 
-- (void)updateSearchResultsForSearchController:(UISearchController *)searchController
-{
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     [self.debounceTimer invalidate];
     NSString *text = searchController.searchBar.text;
     

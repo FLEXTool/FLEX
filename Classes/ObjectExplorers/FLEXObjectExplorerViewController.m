@@ -40,13 +40,11 @@
 
 #pragma mark - Initialization
 
-+ (instancetype)exploringObject:(id)target
-{
++ (instancetype)exploringObject:(id)target {
     return [self exploringObject:target customSection:[FLEXShortcutsSection forObject:target]];
 }
 
-+ (instancetype)exploringObject:(id)target customSection:(FLEXTableViewSection *)section
-{
++ (instancetype)exploringObject:(id)target customSection:(FLEXTableViewSection *)section {
     return [[self alloc]
         initWithObject:target
         explorer:[FLEXObjectExplorer forObject:target]
@@ -56,8 +54,7 @@
 
 - (id)initWithObject:(id)target
             explorer:(__kindof FLEXObjectExplorer *)explorer
-       customSection:(FLEXTableViewSection *)customSection
-{
+       customSection:(FLEXTableViewSection *)customSection {
     NSParameterAssert(target);
     
     self = [super init];
@@ -73,8 +70,7 @@
 
 #pragma mark - View controller lifecycle
 
-- (void)loadView
-{
+- (void)loadView {
     // TODO: grouped with rounded corners or not?
     FLEXTableView *tableView = [[FLEXTableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView = tableView;
@@ -87,8 +83,7 @@
     }
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     // Use [object class] here rather than object_getClass
@@ -129,8 +124,7 @@
     [self.tableView addGestureRecognizer:rightSwipe];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     // Reload the entire table view rather than just the visible cells, because the filtered rows
@@ -141,14 +135,12 @@
 
 #pragma mark - Private
 
-- (void)refreshControlDidRefresh:(id)sender
-{
+- (void)refreshControlDidRefresh:(id)sender {
     [self reloadData];
     [self.refreshControl endRefreshing];
 }
 
-- (NSArray<FLEXTableViewSection *> *)makeSections
-{
+- (NSArray<FLEXTableViewSection *> *)makeSections {
     FLEXObjectExplorer *explorer = self.explorer;
     
     // Description section is only for instances
@@ -200,15 +192,13 @@
     return sections.copy;
 }
 
-- (NSArray<FLEXTableViewSection *> *)nonemptySections
-{
+- (NSArray<FLEXTableViewSection *> *)nonemptySections {
     return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
         return section.numberOfRows > 0;
     }];
 }
 
-- (BOOL)sectionHasActions:(NSInteger)section
-{
+- (BOOL)sectionHasActions:(NSInteger)section {
     return self.sections[section] == self.descriptionSection;
 }
 
@@ -238,8 +228,7 @@
 
 #pragma mark - Description
 
-- (BOOL)shouldShowDescription
-{
+- (BOOL)shouldShowDescription {
     // Hide if we have filter text; it is rarely
     // useful to see the description when searching
     // since it's already at the top of the screen
@@ -252,8 +241,7 @@
 
 #pragma mark - Search
 
-- (void)updateSearchResults:(NSString *)newText;
-{
+- (void)updateSearchResults:(NSString *)newText; {
     self.filterText = newText;
 
     // Sections will adjust data based on this property
@@ -280,8 +268,7 @@
 
 #pragma mark - Reloading
 
-- (void)reloadData
-{
+- (void)reloadData {
     // Reload explorer
     [self.explorer reloadMetadata];
 
@@ -302,31 +289,26 @@
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.sections.count;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.sections[section].numberOfRows;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return self.sections[section].title;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *reuse = [self.sections[indexPath.section] reuseIdentifierForRow:indexPath.row];
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuse forIndexPath:indexPath];
     [self.sections[indexPath.section] configureCell:cell forRow:indexPath.row];
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     // For the description section, we want that nice slim/snug looking row.
     // Other rows use the automatic size.
     FLEXTableViewSection *section = self.sections[indexPath.section];
@@ -357,13 +339,11 @@
 
 #pragma mark - UITableViewDelegate
 
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self.sections[indexPath.section] canSelectRow:indexPath.row];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXTableViewSection *section = self.sections[indexPath.section];
 
     void (^action)(UIViewController *) = [section didSelectRowAction:indexPath.row];
@@ -380,13 +360,11 @@
     }
 }
 
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self sectionHasActions:indexPath.section];
 }
 
-- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     // Only the description section has "actions"
     if (self.sections[indexPath.section] == self.descriptionSection) {
         return action == @selector(copy:) || action == @selector(copyObjectAddress:);
@@ -395,8 +373,7 @@
     return NO;
 }
 
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     [self performSelector:action withObject:indexPath];
@@ -435,13 +412,11 @@
 ///
 /// Our table cells will use the UITableViewDelegate methods
 /// to make sure we can perform the actions we want to
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     return NO;
 }
 
-- (void)copy:(NSIndexPath *)indexPath
-{
+- (void)copy:(NSIndexPath *)indexPath {
     FLEXTableViewSection *section = self.sections[indexPath.section];
     UIPasteboard.generalPasteboard.string = ({
         NSString *copy = [section titleForRow:indexPath.row];
@@ -456,8 +431,7 @@
     });
 }
 
-- (void)copyObjectAddress:(NSIndexPath *)indexPath
-{
+- (void)copyObjectAddress:(NSIndexPath *)indexPath {
     UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
 }
 

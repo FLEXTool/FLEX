@@ -10,8 +10,7 @@
 
 @implementation FLEXTableLeftCell
 
-+ (instancetype)cellWithTableView:(UITableView *)tableView
-{
++ (instancetype)cellWithTableView:(UITableView *)tableView {
     static NSString *identifier = @"FLEXTableLeftCell";
     FLEXTableLeftCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
@@ -27,8 +26,7 @@
     return cell;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     self.titlelabel.frame = self.contentView.frame;
 }

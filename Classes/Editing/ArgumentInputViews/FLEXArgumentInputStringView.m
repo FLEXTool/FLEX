@@ -11,8 +11,7 @@
 
 @implementation FLEXArgumentInputStringView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         FLEXTypeEncoding type = typeEncoding[0];
@@ -31,8 +30,7 @@
     return self;
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     if ([inputValue isKindOfClass:[NSString class]]) {
         self.inputTextView.text = inputValue;
     } else if ([inputValue isKindOfClass:[NSValue class]]) {
@@ -54,8 +52,7 @@
     }
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     NSString *text = self.inputTextView.text;
     // Interpret empty string as nil. We loose the ability to set empty string as a string value,
     // but we accept that tradeoff in exchange for not having to type quotes for every string.
@@ -84,8 +81,7 @@
 
 // TODO: Support using object address for strings, as in the object arg view.
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
     unsigned long len = strlen(type);
 

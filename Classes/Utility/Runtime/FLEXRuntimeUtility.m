@@ -39,13 +39,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - General Helpers (Public)
 
-+ (BOOL)pointerIsValidObjcObject:(const void *)pointer
-{
++ (BOOL)pointerIsValidObjcObject:(const void *)pointer {
     return FLEXPointerIsValidObjcObject(pointer);
 }
 
-+ (id)potentiallyUnwrapBoxedPointer:(id)returnedObjectOrNil type:(const FLEXTypeEncoding *)returnType
-{
++ (id)potentiallyUnwrapBoxedPointer:(id)returnedObjectOrNil type:(const FLEXTypeEncoding *)returnType {
     if (!returnedObjectOrNil) {
         return nil;
     }
@@ -93,8 +91,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return returnedObjectOrNil;
 }
 
-+ (NSUInteger)fieldNameOffsetForTypeEncoding:(const FLEXTypeEncoding *)typeEncoding
-{
++ (NSUInteger)fieldNameOffsetForTypeEncoding:(const FLEXTypeEncoding *)typeEncoding {
     NSUInteger beginIndex = 0;
     while (typeEncoding[beginIndex] == FLEXTypeEncodingQuote) {
         NSUInteger endIndex = beginIndex + 1;
@@ -106,8 +103,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return beginIndex;
 }
 
-+ (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass
-{
++ (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass {
     NSMutableArray<Class> *superClasses = [NSMutableArray new];
     id cls = [objectOrClass class];
     do {
@@ -118,8 +114,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 }
 
 /// Could be nil
-+ (NSString *)safeDescriptionForObject:(id)object
-{
++ (NSString *)safeDescriptionForObject:(id)object {
     // Don't assume that we have an NSObject subclass.
     // Check to make sure the object responds to the description method
     if ([object respondsToSelector:@selector(description)]) {
@@ -130,8 +125,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 }
 
 /// Never nil
-+ (NSString *)safeDebugDescriptionForObject:(id)object
-{
++ (NSString *)safeDebugDescriptionForObject:(id)object {
     NSString *description = nil;
 
     // Don't assume that we have an NSObject subclass.
@@ -154,8 +148,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return description;
 }
 
-+ (NSString *)summaryForObject:(id)value
-{
++ (NSString *)summaryForObject:(id)value {
     NSString *description = nil;
 
     // Special case BOOL for better readability.
@@ -192,8 +185,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (void)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
-                       toClass:(__unsafe_unretained Class)theClass
-{
+                       toClass:(__unsafe_unretained Class)theClass {
     objc_property_t property = class_getProperty(theClass, name);
     if (!property) {
         unsigned int totalAttributesCount = (unsigned int)attributePairs.count;
@@ -213,8 +205,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
 }
 
-+ (NSArray<NSString *> *)allPropertyAttributeKeys
-{
++ (NSArray<NSString *> *)allPropertyAttributeKeys {
     static NSArray<NSString *> *allPropertyAttributeKeys = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -240,12 +231,11 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Method Helpers (Public)
 
-+ (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method
-{
++ (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method {
     NSMutableArray<NSString *> *components = [NSMutableArray array];
 
     NSString *selectorName = NSStringFromSelector(method_getName(method));
-    NSMutableArray<NSString *> *selectorComponents = [[selectorName componentsSeparatedByString:@":"] mutableCopy];
+    NSMutableArray<NSString *> *selectorComponents = [selectorName componentsSeparatedByString:@":"].mutableCopy;
 
     // this is a workaround cause method_getNumberOfArguments() returns wrong number for some methods
     if (selectorComponents.count == 1) {
@@ -274,16 +264,14 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Method Calling/Field Editing (Public)
 
-+ (id)performSelector:(SEL)selector onObject:(id)object
-{
++ (id)performSelector:(SEL)selector onObject:(id)object {
     return [self performSelector:selector onObject:object withArguments:@[] error:nil];
 }
 
 + (id)performSelector:(SEL)selector
              onObject:(id)object
         withArguments:(NSArray *)arguments
-                error:(NSError * __autoreleasing *)error
-{
+                error:(NSError * __autoreleasing *)error {
     static dispatch_once_t onceToken;
     static SEL stdStringExclusion = nil;
     dispatch_once(&onceToken, ^{
@@ -447,8 +435,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return returnObject;
 }
 
-+ (BOOL)isTollFreeBridgedValue:(id)value forCFType:(const char *)typeEncoding
-{
++ (BOOL)isTollFreeBridgedValue:(id)value forCFType:(const char *)typeEncoding {
     // See https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/Toll-FreeBridgin/Toll-FreeBridgin.html
 #define CASE(cftype, foundationClass) \
     if (strcmp(typeEncoding, @encode(cftype)) == 0) { \
@@ -485,8 +472,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return NO;
 }
 
-+ (NSString *)editableJSONStringForObject:(id)object
-{
++ (NSString *)editableJSONStringForObject:(id)object {
     NSString *editableDescription = nil;
 
     if (object) {
@@ -504,8 +490,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return editableDescription;
 }
 
-+ (id)objectValueFromEditableJSONString:(NSString *)string
-{
++ (id)objectValueFromEditableJSONString:(NSString *)string {
     id value = nil;
     // nil for empty string/whitespace
     if ([string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) {
@@ -518,8 +503,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return value;
 }
 
-+ (NSValue *)valueForNumberWithObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString
-{
++ (NSValue *)valueForNumberWithObjCType:(const char *)typeEncoding fromInputString:(NSString *)inputString {
     NSNumberFormatter *formatter = [NSNumberFormatter new];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber *number = [formatter numberFromString:inputString];
@@ -575,8 +559,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                                                  const char *fieldTypeEncoding,
                                                  NSString *prettyTypeEncoding,
                                                  NSUInteger fieldIndex,
-                                                 NSUInteger fieldOffset))typeBlock
-{
+                                                 NSUInteger fieldOffset))typeBlock {
     if (structEncoding && structEncoding[0] == FLEXTypeEncodingStructBegin) {
         const char *equals = strchr(structEncoding, '=');
         if (equals) {
@@ -628,8 +611,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Metadata Helpers
 
-+ (NSDictionary<NSString *, NSString *> *)attributesForProperty:(objc_property_t)property
-{
++ (NSDictionary<NSString *, NSString *> *)attributesForProperty:(objc_property_t)property {
     NSString *attributes = @(property_getAttributes(property));
     // Thanks to MAObjcRuntime for inspiration here.
     NSArray<NSString *> *attributePairs = [attributes componentsSeparatedByString:@","];
@@ -640,8 +622,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return attributesDictionary;
 }
 
-+ (NSString *)appendName:(NSString *)name toType:(NSString *)type
-{
++ (NSString *)appendName:(NSString *)name toType:(NSString *)type {
     if (!type.length) {
         type = @"(?)";
     }
@@ -655,8 +636,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     return combined;
 }
 
-+ (NSString *)readableTypeForEncoding:(NSString *)encodingString
-{
++ (NSString *)readableTypeForEncoding:(NSString *)encodingString {
     if (!encodingString.length) {
         return @"???";
     }
@@ -805,8 +785,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Internal Helpers
 
-+ (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type
-{
++ (NSValue *)valueForPrimitivePointer:(void *)pointer objCType:(const char *)type {
     // Remove the field name if there is any (e.g. \"width\"d -> d)
     const NSUInteger fieldNameOffset = [FLEXRuntimeUtility fieldNameOffsetForTypeEncoding:type];
     if (fieldNameOffset > 0) {

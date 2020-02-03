@@ -20,8 +20,7 @@ typedef struct {
 
 @implementation FLEXHeapEnumerator
 
-static void range_callback(task_t task, void *context, unsigned type, vm_range_t *ranges, unsigned rangeCount)
-{
+static void range_callback(task_t task, void *context, unsigned type, vm_range_t *ranges, unsigned rangeCount) {
     if (!context) {
         return;
     }
@@ -44,14 +43,12 @@ static void range_callback(task_t task, void *context, unsigned type, vm_range_t
     }
 }
 
-static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_address, __unused vm_size_t size, void **local_memory)
-{
+static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_address, __unused vm_size_t size, void **local_memory) {
     *local_memory = (void *)remote_address;
     return KERN_SUCCESS;
 }
 
-+ (void)enumerateLiveObjectsUsingBlock:(flex_object_enumeration_block_t)block
-{
++ (void)enumerateLiveObjectsUsingBlock:(flex_object_enumeration_block_t)block {
     if (!block) {
         return;
     }
@@ -116,8 +113,7 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     }
 }
 
-+ (void)updateRegisteredClasses
-{
++ (void)updateRegisteredClasses {
     if (!registeredClasses) {
         registeredClasses = CFSetCreateMutable(NULL, 0, NULL);
     } else {

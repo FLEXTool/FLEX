@@ -32,13 +32,11 @@
 
 #pragma mark - Initialization
 
-+ (id)forObject:(id)objectOrClass
-{
++ (id)forObject:(id)objectOrClass {
     return [[self alloc] initWithObject:objectOrClass];
 }
 
-- (id)initWithObject:(id)objectOrClass
-{
+- (id)initWithObject:(id)objectOrClass {
     NSParameterAssert(objectOrClass);
     
     self = [super init];

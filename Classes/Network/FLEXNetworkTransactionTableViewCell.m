@@ -25,8 +25,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 
 @implementation FLEXNetworkTransactionTableViewCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -54,16 +53,14 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     return self;
 }
 
-- (void)setTransaction:(FLEXNetworkTransaction *)transaction
-{
+- (void)setTransaction:(FLEXNetworkTransaction *)transaction {
     if (_transaction != transaction) {
         _transaction = transaction;
         [self setNeedsLayout];
     }
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
 
     const CGFloat kVerticalPadding = 8.0;
@@ -95,8 +92,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     self.transactionDetailsLabel.frame = CGRectMake(transactionDetailsOriginX, transactionDetailsLabelOriginY, transactionDetailsLabelWidth, transactionLabelPreferredSize.height);
 }
 
-- (NSString *)nameLabelText
-{
+- (NSString *)nameLabelText {
     NSURL *url = self.transaction.request.URL;
     NSString *name = [url lastPathComponent];
     if (name.length == 0) {
@@ -109,10 +105,9 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     return name;
 }
 
-- (NSString *)pathLabelText
-{
+- (NSString *)pathLabelText {
     NSURL *url = self.transaction.request.URL;
-    NSMutableArray<NSString *> *mutablePathComponents = [[url pathComponents] mutableCopy];
+    NSMutableArray<NSString *> *mutablePathComponents = url.pathComponents.mutableCopy;
     if (mutablePathComponents.count > 0) {
         [mutablePathComponents removeLastObject];
     }
@@ -123,8 +118,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     return path;
 }
 
-- (NSString *)transactionDetailsLabelText
-{
+- (NSString *)transactionDetailsLabelText {
     NSMutableArray<NSString *> *detailComponents = [NSMutableArray array];
 
     NSString *timestamp = [[self class] timestampStringFromRequestDate:self.transaction.startTime];
@@ -162,8 +156,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     return [detailComponents componentsJoinedByString:@" ・ "];
 }
 
-+ (NSString *)timestampStringFromRequestDate:(NSDate *)date
-{
++ (NSString *)timestampStringFromRequestDate:(NSDate *)date {
     static NSDateFormatter *dateFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -173,8 +166,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     return [dateFormatter stringFromDate:date];
 }
 
-+ (CGFloat)preferredCellHeight
-{
++ (CGFloat)preferredCellHeight {
     return 65.0;
 }
 

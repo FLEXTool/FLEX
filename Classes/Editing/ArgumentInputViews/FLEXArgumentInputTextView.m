@@ -20,8 +20,7 @@
 
 @implementation FLEXArgumentInputTextView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.inputTextView = [UITextView new];
@@ -54,8 +53,7 @@
 
 #pragma mark - Private
 
-- (UIToolbar *)createToolBar
-{
+- (UIToolbar *)createToolBar {
     UIToolbar *toolBar = [UIToolbar new];
     [toolBar sizeToFit];
     UIBarButtonItem *spaceItem = [[UIBarButtonItem alloc]
@@ -74,8 +72,7 @@
     return toolBar;
 }
 
-- (void)setInputPlaceholderText:(NSString *)placeholder
-{
+- (void)setInputPlaceholderText:(NSString *)placeholder {
     self.placeholderLabel.text = placeholder;
     if (placeholder.length) {
         if (!self.inputTextView.text.length) {
@@ -90,24 +87,21 @@
     [self setNeedsLayout];
 }
 
-- (NSString *)inputPlaceholderText
-{
+- (NSString *)inputPlaceholderText {
     return self.placeholderLabel.text;
 }
 
 
 #pragma mark - Superclass Overrides
 
-- (BOOL)inputViewIsFirstResponder
-{
+- (BOOL)inputViewIsFirstResponder {
     return self.inputTextView.isFirstResponder;
 }
 
 
 #pragma mark - Layout and Sizing
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     self.inputTextView.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.bounds.size.width, [self inputTextViewHeight]);
@@ -121,8 +115,7 @@
     );
 }
 
-- (NSUInteger)numberOfInputLines
-{
+- (NSUInteger)numberOfInputLines {
     switch (self.targetSize) {
         case FLEXArgumentInputViewSizeDefault:
             return 2;
@@ -133,13 +126,11 @@
     }
 }
 
-- (CGFloat)inputTextViewHeight
-{
+- (CGFloat)inputTextViewHeight {
     return ceil([[self class] inputFont].lineHeight * self.numberOfInputLines) + 16.0;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
     fitSize.height += [self inputTextViewHeight];
     return fitSize;
@@ -148,16 +139,14 @@
 
 #pragma mark - Class Helpers
 
-+ (UIFont *)inputFont
-{
++ (UIFont *)inputFont {
     return [UIFont systemFontOfSize:14.0];
 }
 
 
 #pragma mark - UITextViewDelegate
 
-- (void)textViewDidChange:(UITextView *)textView
-{
+- (void)textViewDidChange:(UITextView *)textView {
     [self.delegate argumentInputViewValueDidChange:self];
     self.placeholderLabel.hidden = !(self.inputPlaceholderText.length && !textView.text.length);
 }

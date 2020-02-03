@@ -13,14 +13,12 @@
 
 static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
 
-@implementation FLEXSQLiteDatabaseManager
-{
+@implementation FLEXSQLiteDatabaseManager {
     sqlite3* _db;
     NSString* _databasePath;
 }
 
-- (instancetype)initWithPath:(NSString*)aPath
-{
+- (instancetype)initWithPath:(NSString*)aPath {
     self = [super init];
     
     if (self) {
@@ -86,13 +84,11 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
 }
 
 
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables
-{
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables {
     return [self executeQuery:QUERY_TABLENAMES_SQL];
 }
 
-- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName
-{
+- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName {
     NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info('%@')",tableName];
     NSArray<NSDictionary<NSString *, id> *> *resultArray =  [self executeQuery:sql];
     NSMutableArray<NSString *> *array = [NSMutableArray array];
@@ -103,8 +99,7 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
     return array;
 }
 
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName
-{
+- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName {
     NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@",tableName];
     return [self executeQuery:sql];
 }
@@ -112,8 +107,7 @@ static NSString *const QUERY_TABLENAMES_SQL = @"SELECT name FROM sqlite_master W
 #pragma mark -
 #pragma mark - Private
 
-- (NSArray<NSDictionary<NSString *, id> *> *)executeQuery:(NSString *)sql
-{
+- (NSArray<NSDictionary<NSString *, id> *> *)executeQuery:(NSString *)sql {
     [self open];
     NSMutableArray<NSDictionary<NSString *, id> *> *resultArray = [NSMutableArray array];
     sqlite3_stmt *pstmt;

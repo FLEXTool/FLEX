@@ -32,8 +32,7 @@
 
 @implementation FLEXGlobalsViewController
 
-+ (NSString *)globalsTitleForSection:(FLEXGlobalsSectionKind)section
-{
++ (NSString *)globalsTitleForSection:(FLEXGlobalsSectionKind)section {
     switch (section) {
         case FLEXGlobalsSectionProcessAndEvents:
             return @"Process and Events";
@@ -49,8 +48,7 @@
     }
 }
 
-+ (FLEXGlobalsEntry *)globalsEntryForRow:(FLEXGlobalsRow)row
-{
++ (FLEXGlobalsEntry *)globalsEntryForRow:(FLEXGlobalsRow)row {
     switch (row) {
         case FLEXGlobalsRowAppKeychainItems:
             return [FLEXKeychainTableViewController flex_concreteGlobalsEntry:row];
@@ -89,8 +87,7 @@
     }
 }
 
-+ (NSArray<FLEXGlobalsSection *> *)defaultGlobalSections
-{
++ (NSArray<FLEXGlobalsSection *> *)defaultGlobalSections {
     static NSArray<FLEXGlobalsSection *> *sections = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -133,8 +130,7 @@
 
 #pragma mark - UIViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     self.title = @"💪  FLEX";
@@ -174,8 +170,7 @@
 
 #pragma mark - Private
 
-- (NSArray<FLEXGlobalsSection *> *)nonemptySections
-{
+- (NSArray<FLEXGlobalsSection *> *)nonemptySections {
     return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
         return section.numberOfRows > 0;
     }];
@@ -183,18 +178,15 @@
 
 #pragma mark - Table View Data Source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.sections.count;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.sections[section].numberOfRows;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
@@ -208,15 +200,13 @@
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return self.sections[section].title;
 }
 
 #pragma mark - Table View Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXTableViewSection *section = self.sections[indexPath.section];
 
     void (^action)(UIViewController *) = [section didSelectRowAction:indexPath.row];

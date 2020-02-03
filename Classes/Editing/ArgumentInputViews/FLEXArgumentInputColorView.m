@@ -30,8 +30,7 @@
 
 @implementation FLEXColorComponentInputView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.slider = [UISlider new];
@@ -49,15 +48,13 @@
     return self;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     self.slider.backgroundColor = backgroundColor;
     self.valueLabel.backgroundColor = backgroundColor;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     const CGFloat kValueLabelWidth = 50.0;
@@ -72,19 +69,16 @@
     self.valueLabel.frame = CGRectMake(valueLabelOriginX, valueLabelOriginY, kValueLabelWidth, self.valueLabel.frame.size.height);
 }
 
-- (void)sliderChanged:(id)sender
-{
+- (void)sliderChanged:(id)sender {
     [self.delegate colorComponentInputViewValueDidChange:self];
     [self updateValueLabel];
 }
 
-- (void)updateValueLabel
-{
+- (void)updateValueLabel {
     self.valueLabel.text = [NSString stringWithFormat:@"%.3f", self.slider.value];
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGFloat height = [self.slider sizeThatFits:size].height;
     return CGSizeMake(size.width, height);
 }
@@ -101,8 +95,7 @@
 
 @implementation FLEXColorPreviewBox
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.layer.borderWidth = 1.0;
@@ -117,18 +110,15 @@
     return self;
 }
 
-- (void)setColor:(UIColor *)color
-{
+- (void)setColor:(UIColor *)color {
     self.colorOverlayView.backgroundColor = color;
 }
 
-- (UIColor *)color
-{
+- (UIColor *)color {
     return self.colorOverlayView.backgroundColor;
 }
 
-+ (UIImage *)backgroundPatternImage
-{
++ (UIImage *)backgroundPatternImage {
     const CGFloat kSquareDimension = 5.0;
     CGSize squareSize = CGSizeMake(kSquareDimension, kSquareDimension);
     CGSize imageSize = CGSizeMake(2.0 * kSquareDimension, 2.0 * kSquareDimension);
@@ -163,8 +153,7 @@
 
 @implementation FLEXArgumentInputColorView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.colorPreviewBox = [FLEXColorPreviewBox new];
@@ -199,8 +188,7 @@
     return self;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     self.alphaInput.backgroundColor = backgroundColor;
     self.redInput.backgroundColor = backgroundColor;
@@ -208,8 +196,7 @@
     self.blueInput.backgroundColor = backgroundColor;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat runningOriginY = 0;
@@ -235,8 +222,7 @@
     }
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     if ([inputValue isKindOfClass:[UIColor class]]) {
         [self updateWithColor:inputValue];
     } else if ([inputValue isKindOfClass:[NSValue class]]) {
@@ -252,18 +238,15 @@
     }
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     return [UIColor colorWithRed:self.redInput.slider.value green:self.greenInput.slider.value blue:self.blueInput.slider.value alpha:self.alphaInput.slider.value];
 }
 
-- (void)colorComponentInputViewValueDidChange:(FLEXColorComponentInputView *)colorComponentInputView
-{
+- (void)colorComponentInputViewValueDidChange:(FLEXColorComponentInputView *)colorComponentInputView {
     [self updateColorPreview];
 }
 
-- (void)updateWithColor:(UIColor *)color
-{
+- (void)updateWithColor:(UIColor *)color {
     CGFloat red, green, blue, white, alpha;
     if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
         self.alphaInput.slider.value = alpha;
@@ -287,8 +270,7 @@
     [self updateColorPreview];
 }
 
-- (void)updateColorPreview
-{
+- (void)updateColorPreview {
     self.colorPreviewBox.color = self.inputValue;
     unsigned char redByte = self.redInput.slider.value * 255;
     unsigned char greenByte = self.greenInput.slider.value * 255;
@@ -297,8 +279,7 @@
     [self setNeedsLayout];
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGFloat height = 0;
     height += [[self class] colorPreviewBoxHeight];
     height += [[self class] inputViewVerticalPadding];
@@ -312,18 +293,15 @@
     return CGSizeMake(size.width, height);
 }
 
-+ (CGFloat)inputViewVerticalPadding
-{
++ (CGFloat)inputViewVerticalPadding {
     return 10.0;
 }
 
-+ (CGFloat)colorPreviewBoxHeight
-{
++ (CGFloat)colorPreviewBoxHeight {
     return 40.0;
 }
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
 
     // We don't care if currentValue is a color or not; we will default to +clearColor

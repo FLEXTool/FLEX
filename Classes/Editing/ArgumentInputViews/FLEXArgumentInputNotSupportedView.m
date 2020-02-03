@@ -11,8 +11,7 @@
 
 @implementation FLEXArgumentInputNotSupportedView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.inputTextView.userInteractionEnabled = NO;

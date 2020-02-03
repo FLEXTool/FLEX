@@ -25,13 +25,11 @@
 
 #pragma mark - Initialization
 
-+ (instancetype)target:(id)target
-{
++ (instancetype)target:(id)target {
     return [[self alloc] initWithTarget:target];
 }
 
-- (id)initWithTarget:(id)target
-{
+- (id)initWithTarget:(id)target {
     self = [super init];
     if (self) {
         self.target = target;
@@ -48,15 +46,13 @@
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 #pragma mark - UIViewController methods
 
-- (void)keyboardDidShow:(NSNotification *)notification
-{
+- (void)keyboardDidShow:(NSNotification *)notification {
     CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
@@ -74,16 +70,14 @@
     }
 }
 
-- (void)keyboardWillHide:(NSNotification *)notification
-{
+- (void)keyboardWillHide:(NSNotification *)notification {
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
     scrollInsets.bottom = 0.0;
     self.scrollView.contentInset = scrollInsets;
     self.scrollView.scrollIndicatorInsets = scrollInsets;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.view.backgroundColor = FLEXColor.scrollViewBackgroundColor;
@@ -107,8 +101,7 @@
     self.navigationItem.rightBarButtonItem = self.setterButton;
 }
 
-- (void)viewWillLayoutSubviews
-{
+- (void)viewWillLayoutSubviews {
     CGSize constrainSize = CGSizeMake(self.scrollView.bounds.size.width, CGFLOAT_MAX);
     CGSize fieldEditorSize = [self.fieldEditorView sizeThatFits:constrainSize];
     self.fieldEditorView.frame = CGRectMake(0, 0, fieldEditorSize.width, fieldEditorSize.height);
@@ -117,19 +110,16 @@
 
 #pragma mark - Public
 
-- (FLEXArgumentInputView *)firstInputView
-{
+- (FLEXArgumentInputView *)firstInputView {
     return [self.fieldEditorView argumentInputViews].firstObject;
 }
 
-- (void)actionButtonPressed:(id)sender
-{
+- (void)actionButtonPressed:(id)sender {
     // Subclasses can override
     [self.fieldEditorView endEditing:YES];
 }
 
-- (void)exploreObjectOrPopViewController:(id)objectOrNil
-{
+- (void)exploreObjectOrPopViewController:(id)objectOrNil {
     if (objectOrNil) {
         // For non-nil (or void) return types, push an explorer view controller to display the object
         FLEXObjectExplorerViewController *explorerViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:objectOrNil];

@@ -16,8 +16,7 @@
 
 @implementation FLEXNetworkTransaction
 
-- (NSString *)description
-{
+- (NSString *)description {
     NSString *description = [super description];
 
     description = [description stringByAppendingFormat:@" id = %@;", self.requestID];
@@ -50,8 +49,7 @@
     return _cachedRequestBody;
 }
 
-+ (NSString *)readableStringFromTransactionState:(FLEXNetworkTransactionState)state
-{
++ (NSString *)readableStringFromTransactionState:(FLEXNetworkTransactionState)state {
     NSString *readableString = nil;
     switch (state) {
         case FLEXNetworkTransactionStateUnstarted:

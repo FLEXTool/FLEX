@@ -21,8 +21,7 @@
 
 @implementation FLEXKeychainTableViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.navigationItem.rightBarButtonItems = @[
@@ -38,18 +37,15 @@
     [self updateHeaderTitle];
 }
 
-- (void)refreshkeychainItems
-{
+- (void)refreshkeychainItems {
     self.keychainItems = [FLEXKeychain allAccounts].mutableCopy;
 }
 
-- (void)updateHeaderTitle
-{
+- (void)updateHeaderTitle {
     self.headerTitle = [NSString stringWithFormat:@"%@ items", @(self.keychainItems.count)];
 }
 
-- (FLEXKeychainQuery *)queryForItemAtIndex:(NSInteger)idx
-{
+- (FLEXKeychainQuery *)queryForItemAtIndex:(NSInteger)idx {
     NSDictionary *item = self.keychainItems[idx];
 
     FLEXKeychainQuery *query = [FLEXKeychainQuery new];
@@ -60,8 +56,7 @@
     return query;
 }
 
-- (void)deleteItem:(NSDictionary *)item
-{
+- (void)deleteItem:(NSDictionary *)item {
     NSError *error = nil;
     BOOL success = [FLEXKeychain
         deletePasswordForService:item[kFLEXKeychainWhereKey]
@@ -80,8 +75,7 @@
 
 #pragma mark Buttons
 
-- (void)trashPressed
-{
+- (void)trashPressed {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.title(@"Clear Keychain");
         make.message(@"This will remove all keychain items for this app.\n");
@@ -98,8 +92,7 @@
     } showFrom:self];
 }
 
-- (void)addPressed
-{
+- (void)addPressed {
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Add Keychain Item");
         make.textField(@"Service name, i.e. Instagram");
@@ -122,8 +115,7 @@
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row
-{
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
     return @"🔑  Keychain";
 }
 
@@ -137,13 +129,11 @@
 
 #pragma mark - Table View Data Source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.keychainItems.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (!cell) {
@@ -167,13 +157,11 @@
     return cell;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return self.headerTitle;
 }
 
-- (void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)style forRowAtIndexPath:(NSIndexPath *)ip
-{
+- (void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)style forRowAtIndexPath:(NSIndexPath *)ip {
     if (style == UITableViewCellEditingStyleDelete) {
         [self deleteItem:self.keychainItems[ip.row]];
         [self.keychainItems removeObjectAtIndex:ip.row];
@@ -184,8 +172,7 @@
 
 #pragma mark - Table View Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXKeychainQuery *query = [self queryForItemAtIndex:indexPath.row];
     
     [FLEXAlert makeAlert:^(FLEXAlert *make) {

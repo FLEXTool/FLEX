@@ -17,8 +17,7 @@
 
 @implementation FLEXKeyboardHelpViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     self.textView = [[UITextView alloc] initWithFrame:self.view.bounds];
@@ -36,8 +35,7 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed:)];
 }
 
-- (void)donePressed:(id)sender
-{
+- (void)donePressed:(id)sender {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 

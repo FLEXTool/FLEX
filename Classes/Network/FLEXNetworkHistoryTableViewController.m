@@ -31,8 +31,7 @@
 
 @implementation FLEXNetworkHistoryTableViewController
 
-- (id)init
-{
+- (id)init {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleNewTransactionRecordedNotification:) name:kFLEXNetworkRecorderNewTransactionNotification object:nil];
@@ -49,13 +48,11 @@
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
@@ -70,8 +67,7 @@
     [self updateTransactions];
 }
 
-- (void)settingsButtonTapped:(id)sender
-{
+- (void)settingsButtonTapped:(id)sender {
     FLEXNetworkSettingsTableViewController *settingsViewController = [FLEXNetworkSettingsTableViewController new];
     settingsViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(settingsViewControllerDoneTapped:)];
     settingsViewController.title = @"Network Debugging Settings";
@@ -80,18 +76,15 @@
     [self presentViewController:wrapperNavigationController animated:YES completion:nil];
 }
 
-- (void)settingsViewControllerDoneTapped:(id)sender
-{
+- (void)settingsViewControllerDoneTapped:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)updateTransactions
-{
+- (void)updateTransactions {
     self.networkTransactions = [[FLEXNetworkRecorder defaultRecorder] networkTransactions];
 }
 
-- (void)setNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)networkTransactions
-{
+- (void)setNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)networkTransactions {
     if (![_networkTransactions isEqual:networkTransactions]) {
         _networkTransactions = networkTransactions;
         [self updateBytesReceived];
@@ -99,8 +92,7 @@
     }
 }
 
-- (void)updateBytesReceived
-{
+- (void)updateBytesReceived {
     long long bytesReceived = 0;
     for (FLEXNetworkTransaction *transaction in self.networkTransactions) {
         bytesReceived += transaction.receivedDataLength;
@@ -109,16 +101,14 @@
     [self updateFirstSectionHeader];
 }
 
-- (void)setFilteredNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)filteredNetworkTransactions
-{
+- (void)setFilteredNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)filteredNetworkTransactions {
     if (![_filteredNetworkTransactions isEqual:filteredNetworkTransactions]) {
         _filteredNetworkTransactions = filteredNetworkTransactions;
         [self updateFilteredBytesReceived];
     }
 }
 
-- (void)updateFilteredBytesReceived
-{
+- (void)updateFilteredBytesReceived {
     long long filteredBytesReceived = 0;
     for (FLEXNetworkTransaction *transaction in self.filteredNetworkTransactions) {
         filteredBytesReceived += transaction.receivedDataLength;
@@ -127,8 +117,7 @@
     [self updateFirstSectionHeader];
 }
 
-- (void)updateFirstSectionHeader
-{
+- (void)updateFirstSectionHeader {
     UIView *view = [self.tableView headerViewForSection:0];
     if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
         UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
@@ -137,8 +126,7 @@
     }
 }
 
-- (NSString *)headerText
-{
+- (NSString *)headerText {
     NSString *headerText = nil;
     if (FLEXNetworkObserver.isEnabled) {
         long long bytesReceived = 0;
@@ -171,15 +159,13 @@
 
 #pragma mark - Notification Handlers
 
-- (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
-{
+- (void)handleNewTransactionRecordedNotification:(NSNotification *)notification {
     if (self.viewIfLoaded.window) {
         [self tryUpdateTransactions];
     }
 }
 
-- (void)tryUpdateTransactions
-{
+- (void)tryUpdateTransactions {
     // Let the previous row insert animation finish before starting a new one to avoid stomping.
     // We'll try calling the method again when the insertion completes, and we properly no-op if there haven't been changes.
     if (self.rowInsertInProgress) {
@@ -225,8 +211,7 @@
     }
 }
 
-- (void)handleTransactionUpdatedNotification:(NSNotification *)notification
-{
+- (void)handleTransactionUpdatedNotification:(NSNotification *)notification {
     [self updateBytesReceived];
     [self updateFilteredBytesReceived];
 
@@ -245,40 +230,34 @@
     [self updateFirstSectionHeader];
 }
 
-- (void)handleTransactionsClearedNotification:(NSNotification *)notification
-{
+- (void)handleTransactionsClearedNotification:(NSNotification *)notification {
     [self updateTransactions];
     [self.tableView reloadData];
 }
 
-- (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification
-{
+- (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification {
     // Update the header, which displays a warning when network debugging is disabled
     [self updateFirstSectionHeader];
 }
 
 #pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.searchController.isActive ? self.filteredNetworkTransactions.count : self.networkTransactions.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return [self headerText];
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
-{
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
     if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
         UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
         headerView.textLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightSemibold];
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXNetworkTransactionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
     cell.transaction = [self transactionAtIndexPath:indexPath];
 
@@ -293,8 +272,7 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXNetworkTransactionDetailTableViewController *detailViewController = [FLEXNetworkTransactionDetailTableViewController new];
     detailViewController.transaction = [self transactionAtIndexPath:indexPath];
     [self.navigationController pushViewController:detailViewController animated:YES];
@@ -302,18 +280,15 @@
 
 #pragma mark - Menu Actions
 
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     return action == @selector(copy:);
 }
 
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
         UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
@@ -322,8 +297,7 @@
 
 #if FLEX_AT_LEAST_IOS13_SDK
 
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
-{
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     return [UIContextMenuConfiguration
         configurationWithIdentifier:nil
         previewProvider:nil
@@ -348,15 +322,13 @@
 
 #endif
 
-- (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath
-{
+- (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath {
     return self.searchController.isActive ? self.filteredNetworkTransactions[indexPath.row] : self.networkTransactions[indexPath.row];
 }
 
 #pragma mark - Search Bar
 
-- (void)updateSearchResults:(NSString *)searchString
-{
+- (void)updateSearchResults:(NSString *)searchString {
     [self onBackgroundQueue:^NSArray *{
         return [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary<NSString *, id> *bindings) {
             return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
@@ -371,18 +343,15 @@
 
 #pragma mark UISearchControllerDelegate
 
-- (void)willPresentSearchController:(UISearchController *)searchController
-{
+- (void)willPresentSearchController:(UISearchController *)searchController {
     self.isPresentingSearch = YES;
 }
 
-- (void)didPresentSearchController:(UISearchController *)searchController
-{
+- (void)didPresentSearchController:(UISearchController *)searchController {
     self.isPresentingSearch = NO;
 }
 
-- (void)willDismissSearchController:(UISearchController *)searchController
-{
+- (void)willDismissSearchController:(UISearchController *)searchController {
     [self.tableView reloadData];
 }
 

@@ -25,8 +25,7 @@
     [self.view addSubview:self.multiColumnView];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.multiColumnView reloadData];
 }
@@ -48,29 +47,24 @@
 }
 #pragma mark MultiColumnTableView DataSource
 
-- (NSInteger)numberOfColumnsInTableView:(FLEXMultiColumnTableView *)tableView
-{
+- (NSInteger)numberOfColumnsInTableView:(FLEXMultiColumnTableView *)tableView {
     return self.columnsArray.count;
 }
-- (NSInteger)numberOfRowsInTableView:(FLEXMultiColumnTableView *)tableView
-{
+- (NSInteger)numberOfRowsInTableView:(FLEXMultiColumnTableView *)tableView {
     return self.contentsArray.count;
 }
 
 
-- (NSString *)columnNameInColumn:(NSInteger)column
-{
+- (NSString *)columnNameInColumn:(NSInteger)column {
     return self.columnsArray[column];
 }
 
 
-- (NSString *)rowNameInRow:(NSInteger)row
-{
+- (NSString *)rowNameInRow:(NSInteger)row {
     return [NSString stringWithFormat:@"%ld",(long)row];
 }
 
-- (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row
-{
+- (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row {
     if (self.contentsArray.count > row) {
         NSDictionary<NSString *, id> *dic = self.contentsArray[row];
         if (self.contentsArray.count > column) {
@@ -80,8 +74,7 @@
     return @"";
 }
 
-- (NSArray *)contentAtRow:(NSInteger)row
-{
+- (NSArray *)contentAtRow:(NSInteger)row {
     NSMutableArray *result = [NSMutableArray array];
     if (self.contentsArray.count > row) {
         NSDictionary<NSString *, id> *dic = self.contentsArray[row];
@@ -94,24 +87,20 @@
 }
 
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
-      heightForContentCellInRow:(NSInteger)row
-{
+      heightForContentCellInRow:(NSInteger)row {
     return 40;
 }
 
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
-    widthForContentCellInColumn:(NSInteger)column
-{
+    widthForContentCellInColumn:(NSInteger)column {
     return 120;
 }
 
-- (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView
-{
+- (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView {
     return 40;
 }
 
-- (CGFloat)widthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView
-{
+- (CGFloat)widthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView {
     NSString *str = [NSString stringWithFormat:@"%lu",(unsigned long)self.contentsArray.count];
     NSDictionary<NSString *, id> *attrs = @{@"NSFontAttributeName":[UIFont systemFontOfSize:17.0]};
     CGSize size =   [str boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, 14)
@@ -124,14 +113,12 @@
 #pragma mark MultiColumnTableView Delegate
 
 
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapLabelWithText:(NSString *)text
-{
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapLabelWithText:(NSString *)text {
     FLEXWebViewController * detailViewController = [[FLEXWebViewController alloc] initWithText:text];
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapHeaderWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)sortType
-{
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapHeaderWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)sortType {
     
     NSArray<NSDictionary<NSString *, id> *> *sortContentData = [self.contentsArray sortedArrayUsingComparator:^NSComparisonResult(NSDictionary<NSString *, id> * obj1, NSDictionary<NSString *, id> * obj2) {
         
@@ -163,8 +150,7 @@
 #pragma mark About Transition
 
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
-              withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator
-{
+              withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super willTransitionToTraitCollection:newCollection
                  withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {

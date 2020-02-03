@@ -21,13 +21,11 @@
 
 @implementation FLEXArgumentInputViewFactory
 
-+ (FLEXArgumentInputView *)argumentInputViewForTypeEncoding:(const char *)typeEncoding
-{
++ (FLEXArgumentInputView *)argumentInputViewForTypeEncoding:(const char *)typeEncoding {
     return [self argumentInputViewForTypeEncoding:typeEncoding currentValue:nil];
 }
 
-+ (FLEXArgumentInputView *)argumentInputViewForTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue
-{
++ (FLEXArgumentInputView *)argumentInputViewForTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue {
     Class subclass = [self argumentInputViewSubclassForTypeEncoding:typeEncoding currentValue:currentValue];
     if (!subclass) {
         // Fall back to a FLEXArgumentInputNotSupportedView if we can't find a subclass that fits the type encoding.
@@ -39,8 +37,7 @@
     return [[subclass alloc] initWithArgumentTypeEncoding:typeEncoding + fieldNameOffset];
 }
 
-+ (Class)argumentInputViewSubclassForTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue
-{
++ (Class)argumentInputViewSubclassForTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue {
     // Remove the field name if there is any (e.g. \"width\"d -> d)
     const NSUInteger fieldNameOffset = [FLEXRuntimeUtility fieldNameOffsetForTypeEncoding:typeEncoding];
     Class argumentInputViewSubclass = nil;
@@ -66,8 +63,7 @@
     return argumentInputViewSubclass;
 }
 
-+ (BOOL)canEditFieldWithTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue
-{
++ (BOOL)canEditFieldWithTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue {
     return [self argumentInputViewSubclassForTypeEncoding:typeEncoding currentValue:currentValue] != nil;
 }
 

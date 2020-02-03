@@ -18,8 +18,7 @@
 
 @implementation FLEXArgumentInputStructView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         NSMutableArray<FLEXArgumentInputView *> *inputViews = [NSMutableArray array];
@@ -52,16 +51,14 @@
 
 #pragma mark - Superclass Overrides
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         inputView.backgroundColor = backgroundColor;
     }
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     if ([inputValue isKindOfClass:[NSValue class]]) {
         const char *structTypeEncoding = [inputValue objCType];
         if (strcmp(self.typeEncoding.UTF8String, structTypeEncoding) == 0) {
@@ -96,8 +93,7 @@
     }
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     NSValue *boxedStruct = nil;
     const char *structTypeEncoding = self.typeEncoding.UTF8String;
     NSUInteger structSize = 0;
@@ -136,8 +132,7 @@
     return boxedStruct;
 }
 
-- (BOOL)inputViewIsFirstResponder
-{
+- (BOOL)inputViewIsFirstResponder {
     BOOL isFirstResponder = NO;
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         if ([inputView inputViewIsFirstResponder]) {
@@ -151,8 +146,7 @@
 
 #pragma mark - Layout and Sizing
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat runningOriginY = self.topInputFieldVerticalLayoutGuide;
@@ -164,13 +158,11 @@
     }
 }
 
-+ (CGFloat)verticalPaddingBetweenFields
-{
++ (CGFloat)verticalPaddingBetweenFields {
     return 10.0;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
     
     CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
@@ -187,8 +179,7 @@
 
 #pragma mark - Class Helpers
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
     if (type[0] == FLEXTypeEncodingStructBegin) {
         // We cannot support anything with bitfields or structs,
@@ -205,8 +196,7 @@
     return NO;
 }
 
-+ (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding
-{
++ (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding {
     NSArray<NSString *> *customTitles = nil;
     if (strcmp(typeEncoding, @encode(CGRect)) == 0) {
         customTitles = @[@"CGPoint origin", @"CGSize size"];

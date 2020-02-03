@@ -36,13 +36,11 @@
 
 @implementation FLEXASLLogController
 
-+ (instancetype)withUpdateHandler:(void(^)(NSArray<FLEXSystemLogMessage *> *newMessages))newMessagesHandler
-{
++ (instancetype)withUpdateHandler:(void(^)(NSArray<FLEXSystemLogMessage *> *newMessages))newMessagesHandler {
     return [[self alloc] initWithUpdateHandler:newMessagesHandler];
 }
 
-- (id)initWithUpdateHandler:(void(^)(NSArray<FLEXSystemLogMessage *> *newMessages))newMessagesHandler
-{
+- (id)initWithUpdateHandler:(void(^)(NSArray<FLEXSystemLogMessage *> *newMessages))newMessagesHandler {
     NSParameterAssert(newMessagesHandler);
 
     self = [super init];
@@ -59,8 +57,7 @@
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [self.logUpdateTimer invalidate];
 }
 
@@ -69,8 +66,7 @@
     return YES;
 }
 
-- (void)updateLogMessages
-{
+- (void)updateLogMessages {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSArray<FLEXSystemLogMessage *> *newMessages;
         @synchronized (self) {
@@ -94,8 +90,7 @@
 
 #pragma mark - Log Message Fetching
 
-- (NSArray<FLEXSystemLogMessage *> *)newLogMessagesForCurrentProcess
-{
+- (NSArray<FLEXSystemLogMessage *> *)newLogMessagesForCurrentProcess {
     if (!self.logMessageIdentifiers.count) {
         return [self allLogMessagesForCurrentProcess];
     }
@@ -116,8 +111,7 @@
     return newMessages;
 }
 
-- (aslresponse)ASLMessageListForCurrentProcess
-{
+- (aslresponse)ASLMessageListForCurrentProcess {
     static NSString *pidString = nil;
     if (!pidString) {
         pidString = @([NSProcessInfo.processInfo processIdentifier]).stringValue;
@@ -137,8 +131,7 @@
     return asl_search(NULL, query);
 }
 
-- (NSArray<FLEXSystemLogMessage *> *)allLogMessagesForCurrentProcess
-{
+- (NSArray<FLEXSystemLogMessage *> *)allLogMessagesForCurrentProcess {
     aslresponse response = [self ASLMessageListForCurrentProcess];
     aslmsg aslMessage = NULL;
 

@@ -74,8 +74,7 @@
 //////////////////////////////////////
 // originally _objc_isTaggedPointer //
 //////////////////////////////////////
-static BOOL flex_isTaggedPointer(const void *ptr) 
-{
+static BOOL flex_isTaggedPointer(const void *ptr)  {
     return ((uintptr_t)ptr & _OBJC_TAG_MASK) == _OBJC_TAG_MASK;
 }
 
@@ -86,8 +85,7 @@ static BOOL flex_isTaggedPointer(const void *ptr)
 ////////////////////////////////////////////////
 // originally objc_object::isExtTaggedPointer //
 ////////////////////////////////////////////////
-static BOOL flex_isExtTaggedPointer(const void *ptr) 
-{
+static BOOL flex_isExtTaggedPointer(const void *ptr)  {
     return ((uintptr_t)ptr & _OBJC_TAG_EXT_MASK) == _OBJC_TAG_EXT_MASK;
 }
 
@@ -100,8 +98,7 @@ static BOOL flex_isExtTaggedPointer(const void *ptr)
 
 extern "C" {
 
-static BOOL FLEXPointerIsReadable(const void *inPtr)
-{
+static BOOL FLEXPointerIsReadable(const void *inPtr) {
     kern_return_t error = KERN_SUCCESS;
 
     vm_size_t vmsize;
@@ -142,8 +139,7 @@ static BOOL FLEXPointerIsReadable(const void *inPtr)
 
 /// Accepts addresses that may or may not be readable.
 /// https://blog.timac.org/2016/1124-testing-if-an-arbitrary-pointer-is-a-valid-objective-c-object/
-BOOL FLEXPointerIsValidObjcObject(const void *ptr)
-{
+BOOL FLEXPointerIsValidObjcObject(const void *ptr) {
     uintptr_t pointer = (uintptr_t)ptr;
 
     if (!ptr) {

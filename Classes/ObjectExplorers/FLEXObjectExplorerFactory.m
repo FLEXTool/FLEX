@@ -23,8 +23,7 @@
 @implementation FLEXObjectExplorerFactory
 static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
 
-+ (void)initialize
-{
++ (void)initialize {
     if (self == [FLEXObjectExplorerFactory class]) {
         #define ClassKey(name) (Class<NSCopying>)[name class]
         #define ClassKeyByName(str) (Class<NSCopying>)NSClassFromString(@ #str)
@@ -46,8 +45,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
     }
 }
 
-+ (FLEXObjectExplorerViewController *)explorerViewControllerForObject:(id)object
-{
++ (FLEXObjectExplorerViewController *)explorerViewControllerForObject:(id)object {
     // Can't explore nil
     if (!object) {
         return nil;
@@ -77,15 +75,13 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
     ];
 }
 
-+ (void)registerExplorerSection:(Class)explorerClass forClass:(Class)objectClass
-{
++ (void)registerExplorerSection:(Class)explorerClass forClass:(Class)objectClass {
     classesToRegisteredSections[(Class<NSCopying>)objectClass] = explorerClass;
 }
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row 
-{
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row  {
     switch (row) {
         case FLEXGlobalsRowAppDelegate:
             return @"🎟  App Delegate";
@@ -111,8 +107,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
     }
 }
 
-+ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row 
-{
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row  {
     switch (row) {
         case FLEXGlobalsRowAppDelegate: {
             id<UIApplicationDelegate> appDelegate = UIApplication.sharedApplication.delegate;
@@ -148,8 +143,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
     }
 }
 
-+ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row
-{
++ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
     switch (row) {
         case FLEXGlobalsRowRootViewController: {
             // Check if the app delegate responds to -window. If not, present an alert

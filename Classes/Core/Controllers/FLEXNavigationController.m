@@ -22,6 +22,10 @@
 
 @implementation FLEXNavigationController
 
++ (instancetype)withRootViewController:(UIViewController *)rootVC {
+    return [[self alloc] initWithRootViewController:rootVC];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     

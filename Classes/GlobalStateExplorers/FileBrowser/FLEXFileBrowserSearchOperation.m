@@ -10,13 +10,11 @@
 
 @implementation NSMutableArray (FLEXStack)
 
-- (void)flex_push:(id)anObject
-{
+- (void)flex_push:(id)anObject {
     [self addObject:anObject];
 }
 
-- (id)flex_pop
-{
+- (id)flex_pop {
     id anObject = self.lastObject;
     [self removeLastObject];
     return anObject;
@@ -35,8 +33,7 @@
 
 #pragma mark - private
 
-- (uint64_t)totalSizeAtPath:(NSString *)path
-{
+- (uint64_t)totalSizeAtPath:(NSString *)path {
     NSFileManager *fileManager = NSFileManager.defaultManager;
     NSDictionary<NSString *, id> *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
     uint64_t totalSize = [attributes fileSize];
@@ -50,8 +47,7 @@
 
 #pragma mark - instance method
 
-- (id)initWithPath:(NSString *)currentPath searchString:(NSString *)searchString
-{
+- (id)initWithPath:(NSString *)currentPath searchString:(NSString *)searchString {
     self = [super init];
     if (self) {
         self.path = currentPath;
@@ -62,8 +58,7 @@
 
 #pragma mark - methods to override
 
-- (void)main
-{
+- (void)main {
     NSFileManager *fileManager = NSFileManager.defaultManager;
     NSMutableArray<NSString *> *searchPaths = [NSMutableArray array];
     NSMutableDictionary<NSString *, NSNumber *> *sizeMapping = [NSMutableDictionary dictionary];

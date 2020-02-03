@@ -27,8 +27,7 @@
     return [super initWithStyle:UITableViewStylePlain];
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.showsSearchBar = YES;
@@ -65,8 +64,7 @@
     }
 }
 
-- (void)handleUpdateWithNewMessages:(NSArray<FLEXSystemLogMessage *> *)newMessages
-{
+- (void)handleUpdateWithNewMessages:(NSArray<FLEXSystemLogMessage *> *)newMessages {
     self.title = @"System Log";
 
     [self.logMessages addObjectsFromArray:newMessages];
@@ -79,15 +77,13 @@
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
     [self.logController startMonitoring];
 }
 
-- (void)scrollToLastRow
-{
+- (void)scrollToLastRow {
     NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
     if (numberOfRows > 0) {
         NSIndexPath *lastIndexPath = [NSIndexPath indexPathForRow:numberOfRows - 1 inSection:0];
@@ -95,8 +91,7 @@
     }
 }
 
-- (void)showLogSettings
-{
+- (void)showLogSettings {
     FLEXOSLogController *logController = (FLEXOSLogController *)self.logController;
     BOOL persistent = [[NSUserDefaults standardUserDefaults] boolForKey:kFLEXiOSPersistentOSLogKey];
     NSString *toggle = persistent ? @"Disable" : @"Enable";
@@ -127,18 +122,15 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.searchController.isActive ? self.filteredLogMessages.count : self.logMessages.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
     FLEXSystemLogTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXSystemLogTableViewCellIdentifier forIndexPath:indexPath];
     cell.logMessage = [self logMessageAtIndexPath:indexPath];
     cell.highlightedText = self.searchText;
@@ -152,41 +144,35 @@
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXSystemLogMessage *logMessage = [self logMessageAtIndexPath:indexPath];
     return [FLEXSystemLogTableViewCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
 }
 
 #pragma mark - Copy on long press
 
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     return action == @selector(copy:);
 }
 
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
-{
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         // We usually only want to copy the log message itself, not any metadata associated with it.
         UIPasteboard.generalPasteboard.string = [self logMessageAtIndexPath:indexPath].messageText;
     }
 }
 
-- (FLEXSystemLogMessage *)logMessageAtIndexPath:(NSIndexPath *)indexPath
-{
+- (FLEXSystemLogMessage *)logMessageAtIndexPath:(NSIndexPath *)indexPath {
     return self.searchController.isActive ? self.filteredLogMessages[indexPath.row] : self.logMessages[indexPath.row];
 }
 
 #pragma mark - Search bar
 
-- (void)updateSearchResults:(NSString *)searchString
-{
+- (void)updateSearchResults:(NSString *)searchString {
     [self onBackgroundQueue:^NSArray *{
         return [self.logMessages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXSystemLogMessage *logMessage, NSDictionary<NSString *, id> *bindings) {
             NSString *displayedText = [FLEXSystemLogTableViewCell displayedTextForLogMessage:logMessage];

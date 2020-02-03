@@ -24,8 +24,7 @@
 
 @implementation FLEXTableViewCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         [self postInit];
@@ -55,8 +54,7 @@
     return self.detailTextLabel;
 }
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender
-{
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     return [self._tableView _canPerformAction:action forCell:self sender:sender];
 }
 
@@ -69,8 +67,7 @@
 /// sake. I see this as "fixing" a poorly designed API.
 /// That approach would require lots of boilerplate to
 /// make the menu appear above this cell.
-- (void)forwardInvocation:(NSInvocation *)invocation
-{
+- (void)forwardInvocation:(NSInvocation *)invocation {
     // Must be unretained to avoid over-releasing
     __unsafe_unretained id sender;
     [invocation getArgument:&sender atIndex:2];
@@ -84,8 +81,7 @@
     [invocation invokeWithTarget:self._tableView];
 }
 
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector
-{
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
     if ([self canPerformAction:selector withSender:nil]) {
         return [self._tableView methodSignatureForSelector:@selector(_performAction:forCell:sender:)];
     }

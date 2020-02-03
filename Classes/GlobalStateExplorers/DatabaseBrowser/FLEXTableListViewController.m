@@ -14,8 +14,7 @@
 
 #import "FLEXTableContentViewController.h"
 
-@interface FLEXTableListViewController ()
-{
+@interface FLEXTableListViewController () {
     id<FLEXDatabaseManager> _dbm;
     NSString *_databasePath;
 }
@@ -30,8 +29,7 @@
 
 @implementation FLEXTableListViewController
 
-- (instancetype)initWithPath:(NSString *)path
-{
+- (instancetype)initWithPath:(NSString *)path {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _databasePath = [path copy];
@@ -42,8 +40,7 @@
     return self;
 }
 
-- (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path
-{
+- (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path {
     NSString *pathExtension = path.pathExtension.lowercaseString;
     
     NSArray<NSString *> *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
@@ -59,8 +56,7 @@
     return nil;
 }
 
-- (void)getAllTables
-{
+- (void)getAllTables {
     NSArray<NSDictionary<NSString *, id> *> *resultArray = [_dbm queryAllTables];
     NSMutableArray<NSString *> *array = [NSMutableArray array];
     for (NSDictionary<NSString *, id> *dict in resultArray) {
@@ -71,8 +67,7 @@
     self.filteredTables = array;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.showsSearchBar = YES;
@@ -80,8 +75,7 @@
 
 #pragma mark - Search bar
 
-- (void)updateSearchResults:(NSString *)searchText
-{
+- (void)updateSearchResults:(NSString *)searchText {
     if (searchText.length > 0) {
         NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", searchText];
         self.filteredTables = [self.tables filteredArrayUsingPredicate:searchPredicate];
@@ -94,13 +88,11 @@
 
 #pragma mark - Table View Data Source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.filteredTables.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FLEXTableListViewControllerCell"];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
@@ -111,8 +103,7 @@
 }
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXTableContentViewController *contentViewController = [FLEXTableContentViewController new];
     
     contentViewController.contentsArray = [_dbm queryAllDataWithTableName:self.filteredTables[indexPath.row]];
@@ -122,15 +113,13 @@
     [self.navigationController pushViewController:contentViewController animated:YES];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return [NSString stringWithFormat:@"Tables (%lu)", (unsigned long)self.filteredTables.count];
 }
 
 #pragma mark - FLEXTableListViewController
 
-+ (BOOL)supportsExtension:(NSString *)extension
-{
++ (BOOL)supportsExtension:(NSString *)extension {
     extension = extension.lowercaseString;
     
     NSArray<NSString *> *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
@@ -146,13 +135,11 @@
     return NO;
 }
 
-+ (NSArray<NSString *> *)supportedSQLiteExtensions
-{
++ (NSArray<NSString *> *)supportedSQLiteExtensions {
     return @[@"db", @"sqlite", @"sqlite3"];
 }
 
-+ (NSArray<NSString *> *)supportedRealmExtensions
-{
++ (NSArray<NSString *> *)supportedRealmExtensions {
     if (NSClassFromString(@"RLMRealm") == nil) {
         return nil;
     }

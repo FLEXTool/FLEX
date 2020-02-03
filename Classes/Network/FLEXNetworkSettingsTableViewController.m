@@ -21,8 +21,7 @@
 
 @implementation FLEXNetworkSettingsTableViewController
 
-- (instancetype)initWithStyle:(UITableViewStyle)style
-{
+- (instancetype)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
 
@@ -30,8 +29,7 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 
     NSMutableArray<UITableViewCell *> *mutableCells = [NSMutableArray array];
@@ -56,24 +54,20 @@
 
 #pragma mark - Settings Actions
 
-- (void)networkDebuggingToggled:(UISwitch *)sender
-{
+- (void)networkDebuggingToggled:(UISwitch *)sender {
     [FLEXNetworkObserver setEnabled:sender.isOn];
 }
 
-- (void)cacheMediaResponsesToggled:(UISwitch *)sender
-{
+- (void)cacheMediaResponsesToggled:(UISwitch *)sender {
     [[FLEXNetworkRecorder defaultRecorder] setShouldCacheMediaResponses:sender.isOn];
 }
 
-- (void)cacheLimitAdjusted:(UISlider *)sender
-{
+- (void)cacheLimitAdjusted:(UISlider *)sender {
     [[FLEXNetworkRecorder defaultRecorder] setResponseCacheByteLimit:sender.value];
     self.cacheLimitCell.textLabel.text = [self titleForCacheLimitCellWithValue:sender.value];
 }
 
-- (void)clearRequestsTapped:(UIButton *)sender
-{
+- (void)clearRequestsTapped:(UIButton *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.button(@"Cancel").cancelStyle();
         make.button(@"Clear Recorded Requests").destructiveStyle().handler(^(NSArray *strings) {
@@ -87,25 +81,21 @@
 
 #pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.cells.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath 
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
     return self.cells[indexPath.row];
 }
 
 #pragma mark - Helpers
 
-- (UITableViewCell *)switchCellWithTitle:(NSString *)title toggleAction:(SEL)toggleAction isOn:(BOOL)isOn
-{
+- (UITableViewCell *)switchCellWithTitle:(NSString *)title toggleAction:(SEL)toggleAction isOn:(BOOL)isOn {
     UITableViewCell *cell = [UITableViewCell new];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.textLabel.text = title;
@@ -124,8 +114,7 @@
     return cell;
 }
 
-- (UITableViewCell *)buttonCellWithTitle:(NSString *)title touchUpAction:(SEL)action isDestructive:(BOOL)isDestructive
-{
+- (UITableViewCell *)buttonCellWithTitle:(NSString *)title touchUpAction:(SEL)action isDestructive:(BOOL)isDestructive {
     UITableViewCell *buttonCell = [UITableViewCell new];
     buttonCell.selectionStyle = UITableViewCellSelectionStyleNone;
 
@@ -146,14 +135,12 @@
     return buttonCell;
 }
 
-- (NSString *)titleForCacheLimitCellWithValue:(long long)cacheLimit
-{
+- (NSString *)titleForCacheLimitCellWithValue:(long long)cacheLimit {
     NSInteger limitInMB = round(cacheLimit / (1024 * 1024));
     return [NSString stringWithFormat:@"Cache Limit (%ld MB)", (long)limitInMB];
 }
 
-- (UITableViewCell *)sliderCellWithTitle:(NSString *)title changedAction:(SEL)changedAction minimum:(CGFloat)minimum maximum:(CGFloat)maximum initialValue:(CGFloat)initialValue
-{
+- (UITableViewCell *)sliderCellWithTitle:(NSString *)title changedAction:(SEL)changedAction minimum:(CGFloat)minimum maximum:(CGFloat)maximum initialValue:(CGFloat)initialValue {
     UITableViewCell *sliderCell = [UITableViewCell new];
     sliderCell.selectionStyle = UITableViewCellSelectionStyleNone;
     sliderCell.textLabel.text = title;
@@ -176,8 +163,7 @@
     return sliderCell;
 }
 
-+ (UIFont *)cellTitleFont
-{
++ (UIFont *)cellTitleFont {
     return [UIFont systemFontOfSize:14.0];
 }
 

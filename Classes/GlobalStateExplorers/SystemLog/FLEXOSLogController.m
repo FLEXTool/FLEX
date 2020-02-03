@@ -38,8 +38,7 @@ static uint8_t (*OSLogGetType)(void *);
 
 @implementation FLEXOSLogController
 
-+ (void)load
-{
++ (void)load {
     // Persist logs when the app launches on iOS 10 if we have persistent logs turned on
     if (FLEXOSLogAvailable()) {
         BOOL persistent = [[NSUserDefaults standardUserDefaults] boolForKey:kFLEXiOSPersistentOSLogKey];
@@ -60,15 +59,13 @@ static uint8_t (*OSLogGetType)(void *);
     return shared;
 }
 
-+ (instancetype)withUpdateHandler:(void(^)(NSArray<FLEXSystemLogMessage *> *newMessages))newMessagesHandler
-{
++ (instancetype)withUpdateHandler:(void(^)(NSArray<FLEXSystemLogMessage *> *newMessages))newMessagesHandler {
     FLEXOSLogController *shared = [self sharedLogController];
     shared.updateHandler = newMessagesHandler;
     return shared;
 }
 
-- (id)init
-{
+- (id)init {
     NSAssert(FLEXOSLogAvailable(), @"os_log is only available on iOS 10 and up");
 
     self = [super init];

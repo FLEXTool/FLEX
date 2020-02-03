@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXNavigationController : UINavigationController
 
++ (instancetype)withRootViewController:(UIViewController *)rootVC;
+
 @end
 
 NS_ASSUME_NONNULL_END

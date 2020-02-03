@@ -11,8 +11,7 @@
 
 @implementation FLEXArgumentInputNumberView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.inputTextView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
@@ -21,20 +20,17 @@
     return self;
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     if ([inputValue respondsToSelector:@selector(stringValue)]) {
         self.inputTextView.text = [inputValue stringValue];
     }
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     return [FLEXRuntimeUtility valueForNumberWithObjCType:self.typeEncoding.UTF8String fromInputString:self.inputTextView.text];
 }
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
     
     static NSArray<NSString *> *primitiveTypes = nil;
