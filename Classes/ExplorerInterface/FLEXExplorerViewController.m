@@ -10,6 +10,7 @@
 #import "FLEXExplorerToolbar.h"
 #import "FLEXToolbarItem.h"
 #import "FLEXUtility.h"
+#import "FLEXNavigationController.h"
 #import "FLEXHierarchyViewController.h"
 #import "FLEXGlobalsTableViewController.h"
 #import "FLEXObjectExplorerViewController.h"
@@ -80,7 +81,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return self;
 }
 
--(void)dealloc
+- (void)dealloc
 {
     for (UIView *view in _observedViews) {
         [self stopObservingView:view];
@@ -192,6 +193,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         }
     }];
 }
+
 
 #pragma mark - Setter Overrides
 
@@ -495,7 +497,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     if (tapGR.state == UIGestureRecognizerStateRecognized && self.selectedView) {
         UIViewController *topStackVC = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:topStackVC];
+        UINavigationController *navigationController = [[FLEXNavigationController alloc] initWithRootViewController:topStackVC];
         [self makeKeyAndPresentViewController:navigationController animated:YES completion:nil];
     }
 }
@@ -740,6 +742,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
 }
 
+
 #pragma mark - Modal Presentation and Window Management
 
 - (void)makeKeyAndPresentViewController:(UINavigationController *)toPresent animated:(BOOL)animated completion:(void (^)(void))completion
@@ -819,6 +822,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
+
 #pragma mark - Keyboard Shortcut Helpers
 
 - (void)toggleSelectTool
@@ -868,7 +872,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
         FLEXGlobalsTableViewController *globalsViewController = [FLEXGlobalsTableViewController new];
         [FLEXGlobalsTableViewController setApplicationWindow:[UIApplication.sharedApplication keyWindow]];
-        return [[UINavigationController alloc] initWithRootViewController:globalsViewController];
+        return [[FLEXNavigationController alloc] initWithRootViewController:globalsViewController];
     } completion:nil];
 }
 

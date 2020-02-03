@@ -176,6 +176,8 @@
 		C3531B9E23E69BB200A184AD /* FLEXManager+Networking.m in Sources */ = {isa = PBXBuildFile; fileRef = C3531B9C23E69BB200A184AD /* FLEXManager+Networking.m */; };
 		C3531BA123E796BD00A184AD /* FLEXManager+Extensibility.h in Headers */ = {isa = PBXBuildFile; fileRef = C3531B9F23E796BD00A184AD /* FLEXManager+Extensibility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3531BA223E796BD00A184AD /* FLEXManager+Extensibility.m in Sources */ = {isa = PBXBuildFile; fileRef = C3531BA023E796BD00A184AD /* FLEXManager+Extensibility.m */; };
+		C3531BA523E88A2100A184AD /* FLEXNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = C3531BA323E88A2100A184AD /* FLEXNavigationController.h */; };
+		C3531BA623E88A2100A184AD /* FLEXNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3531BA423E88A2100A184AD /* FLEXNavigationController.m */; };
 		C362AE8123C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h in Headers */ = {isa = PBXBuildFile; fileRef = C362AE7F23C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h */; };
 		C362AE8223C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m in Sources */ = {isa = PBXBuildFile; fileRef = C362AE8023C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m */; };
 		C36B096523E0D4A1008F5D47 /* UIMenu+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C36B096323E0D4A1008F5D47 /* UIMenu+FLEX.h */; };
@@ -497,6 +499,8 @@
 		C3531B9C23E69BB200A184AD /* FLEXManager+Networking.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "FLEXManager+Networking.m"; sourceTree = "<group>"; };
 		C3531B9F23E796BD00A184AD /* FLEXManager+Extensibility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEXManager+Extensibility.h"; sourceTree = "<group>"; };
 		C3531BA023E796BD00A184AD /* FLEXManager+Extensibility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "FLEXManager+Extensibility.m"; sourceTree = "<group>"; };
+		C3531BA323E88A2100A184AD /* FLEXNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNavigationController.h; sourceTree = "<group>"; };
+		C3531BA423E88A2100A184AD /* FLEXNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNavigationController.m; sourceTree = "<group>"; };
 		C362AE7F23C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMapTable+FLEX_Subscripting.h"; sourceTree = "<group>"; };
 		C362AE8023C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMapTable+FLEX_Subscripting.m"; sourceTree = "<group>"; };
 		C36B096323E0D4A1008F5D47 /* UIMenu+FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIMenu+FLEX.h"; sourceTree = "<group>"; };
@@ -1007,6 +1011,8 @@
 			children = (
 				C38DF0E822CFE4370077B4AD /* FLEXTableViewController.h */,
 				C38DF0E922CFE4370077B4AD /* FLEXTableViewController.m */,
+				C3531BA323E88A2100A184AD /* FLEXNavigationController.h */,
+				C3531BA423E88A2100A184AD /* FLEXNavigationController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1247,6 +1253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				779B1EDA1C0C4D7C001F5E49 /* FLEXTableListViewController.h in Headers */,
+				C3531BA523E88A2100A184AD /* FLEXNavigationController.h in Headers */,
 				3A4C94ED1B5B21410088C3F2 /* FLEXArgumentInputColorView.h in Headers */,
 				C3A9424523C641C1006871A3 /* SceneKit+Snapshot.h in Headers */,
 				3A4C94EB1B5B21410088C3F2 /* FLEXImagePreviewViewController.h in Headers */,
@@ -1608,6 +1615,7 @@
 				C31D93E523E38CBE005517BF /* FLEXBlockShortcuts.m in Sources */,
 				C34D4EB523A2AF2A00C1F903 /* FLEXColorPreviewSection.m in Sources */,
 				C36B097123E1EDCD008F5D47 /* FLEXTableViewSection.m in Sources */,
+				C3531BA623E88A2100A184AD /* FLEXNavigationController.m in Sources */,
 				3A4C94EA1B5B21410088C3F2 /* FLEXHierarchyTableViewController.m in Sources */,
 				3A4C95331B5B21410088C3F2 /* FLEXSystemLogTableViewCell.m in Sources */,
 				C3A9423523C3F98E006871A3 /* FHSViewController.m in Sources */,

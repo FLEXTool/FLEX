@@ -6,7 +6,7 @@
 //  Copyright © 2020 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXNavigationController.h"
 
 @protocol FLEXHierarchyDelegate <NSObject>
 - (void)viewHierarchyDidDismiss:(UIView *)selectedView;
@@ -14,7 +14,7 @@
 
 /// A navigation controller which manages two child view controllers:
 /// a 3D Reveal-like hierarchy explorer, and a 2D tree-list hierarchy explorer.
-@interface FLEXHierarchyViewController : UINavigationController
+@interface FLEXHierarchyViewController : FLEXNavigationController
 
 + (instancetype)delegate:(id<FLEXHierarchyDelegate>)delegate;
 + (instancetype)delegate:(id<FLEXHierarchyDelegate>)delegate

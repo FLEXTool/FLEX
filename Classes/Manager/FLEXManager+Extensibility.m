@@ -8,6 +8,7 @@
 
 #import "FLEXManager+Extensibility.h"
 #import "FLEXManager+Private.h"
+#import "FLEXNavigationController.h"
 #import "FLEXGlobalsEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXKeyboardShortcutManager.h"
@@ -222,7 +223,7 @@
         [topViewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     } else {
         id viewController = [class new];
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        UINavigationController *navigationController = [[FLEXNavigationController alloc] initWithRootViewController:viewController];
         [topViewController presentViewController:navigationController animated:YES completion:nil];
     }
 }

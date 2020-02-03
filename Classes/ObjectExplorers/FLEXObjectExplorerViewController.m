@@ -233,7 +233,7 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
-    return [g2 class] == [UIPanGestureRecognizer class];
+    return [g2 isKindOfClass:[UIPanGestureRecognizer class]];
 }
 
 #pragma mark - Description
