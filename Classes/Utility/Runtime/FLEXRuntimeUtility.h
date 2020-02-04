@@ -41,6 +41,7 @@ typedef NS_ENUM(NSUInteger, FLEXPropertyAttribute) {
 };
 
 typedef NS_ENUM(char, FLEXTypeEncoding) {
+    FLEXTypeEncodingNull             = '\0',
     FLEXTypeEncodingUnknown          = '?',
     FLEXTypeEncodingChar             = 'c',
     FLEXTypeEncodingInt              = 'i',

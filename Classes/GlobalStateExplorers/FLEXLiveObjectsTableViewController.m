@@ -8,7 +8,7 @@
 
 #import "FLEXLiveObjectsTableViewController.h"
 #import "FLEXHeapEnumerator.h"
-#import "FLEXInstancesTableViewController.h"
+#import "FLEXInstancesViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXScopeCarousel.h"
 #import "FLEXTableView.h"
@@ -229,7 +229,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *className = self.filteredClassNames[indexPath.row];
-    FLEXInstancesTableViewController *instancesViewController = [FLEXInstancesTableViewController instancesTableViewControllerForClassName:className];
+    FLEXInstancesViewController *instancesViewController = [FLEXInstancesViewController instancesTableViewControllerForClassName:className];
     [self.navigationController pushViewController:instancesViewController animated:YES];
 }
 

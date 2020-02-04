@@ -9,7 +9,7 @@
 #import "FLEXClassShortcuts.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXShortcut.h"
-#import "FLEXInstancesTableViewController.h"
+#import "FLEXInstancesViewController.h"
 
 /// Pretty much only necessary because I want to provide
 /// a useful subtitle for the bundles of classes
@@ -83,7 +83,7 @@
 
 - (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
     if (row == 1) {
-        return [FLEXInstancesTableViewController
+        return [FLEXInstancesViewController
             instancesTableViewControllerForClassName:NSStringFromClass(self.cls)
         ];
     }

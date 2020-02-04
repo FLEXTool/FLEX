@@ -1,22 +1,23 @@
 //
-//  FLEXInstancesTableViewController.m
+//  FLEXInstancesViewController.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/28/14.
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXInstancesTableViewController.h"
+#import "FLEXInstancesViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXHeapEnumerator.h"
 #import "FLEXObjectRef.h"
+#import "NSString+FLEX.h"
 #import <malloc/malloc.h>
 
 
-@interface FLEXInstancesTableViewController ()
+@interface FLEXInstancesViewController ()
 
 /// Array of [[section], [section], ...]
 /// where [section] is [["row title", instance], ["row title", instance], ...]
@@ -28,7 +29,7 @@
 
 @end
 
-@implementation FLEXInstancesTableViewController
+@implementation FLEXInstancesViewController
 
 - (id)initWithReferences:(NSArray<FLEXObjectRef *> *)references {
     return [self initWithReferences:references predicates:nil sectionTitles:nil];
@@ -70,7 +71,7 @@
         }
     }];
     NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingAll:instances];
-    FLEXInstancesTableViewController *viewController = [[self alloc] initWithReferences:references];
+    FLEXInstancesViewController *viewController = [[self alloc] initWithReferences:references];
     viewController.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)instances.count];
     return viewController;
 }
@@ -89,25 +90,30 @@
         while (tryClass) {
             unsigned int ivarCount = 0;
             Ivar *ivars = class_copyIvarList(tryClass, &ivarCount);
+            
             for (unsigned int ivarIndex = 0; ivarIndex < ivarCount; ivarIndex++) {
                 Ivar ivar = ivars[ivarIndex];
-                const char *typeEncoding = ivar_getTypeEncoding(ivar);
-                if (typeEncoding[0] == FLEXTypeEncodingObjcObject || typeEncoding[0] == FLEXTypeEncodingObjcClass) {
+                NSString *typeEncoding = @(ivar_getTypeEncoding(ivar) ?: "");
+                
+                if (typeEncoding.flex_typeIsObjectOrClass) {
                     ptrdiff_t offset = ivar_getOffset(ivar);
                     uintptr_t *fieldPointer = (__bridge void *)tryObject + offset;
+                    
                     if (*fieldPointer == (uintptr_t)(__bridge void *)object) {
-                        [instances addObject:[FLEXObjectRef referencing:tryObject ivar:@(ivar_getName(ivar))]];
+                        NSString *ivarName = @(ivar_getName(ivar) ?: "???");
+                        [instances addObject:[FLEXObjectRef referencing:tryObject ivar:ivarName]];
                         return;
                     }
                 }
             }
+            
             tryClass = class_getSuperclass(tryClass);
         }
     }];
 
     NSArray<NSPredicate *> *predicates = [self defaultPredicates];
     NSArray<NSString *> *sectionTitles = [self defaultSectionTitles];
-    FLEXInstancesTableViewController *viewController = [[self alloc] initWithReferences:instances
+    FLEXInstancesViewController *viewController = [[self alloc] initWithReferences:instances
                                                                              predicates:predicates
                                                                           sectionTitles:sectionTitles];
     viewController.title = [NSString stringWithFormat:@"Referencing %@ %p", NSStringFromClass(object_getClass(object)), object];

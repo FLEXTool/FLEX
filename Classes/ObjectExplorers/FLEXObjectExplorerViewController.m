@@ -13,7 +13,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
-#import "FLEXInstancesTableViewController.h"
+#import "FLEXInstancesViewController.h"
 #import "FLEXTableView.h"
 #import "FLEXTableViewCell.h"
 #import "FLEXScopeCarousel.h"
@@ -164,7 +164,7 @@
         }
     ];
     referencesSection.selectionAction = ^(UIViewController *host) {
-        UIViewController *references = [FLEXInstancesTableViewController
+        UIViewController *references = [FLEXInstancesViewController
             instancesTableViewControllerForInstancesReferencingObject:explorer.object
         ];
         [host.navigationController pushViewController:references animated:YES];

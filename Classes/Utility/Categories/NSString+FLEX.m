@@ -66,10 +66,12 @@
 }
 
 - (BOOL)flex_typeIsConst {
+    if (!self.length) return NO;
     return [self characterAtIndex:0] == FLEXTypeEncodingConst;
 }
 
 - (FLEXTypeEncoding)flex_firstNonConstType {
+    if (!self.length) return FLEXTypeEncodingNull;
     return [self characterAtIndex:(self.flex_typeIsConst ? 1 : 0)];
 }
 

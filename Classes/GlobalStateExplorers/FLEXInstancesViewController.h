@@ -1,5 +1,5 @@
 //
-//  FLEXInstancesTableViewController.h
+//  FLEXInstancesViewController.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/28/14.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FLEXInstancesTableViewController : UITableViewController
+@interface FLEXInstancesViewController : UITableViewController
 
 + (instancetype)instancesTableViewControllerForClassName:(NSString *)className;
 + (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object;
