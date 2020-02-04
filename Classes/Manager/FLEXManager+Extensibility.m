@@ -219,10 +219,21 @@
 
 - (void)toggleTopViewControllerOfClass:(Class)class {
     UINavigationController *topViewController = (id)self.topViewController;
-    if ([topViewController isKindOfClass:[UINavigationController class]] &&
-        [topViewController.topViewController isKindOfClass:[class class]]) {
-        [topViewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    if ([topViewController isKindOfClass:[FLEXNavigationController class]]) {
+        if ([topViewController.topViewController isKindOfClass:[class class]]) {
+            if (topViewController.viewControllers.count == 1) {
+                // Dismiss since we are already presenting it
+                [topViewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+            } else {
+                // Pop since we are viewing it but it's not the only thing on the stack
+                [topViewController popViewControllerAnimated:YES];
+            }
+        } else {
+            // Push it on the existing navigation stack
+            [topViewController pushViewController:[class new] animated:YES];
+        }
     } else {
+        // Present it in an entirely new navigation controller
         [topViewController presentViewController:
             [FLEXNavigationController withRootViewController:[class new]]
         animated:YES completion:nil];
