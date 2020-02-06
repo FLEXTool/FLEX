@@ -81,7 +81,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
         case FLEXUnorderedCollection:
             return [self describe:[self objectForRow:row]];
         case FLEXKeyedCollection:
-            return [self describe:self.collection.allKeys[row]];
+            return [self describe:self.cachedCollection.allKeys[row]];
 
         case FLEXUnsupportedCollection:
             return nil;
@@ -112,11 +112,11 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 - (id)objectForRow:(NSInteger)row {
     switch (self.collectionType) {
         case FLEXOrderedCollection:
-            return self.collection[row];
+            return self.cachedCollection[row];
         case FLEXUnorderedCollection:
-            return self.collection.allObjects[row];
+            return self.cachedCollection.allObjects[row];
         case FLEXKeyedCollection:
-            return self.collection[self.collection.allKeys[row]];
+            return self.cachedCollection[self.cachedCollection.allKeys[row]];
 
         case FLEXUnsupportedCollection:
             return nil;

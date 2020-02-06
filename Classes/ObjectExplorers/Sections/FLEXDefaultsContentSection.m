@@ -29,10 +29,10 @@
 
 + (instancetype)forDefaults:(NSUserDefaults *)userDefaults {
     FLEXDefaultsContentSection *section = [self forReusableFuture:^id(FLEXDefaultsContentSection *section) {
+        section.defaults = userDefaults;
+        section.onlyShowKeysForAppPrefs = YES;
         return section.whitelistedDefaults;
     }];
-
-    section.defaults = userDefaults;
     return section;
 }
 
