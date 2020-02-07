@@ -106,4 +106,10 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// in the background before updating the UI back on the main queue.
 - (void)onBackgroundQueue:(NSArray *(^)(void))backgroundBlock thenOnMainQueue:(void(^)(NSArray *))mainBlock;
 
+/// Whether or not to display the "share" icon in the middle of the toolbar. NO by default.
+@property (nonatomic) BOOL showsShareToolbarItem;
+/// Called when the share button is pressed.
+/// Default implementation does nothign. Subclasses may override.
+- (void)shareButtonPressed;
+
 @end

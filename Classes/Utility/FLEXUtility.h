@@ -66,6 +66,10 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
     stringWithFormat:@"%@ %@", @(count), (count == 1 ? singular : plural) \
 ]
 
+#define FLEXPluralFormatString(count, pluralFormat, singularFormat) [NSString \
+    stringWithFormat:(count == 1 ? singularFormat : pluralFormat), @(count)  \
+]
+
 #if !FLEX_AT_LEAST_IOS13_SDK
 @class UIWindowScene;
 #endif

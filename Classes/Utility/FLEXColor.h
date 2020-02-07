@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, class) UIColor *toolbarItemHighlightedColor;
 @property (readonly, class) UIColor *toolbarItemSelectedColor;
 @property (readonly, class) UIColor *hairlineColor;
+@property (readonly, class) UIColor *destructiveColor;
 
 @end
 

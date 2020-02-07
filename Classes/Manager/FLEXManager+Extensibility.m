@@ -109,6 +109,17 @@
         [self toggleTopViewControllerOfClass:[FLEXNetworkHistoryTableViewController class]];
     } description:@"Toggle network history view"];
     
+    // 't' is for testing: quickly present an object explorer for debugging
+    [self registerSimulatorShortcutWithKey:@"t" modifiers:0 action:^{
+        [self showExplorerIfNeeded];
+        
+        [self.explorerViewController toggleToolWithViewControllerProvider:^UINavigationController *{
+            return [FLEXNavigationController withRootViewController:[FLEXObjectExplorerFactory
+                explorerViewControllerForObject:NSBundle.mainBundle
+            ]];
+        } completion:nil];
+    } description:@"Present an object explorer for debugging"];
+    
     [self registerSimulatorShortcutWithKey:UIKeyInputDownArrow modifiers:0 action:^{
         if (self.isHidden || ![self.explorerViewController handleDownArrowKeyPressed]) {
             [self tryScrollDown];
@@ -234,7 +245,7 @@
         }
     } else {
         // Present it in an entirely new navigation controller
-        [topViewController presentViewController:
+        [self.explorerViewController presentViewController:
             [FLEXNavigationController withRootViewController:[class new]]
         animated:YES completion:nil];
     }

@@ -9,11 +9,13 @@
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
+#import "UIBarButtonItem+FLEX.h"
 #import "FLEXMultilineTableViewCell.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXInstancesViewController.h"
+#import "FLEXTabsViewController.h"
 #import "FLEXTableView.h"
 #import "FLEXTableViewCell.h"
 #import "FLEXScopeCarousel.h"
@@ -71,7 +73,6 @@
 #pragma mark - View controller lifecycle
 
 - (void)loadView {
-    // TODO: grouped with rounded corners or not?
     FLEXTableView *tableView = [[FLEXTableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView = tableView;
 
@@ -85,6 +86,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.showsShareToolbarItem = YES;
 
     // Use [object class] here rather than object_getClass
     // to avoid the KVO prefix for observed objects
@@ -223,7 +226,22 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
-    return [g2 isKindOfClass:[UIPanGestureRecognizer class]];
+    return [g2 isKindOfClass:[UIPanGestureRecognizer class]] && g2 != self.navigationController.interactivePopGestureRecognizer;
+}
+
+- (void)shareButtonPressed {
+    [FLEXAlert makeSheet:^(FLEXAlert *make) {
+        make.button(@"Add to Bookmarks").handler(^(NSArray<NSString *> *strings) {
+            // TODO
+        });
+        make.button(@"Copy Description").handler(^(NSArray<NSString *> *strings) {
+            UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
+        });
+        make.button(@"Copy Address").handler(^(NSArray<NSString *> *strings) {
+            [self copyObjectAddress:nil];
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
 }
 
 #pragma mark - Description
@@ -238,6 +256,7 @@
 
     return YES;
 }
+
 
 #pragma mark - Search
 
@@ -265,6 +284,7 @@
         [self.tableView reloadData];
     }
 }
+
 
 #pragma mark - Reloading
 
@@ -405,6 +425,7 @@
 }
 
 #endif
+
 
 #pragma mark - UIMenuController
 

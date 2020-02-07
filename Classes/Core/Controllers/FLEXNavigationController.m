@@ -7,6 +7,8 @@
 //
 
 #import "FLEXNavigationController.h"
+#import "FLEXExplorerViewController.h"
+#import "FLEXTabList.h"
 
 @interface UINavigationController (Private) <UIGestureRecognizerDelegate>
 - (void)_gestureRecognizedInteractiveHide:(UIGestureRecognizer *)sender;
@@ -23,13 +25,50 @@
 @implementation FLEXNavigationController
 
 + (instancetype)withRootViewController:(UIViewController *)rootVC {
-    return [[self alloc] initWithRootViewController:rootVC];
+    FLEXNavigationController *instance =  [[self alloc] initWithRootViewController:rootVC];
+    
+    // Give root view controllers a Done button
+    UIBarButtonItem *done = [[UIBarButtonItem alloc]
+        initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+        target:instance
+        action:@selector(dismissAnimated)
+    ];
+    
+    // Prepend the button if other buttons exist already
+    NSArray *existingItems = rootVC.navigationItem.rightBarButtonItems;
+    if (existingItems.count) {
+        rootVC.navigationItem.rightBarButtonItems = [@[done] arrayByAddingObjectsFromArray:existingItems];
+    } else {
+        rootVC.navigationItem.rightBarButtonItem = done;
+    }
+    
+    return instance;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.waitingToAddTab = YES;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (self.waitingToAddTab) {
+        // Only add new tab if we're presented properly
+        if ([self.presentingViewController isKindOfClass:[FLEXExplorerViewController class]]) {
+            // New navigation controllers always add themselves as new tabs,
+            // tabs are closed by FLEXExplorerViewController
+            [FLEXTabList.sharedList addTab:self];
+            self.waitingToAddTab = NO;
+        }
+    }
+}
+
+- (void)dismissAnimated {
+    // TODO tabs not closed on swipe down gesture
+    [FLEXTabList.sharedList closeTab:self];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)_gestureRecognizedInteractiveHide:(UIPanGestureRecognizer *)sender {
