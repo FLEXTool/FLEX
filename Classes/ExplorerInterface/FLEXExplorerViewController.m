@@ -19,6 +19,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXTabsViewController.h"
+#import "FLEXWindowManagerController.h"
 
 static NSString *const kFLEXToolbarTopMarginDefaultsKey = @"com.flex.FLEXToolbar.topMargin";
 
@@ -440,6 +441,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [toolbar.globalsItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleToolbarShowTabsGesture:)
     ]];
+    
+    // Long press gesture to present window manager
+    [toolbar.selectItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleToolbarWindowManagerGesture:)
+    ]];
 }
 
 - (void)handleToolbarPanGesture:(UIPanGestureRecognizer *)panGR {
@@ -520,6 +526,15 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     [super presentViewController:[[UINavigationController alloc]
         initWithRootViewController:[FLEXTabsViewController new]
+    ] animated:YES completion:nil];
+}
+
+- (void)handleToolbarWindowManagerGesture:(UILongPressGestureRecognizer *)sender {
+    // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+    self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
+    
+    [super presentViewController:[[UINavigationController alloc]
+        initWithRootViewController:[FLEXWindowManagerController new]
     ] animated:YES completion:nil];
 }
 

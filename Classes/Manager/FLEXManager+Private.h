@@ -7,12 +7,13 @@
 //
 
 #import "FLEXManager.h"
+#import "FLEXWindow.h"
 
 @class FLEXGlobalsEntry, FLEXExplorerViewController;
 
 @interface FLEXManager (Private)
 
-//@property (nonatomic) FLEXWindow *explorerWindow;
+@property (nonatomic, readonly) FLEXWindow *explorerWindow;
 @property (nonatomic, readonly) FLEXExplorerViewController *explorerViewController;
 
 /// An array of FLEXGlobalsEntry objects that have been registered by the user.

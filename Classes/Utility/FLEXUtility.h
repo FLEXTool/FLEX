@@ -81,6 +81,8 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
 @property (nonatomic, readonly, class) UIWindow *appKeyWindow;
 /// The first active \c UIWindowScene of the app.
 @property (nonatomic, readonly, class) UIWindowScene *activeScene API_AVAILABLE(ios(13.0));
+/// @return top-most view controller of the given window
++ (UIViewController *)topViewControllerInWindow:(UIWindow *)window;
 
 + (UIColor *)consistentRandomColorForObject:(id)object;
 + (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame;

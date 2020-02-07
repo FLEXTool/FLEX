@@ -221,11 +221,7 @@
 }
 
 - (UIViewController *)topViewController {
-    UIViewController *topViewController = UIApplication.sharedApplication.keyWindow.rootViewController;
-    while (topViewController.presentedViewController) {
-        topViewController = topViewController.presentedViewController;
-    }
-    return topViewController;
+    return [FLEXUtility topViewControllerInWindow:UIApplication.sharedApplication.keyWindow];
 }
 
 - (void)toggleTopViewControllerOfClass:(Class)class {
