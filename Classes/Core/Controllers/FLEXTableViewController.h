@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLEXTableView.h"
 @class FLEXScopeCarousel, FLEXWindow;
 
 typedef CGFloat FLEXDebounceInterval;
@@ -111,5 +112,9 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// Called when the share button is pressed.
 /// Default implementation does nothign. Subclasses may override.
 - (void)shareButtonPressed;
+
+/// Subclasses may call this to opt-out of all toolbar related behavior.
+/// This is necessary if you want to disable the gesture which reveals the toolbar.
+- (void)disableToolbar;
 
 @end

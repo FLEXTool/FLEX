@@ -16,6 +16,7 @@
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXInstancesViewController.h"
 #import "FLEXTabsViewController.h"
+#import "FLEXBookmarkManager.h"
 #import "FLEXTableView.h"
 #import "FLEXTableViewCell.h"
 #import "FLEXScopeCarousel.h"
@@ -232,7 +233,7 @@
 - (void)shareButtonPressed {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.button(@"Add to Bookmarks").handler(^(NSArray<NSString *> *strings) {
-            // TODO
+            [FLEXBookmarkManager.bookmarks addObject:self.object];
         });
         make.button(@"Copy Description").handler(^(NSArray<NSString *> *strings) {
             UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
