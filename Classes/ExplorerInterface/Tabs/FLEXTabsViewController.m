@@ -9,12 +9,14 @@
 #import "FLEXTabsViewController.h"
 #import "FLEXNavigationController.h"
 #import "FLEXTabList.h"
+#import "FLEXBookmarkManager.h"
 #import "FLEXTableView.h"
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "UIBarButtonItem+FLEX.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXGlobalsViewController.h"
+#import "FLEXBookmarksViewController.h"
 
 @interface FLEXTabsViewController ()
 @property (nonatomic, copy) NSArray<UINavigationController *> *openTabs;
@@ -137,10 +139,10 @@
             [presenter presentViewController:activeTab animated:YES completion:nil];
         }];
     } else if (self.activeIndex == NSNotFound) {
-        // The only tab was closed
+        // The only tab was closed, so dismiss everything
         [self.corePresenter dismissViewControllerAnimated:YES completion:nil];
     } else {
-        // Simple dismiss with the same active tab
+        // Simple dismiss with the same active tab, only dismiss myself
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
@@ -175,11 +177,33 @@
 }
 
 - (void)addTabButtonPressed {
+    if (FLEXBookmarkManager.bookmarks.count) {
+        [FLEXAlert makeSheet:^(FLEXAlert *make) {
+            make.title(@"New Tab");
+            make.button(@"Main Menu").handler(^(NSArray<NSString *> *strings) {
+                [self addTabAndDismiss:[FLEXNavigationController
+                    withRootViewController:[FLEXGlobalsViewController new]
+                ]];
+            });
+            make.button(@"Choose from Bookmarks").handler(^(NSArray<NSString *> *strings) {
+                [self presentViewController:[FLEXNavigationController
+                    withRootViewController:[FLEXBookmarksViewController new]
+                ] animated:YES completion:nil];
+            });
+            make.button(@"Cancel").cancelStyle();
+        } showFrom:self];
+    } else {
+        // No bookmarks, just open the main menu
+        [self addTabAndDismiss:[FLEXNavigationController
+            withRootViewController:[FLEXGlobalsViewController new]
+        ]];
+    }
+}
+
+- (void)addTabAndDismiss:(UINavigationController *)newTab {
     FLEXExplorerViewController *presenter = self.corePresenter;
     [presenter dismissViewControllerAnimated:YES completion:^{
-        [presenter presentViewController:[FLEXNavigationController
-            withRootViewController:[FLEXGlobalsViewController new]
-        ] animated:YES completion:nil];
+        [presenter presentViewController:newTab animated:YES completion:nil];
     }];
 }
 
@@ -188,14 +212,14 @@
         NSInteger count = self.openTabs.count;
         NSString *title = FLEXPluralFormatString(count, @"Close %@ tabs", @"Close %@ tab");
         make.button(title).destructiveStyle().handler(^(NSArray<NSString *> *strings) {
-            [self closeAllTabs];
+            [self closeAll];
             [self toggleEditing];
         });
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
 }
 
-- (void)closeAllTabs {
+- (void)closeAll {
     NSInteger rowCount = self.openTabs.count;
     
     // Close tabs and update data source

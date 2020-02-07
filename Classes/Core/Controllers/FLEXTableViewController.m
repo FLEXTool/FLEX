@@ -8,6 +8,7 @@
 
 #import "FLEXTableViewController.h"
 #import "FLEXExplorerViewController.h"
+#import "FLEXBookmarksViewController.h"
 #import "FLEXTabsViewController.h"
 #import "FLEXScopeCarousel.h"
 #import "FLEXTableView.h"
@@ -189,6 +190,12 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     if (self.isViewLoaded) {
         [self setupToolbarItems];
     }
+}
+
+- (void)disableToolbar {
+    self.navigationController.toolbarHidden = YES;
+    self.navigationController.hidesBarsOnSwipe = NO;
+    self.toolbarItems = nil;
 }
 
 
@@ -410,7 +417,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 }
 
 - (void)showBookmarks {
-    // TODO
+    UINavigationController *nav = [[UINavigationController alloc]
+        initWithRootViewController:[FLEXBookmarksViewController new]
+    ];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)showTabSwitcher {
