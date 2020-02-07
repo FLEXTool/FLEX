@@ -133,4 +133,8 @@
     return FLEXDynamicColor(systemGrayColor, grayColor);
 }
 
++ (UIColor *)destructiveColor {
+    return FLEXDynamicColor(systemRedColor, redColor);
+}
+
 @end

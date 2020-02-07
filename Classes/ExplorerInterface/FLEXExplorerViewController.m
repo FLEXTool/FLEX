@@ -11,12 +11,14 @@
 #import "FLEXToolbarItem.h"
 #import "FLEXUtility.h"
 #import "FLEXWindow.h"
+#import "FLEXTabList.h"
 #import "FLEXNavigationController.h"
 #import "FLEXHierarchyViewController.h"
 #import "FLEXGlobalsViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXNetworkHistoryTableViewController.h"
+#import "FLEXTabsViewController.h"
 
 static NSString *const kFLEXToolbarTopMarginDefaultsKey = @"com.flex.FLEXToolbar.topMargin";
 
@@ -416,23 +418,28 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 #pragma mark - Toolbar Dragging
 
 - (void)setupToolbarGestures {
+    FLEXExplorerToolbar *toolbar = self.explorerToolbar;
+    
     // Pan gesture for dragging.
-    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc]
+    [toolbar.dragHandle addGestureRecognizer:[[UIPanGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleToolbarPanGesture:)
-    ];
-    [self.explorerToolbar.dragHandle addGestureRecognizer:panGR];
+    ]];
     
     // Tap gesture for hinting.
-    UITapGestureRecognizer *hintTapGR = [[UITapGestureRecognizer alloc]
+    [toolbar.dragHandle addGestureRecognizer:[[UITapGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleToolbarHintTapGesture:)
-    ];
-    [self.explorerToolbar.dragHandle addGestureRecognizer:hintTapGR];
+    ]];
     
     // Tap gesture for showing additional details
     self.detailsTapGR = [[UITapGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleToolbarDetailsTapGesture:)
     ];
-    [self.explorerToolbar.selectedViewDescriptionContainer addGestureRecognizer:self.detailsTapGR];
+    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:self.detailsTapGR];
+    
+    // Long press gesture to present tabs manager
+    [toolbar.globalsItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleToolbarShowTabsGesture:)
+    ]];
 }
 
 - (void)handleToolbarPanGesture:(UIPanGestureRecognizer *)panGR {
@@ -501,10 +508,19 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarDetailsTapGesture:(UITapGestureRecognizer *)tapGR {
     if (tapGR.state == UIGestureRecognizerStateRecognized && self.selectedView) {
         UIViewController *topStackVC = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
-        [self makeKeyAndPresentViewController:
+        [self presentViewController:
             [FLEXNavigationController withRootViewController:topStackVC]
         animated:YES completion:nil];
     }
+}
+
+- (void)handleToolbarShowTabsGesture:(UILongPressGestureRecognizer *)sender {
+    // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+    self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
+    
+    [super presentViewController:[[UINavigationController alloc]
+        initWithRootViewController:[FLEXTabsViewController new]
+    ] animated:YES completion:nil];
 }
 
 
@@ -737,20 +753,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 
-#pragma mark - Modal Dismissal
-
-- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController {
-    [self presentedViewControllerDidDismiss];
-}
-
-- (void)presentedViewControllerDidDismiss {
-    [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
-}
-
-
 #pragma mark - Modal Presentation and Window Management
 
-- (void)makeKeyAndPresentViewController:(UINavigationController *)toPresent
+- (void)presentViewController:(UIViewController *)toPresent
                                animated:(BOOL)animated
                              completion:(void (^)(void))completion {
     // Make our window key to correctly handle input.
@@ -771,29 +776,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
     [UIMenuController.sharedMenuController update];
     
-    // Add the "Done" button to the navigation controller's view controller if it doesn't have one
-    // (the hierarchy screen adds it's own done button in order to pass data between us)
-    if (!toPresent.topViewController.navigationItem.rightBarButtonItem) {
-        toPresent.topViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-            initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-            target:self
-            action:@selector(presentedViewControllerDidDismiss)
-        ];
-    }
-    
-    // Make myself the delegate for sheets presented modally so we can do the
-    // proper cleanup when sheets are dragged to dismiss without the done button
-    if (@available(iOS 13, *)) {
-        toPresent.presentationController.delegate = self;
-    }
-    
     // Show the view controller.
-    [self presentViewController:toPresent animated:animated completion:completion];
+    [super presentViewController:toPresent animated:animated completion:completion];
 }
 
-- (void)resignKeyAndDismissViewControllerAnimated:(BOOL)animated
-                                       completion:(void (^)(void))completion
-{
+- (void)dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion {    
     UIWindow *appWindow = self.window.previousKeyWindow;
     [appWindow makeKeyWindow];
     [appWindow.rootViewController setNeedsStatusBarAppearanceUpdate];
@@ -809,7 +796,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // scroll to top, but below FLEX otherwise for exploration.
     [self statusWindow].windowLevel = UIWindowLevelStatusBar;
     
-    [self dismissViewControllerAnimated:animated completion:completion];
+    [super dismissViewControllerAnimated:animated completion:completion];
 }
 
 - (BOOL)wantsWindowToBecomeKey
@@ -820,9 +807,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future
                                   completion:(void(^)(void))completion {
     if (self.presentedViewController) {
-        [self resignKeyAndDismissViewControllerAnimated:YES completion:completion];
+        [self dismissViewControllerAnimated:YES completion:completion];
     } else if (future) {
-        [self makeKeyAndPresentViewController:future() animated:YES completion:completion];
+        [self presentViewController:future() animated:YES completion:completion];
     }
 }
 

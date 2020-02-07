@@ -71,7 +71,7 @@
     [[FLEXManager sharedManager] showExplorer];
     [[FLEXManager sharedManager] setNetworkDebuggingEnabled:YES];
     [self sendExampleNetworkRequests];
-    self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
+//    self.repeatingLogExampleTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(sendExampleLogMessage) userInfo:nil repeats:YES];
 
     [[NSUserDefaults standardUserDefaults] setObject:@"foo" forKey:@"FLEXExamplePrefFoo"];
     

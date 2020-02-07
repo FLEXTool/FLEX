@@ -32,6 +32,8 @@
 
 @implementation FLEXGlobalsViewController
 
+#pragma mark - Initialization
+
 + (NSString *)globalsTitleForSection:(FLEXGlobalsSectionKind)section {
     switch (section) {
         case FLEXGlobalsSectionProcessAndEvents:
@@ -128,6 +130,7 @@
     return sections;
 }
 
+
 #pragma mark - UIViewController
 
 - (void)viewDidLoad {
@@ -151,6 +154,13 @@
     self.sections = self.allSections;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.navigationController.toolbarHidden = YES;
+}
+
+
 #pragma mark - Search Bar
 
 - (void)updateSearchResults:(NSString *)newText {
@@ -168,6 +178,7 @@
     }
 }
 
+
 #pragma mark - Private
 
 - (NSArray<FLEXGlobalsSection *> *)nonemptySections {
@@ -175,6 +186,7 @@
         return section.numberOfRows > 0;
     }];
 }
+
 
 #pragma mark - Table View Data Source
 
@@ -205,6 +217,7 @@
 }
 
 #pragma mark - Table View Delegate
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXTableViewSection *section = self.sections[indexPath.section];

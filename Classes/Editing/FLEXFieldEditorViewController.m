@@ -12,6 +12,7 @@
 #import "FLEXPropertyAttributes.h"
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
+#import "UIBarButtonItem+FLEX.h"
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
@@ -61,7 +62,9 @@
         target:self
         action:@selector(getterButtonPressed:)
     ];
-    self.navigationItem.rightBarButtonItems = @[self.setterButton, self.getterButton];
+    self.toolbarItems = @[
+        UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.setterButton
+    ];
 
     // Configure input view
     self.fieldEditorView.fieldDescription = self.fieldDescription;
@@ -72,7 +75,12 @@
 
     // Don't show a "set" button for switches; we mutate when the switch is flipped
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
-        self.navigationItem.rightBarButtonItem = nil;
+        self.setterButton.enabled = NO;
+        self.setterButton.title = @"Flip the switch to call the setter";
+        // Put getter button before setter button 
+        self.toolbarItems = @[
+            UIBarButtonItem.flex_flexibleSpace, self.setterButton, self.getterButton
+        ];
     }
 }
 

@@ -7,9 +7,12 @@
 //
 
 #import "FLEXTableViewController.h"
+#import "FLEXExplorerViewController.h"
+#import "FLEXTabsViewController.h"
 #import "FLEXScopeCarousel.h"
 #import "FLEXTableView.h"
 #import "FLEXUtility.h"
+#import "UIBarButtonItem+FLEX.h"
 #import <objc/runtime.h>
 
 @interface Block : NSObject
@@ -33,7 +36,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @synthesize tableHeaderViewContainer = _tableHeaderViewContainer;
 @synthesize automaticallyShowsSearchBarCancelButton = _automaticallyShowsSearchBarCancelButton;
 
-#pragma mark - Public
+#pragma mark - Initialization
 
 - (id)init {
 #if FLEX_AT_LEAST_IOS13_SDK
@@ -59,6 +62,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     
     return self;
 }
+
+
+#pragma mark - Public
 
 - (FLEXWindow *)window {
     return (id)self.view.window;
@@ -178,6 +184,14 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     });
 }
 
+- (void)setsShowsShareToolbarItem:(BOOL)showsShareToolbarItem {
+    _showsShareToolbarItem = showsShareToolbarItem;
+    if (self.isViewLoaded) {
+        [self setupToolbarItems];
+    }
+}
+
+
 #pragma mark - View Controller Lifecycle
 
 - (void)loadView {
@@ -190,6 +204,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     [super viewDidLoad];
     
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+    
+    // Toolbar
+    self.navigationController.toolbarHidden = NO;
+    self.navigationController.hidesBarsOnSwipe = YES;
 
     // On iOS 13, the root view controller shows it's search bar no matter what.
     // Turning this off avoids some weird flash the navigation bar does when we
@@ -203,11 +221,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-    
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
@@ -217,6 +230,8 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             self.navigationItem.hidesSearchBarWhenScrolling = NO;
         }
     }
+
+    [self setupToolbarItems];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -248,7 +263,35 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.didInitiallyRevealSearchBar = NO;
 }
 
+
 #pragma mark - Private
+
+- (void)setupToolbarItems {
+    UIBarButtonItem *emptySpaceOrShare = UIBarButtonItem.flex_fixedSpace;
+    if (self.showsShareToolbarItem) {
+        emptySpaceOrShare = FLEXBarButtonItemSystem(Action, self, @selector(shareButtonPressed));
+    }
+    
+    self.toolbarItems = @[
+        UIBarButtonItem.flex_fixedSpace,
+        UIBarButtonItem.flex_flexibleSpace,
+        UIBarButtonItem.flex_fixedSpace,
+        UIBarButtonItem.flex_flexibleSpace,
+        UIBarButtonItem.flex_fixedSpace,
+        UIBarButtonItem.flex_flexibleSpace,
+        emptySpaceOrShare,
+        UIBarButtonItem.flex_flexibleSpace,
+        FLEXBarButtonItemSystem(Bookmarks, self, @selector(showBookmarks)),
+        UIBarButtonItem.flex_flexibleSpace,
+        FLEXBarButtonItemSystem(Organize, self, @selector(showTabSwitcher)),
+    ];
+    
+    // Disable tabs entirely when not presented by FLEXExplorerViewController
+    UIViewController *presenter = self.navigationController.presentingViewController;
+    if (![presenter isKindOfClass:[FLEXExplorerViewController class]]) {
+        self.toolbarItems.lastObject.enabled = NO;
+    }
+}
 
 - (void)debounce:(void(^)(void))block {
     [self.debounceTimer invalidate];
@@ -366,6 +409,22 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     return _tableHeaderViewContainer;
 }
 
+- (void)showBookmarks {
+    // TODO
+}
+
+- (void)showTabSwitcher {
+    UINavigationController *nav = [[UINavigationController alloc]
+        initWithRootViewController:[FLEXTabsViewController new]
+    ];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)shareButtonPressed {
+
+}
+
+
 #pragma mark - Search Bar
 
 #pragma mark UISearchResultsUpdating
@@ -391,6 +450,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
+
 #pragma mark UISearchControllerDelegate
 
 - (void)willPresentSearchController:(UISearchController *)searchController {
@@ -407,12 +467,14 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
+
 #pragma mark UISearchBarDelegate
 
 /// Not necessary in iOS 13; remove this when iOS 13 is the deployment target
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     [self updateSearchResultsForSearchController:self.searchController];
 }
+
 
 #pragma mark Table view
 

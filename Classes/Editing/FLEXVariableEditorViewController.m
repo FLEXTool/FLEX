@@ -15,6 +15,7 @@
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXObjectExplorerViewController.h"
+#import "UIBarButtonItem+FLEX.h"
 
 @interface FLEXVariableEditorViewController () <UIScrollViewDelegate>
 @property (nonatomic) UIScrollView *scrollView;
@@ -98,7 +99,9 @@
         target:self
         action:@selector(actionButtonPressed:)
     ];
-    self.navigationItem.rightBarButtonItem = self.setterButton;
+    
+    self.navigationController.toolbarHidden = NO;
+    self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, self.setterButton];
 }
 
 - (void)viewWillLayoutSubviews {
