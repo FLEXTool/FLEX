@@ -13,7 +13,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXKeyboardShortcutManager.h"
 #import "FLEXExplorerViewController.h"
-#import "FLEXNetworkHistoryTableViewController.h"
+#import "FLEXNetworkMITMViewController.h"
 #import "FLEXKeyboardHelpViewController.h"
 #import "FLEXFileBrowserTableViewController.h"
 
@@ -106,7 +106,7 @@
     } description:@"Toggle move tool"];
     
     [self registerSimulatorShortcutWithKey:@"n" modifiers:0 action:^{
-        [self toggleTopViewControllerOfClass:[FLEXNetworkHistoryTableViewController class]];
+        [self toggleTopViewControllerOfClass:[FLEXNetworkMITMViewController class]];
     } description:@"Toggle network history view"];
     
     // 't' is for testing: quickly present an object explorer for debugging

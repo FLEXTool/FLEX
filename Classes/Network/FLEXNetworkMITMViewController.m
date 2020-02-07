@@ -1,5 +1,5 @@
 //
-//  FLEXNetworkHistoryTableViewController.m
+//  FLEXNetworkMITMViewController.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/8/15.
@@ -8,15 +8,16 @@
 
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
-#import "FLEXNetworkHistoryTableViewController.h"
+#import "FLEXNetworkMITMViewController.h"
 #import "FLEXNetworkTransaction.h"
-#import "FLEXNetworkTransactionTableViewCell.h"
 #import "FLEXNetworkRecorder.h"
-#import "FLEXNetworkTransactionDetailTableViewController.h"
 #import "FLEXNetworkObserver.h"
+#import "FLEXNetworkTransactionTableViewCell.h"
+#import "FLEXNetworkTransactionDetailTableViewController.h"
 #import "FLEXNetworkSettingsTableViewController.h"
+#import "UIBarButtonItem+FLEX.h"
 
-@interface FLEXNetworkHistoryTableViewController ()
+@interface FLEXNetworkMITMViewController ()
 
 /// Backing model
 @property (nonatomic, copy) NSArray<FLEXNetworkTransaction *> *networkTransactions;
@@ -26,10 +27,13 @@
 
 @property (nonatomic) BOOL rowInsertInProgress;
 @property (nonatomic) BOOL isPresentingSearch;
+@property (nonatomic) BOOL pendingReload;
 
 @end
 
-@implementation FLEXNetworkHistoryTableViewController
+@implementation FLEXNetworkMITMViewController
+
+#pragma mark - Initialization
 
 - (id)init {
     self = [super initWithStyle:UITableViewStylePlain];
@@ -52,6 +56,8 @@
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
+#pragma mark - Lifecycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -67,18 +73,38 @@
     [self updateTransactions];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    // Reload the table if we received updates while not on-screen
+    if (self.pendingReload) {
+        [self.tableView reloadData];
+        self.pendingReload = NO;
+    }
+}
+
+
+#pragma mark - Private
+
+#pragma mark Button Actions
+
 - (void)settingsButtonTapped:(id)sender {
-    FLEXNetworkSettingsTableViewController *settingsViewController = [FLEXNetworkSettingsTableViewController new];
-    settingsViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(settingsViewControllerDoneTapped:)];
-    settingsViewController.title = @"Network Debugging Settings";
+    UIViewController *settings = [FLEXNetworkSettingsTableViewController new];
+    settings.navigationItem.rightBarButtonItem = FLEXBarButtonItemSystem(
+        Done, self, @selector(settingsViewControllerDoneTapped:)
+    );
+    settings.title = @"Network Debugging Settings";
+    
     // This is not a FLEXNavigationController because it is not intended as a new tab
-    UINavigationController *wrapperNavigationController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-    [self presentViewController:wrapperNavigationController animated:YES completion:nil];
+    UIViewController *nav = [[UINavigationController alloc] initWithRootViewController:settings];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)settingsViewControllerDoneTapped:(id)sender {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+
+#pragma mark Transactions
 
 - (void)updateTransactions {
     self.networkTransactions = [[FLEXNetworkRecorder defaultRecorder] networkTransactions];
@@ -101,9 +127,9 @@
     [self updateFirstSectionHeader];
 }
 
-- (void)setFilteredNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)filteredNetworkTransactions {
-    if (![_filteredNetworkTransactions isEqual:filteredNetworkTransactions]) {
-        _filteredNetworkTransactions = filteredNetworkTransactions;
+- (void)setFilteredNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)networkTransactions {
+    if (![_filteredNetworkTransactions isEqual:networkTransactions]) {
+        _filteredNetworkTransactions = networkTransactions;
         [self updateFilteredBytesReceived];
     }
 }
@@ -116,6 +142,8 @@
     self.filteredBytesReceived = filteredBytesReceived;
     [self updateFirstSectionHeader];
 }
+
+#pragma mark Header
 
 - (void)updateFirstSectionHeader {
     UIView *view = [self.tableView headerViewForSection:0];
@@ -147,6 +175,7 @@
     return headerText;
 }
 
+
 #pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
@@ -157,15 +186,19 @@
     return [self new];
 }
 
+
 #pragma mark - Notification Handlers
 
 - (void)handleNewTransactionRecordedNotification:(NSNotification *)notification {
-    if (self.viewIfLoaded.window) {
-        [self tryUpdateTransactions];
-    }
+    [self tryUpdateTransactions];
 }
 
 - (void)tryUpdateTransactions {
+    // Don't do any updating if we aren't in the view hierarchy
+    if (!self.viewIfLoaded.window) {
+        self.pendingReload = YES;
+        return;
+    }
     // Let the previous row insert animation finish before starting a new one to avoid stomping.
     // We'll try calling the method again when the insertion completes, and we properly no-op if there haven't been changes.
     if (self.rowInsertInProgress) {
@@ -240,6 +273,7 @@
     [self updateFirstSectionHeader];
 }
 
+
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -277,6 +311,7 @@
     detailViewController.transaction = [self transactionAtIndexPath:indexPath];
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
+
 
 #pragma mark - Menu Actions
 
@@ -325,6 +360,7 @@
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath {
     return self.searchController.isActive ? self.filteredNetworkTransactions[indexPath.row] : self.networkTransactions[indexPath.row];
 }
+
 
 #pragma mark - Search Bar
 
