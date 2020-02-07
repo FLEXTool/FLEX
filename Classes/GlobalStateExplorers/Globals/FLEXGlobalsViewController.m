@@ -19,7 +19,7 @@
 #import "FLEXGlobalsEntry.h"
 #import "FLEXManager+Private.h"
 #import "FLEXSystemLogTableViewController.h"
-#import "FLEXNetworkHistoryTableViewController.h"
+#import "FLEXNetworkMITMViewController.h"
 #import "FLEXAddressExplorerCoordinator.h"
 #import "FLEXGlobalsSection.h"
 
@@ -68,7 +68,7 @@
         case FLEXGlobalsRowSystemLog:
             return [FLEXSystemLogTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowNetworkHistory:
-            return [FLEXNetworkHistoryTableViewController flex_concreteGlobalsEntry:row];
+            return [FLEXNetworkMITMViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowKeyWindow:
         case FLEXGlobalsRowRootViewController:
         case FLEXGlobalsRowProcessInfo:

@@ -1,5 +1,5 @@
 //
-//  FLEXNetworkHistoryTableViewController.h
+//  FLEXNetworkMITMViewController.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/8/15.
@@ -9,6 +9,6 @@
 #import "FLEXTableViewController.h"
 #import "FLEXGlobalsEntry.h"
 
-@interface FLEXNetworkHistoryTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
+@interface FLEXNetworkMITMViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
 @end

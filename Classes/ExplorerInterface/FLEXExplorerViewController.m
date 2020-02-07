@@ -17,7 +17,7 @@
 #import "FLEXGlobalsViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
-#import "FLEXNetworkHistoryTableViewController.h"
+#import "FLEXNetworkMITMViewController.h"
 #import "FLEXTabsViewController.h"
 
 static NSString *const kFLEXToolbarTopMarginDefaultsKey = @"com.flex.FLEXToolbar.topMargin";
