@@ -59,6 +59,14 @@
 }
 #endif
 
++ (UIViewController *)topViewControllerInWindow:(UIWindow *)window {
+    UIViewController *topViewController = window.rootViewController;
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
+    }
+    return topViewController;
+}
+
 + (UIColor *)consistentRandomColorForObject:(id)object {
     CGFloat hue = (((NSUInteger)object >> 4) % 256) / 255.0;
     return [UIColor colorWithHue:hue saturation:1.0 brightness:1.0 alpha:1.0];
