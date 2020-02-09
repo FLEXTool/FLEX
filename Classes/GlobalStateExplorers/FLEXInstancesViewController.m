@@ -77,10 +77,19 @@
 }
 
 + (instancetype)instancesTableViewControllerForInstancesReferencingObject:(id)object {
+    static Class SwiftObjectClass = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        SwiftObjectClass = NSClassFromString(@"SwiftObject");
+        if (!SwiftObjectClass) {
+            SwiftObjectClass = NSClassFromString(@"Swift._SwiftObject");
+        }
+    });
+    
     NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray array];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
         // Skip Swift objects
-        if ([actualClass isKindOfClass:NSClassFromString(@"SwiftObject")]) {
+        if ([actualClass isKindOfClass:SwiftObjectClass]) {
             return;
         }
         

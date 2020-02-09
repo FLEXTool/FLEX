@@ -44,8 +44,12 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
 + (void)load {
     // We need to get all of the methods in this file and add them to NSProxy. 
     // To do this we we need the class itself and it's metaclass.
+    // Edit: also add them to Swift._SwiftObject
     Class NSProxyClass = [NSProxy class];
     Class NSProxy_meta = object_getClass(NSProxyClass);
+    Class SwiftObjectClass = (
+        NSClassFromString(@"SwiftObject") ?: NSClassFromString(@"Swift._SwiftObject")
+    );
     
     // Copy all of the "flex_" methods from NSObject
     id filterFunc = ^BOOL(FLEXMethod *method, NSUInteger idx) {
@@ -54,10 +58,18 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
     NSArray *instanceMethods = [[NSObject flex_allInstanceMethods] flex_filtered:filterFunc];
     NSArray *classMethods = [[NSObject flex_allClassMethods] flex_filtered:filterFunc];
     
-    FLEXClassBuilder *proxy = [FLEXClassBuilder builderForClass:NSProxyClass];
-    FLEXClassBuilder *meta  = [FLEXClassBuilder builderForClass:NSProxy_meta];
+    FLEXClassBuilder *proxy     = [FLEXClassBuilder builderForClass:NSProxyClass];
+    FLEXClassBuilder *proxyMeta = [FLEXClassBuilder builderForClass:NSProxy_meta];
     [proxy addMethods:instanceMethods];
-    [meta addMethods:classMethods];
+    [proxyMeta addMethods:classMethods];
+    
+    if (SwiftObjectClass) {
+        Class SwiftObject_meta = object_getClass(SwiftObjectClass);
+        FLEXClassBuilder *swiftObject = [FLEXClassBuilder builderForClass:SwiftObjectClass];
+        FLEXClassBuilder *swiftObjectMeta = [FLEXClassBuilder builderForClass:SwiftObject_meta];
+        [swiftObject addMethods:instanceMethods];
+        [swiftObjectMeta addMethods:classMethods];
+    }
 }
 
 @end
