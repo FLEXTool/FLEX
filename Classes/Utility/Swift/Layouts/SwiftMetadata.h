@@ -6,15 +6,14 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#include "FLEXPointers.h"
+#include "RelativePointer.h"
+#include "MetadataValues.h"
+#include <MacTypes.h>
 
-typedef int32_t ContextDescriptorFlags;
+using namespace swift;
 
-typedef NS_ENUM(NSUInteger, NominalTypeDescriptorKind) {
-    NominalTypeDescriptorKindClass = 0,
-    NominalTypeDescriptorKindStruct = 1,
-    NominalTypeDescriptorKindEnum = 2
-};
+#pragma mark - Integral Types
 
 typedef NS_ENUM(NSUInteger, MetadataKind) {
     MetadataKindStruct = 1,
@@ -34,10 +33,34 @@ typedef NS_ENUM(NSUInteger, MetadataKind) {
 //  MetadataKindClass = isa
 };
 
+#pragma mark - IDK
+
 typedef union _CommonMetadata {
     MetadataKind kind;
     Class isa;
 } Metadata;
+
+#pragma mark - Type Descriptors
+
+struct ContextDescriptor {
+    ContextDescriptorFlags flags;
+    RelativeIndirectablePointer<ContextDescriptor, true> parent;
+    
+    bool isGeneric() const { return flags.isGeneric(); }
+    bool isUnique() const { return flags.isUnique(); }
+    ContextDescriptorKind getKind() const { return flags.getKind(); }
+    
+    /// Get the generic context information for this context, or null if the
+    /// context is not generic.
+    const TargetGenericContext<Runtime> *getGenericContext() const;
+    
+    unsigned genericParamCount() const {
+      auto *genericContext = getGenericContext();
+      return genericContext
+                ? genericContext->getGenericContextHeader().NumParams
+                : 0;
+    }
+}
 
 /// For classes and structs
 typedef struct _StructureDescriptor {
@@ -58,21 +81,27 @@ typedef struct _EnumDescriptor {
 typedef struct ClassTypeDescriptor {
     ContextDescriptorFlags flags;
     int32_t parent;
-    RelativeOffset mangledName; // char[]
-    RelativeOffset fieldTypesAccessor; // int64_t
-    RelativeOffset fieldDescriptor; // FieldDescriptor
-    RelativeOffset superClass; // id
+    RelativeDirectPointer<char> mangledName;
+    RelativeDirectPointer<int64_t> fieldTypesAccessor;
+    RelativeDirectPointer<void *> fieldDescriptor; // FieldDescriptor
+    RelativeDirectPointer<Class> superClass; // id
     int32_t negativeSizeAndBoundsUnion;
     int32_t metadataPositiveSizeInWords;
     int32_t numImmediateMembers;
     int32_t numberOfFields;
-    RelativeOffset offsetToTheFieldOffsetVector; // int64_t[]
+    RelativeDirectPointer<int64_t> offsetToTheFieldOffsetVector; // int64_t[]
 //    TargetTypeGenericContextDescriptorHeader genericContextHeader;
 } ClassTypeDescriptor;
 
-typedef struct _NominalTypeDescriptor {
-    NominalTypeDescriptorKind kind;
-    const char *mangledName;
+struct NominalTypeDescriptor {
+    enum Kind : NSUInteger {
+        Class  = 0,
+        Struct = 1,
+        Enum   = 2
+    };
+    
+    NominalTypeDescriptor::Kind kind;
+    RelativeDirectPointer<char> mangledName;
     union {
         StructureDescriptor ivars; // structs / classes
         EnumDescriptor cases; // enums
@@ -84,7 +113,12 @@ typedef struct _NominalTypeDescriptor {
         NSUInteger formalTypeParamCount;
         NSUInteger witnessTableCount[1]; // Variable-length with size .typeParamCount
     } generic;
-} NominalTypeDescriptor;
+};
+
+struct ClassTypeDescriptor : NominalTypeDescriptor {
+    RelativeDirectPointer<NSInteger> fieldTypes;
+    
+}
 
 #define _High8BitMask 0xFF00000000000000
 #define _High8Offset 24

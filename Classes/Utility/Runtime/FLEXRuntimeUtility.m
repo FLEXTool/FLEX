@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
-#import "FLEXSwiftRuntimeUtility.h"
+//#import "FLEXSwiftRuntimeUtility.h"
 
 // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
 NSString *const kFLEXPropertyAttributeKeyTypeEncoding = @"T";
@@ -298,9 +298,9 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     }
 
     // Case: `object` is a Swift object or class. Does not implement methodSignatureForSelector:
-    if ([FLEXSwiftRuntimeUtility isSwiftObjectOrClass:object]) {
-        return [FLEXSwiftRuntimeUtility performSelector:selector onSwiftObject:object withArguments:arguments error:error];
-    }
+//    if ([FLEXSwiftRuntimeUtility isSwiftObjectOrClass:object]) {
+//        return [FLEXSwiftRuntimeUtility performSelector:selector onSwiftObject:object withArguments:arguments error:error];
+//    }
     
     // Probably an unsupported type encoding, like bitfields
     // or inline arrays. In the future, we could calculate

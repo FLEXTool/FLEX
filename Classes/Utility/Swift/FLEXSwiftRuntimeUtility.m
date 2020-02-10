@@ -8,6 +8,7 @@
 
 #import "FLEXSwiftRuntimeUtility.h"
 #import "FLEXRuntimeUtility.h"
+#import "SwiftMetadata.h"
 #import <objc/runtime.h>
 
 @implementation FLEXSwiftRuntimeUtility
@@ -48,7 +49,7 @@
 }
 
 + (id)performSelector:(SEL)selector onSwiftObject:(id)object withArguments:(NSArray *)arguments error:(NSError *__autoreleasing *)error {
-    
+    return nil;
 }
 
 @end
