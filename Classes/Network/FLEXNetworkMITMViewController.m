@@ -365,16 +365,21 @@
 #pragma mark - Search Bar
 
 - (void)updateSearchResults:(NSString *)searchString {
-    [self onBackgroundQueue:^NSArray *{
-        return [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary<NSString *, id> *bindings) {
-            return [[transaction.request.URL absoluteString] rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
-        }]];
-    } thenOnMainQueue:^(NSArray *filteredNetworkTransactions) {
-        if ([self.searchText isEqual:searchString]) {
-            self.filteredNetworkTransactions = filteredNetworkTransactions;
-            [self.tableView reloadData];
-        }
-    }];
+    if (!searchString) {
+        self.filteredNetworkTransactions = self.networkTransactions;
+        [self.tableView reloadData];
+    } else {
+        [self onBackgroundQueue:^NSArray *{
+            return [self.networkTransactions flex_filtered:^BOOL(FLEXNetworkTransaction *entry, NSUInteger idx) {
+                return [entry.request.URL.absoluteString localizedCaseInsensitiveContainsString:searchString];
+            }];
+        } thenOnMainQueue:^(NSArray *filteredNetworkTransactions) {
+            if ([self.searchText isEqual:searchString]) {
+                self.filteredNetworkTransactions = filteredNetworkTransactions;
+                [self.tableView reloadData];
+            }
+        }];
+    }
 }
 
 #pragma mark UISearchControllerDelegate
