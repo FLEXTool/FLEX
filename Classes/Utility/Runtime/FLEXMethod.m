@@ -9,7 +9,7 @@
 
 #import "FLEXMethod.h"
 #import "FLEXMirror.h"
-
+#import "FLEXTypeEncodingParser.h"
 
 @implementation FLEXMethod
 @dynamic implementation;
@@ -67,10 +67,9 @@
         _objc_method = method;
         _isInstanceMethod = isInstanceMethod;
         _signatureString = @(method_getTypeEncoding(method));
-        @try {
+        
+        if ([FLEXTypeEncodingParser methodTypeEncodingSupported:_signatureString]) {
             _signature = [NSMethodSignature signatureWithObjCTypes:_signatureString.UTF8String];
-        } @catch (NSException *exception) {
-            _signature = nil;
         }
 
         [self examine];
@@ -349,6 +348,10 @@
 
 // Code borrowed from MAObjcRuntime, by Mike Ash.
 - (void)getReturnValue:(void *)retPtr forMessageSend:(id)target arguments:(va_list)args {
+    if (!_signature) {
+        return;
+    }
+    
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:_signature];
     NSUInteger argumentCount = _signature.numberOfArguments;
     

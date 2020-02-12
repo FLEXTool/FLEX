@@ -10,11 +10,14 @@
 #import "FLEXShortcut.h"
 #import <objc/runtime.h>
 
+// Don't load pre-registered shortcuts in a test environment
+#define FLEX_EXIT_IF_TESTING() if (NSClassFromString(@"XCTest")) return;
+
 #pragma mark - Views
 
 @implementation FLEXShortcutsFactory (Views)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     // Only available since iOS 3.2, but we never supported iOS 3, so who cares
     NSArray *ivars = @[@"_gestureRecognizers"];
     NSArray *methods = @[@"sizeToFit", @"setNeedsLayout", @"removeFromSuperview"];
@@ -73,7 +76,7 @@
 
 @implementation FLEXShortcutsFactory (ViewControllers)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     // UIViewController
     self.append
         .properties(@[
@@ -90,7 +93,7 @@
 
 @implementation FLEXShortcutsFactory (UIImage)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     self.append.methods(@[
         @"CGImage", @"CIImage"
     ]).properties(@[
@@ -110,7 +113,7 @@
 
 @implementation FLEXShortcutsFactory (NSBundle)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     self.append.properties(@[
         @"bundleIdentifier", @"principalClass",
         @"infoDictionary", @"bundlePath",
@@ -125,7 +128,7 @@
 
 @implementation FLEXShortcutsFactory (Classes)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     self.append.methods(@[@"new", @"alloc"]).forClass(objc_getMetaClass("NSObject"));
 }
 
@@ -136,7 +139,7 @@
 
 @implementation FLEXShortcutsFactory (Activities)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     self.append.properties(@[
         @"item", @"placeholderItem", @"activityType"
     ]).forClass(UIActivityItemProvider.class);
@@ -153,7 +156,7 @@
 
 @implementation FLEXShortcutsFactory (Blocks)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     self.append.methods(@[@"invoke"]).forClass(NSClassFromString(@"NSBlock"));
 }
 

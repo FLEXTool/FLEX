@@ -10,6 +10,7 @@
 #import "FLEXIvar.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXRuntimeSafety.h"
+#import "FLEXTypeEncodingParser.h"
 
 @interface FLEXIvar () {
     NSString *_flex_description;
@@ -71,9 +72,7 @@
     _type         = (FLEXTypeEncoding)[_typeEncoding characterAtIndex:0];
     _offset       = ivar_getOffset(self.objc_ivar);
 
-    @try {
-        NSGetSizeAndAlignment(_typeEncoding.UTF8String, &_size, nil);
-    } @catch (NSException *exception) { }
+    FLEXGetSizeAndAlignment(_typeEncoding.UTF8String, &_size, nil);
     _details = [NSString stringWithFormat:
         @"%@ bytes, offset %@  —  %@",
         (_size ? @(_size) : @"?"), @(_offset), _typeEncoding
@@ -121,12 +120,7 @@
         );
 
         NSUInteger bufferSize = 0;
-        @try {
-            // NSGetSizeAndAlignment barfs on type encoding for bitfields.
-            NSGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL);
-        } @catch (NSException *exception) { }
-
-        if (bufferSize > 0) {
+        if (FLEXGetSizeAndAlignment(typeEncodingCString, &bufferSize, NULL)) {
             void *buffer = calloc(bufferSize, 1);
             [valueValue getValue:buffer];
             void *pointer = (__bridge void *)target + self.offset;

@@ -11,6 +11,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import "FLEXTypeEncodingParser.h"
 #import "FLEXAlert.h"
 #import "NSArray+Functional.h"
 #import "UIFont+FLEX.h"

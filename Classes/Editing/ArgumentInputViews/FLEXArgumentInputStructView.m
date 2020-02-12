@@ -9,6 +9,7 @@
 #import "FLEXArgumentInputStructView.h"
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXRuntimeUtility.h"
+#import "FLEXTypeEncodingParser.h"
 
 @interface FLEXArgumentInputStructView ()
 
@@ -63,12 +64,8 @@
         const char *structTypeEncoding = [inputValue objCType];
         if (strcmp(self.typeEncoding.UTF8String, structTypeEncoding) == 0) {
             NSUInteger valueSize = 0;
-            @try {
-                // NSGetSizeAndAlignment barfs on type encoding for bitfields.
-                NSGetSizeAndAlignment(structTypeEncoding, &valueSize, NULL);
-            } @catch (NSException *exception) { }
             
-            if (valueSize > 0) {
+            if (FLEXGetSizeAndAlignment(structTypeEncoding, &valueSize, NULL)) {
                 void *unboxedValue = malloc(valueSize);
                 [inputValue getValue:unboxedValue];
                 [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName,
@@ -97,12 +94,8 @@
     NSValue *boxedStruct = nil;
     const char *structTypeEncoding = self.typeEncoding.UTF8String;
     NSUInteger structSize = 0;
-    @try {
-        // NSGetSizeAndAlignment barfs on type encoding for bitfields.
-        NSGetSizeAndAlignment(structTypeEncoding, &structSize, NULL);
-    } @catch (NSException *exception) { }
     
-    if (structSize > 0) {
+    if (FLEXGetSizeAndAlignment(structTypeEncoding, &structSize, NULL)) {
         void *unboxedStruct = malloc(structSize);
         [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName,
                                                                                            const char *fieldTypeEncoding,
@@ -182,15 +175,7 @@
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
     if (type[0] == FLEXTypeEncodingStructBegin) {
-        // We cannot support anything with bitfields or structs,
-        // and this will throw an exception if it does
-        @try {
-            NSGetSizeAndAlignment(type, nil, nil);
-        } @catch (NSException *exception) {
-            return NO;
-        }
-
-        return YES;
+        return FLEXGetSizeAndAlignment(type, nil, nil);
     }
 
     return NO;
