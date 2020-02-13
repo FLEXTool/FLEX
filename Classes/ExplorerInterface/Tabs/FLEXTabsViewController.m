@@ -252,6 +252,7 @@
     cell.detailTextLabel.text = FLEXPluralString(tab.viewControllers.count, @"pages", @"page");
     
     if (!cell.tag) {
+        cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
         cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
         cell.tag = 1;

@@ -31,7 +31,8 @@
     self = [super initWithTarget:target];
     if (self) {
         self.method = method;
-        self.title = method.isInstanceMethod ? @"Method" : @"Class Method";
+        self.title = method.isInstanceMethod ? @"Method: " : @"Class Method: ";
+        self.title = [self.title stringByAppendingString:method.selectorString];
     }
 
     return self;
