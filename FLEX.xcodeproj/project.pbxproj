@@ -773,10 +773,6 @@
 				C38F3F30230C958F004E3731 /* FLEXAlert.m */,
 				7349FD6822B93CDF00051810 /* FLEXColor.h */,
 				7349FD6922B93CDF00051810 /* FLEXColor.m */,
-				C31D93E623E38E97005517BF /* FLEXBlockDescription.h */,
-				C31D93E723E38E97005517BF /* FLEXBlockDescription.m */,
-				C3854DF223F36C9E00FCD1E2 /* FLEXTypeEncodingParser.h */,
-				C3854DF123F36C9E00FCD1E2 /* FLEXTypeEncodingParser.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -1021,6 +1017,35 @@
 			path = Bookmarks;
 			sourceTree = "<group>";
 		};
+		C313854523F5F6120046E63C /* Objc */ = {
+			isa = PBXGroup;
+			children = (
+				C383C3B723B6A62A007A321B /* FLEXRuntimeSafety.h */,
+				C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */,
+				C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */,
+				C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */,
+				C36FBFC5230F3B98008D95D5 /* FLEXMirror.h */,
+				C36FBFB9230F3B97008D95D5 /* FLEXMirror.m */,
+				C36FBFC0230F3B98008D95D5 /* FLEXMethodBase.h */,
+				C36FBFC3230F3B98008D95D5 /* FLEXMethodBase.m */,
+				C36FBFC1230F3B98008D95D5 /* FLEXMethod.h */,
+				C36FBFBB230F3B97008D95D5 /* FLEXMethod.m */,
+				C36FBFC4230F3B98008D95D5 /* FLEXIvar.h */,
+				C36FBFCA230F3B98008D95D5 /* FLEXIvar.m */,
+				C36FBFBC230F3B97008D95D5 /* FLEXProperty.h */,
+				C36FBFBE230F3B97008D95D5 /* FLEXProperty.m */,
+				C36FBFC6230F3B98008D95D5 /* FLEXPropertyAttributes.h */,
+				C36FBFC8230F3B98008D95D5 /* FLEXPropertyAttributes.m */,
+				C36FBFBD230F3B97008D95D5 /* FLEXProtocol.h */,
+				C36FBFC2230F3B98008D95D5 /* FLEXProtocol.m */,
+				C36FBFBA230F3B97008D95D5 /* FLEXProtocolBuilder.h */,
+				C36FBFC7230F3B98008D95D5 /* FLEXProtocolBuilder.m */,
+				C36FBFC9230F3B98008D95D5 /* FLEXClassBuilder.h */,
+				C36FBFBF230F3B98008D95D5 /* FLEXClassBuilder.m */,
+			);
+			path = Objc;
+			sourceTree = "<group>";
+		};
 		C33CF16B22D664E600F9C6C0 /* FileBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -1098,30 +1123,13 @@
 		C36FBFB8230F3B52008D95D5 /* Runtime */ = {
 			isa = PBXGroup;
 			children = (
-				C383C3B723B6A62A007A321B /* FLEXRuntimeSafety.h */,
-				C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */,
-				C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */,
-				C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */,
+				C313854523F5F6120046E63C /* Objc */,
 				3A4C945B1B5B21410088C3F2 /* FLEXRuntimeUtility.h */,
 				3A4C945C1B5B21410088C3F2 /* FLEXRuntimeUtility.m */,
-				C36FBFC5230F3B98008D95D5 /* FLEXMirror.h */,
-				C36FBFB9230F3B97008D95D5 /* FLEXMirror.m */,
-				C36FBFC0230F3B98008D95D5 /* FLEXMethodBase.h */,
-				C36FBFC3230F3B98008D95D5 /* FLEXMethodBase.m */,
-				C36FBFC1230F3B98008D95D5 /* FLEXMethod.h */,
-				C36FBFBB230F3B97008D95D5 /* FLEXMethod.m */,
-				C36FBFC4230F3B98008D95D5 /* FLEXIvar.h */,
-				C36FBFCA230F3B98008D95D5 /* FLEXIvar.m */,
-				C36FBFBC230F3B97008D95D5 /* FLEXProperty.h */,
-				C36FBFBE230F3B97008D95D5 /* FLEXProperty.m */,
-				C36FBFC6230F3B98008D95D5 /* FLEXPropertyAttributes.h */,
-				C36FBFC8230F3B98008D95D5 /* FLEXPropertyAttributes.m */,
-				C36FBFBD230F3B97008D95D5 /* FLEXProtocol.h */,
-				C36FBFC2230F3B98008D95D5 /* FLEXProtocol.m */,
-				C36FBFBA230F3B97008D95D5 /* FLEXProtocolBuilder.h */,
-				C36FBFC7230F3B98008D95D5 /* FLEXProtocolBuilder.m */,
-				C36FBFC9230F3B98008D95D5 /* FLEXClassBuilder.h */,
-				C36FBFBF230F3B98008D95D5 /* FLEXClassBuilder.m */,
+				C31D93E623E38E97005517BF /* FLEXBlockDescription.h */,
+				C31D93E723E38E97005517BF /* FLEXBlockDescription.m */,
+				C3854DF223F36C9E00FCD1E2 /* FLEXTypeEncodingParser.h */,
+				C3854DF123F36C9E00FCD1E2 /* FLEXTypeEncodingParser.m */,
 			);
 			path = Runtime;
 			sourceTree = "<group>";
