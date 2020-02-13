@@ -148,6 +148,8 @@
 		C312A13523ECBE5800E38049 /* FLEXBookmarksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C312A13323ECBE5800E38049 /* FLEXBookmarksViewController.m */; };
 		C312A13C23ECE79000E38049 /* FLEXWindowManagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = C312A13A23ECE79000E38049 /* FLEXWindowManagerController.m */; };
 		C312A13D23ECE79000E38049 /* FLEXWindowManagerController.h in Headers */ = {isa = PBXBuildFile; fileRef = C312A13B23ECE79000E38049 /* FLEXWindowManagerController.h */; };
+		C313853F23F5C1A10046E63C /* FLEXViewControllersViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C313853D23F5C1A10046E63C /* FLEXViewControllersViewController.h */; };
+		C313854023F5C1A10046E63C /* FLEXViewControllersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C313853E23F5C1A10046E63C /* FLEXViewControllersViewController.m */; };
 		C31C4A6923342A2200C35F12 /* FLEXMetadataSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C31C4A6723342A2200C35F12 /* FLEXMetadataSection.h */; };
 		C31C4A6A23342A2200C35F12 /* FLEXMetadataSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C31C4A6823342A2200C35F12 /* FLEXMetadataSection.m */; };
 		C31D93E423E38CBE005517BF /* FLEXBlockShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C31D93E223E38CBE005517BF /* FLEXBlockShortcuts.h */; };
@@ -483,6 +485,8 @@
 		C312A13323ECBE5800E38049 /* FLEXBookmarksViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXBookmarksViewController.m; sourceTree = "<group>"; };
 		C312A13A23ECE79000E38049 /* FLEXWindowManagerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXWindowManagerController.m; sourceTree = "<group>"; };
 		C312A13B23ECE79000E38049 /* FLEXWindowManagerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXWindowManagerController.h; sourceTree = "<group>"; };
+		C313853D23F5C1A10046E63C /* FLEXViewControllersViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXViewControllersViewController.h; sourceTree = "<group>"; };
+		C313853E23F5C1A10046E63C /* FLEXViewControllersViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXViewControllersViewController.m; sourceTree = "<group>"; };
 		C31C4A6723342A2200C35F12 /* FLEXMetadataSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMetadataSection.h; sourceTree = "<group>"; };
 		C31C4A6823342A2200C35F12 /* FLEXMetadataSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMetadataSection.m; sourceTree = "<group>"; };
 		C31D93E223E38CBE005517BF /* FLEXBlockShortcuts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXBlockShortcuts.h; sourceTree = "<group>"; };
@@ -1000,6 +1004,8 @@
 				94A5151A1C4CA1F10063292F /* FLEXExplorerViewController.m */,
 				C312A13B23ECE79000E38049 /* FLEXWindowManagerController.h */,
 				C312A13A23ECE79000E38049 /* FLEXWindowManagerController.m */,
+				C313853D23F5C1A10046E63C /* FLEXViewControllersViewController.h */,
+				C313853E23F5C1A10046E63C /* FLEXViewControllersViewController.m */,
 			);
 			path = ExplorerInterface;
 			sourceTree = "<group>";
@@ -1448,6 +1454,7 @@
 				C34D4EB423A2AF2A00C1F903 /* FLEXColorPreviewSection.h in Headers */,
 				C383C3BE23B6B398007A321B /* UITextField+Range.h in Headers */,
 				224D49A81C673AB5000EAB86 /* FLEXRealmDatabaseManager.h in Headers */,
+				C313853F23F5C1A10046E63C /* FLEXViewControllersViewController.h in Headers */,
 				C398682623AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h in Headers */,
 				7349FD6A22B93CDF00051810 /* FLEXColor.h in Headers */,
 				C36FBFD3230F3B98008D95D5 /* FLEXMethod.h in Headers */,
@@ -1533,6 +1540,7 @@
 					};
 					3A4C941E1B5B20570088C3F2 = {
 						CreatedOnToolsVersion = 6.4;
+						LastSwiftMigration = 1130;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -1635,6 +1643,7 @@
 				3A4C94F01B5B21410088C3F2 /* FLEXArgumentInputDateView.m in Sources */,
 				C398627723AD79B7007E6793 /* NSString+FLEX.m in Sources */,
 				C36FBFDC230F3B98008D95D5 /* FLEXIvar.m in Sources */,
+				C313854023F5C1A10046E63C /* FLEXViewControllersViewController.m in Sources */,
 				C3F527C22318670F009CBA07 /* FLEXImageShortcuts.m in Sources */,
 				679F64871BD53B7B00A8C94C /* FLEXCookiesTableViewController.m in Sources */,
 				C3A9422D23C3DA39006871A3 /* FHSView.m in Sources */,
@@ -1904,6 +1913,7 @@
 		3A4C94361B5B20570088C3F2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_IDENTITY = "";
@@ -1926,6 +1936,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				WARNING_CFLAGS = "-Wno-unsupported-availability-guard";
 			};
 			name = Debug;
@@ -1933,6 +1945,7 @@
 		3A4C94371B5B20570088C3F2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_IDENTITY = "";
@@ -1955,6 +1968,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				WARNING_CFLAGS = "-Wno-unsupported-availability-guard";
 			};
 			name = Release;

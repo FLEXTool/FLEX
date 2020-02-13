@@ -20,6 +20,7 @@
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXTabsViewController.h"
 #import "FLEXWindowManagerController.h"
+#import "FLEXViewControllersViewController.h"
 
 static NSString *const kFLEXToolbarTopMarginDefaultsKey = @"com.flex.FLEXToolbar.topMargin";
 
@@ -446,6 +447,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [toolbar.selectItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleToolbarWindowManagerGesture:)
     ]];
+    
+    // Long press gesture to present view controllers at tap
+    [toolbar.hierarchyItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleToolbarShowViewControllersGesture:)
+    ]];
 }
 
 - (void)handleToolbarPanGesture:(UIPanGestureRecognizer *)panGR {
@@ -537,6 +543,20 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [super presentViewController:[FLEXNavigationController
         withRootViewController:[FLEXWindowManagerController new]
     ] animated:YES completion:nil];
+}
+
+- (void)handleToolbarShowViewControllersGesture:(UILongPressGestureRecognizer *)sender {
+    if (self.viewsAtTapPoint.count) {
+        // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
+        
+        UIViewController *list = [FLEXViewControllersViewController
+            controllersForViews:self.viewsAtTapPoint
+        ];
+        [self presentViewController:
+            [FLEXNavigationController withRootViewController:list
+        ] animated:YES completion:nil];
+    }
 }
 
 
