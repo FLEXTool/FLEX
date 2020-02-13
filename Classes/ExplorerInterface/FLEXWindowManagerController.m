@@ -9,6 +9,7 @@
 #import "FLEXWindowManagerController.h"
 #import "FLEXManager+Private.h"
 #import "FLEXUtility.h"
+#import "FLEXObjectExplorerFactory.h"
 
 @interface FLEXWindowManagerController ()
 @property (nonatomic) UIWindow *keyWindow;
@@ -17,6 +18,7 @@
 @property (nonatomic, copy) NSArray<NSString *> *windowSubtitles;
 @property (nonatomic, copy) NSArray<UIScene *> *scenes API_AVAILABLE(ios(13));
 @property (nonatomic, copy) NSArray<NSString *> *sceneSubtitles;
+@property (nonatomic, copy) NSArray<NSArray *> *sections;
 @end
 
 @implementation FLEXWindowManagerController
@@ -49,17 +51,22 @@
 - (void)reloadData {
     self.keyWindow = UIApplication.sharedApplication.keyWindow;
     self.windows = UIApplication.sharedApplication.windows;
+    self.keyWindowSubtitle = self.windowSubtitles[[self.windows indexOfObject:self.keyWindow]];
     self.windowSubtitles = [self.windows flex_mapped:^id(UIWindow *window, NSUInteger idx) {
         return [NSString stringWithFormat:@"Level: %@ — Root: %@",
             @(window.windowLevel), window.rootViewController
         ];
     }];
-    self.keyWindowSubtitle = self.windowSubtitles[[self.windows indexOfObject:self.keyWindow]];
+    
     if (@available(iOS 13, *)) {
         self.scenes = UIApplication.sharedApplication.connectedScenes.allObjects;
         self.sceneSubtitles = [self.scenes flex_mapped:^id(UIScene *scene, NSUInteger idx) {
             return [self sceneDescription:scene];
         }];
+        
+        self.sections = @[@[self.keyWindow], self.windows, self.scenes];
+    } else {
+        self.sections = @[@[self.keyWindow], self.windows];
     }
 }
 
@@ -137,27 +144,11 @@
 #pragma mark - Table View Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (@available(iOS 13, *)) {
-        return 3;
-    }
-    
-    return 2;
+    return self.sections.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch (section) {
-        case 0:
-            return 1;
-        case 1:
-            return self.windows.count;
-        case 2:
-            if (@available(iOS 13, *)) {
-                return self.scenes.count;
-            }
-    }
-    
-    @throw NSInternalInconsistencyException;
-    return 0;
+    return self.sections[section].count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -193,6 +184,8 @@
             }
     }
     
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     cell.textLabel.text = window.description;
     cell.detailTextLabel.text = [NSString
         stringWithFormat:@"Level: %@ — Root: %@", @(window.windowLevel), window.rootViewController
@@ -298,6 +291,12 @@
         
         make.textField(@"+/- window level, i.e. 5 or -10");
     } showFrom:self];
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)ip {
+    [self.navigationController pushViewController:
+        [FLEXObjectExplorerFactory explorerViewControllerForObject:self.sections[ip.section][ip.row]]
+    animated:YES];
 }
 
 @end

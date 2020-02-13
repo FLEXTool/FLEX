@@ -66,7 +66,8 @@
 }
 
 - (void)dismissAnimated {
-    // TODO tabs not closed on swipe down gesture
+    // Tabs are only closed if the done button is pressed; this
+    // allows you to leave a tab open by dragging down to dismiss
     [FLEXTabList.sharedList closeTab:self];
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }

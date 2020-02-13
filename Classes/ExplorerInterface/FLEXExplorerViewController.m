@@ -524,6 +524,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Back up the UIMenuController items since dismissViewController: will attempt to replace them
     self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
     
+    // Don't use FLEXNavigationController because the tab viewer itself is not a tab
     [super presentViewController:[[UINavigationController alloc]
         initWithRootViewController:[FLEXTabsViewController new]
     ] animated:YES completion:nil];
@@ -533,8 +534,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Back up the UIMenuController items since dismissViewController: will attempt to replace them
     self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
     
-    [super presentViewController:[[UINavigationController alloc]
-        initWithRootViewController:[FLEXWindowManagerController new]
+    [super presentViewController:[FLEXNavigationController
+        withRootViewController:[FLEXWindowManagerController new]
     ] animated:YES completion:nil];
 }
 
