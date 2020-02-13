@@ -13,7 +13,7 @@
 #if TARGET_IPHONE_SIMULATOR
     #define updateInterval 5.0
 #else
-    #define updateInterval 1.0
+    #define updateInterval 0.5
 #endif
 
 @interface FLEXASLLogController ()

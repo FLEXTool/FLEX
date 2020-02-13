@@ -12,6 +12,7 @@
 #import "FLEXASLLogController.h"
 #import "FLEXOSLogController.h"
 #import "FLEXSystemLogCell.h"
+#import "fishhook.h"
 
 @interface FLEXSystemLogViewController ()
 
@@ -21,7 +22,23 @@
 
 @end
 
+static BOOL FLEXDidHookNSLog = NO;
+void (*orig_os_log_shim_enabled)() = nil;
+BOOL my_os_log_shim_enabled() {
+    return NO;
+}
+
 @implementation FLEXSystemLogViewController
+
++ (void)load {
+    // Thanks to @Ram4096 on GitHub for telling me that
+    // os_log is conditionally enabled by the SDK version
+    FLEXDidHookNSLog = rebind_symbols((struct rebinding[1]) {
+        "os_log_shim_enabled",
+        (void *)my_os_log_shim_enabled,
+        (void **)&orig_os_log_shim_enabled
+    }, 1) == 0;
+}
 
 - (id)init {
     return [super initWithStyle:UITableViewStylePlain];
@@ -39,7 +56,7 @@
     };
 
     _logMessages = [NSMutableArray array];
-    if (FLEXOSLogAvailable()) {
+    if (FLEXOSLogAvailable() && !FLEXDidHookNSLog) {
         _logController = [FLEXOSLogController withUpdateHandler:logHandler];
     } else {
         _logController = [FLEXASLLogController withUpdateHandler:logHandler];
