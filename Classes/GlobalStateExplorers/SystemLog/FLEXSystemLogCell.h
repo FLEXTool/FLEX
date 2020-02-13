@@ -1,5 +1,5 @@
 //
-//  FLEXSystemLogTableViewCell.h
+//  FLEXSystemLogCell.h
 //  FLEX
 //
 //  Created by Ryan Olson on 1/25/15.
@@ -10,9 +10,9 @@
 
 @class FLEXSystemLogMessage;
 
-extern NSString *const kFLEXSystemLogTableViewCellIdentifier;
+extern NSString *const kFLEXSystemLogCellIdentifier;
 
-@interface FLEXSystemLogTableViewCell : UITableViewCell
+@interface FLEXSystemLogCell : UITableViewCell
 
 @property (nonatomic) FLEXSystemLogMessage *logMessage;
 @property (nonatomic, copy) NSString *highlightedText;

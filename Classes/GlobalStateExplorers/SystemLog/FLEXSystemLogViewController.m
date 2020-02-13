@@ -1,19 +1,19 @@
 //
-//  FLEXSystemLogTableViewController.m
+//  FLEXSystemLogViewController.m
 //  FLEX
 //
 //  Created by Ryan Olson on 1/19/15.
 //  Copyright (c) 2015 f. All rights reserved.
 //
 
-#import "FLEXSystemLogTableViewController.h"
+#import "FLEXSystemLogViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "FLEXASLLogController.h"
 #import "FLEXOSLogController.h"
-#import "FLEXSystemLogTableViewCell.h"
+#import "FLEXSystemLogCell.h"
 
-@interface FLEXSystemLogTableViewController ()
+@interface FLEXSystemLogViewController ()
 
 @property (nonatomic, readonly) id<FLEXLogController> logController;
 @property (nonatomic, readonly) NSMutableArray<FLEXSystemLogMessage *> *logMessages;
@@ -21,7 +21,7 @@
 
 @end
 
-@implementation FLEXSystemLogTableViewController
+@implementation FLEXSystemLogViewController
 
 - (id)init {
     return [super initWithStyle:UITableViewStylePlain];
@@ -45,7 +45,7 @@
         _logController = [FLEXASLLogController withUpdateHandler:logHandler];
     }
 
-    [self.tableView registerClass:[FLEXSystemLogTableViewCell class] forCellReuseIdentifier:kFLEXSystemLogTableViewCellIdentifier];
+    [self.tableView registerClass:[FLEXSystemLogCell class] forCellReuseIdentifier:kFLEXSystemLogCellIdentifier];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.title = @"Loading...";
     
@@ -110,6 +110,7 @@
     } showFrom:self];
 }
 
+
 #pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
@@ -120,18 +121,15 @@
     return [self new];
 }
 
-#pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
+#pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.searchController.isActive ? self.filteredLogMessages.count : self.logMessages.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
-    FLEXSystemLogTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXSystemLogTableViewCellIdentifier forIndexPath:indexPath];
+    FLEXSystemLogCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXSystemLogCellIdentifier forIndexPath:indexPath];
     cell.logMessage = [self logMessageAtIndexPath:indexPath];
     cell.highlightedText = self.searchText;
     
@@ -146,8 +144,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXSystemLogMessage *logMessage = [self logMessageAtIndexPath:indexPath];
-    return [FLEXSystemLogTableViewCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
+    return [FLEXSystemLogCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
 }
+
 
 #pragma mark - Copy on long press
 
@@ -170,12 +169,13 @@
     return self.searchController.isActive ? self.filteredLogMessages[indexPath.row] : self.logMessages[indexPath.row];
 }
 
+
 #pragma mark - Search bar
 
 - (void)updateSearchResults:(NSString *)searchString {
     [self onBackgroundQueue:^NSArray *{
         return [self.logMessages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXSystemLogMessage *logMessage, NSDictionary<NSString *, id> *bindings) {
-            NSString *displayedText = [FLEXSystemLogTableViewCell displayedTextForLogMessage:logMessage];
+            NSString *displayedText = [FLEXSystemLogCell displayedTextForLogMessage:logMessage];
             return [displayedText rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
         }]];
     } thenOnMainQueue:^(NSArray *filteredLogMessages) {

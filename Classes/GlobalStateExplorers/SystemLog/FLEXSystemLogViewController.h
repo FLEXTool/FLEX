@@ -1,5 +1,5 @@
 //
-//  FLEXSystemLogTableViewController.h
+//  FLEXSystemLogViewController.h
 //  FLEX
 //
 //  Created by Ryan Olson on 1/19/15.
@@ -9,6 +9,6 @@
 #import "FLEXTableViewController.h"
 #import "FLEXGlobalsEntry.h"
 
-@interface FLEXSystemLogTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
+@interface FLEXSystemLogViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
 @end

@@ -1,24 +1,24 @@
 //
-//  FLEXSystemLogTableViewCell.m
+//  FLEXSystemLogCell.m
 //  FLEX
 //
 //  Created by Ryan Olson on 1/25/15.
 //  Copyright (c) 2015 f. All rights reserved.
 //
 
-#import "FLEXSystemLogTableViewCell.h"
+#import "FLEXSystemLogCell.h"
 #import "FLEXSystemLogMessage.h"
 
-NSString *const kFLEXSystemLogTableViewCellIdentifier = @"FLEXSystemLogTableViewCellIdentifier";
+NSString *const kFLEXSystemLogCellIdentifier = @"FLEXSystemLogCellIdentifier";
 
-@interface FLEXSystemLogTableViewCell ()
+@interface FLEXSystemLogCell ()
 
 @property (nonatomic) UILabel *logMessageLabel;
 @property (nonatomic) NSAttributedString *logMessageAttributedText;
 
 @end
 
-@implementation FLEXSystemLogTableViewCell
+@implementation FLEXSystemLogCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -63,6 +63,7 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
     self.logMessageLabel.attributedText = self.logMessageAttributedText;
     self.logMessageLabel.frame = UIEdgeInsetsInsetRect(self.contentView.bounds, kFLEXLogMessageCellInsets);
 }
+
 
 #pragma mark - Stateless helpers
 

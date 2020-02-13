@@ -18,7 +18,7 @@
 #import "FLEXCookiesTableViewController.h"
 #import "FLEXGlobalsEntry.h"
 #import "FLEXManager+Private.h"
-#import "FLEXSystemLogTableViewController.h"
+#import "FLEXSystemLogViewController.h"
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXAddressExplorerCoordinator.h"
 #import "FLEXGlobalsSection.h"
@@ -66,7 +66,7 @@
         case FLEXGlobalsRowBrowseContainer:
             return [FLEXFileBrowserTableViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowSystemLog:
-            return [FLEXSystemLogTableViewController flex_concreteGlobalsEntry:row];
+            return [FLEXSystemLogViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowNetworkHistory:
             return [FLEXNetworkMITMViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowKeyWindow:
