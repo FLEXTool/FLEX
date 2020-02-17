@@ -68,8 +68,9 @@
         _isInstanceMethod = isInstanceMethod;
         _signatureString = @(method_getTypeEncoding(method));
         
-        if ([FLEXTypeEncodingParser methodTypeEncodingSupported:_signatureString]) {
-            _signature = [NSMethodSignature signatureWithObjCTypes:_signatureString.UTF8String];
+        NSString *cleanSig = nil;
+        if ([FLEXTypeEncodingParser methodTypeEncodingSupported:_signatureString cleaned:&cleanSig]) {
+            _signature = [NSMethodSignature signatureWithObjCTypes:cleanSig.UTF8String];
         }
 
         [self examine];
@@ -77,6 +78,7 @@
     
     return self;
 }
+
 
 #pragma mark Other
 
@@ -152,20 +154,27 @@
     _name              = NSStringFromSelector(_selector);
     _returnType        = (FLEXTypeEncoding *)_signature.methodReturnType;
     _returnSize        = _signature.methodReturnLength;
-    _typeEncoding      = [_signatureString
-        stringByReplacingOccurrencesOfString:@"[0-9]"
-        withString:@""
-        options:NSRegularExpressionSearch
-        range:NSMakeRange(0, _signatureString.length)
-    ];
 }
 
-#pragma mark Setters
+#pragma mark Public
 
 - (void)setImplementation:(IMP)implementation {
     NSParameterAssert(implementation);
     method_setImplementation(self.objc_method, implementation);
     [self examine];
+}
+
+- (NSString *)typeEncoding {
+    if (!_typeEncoding) {
+        _typeEncoding = [_signatureString
+            stringByReplacingOccurrencesOfString:@"[0-9]"
+            withString:@""
+            options:NSRegularExpressionSearch
+            range:NSMakeRange(0, _signatureString.length)
+        ];
+    }
+    
+    return _typeEncoding;
 }
 
 #pragma mark Misc

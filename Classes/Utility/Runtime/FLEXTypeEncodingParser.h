@@ -15,9 +15,15 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger * _Nullable sizep, NSU
 
 @interface FLEXTypeEncodingParser : NSObject
 
+/// \c cleanedEncoding is necessary because a type encoding may contain a pointer
+/// to an unsupported type. \c NSMethodSignature will pass each type to \c NSGetSizeAndAlignment
+/// which will throw an exception on unsupported struct pointers, and this exception is caught
+/// by \c NSMethodSignature, but it still bothers anyone debugging with \c objc_exception_throw
+///
+/// @param cleanedEncoding the "safe" type encoding you can pass to \c NSMethodSignature
 /// @return whether the given type encoding can be passed to
 /// \c NSMethodSignature without it throwing an exception.
-+ (BOOL)methodTypeEncodingSupported:(NSString *)typeEncoding;
++ (BOOL)methodTypeEncodingSupported:(NSString *)typeEncoding cleaned:(NSString *_Nonnull*_Nullable)cleanedEncoding;
 
 /// @return The type encoding of an individual argument in a method's type encoding string.
 /// Pass 0 to get the type of the return value. 1 and 2 are `self` and `_cmd` respectively.

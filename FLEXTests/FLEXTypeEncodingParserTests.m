@@ -177,13 +177,30 @@ typedef struct Anon {
 }
 
 - (void)testMethodSignatures {
-    NSArray<NSString *> *signatures = @[
-        @"^{__CFBundle=}16@0:8", @"v24@0:8@16", @"@40@0:8@16{CGSize=dd}24"
-    ];
+    NSDictionary<NSString *, NSString *> *uncleanToClean = @{
+        @"@28@0:8r^{basic_string<char, std::__1::char_traits<char>, "
+        "std::__1::allocator<char> >={__compressed_pair<std::__1::"
+        "basic_string<char, std::__1::char_traits<char>, "
+        "std::__1::allocator<char> >::__rep, std::__1::allocator<char> "
+        ">={__rep=(?={__long=QQ*}{__short=(?=Cc)[23c]}{__raw=[3Q]})}}}16B24":
+            @"@28@0:8r^{?=}16B24",
+        
+        @"^{nui_size_cache=^{pair<CGSize, CGSize>}^{pair<CGSize, CGSize>}"
+        "{__compressed_pair<std::__1::pair<CGSize, CGSize> *, "
+        "std::__1::allocator<std::__1::pair<CGSize, CGSize> > >="
+        "^{pair<CGSize, CGSize>}}}16@0:8" :
+            @"^{nui_size_cache=}16@0:8",
+        
+        @"^?32@0:8r^{_CAPropertyInfo=I[2:]b16b16*^{__CFString}}16"
+        "r^{_CAPropertyInfo=I[2:]b16b16*^{__CFString}}24":
+            @"^?32@0:8r^{_CAPropertyInfo=}16r^{_CAPropertyInfo=}24",
+    };
     
-    for (NSString *signature in signatures) {
-        XCTAssertTrue([FLEXTypeEncodingParser methodTypeEncodingSupported:signature]);
-    }
+    [uncleanToClean enumerateKeysAndObjectsUsingBlock:^(NSString *needsCleaning, NSString *cleaned, BOOL *stop) {
+        NSString *cleanedResult = nil;
+        XCTAssertTrue([FLEXTypeEncodingParser methodTypeEncodingSupported:needsCleaning cleaned:&cleanedResult]);
+        XCTAssertEqualObjects(cleaned, cleanedResult);
+    }];
 }
 
 @end
