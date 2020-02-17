@@ -14,11 +14,12 @@
 
 @interface FLEXExplorerToolbar ()
 
-@property (nonatomic, readwrite) FLEXToolbarItem *selectItem;
-@property (nonatomic, readwrite) FLEXToolbarItem *moveItem;
 @property (nonatomic, readwrite) FLEXToolbarItem *globalsItem;
-@property (nonatomic, readwrite) FLEXToolbarItem *closeItem;
 @property (nonatomic, readwrite) FLEXToolbarItem *hierarchyItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *selectItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *recentItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *moveItem;
+@property (nonatomic, readwrite) FLEXToolbarItem *closeItem;
 @property (nonatomic, readwrite) UIView *dragHandle;
 
 @property (nonatomic) UIImageView *dragHandleImageView;
@@ -37,34 +38,29 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        // Background
         self.backgroundView = [UIView new];
         self.backgroundView.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
         [self addSubview:self.backgroundView];
 
+        // Drag handle
         self.dragHandle = [UIView new];
         self.dragHandle.backgroundColor = UIColor.clearColor;
+        self.dragHandleImageView = [[UIImageView alloc] initWithImage:FLEXResources.dragHandle];
+        self.dragHandleImageView.tintColor = [FLEXColor.iconColor colorWithAlphaComponent:0.666];
+        [self.dragHandle addSubview:self.dragHandleImageView];
         [self addSubview:self.dragHandle];
         
-        UIImage *dragHandle = [FLEXResources dragHandle];
-        self.dragHandleImageView = [[UIImageView alloc] initWithImage:dragHandle];
-        self.dragHandleImageView.tintColor = [[FLEXColor iconColor] colorWithAlphaComponent:0.666];
-        [self.dragHandle addSubview:self.dragHandleImageView];
-        
-        UIImage *globalsIcon = [FLEXResources globeIcon];
-        self.globalsItem = [FLEXToolbarItem toolbarItemWithTitle:@"menu" image:globalsIcon];
-        
-        UIImage *listIcon = [FLEXResources listIcon];
-        self.hierarchyItem = [FLEXToolbarItem toolbarItemWithTitle:@"views" image:listIcon];
-        
-        UIImage *selectIcon = [FLEXResources selectIcon];
-        self.selectItem = [FLEXToolbarItem toolbarItemWithTitle:@"select" image:selectIcon];
-        
-        UIImage *moveIcon = [FLEXResources moveIcon];
-        self.moveItem = [FLEXToolbarItem toolbarItemWithTitle:@"move" image:moveIcon];
-        
-        UIImage *closeIcon = [FLEXResources closeIcon];
-        self.closeItem = [FLEXToolbarItem toolbarItemWithTitle:@"close" image:closeIcon];
+        // Buttons
+        self.globalsItem   = [FLEXToolbarItem itemWithTitle:@"menu" image:FLEXResources.globalsIcon];
+        self.hierarchyItem = [FLEXToolbarItem itemWithTitle:@"views" image:FLEXResources.hierarchyIcon];
+        self.selectItem    = [FLEXToolbarItem itemWithTitle:@"select" image:FLEXResources.selectIcon];
+        self.recentItem    = [FLEXToolbarItem itemWithTitle:@"recent" image:FLEXResources.recentIcon];
+        self.moveItem      = [FLEXToolbarItem itemWithTitle:@"move" image:FLEXResources.moveIcon sibling:self.recentItem];
+        self.closeItem     = [FLEXToolbarItem itemWithTitle:@"close" image:FLEXResources.closeIcon];
 
+        // Selected view box //
+        
         self.selectedViewDescriptionContainer = [UIView new];
         self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor tertiaryBackgroundColorWithAlpha:0.95];
         self.selectedViewDescriptionContainer.hidden = YES;
@@ -83,6 +79,7 @@
         self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
         [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewDescriptionLabel];
         
+        // toolbarItems
         self.toolbarItems = @[_globalsItem, _hierarchyItem, _selectItem, _moveItem, _closeItem];
     }
 
@@ -108,13 +105,13 @@
     CGFloat originY = CGRectGetMinY(safeArea);
     CGFloat height = kToolbarItemHeight;
     CGFloat width = FLEXFloor((CGRectGetWidth(safeArea) - CGRectGetWidth(self.dragHandle.frame)) / self.toolbarItems.count);
-    for (UIView *toolbarItem in self.toolbarItems) {
-        toolbarItem.frame = CGRectMake(originX, originY, width, height);
-        originX = CGRectGetMaxX(toolbarItem.frame);
+    for (FLEXToolbarItem *toolbarItem in self.toolbarItems) {
+        toolbarItem.currentItem.frame = CGRectMake(originX, originY, width, height);
+        originX = CGRectGetMaxX(toolbarItem.currentItem.frame);
     }
     
     // Make sure the last toolbar item goes to the edge to account for any accumulated rounding effects.
-    UIView *lastToolbarItem = self.toolbarItems.lastObject;
+    UIView *lastToolbarItem = self.toolbarItems.lastObject.currentItem;
     CGRect lastToolbarItemFrame = lastToolbarItem.frame;
     lastToolbarItemFrame.size.width = CGRectGetMaxX(safeArea) - lastToolbarItemFrame.origin.x;
     lastToolbarItem.frame = lastToolbarItemFrame;
@@ -170,7 +167,7 @@
     
     // Remove old toolbar items, if any
     for (FLEXToolbarItem *item in _toolbarItems) {
-        [item removeFromSuperview];
+        [item.currentItem removeFromSuperview];
     }
     
     // Trim to 5 items if necessary
@@ -179,7 +176,7 @@
     }
 
     for (FLEXToolbarItem *item in toolbarItems) {
-        [self addSubview:item];
+        [self addSubview:item.currentItem];
     }
 
     _toolbarItems = toolbarItems.copy;

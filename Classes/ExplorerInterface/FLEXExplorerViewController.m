@@ -372,6 +372,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     NSDictionary<NSString *, FLEXToolbarItem *> *actionsToItems = @{
         NSStringFromSelector(@selector(selectButtonTapped:)):        toolbar.selectItem,
         NSStringFromSelector(@selector(hierarchyButtonTapped:)):     toolbar.hierarchyItem,
+        NSStringFromSelector(@selector(recentButtonTapped:)):        toolbar.recentItem,
         NSStringFromSelector(@selector(moveButtonTapped:)):          toolbar.moveItem,
         NSStringFromSelector(@selector(globalsButtonTapped:)):       toolbar.globalsItem,
         NSStringFromSelector(@selector(closeButtonTapped:)):         toolbar.closeItem,
@@ -395,6 +396,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return [UIApplication.sharedApplication valueForKey:statusBarString];
 }
 
+- (void)recentButtonTapped:(FLEXToolbarItem *)sender {
+    NSAssert(FLEXTabList.sharedList.activeTab, @"Must have active tab");
+    [self presentViewController:FLEXTabList.sharedList.activeTab animated:YES completion:nil];
+}
+
 - (void)moveButtonTapped:(FLEXToolbarItem *)sender {
     [self toggleMoveTool];
 }
@@ -409,11 +415,17 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)updateButtonStates {
-    // Move and details only active when an object is selected.
+    FLEXExplorerToolbar *toolbar = self.explorerToolbar;
+    
+    toolbar.selectItem.selected = self.currentMode == FLEXExplorerModeSelect;
+    
+    // Move only enabled when an object is selected.
     BOOL hasSelectedObject = self.selectedView != nil;
-    self.explorerToolbar.moveItem.enabled = hasSelectedObject;
-    self.explorerToolbar.selectItem.selected = self.currentMode == FLEXExplorerModeSelect;
-    self.explorerToolbar.moveItem.selected = self.currentMode == FLEXExplorerModeMove;
+    toolbar.moveItem.enabled = hasSelectedObject;
+    toolbar.moveItem.selected = self.currentMode == FLEXExplorerModeMove;
+    
+    // Recent only enabled when we have a last active tab
+    toolbar.recentItem.enabled = FLEXTabList.sharedList.activeTab != nil;
 }
 
 
@@ -831,6 +843,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // We want it above FLEX while a modal is presented for
     // scroll to top, but below FLEX otherwise for exploration.
     [self statusWindow].windowLevel = UIWindowLevelStatusBar;
+    
+    [self updateButtonStates];
     
     [super dismissViewControllerAnimated:animated completion:completion];
 }

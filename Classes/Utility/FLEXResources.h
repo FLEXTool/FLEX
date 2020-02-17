@@ -6,16 +6,16 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 @interface FLEXResources : NSObject
 
 @property (readonly, class) UIImage *closeIcon;
 @property (readonly, class) UIImage *dragHandle;
-@property (readonly, class) UIImage *globeIcon;
+@property (readonly, class) UIImage *globalsIcon;
 @property (readonly, class) UIImage *hierarchyIndentPattern;
-@property (readonly, class) UIImage *listIcon;
+@property (readonly, class) UIImage *hierarchyIcon;
+@property (readonly, class) UIImage *recentIcon;
 @property (readonly, class) UIImage *moveIcon;
 @property (readonly, class) UIImage *selectIcon;
 @property (readonly, class) UIImage *checkerPattern;

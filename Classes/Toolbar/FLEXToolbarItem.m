@@ -12,32 +12,54 @@
 
 @interface FLEXToolbarItem ()
 
+@property (nonatomic) FLEXToolbarItem *sibling;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic) UIImage *image;
+
+@property (nonatomic, readonly, class) UIColor *defaultBackgroundColor;
+@property (nonatomic, readonly, class) UIColor *highlightedBackgroundColor;
+@property (nonatomic, readonly, class) UIColor *selectedBackgroundColor;
 
 @end
 
 @implementation FLEXToolbarItem
 
-+ (instancetype)toolbarItemWithTitle:(NSString *)title image:(UIImage *)image {
+#pragma mark - Public
+
++ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image {
+    return [self itemWithTitle:title image:image sibling:nil];
+}
+
++ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image sibling:(FLEXToolbarItem *)backupItem {
+    NSParameterAssert(title); NSParameterAssert(image);
+    
     FLEXToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeSystem];
+    toolbarItem.sibling = backupItem;
     toolbarItem.title = title;
-    toolbarItem.backgroundColor = [self defaultBackgroundColor];
     toolbarItem.image = image;
+    toolbarItem.tintColor = FLEXColor.iconColor;
+    toolbarItem.backgroundColor = self.defaultBackgroundColor;
     toolbarItem.titleLabel.font = [UIFont systemFontOfSize:12.0];
     [toolbarItem setTitle:title forState:UIControlStateNormal];
     [toolbarItem setImage:image forState:UIControlStateNormal];
-    [toolbarItem setTitleColor:[FLEXColor primaryTextColor] forState:UIControlStateNormal];
-    [toolbarItem setTitleColor:[FLEXColor deemphasizedTextColor] forState:UIControlStateDisabled];
-    [toolbarItem setTintColor:[FLEXColor iconColor]];
+    [toolbarItem setTitleColor:FLEXColor.primaryTextColor forState:UIControlStateNormal];
+    [toolbarItem setTitleColor:FLEXColor.deemphasizedTextColor forState:UIControlStateDisabled];
     return toolbarItem;
+}
+
+- (FLEXToolbarItem *)currentItem {
+    if (!self.enabled && self.sibling) {
+        return self.sibling.currentItem;
+    }
+    
+    return self;
 }
 
 
 #pragma mark - Display Defaults
 
 + (NSDictionary<NSString *, id> *)titleAttributes {
-    return @{NSFontAttributeName : [UIFont systemFontOfSize:12.0]};
+    return @{ NSFontAttributeName : [UIFont systemFontOfSize:12.0] };
 }
 
 + (UIColor *)highlightedBackgroundColor {
@@ -60,13 +82,33 @@
 #pragma mark - State Changes
 
 - (void)setHighlighted:(BOOL)highlighted {
-    [super setHighlighted:highlighted];
+    super.highlighted = highlighted;
     [self updateColors];
 }
 
 - (void)setSelected:(BOOL)selected {
-    [super setSelected:selected];
+    super.selected = selected;
     [self updateColors];
+}
+
+- (void)setEnabled:(BOOL)enabled {
+    if (self.enabled != enabled) {
+        if (self.sibling) {
+            if (enabled) { // Replace sibling with myself
+                UIView *superview = self.sibling.superview;
+                [self.sibling removeFromSuperview];
+                self.frame = self.sibling.frame;
+                [superview addSubview:self];
+            } else { // Replace myself with sibling
+                UIView *superview = self.superview;
+                [self removeFromSuperview];
+                self.sibling.frame = self.frame;
+                [superview addSubview:self.sibling];
+            }
+        }
+        
+        super.enabled = enabled;
+    }
 }
 
 + (id)_selectedIndicatorImage { return nil; }
@@ -74,11 +116,11 @@
 - (void)updateColors {
     // Background color
     if (self.highlighted) {
-        self.backgroundColor = [[self class] highlightedBackgroundColor];
+        self.backgroundColor = self.class.highlightedBackgroundColor;
     } else if (self.selected) {
-        self.backgroundColor = [[self class] selectedBackgroundColor];
+        self.backgroundColor = self.class.selectedBackgroundColor;
     } else {
-        self.backgroundColor = [[self class] defaultBackgroundColor];
+        self.backgroundColor = self.class.defaultBackgroundColor;
     }
 }
 

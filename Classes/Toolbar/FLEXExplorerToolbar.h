@@ -10,6 +10,8 @@
 
 @class FLEXToolbarItem;
 
+/// Users of the toolbar can configure the enabled state
+/// and event target/actions for each item.
 @interface FLEXExplorerToolbar : UIView
 
 /// The items to be displayed in the toolbar. Defaults to:
@@ -17,23 +19,22 @@
 @property (nonatomic, copy) NSArray<FLEXToolbarItem *> *toolbarItems;
 
 /// Toolbar item for selecting views.
-/// Users of the toolbar can configure the enabled/selected state and event targets/actions.
 @property (nonatomic, readonly) FLEXToolbarItem *selectItem;
 
 /// Toolbar item for presenting a list with the view hierarchy.
-/// Users of the toolbar can configure the enabled state and event targets/actions.
 @property (nonatomic, readonly) FLEXToolbarItem *hierarchyItem;
 
 /// Toolbar item for moving views.
-/// Users of the toolbar can configure the enabled/selected state and event targets/actions.
+/// Its \c sibling is the \c lastTabItem
 @property (nonatomic, readonly) FLEXToolbarItem *moveItem;
 
-/// Toolbar item for inspecting details of the selected view.
-/// Users of the toolbar can configure the enabled state and event targets/actions.
+/// Toolbar item for presenting the currently active tab.
+@property (nonatomic, readonly) FLEXToolbarItem *recentItem;
+
+/// Toolbar item for presenting a screen with various tools for inspecting the app.
 @property (nonatomic, readonly) FLEXToolbarItem *globalsItem;
 
 /// Toolbar item for hiding the explorer.
-/// Users of the toolbar can configure the event targets/actions.
 @property (nonatomic, readonly) FLEXToolbarItem *closeItem;
 
 /// A view for moving the entire toolbar.

@@ -7,9 +7,23 @@
 # the original script, I left it to be generic as it was originally intended
 # in case someone else finds it useful. The original python script outputs
 # header and implementation files, which this script removes after it is run.
+#
+# Run this command to remove the hex files: find . -type f -name "*.txt" | xargs rm
+#
+# Usage: ./images_to_hex.sh [one or more folders in a quoted string]
+# Examples:
+#     bash images_to_hex.sh
+#     bash images_to_hex.sh toolbar
+#     bash images_to_hex.sh "toolbar filetypes"
+#
 
-allImageFolders="filetypes range-slider toolbar misc"
-for dir in $allImageFolders; do
+if [[ $1 ]]; then
+    imageFolders="$1"
+else
+    imageFolders="filetypes range-slider toolbar misc"
+fi
+
+for dir in $imageFolders; do
     rm $dir/*.txt
     for image in `ls $dir`; do
         name=`basename $image .png`
