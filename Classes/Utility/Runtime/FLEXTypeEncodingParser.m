@@ -37,6 +37,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
 @property (nonatomic, readonly) NSScanner *scan;
 @property (nonatomic, readonly) NSString *scanned;
 @property (nonatomic, readonly) NSString *unscanned;
+@property (nonatomic, readonly) char nextChar;
 
 /// Replacements are made to this string as we scan as needed
 @property (nonatomic) NSMutableString *cleaned;
@@ -150,6 +151,11 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     return identifierSet;
 }
 
+- (char)nextChar {
+    NSScanner *scan = self.scan;
+    return [scan.string characterAtIndex:scan.scanLocation];
+}
+
 /// For scanning struct/class names
 - (NSString *)scanIdentifier {
     NSString *prefix = nil, *suffix = nil;
@@ -250,45 +256,52 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     }
 
     // Check for struct/union/array
-    if ([self canScanChar:FLEXTypeEncodingStructBegin] ||
-      [self canScanChar:FLEXTypeEncodingUnionBegin] ||
-      [self canScanChar:FLEXTypeEncodingArrayBegin]) {
+    char next = self.nextChar;
+    BOOL didScanSUA = YES, structOrUnion = NO, isUnion = NO;
+    FLEXTypeEncoding opening = FLEXTypeEncodingNull, closing = FLEXTypeEncodingNull;
+    switch (next) {
+        case FLEXTypeEncodingStructBegin:
+            structOrUnion = YES;
+            opening = FLEXTypeEncodingStructBegin;
+            closing = FLEXTypeEncodingStructEnd;
+            break;
+        case FLEXTypeEncodingUnionBegin:
+            structOrUnion = isUnion = YES;
+            opening = FLEXTypeEncodingUnionBegin;
+            closing = FLEXTypeEncodingUnionEnd;
+            break;
+        case FLEXTypeEncodingArrayBegin:
+            opening = FLEXTypeEncodingArrayBegin;
+            closing = FLEXTypeEncodingArrayEnd;
+            break;
+            
+        default:
+            didScanSUA = NO;
+            break;
+    }
+    
+    if (didScanSUA) {
         NSUInteger backup = self.scan.scanLocation;
 
         // Ensure we have a closing tag
-        if (![self scanPair:FLEXTypeEncodingStructBegin close:FLEXTypeEncodingStructEnd] &&
-          ![self scanPair:FLEXTypeEncodingUnionBegin close:FLEXTypeEncodingUnionEnd] &&
-          ![self scanPair:FLEXTypeEncodingArrayBegin close:FLEXTypeEncodingArrayEnd]) {
+        if (![self scanPair:opening close:closing]) {
             // Scan failed, abort
             self.scan.scanLocation = start;
             return -1;
         }
 
-        // Scan the next thing until we scan the closing tag
-        BOOL structOrUnion = NO, isUnion = NO;
+        // Move cursor just after opening tag (struct/union/array)
         NSInteger arrayCount = -1;
-        self.scan.scanLocation = backup;
-        FLEXTypeEncoding closing;
-        if ([self scanChar:FLEXTypeEncodingStructBegin]) {
-            closing = FLEXTypeEncodingStructEnd;
-            structOrUnion = YES;
-        } else if ([self scanChar:FLEXTypeEncodingUnionBegin]) {
-            closing = FLEXTypeEncodingUnionEnd;
-            structOrUnion = isUnion = YES;
-        } else {
-            // Assert because code above did confirm a closing tag exists
-            assert([self scanChar:FLEXTypeEncodingArrayBegin]);
-            closing = FLEXTypeEncodingArrayEnd;
-            
+        self.scan.scanLocation = backup + 1;
+        
+        if (!structOrUnion) {
             arrayCount = [self scanSize];
             if (!arrayCount) {
                 // Arrays must have a count after the opening brace
                 self.scan.scanLocation = start;
                 return -1;
             }
-        }
-
-        if (structOrUnion) {
+        } else {
             // If we encounter the ?= portion of something like {?=b8b4b1b1b18[8S]}
             // then we skip over it, since it means nothing to us in this context.
             // It is completely optional, and if it fails, we go right back where we were.
@@ -305,15 +318,18 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
         NSMutableString *cleanedBackup = self.cleaned.mutableCopy;
         
         while (![self scanChar:closing]) {
+            next = self.nextChar;
             // Check for bitfields, which we cannot support because
             // type encodings for bitfields do not include alignment info
-            if ([self scanChar:FLEXTypeEncodingBitField]) {
+            if (next == FLEXTypeEncodingBitField) {
                 self.scan.scanLocation = start;
                 return -1;
             }
 
             // Structure fields could be named
-            [self scanPair:FLEXTypeEncodingQuote close:FLEXTypeEncodingQuote];
+            if (next == FLEXTypeEncodingQuote) {
+                [self scanPair:FLEXTypeEncodingQuote close:FLEXTypeEncodingQuote];
+            }
 
             ssize_t align = 0;
             ssize_t size = [self scanAndGetSizeAndAlignForNextType:&align];
@@ -349,12 +365,12 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             // arrays are element.size x length, and
             // structs are the sum of their members
             if (structOrUnion) {
-                if (isUnion) {
+                if (isUnion) { // Union
                     sizeSoFar = MAX(sizeSoFar, size);
-                } else {
+                } else { // Struct
                     sizeSoFar += size;
                 }
-            } else {
+            } else { // Array
                 sizeSoFar = size * arrayCount;
             }
             
@@ -370,46 +386,55 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
 
         return sizeSoFar;
     }
-
+    
     // Scan single thing and possible size and return
     ssize_t size = 0;
-    FLEXTypeEncoding t;
-    if ([self scanChar:FLEXTypeEncodingUnknown into:&t] ||
-      [self scanChar:FLEXTypeEncodingChar into:&t] ||
-      [self scanChar:FLEXTypeEncodingInt into:&t] ||
-      [self scanChar:FLEXTypeEncodingShort into:&t] ||
-      [self scanChar:FLEXTypeEncodingLong into:&t] ||
-      [self scanChar:FLEXTypeEncodingLongLong into:&t] ||
-      [self scanChar:FLEXTypeEncodingUnsignedChar into:&t] ||
-      [self scanChar:FLEXTypeEncodingUnsignedInt into:&t] ||
-      [self scanChar:FLEXTypeEncodingUnsignedShort into:&t] ||
-      [self scanChar:FLEXTypeEncodingUnsignedLong into:&t] ||
-      [self scanChar:FLEXTypeEncodingUnsignedLongLong into:&t] ||
-      [self scanChar:FLEXTypeEncodingFloat into:&t] ||
-      [self scanChar:FLEXTypeEncodingDouble into:&t] ||
-      [self scanChar:FLEXTypeEncodingLongDouble into:&t] ||
-      [self scanChar:FLEXTypeEncodingCBool into:&t] ||
-      [self scanChar:FLEXTypeEncodingCString into:&t] ||
-      [self scanChar:FLEXTypeEncodingSelector into:&t] ||
-      [self scanChar:FLEXTypeEncodingBitField into:&t]) {
-        // Skip optional frame offset
-        [self scanSize];
-        
-        if (t == FLEXTypeEncodingBitField) {
-            self.scan.scanLocation = start;
-            return -1;
-        } else {
-            // Compute size
-            size = [self sizeForType:t];
+    char t = self.nextChar;
+    switch (t) {
+        case FLEXTypeEncodingUnknown:
+        case FLEXTypeEncodingChar:
+        case FLEXTypeEncodingInt:
+        case FLEXTypeEncodingShort:
+        case FLEXTypeEncodingLong:
+        case FLEXTypeEncodingLongLong:
+        case FLEXTypeEncodingUnsignedChar:
+        case FLEXTypeEncodingUnsignedInt:
+        case FLEXTypeEncodingUnsignedShort:
+        case FLEXTypeEncodingUnsignedLong:
+        case FLEXTypeEncodingUnsignedLongLong:
+        case FLEXTypeEncodingFloat:
+        case FLEXTypeEncodingDouble:
+        case FLEXTypeEncodingLongDouble:
+        case FLEXTypeEncodingCBool:
+        case FLEXTypeEncodingCString:
+        case FLEXTypeEncodingSelector:
+        case FLEXTypeEncodingBitField: {
+            self.scan.scanLocation++;
+            // Skip optional frame offset
+            [self scanSize];
+            
+            if (t == FLEXTypeEncodingBitField) {
+                self.scan.scanLocation = start;
+                return -1;
+            } else {
+                // Compute size
+                size = [self sizeForType:t];
+            }
         }
-    }
-
-    // These might have numbers OR quotes after them
-    else if ([self scanChar:FLEXTypeEncodingObjcObject] || [self scanChar:FLEXTypeEncodingObjcClass]) {
-        // Skip optional frame offset
-        [self scanSize];
-        [self scanPair:FLEXTypeEncodingQuote close:FLEXTypeEncodingQuote];
-        size = sizeof(id);
+            break;
+        
+        case FLEXTypeEncodingObjcObject:
+        case FLEXTypeEncodingObjcClass: {
+            self.scan.scanLocation++;
+            // These might have numbers OR quotes after them
+            // Skip optional frame offset
+            [self scanSize];
+            [self scanPair:FLEXTypeEncodingQuote close:FLEXTypeEncodingQuote];
+            size = sizeof(id);
+        }
+            break;
+            
+        default: break;
     }
 
     if (size) {
@@ -430,8 +455,13 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
 }
 
 - (BOOL)canScanString:(NSString *)str {
-    if ([self scanString:str]) {
-        self.scan.scanLocation -= str.length;
+    NSScanner *scan = self.scan;
+    NSUInteger len = str.length;
+    unichar buff1[len], buff2[len];
+    
+    [str getCharacters:buff1];
+    [scan.string getCharacters:buff2 range:NSMakeRange(scan.scanLocation, len)];
+    if (memcmp(buff1, buff2, len) == 0) {
         return YES;
     }
 
@@ -439,15 +469,23 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
 }
 
 - (BOOL)canScanChar:(char)c {
-    return [self canScanString:S(c)];
+    NSScanner *scan = self.scan;
+    if (scan.scanLocation >= scan.string.length) return NO;
+    
+    return [scan.string characterAtIndex:scan.scanLocation] == c;
 }
 
 - (BOOL)scanChar:(char)c {
-    return [self scanString:S(c)];
+    if ([self canScanChar:c]) {
+        self.scan.scanLocation++;
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (BOOL)scanChar:(char)c into:(char *)ref {
-    if ([self scanString:S(c)]) {
+    if ([self scanChar:c]) {
         *ref = c;
         return YES;
     }
@@ -546,42 +584,70 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             return NO;
         }
     }
+    
+    char next = self.nextChar;
 
     // Check for struct/union/array, scan past it
-    if ([self scanPair:FLEXTypeEncodingStructBegin close:FLEXTypeEncodingStructEnd] ||
-      [self scanPair:FLEXTypeEncodingUnionBegin close:FLEXTypeEncodingUnionEnd] ||
-      [self scanPair:FLEXTypeEncodingArrayBegin close:FLEXTypeEncodingArrayEnd]) {
+    FLEXTypeEncoding opening = FLEXTypeEncodingNull, closing = FLEXTypeEncodingNull;
+    BOOL checkPair = YES;
+    switch (next) {
+        case FLEXTypeEncodingStructBegin:
+            opening = FLEXTypeEncodingStructBegin;
+            closing = FLEXTypeEncodingStructEnd;
+            break;
+        case FLEXTypeEncodingUnionBegin:
+            opening = FLEXTypeEncodingUnionBegin;
+            closing = FLEXTypeEncodingUnionEnd;
+            break;
+        case FLEXTypeEncodingArrayBegin:
+            opening = FLEXTypeEncodingArrayBegin;
+            closing = FLEXTypeEncodingArrayEnd;
+            break;
+            
+        default:
+            checkPair = NO;
+            break;
+    }
+    
+    if (checkPair && [self scanPair:opening close:closing]) {
         return YES;
     }
 
     // Scan single thing and possible size and return
-    if ([self scanChar:FLEXTypeEncodingUnknown] ||
-      [self scanChar:FLEXTypeEncodingChar] ||
-      [self scanChar:FLEXTypeEncodingInt] ||
-      [self scanChar:FLEXTypeEncodingShort] ||
-      [self scanChar:FLEXTypeEncodingLong] ||
-      [self scanChar:FLEXTypeEncodingLongLong] ||
-      [self scanChar:FLEXTypeEncodingUnsignedChar] ||
-      [self scanChar:FLEXTypeEncodingUnsignedInt] ||
-      [self scanChar:FLEXTypeEncodingUnsignedShort] ||
-      [self scanChar:FLEXTypeEncodingUnsignedLong] ||
-      [self scanChar:FLEXTypeEncodingUnsignedLongLong] ||
-      [self scanChar:FLEXTypeEncodingFloat] ||
-      [self scanChar:FLEXTypeEncodingDouble] ||
-      [self scanChar:FLEXTypeEncodingLongDouble] ||
-      [self scanChar:FLEXTypeEncodingCBool] ||
-      [self scanChar:FLEXTypeEncodingCString] ||
-      [self scanChar:FLEXTypeEncodingSelector] ||
-      [self scanChar:FLEXTypeEncodingBitField]) {
-        // Size is optional
-        [self scanSize];
-        return YES;
-    }
-
-    // These might have numbers OR quotes after them
-    if ([self scanChar:FLEXTypeEncodingObjcObject] || [self scanChar:FLEXTypeEncodingObjcClass]) {
-        [self scanSize] || [self scanPair:FLEXTypeEncodingQuote close:FLEXTypeEncodingQuote];
-        return YES;
+    switch (next) {
+        case FLEXTypeEncodingUnknown:
+        case FLEXTypeEncodingChar:
+        case FLEXTypeEncodingInt:
+        case FLEXTypeEncodingShort:
+        case FLEXTypeEncodingLong:
+        case FLEXTypeEncodingLongLong:
+        case FLEXTypeEncodingUnsignedChar:
+        case FLEXTypeEncodingUnsignedInt:
+        case FLEXTypeEncodingUnsignedShort:
+        case FLEXTypeEncodingUnsignedLong:
+        case FLEXTypeEncodingUnsignedLongLong:
+        case FLEXTypeEncodingFloat:
+        case FLEXTypeEncodingDouble:
+        case FLEXTypeEncodingLongDouble:
+        case FLEXTypeEncodingCBool:
+        case FLEXTypeEncodingCString:
+        case FLEXTypeEncodingSelector:
+        case FLEXTypeEncodingBitField: {
+            self.scan.scanLocation++;
+            // Size is optional
+            [self scanSize];
+            return YES;
+        }
+        
+        case FLEXTypeEncodingObjcObject:
+        case FLEXTypeEncodingObjcClass: {
+            self.scan.scanLocation++;
+            // These might have numbers OR quotes after them
+            [self scanSize] || [self scanPair:FLEXTypeEncodingQuote close:FLEXTypeEncodingQuote];
+            return YES;
+        }
+            
+        default: break;
     }
 
     self.scan.scanLocation = start;
