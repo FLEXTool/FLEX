@@ -34,6 +34,23 @@ typedef struct Anon {
     int baz;
 } Anon;
 
+typedef struct HasBitfield {
+    int a: 1;
+} HasBitfield;
+
+typedef struct HasArray {
+    int a[2];
+} HasArray;
+
+typedef struct HasUnion {
+    int a, b;
+    union {
+        float y, z;
+        char a;
+    } u;
+    char c;
+} HasUnion;
+
 @implementation FLEXTypeEncodingParserTests
 
 - (void)setUp {
@@ -157,6 +174,8 @@ typedef struct Anon {
     // Arrays do not affect alignment like nested structs do
     XCTAssertEqual(sizeof(ArrayInMiddle), 4);
     XCTAssertEqual(sizeof(ArrayAtEnd), 4);
+    
+    XCTAssertEqual(sizeof(HasUnion), 16);
 
     // Test my method of converting calculated sizes to actual sizes
     // for FLEXTypeEncodingParser
@@ -194,6 +213,9 @@ typedef struct Anon {
         @"^?32@0:8r^{_CAPropertyInfo=I[2:]b16b16*^{__CFString}}16"
         "r^{_CAPropertyInfo=I[2:]b16b16*^{__CFString}}24":
             @"^?32@0:8r^{_CAPropertyInfo=}16r^{_CAPropertyInfo=}24",
+        
+        // NSMethodSignature doesn't support unions for some reason
+        @"^{?=(pj_timestamp={?=II}Q)Iii}20@0:8i16": @"^{?=}20@0:8i16",
     };
     
     [uncleanToClean enumerateKeysAndObjectsUsingBlock:^(NSString *needsCleaning, NSString *cleaned, BOOL *stop) {
@@ -201,6 +223,12 @@ typedef struct Anon {
         XCTAssertTrue([FLEXTypeEncodingParser methodTypeEncodingSupported:needsCleaning cleaned:&cleanedResult]);
         XCTAssertEqualObjects(cleaned, cleanedResult);
     }];
+}
+
+- (void)testSupportedTypeEncodings {
+    XCTAssertThrows(NSGetSizeAndAlignment(@encode(HasBitfield), nil, nil));
+    XCTAssertNoThrow(NSGetSizeAndAlignment(@encode(HasArray), nil, nil));
+    XCTAssertNoThrow(NSGetSizeAndAlignment(@encode(HasUnion), nil, nil));
 }
 
 @end
