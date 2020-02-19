@@ -16,6 +16,7 @@
 #import "FLEXProtocol.h"
 #import "FLEXPropertyAttributes.h"
 #import "NSArray+Functional.h"
+#import "FLEXUtility.h"
 
 
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...) {
@@ -41,7 +42,7 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
 @interface NSProxy (AnyObjectAdditions) @end
 @implementation NSProxy (AnyObjectAdditions)
 
-+ (void)load {
++ (void)load { FLEX_EXIT_IF_TESTING()
     // We need to get all of the methods in this file and add them to NSProxy. 
     // To do this we we need the class itself and it's metaclass.
     // Edit: also add them to Swift._SwiftObject

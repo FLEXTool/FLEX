@@ -17,6 +17,9 @@
 #import "UIFont+FLEX.h"
 #import "NSMapTable+FLEX_Subscripting.h"
 
+// Used to prevent loading of pre-registered shortcuts and runtime categories in a test environment
+#define FLEX_EXIT_IF_TESTING() if (NSClassFromString(@"XCTest")) return;
+
 /// Rounds down to the nearest "point" coordinate
 NS_INLINE CGFloat FLEXFloor(CGFloat x) {
     return floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale;

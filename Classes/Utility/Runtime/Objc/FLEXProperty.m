@@ -44,6 +44,7 @@
 }
 
 + (instancetype)named:(NSString *)name onClass:(Class)cls {
+    NSParameterAssert(class_getProperty(cls, name.UTF8String));
     return [self property:class_getProperty(cls, name.UTF8String) onClass:cls];
 }
 

@@ -184,7 +184,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 #pragma mark - Property Helpers (Public)
 
-+ (void)tryAddPropertyWithName:(const char *)name
++ (BOOL)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
                        toClass:(__unsafe_unretained Class)theClass {
     objc_property_t property = class_getProperty(theClass, name);
@@ -200,10 +200,15 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
                 attributes[attributeIndex++] = attribute;
             }
 
-            class_addProperty(theClass, name, attributes, totalAttributesCount);
+            BOOL success = class_addProperty(theClass, name, attributes, totalAttributesCount);
             free(attributes);
+            return success;
+        } else {
+            return NO;
         }
     }
+    
+    return YES;
 }
 
 + (NSArray<NSString *> *)allPropertyAttributeKeys {

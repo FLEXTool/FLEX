@@ -77,6 +77,32 @@ typedef NS_ENUM(char, FLEXTypeEncoding) {
 #define FLEXEncodeClass(class) ("@\"" #class "\"")
 #define FLEXEncodeObject(obj) (obj ? [NSString stringWithFormat:@"@\"%@\"", [obj class]].UTF8String : @encode(id))
 
+#define PropertyKey(suffix) kFLEXPropertyAttributeKey##suffix : @""
+#define PropertyKeyGetter(getter) kFLEXPropertyAttributeKeyCustomGetter : NSStringFromSelector(@selector(getter))
+#define PropertyKeySetter(setter) kFLEXPropertyAttributeKeyCustomSetter : NSStringFromSelector(@selector(setter))
+
+/// Takes: min iOS version, property name, target class, property type, and a list of attributes
+#define FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, type, ...) ({ \
+    if (@available(iOS iOS_atLeast, *)) { \
+        NSMutableDictionary *attrs = [NSMutableDictionary dictionaryWithDictionary:@{ \
+            kFLEXPropertyAttributeKeyTypeEncoding : @(type), \
+            __VA_ARGS__ \
+        }]; \
+        [FLEXRuntimeUtility \
+            tryAddPropertyWithName:#name \
+            attributes:attrs \
+            toClass:cls \
+        ]; \
+    } \
+})
+
+/// Takes: min iOS version, property name, target class, property type, and a list of attributes
+#define FLEXRuntimeUtilityTryAddNonatomicProperty(iOS_atLeast, name, cls, type, ...) \
+    FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, @encode(type), PropertyKey(NonAtomic), __VA_ARGS__);
+/// Takes: min iOS version, property name, target class, property type (class name), and a list of attributes
+#define FLEXRuntimeUtilityTryAddObjectProperty(iOS_atLeast, name, cls, type, ...) \
+    FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, FLEXEncodeClass(type), PropertyKey(NonAtomic), __VA_ARGS__);
+
 @interface FLEXRuntimeUtility : NSObject
 
 // General Helpers
@@ -100,7 +126,7 @@ typedef NS_ENUM(char, FLEXTypeEncoding) {
 + (NSString *)safeDebugDescriptionForObject:(id)object;
 
 // Property Helpers
-+ (void)tryAddPropertyWithName:(const char *)name
++ (BOOL)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
                        toClass:(__unsafe_unretained Class)theClass;
 + (NSArray<NSString *> *)allPropertyAttributeKeys;
