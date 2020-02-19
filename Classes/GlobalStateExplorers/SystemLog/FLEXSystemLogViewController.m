@@ -13,6 +13,7 @@
 #import "FLEXOSLogController.h"
 #import "FLEXSystemLogCell.h"
 #import "fishhook.h"
+#import <dlfcn.h>
 
 @interface FLEXSystemLogViewController ()
 
@@ -22,11 +23,16 @@
 
 @end
 
+static void (*MSHookFunction)(void *symbol, void *replace, void **result);
+
 static BOOL FLEXDidHookNSLog = NO;
-void (*orig_os_log_shim_enabled)() = nil;
+static BOOL FLEXNSLogHookWorks = NO;
+BOOL (*orig_os_log_shim_enabled)() = nil;
 BOOL my_os_log_shim_enabled() {
     return NO;
 }
+
+extern BOOL os_log_shim_enabled();
 
 @implementation FLEXSystemLogViewController
 
@@ -38,6 +44,35 @@ BOOL my_os_log_shim_enabled() {
         (void *)my_os_log_shim_enabled,
         (void **)&orig_os_log_shim_enabled
     }, 1) == 0;
+    
+    if (FLEXDidHookNSLog && orig_os_log_shim_enabled != nil) {
+        // Check if our rebinding worked
+        FLEXNSLogHookWorks = os_log_shim_enabled() == NO;
+    }
+    
+    // So, just because we rebind the lazily loaded symbol for
+    // this function doesn't mean it's even going to be used.
+    // While it seems to be sufficient for the simulator, for
+    // whatever reason it is not sufficient on-device. We need
+    // to actually hook the function with something like Substrate.
+    
+    // Check if we have substrate, and if so use that instead
+    void *handle = dlopen("/usr/lib/libsubstrate.dylib", RTLD_LAZY);
+    if (handle) {
+        MSHookFunction = dlsym(handle, "MSHookFunction");
+        
+        if (MSHookFunction) {
+            // Set the hook and check if it worked
+            //
+            // Very important that we use orig_os_log_shim_enabled
+            // here as opposed to os_log_shim_enabled.
+            MSHookFunction(orig_os_log_shim_enabled, my_os_log_shim_enabled, nil);
+            FLEXNSLogHookWorks = orig_os_log_shim_enabled() == NO;
+            if (FLEXNSLogHookWorks) {
+                return;
+            }
+        }
+    }
 }
 
 - (id)init {
@@ -56,7 +91,7 @@ BOOL my_os_log_shim_enabled() {
     };
 
     _logMessages = [NSMutableArray array];
-    if (FLEXOSLogAvailable() && !FLEXDidHookNSLog) {
+    if (FLEXOSLogAvailable() && !FLEXNSLogHookWorks) {
         _logController = [FLEXOSLogController withUpdateHandler:logHandler];
     } else {
         _logController = [FLEXASLLogController withUpdateHandler:logHandler];
