@@ -8,16 +8,36 @@
 
 #import "FLEXShortcutsFactory+Defaults.h"
 #import "FLEXShortcut.h"
-#import <objc/runtime.h>
-
-// Don't load pre-registered shortcuts in a test environment
-#define FLEX_EXIT_IF_TESTING() if (NSClassFromString(@"XCTest")) return;
+#import "FLEXRuntimeUtility.h"
+#import "NSObject+Reflection.h"
 
 #pragma mark - Views
 
 @implementation FLEXShortcutsFactory (Views)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
+    // A quirk of UIView and some other classes: a lot of the `@property`s are
+    // not actually properties from the perspective of the runtime.
+    //
+    // We add these properties to the class at runtime if they haven't been added yet.
+    // This way, we can use our property editor to access and change them.
+    // The property attributes match the declared attributes in their headers.
+
+    // UIView, public
+    Class UIView_ = UIView.class;
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, frame, UIView_, CGRect);
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, alpha, UIView_, CGFloat);
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, clipsToBounds, UIView_, BOOL);
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, opaque, UIView_, BOOL, PropertyKeyGetter(isOpaque));
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, hidden, UIView_, BOOL, PropertyKeyGetter(isHidden));
+    FLEXRuntimeUtilityTryAddObjectProperty(2, backgroundColor, UIView_, UIColor, PropertyKey(Copy));
+    FLEXRuntimeUtilityTryAddObjectProperty(6, constraints, UIView_, NSArray, PropertyKey(ReadOnly));
+    FLEXRuntimeUtilityTryAddObjectProperty(2, subviews, UIView_, NSArray, PropertyKey(ReadOnly));
+    FLEXRuntimeUtilityTryAddObjectProperty(2, superview, UIView_, UIView, PropertyKey(ReadOnly));
+
+    // UIButton, private
+    FLEXRuntimeUtilityTryAddObjectProperty(2, font, UIButton.class, UIFont, PropertyKey(ReadOnly));
+    
     // Only available since iOS 3.2, but we never supported iOS 3, so who cares
     NSArray *ivars = @[@"_gestureRecognizers"];
     NSArray *methods = @[@"sizeToFit", @"setNeedsLayout", @"removeFromSuperview"];
@@ -77,6 +97,9 @@
 @implementation FLEXShortcutsFactory (ViewControllers)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
+    // toolbarItems is not really a property, make it one 
+    FLEXRuntimeUtilityTryAddObjectProperty(3, toolbarItems, UIViewController.class, NSArray);
+    
     // UIViewController
     self.append
         .properties(@[
