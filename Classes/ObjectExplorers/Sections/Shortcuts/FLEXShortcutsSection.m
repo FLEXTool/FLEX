@@ -278,16 +278,16 @@ static RegistrationBuckets *mMethods = nil;
 + (NSArray<id<FLEXRuntimeMetadata>> *)shortcutsForObjectOrClass:(id)objectOrClass {
     NSMutableArray<id<FLEXRuntimeMetadata>> *shortcuts = [NSMutableArray new];
     BOOL isClass = object_isClass(objectOrClass);
-
-     // The -class does not give you a metaclass, and we want a metaclass if a class is passed in
+    // The -class does not give you a metaclass, and we want a metaclass
+    // if a class is passed in, or a class if an object is passed in
     Class classKey = object_getClass(objectOrClass);
+    
     RegistrationBuckets *propertyBucket = isClass ? mProperties : cProperties;
     RegistrationBuckets *methodBucket = isClass ? mMethods : cMethods;
     RegistrationBuckets *ivarBucket = isClass ? nil : cIvars;
 
     BOOL stop = NO;
     while (!stop && classKey) {
-
         NSArray *properties = propertyBucket[classKey];
         NSArray *ivars = ivarBucket[classKey];
         NSArray *methods = methodBucket[classKey];
@@ -389,32 +389,47 @@ static RegistrationBuckets *mMethods = nil;
             @"You can only do one of [append, prepend, replace]"
         );
 
-        BOOL onInstance = !self->_notInstance;
-
+        
+        /// Whether the metadata we're about to add is instance or
+        /// class metadata, i.e. class properties vs instance properties
+        BOOL instanceMetadata = !self->_notInstance;
+        /// Whether the given class is a metaclass or not; we need to switch to
+        /// the metaclass to add class metadata if we are given the normal class object
         BOOL isMeta = class_isMetaClass(cls);
-        RegistrationBuckets *propertyBucket = isMeta ? mProperties : cProperties;
-        RegistrationBuckets *methodBucket = isMeta ? mMethods : cMethods;
-        RegistrationBuckets *ivarBucket = isMeta ? nil : cIvars;
+        /// Whether the shortcuts we're about to add should appear for classes or instances
+        BOOL instanceShortcut = !isMeta;
+        
+        if (instanceMetadata) {
+            NSAssert(instanceShortcut,
+                @"Instance metadata can only be added as an instance shortcut"
+            );
+        }
+        
+        Class metaclass = isMeta ? cls : object_getClass(cls);
+        Class clsForMetadata = instanceMetadata ? cls : metaclass;
+        
+        RegistrationBuckets *propertyBucket = instanceMetadata ? cProperties : mProperties;
+        RegistrationBuckets *methodBucket = instanceMetadata ? cMethods : mMethods;
+        RegistrationBuckets *ivarBucket = instanceMetadata ? cIvars : nil;
 
         if (self->_properties) {
             NSArray *items = [self->_properties flex_mapped:^id(NSString *name, NSUInteger idx) {
-                return [FLEXProperty named:name onClass:cls];
+                return [FLEXProperty named:name onClass:clsForMetadata];
             }];
             [self _register:items to:propertyBucket class:cls];
         }
 
         if (self->_methods) {
             NSArray *items = [self->_methods flex_mapped:^id(NSString *name, NSUInteger idx) {
-                return [FLEXMethod selector:NSSelectorFromString(name) class:cls];
+                return [FLEXMethod selector:NSSelectorFromString(name) class:clsForMetadata];
             }];
             [self _register:items to:methodBucket class:cls];
         }
 
         if (self->_ivars) {
-            NSAssert(onInstance, @"Cannot register ivar shortcuts for classes (%@)", cls);
-            NSAssert(!isMeta, @"Cannot register ivar shortcuts for metaclasses (%@)", cls);
+            NSAssert(instanceMetadata, @"Instance metadata can only be added as an instance shortcut (%@)", cls);
             NSArray *items = [self->_ivars flex_mapped:^id(NSString *name, NSUInteger idx) {
-                return [FLEXIvar named:name onClass:cls];
+                return [FLEXIvar named:name onClass:clsForMetadata];
             }];
             [self _register:items to:ivarBucket class:cls];
         }
