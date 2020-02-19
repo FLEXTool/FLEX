@@ -195,7 +195,15 @@ typedef struct HasUnion {
     XCTAssertEqual(RoundUpToMultipleOf4(13), 16);
 }
 
-- (void)testMethodSignatures {
+- (void)testUnsupportedMethodSignatures {
+    NSArray<NSString *> *unsupported = @[@"{?=[4]}16@0:8}"];
+    
+    for (NSString *signature in unsupported) {
+        XCTAssertFalse([FLEXTypeEncodingParser methodTypeEncodingSupported:signature cleaned:nil]);
+    }
+}
+
+- (void)testMethodSignatureCleaning {
     NSDictionary<NSString *, NSString *> *uncleanToClean = @{
         @"@28@0:8r^{basic_string<char, std::__1::char_traits<char>, "
         "std::__1::allocator<char> >={__compressed_pair<std::__1::"

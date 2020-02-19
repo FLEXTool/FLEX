@@ -321,8 +321,10 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
         
         if (!structOrUnion) {
             arrayCount = [self scanSize];
-            if (!arrayCount) {
-                // Arrays must have a count after the opening brace
+            if (!arrayCount || self.nextChar == FLEXTypeEncodingArrayEnd) {
+                // Malformed array type:
+                // 1. Arrays must have a count after the opening brace
+                // 2. Arrays must have an element type after the count
                 self.scan.scanLocation = start;
                 return -1;
             }
