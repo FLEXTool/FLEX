@@ -103,6 +103,28 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
             return @"📱  UIDevice.currentDevice";
         case FLEXGlobalsRowPasteboard:
             return @"📋  UIPasteboard.generalPasteboard";
+        case FLEXGlobalsRowURLSession:
+            return @"📡  NSURLSession.sharedSession";
+        case FLEXGlobalsRowURLCache:
+            return @"⏳  NSURLCache.sharedURLCache";
+        case FLEXGlobalsRowNotificationCenter:
+            return @"🔔  NSNotificationCenter.defaultCenter";
+        case FLEXGlobalsRowMenuController:
+            return @"📎  UIMenuController.sharedMenuController";
+        case FLEXGlobalsRowFileManager:
+            return @"🗄  NSFileManager.defaultManager";
+        case FLEXGlobalsRowTimeZone:
+            return @"🌎  NSTimeZone.systemTimeZone";
+        case FLEXGlobalsRowLocale:
+            return @"🗣  NSLocale.currentLocale";
+        case FLEXGlobalsRowCalendar:
+            return @"📅  NSCalendar.currentCalendar";
+        case FLEXGlobalsRowMainRunLoop:
+            return @"🏃🏻‍♂️  NSRunLoop.mainRunLoop";
+        case FLEXGlobalsRowMainThread:
+            return @"🧵  NSThread.mainThread";
+        case FLEXGlobalsRowOperationQueue:
+            return @"📚  NSOperationQueue.mainQueue";
         default: return nil;
     }
 }
@@ -127,6 +149,29 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
+            case FLEXGlobalsRowURLSession:
+            return [self explorerViewControllerForObject:NSURLSession.sharedSession];
+        case FLEXGlobalsRowURLCache:
+            return [self explorerViewControllerForObject:NSURLCache.sharedURLCache];
+        case FLEXGlobalsRowNotificationCenter:
+            return [self explorerViewControllerForObject:NSNotificationCenter.defaultCenter];
+        case FLEXGlobalsRowMenuController:
+            return [self explorerViewControllerForObject:UIMenuController.sharedMenuController];
+        case FLEXGlobalsRowFileManager:
+            return [self explorerViewControllerForObject:NSFileManager.defaultManager];
+        case FLEXGlobalsRowTimeZone:
+            return [self explorerViewControllerForObject:NSTimeZone.systemTimeZone];
+        case FLEXGlobalsRowLocale:
+            return [self explorerViewControllerForObject:NSLocale.currentLocale];
+        case FLEXGlobalsRowCalendar:
+            return [self explorerViewControllerForObject:NSCalendar.currentCalendar];
+        case FLEXGlobalsRowMainRunLoop:
+            return [self explorerViewControllerForObject:NSRunLoop.mainRunLoop];
+        case FLEXGlobalsRowMainThread:
+            return [self explorerViewControllerForObject:NSThread.mainThread];
+        case FLEXGlobalsRowOperationQueue:
+            return [self explorerViewControllerForObject:NSOperationQueue.mainQueue];
+            
         case FLEXGlobalsRowKeyWindow:
             return [FLEXObjectExplorerFactory
                 explorerViewControllerForObject:FLEXUtility.appKeyWindow

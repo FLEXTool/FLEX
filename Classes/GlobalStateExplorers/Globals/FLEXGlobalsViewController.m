@@ -79,6 +79,17 @@
         case FLEXGlobalsRowMainScreen:
         case FLEXGlobalsRowCurrentDevice:
         case FLEXGlobalsRowPasteboard:
+        case FLEXGlobalsRowURLSession:
+        case FLEXGlobalsRowURLCache:
+        case FLEXGlobalsRowNotificationCenter:
+        case FLEXGlobalsRowMenuController:
+        case FLEXGlobalsRowFileManager:
+        case FLEXGlobalsRowTimeZone:
+        case FLEXGlobalsRowLocale:
+        case FLEXGlobalsRowCalendar:
+        case FLEXGlobalsRowMainRunLoop:
+        case FLEXGlobalsRowMainThread:
+        case FLEXGlobalsRowOperationQueue:
             return [FLEXObjectExplorerFactory flex_concreteGlobalsEntry:row];
 
         default:
@@ -118,6 +129,17 @@
                 [self globalsEntryForRow:FLEXGlobalsRowPasteboard],
                 [self globalsEntryForRow:FLEXGlobalsRowMainScreen],
                 [self globalsEntryForRow:FLEXGlobalsRowCurrentDevice],
+                [self globalsEntryForRow:FLEXGlobalsRowURLSession],
+                [self globalsEntryForRow:FLEXGlobalsRowURLCache],
+                [self globalsEntryForRow:FLEXGlobalsRowNotificationCenter],
+                [self globalsEntryForRow:FLEXGlobalsRowMenuController],
+                [self globalsEntryForRow:FLEXGlobalsRowFileManager],
+                [self globalsEntryForRow:FLEXGlobalsRowTimeZone],
+                [self globalsEntryForRow:FLEXGlobalsRowLocale],
+                [self globalsEntryForRow:FLEXGlobalsRowCalendar],
+                [self globalsEntryForRow:FLEXGlobalsRowMainRunLoop],
+                [self globalsEntryForRow:FLEXGlobalsRowMainThread],
+                [self globalsEntryForRow:FLEXGlobalsRowOperationQueue],
             ]
         ];
         
