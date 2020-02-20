@@ -152,7 +152,7 @@
 @implementation FLEXShortcutsFactory (Classes)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
-    self.append.methods(@[@"new", @"alloc"]).forClass(objc_getMetaClass("NSObject"));
+    self.append.classMethods(@[@"new", @"alloc"]).forClass(NSObject.flex_metaclass);
 }
 
 @end
@@ -175,12 +175,73 @@
 @end
 
 
-#pragma mark - Activities
+#pragma mark - Blocks
 
 @implementation FLEXShortcutsFactory (Blocks)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
     self.append.methods(@[@"invoke"]).forClass(NSClassFromString(@"NSBlock"));
+}
+
+@end
+
+#pragma mark - Foundation
+
+@implementation FLEXShortcutsFactory (Foundation)
+
++ (void)load { FLEX_EXIT_IF_TESTING()
+    self.append.properties(@[
+        @"configuration", @"delegate", @"delegateQueue", @"sessionDescription",
+    ]).methods(@[
+        @"dataTaskWithURL:", @"finishTasksAndInvalidate", @"invalidateAndCancel",
+    ]).forClass(NSURLSession.class);
+    
+    self.append.methods(@[
+        @"cachedResponseForRequest:", @"storeCachedResponse:forRequest:",
+        @"storeCachedResponse:forDataTask:", @"removeCachedResponseForRequest:",
+        @"removeCachedResponseForDataTask:", @"removeCachedResponsesSinceDate:",
+        @"removeAllCachedResponses",
+    ]).forClass(NSURLCache.class);
+    
+    
+    self.append.methods(@[
+        @"postNotification:", @"postNotificationName:object:userInfo:",
+        @"addObserver:selector:name:object:", @"removeObserver:",
+        @"removeObserver:name:object:",
+    ]).forClass(NSNotificationCenter.class);
+    
+    // NSTimeZone class properties aren't real properties
+    FLEXRuntimeUtilityTryAddObjectProperty(2, localTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
+    FLEXRuntimeUtilityTryAddObjectProperty(2, systemTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
+    FLEXRuntimeUtilityTryAddObjectProperty(2, defaultTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
+    FLEXRuntimeUtilityTryAddObjectProperty(2, knownTimeZoneNames, NSTimeZone.flex_metaclass, NSArray);
+    FLEXRuntimeUtilityTryAddObjectProperty(2, abbreviationDictionary, NSTimeZone.flex_metaclass, NSDictionary);
+    
+    self.append.classMethods(@[
+        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:", @"", @"", @"", 
+    ]).forClass(NSTimeZone.flex_metaclass);
+    
+    self.append.classProperties(@[
+        @"defaultTimeZone", @"systemTimeZone", @"localTimeZone"
+    ]).forClass(NSTimeZone.class);
+    
+    
+//    self.append.<#type#>(@[@"<#value#>"]).forClass(NSURLSession.class);
+//    
+//    
+//    self.append.<#type#>(@[@"<#value#>"]).forClass(NSURLSession.class);
+//    
+//    
+//    self.append.<#type#>(@[@"<#value#>"]).forClass(NSURLSession.class);
+//    
+//    
+//    self.append.<#type#>(@[@"<#value#>"]).forClass(NSURLSession.class);
+//    
+//    
+//    self.append.<#type#>(@[@"<#value#>"]).forClass(NSURLSession.class);
+//    
+//    
+//    self.append.<#type#>(@[@"<#value#>"]).forClass(NSURLSession.class);
 }
 
 @end

@@ -21,3 +21,5 @@
 @interface FLEXShortcutsFactory (Activities) @end
 
 @interface FLEXShortcutsFactory (Blocks) @end
+
+@interface FLEXShortcutsFactory (Foundation) @end
