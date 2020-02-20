@@ -68,20 +68,30 @@
 
 - (void)examine {
     _name         = @(ivar_getName(self.objc_ivar));
-    _typeEncoding = @(ivar_getTypeEncoding(self.objc_ivar));
-    _type         = (FLEXTypeEncoding)[_typeEncoding characterAtIndex:0];
     _offset       = ivar_getOffset(self.objc_ivar);
+    _typeEncoding = @(ivar_getTypeEncoding(self.objc_ivar) ?: "");
+    
+    NSString *typeForDetails = _typeEncoding;
+    NSString *sizeForDetails = nil;
+    if (_typeEncoding.length) {
+        _type = (FLEXTypeEncoding)[_typeEncoding characterAtIndex:0];
+        FLEXGetSizeAndAlignment(_typeEncoding.UTF8String, &_size, nil);
+        sizeForDetails = [@(_size).stringValue stringByAppendingString:@" bytes"];
+    } else {
+        _type = FLEXTypeEncodingNull;
+        typeForDetails = @"no type info";
+        sizeForDetails = @"unknown size";
+    }
 
-    FLEXGetSizeAndAlignment(_typeEncoding.UTF8String, &_size, nil);
     _details = [NSString stringWithFormat:
-        @"%@ bytes, offset %@  —  %@",
-        (_size ? @(_size) : @"?"), @(_offset), _typeEncoding
+        @"%@, offset %@  —  %@",
+        sizeForDetails, @(_offset), typeForDetails
     ];
 }
 
 - (id)getValue:(id)target {
     id value = nil;
-    if (!FLEXIvarIsSafe(_objc_ivar)) {
+    if (!FLEXIvarIsSafe(_objc_ivar) || _type == FLEXTypeEncodingNull) {
         return nil;
     }
 

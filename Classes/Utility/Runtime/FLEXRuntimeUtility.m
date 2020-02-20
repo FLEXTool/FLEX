@@ -635,7 +635,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 
 + (NSString *)readableTypeForEncoding:(NSString *)encodingString {
     if (!encodingString.length) {
-        return @"???";
+        return @"?";
     }
 
     // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
