@@ -297,6 +297,16 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         return nil;
     }
 
+    NSMethodSignature *methodSignature = [NSMethodSignature signatureWithObjCTypes:({
+        Method method;
+        if (object_isClass(object)) {
+            method = class_getClassMethod(object, selector);
+        } else {
+            method = class_getInstanceMethod(object_getClass(object), selector);
+        }
+        method_getTypeEncoding(method);
+    })];
+    
     // Probably an unsupported type encoding, like bitfields.
     // In the future, we could calculate the return length
     // on our own. For now, we abort.
@@ -305,7 +315,6 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     // NSMethodSignature will convert {?=b8b4b1b1b18[8S]} to {?}
     //
     // returnType = method_getTypeEncoding(class_getInstanceMethod([object class], selector));
-    NSMethodSignature *methodSignature = [object methodSignatureForSelector:selector];
     if (!methodSignature.methodReturnLength &&
         methodSignature.methodReturnType[0] != FLEXTypeEncodingVoid) {
         return nil;
