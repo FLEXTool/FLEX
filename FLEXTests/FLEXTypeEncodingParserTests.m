@@ -196,7 +196,10 @@ typedef struct HasUnion {
 }
 
 - (void)testUnsupportedMethodSignatures {
-    NSArray<NSString *> *unsupported = @[@"{?=[4]}16@0:8}"];
+    NSArray<NSString *> *unsupported = @[
+        @"{?=[4]}16@0:8}",
+        @"i48@0:8^{__CVBuffer=}16I24(pj_timestamp={?=II}Q)28i36B40B44",
+    ];
     
     for (NSString *signature in unsupported) {
         XCTAssertFalse([FLEXTypeEncodingParser methodTypeEncodingSupported:signature cleaned:nil]);
@@ -224,12 +227,15 @@ typedef struct HasUnion {
         
         // NSMethodSignature doesn't support unions for some reason
         @"^{?=(pj_timestamp={?=II}Q)Iii}20@0:8i16": @"^{?=}20@0:8i16",
+        
+        @"^{KeyValueArray=^^?{Atomic={?=i}}I[1^{Object}]}16@0:8":
+            @"^{KeyValueArray=^^?{Atomic={?=i}}I[1^{Object=}]}16@0:8"
     };
     
-    [uncleanToClean enumerateKeysAndObjectsUsingBlock:^(NSString *needsCleaning, NSString *cleaned, BOOL *stop) {
-        NSString *cleanedResult = nil;
-        XCTAssertTrue([FLEXTypeEncodingParser methodTypeEncodingSupported:needsCleaning cleaned:&cleanedResult]);
-        XCTAssertEqualObjects(cleaned, cleanedResult);
+    [uncleanToClean enumerateKeysAndObjectsUsingBlock:^(NSString *needsCleaning, NSString *expected, BOOL *stop) {
+        NSString *cleaned = nil;
+        XCTAssertTrue([FLEXTypeEncodingParser methodTypeEncodingSupported:needsCleaning cleaned:&cleaned]);
+        XCTAssertEqualObjects(cleaned, expected);
     }];
 }
 

@@ -14,6 +14,43 @@
     [[NSString alloc] initWithCharacters:&__c length:1]; \
 })
 
+typedef struct FLEXTypeInfo {
+    /// The size is unaligned. -1 if not supported at all.
+    ssize_t size;
+    ssize_t align;
+    /// NO if the type cannot be supported at all
+    /// YES if the type is either fully or partially supported.
+    BOOL supported;
+    /// YES if the type was only partially supported, such as in
+    /// the case of unions in pointer types, or named structure
+    /// types without member info. These can be corrected manually
+    /// since they can be fixed or replaced with less info.
+    BOOL fixesApplied;
+    /// Whether this type is a union or one of its members
+    /// recursively contains a union, exlcuding pointers.
+    ///
+    /// Unions are tricky because they're supported by
+    /// \c NSGetSizeAndAlignment but not by \c NSMethodSignature
+    /// so we need to track whenever a type contains a union
+    /// so that we can clean it out of pointer types.
+    BOOL containsUnion;
+} FLEXTypeInfo;
+
+/// Type info for a completely unsupported type.
+static FLEXTypeInfo FLEXTypeInfoUnsupported = (FLEXTypeInfo){ -1, 0, NO, NO, NO };
+/// Type info for the void return type.
+static FLEXTypeInfo FLEXTypeInfoVoid = (FLEXTypeInfo){ 0, 0, YES, NO, NO };
+
+/// Builds type info for a fully or partially supported type.
+static inline FLEXTypeInfo FLEXTypeInfoMake(ssize_t size, ssize_t align, BOOL fixed) {
+    return (FLEXTypeInfo){ size, align, YES, fixed, NO };
+}
+
+/// Builds type info for a fully or partially supported type.
+static inline FLEXTypeInfo FLEXTypeInfoMakeU(ssize_t size, ssize_t align, BOOL fixed, BOOL hasUnion) {
+    return (FLEXTypeInfo){ size, align, YES, fixed, hasUnion };
+}
+
 BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *alignp) {
     NSInteger size = 0, align = 0;
     size = [FLEXTypeEncodingParser sizeForTypeEncoding:@(type) alignment:&align];
@@ -68,13 +105,16 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     return self;
 }
 
+
 #pragma mark Public
 
 + (BOOL)methodTypeEncodingSupported:(NSString *)typeEncoding cleaned:(NSString * __autoreleasing *)cleanedEncoding {
     FLEXTypeEncodingParser *parser = [[self alloc] initWithObjCTypes:typeEncoding];
+    
     while (!parser.scan.isAtEnd) {
-        BOOL containsUnion = NO;
-        if ([parser parseNextType:nil hasUnion:&containsUnion] == -1 || containsUnion) {
+        FLEXTypeInfo info = [parser parseNextType];
+        
+        if (!info.supported || info.containsUnion) {
             return NO;
         }
     }
@@ -109,31 +149,37 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
 }
 
 + (ssize_t)sizeForTypeEncoding:(NSString *)type alignment:(ssize_t *)alignOut unaligned:(BOOL)unaligned {
-    return [self parseType:type alignment:alignOut unaligned:unaligned hasUnion:nil];
-}
+    FLEXTypeInfo info = [self parseType:type];
+    
+    ssize_t size = info.size;
+    ssize_t align = info.align;
+    
+    if (info.supported) {
+        if (alignOut) {
+            *alignOut = align;
+        }
 
-/// @return the size of the type
-+ (ssize_t)parseType:(NSString *)type
-           alignment:(ssize_t *)alignOut
-           unaligned:(BOOL)unaligned
-            hasUnion:(BOOL *)containsUnion {
-    ssize_t align = 0;
-    ssize_t size = [[[self alloc] initWithObjCTypes:type] parseNextType:&align hasUnion:containsUnion];
-
-    if (size == -1 || size == 0) {
-        return size;
+        if (!unaligned) {
+            size += size % align;
+        }
     }
     
-    if (alignOut) {
-        *alignOut = align;
-    }
+    // size is -1 if not supported
+    return size;
+}
 
-    if (unaligned) {
-        return size;
-    } else {
-        size += size % align;
-        return size;
++ (FLEXTypeInfo)parseType:(NSString *)type cleaned:(NSString * __autoreleasing *)cleanedEncoding {
+    FLEXTypeEncodingParser *parser = [[self alloc] initWithObjCTypes:type];
+    FLEXTypeInfo info = [parser parseNextType];
+    if (cleanedEncoding) {
+        *cleanedEncoding = parser.cleaned;
     }
+    
+    return info;
+}
+
++ (FLEXTypeInfo)parseType:(NSString *)type {
+    return [self parseType:type cleaned:nil];
 }
 
 #pragma mark Private
@@ -215,17 +261,14 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     }
 }
 
-/// @param containsUnion an out param indicating whether the given type contains
-/// a union, exlcuding pointers to/with unions. Must be initialized to \c NO
-/// @return the (unaligned) size of the type in bytes
-- (ssize_t)parseNextType:(ssize_t *)alignment hasUnion:(BOOL *)containsUnion {
+- (FLEXTypeInfo)parseNextType {
     NSUInteger start = self.scan.scanLocation;
 
     // Check for void first
     if ([self scanChar:FLEXTypeEncodingVoid]) {
         // Skip argument frame for method signatures
         [self scanSize];
-        return 0;
+        return FLEXTypeInfoVoid;
     }
 
     // Scan optional const
@@ -242,19 +285,22 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
                 substringWithRange:NSMakeRange(pointerTypeStart, pointerTypeLength)
             ];
             
-            BOOL pointeeHasUnion = NO;
-            BOOL unsupported = -1 == [self.class
-                parseType:pointerType
-                alignment:nil
-                unaligned:NO
-                hasUnion:&pointeeHasUnion
-            ];
-            // Clean the type if it is unsupported or contains a union
+            // Deeeep nested cleaning info gets lost here
+            NSString *cleaned = nil;
+            FLEXTypeInfo info = [self.class parseType:pointerType cleaned:&cleaned];
+            BOOL needsCleaning = !info.supported || info.containsUnion || info.fixesApplied;
+            
+            // Clean the type if it is unsupported, malformed, or contains a union.
             // (Unions are supported by NSGetSizeAndAlignment but not
             // supported by NSMethodSignature for some reason)
-            if (unsupported || pointeeHasUnion) {
-                // We don't set *containsUnion here since we can clean it out
-                NSString *cleaned = [self cleanPointeeTypeAtLocation:pointerTypeStart];
+            if (needsCleaning) {
+                // if unsupported, no cleaning occurred in parseType:cleaned: above.
+                // Otherwise, the type is partially supported and we did clean it,
+                // and we will replace this type with the cleaned type from above.
+                if (!info.supported || info.containsUnion) {
+                    cleaned = [self cleanPointeeTypeAtLocation:pointerTypeStart];
+                }
+                
                 [self.cleaned replaceCharactersInRange:NSMakeRange(
                     pointerTypeStart - self.cleanedReplacingOffset, pointerTypeLength
                 ) withString:cleaned];
@@ -264,14 +310,11 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             [self scanSize];
             
             ssize_t size = [self sizeForType:FLEXTypeEncodingPointer];
-            if (alignment) {
-                *alignment = size;
-            }
-            return size;
+            return FLEXTypeInfoMake(size, size, !info.supported || info.fixesApplied);
         } else {
             // Scan failed, abort
             self.scan.scanLocation = start;
-            return -1;
+            return FLEXTypeInfoUnsupported;
         }
     }
 
@@ -301,10 +344,8 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     }
     
     if (didScanSUA) {
-        // We found a union, set this flag
-        if (isUnion && containsUnion) {
-            *containsUnion = YES;
-        }
+        BOOL containsUnion = isUnion;
+        BOOL fixesApplied = NO;
         
         NSUInteger backup = self.scan.scanLocation;
 
@@ -312,7 +353,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
         if (![self scanPair:opening close:closing]) {
             // Scan failed, abort
             self.scan.scanLocation = start;
-            return -1;
+            return FLEXTypeInfoUnsupported;
         }
 
         // Move cursor just after opening tag (struct/union/array)
@@ -326,7 +367,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
                 // 1. Arrays must have a count after the opening brace
                 // 2. Arrays must have an element type after the count
                 self.scan.scanLocation = start;
-                return -1;
+                return FLEXTypeInfoUnsupported;
             }
         } else {
             // If we encounter the ?= portion of something like {?=b8b4b1b1b18[8S]}
@@ -350,7 +391,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             // type encodings for bitfields do not include alignment info
             if (next == FLEXTypeEncodingBitField) {
                 self.scan.scanLocation = start;
-                return -1;
+                return FLEXTypeInfoUnsupported;
             }
 
             // Structure fields could be named
@@ -358,34 +399,33 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
                 [self scanPair:FLEXTypeEncodingQuote close:FLEXTypeEncodingQuote];
             }
 
-            ssize_t align = 0;
-            ssize_t size = [self parseNextType:&align hasUnion:containsUnion];
-            if (size == -1) {
+            FLEXTypeInfo info = [self parseNextType];
+            if (!info.supported || info.containsUnion) {
                 // The above call is the only time in this method where
-                // cleaned might be mutated recursively, so this is the
+                // `cleaned` might be mutated recursively, so this is the
                 // only place where we need to keep and restore a backup
                 //
                 // For instance, if we've been iterating over the members
                 // of a struct and we've encountered a few pointers so far
-                // that we needed to clean, and suddenly we come across
-                // an unsupported member, we need to be able to "rewind"
-                // and undo any chances to self.cleaned so that the parent
+                // that we needed to clean, and suddenly we come across an
+                // unsupported member, we need to be able to "rewind" and
+                // undo any changes to `self.cleaned` so that the parent
                 // call in the call stack can wipe the current structure
                 // clean entirely if needed. Example below:
                 //
                 //      Initial: ^{foo=^{pair<d,d>}{^pair<i,i>}{invalid_type<d>}}
                 //                       v-- here
                 //    1st clean: ^{foo=^{?=}{^pair<i,i>}{invalid_type<d>}
-                //                          v-- here
+                //                           v-- here
                 //    2nd clean: ^{foo=^{?=}{?=}{invalid_type<d>}
-                //                             v-- here
+                //                               v-- here
                 //  Can't clean: ^{foo=^{?=}{?=}{invalid_type<d>}
                 //                 v-- to here
                 //       Rewind: ^{foo=^{pair<d,d>}{^pair<i,i>}{invalid_type<d>}}
                 //  Final clean: ^{foo=}
                 self.cleaned = cleanedBackup;
                 self.scan.scanLocation = start;
-                return -1;
+                return FLEXTypeInfoUnsupported;
             }
             
             // Unions are the size of their largest member,
@@ -393,29 +433,28 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             // structs are the sum of their members
             if (structOrUnion) {
                 if (isUnion) { // Union
-                    sizeSoFar = MAX(sizeSoFar, size);
+                    sizeSoFar = MAX(sizeSoFar, info.size);
                 } else { // Struct
-                    sizeSoFar += size;
+                    sizeSoFar += info.size;
                 }
             } else { // Array
-                sizeSoFar = size * arrayCount;
+                sizeSoFar = info.size * arrayCount;
             }
             
-            maxAlign = MAX(maxAlign, align);
+            // Propogate the max alignment and other metadata
+            maxAlign = MAX(maxAlign, info.align);
+            containsUnion = containsUnion || info.containsUnion;
+            fixesApplied = fixesApplied || info.fixesApplied;
         }
         
         // Skip optional frame offset
         [self scanSize];
 
-        if (alignment) {
-            *alignment = maxAlign;
-        }
-
-        return sizeSoFar;
+        return FLEXTypeInfoMakeU(sizeSoFar, maxAlign, fixesApplied, containsUnion);
     }
     
     // Scan single thing and possible size and return
-    ssize_t size = 0;
+    ssize_t size = -1;
     char t = self.nextChar;
     switch (t) {
         case FLEXTypeEncodingUnknown:
@@ -442,7 +481,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             
             if (t == FLEXTypeEncodingBitField) {
                 self.scan.scanLocation = start;
-                return -1;
+                return FLEXTypeInfoUnsupported;
             } else {
                 // Compute size
                 size = [self sizeForType:t];
@@ -464,17 +503,13 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
         default: break;
     }
 
-    if (size) {
+    if (size > 0) {
         // Alignment of scalar types is its size
-        if (alignment) {
-            *alignment = size;
-        }
-
-        return size;
+        return FLEXTypeInfoMake(size, size, NO);
     }
 
     self.scan.scanLocation = start;
-    return -1;
+    return FLEXTypeInfoUnsupported;
 }
 
 - (BOOL)scanString:(NSString *)str {
@@ -714,24 +749,40 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     return YES;
 }
 
-- (NSString *)extractTypeNameFromScanLocation {
+- (NSString *)extractTypeNameFromScanLocation:(BOOL)allowMissingTypeInfo closing:(FLEXTypeEncoding)closeTag {
     NSUInteger start = self.scan.scanLocation;
-    NSString *typeName = nil;
 
     // The ?= portion of something like {?=b8b4b1b1b18[8S]}
     if ([self scanChar:FLEXTypeEncodingUnknown]) {
-        typeName = @"?";
+        return @"?";
     } else {
-        typeName = [self scanIdentifier];
-        // = is non-optional
-        if (!typeName || ![self scanString:@"="]) {
+        NSString *typeName = [self scanIdentifier];
+        char next = self.nextChar;
+        
+        if (!typeName) {
             // Did not scan an identifier
             self.scan.scanLocation = start;
             return nil;
         }
+        
+        switch (next) {
+            case '=':
+                return typeName;
+                
+            default: {
+                // = is non-optional unless we allowMissingTypeInfo, in whcih
+                // case the next character needs to be a closing brace
+                if (allowMissingTypeInfo && next == closeTag) {
+                    return typeName;
+                } else {
+                    // Not a valid identifier; possibly a generic C++ type
+                    // i.e. {pair<T, U>} where `name` was found as `pair`
+                    self.scan.scanLocation = start;
+                    return nil;
+                }
+            }
+        }
     }
-
-    return typeName;
 }
 
 - (NSString *)cleanPointeeTypeAtLocation:(NSUInteger)scanLocation {
@@ -774,15 +825,15 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             return @"?";
             
         case FLEXTypeEncodingStructBegin: {
-            BOOL containsUnion = NO;
-            if ([self parseNextType:nil hasUnion:&containsUnion] != -1 && !containsUnion) {
+            FLEXTypeInfo info = [self parseNextType];
+            if (info.supported && !info.fixesApplied) {
                 return typeIsClean();
             }
             
             // The structure we just tried to scan is unsupported, so just return its name
             // if it has one. If not, just return a question mark.
             self.scan.scanLocation++; // Skip past {
-            NSString *name = [self extractTypeNameFromScanLocation];
+            NSString *name = [self extractTypeNameFromScanLocation:YES closing:FLEXTypeEncodingStructEnd];
             if (name) {
                 // Got the name, scan past the closing token
                 [self.scan scanUpToString:@"}" intoString:nil];
@@ -812,7 +863,8 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     }
     
     // Check for other types, which in theory are all valid but whatever
-    if ([self parseNextType:nil hasUnion:nil] != -1) {
+    FLEXTypeInfo info = [self parseNextType];
+    if (info.supported && !info.fixesApplied) {
         return typeIsClean();
     }
     
