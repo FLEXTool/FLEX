@@ -19,6 +19,7 @@
 #import "FLEXLayerExplorerViewController.h"
 #import "FLEXColorExplorerViewController.h"
 #import "FLEXBundleExplorerViewController.h"
+#import "FLEXUtility.h"
 #import <objc/runtime.h>
 
 @implementation FLEXObjectExplorerFactory
@@ -83,7 +84,7 @@
         case FLEXGlobalsRowMainBundle:
             return @"📦  NSBundle.mainBundle";
         case FLEXGlobalsRowApplication:
-            return @"🚀  UIApplication.sharedApplication";
+            return @"🚀  UIApplication.flex_sharedApplication";
         case FLEXGlobalsRowMainScreen:
             return @"💻  UIScreen.mainScreen";
         case FLEXGlobalsRowCurrentDevice:
@@ -98,7 +99,7 @@
 {
     switch (row) {
         case FLEXGlobalsRowAppDelegate: {
-            id<UIApplicationDelegate> appDelegate = UIApplication.sharedApplication.delegate;
+            id<UIApplicationDelegate> appDelegate = UIApplication.flex_sharedApplication.delegate;
             return [self explorerViewControllerForObject:appDelegate];
         }
         case FLEXGlobalsRowProcessInfo:
@@ -108,7 +109,7 @@
         case FLEXGlobalsRowMainBundle:
             return [self explorerViewControllerForObject:NSBundle.mainBundle];
         case FLEXGlobalsRowApplication:
-            return [self explorerViewControllerForObject:UIApplication.sharedApplication];
+            return [self explorerViewControllerForObject:UIApplication.flex_sharedApplication];
         case FLEXGlobalsRowMainScreen:
             return [self explorerViewControllerForObject:UIScreen.mainScreen];
         case FLEXGlobalsRowCurrentDevice:
@@ -116,7 +117,7 @@
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
         case FLEXGlobalsRowRootViewController:
-            return [self explorerViewControllerForObject:UIApplication.sharedApplication.delegate.window.rootViewController];
+            return [self explorerViewControllerForObject:UIApplication.flex_sharedApplication.delegate.window.rootViewController];
         default: return nil;
     }
 }

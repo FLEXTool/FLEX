@@ -468,3 +468,19 @@
 }
 
 @end
+
+
+@implementation UIApplication(FLEX)
+
++ (UIApplication *)flex_sharedApplication {
+  id sharedApplication = nil;
+  Class uiApplicationClass = NSClassFromString(kGULApplicationClassName);
+  if (uiApplicationClass &&
+      [uiApplicationClass respondsToSelector:(NSSelectorFromString(@"sharedApplication"))]) {
+    sharedApplication = [uiApplicationClass sharedApplication];
+  }
+  return sharedApplication;
+}
+
+
+@end

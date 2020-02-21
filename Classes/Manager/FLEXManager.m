@@ -84,7 +84,7 @@
         // isn't the active scene
         if (!self.explorerWindow.windowScene ||
             self.explorerWindow.windowScene.activationState != UISceneActivationStateForegroundActive) {
-            for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+            for (UIScene *scene in UIApplication.flex_sharedApplication.connectedScenes) {
                 // Look for an active UIWindowScene
                 if (scene.activationState == UISceneActivationStateForegroundActive &&
                     [scene isKindOfClass:[UIWindowScene class]]) {
@@ -351,7 +351,7 @@
 
 - (UIScrollView *)firstScrollView
 {
-    NSMutableArray<UIView *> *views = [UIApplication.sharedApplication.keyWindow.subviews mutableCopy];
+    NSMutableArray<UIView *> *views = [UIApplication.flex_sharedApplication.keyWindow.subviews mutableCopy];
     UIScrollView *scrollView = nil;
     while (views.count > 0) {
         UIView *view = views.firstObject;
@@ -380,7 +380,7 @@
 
 - (UIViewController *)topViewController
 {
-    UIViewController *topViewController = [[UIApplication.sharedApplication keyWindow] rootViewController];
+    UIViewController *topViewController = [[UIApplication.flex_sharedApplication keyWindow] rootViewController];
     while ([topViewController presentedViewController]) {
         topViewController = [topViewController presentedViewController];
     }

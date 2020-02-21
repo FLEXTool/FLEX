@@ -480,7 +480,7 @@
 - (void)forwardAction:(SEL)action withSender:(id)sender
 {
     id target = [self.nextResponder targetForAction:action withSender:sender];
-    [UIApplication.sharedApplication sendAction:action to:target from:self forEvent:nil];
+    [UIApplication.flex_sharedApplication sendAction:action to:target from:self forEvent:nil];
 }
 
 - (void)fileBrowserRename:(UIMenuController *)sender

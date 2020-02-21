@@ -125,7 +125,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (UIViewController *)viewControllerForRotationAndOrientation
 {
-    UIWindow *window = self.previousKeyWindow ?: [UIApplication.sharedApplication keyWindow];
+    UIWindow *window = self.previousKeyWindow ?: [UIApplication.flex_sharedApplication keyWindow];
     UIViewController *viewController = window.rootViewController;
     // Obfuscating selector _viewControllerForSupportedInterfaceOrientations
     NSString *viewControllerSelectorString = [@[@"_vie", @"wContro", @"llerFor", @"Supported", @"Interface", @"Orientations"] componentsJoinedByString:@""];
@@ -392,7 +392,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (UIWindow *)statusWindow
 {
     NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
-    return [UIApplication.sharedApplication valueForKey:statusBarString];
+    return [UIApplication.flex_sharedApplication valueForKey:statusBarString];
 }
 
 - (void)moveButtonTapped:(FLEXToolbarItem *)sender
@@ -589,7 +589,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 {
     // Select in the window that would handle the touch, but don't just use the result of hitTest:withEvent: so we can still select views with interaction disabled.
     // Default to the the application's key window if none of the windows want the touch.
-    UIWindow *windowForSelection = [UIApplication.sharedApplication keyWindow];
+    UIWindow *windowForSelection = [UIApplication.flex_sharedApplication keyWindow];
     for (UIWindow *window in [FLEXUtility allWindows].reverseObjectEnumerator) {
         // Ignore the explorer's own window.
         if (window != self.view.window) {
@@ -786,7 +786,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)makeKeyAndPresentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion
 {
     // Save the current key window so we can restore it following dismissal.
-    self.previousKeyWindow = UIApplication.sharedApplication.keyWindow;
+    self.previousKeyWindow = UIApplication.flex_sharedApplication.keyWindow;
 
     // Make our window key to correctly handle input.
     [self.view.window makeKeyWindow];
@@ -795,7 +795,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // the UITextEffectsWindow has a lower level than the FLEX window by default
     // until a text field is activated, bringing it above the FLEX window.
     if (@available(iOS 13, *)) {
-        for (UIWindow *window in UIApplication.sharedApplication.windows) {
+        for (UIWindow *window in UIApplication.flex_sharedApplication.windows) {
             if ([window isKindOfClass:NSClassFromString(@"UITextEffectsWindow")]) {
                 if (window.windowLevel <= self.view.window.windowLevel) {
                     window.windowLevel = self.view.window.windowLevel + 1;
@@ -885,7 +885,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self toggleToolWithViewControllerProvider:^UIViewController *{
         FLEXGlobalsTableViewController *globalsViewController = [FLEXGlobalsTableViewController new];
         globalsViewController.delegate = self;
-        [FLEXGlobalsTableViewController setApplicationWindow:[UIApplication.sharedApplication keyWindow]];
+        [FLEXGlobalsTableViewController setApplicationWindow:[UIApplication.flex_sharedApplication keyWindow]];
         return [[UINavigationController alloc] initWithRootViewController:globalsViewController];
     } completion:nil];
 }

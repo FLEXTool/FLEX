@@ -25,6 +25,8 @@
     stringWithFormat:@"%@ %@", @(count), (count == 1 ? singular : plural) \
 ]
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FLEXUtility : NSObject
 
 + (UIColor *)consistentRandomColorForObject:(id)object;
@@ -67,3 +69,14 @@
 + (void)replaceImplementationOfSelector:(SEL)selector withSelector:(SEL)swizzledSelector forClass:(Class)cls withMethodDescription:(struct objc_method_description)methodDescription implementationBlock:(id)implementationBlock undefinedBlock:(id)undefinedBlock;
 
 @end
+
+    
+static NSString * const kGULApplicationClassName = @"UIApplication";
+
+@interface UIApplication(FLEX)
+    
++ (UIApplication *)flex_sharedApplication;
+    
+@end
+
+NS_ASSUME_NONNULL_END

@@ -239,7 +239,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
         isKeyDown = [event _isKeyDown];
     }
     
-    BOOL interactionEnabled = ![UIApplication.sharedApplication isIgnoringInteractionEvents];
+    BOOL interactionEnabled = ![UIApplication.flex_sharedApplication isIgnoringInteractionEvents];
     BOOL hasFirstResponder = NO;
     if (isKeyDown && modifiedInput.length > 0 && interactionEnabled) {
         UIResponder *firstResponder = nil;
