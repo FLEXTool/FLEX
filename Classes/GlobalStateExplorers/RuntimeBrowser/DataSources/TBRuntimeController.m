@@ -76,8 +76,12 @@ static TBRuntimeController *controller = nil;
 }
 
 + (NSString *)shortBundleNameForClass:(NSString *)name {
-    NSString *imagePath = @(class_getImageName(NSClassFromString(name)));
-    return [[TBRuntime runtime] shortNameForImageName:imagePath];
+    const char *imageName = class_getImageName(NSClassFromString(name));
+    if (!imageName) {
+        return @"(unspecified)";
+    }
+    
+    return [[TBRuntime runtime] shortNameForImageName:@(imageName)];
 }
 
 + (NSString *)imagePathWithShortName:(NSString *)suffix {

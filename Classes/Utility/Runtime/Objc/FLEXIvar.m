@@ -67,7 +67,7 @@
 }
 
 - (void)examine {
-    _name         = @(ivar_getName(self.objc_ivar));
+    _name         = @(ivar_getName(self.objc_ivar) ?: "(nil)");
     _offset       = ivar_getOffset(self.objc_ivar);
     _typeEncoding = @(ivar_getTypeEncoding(self.objc_ivar) ?: "");
     

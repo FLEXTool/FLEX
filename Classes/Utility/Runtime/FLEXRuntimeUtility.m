@@ -623,7 +623,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 #pragma mark - Metadata Helpers
 
 + (NSDictionary<NSString *, NSString *> *)attributesForProperty:(objc_property_t)property {
-    NSString *attributes = @(property_getAttributes(property));
+    NSString *attributes = @(property_getAttributes(property) ?: "");
     // Thanks to MAObjcRuntime for inspiration here.
     NSArray<NSString *> *attributePairs = [attributes componentsSeparatedByString:@","];
     NSMutableDictionary<NSString *, NSString *> *attributesDictionary = [NSMutableDictionary new];

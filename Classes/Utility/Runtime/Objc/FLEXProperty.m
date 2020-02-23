@@ -59,7 +59,7 @@
     if (self) {
         _objc_property = property;
         _attributes    = [FLEXPropertyAttributes attributesForProperty:property];
-        _name          = @(property_getName(property));
+        _name          = @(property_getName(property) ?: "(nil)");
         _cls           = cls;
         
         if (!_attributes) [NSException raise:NSInternalInconsistencyException format:@"Error retrieving property attributes"];

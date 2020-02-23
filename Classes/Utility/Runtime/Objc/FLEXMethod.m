@@ -66,7 +66,7 @@
     if (self) {
         _objc_method = method;
         _isInstanceMethod = isInstanceMethod;
-        _signatureString = @(method_getTypeEncoding(method));
+        _signatureString = @(method_getTypeEncoding(method) ?: "?@:");
         
         NSString *cleanSig = nil;
         if ([FLEXTypeEncodingParser methodTypeEncodingSupported:_signatureString cleaned:&cleanSig]) {

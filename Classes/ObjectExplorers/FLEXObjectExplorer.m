@@ -142,7 +142,7 @@
         ]];
         [_allImageNames addObject:[FLEXStaticMetadata
             style:FLEXStaticMetadataRowStyleDefault
-            title:@"Image Name" string:@(class_getImageName(cls))
+            title:@"Image Name" string:@(class_getImageName(cls) ?: "Created at Runtime")
         ]];
     }
     
