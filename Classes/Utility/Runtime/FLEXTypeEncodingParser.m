@@ -109,6 +109,10 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
 #pragma mark Public
 
 + (BOOL)methodTypeEncodingSupported:(NSString *)typeEncoding cleaned:(NSString * __autoreleasing *)cleanedEncoding {
+    if (!typeEncoding.length) {
+        return NO;
+    }
+    
     FLEXTypeEncodingParser *parser = [[self alloc] initWithObjCTypes:typeEncoding];
     
     while (!parser.scan.isAtEnd) {

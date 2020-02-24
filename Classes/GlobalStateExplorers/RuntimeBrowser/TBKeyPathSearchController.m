@@ -19,7 +19,7 @@
 
 @interface TBKeyPathSearchController ()
 @property (nonatomic, readonly, weak) id<TBKeyPathSearchControllerDelegate> delegate;
-@property (nonatomic, readonly) NSTimer *timer;
+@property (nonatomic) NSTimer *timer;
 @property (nonatomic) NSArray<NSString*> *bundlesOrClasses;
 @property (nonatomic) TBKeyPath *keyPath;
 
@@ -29,6 +29,9 @@
 /// or (2) when the class key is a wildcard and we're searching methods in many
 /// classes at once. Each list in \c classesToMethods correspnds to a class here.
 @property (nonatomic) NSArray<NSString *> *classes;
+/// A filtered version of \c classes used when searching for a specific attribute.
+/// Classes with no matching ivars/properties/methods are not shown.
+@property (nonatomic) NSArray<NSString *> *filteredClasses;
 // We use this regardless of whether the target class is absolute, just as above
 @property (nonatomic) NSArray<NSArray<FLEXMethod *> *> *classesToMethods;
 @end
@@ -95,6 +98,7 @@
         [self didSelectAbsoluteClass:text];
     } else {
         self.classes = nil;
+        self.filteredClasses = nil;
     }
 
     [self updateTable];
@@ -102,6 +106,7 @@
 
 - (void)didSelectAbsoluteClass:(NSString *)name {
     self.classes          = [self classesOf:name];
+    self.filteredClasses  = self.classes;
     self.bundlesOrClasses = nil;
     self.classesToMethods = nil;
 }
@@ -124,11 +129,19 @@
             // Here, our class key is 'absolute'; .classes is a list of superclasses
             // and we want to show the methods for those classes specifically
             // TODO: add caching to this somehow
-            self.classesToMethods = [TBRuntimeController
+            NSMutableArray *methods = [TBRuntimeController
                 methodsForToken:self.keyPath.methodKey
                 instance:self.keyPath.instanceMethods
                 inClasses:self.classes
-            ];
+            ].mutableCopy;
+            
+            // Remove classes without results if we're searching for a method
+            TBToken *methodKey = self.keyPath.methodKey;
+            if (methodKey && !methodKey.isAny) {
+                [self setNonEmptyMethodLists:methods withClasses:self.classes.mutableCopy];
+            } else {
+                self.filteredClasses = self.classes;
+            }
         }
         else {
             TBKeyPath *keyPath = self.keyPath;
@@ -138,6 +151,7 @@
                 
                 NSMutableArray *methods = models.mutableCopy;
                 NSMutableArray *classes = [TBRuntimeController classesForKeyPath:keyPath];
+                self.classes = classes.copy;
                 [self setNonEmptyMethodLists:methods withClasses:classes];
             } else { // We're looking at bundles or classes
                 self.bundlesOrClasses = models;
@@ -152,7 +166,7 @@
     });
 }
 
-/// Assign .classes and .classesToMethods after removing empty sections
+/// Assign assign .filteredClasses and .classesToMethods after removing empty sections
 - (void)setNonEmptyMethodLists:(NSMutableArray<NSArray *> *)methods withClasses:(NSMutableArray *)classes {
     // Remove sections with no methods
     NSIndexSet *allEmpty = [methods indexesOfObjectsPassingTest:^BOOL(NSArray *list, NSUInteger idx, BOOL *stop) {
@@ -161,7 +175,7 @@
     [methods removeObjectsAtIndexes:allEmpty];
     [classes removeObjectsAtIndexes:allEmpty];
     
-    self.classes = classes;
+    self.filteredClasses = classes;
     self.classesToMethods = methods;
 }
 
@@ -201,9 +215,10 @@
     if (searchText.length) {
         if (!self.keyPath.methodKey) {
             self.classes = nil;
+            self.filteredClasses = nil;
         }
 
-        _timer = [NSTimer fireSecondsFromNow:0.15 block:^{
+        self.timer = [NSTimer fireSecondsFromNow:0.15 block:^{
             [self updateTable];
         }];
     }
@@ -236,11 +251,11 @@
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.classes.count ?: 1;
+    return self.filteredClasses.count ?: 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.classes.count ? 1 : self.bundlesOrClasses.count;
+    return self.filteredClasses.count ? 1 : self.bundlesOrClasses.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -258,7 +273,7 @@
         }
     }
     // One row per section
-    else if (self.classes.count) {
+    else if (self.filteredClasses.count) {
         NSArray<FLEXMethod *> *methods = self.classesToMethods[indexPath.section];
         NSMutableString *summary = [NSMutableString new];
         [methods enumerateObjectsUsingBlock:^(FLEXMethod *method, NSUInteger idx, BOOL *stop) {
@@ -277,7 +292,7 @@
         }];
 
         cell.accessoryType        = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text       = self.classes[indexPath.section];
+        cell.textLabel.text       = self.filteredClasses[indexPath.section];
         cell.detailTextLabel.text = summary.length ? summary : nil;
 
     }
@@ -289,7 +304,7 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (self.classes || self.keyPath.methodKey) {
+    if (self.filteredClasses || self.keyPath.methodKey) {
         return @" ";
     } else if (self.bundlesOrClasses) {
         NSInteger count = self.bundlesOrClasses.count;
@@ -304,7 +319,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (self.classes || self.keyPath.methodKey) {
+    if (self.filteredClasses || self.keyPath.methodKey) {
         if (section == 0) {
             return 55;
         }
@@ -328,8 +343,8 @@
             [self didSelectKeyPathOption:bundleSuffixOrClass];
         }
     } else {
-        if (self.classes) {
-            Class cls = NSClassFromString(self.classes[indexPath.section]);
+        if (self.filteredClasses.count) {
+            Class cls = NSClassFromString(self.filteredClasses[indexPath.section]);
             NSParameterAssert(cls);
             [self.delegate didSelectClass:cls];
         } else {
