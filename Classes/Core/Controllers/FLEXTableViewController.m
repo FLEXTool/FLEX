@@ -30,6 +30,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @property (nonatomic) BOOL didInitiallyRevealSearchBar;
 @property (nonatomic) UITableViewStyle style;
 
+@property (nonatomic) BOOL hasAppeared;
 @property (nonatomic, readonly) UIView *tableHeaderViewContainer;
 @end
 
@@ -263,8 +264,8 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.didInitiallyRevealSearchBar = YES;
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    [super willMoveToParentViewController:parent];
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    [super didMoveToParentViewController:parent];
     // Reset this since we are re-appearing under a new
     // parent view controller and need to show it again
     self.didInitiallyRevealSearchBar = NO;
