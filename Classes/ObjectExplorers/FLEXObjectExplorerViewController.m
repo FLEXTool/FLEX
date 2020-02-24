@@ -109,10 +109,10 @@
     UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleSwipeGesture:)
     ];
-    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
     UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleSwipeGesture:)
     ];
+    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
     rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
     leftSwipe.delegate = self;
     rightSwipe.delegate = self;
@@ -206,7 +206,17 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
-    return [g2 isKindOfClass:[UIPanGestureRecognizer class]] && g2 != self.navigationController.interactivePopGestureRecognizer;
+    return [g2 isKindOfClass:[UIPanGestureRecognizer class]] &&g2 != self.navigationController.interactivePopGestureRecognizer;
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UISwipeGestureRecognizer *)gesture {
+    // Don't allow swiping from the carousel
+    CGPoint location = [gesture locationInView:self.tableView];
+    if ([self.carousel hitTest:location withEvent:nil]) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (void)shareButtonPressed {
