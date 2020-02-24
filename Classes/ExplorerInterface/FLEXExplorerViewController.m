@@ -851,7 +851,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
     [UIMenuController.sharedMenuController update];
     
-    // Show the view controller.
+    // Show the view controller
     [super presentViewController:toPresent animated:animated completion:completion];
 }
 
