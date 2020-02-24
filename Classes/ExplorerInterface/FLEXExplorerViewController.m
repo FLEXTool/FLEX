@@ -449,6 +449,17 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         initWithTarget:self action:@selector(handleToolbarDetailsTapGesture:)
     ];
     [toolbar.selectedViewDescriptionContainer addGestureRecognizer:self.detailsTapGR];
+    // Swipe gestures for selecting deeper / higher views at a point
+    UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
+    ];
+    UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
+    ];
+    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+    rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:leftSwipe];
+    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:rightSwipe];
     
     // Long press gesture to present tabs manager
     [toolbar.globalsItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
@@ -586,6 +597,22 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
+- (void)handleChangeViewAtPointGesture:(UISwipeGestureRecognizer *)sender {
+    NSInteger max = self.viewsAtTapPoint.count - 1;
+    NSInteger currentIdx = [self.viewsAtTapPoint indexOfObject:self.selectedView];
+    switch (sender.direction) {
+        case UISwipeGestureRecognizerDirectionLeft:
+            self.selectedView = self.viewsAtTapPoint[MIN(max, currentIdx + 1)];
+            break;
+        case UISwipeGestureRecognizerDirectionRight:
+            self.selectedView = self.viewsAtTapPoint[MAX(0, currentIdx - 1)];
+            break;
+            
+        default:
+            break;
+    }
+}
+
 - (void)updateOutlineViewsForSelectionPoint:(CGPoint)selectionPointInWindow {
     [self removeAndClearOutlineViews];
     
@@ -646,8 +673,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Select in the window that would handle the touch, but don't just use the result of
     // hitTest:withEvent: so we can still select views with interaction disabled.
     // Default to the the application's key window if none of the windows want the touch.
-    UIWindow *windowForSelection = [UIApplication.sharedApplication keyWindow];
-    for (UIWindow *window in [FLEXUtility allWindows].reverseObjectEnumerator) {
+    UIWindow *windowForSelection = UIApplication.sharedApplication.keyWindow;
+    for (UIWindow *window in FLEXUtility.allWindows.reverseObjectEnumerator) {
         // Ignore the explorer's own window.
         if (window != self.view.window) {
             if ([window hitTest:tapPointInWindow withEvent:nil]) {

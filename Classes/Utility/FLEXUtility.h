@@ -83,6 +83,8 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
 /// The key window of the app, if it is not a \c FLEXWindow.
 /// If it is, then \c FLEXWindow.previousKeyWindow is returned.
 @property (nonatomic, readonly, class) UIWindow *appKeyWindow;
+/// @return the result of +[UIWindow allWindowsIncludingInternalWindows:onlyVisibleWindows:]
+@property (nonatomic, readonly, class) NSArray<UIWindow *> *allWindows;
 /// The first active \c UIWindowScene of the app.
 @property (nonatomic, readonly, class) UIWindowScene *activeScene API_AVAILABLE(ios(13.0));
 /// @return top-most view controller of the given window
@@ -110,8 +112,6 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
-
-+ (NSArray<UIWindow *> *)allWindows;
 
 // Swizzling utilities
 
