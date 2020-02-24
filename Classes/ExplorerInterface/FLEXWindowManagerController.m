@@ -163,6 +163,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    
     UIWindow *window = nil;
     NSString *subtitle = nil;
     
@@ -184,11 +187,10 @@
             }
     }
     
-    cell.accessoryType = UITableViewCellAccessoryDetailButton;
-    cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     cell.textLabel.text = window.description;
     cell.detailTextLabel.text = [NSString
-        stringWithFormat:@"Level: %@ — Root: %@", @(window.windowLevel), window.rootViewController
+        stringWithFormat:@"Level: %@ — Root: %@",
+        @((NSInteger)window.windowLevel), window.rootViewController.class
     ];
     
     return cell;
