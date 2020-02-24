@@ -20,35 +20,35 @@
 @interface FLEXNavigationController ()
 @property (nonatomic, readonly) BOOL toolbarWasHidden;
 @property (nonatomic) BOOL waitingToAddTab;
+@property (nonatomic) UISwipeGestureRecognizer *navigationBarSwipeGesture;
 @end
 
 @implementation FLEXNavigationController
 
 + (instancetype)withRootViewController:(UIViewController *)rootVC {
-    FLEXNavigationController *instance =  [[self alloc] initWithRootViewController:rootVC];
-    
-    // Give root view controllers a Done button
-    UIBarButtonItem *done = [[UIBarButtonItem alloc]
-        initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-        target:instance
-        action:@selector(dismissAnimated)
-    ];
-    
-    // Prepend the button if other buttons exist already
-    NSArray *existingItems = rootVC.navigationItem.rightBarButtonItems;
-    if (existingItems.count) {
-        rootVC.navigationItem.rightBarButtonItems = [@[done] arrayByAddingObjectsFromArray:existingItems];
-    } else {
-        rootVC.navigationItem.rightBarButtonItem = done;
-    }
-    
-    return instance;
+    return [[self alloc] initWithRootViewController:rootVC];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.waitingToAddTab = YES;
+    
+    // Add gesture to dismiss if not presented with a sheet style
+    if (@available(iOS 13, *)) {
+        switch (self.modalPresentationStyle) {
+            case UIModalPresentationAutomatic:
+            case UIModalPresentationPageSheet:
+            case UIModalPresentationFormSheet:
+                break;
+                
+            default:
+                [self addNavigationBarSwipeGesture];
+                break;
+        }
+    } else {
+        [self addNavigationBarSwipeGesture];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -65,11 +65,62 @@
     }
 }
 
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    [super pushViewController:viewController animated:animated];
+    [self addNavigationBarItemsToViewController:viewController.navigationItem];
+}
+
 - (void)dismissAnimated {
     // Tabs are only closed if the done button is pressed; this
     // allows you to leave a tab open by dragging down to dismiss
     [FLEXTabList.sharedList closeTab:self];
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)addNavigationBarItemsToViewController:(UINavigationItem *)navigationItem {
+    // Check if a done item already exists
+    for (UIBarButtonItem *item in navigationItem.rightBarButtonItems) {
+        if (item.style == UIBarButtonItemStyleDone) {
+            return;
+        }
+    }
+    
+    // Give root view controllers a Done button if it does not already have one
+    UIBarButtonItem *done = [[UIBarButtonItem alloc]
+        initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+        target:self
+        action:@selector(dismissAnimated)
+    ];
+    
+    // Prepend the button if other buttons exist already
+    NSArray *existingItems = navigationItem.rightBarButtonItems;
+    if (existingItems.count) {
+        navigationItem.rightBarButtonItems = [@[done] arrayByAddingObjectsFromArray:existingItems];
+    } else {
+        navigationItem.rightBarButtonItem = done;
+    }
+}
+
+- (void)addNavigationBarSwipeGesture {
+    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleNavigationBarSwipe:)
+    ];
+    swipe.direction = UISwipeGestureRecognizerDirectionDown;
+    swipe.delegate = self;
+    self.navigationBarSwipeGesture = swipe;
+    [self.navigationBar addGestureRecognizer:swipe];
+}
+
+- (void)handleNavigationBarSwipe:(UISwipeGestureRecognizer *)sender {
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
+    if (g1 == self.navigationBarSwipeGesture && g2 == self.barHideOnSwipeGestureRecognizer) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (void)_gestureRecognizedInteractiveHide:(UIPanGestureRecognizer *)sender {
