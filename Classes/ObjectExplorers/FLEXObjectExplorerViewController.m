@@ -94,14 +94,6 @@
     // to avoid the KVO prefix for observed objects
     self.title = [[self.object class] description];
 
-    // Refresh
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl
-        addTarget:self
-        action:@selector(refreshControlDidRefresh:)
-        forControlEvents:UIControlEventValueChanged
-    ];
-
     // Search
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
@@ -130,11 +122,6 @@
 
 
 #pragma mark - Private
-
-- (void)refreshControlDidRefresh:(id)sender {
-    [self reloadData];
-    [self.refreshControl endRefreshing];
-}
 
 - (NSArray<FLEXTableViewSection *> *)makeSections {
     FLEXObjectExplorer *explorer = self.explorer;
