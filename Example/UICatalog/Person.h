@@ -17,4 +17,6 @@
 @property (nonatomic, readonly) CGFloat height;
 @property (nonatomic, readonly) NSNumber *numberOfKids;
 
+@property (nonatomic) NSDecimalNumber *netWorth;
+
 @end

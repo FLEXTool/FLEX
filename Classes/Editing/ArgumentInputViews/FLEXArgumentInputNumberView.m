@@ -17,6 +17,7 @@
         self.inputTextView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
         self.targetSize = FLEXArgumentInputViewSizeSmall;
     }
+    
     return self;
 }
 
@@ -33,24 +34,29 @@
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
     
-    static NSArray<NSString *> *primitiveTypes = nil;
+    static NSArray<NSString *> *supportedTypes = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        primitiveTypes = @[@(@encode(char)),
-                           @(@encode(int)),
-                           @(@encode(short)),
-                           @(@encode(long)),
-                           @(@encode(long long)),
-                           @(@encode(unsigned char)),
-                           @(@encode(unsigned int)),
-                           @(@encode(unsigned short)),
-                           @(@encode(unsigned long)),
-                           @(@encode(unsigned long long)),
-                           @(@encode(float)),
-                           @(@encode(double)),
-                           @(@encode(long double))];
+        supportedTypes = @[
+            @FLEXEncodeClass(NSNumber),
+            @FLEXEncodeClass(NSDecimalNumber),
+            @(@encode(char)),
+            @(@encode(int)),
+            @(@encode(short)),
+            @(@encode(long)),
+            @(@encode(long long)),
+            @(@encode(unsigned char)),
+            @(@encode(unsigned int)),
+            @(@encode(unsigned short)),
+            @(@encode(unsigned long)),
+            @(@encode(unsigned long long)),
+            @(@encode(float)),
+            @(@encode(double)),
+            @(@encode(long double))
+        ];
     });
-    return type && [primitiveTypes containsObject:@(type)];
+    
+    return type && [supportedTypes containsObject:@(type)];
 }
 
 @end

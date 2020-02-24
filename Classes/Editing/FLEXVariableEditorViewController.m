@@ -93,7 +93,7 @@
     self.fieldEditorView.targetDescription = [NSString stringWithFormat:@"%@ %p", [self.target class], self.target];
     [self.scrollView addSubview:self.fieldEditorView];
     
-    _setterButton = [[UIBarButtonItem alloc]
+    _actionButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Set"
         style:UIBarButtonItemStyleDone
         target:self
@@ -101,7 +101,7 @@
     ];
     
     self.navigationController.toolbarHidden = NO;
-    self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, self.setterButton];
+    self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, self.actionButton];
 }
 
 - (void)viewWillLayoutSubviews {

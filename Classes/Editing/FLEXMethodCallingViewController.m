@@ -41,7 +41,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.setterButton.title = @"Call";
+    self.actionButton.title = @"Call";
 
     // Configure field editor view
     self.fieldEditorView.argumentInputViews = [self argumentInputViews];

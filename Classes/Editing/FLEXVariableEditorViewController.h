@@ -24,7 +24,7 @@
 @property (nonatomic, readonly) id target;
 @property (nonatomic, readonly) FLEXFieldEditorView *fieldEditorView;
 /// Subclasses can change the button title via the button's \c title property
-@property (nonatomic, readonly) UIBarButtonItem *setterButton;
+@property (nonatomic, readonly) UIBarButtonItem *actionButton;
 
 - (void)actionButtonPressed:(id)sender;
 

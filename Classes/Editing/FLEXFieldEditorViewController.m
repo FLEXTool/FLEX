@@ -63,7 +63,7 @@
         action:@selector(getterButtonPressed:)
     ];
     self.toolbarItems = @[
-        UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.setterButton
+        UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.actionButton
     ];
 
     // Configure input view
@@ -75,11 +75,11 @@
 
     // Don't show a "set" button for switches; we mutate when the switch is flipped
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
-        self.setterButton.enabled = NO;
-        self.setterButton.title = @"Flip the switch to call the setter";
+        self.actionButton.enabled = NO;
+        self.actionButton.title = @"Flip the switch to call the setter";
         // Put getter button before setter button 
         self.toolbarItems = @[
-            UIBarButtonItem.flex_flexibleSpace, self.setterButton, self.getterButton
+            UIBarButtonItem.flex_flexibleSpace, self.actionButton, self.getterButton
         ];
     }
 }

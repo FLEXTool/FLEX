@@ -16,6 +16,7 @@
     bob->_age = 50;
     bob->_height = 5.8;
     bob->_numberOfKids = @3;
+    bob->_netWorth = [NSDecimalNumber decimalNumberWithString:@"12345.67"];
     return bob;
 }
 
@@ -24,18 +25,24 @@
     [coder encodeInteger:self.age forKey:@"age"];
     [coder encodeDouble:self.height forKey:@"height"];
     [coder encodeObject:self.numberOfKids forKey:@"numberOfKids"];
+    [coder encodeObject:self.netWorth forKey:@"netWorth"];
 }
 
 - (nullable instancetype)initWithCoder:(nonnull NSCoder *)coder {
     self->_name = [coder decodeObjectForKey:@"name"];
     self->_age = [coder decodeIntegerForKey:@"age"];
     self->_height = [coder decodeDoubleForKey:@"height"];
-    self->_numberOfKids= [coder decodeObjectForKey:@"numberOfKids"];
+    self->_numberOfKids = [coder decodeObjectForKey:@"numberOfKids"];
+    self->_netWorth = [coder decodeObjectForKey:@"netWorth"];
     return self;
 }
 
+- (void)setNetWorth:(NSDecimalNumber *)netWorth {
+    _netWorth = netWorth;
+}
+
 - (NSUInteger)hash {
-    return self.name.hash ^ @(self.age).hash ^ self.numberOfKids.hash;
+    return self.name.hash ^ @(self.age).hash ^ self.numberOfKids.hash ^ self.netWorth.hash;
 }
 
 - (BOOL)isEqual:(id)object {

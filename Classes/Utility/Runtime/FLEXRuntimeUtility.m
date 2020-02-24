@@ -519,51 +519,61 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
     NSNumberFormatter *formatter = [NSNumberFormatter new];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber *number = [formatter numberFromString:inputString];
-
-    // Make sure we box the number with the correct type encoding so it can be properly unboxed later via getValue:
-    NSValue *value = nil;
-    if (strcmp(typeEncoding, @encode(char)) == 0) {
-        char primitiveValue = [number charValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(int)) == 0) {
-        int primitiveValue = [number intValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(short)) == 0) {
-        short primitiveValue = [number shortValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(long)) == 0) {
-        long primitiveValue = [number longValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(long long)) == 0) {
-        long long primitiveValue = [number longLongValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(unsigned char)) == 0) {
-        unsigned char primitiveValue = [number unsignedCharValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(unsigned int)) == 0) {
-        unsigned int primitiveValue = [number unsignedIntValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(unsigned short)) == 0) {
-        unsigned short primitiveValue = [number unsignedShortValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(unsigned long)) == 0) {
-        unsigned long primitiveValue = [number unsignedLongValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(unsigned long long)) == 0) {
-        unsigned long long primitiveValue = [number unsignedLongValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(float)) == 0) {
-        float primitiveValue = [number floatValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(double)) == 0) {
-        double primitiveValue = [number doubleValue];
-        value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
-    } else if (strcmp(typeEncoding, @encode(long double)) == 0) {
-      long double primitiveValue = [number doubleValue];
-      value = [NSValue value:&primitiveValue withObjCType:typeEncoding];
+    
+    // Is the type encoding longer than one character?
+    if (strlen(typeEncoding) > 1) {
+        NSString *type = @(typeEncoding);
+        
+        // Is it NSDecimalNumber or NSNumber?
+        if ([type isEqualToString:@FLEXEncodeClass(NSDecimalNumber)]) {
+            return [NSDecimalNumber decimalNumberWithString:inputString];
+        } else if ([type isEqualToString:@FLEXEncodeClass(NSNumber)]) {
+            return number;
+        }
+        
+        return nil;
     }
-
-    return value;
+    
+    // Type encoding is one character, switch on the type
+    FLEXTypeEncoding type = typeEncoding[0];
+    uint8_t value[32];
+    void *bufferStart = &value[0];
+    
+    // Make sure we box the number with the correct type encoding
+    // so it can be properly unboxed later via getValue:
+    switch (type) {
+        case FLEXTypeEncodingChar:
+            *(char *)bufferStart = number.charValue; break;
+        case FLEXTypeEncodingInt:
+            *(int *)bufferStart = number.intValue; break;
+        case FLEXTypeEncodingShort:
+            *(short *)bufferStart = number.shortValue; break;
+        case FLEXTypeEncodingLong:
+            *(long *)bufferStart = number.longValue; break;
+        case FLEXTypeEncodingLongLong:
+            *(long long *)bufferStart = number.longLongValue; break;
+        case FLEXTypeEncodingUnsignedChar:
+            *(unsigned char *)bufferStart = number.unsignedCharValue; break;
+        case FLEXTypeEncodingUnsignedInt:
+            *(unsigned int *)bufferStart = number.unsignedIntValue; break;
+        case FLEXTypeEncodingUnsignedShort:
+            *(unsigned short *)bufferStart = number.unsignedShortValue; break;
+        case FLEXTypeEncodingUnsignedLong:
+            *(unsigned long *)bufferStart = number.unsignedLongValue; break;
+        case FLEXTypeEncodingUnsignedLongLong:
+            *(unsigned long long *)bufferStart = number.unsignedLongLongValue; break;
+        case FLEXTypeEncodingFloat:
+            *(float *)bufferStart = number.floatValue; break;
+        case FLEXTypeEncodingDouble:
+            *(double *)bufferStart = number.doubleValue; break;
+            
+        case FLEXTypeEncodingLongDouble:
+            // NSNumber does not support long double
+        default:
+            return nil;
+    }
+    
+    return [NSValue value:value withObjCType:typeEncoding];
 }
 
 + (void)enumerateTypesInStructEncoding:(const char *)structEncoding
@@ -826,10 +836,13 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 #undef CASE
 
     NSValue *value = nil;
-    @try {
-        value = [NSValue valueWithBytes:pointer objCType:type];
-    } @catch (NSException *exception) {
-        // Certain type encodings are not supported by valueWithBytes:objCType:. Just fail silently if an exception is thrown.
+    if (FLEXGetSizeAndAlignment(type, nil, nil)) {
+        @try {
+            value = [NSValue valueWithBytes:pointer objCType:type];
+        } @catch (NSException *exception) {
+            // Certain type encodings are not supported by valueWithBytes:objCType:.
+            // Just fail silently if an exception is thrown.
+        }
     }
 
     return value;
