@@ -13,6 +13,7 @@
 #import "FLEXTableListViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
+#import <mach-o/loader.h>
 
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end
@@ -234,16 +235,38 @@
             } @catch (NSException *e) { }
             
             // Try to decode other things instead
-            object = object
-                        ?: [NSPropertyListSerialization propertyListWithData:fileData
-                                                                     options:0
-                                                                      format:NULL
-                                                                       error:NULL]
-                        ?: [NSDictionary dictionaryWithContentsOfFile:fullPath]
-                        ?: [NSArray arrayWithContentsOfFile:fullPath];
+            object = object ?: [NSPropertyListSerialization
+                propertyListWithData:fileData
+                options:0
+                format:NULL
+                error:NULL
+            ] ?: [NSDictionary dictionaryWithContentsOfFile:fullPath]
+              ?: [NSArray arrayWithContentsOfFile:fullPath];
             
             if (object) {
                 drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
+            } else {
+                // Is it possibly a mach-O file?
+                if (fileData.length > sizeof(struct mach_header_64)) {
+                    struct mach_header_64 header;
+                    [fileData getBytes:&header length:sizeof(struct mach_header_64)];
+                    
+                    // Does it have the mach header magic number?
+                    if (header.magic == MH_MAGIC_64) {
+                        // See if we can get some classes out of it...
+                        unsigned int count = 0;
+                        const char **classList = objc_copyClassNamesForImage(
+                            fullPath.UTF8String, &count
+                        );
+                        
+                        if (count > 0) {
+                            NSArray<NSString *> *classNames = [NSArray flex_forEachUpTo:count map:^id(NSUInteger i) {
+                                return objc_getClass(classList[i]);
+                            }];
+                            drillInViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:classNames];
+                        }
+                    }
+                }
             }
         }
 
