@@ -40,6 +40,10 @@
     return _options == TBWildcardOptionsAny;
 }
 
+- (BOOL)isEmpty {
+    return self.isAny && self.string.length == 0;
+}
+
 - (NSString *)description {
     if (tb_description) {
         return tb_description;

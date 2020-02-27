@@ -56,6 +56,18 @@
     }];
 }
 
+- (instancetype)flex_subArrayUpto:(NSUInteger)maxLength {
+    if (maxLength > self.count) {
+        if (FLEXArrayClassIsMutable(self)) {
+            return self.mutableCopy;
+        }
+        
+        return self;
+    }
+    
+    return [self subarrayWithRange:NSMakeRange(0, maxLength)];
+}
+
 + (__kindof NSArray *)flex_forEachUpTo:(NSUInteger)bound map:(id(^)(NSUInteger))block {
     NSMutableArray *array = [NSMutableArray new];
     for (NSUInteger i = 0; i < bound; i++) {

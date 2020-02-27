@@ -8,6 +8,8 @@
 #import "FLEXUtility.h"
 
 #define kToolbarHeight 44
+#define kButtonSpacing 6
+#define kScrollViewHorizontalMargins 3
 
 @interface TBKeyboardToolbar ()
 
@@ -59,98 +61,134 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    // Layout top border
     CGRect frame = _toolbarView.bounds;
-    frame.size.height = 0.5f;
-    
+    frame.size.height = 0.5;
     _topBorder.frame = frame;
+    
+    // Scroll view //
+    
+    frame = CGRectMake(0, 0, self.bounds.size.width, kToolbarHeight);
+    CGSize contentSize = self.scrollView.contentSize;
+    CGFloat scrollViewWidth = frame.size.width;
+    
+    // If our content size is smaller than the scroll view,
+    // we want to right-align all the content
+    if (contentSize.width < scrollViewWidth) {
+        // Compute the content size to scroll view size difference
+        UIEdgeInsets insets = self.scrollView.contentInset;
+        CGFloat margin = insets.left + insets.right;
+        CGFloat difference = scrollViewWidth - contentSize.width - margin;
+        // Update the content size to be the full width of the scroll view
+        contentSize.width += difference;
+        self.scrollView.contentSize = contentSize;
+        
+        // Offset every button by the difference above
+        // so that every button appears right-aligned
+        for (UIView *button in self.scrollView.subviews) {
+            CGRect f = button.frame;
+            f.origin.x += difference;
+            button.frame = f;
+        }
+    }
 }
 
 - (UIView *)inputAccessoryView {
     _topBorder       = [CALayer layer];
-    _topBorder.frame = CGRectMake(0.0f, 0.0f, self.bounds.size.width, 0.5f);
+    _topBorder.frame = CGRectMake(0.0, 0.0, self.bounds.size.width, 0.5);
+    [self makeScrollView];
     
-    UIColor *borderColor = nil;
-    UIBlurEffectStyle style;
+    UIColor *borderColor = nil, *backgroundColor = nil;
+    UIColor *lightColor = [UIColor colorWithHue:216.0/360.0 saturation:0.05 brightness:0.85 alpha:1];
+    UIColor *darkColor = [UIColor colorWithHue:220.0/360.0 saturation:0.07 brightness:0.16 alpha:1];
     
     switch (_appearance) {
         case UIKeyboardAppearanceDefault:
             #if FLEX_AT_LEAST_IOS13_SDK
             if (@available(iOS 13, *)) {
-                borderColor = [UIColor systemBackgroundColor];
+                borderColor = UIColor.systemBackgroundColor;
                 
                 if (self.usingDarkMode) {
-                    style = UIBlurEffectStyleSystemThickMaterial;
-                    self.backgroundColor = nil;
+                    // style = UIBlurEffectStyleSystemThickMaterial;
+                    backgroundColor = darkColor;
                 } else {
-                    style = UIBlurEffectStyleSystemUltraThinMaterialLight;
-                    self.backgroundColor = [UIColor colorWithWhite:0.700 alpha:0.750];
+                    // style = UIBlurEffectStyleSystemUltraThinMaterialLight;
+                    backgroundColor = lightColor;
                 }
                 break;
             }
             #endif
         case UIKeyboardAppearanceLight: {
-            style = UIBlurEffectStyleLight;
-            borderColor = [UIColor clearColor];
+            borderColor = UIColor.clearColor;
+            backgroundColor = lightColor;
             break;
         }
         case UIKeyboardAppearanceDark: {
-            style = UIBlurEffectStyleDark;
             borderColor = [UIColor colorWithWhite:0.100 alpha:1.000];
+            backgroundColor = darkColor;
             break;
         }
     }
     
-    UIVisualEffect *blur = [UIBlurEffect effectWithStyle:style];
-    self.blurView = [[UIVisualEffectView alloc] initWithEffect:blur];
-    [self.blurView.contentView.layer addSublayer:self.topBorder];
-    [self.blurView.contentView addSubview:[self fakeToolbar]];
-    
-    self.toolbarView = self.blurView;
+    self.toolbarView = [UIView new];
+    [self.toolbarView addSubview:self.scrollView];
+    [self.toolbarView.layer addSublayer:self.topBorder];
     self.toolbarView.frame = CGRectMake(0, 0, self.bounds.size.width, kToolbarHeight);
     self.toolbarView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
+    self.backgroundColor = backgroundColor;
     self.topBorder.backgroundColor = borderColor.CGColor;
     
     return self.toolbarView;
 }
 
-- (UIScrollView *)fakeToolbar {
-    _scrollView                  = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, kToolbarHeight)];
-    _scrollView.backgroundColor  = [UIColor clearColor];
-    _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    _scrollView.contentInset     = UIEdgeInsetsMake(8.0f, 0.0f, 4.0f, 6.0f);
-    _scrollView.showsHorizontalScrollIndicator = NO;
+- (UIScrollView *)makeScrollView {
+    UIScrollView *scrollView = [UIScrollView new];
+    scrollView.backgroundColor  = UIColor.clearColor;
+    scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    scrollView.contentInset     = UIEdgeInsetsMake(
+        8.f, kScrollViewHorizontalMargins, 4.f, kScrollViewHorizontalMargins
+    );
+    scrollView.showsHorizontalScrollIndicator = NO;
     
+    self.scrollView = scrollView;
     [self addButtons];
     
-    return _scrollView;
+    return scrollView;
 }
 
 - (void)addButtons {
-    NSUInteger spacing = 6;
-    NSUInteger originX = spacing;
+    NSUInteger originX = 0.f;
     
     CGRect originFrame;
-    CGFloat top    = _scrollView.contentInset.top;
-    CGFloat bottom = _scrollView.contentInset.bottom;
+    CGFloat top    = self.scrollView.contentInset.top;
+    CGFloat bottom = self.scrollView.contentInset.bottom;
     
-    for (TBToolbarButton *button in _buttons) {
+    for (TBToolbarButton *button in self.buttons) {
         button.appearance = self.appearance;
         
         originFrame             = button.frame;
         originFrame.origin.x    = originX;
-        originFrame.origin.y    = 0;
+        originFrame.origin.y    = 0.f;
         originFrame.size.height = kToolbarHeight - (top + bottom);
         button.frame            = originFrame;
         
-        [_scrollView addSubview:button];
+        [self.scrollView addSubview:button];
         
-        originX += button.bounds.size.width + spacing;
+        // originX tracks the origin of the next button to be added,
+        // so at the end of each iteration of this loop we increment
+        // it by the size of the last button with some padding
+        originX += button.bounds.size.width + kButtonSpacing;
     }
     
-    CGSize contentSize = _scrollView.contentSize;
-    contentSize.width  = originX - spacing;
-    _scrollView.contentSize = contentSize;
+    // Update contentSize,
+    // set to the max x value of the last button added
+    CGSize contentSize = self.scrollView.contentSize;
+    contentSize.width  = originX - kButtonSpacing;
+    self.scrollView.contentSize = contentSize;
+    
+    // Needed to potentially right-align buttons
+    [self setNeedsLayout];
 }
 
 - (void)setButtons:(NSArray<TBToolbarButton *> *)buttons {
@@ -158,44 +196,6 @@
     _buttons = buttons.copy;
     
     [self addButtons];
-}
-
-- (void)setButtons:(NSArray<TBToolbarButton *> *)buttons animated:(BOOL)animated {
-    if (!animated) {
-        self.buttons = buttons;
-        return;
-    }
-    
-    NSMutableSet *buttonstoRemove = [NSMutableSet setWithArray:_buttons];
-    [buttonstoRemove minusSet:[NSSet setWithArray:buttons]];
-
-    NSMutableSet *buttonsToAdd = [NSMutableSet setWithArray:buttons];
-    [buttonsToAdd minusSet:[NSSet setWithArray:_buttons]];
-
-    if (!buttonstoRemove.count && !buttonsToAdd.count) {
-        return;
-    }
-
-    // New buttons are invisible at first
-    for (TBToolbarButton *button in buttons) {
-        button.alpha = 0;
-    }
-
-    [UIView animateWithDuration:0.1 animations:^{
-        // Fade out old buttons
-        for (TBToolbarButton *button in _buttons) {
-            button.alpha = 0;
-        }
-    } completion:^(BOOL finished) {
-        // Remove old, add new
-        self.buttons = buttons;
-        [UIView animateWithDuration:0.1 animations:^{
-            // Fade in new buttons
-            for (TBToolbarButton *button in buttons) {
-                button.alpha = 1;
-            }
-        }];
-    }];
 }
 
 - (BOOL)useSystemAppearance {

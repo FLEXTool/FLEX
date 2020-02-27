@@ -14,8 +14,6 @@
 
 + (instancetype)toolbarWithButtons:(NSArray *)buttons;
 
-- (void)setButtons:(NSArray<TBToolbarButton*> *)buttons animated:(BOOL)animated;
-
 @property (nonatomic) NSArray<TBToolbarButton*> *buttons;
 @property (nonatomic) UIKeyboardAppearance appearance;
 

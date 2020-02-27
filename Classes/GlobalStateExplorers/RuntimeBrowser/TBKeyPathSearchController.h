@@ -29,6 +29,9 @@
 
 @property (nonatomic) TBKeyPathToolbar *toolbar;
 
+/// Suggestions for the toolbar
+@property (nonatomic, readonly) NSArray<NSString *> *suggestions;
+
 - (void)didSelectKeyPathOption:(NSString *)text;
 - (void)didPressButton:(NSString *)text insertInto:(UISearchBar *)searchBar;
 

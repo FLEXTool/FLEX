@@ -19,6 +19,11 @@
 - (instancetype)flex_filtered:(BOOL(^)(T obj, NSUInteger idx))filterFunc;
 - (void)flex_forEach:(void(^)(T obj, NSUInteger idx))block;
 
+/// Unlike \c subArrayWithRange: this will not throw an exception if \c maxLength
+/// is greater than the size of the array. If the array has one element and
+/// \c maxLength is greater than 1, you get an array with 1 element back.
+- (instancetype)flex_subArrayUpto:(NSUInteger)maxLength;
+
 + (instancetype)flex_forEachUpTo:(NSUInteger)bound map:(T(^)(NSUInteger))block;
 
 - (instancetype)sortedUsingSelector:(SEL)selector;

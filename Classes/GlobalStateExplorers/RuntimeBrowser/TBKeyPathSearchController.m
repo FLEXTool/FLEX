@@ -20,8 +20,14 @@
 @interface TBKeyPathSearchController ()
 @property (nonatomic, readonly, weak) id<TBKeyPathSearchControllerDelegate> delegate;
 @property (nonatomic) NSTimer *timer;
-@property (nonatomic) NSArray<NSString*> *bundlesOrClasses;
+/// If \c keyPath is \c nil or if it only has a \c bundleKey, this is
+/// a list of bundle key path components like \c UICatalog or \c UIKit\.framework
+/// If \c keyPath has more than a \c bundleKey then it is a list of class names.
+@property (nonatomic) NSArray<NSString *> *bundlesOrClasses;
+/// nil when search bar is empty
 @property (nonatomic) TBKeyPath *keyPath;
+
+@property (nonatomic, readonly) NSString *emptySuggestion;
 
 /// Used to track which methods go with which classes. This is used in
 /// two scenarios: (1) when the target class is absolute and has classes,
@@ -43,13 +49,15 @@
     TBKeyPathSearchController *controller = [self new];
     controller->_bundlesOrClasses = [TBRuntimeController allBundleNames];
     controller->_delegate         = delegate;
+    controller->_emptySuggestion  = NSBundle.mainBundle.executablePath.lastPathComponent;
 
     NSParameterAssert(delegate.tableView);
     NSParameterAssert(delegate.searchController);
 
     delegate.tableView.delegate   = controller;
     delegate.tableView.dataSource = controller;
-    delegate.searchController.searchBar.delegate = controller;    
+    delegate.searchController.searchBar.delegate = controller;   
+    delegate.searchController.searchBar.keyboardType = UIKeyboardTypeWebSearch;
 
     return controller;
 }
@@ -112,12 +120,39 @@
 }
 
 - (void)didPressButton:(NSString *)text insertInto:(UISearchBar *)searchBar {
+    [self.toolbar setKeyPath:self.keyPath suggestions:nil];
+    
     // Available since at least iOS 9, still present in iOS 13
     UITextField *field = [searchBar valueForKey:@"_searchBarTextField"];
 
     if ([self searchBar:searchBar shouldChangeTextInRange:field.selectedRange replacementText:text]) {
         [field replaceRange:field.selectedTextRange withText:text];
     }
+}
+
+- (NSArray<NSString *> *)suggestions {
+    if (self.bundlesOrClasses) {
+        if (self.classes) {
+            if (self.classesToMethods) {
+                // We have selected a class and are searching metadata
+                return nil;
+            }
+            
+            // We are currently searching classes
+            return [self.filteredClasses flex_subArrayUpto:10];
+        }
+        
+        if (!self.keyPath) {
+            // Search bar is empty
+            return @[self.emptySuggestion];
+        }
+        
+        // We are currently searching bundles
+        return [self.bundlesOrClasses flex_subArrayUpto:10];
+    }
+    
+    // We have nothing at all to even search
+    return nil;
 }
 
 #pragma mark - Filtering + UISearchBarDelegate
@@ -161,9 +196,15 @@
         
         // Finally, reload the table on the main thread
         dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateToolbarButtons];
             [self.delegate.tableView reloadData];
         });
     });
+}
+
+- (void)updateToolbarButtons {
+    // Update toolbar buttons
+    [self.toolbar setKeyPath:self.keyPath suggestions:self.suggestions];
 }
 
 /// Assign assign .filteredClasses and .classesToMethods after removing empty sections
@@ -208,9 +249,6 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     [_timer invalidate];
 
-    // Update toolbar buttons
-    [self.toolbar setKeyPath:self.keyPath animated:YES];
-
     // Schedule update timer
     if (searchText.length) {
         if (!self.keyPath.methodKey) {
@@ -228,6 +266,7 @@
         _classesToMethods = nil;
         _classes = nil;
         _keyPath = nil;
+        [self updateToolbarButtons];
         [self.delegate.tableView reloadData];
     }
 }

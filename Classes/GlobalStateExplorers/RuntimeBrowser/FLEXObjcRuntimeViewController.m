@@ -48,9 +48,13 @@
     UISearchBar *searchBar = self.searchController.searchBar;
     TBKeyPathSearchController *keyPathController = [TBKeyPathSearchController delegate:self];
     _keyPathController = keyPathController;
-    _keyPathController.toolbar = [TBKeyPathToolbar toolbarWithHandler:^(NSString *buttonTitle) {
-        [keyPathController didPressButton:buttonTitle insertInto:searchBar];
-    }];
+    _keyPathController.toolbar = [TBKeyPathToolbar toolbarWithHandler:^(NSString *text, BOOL suggestion) {
+        if (suggestion) {
+            [keyPathController didSelectKeyPathOption:text];
+        } else {
+            [keyPathController didPressButton:text insertInto:searchBar];
+        }
+    } suggestions:keyPathController.suggestions];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

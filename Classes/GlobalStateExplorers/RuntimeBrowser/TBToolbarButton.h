@@ -6,7 +6,7 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^TBToolbarAction)(NSString *buttonTitle);
+typedef void (^TBToolbarAction)(NSString *buttonTitle, BOOL isSuggestion);
 
 
 @interface TBToolbarButton : UIButton
@@ -25,3 +25,5 @@ typedef void (^TBToolbarAction)(NSString *buttonTitle);
 - (void)addEventHandler:(TBToolbarAction)eventHandler forControlEvents:(UIControlEvents)controlEvents;
 
 @end
+
+@interface TBToolbarSuggestedButton : TBToolbarButton @end

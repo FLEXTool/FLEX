@@ -16,16 +16,19 @@
 
 @implementation TBKeyPathToolbar
 
-+ (instancetype)toolbarWithHandler:(TBToolbarAction)tapHandler {
-    TBKeyPath *emptyKeyPath = [TBKeyPathTokenizer tokenizeString:@""];
-    NSArray *buttons = [self buttonsForKeyPath:emptyKeyPath handler:tapHandler];
++ (instancetype)toolbarWithHandler:(TBToolbarAction)tapHandler suggestions:(NSArray<NSString *> *)suggestions {
+    NSArray *buttons = [self
+        buttonsForKeyPath:TBKeyPath.empty suggestions:suggestions handler:tapHandler
+    ];
 
     TBKeyPathToolbar *me = [self toolbarWithButtons:buttons];
     me.tapHandler = tapHandler;
     return me;
 }
 
-+ (NSArray<TBToolbarButton*> *)buttonsForKeyPath:(TBKeyPath *)keyPath handler:(TBToolbarAction)handler {
++ (NSArray<TBToolbarButton*> *)buttonsForKeyPath:(TBKeyPath *)keyPath
+                                     suggestions:(NSArray<NSString *> *)suggestions
+                                         handler:(TBToolbarAction)handler {
     NSMutableArray *buttons = [NSMutableArray array];
     TBToken *lastKey = nil;
     BOOL lastKeyIsMethod = NO;
@@ -47,9 +50,8 @@
                 }
                 [buttons addObject:[TBToolbarButton buttonWithTitle:@"*" action:handler]];
             } else {
-                [buttons addObject:[TBToolbarButton buttonWithTitle:@"*." action:handler]];
                 [buttons addObject:[TBToolbarButton buttonWithTitle:@"*" action:handler]];
-                [buttons addObject:[TBToolbarButton buttonWithTitle:@"." action:handler]];
+                [buttons addObject:[TBToolbarButton buttonWithTitle:@"*." action:handler]];
             }
             break;
 
@@ -63,25 +65,29 @@
                     if (lastKey.string.length) {
                         [buttons addObject:[TBToolbarButton buttonWithTitle:@"*." action:handler]];
                     }
-                    [buttons addObject:[TBToolbarButton buttonWithTitle:@"." action:handler]];
                 }
             }
 
             else if (lastKey.options & TBWildcardOptionsSuffix) {
                 if (!lastKeyIsMethod) {
+                    [buttons addObject:[TBToolbarButton buttonWithTitle:@"*" action:handler]];
                     [buttons addObject:[TBToolbarButton buttonWithTitle:@"*." action:handler]];
-                    [buttons addObject:[TBToolbarButton buttonWithTitle:@"." action:handler]];
                 }
             }
         }
+    }
+    
+    for (NSString *suggestion in suggestions) {
+        [buttons addObject:[TBToolbarSuggestedButton buttonWithTitle:suggestion action:handler]];
     }
 
     return buttons;
 }
 
-- (void)setKeyPath:(TBKeyPath *)keyPath animated:(BOOL)animated {
-    NSArray *buttons = [TBKeyPathToolbar buttonsForKeyPath:keyPath handler:self.tapHandler];
-    [self setButtons:buttons animated:animated];
+- (void)setKeyPath:(TBKeyPath *)keyPath suggestions:(NSArray<NSString *> *)suggestions {
+    self.buttons = [self.class
+        buttonsForKeyPath:keyPath suggestions:suggestions handler:self.tapHandler
+    ];
 }
 
 @end

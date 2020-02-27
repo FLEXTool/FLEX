@@ -12,8 +12,8 @@
 
 @interface TBKeyPathToolbar : TBKeyboardToolbar
 
-+ (instancetype)toolbarWithHandler:(TBToolbarAction)tapHandler;
++ (instancetype)toolbarWithHandler:(TBToolbarAction)tapHandler suggestions:(NSArray<NSString *> *)suggestions;
 
-- (void)setKeyPath:(TBKeyPath *)keyPath animated:(BOOL)animated;
+- (void)setKeyPath:(TBKeyPath *)keyPath suggestions:(NSArray<NSString *> *)suggestions;
 
 @end
