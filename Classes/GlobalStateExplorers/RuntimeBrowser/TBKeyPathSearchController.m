@@ -42,7 +42,6 @@
 @property (nonatomic) NSArray<NSArray<FLEXMethod *> *> *classesToMethods;
 @end
 
-#warning TODO there's no code to handle refreshing the table after manually appending ".bar" to "Bundle"
 @implementation TBKeyPathSearchController
 
 + (instancetype)delegate:(id<TBKeyPathSearchControllerDelegate>)delegate {
@@ -56,8 +55,14 @@
 
     delegate.tableView.delegate   = controller;
     delegate.tableView.dataSource = controller;
-    delegate.searchController.searchBar.delegate = controller;   
-    delegate.searchController.searchBar.keyboardType = UIKeyboardTypeWebSearch;
+    
+    UISearchBar *searchBar = delegate.searchController.searchBar;
+    searchBar.delegate = controller;   
+    searchBar.keyboardType = UIKeyboardTypeWebSearch;
+    searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+    if (@available(iOS 11, *)) {
+        searchBar.smartInsertDeleteType = UITextSmartInsertDeleteTypeNo;
+    }
 
     return controller;
 }
