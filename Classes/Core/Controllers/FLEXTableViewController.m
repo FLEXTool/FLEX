@@ -32,6 +32,8 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 @property (nonatomic) BOOL hasAppeared;
 @property (nonatomic, readonly) UIView *tableHeaderViewContainer;
+
+@property (nonatomic, readonly) BOOL manuallyDeactivateSearchOnDisappear;
 @end
 
 @implementation FLEXTableViewController
@@ -60,6 +62,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         _searchBarDebounceInterval = kFLEXDebounceFast;
         _showSearchBarInitially = YES;
         _style = style;
+        _manuallyDeactivateSearchOnDisappear = ({
+            NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 11;
+        });
     }
     
     return self;
@@ -264,6 +269,14 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.didInitiallyRevealSearchBar = YES;
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    if (self.manuallyDeactivateSearchOnDisappear && self.searchController.isActive) {
+        self.searchController.active = NO;
+    }
+}
+
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     [super didMoveToParentViewController:parent];
     // Reset this since we are re-appearing under a new
@@ -318,7 +331,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         self.carousel.frame = FLEXRectSetHeight(
             self.carousel.frame, self.carousel.intrinsicContentSize.height
         );
-        self.carousel.frame = FLEXRectSetY(self.carousel.frame, 0);
     }
     
     self.tableView.tableHeaderView = self.tableView.tableHeaderView;

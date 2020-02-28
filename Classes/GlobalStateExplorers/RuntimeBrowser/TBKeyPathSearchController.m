@@ -294,12 +294,8 @@
 
 #pragma mark UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.filteredClasses.count ?: 1;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.filteredClasses.count ? 1 : self.bundlesOrClasses.count;
+    return self.filteredClasses.count ?: self.bundlesOrClasses.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -318,7 +314,7 @@
     }
     // One row per section
     else if (self.filteredClasses.count) {
-        NSArray<FLEXMethod *> *methods = self.classesToMethods[indexPath.section];
+        NSArray<FLEXMethod *> *methods = self.classesToMethods[indexPath.row];
         NSMutableString *summary = [NSMutableString new];
         [methods enumerateObjectsUsingBlock:^(FLEXMethod *method, NSUInteger idx, BOOL *stop) {
             NSString *format = nil;
@@ -336,8 +332,10 @@
         }];
 
         cell.accessoryType        = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text       = self.filteredClasses[indexPath.section];
-        cell.detailTextLabel.text = summary.length ? summary : nil;
+        cell.textLabel.text       = self.filteredClasses[indexPath.row];
+        if (@available(iOS 10, *)) {
+            cell.detailTextLabel.text = summary.length ? summary : nil;
+        }
 
     }
     else {

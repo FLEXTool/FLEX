@@ -25,8 +25,10 @@
         _selectionIndicatorStripe = [UIView new];
 
         self.titleLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
-        self.titleLabel.adjustsFontForContentSizeCategory = YES;
         self.selectionIndicatorStripe.backgroundColor = self.tintColor;
+        if (@available(iOS 10, *)) {
+            self.titleLabel.adjustsFontForContentSizeCategory = YES;
+        }
 
         [self.contentView addSubview:self.titleLabel];
         [self.contentView addSubview:self.selectionIndicatorStripe];

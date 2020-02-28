@@ -28,6 +28,7 @@
 @property (nonatomic, copy) NSArray<FLEXGlobalsSection *> *sections;
 /// Every section in the table view, regardless of whether or not a section is empty.
 @property (nonatomic, readonly) NSArray<FLEXGlobalsSection *> *allSections;
+@property (nonatomic, readonly) BOOL manuallyDeselectOnAppear;
 @end
 
 @implementation FLEXGlobalsViewController
@@ -169,17 +170,23 @@
         NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
         FLEXGlobalsSection *custom = [FLEXGlobalsSection
             title:title
-            rows:[FLEXManager sharedManager].userGlobalEntries
+            rows:FLEXManager.sharedManager.userGlobalEntries
         ];
         _allSections = [_allSections arrayByAddingObject:custom];
     }
     self.sections = self.allSections;
+    
+    _manuallyDeselectOnAppear = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 10;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
     [self disableToolbar];
+    
+    if (self.manuallyDeselectOnAppear) {
+        [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+    }
 }
 
 

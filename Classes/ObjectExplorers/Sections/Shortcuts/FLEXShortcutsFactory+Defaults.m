@@ -73,6 +73,9 @@
     }
 
     ivars = @[@"_targetActions", @"_gestureRecognizers"];
+    
+    // Property was added in iOS 10 but we want it on iOS 9 too
+    FLEXRuntimeUtilityTryAddObjectProperty(9, allTargets, UIControl.class, NSArray, PropertyKey(ReadOnly));
 
     // UIControl
     self.append.ivars(ivars).methods(methods).properties(@[
@@ -163,6 +166,9 @@
 @implementation FLEXShortcutsFactory (Activities)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
+    // Property was added in iOS 10 but we want it on iOS 9 too
+    FLEXRuntimeUtilityTryAddNonatomicProperty(9, item, UIActivityItemProvider.class, id, PropertyKey(ReadOnly));
+    
     self.append.properties(@[
         @"item", @"placeholderItem", @"activityType"
     ]).forClass(UIActivityItemProvider.class);
