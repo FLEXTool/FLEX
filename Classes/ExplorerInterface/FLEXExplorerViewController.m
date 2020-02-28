@@ -24,7 +24,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
-@interface FLEXExplorerViewController () <FLEXHierarchyTableViewControllerDelegate, FLEXGlobalsTableViewControllerDelegate>
+@interface FLEXExplorerViewController () <FLEXHierarchyTableViewControllerDelegate, FLEXGlobalsTableViewControllerDelegate, UIAdaptivePresentationControllerDelegate>
 
 @property (nonatomic) FLEXExplorerToolbar *explorerToolbar;
 
@@ -808,6 +808,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
     [[self statusWindow] setWindowLevel:self.view.window.windowLevel + 1.0];
     
+    viewController.presentationController.delegate = self;
+    
     // Show the view controller.
     [self presentViewController:viewController animated:animated completion:completion];
 }
@@ -935,5 +937,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         self.selectedView.frame = frame;
     }
 }
+
+#pragma mark - UIAdaptivePresentationControllerDelegate
+/// # handle the callback for a `presentationController` dismissed with a swipe 
+- (void)presentationControllerDidDismiss:(UIPresentationController *)presentationController {
+    [self resignKeyAndDismissViewControllerAnimated:YES completion:nil];
+}
+
 
 @end
