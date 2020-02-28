@@ -41,30 +41,6 @@ FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell = @"kFLEXCodeFontCell";
 #endif
 }
 
-- (CGFloat)_heightForHeaderInSection:(NSInteger)section {
-    CGFloat height = [super _heightForHeaderInSection:section];
-    if (section == 0) {
-        NSString *title = [self _titleForHeaderInSection:section];
-        if (self.tableHeaderView) {
-            if (!@available(iOS 13, *)) {
-                return height - self.tableHeaderView.frame.size.height + 8;
-            }
-            // On iOS 13, returning an empty title for the table view
-            // messes with the height of the table view later on.
-            // We return a space to work around this.
-            else if ([title isEqualToString:@" "]) {
-                return height - self.tableHeaderView.frame.size.height + 5;
-            }
-        } else {
-            if (@available(iOS 13, *) && [title isEqualToString:@" "]) {
-                return 5;
-            }
-        }
-    }
-
-    return height;
-}
-
 #pragma mark - Initialization
 
 + (id)groupedTableView {

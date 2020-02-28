@@ -137,7 +137,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     } else if (self.showsCarousel) {
         return self.carousel.selectedIndex;
     } else {
-        return NSNotFound;
+        return 0;
     }
 }
 
@@ -318,10 +318,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         self.carousel.frame = FLEXRectSetHeight(
             self.carousel.frame, self.carousel.intrinsicContentSize.height
         );
+        self.carousel.frame = FLEXRectSetY(self.carousel.frame, 0);
     }
     
     self.tableView.tableHeaderView = self.tableView.tableHeaderView;
-    [self.tableView layoutIfNeeded];
 }
 
 - (void)addCarousel:(FLEXScopeCarousel *)carousel {
