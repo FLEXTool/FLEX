@@ -130,7 +130,7 @@
 }
 
 + (UIColor *)hairlineColor {
-    return FLEXDynamicColor(systemGrayColor, grayColor);
+    return FLEXDynamicColor(systemGray3Color, colorWithWhite:0.75 alpha:1);
 }
 
 + (UIColor *)destructiveColor {

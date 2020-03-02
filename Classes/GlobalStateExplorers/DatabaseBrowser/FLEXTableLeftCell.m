@@ -16,13 +16,13 @@
     
     if (!cell) {
         cell = [[FLEXTableLeftCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
-        UILabel *textLabel               = [[UILabel alloc] initWithFrame:CGRectZero];
+        UILabel *textLabel               = [UILabel new];
         textLabel.textAlignment          = NSTextAlignmentCenter;
         textLabel.font                   = [UIFont systemFontOfSize:13.0];
-        textLabel.backgroundColor = UIColor.clearColor;
         [cell.contentView addSubview:textLabel];
         cell.titlelabel = textLabel;
     }
+    
     return cell;
 }
 

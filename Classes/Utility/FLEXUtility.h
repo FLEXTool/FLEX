@@ -25,6 +25,11 @@ NS_INLINE CGFloat FLEXFloor(CGFloat x) {
     return floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale;
 }
 
+/// Returns the given number of points in pixels
+NS_INLINE CGFloat FLEXPointsToPixels(CGFloat points) {
+    return points / UIScreen.mainScreen.scale;
+}
+
 /// Creates a CGRect with all members rounded down to the nearest "point" coordinate
 NS_INLINE CGRect FLEXRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {
     return CGRectMake(FLEXFloor(x), FLEXFloor(y), FLEXFloor(width), FLEXFloor(height));

@@ -85,6 +85,25 @@
     return array;
 }
 
+
++ (instancetype)flex_mapped:(id<NSFastEnumeration>)collection block:(id(^)(id obj, NSUInteger idx))mapFunc {
+    NSMutableArray *array = [NSMutableArray new];
+    NSInteger idx = 0;
+    for (id obj in collection) {
+        id ret = mapFunc(obj, idx++);
+        if (ret) {
+            [array addObject:ret];
+        }
+    }
+
+    // For performance reasons, don't copy large arrays
+    if (array.count < 2048) {
+        return array.copy;
+    }
+
+    return array;
+}
+
 - (instancetype)sortedUsingSelector:(SEL)selector {
     if (FLEXArrayClassIsMutable(self)) {
         NSMutableArray *me = (id)self;

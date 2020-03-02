@@ -14,11 +14,25 @@ typedef NS_ENUM(NSUInteger, FLEXTableColumnHeaderSortType) {
     FLEXTableColumnHeaderSortTypeDesc,
 };
 
+NS_INLINE FLEXTableColumnHeaderSortType FLEXNextTableColumnHeaderSortType(
+    FLEXTableColumnHeaderSortType current) {
+    switch (current) {
+        case FLEXTableColumnHeaderSortTypeAsc:
+            return FLEXTableColumnHeaderSortTypeDesc;
+        case FLEXTableColumnHeaderSortTypeNone:
+        case FLEXTableColumnHeaderSortTypeDesc:
+            return FLEXTableColumnHeaderSortTypeAsc;
+    }
+    
+    return FLEXTableColumnHeaderSortTypeNone;
+}
+
 @interface FLEXTableColumnHeader : UIView
 
-@property (nonatomic) UILabel *label;
+@property (nonatomic) NSInteger index;
+@property (nonatomic, readonly) UILabel *titleLabel;
 
-- (void)changeSortStatusWithType:(FLEXTableColumnHeaderSortType)type;
+@property (nonatomic) FLEXTableColumnHeaderSortType sortType;
 
 @end
 

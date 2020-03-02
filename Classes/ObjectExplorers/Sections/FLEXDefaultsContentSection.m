@@ -75,7 +75,7 @@
 
     // Generate new dictionary from whitelisted keys
     NSArray *values = [self.defaults.dictionaryRepresentation
-        objectsForKeys:self.keys notFoundMarker:[NSNull null]
+        objectsForKeys:self.keys notFoundMarker:NSNull.null
     ];
     return [NSDictionary dictionaryWithObjects:values forKeys:self.keys];
 }

@@ -14,8 +14,8 @@
 @protocol FLEXMultiColumnTableViewDelegate <NSObject>
 
 @required
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapLabelWithText:(NSString *)text;
-- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didTapHeaderWithText:(NSString *)text sortType:(FLEXTableColumnHeaderSortType)sortType;
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didSelectRow:(NSInteger)row;
+- (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView didSelectHeaderForColumn:(NSInteger)column sortType:(FLEXTableColumnHeaderSortType)sortType;
 
 @end
 
@@ -25,10 +25,9 @@
 
 - (NSInteger)numberOfColumnsInTableView:(FLEXMultiColumnTableView *)tableView;
 - (NSInteger)numberOfRowsInTableView:(FLEXMultiColumnTableView *)tableView;
-- (NSString *)columnNameInColumn:(NSInteger)column;
-- (NSString *)rowNameInRow:(NSInteger)row;
-- (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row;
-- (NSArray *)contentAtRow:(NSInteger)row;
+- (NSString *)columnTitle:(NSInteger)column;
+- (NSString *)rowTitle:(NSInteger)row;
+- (NSArray<NSString *> *)contentForRow:(NSInteger)row;
 
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView widthForContentCellInColumn:(NSInteger)column;
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView heightForContentCellInRow:(NSInteger)row;
@@ -40,8 +39,8 @@
 
 @interface FLEXMultiColumnTableView : UIView
 
-@property (nonatomic, weak) id<FLEXMultiColumnTableViewDataSource>dataSource;
-@property (nonatomic, weak) id<FLEXMultiColumnTableViewDelegate>delegate;
+@property (nonatomic, weak) id<FLEXMultiColumnTableViewDataSource> dataSource;
+@property (nonatomic, weak) id<FLEXMultiColumnTableViewDelegate> delegate;
 
 - (void)reloadData;
 

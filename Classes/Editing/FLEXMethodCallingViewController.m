@@ -78,7 +78,7 @@
     NSMutableArray *arguments = [NSMutableArray array];
     for (FLEXArgumentInputView *inputView in self.fieldEditorView.argumentInputViews) {
         // Use NSNull as a nil placeholder; it will be interpreted as nil
-        [arguments addObject:inputView.inputValue ?: [NSNull null]];
+        [arguments addObject:inputView.inputValue ?: NSNull.null];
     }
 
     // Call method

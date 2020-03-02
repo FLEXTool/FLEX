@@ -7,17 +7,15 @@
 //
 
 #import "FLEXTableListViewController.h"
-
 #import "FLEXDatabaseManager.h"
 #import "FLEXSQLiteDatabaseManager.h"
 #import "FLEXRealmDatabaseManager.h"
-
 #import "FLEXTableContentViewController.h"
+#import "NSArray+Functional.h"
 
-@interface FLEXTableListViewController () {
-    id<FLEXDatabaseManager> _dbm;
-    NSString *_databasePath;
-}
+@interface FLEXTableListViewController ()
+@property (nonatomic, readonly) id<FLEXDatabaseManager> dbm;
+@property (nonatomic, readonly) NSString *path;
 
 @property (nonatomic) NSArray<NSString *> *tables;
 @property (nonatomic) NSArray<NSString *> *filteredTables;
@@ -32,9 +30,9 @@
 - (instancetype)initWithPath:(NSString *)path {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        _databasePath = [path copy];
-        _dbm = [self databaseManagerForFileAtPath:_databasePath];
-        [_dbm open];
+        _path = [path copy];
+        _dbm = [self databaseManagerForFileAtPath:self.path];
+        [self.dbm open];
         [self getAllTables];
     }
     return self;
@@ -45,26 +43,19 @@
     
     NSArray<NSString *> *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
     if ([sqliteExtensions indexOfObject:pathExtension] != NSNotFound) {
-        return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
+        return [FLEXSQLiteDatabaseManager managerForDatabase:path];
     }
     
     NSArray<NSString *> *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
     if (realmExtensions != nil && [realmExtensions indexOfObject:pathExtension] != NSNotFound) {
-        return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
+        return [FLEXRealmDatabaseManager managerForDatabase:path];
     }
     
     return nil;
 }
 
 - (void)getAllTables {
-    NSArray<NSDictionary<NSString *, id> *> *resultArray = [_dbm queryAllTables];
-    NSMutableArray<NSString *> *array = [NSMutableArray array];
-    for (NSDictionary<NSString *, id> *dict in resultArray) {
-        NSString *columnName = (NSString *)dict[@"name"] ?: @"";
-        [array addObject:columnName];
-    }
-    self.tables = array;
-    self.filteredTables = array;
+    self.tables = self.filteredTables = [self.dbm queryAllTables];;
 }
 
 - (void)viewDidLoad {
@@ -76,12 +67,14 @@
 #pragma mark - Search bar
 
 - (void)updateSearchResults:(NSString *)searchText {
-    if (searchText.length > 0) {
-        NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", searchText];
-        self.filteredTables = [self.tables filteredArrayUsingPredicate:searchPredicate];
+    if (searchText.length) {
+        self.filteredTables = [self.tables flex_filtered:^BOOL(NSString *tableName, NSUInteger idx) {
+            return [tableName containsString:searchText];
+        }];
     } else {
         self.filteredTables = self.tables;
     }
+    
     [self.tableView reloadData];
 }
 
@@ -106,8 +99,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXTableContentViewController *contentViewController = [FLEXTableContentViewController new];
     
-    contentViewController.contentsArray = [_dbm queryAllDataWithTableName:self.filteredTables[indexPath.row]];
-    contentViewController.columnsArray = [_dbm queryAllColumnsWithTableName:self.filteredTables[indexPath.row]];
+    contentViewController.rows = [self.dbm queryAllDataWithTableName:self.filteredTables[indexPath.row]];
+    contentViewController.columns = [self.dbm queryAllColumnsWithTableName:self.filteredTables[indexPath.row]];
     
     contentViewController.title = self.filteredTables[indexPath.row];
     [self.navigationController pushViewController:contentViewController animated:YES];

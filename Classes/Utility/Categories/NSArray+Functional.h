@@ -24,7 +24,8 @@
 /// \c maxLength is greater than 1, you get an array with 1 element back.
 - (instancetype)flex_subArrayUpto:(NSUInteger)maxLength;
 
-+ (instancetype)flex_forEachUpTo:(NSUInteger)bound map:(T(^)(NSUInteger))block;
++ (instancetype)flex_forEachUpTo:(NSUInteger)bound map:(T(^)(NSUInteger i))block;
++ (instancetype)flex_mapped:(id<NSFastEnumeration>)collection block:(id(^)(T obj, NSUInteger idx))mapFunc;
 
 - (instancetype)sortedUsingSelector:(SEL)selector;
 

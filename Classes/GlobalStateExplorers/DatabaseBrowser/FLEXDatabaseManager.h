@@ -16,11 +16,12 @@
 @protocol FLEXDatabaseManager <NSObject>
 
 @required
-- (instancetype)initWithPath:(NSString*)path;
++ (instancetype)managerForDatabase:(NSString *)path;
 
 - (BOOL)open;
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables;
+/// @return a list of all table names
+- (NSArray<NSString *> *)queryAllTables;
 - (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName;
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName;
+- (NSArray<NSArray *> *)queryAllDataWithTableName:(NSString *)tableName;
 
 @end
