@@ -54,39 +54,4 @@
     return self.detailTextLabel;
 }
 
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    return [self._tableView _canPerformAction:action forCell:self sender:sender];
-}
-
-/// We use this to allow our table view to allow its delegate
-/// to handle any action it chooses to support, without
-/// explicitly implementing the method ourselves.
-///
-/// Alternative considered: override respondsToSelector
-/// to return NO. I decided against this for simplicity's
-/// sake. I see this as "fixing" a poorly designed API.
-/// That approach would require lots of boilerplate to
-/// make the menu appear above this cell.
-- (void)forwardInvocation:(NSInvocation *)invocation {
-    // Must be unretained to avoid over-releasing
-    __unsafe_unretained id sender;
-    [invocation getArgument:&sender atIndex:2];
-    SEL action = invocation.selector;
-
-    // [self._tableView _performAction:action forCell:[self retain] sender:[sender retain]];
-    invocation.selector = @selector(_performAction:forCell:sender:);
-    [invocation setArgument:&action atIndex:2];
-    [invocation setArgument:(void *)&self atIndex:3];
-    [invocation setArgument:(void *)&sender atIndex:4];
-    [invocation invokeWithTarget:self._tableView];
-}
-
-- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
-    if ([self canPerformAction:selector withSender:nil]) {
-        return [self._tableView methodSignatureForSelector:@selector(_performAction:forCell:sender:)];
-    }
-
-    return [super methodSignatureForSelector:selector];
-}
-
 @end

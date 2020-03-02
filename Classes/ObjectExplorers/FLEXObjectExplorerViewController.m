@@ -386,17 +386,16 @@
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     // Only the description section has "actions"
     if (self.sections[indexPath.section] == self.descriptionSection) {
-        return action == @selector(copy:) || action == @selector(copyObjectAddress:);
+        return action == @selector(copy:);
     }
 
     return NO;
 }
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    [self performSelector:action withObject:indexPath];
-#pragma clang diagnostic pop
+    if (action == @selector(copy:)) {
+        UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {

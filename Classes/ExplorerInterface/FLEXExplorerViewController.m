@@ -842,14 +842,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     
     // Back up and replace the UIMenuController items
+    // Edit: no longer replacing the items, but still backing them
+    // up in case we start replacing them again in the future
     self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-    // Initialize custom menu items for explorer screen
-    UIMenuItem *copyObjectAddress = [[UIMenuItem alloc]
-        initWithTitle:@"Copy Address"
-        action:NSSelectorFromString(@"copyObjectAddress:")
-    ];
-    UIMenuController.sharedMenuController.menuItems = @[copyObjectAddress];
-    [UIMenuController.sharedMenuController update];
     
     // Show the view controller
     [super presentViewController:toPresent animated:animated completion:completion];
