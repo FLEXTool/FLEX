@@ -34,6 +34,8 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// Simply calls into initWithStyle:
 - (id)init;
 
+@property (nonatomic) FLEXTableView *tableView;
+
 /// Defaults to NO.
 ///
 /// Setting this to YES will initialize the carousel and the view.
@@ -107,7 +109,28 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// in the background before updating the UI back on the main queue.
 - (void)onBackgroundQueue:(NSArray *(^)(void))backgroundBlock thenOnMainQueue:(void(^)(NSArray *))mainBlock;
 
+/// Adds up to 3 additional items to the toolbar in right-to-left order.
+///
+/// That is, the first item in the given array will be the rightmost item behind
+/// any existing toolbar items. By default, buttons for bookmarks and tabs are shown.
+///
+/// If you wish to have more control over how the buttons are arranged or which
+/// buttons are displayed, you can access the properties for the pre-existing
+/// toolbar items directly and manually set \c self.toolbarItems by overriding
+/// the \c setupToolbarItems method below.
+- (void)addToolbarItems:(NSArray<UIBarButtonItem *> *)items;
+
+/// Subclasses may override. You should not need to call this method directly.
+- (void)setupToolbarItems;
+
+@property (nonatomic, readonly) UIBarButtonItem *shareToolbarItem;
+@property (nonatomic, readonly) UIBarButtonItem *bookmarksToolbarItem;
+@property (nonatomic, readonly) UIBarButtonItem *openTabsToolbarItem;
+
 /// Whether or not to display the "share" icon in the middle of the toolbar. NO by default.
+///
+/// Turning this on after you have added custom toolbar items will
+/// push off the leftmost toolbar item and shift the others leftward.
 @property (nonatomic) BOOL showsShareToolbarItem;
 /// Called when the share button is pressed.
 /// Default implementation does nothign. Subclasses may override.

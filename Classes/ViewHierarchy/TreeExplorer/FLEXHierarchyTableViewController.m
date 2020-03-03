@@ -91,8 +91,15 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     [self updateDisplayedViews];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [self disableToolbar];
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     [self trySelectCellForSelectedView];
 }
 

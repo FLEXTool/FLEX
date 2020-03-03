@@ -30,10 +30,6 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 @implementation FLEXLiveObjectsTableViewController
 
-- (void)loadView {
-    self.tableView = [FLEXTableView flexDefaultTableView];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 

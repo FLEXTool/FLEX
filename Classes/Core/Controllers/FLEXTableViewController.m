@@ -34,9 +34,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @property (nonatomic, readonly) UIView *tableHeaderViewContainer;
 
 @property (nonatomic, readonly) BOOL manuallyDeactivateSearchOnDisappear;
+
+@property (nonatomic) UIBarButtonItem *middleToolbarItem;
+@property (nonatomic) UIBarButtonItem *middleLeftToolbarItem;
+@property (nonatomic) UIBarButtonItem *leftmostToolbarItem;
 @end
 
 @implementation FLEXTableViewController
+@dynamic tableView;
+@synthesize showsShareToolbarItem = _showsShareToolbarItem;
 @synthesize tableHeaderViewContainer = _tableHeaderViewContainer;
 @synthesize automaticallyShowsSearchBarCancelButton = _automaticallyShowsSearchBarCancelButton;
 
@@ -211,6 +217,18 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.view = [FLEXTableView style:self.style];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
+    
+    _shareToolbarItem = FLEXBarButtonItemSystem(Action, self, @selector(shareButtonPressed));
+    _bookmarksToolbarItem = FLEXBarButtonItemSystem(Bookmarks, self, @selector(showBookmarks));
+    _openTabsToolbarItem = FLEXBarButtonItemSystem(Organize, self, @selector(showTabSwitcher));
+    
+    for (UIBarButtonItem *item in @[_shareToolbarItem, _bookmarksToolbarItem, _openTabsToolbarItem]) {
+        item.width = 60;
+    }
+    
+    self.leftmostToolbarItem = UIBarButtonItem.flex_fixedSpace;
+    self.middleLeftToolbarItem = UIBarButtonItem.flex_fixedSpace;
+    self.middleToolbarItem = UIBarButtonItem.flex_fixedSpace;
 }
 
 - (void)viewDidLoad {
@@ -285,34 +303,85 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 }
 
 
-#pragma mark - Private
+#pragma mark - Toolbar, Public
 
 - (void)setupToolbarItems {
-    UIBarButtonItem *emptySpaceOrShare = UIBarButtonItem.flex_fixedSpace;
-    if (self.showsShareToolbarItem) {
-        emptySpaceOrShare = FLEXBarButtonItemSystem(Action, self, @selector(shareButtonPressed));
+    if (!self.isViewLoaded) {
+        return;
     }
     
     self.toolbarItems = @[
-        UIBarButtonItem.flex_fixedSpace,
+        self.leftmostToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
-        UIBarButtonItem.flex_fixedSpace,
+        self.middleLeftToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
-        UIBarButtonItem.flex_fixedSpace,
+        self.middleLeftToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
-        emptySpaceOrShare,
+        self.bookmarksToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
-        FLEXBarButtonItemSystem(Bookmarks, self, @selector(showBookmarks)),
-        UIBarButtonItem.flex_flexibleSpace,
-        FLEXBarButtonItemSystem(Organize, self, @selector(showTabSwitcher)),
+        self.openTabsToolbarItem,
     ];
     
     // Disable tabs entirely when not presented by FLEXExplorerViewController
     UIViewController *presenter = self.navigationController.presentingViewController;
     if (![presenter isKindOfClass:[FLEXExplorerViewController class]]) {
-        self.toolbarItems.lastObject.enabled = NO;
+        self.openTabsToolbarItem.enabled = NO;
     }
 }
+
+- (void)addToolbarItems:(NSArray<UIBarButtonItem *> *)items {
+    if (self.showsShareToolbarItem) {
+        // Share button is in the middle, skip middle button
+        if (items.count > 0) {
+            self.middleLeftToolbarItem = items[0];
+        }
+        if (items.count > 1) {
+            self.leftmostToolbarItem = items[1];
+        }
+    } else {
+        // Add buttons right-to-left
+        if (items.count > 0) {
+            self.middleToolbarItem = items[0];
+        }
+        if (items.count > 1) {
+            self.middleLeftToolbarItem = items[1];
+        }
+        if (items.count > 2) {
+            self.leftmostToolbarItem = items[2];
+        }
+    }
+    
+    [self setupToolbarItems];
+}
+
+- (void)setShowsShareToolbarItem:(BOOL)showShare {
+    if (_showsShareToolbarItem != showShare) {
+        _showsShareToolbarItem = showShare;
+        
+        if (showShare) {
+            // Push out leftmost item
+            self.leftmostToolbarItem = self.middleLeftToolbarItem;
+            self.middleLeftToolbarItem = self.middleToolbarItem;
+            
+            // Use share for middle
+            self.middleToolbarItem = self.shareToolbarItem;
+        } else {
+            // Remove share, shift custom items rightward
+            self.middleToolbarItem = self.middleLeftToolbarItem;
+            self.middleLeftToolbarItem = self.leftmostToolbarItem;
+            self.leftmostToolbarItem = UIBarButtonItem.flex_fixedSpace;
+        }
+    }
+    
+    [self setupToolbarItems];
+}
+
+- (void)shareButtonPressed {
+
+}
+
+
+#pragma mark - Private
 
 - (void)debounce:(void(^)(void))block {
     [self.debounceTimer invalidate];
@@ -441,10 +510,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         initWithRootViewController:[FLEXTabsViewController new]
     ];
     [self presentViewController:nav animated:YES completion:nil];
-}
-
-- (void)shareButtonPressed {
-
 }
 
 

@@ -149,6 +149,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    if (self.window.isKeyWindow) {
+        [self.window resignKeyWindow];
+    }
+    
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     UIInterfaceOrientationMask supportedOrientations = [FLEXUtility infoPlistSupportedInterfaceOrientationsMask];
     if (viewControllerToAsk && ![viewControllerToAsk isKindOfClass:[self class]]) {

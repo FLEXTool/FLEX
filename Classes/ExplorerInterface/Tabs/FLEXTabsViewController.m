@@ -42,7 +42,6 @@
     self.navigationController.hidesBarsOnSwipe = NO;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     
-    [FLEXTabList.sharedList updateSnapshotForActiveTab];
     [self reloadData:NO];
 }
 
@@ -50,6 +49,19 @@
     [super viewWillAppear:animated];
     [self setupDefaultBarItems];
 }
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    // Instead of updating the active snapshot before we present,
+    // we update it after we present to avoid pre-presenation latency
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [FLEXTabList.sharedList updateSnapshotForActiveTab];
+        [self reloadData:NO];
+        [self.tableView reloadData];
+    });
+}
+
 
 #pragma mark - Private
 
@@ -131,6 +143,7 @@
     );
     return presenter;
 }
+
 
 #pragma mark Button Actions
 
@@ -237,6 +250,7 @@
     [self.tableView deleteRowsAtIndexPaths:allRows withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+
 #pragma mark - Table View Data Source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -266,6 +280,7 @@
     
     return cell;
 }
+
 
 #pragma mark - Table View Delegate
 

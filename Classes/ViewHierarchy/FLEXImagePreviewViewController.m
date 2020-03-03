@@ -6,15 +6,17 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXColor.h"
 #import "FLEXImagePreviewViewController.h"
 #import "FLEXUtility.h"
+#import "FLEXColor.h"
+#import "FLEXResources.h"
 
 @interface FLEXImagePreviewViewController () <UIScrollViewDelegate>
 @property (nonatomic) UIImage *image;
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) UIImageView *imageView;
 @end
+
 #pragma mark -
 @implementation FLEXImagePreviewViewController
 
@@ -51,7 +53,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = FLEXColor.scrollViewBackgroundColor;
+    self.view.backgroundColor = [UIColor colorWithPatternImage:FLEXResources.checkerPattern];
     
     self.imageView = [[UIImageView alloc] initWithImage:self.image];
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];

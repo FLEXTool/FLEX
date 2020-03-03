@@ -8,6 +8,8 @@
 
 #import "UIBarButtonItem+FLEX.h"
 
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+
 @implementation UIBarButtonItem (FLEX)
 
 + (UIBarButtonItem *)flex_flexibleSpace {
@@ -15,7 +17,9 @@
 }
 
 + (UIBarButtonItem *)flex_fixedSpace {
-    return [self systemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    UIBarButtonItem *fixed = [self systemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+    fixed.width = 60;
+    return fixed;
 }
 
 + (instancetype)systemItem:(UIBarButtonSystemItem)item target:(id)target action:(SEL)action {

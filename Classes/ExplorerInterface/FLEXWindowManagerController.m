@@ -38,10 +38,6 @@
     }
     
     [self disableToolbar];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-        initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissAnimated)
-    ];
-    
     [self reloadData];
 }
 

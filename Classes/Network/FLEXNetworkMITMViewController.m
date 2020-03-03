@@ -33,29 +33,6 @@
 
 @implementation FLEXNetworkMITMViewController
 
-#pragma mark - Initialization
-
-- (id)init {
-    self = [super initWithStyle:UITableViewStylePlain];
-    if (self) {
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleNewTransactionRecordedNotification:) name:kFLEXNetworkRecorderNewTransactionNotification object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleTransactionsClearedNotification:) name:kFLEXNetworkRecorderTransactionsClearedNotification object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleNetworkObserverEnabledStateChangedNotification:) name:kFLEXNetworkObserverEnabledStateChangedNotification object:nil];
-        self.title = @"📡  Network";
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStylePlain target:self action:@selector(settingsButtonTapped:)];
-
-        // Needed to avoid search bar showing over detail pages pushed on the nav stack
-        // see https://asciiwwdc.com/2014/sessions/228
-        self.definesPresentationContext = YES;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [NSNotificationCenter.defaultCenter removeObserver:self];
-}
-
 #pragma mark - Lifecycle
 
 - (void)viewDidLoad {
@@ -70,6 +47,7 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = [FLEXNetworkTransactionTableViewCell preferredCellHeight];
 
+    [self registerForNotifications];
     [self updateTransactions];
 }
 
@@ -80,6 +58,29 @@
     if (self.pendingReload) {
         [self.tableView reloadData];
         self.pendingReload = NO;
+    }
+}
+
+- (void)dealloc {
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+}
+
+- (void)registerForNotifications {
+    NSDictionary *notifications = @{
+        kFLEXNetworkRecorderNewTransactionNotification:
+            NSStringFromSelector(@selector(handleNewTransactionRecordedNotification:)),
+        kFLEXNetworkRecorderTransactionUpdatedNotification:
+            NSStringFromSelector(@selector(handleTransactionUpdatedNotification:)),
+        kFLEXNetworkRecorderTransactionsClearedNotification:
+            NSStringFromSelector(@selector(handleTransactionsClearedNotification:)),
+        kFLEXNetworkObserverEnabledStateChangedNotification:
+            NSStringFromSelector(@selector(handleNetworkObserverEnabledStateChangedNotification:)),
+    };
+    
+    for (NSString *name in notifications.allKeys) {
+        [NSNotificationCenter.defaultCenter addObserver:self
+            selector:NSSelectorFromString(notifications[name]) name:name object:nil
+        ];
     }
 }
 

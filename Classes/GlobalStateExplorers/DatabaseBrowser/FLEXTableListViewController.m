@@ -43,16 +43,20 @@
 
     self.showsSearchBar = YES;
     [self getAllTables];
+    
+    // Compose query button //
 
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+    UIBarButtonItem *composeQuery = [[UIBarButtonItem alloc]
         initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
         target:self
         action:@selector(queryButtonPressed)
     ];
     // Cannot run custom queries on realm databases
-    self.navigationItem.rightBarButtonItem.enabled = [self.dbm
+    composeQuery.enabled = [self.dbm
         respondsToSelector:@selector(executeStatement:)
     ];
+    
+    [self addToolbarItems:@[composeQuery]];
 }
     
 - (void)queryButtonPressed {

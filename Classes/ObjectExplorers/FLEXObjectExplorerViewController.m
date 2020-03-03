@@ -60,7 +60,7 @@
        customSection:(FLEXTableViewSection *)customSection {
     NSParameterAssert(target);
     
-    self = [super init];
+    self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _object = target;
         _explorer = explorer;
@@ -74,13 +74,12 @@
 #pragma mark - View controller lifecycle
 
 - (void)loadView {
-    FLEXTableView *tableView = [[FLEXTableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
-    self.tableView = tableView;
+    [super loadView];
 
     // Register cell classes
     for (FLEXTableViewSection *section in self.allSections) {
         if (section.cellRegistrationMapping) {
-            [tableView registerCells:section.cellRegistrationMapping];
+            [self.tableView registerCells:section.cellRegistrationMapping];
         }
     }
 }
