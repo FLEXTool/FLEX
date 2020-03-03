@@ -8,11 +8,13 @@
 
 #import "FHSViewController.h"
 #import "FHSSnapshotView.h"
+#import "FLEXHierarchyViewController.h"
 #import "FLEXColor.h"
 #import "FLEXAlert.h"
-#import "NSArray+Functional.h"
 #import "FLEXWindow.h"
-#import "FLEXHierarchyViewController.h"
+#import "FLEXResources.h"
+#import "NSArray+Functional.h"
+#import "UIBarButtonItem+FLEX.h"
 
 BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 
@@ -117,8 +119,8 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 
     // Initialize back bar button item for 3D view to look like a button
     self.navigationItem.hidesBackButton = YES;
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-        initWithTitle:@"2D" style:UIBarButtonItemStylePlain
+    self.navigationItem.leftBarButtonItem = [UIBarButtonItem
+        itemWithImage:FLEXResources.toggle2DIcon
         target:self.navigationController
         action:@selector(toggleHierarchyMode)
     ];
@@ -156,24 +158,14 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 
     // Initialize our toolbar items
     self.toolbarItems = @[
-        [[UIBarButtonItem alloc]
-            initWithCustomView:snapshotView.spacingSlider
-        ],
-        [[UIBarButtonItem alloc]
-            initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-            target:nil action:nil
-        ],
-        [[UIBarButtonItem alloc]
-            initWithBarButtonSystemItem:UIBarButtonSystemItemOrganize
+        [UIBarButtonItem itemWithCustomView:snapshotView.spacingSlider],
+        UIBarButtonItem.flex_flexibleSpace,
+        [UIBarButtonItem
+            itemWithImage:FLEXResources.moreIcon
             target:self action:@selector(didPressOptionsButton)
         ],
-        [[UIBarButtonItem alloc]
-            initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-            target:nil action:nil
-        ],
-        [[UIBarButtonItem alloc]
-            initWithCustomView:snapshotView.depthSlider
-        ],
+        UIBarButtonItem.flex_flexibleSpace,
+        [UIBarButtonItem itemWithCustomView:snapshotView.depthSlider]
     ];
     [self resizeToolbarItems:self.view.frame.size];
 

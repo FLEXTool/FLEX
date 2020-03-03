@@ -13,6 +13,7 @@
 #import "FLEXScopeCarousel.h"
 #import "FLEXTableView.h"
 #import "FLEXUtility.h"
+#import "FLEXResources.h"
 #import "UIBarButtonItem+FLEX.h"
 #import <objc/runtime.h>
 
@@ -219,12 +220,12 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.tableView.delegate = self;
     
     _shareToolbarItem = FLEXBarButtonItemSystem(Action, self, @selector(shareButtonPressed));
-    _bookmarksToolbarItem = FLEXBarButtonItemSystem(Bookmarks, self, @selector(showBookmarks));
-    _openTabsToolbarItem = FLEXBarButtonItemSystem(Organize, self, @selector(showTabSwitcher));
-    
-    for (UIBarButtonItem *item in @[_shareToolbarItem, _bookmarksToolbarItem, _openTabsToolbarItem]) {
-        item.width = 60;
-    }
+    _bookmarksToolbarItem = [UIBarButtonItem
+        itemWithImage:FLEXResources.bookmarksIcon target:self action:@selector(showBookmarks)
+    ];
+    _openTabsToolbarItem = [UIBarButtonItem
+        itemWithImage:FLEXResources.openTabsIcon target:self action:@selector(showTabSwitcher)
+    ];
     
     self.leftmostToolbarItem = UIBarButtonItem.flex_fixedSpace;
     self.middleLeftToolbarItem = UIBarButtonItem.flex_fixedSpace;
@@ -315,12 +316,18 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         UIBarButtonItem.flex_flexibleSpace,
         self.middleLeftToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
-        self.middleLeftToolbarItem,
+        self.middleToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
         self.bookmarksToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
         self.openTabsToolbarItem,
     ];
+    
+    for (UIBarButtonItem *item in self.toolbarItems) {
+        [item _setWidth:60];
+        // This does not work for anything but fixed spaces for some reason
+        // item.width = 60;
+    }
     
     // Disable tabs entirely when not presented by FLEXExplorerViewController
     UIViewController *presenter = self.navigationController.presentingViewController;

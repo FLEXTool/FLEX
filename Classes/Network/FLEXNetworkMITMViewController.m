@@ -16,6 +16,7 @@
 #import "FLEXNetworkTransactionDetailTableViewController.h"
 #import "FLEXNetworkSettingsTableViewController.h"
 #import "UIBarButtonItem+FLEX.h"
+#import "FLEXResources.h"
 
 @interface FLEXNetworkMITMViewController ()
 
@@ -39,6 +40,12 @@
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
+    
+    [self addToolbarItems:@[[UIBarButtonItem
+        itemWithImage:FLEXResources.gearIcon
+        target:self
+        action:@selector(settingsButtonTapped:)
+    ]]];
 
     [self.tableView
         registerClass:[FLEXNetworkTransactionTableViewCell class]

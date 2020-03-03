@@ -38,11 +38,8 @@
     return [[self alloc] initWithTitle:title style:UIBarButtonItemStyleDone target:target action:action];
 }
 
-+ (instancetype)itemWithImage:(UIImage *)image
-                        style:(UIBarButtonItemStyle)style
-                       target:(id)target
-                       action:(SEL)action {
-    return [[self alloc] initWithImage:image style:style target:target action:action];
++ (instancetype)itemWithImage:(UIImage *)image target:(id)target action:(SEL)action {
+    return [[self alloc] initWithImage:image style:UIBarButtonItemStylePlain target:target action:action];
 }
 
 + (instancetype)disabledSystemItem:(UIBarButtonSystemItem)system {
@@ -57,8 +54,8 @@
     return item;
 }
 
-+ (instancetype)disabledItemWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style {
-    UIBarButtonItem *item = [self itemWithImage:image style:style target:nil action:nil];
++ (instancetype)disabledItemWithImage:(UIImage *)image {
+    UIBarButtonItem *item = [self itemWithImage:image target:nil action:nil];
     item.enabled = NO;
     return item;
 }

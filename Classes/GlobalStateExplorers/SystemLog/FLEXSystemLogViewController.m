@@ -7,11 +7,13 @@
 //
 
 #import "FLEXSystemLogViewController.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
 #import "FLEXASLLogController.h"
 #import "FLEXOSLogController.h"
 #import "FLEXSystemLogCell.h"
+#import "FLEXUtility.h"
+#import "FLEXColor.h"
+#import "FLEXResources.h"
+#import "UIBarButtonItem+FLEX.h"
 #import "fishhook.h"
 #import <dlfcn.h>
 
@@ -103,18 +105,23 @@ BOOL my_os_log_shim_enabled() {
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.title = @"Loading...";
     
-    UIBarButtonItem *scrollDown = [[UIBarButtonItem alloc] initWithTitle:@" ⬇︎ "
-                                                                   style:UIBarButtonItemStylePlain
-                                                                  target:self
-                                                                  action:@selector(scrollToLastRow)];
-    UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithTitle:@"Settings"
-                                                                 style:UIBarButtonItemStylePlain
-                                                                target:self
-                                                                action:@selector(showLogSettings)];
-    if (FLEXOSLogAvailable()) {
-        self.navigationItem.rightBarButtonItems = @[scrollDown, settings];
+    // Toolbar buttons //
+    
+    UIBarButtonItem *scrollDown = [UIBarButtonItem
+        itemWithImage:FLEXResources.scrollToBottomIcon
+        target:self
+        action:@selector(scrollToLastRow)
+    ];
+    UIBarButtonItem *settings = [UIBarButtonItem
+        itemWithImage:FLEXResources.gearIcon
+        target:self
+        action:@selector(showLogSettings)
+    ];
+    
+    if (FLEXOSLogAvailable() && !FLEXNSLogHookWorks) {
+        [self addToolbarItems:@[scrollDown, settings]];
     } else {
-        self.navigationItem.rightBarButtonItem = scrollDown;
+        [self addToolbarItems:@[scrollDown]];
     }
 }
 

@@ -23,13 +23,12 @@
 + (instancetype)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action;
 + (instancetype)doneStyleitemWithTitle:(NSString *)title target:(id)target action:(SEL)action;
 
-+ (instancetype)itemWithImage:(UIImage *)image
-                        style:(UIBarButtonItemStyle)style
-                       target:(id)target
-                       action:(SEL)action;
++ (instancetype)itemWithImage:(UIImage *)image target:(id)target action:(SEL)action;
 
 + (instancetype)disabledSystemItem:(UIBarButtonSystemItem)item;
 + (instancetype)disabledItemWithTitle:(NSString *)title style:(UIBarButtonItemStyle)style;
-+ (instancetype)disabledItemWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style;
++ (instancetype)disabledItemWithImage:(UIImage *)image;
+
+- (void)_setWidth:(CGFloat)width;
 
 @end

@@ -11,6 +11,8 @@
 #import "FHSViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXTabList.h"
+#import "FLEXResources.h"
+#import "UIBarButtonItem+FLEX.h"
 
 typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
     FLEXHierarchyViewModeTree = 1,
@@ -69,8 +71,8 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
     [super viewDidLoad];
 
     // 3D toggle button
-    self.treeViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-        initWithTitle:@"3D" style:UIBarButtonItemStylePlain target:self action:@selector(toggleHierarchyMode)
+    self.treeViewController.navigationItem.leftBarButtonItem = [UIBarButtonItem
+        itemWithImage:FLEXResources.toggle3DIcon target:self action:@selector(toggleHierarchyMode)
     ];
 
     // Dismiss when tree view row is selected
