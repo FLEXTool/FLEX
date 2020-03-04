@@ -27,18 +27,25 @@ static void (*MSHookFunction)(void *symbol, void *replace, void **result);
 
 static BOOL FLEXDidHookNSLog = NO;
 static BOOL FLEXNSLogHookWorks = NO;
+
+BOOL (*os_log_shim_enabled)(void *addr) = nil;
 BOOL (*orig_os_log_shim_enabled)() = nil;
 BOOL my_os_log_shim_enabled() {
     return NO;
 }
-
-extern BOOL os_log_shim_enabled();
 
 @implementation FLEXSystemLogViewController
 
 + (void)load {
     // Thanks to @Ram4096 on GitHub for telling me that
     // os_log is conditionally enabled by the SDK version
+    void *addr = __builtin_return_address(0);
+    void *libsystem_trace = dlopen("/usr/lib/system/libsystem_trace.dylib", RTLD_LAZY);
+    os_log_shim_enabled = dlsym(libsystem_trace, "os_log_shim_enabled");
+    if (!os_log_shim_enabled) {
+        return;
+    }
+
     FLEXDidHookNSLog = rebind_symbols((struct rebinding[1]) {
         "os_log_shim_enabled",
         (void *)my_os_log_shim_enabled,
@@ -47,7 +54,7 @@ extern BOOL os_log_shim_enabled();
     
     if (FLEXDidHookNSLog && orig_os_log_shim_enabled != nil) {
         // Check if our rebinding worked
-        FLEXNSLogHookWorks = os_log_shim_enabled() == NO;
+        FLEXNSLogHookWorks = os_log_shim_enabled(addr) == NO;
     }
     
     // So, just because we rebind the lazily loaded symbol for
@@ -63,14 +70,9 @@ extern BOOL os_log_shim_enabled();
         
         if (MSHookFunction) {
             // Set the hook and check if it worked
-            //
-            // Very important that we use orig_os_log_shim_enabled
-            // here as opposed to os_log_shim_enabled.
-            MSHookFunction(orig_os_log_shim_enabled, my_os_log_shim_enabled, nil);
-            FLEXNSLogHookWorks = orig_os_log_shim_enabled() == NO;
-            if (FLEXNSLogHookWorks) {
-                return;
-            }
+            void *unused;
+            MSHookFunction(os_log_shim_enabled, my_os_log_shim_enabled, &unused);
+            FLEXNSLogHookWorks = os_log_shim_enabled(addr) == NO;
         }
     }
 }
