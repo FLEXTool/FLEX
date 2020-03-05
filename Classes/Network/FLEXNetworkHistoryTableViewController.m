@@ -182,7 +182,7 @@
     
     if (self.searchController.isActive) {
         [self updateTransactions];
-        [self updateSearchResults:nil];
+        [self updateSearchResults:self.searchController.searchBar.text];
         return;
     }
 
@@ -349,7 +349,7 @@
 
 #pragma mark - Search Bar
 
-- (void)updateSearchResults:(NSString *)searchString
+- (void)updateSearchResults:(NSString *_Nonnull)searchString
 {
     [self onBackgroundQueue:^NSArray *{
         return [self.networkTransactions filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXNetworkTransaction *transaction, NSDictionary<NSString *, id> *bindings) {
