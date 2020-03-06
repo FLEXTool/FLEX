@@ -14,7 +14,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
-#import "FLEXInstancesViewController.h"
+#import "FLEXObjectListViewController.h"
 #import "FLEXTabsViewController.h"
 #import "FLEXBookmarkManager.h"
 #import "FLEXTableView.h"
@@ -146,8 +146,8 @@
         }
     ];
     referencesSection.selectionAction = ^(UIViewController *host) {
-        UIViewController *references = [FLEXInstancesViewController
-            instancesTableViewControllerForInstancesReferencingObject:explorer.object
+        UIViewController *references = [FLEXObjectListViewController
+            objectsWithReferencesToObject:explorer.object
         ];
         [host.navigationController pushViewController:references animated:YES];
     };
@@ -176,6 +176,10 @@
 
 - (NSArray<FLEXTableViewSection *> *)nonemptySections {
     return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
+        if (!self.shouldShowDescription && section == self.descriptionSection) {
+            return NO;
+        }
+        
         return section.numberOfRows > 0;
     }];
 }
@@ -269,12 +273,17 @@
     // Check to see if class scope changed, update accordingly
     if (self.explorer.classScope != self.selectedScope) {
         self.explorer.classScope = self.selectedScope;
-        for (FLEXTableViewSection *section in self.allSections) {
-            [section reloadData];
-        }
+        [self reloadSections];
     }
 
-    // Recalculate empty sections
+    [self reloadData];
+}
+
+
+#pragma mark - Reloading
+
+- (void)reloadData {
+    // Recalculate displayed sections
     self.sections = [self nonemptySections];
 
     // Refresh table view
@@ -283,24 +292,9 @@
     }
 }
 
-
-#pragma mark - Reloading
-
-- (void)reloadData {
-    // Reload explorer
-    [self.explorer reloadMetadata];
-
-    // Reload sections
+- (void)reloadSections {
     for (FLEXTableViewSection *section in self.allSections) {
         [section reloadData];
-    }
-
-    // Recalculate displayed sections
-    self.sections = [self nonemptySections];
-
-    // Refresh table view
-    if (self.isViewLoaded) {
-        [self.tableView reloadData];
     }
 }
 

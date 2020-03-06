@@ -8,8 +8,8 @@
 
 #import "FLEXTableViewSection.h"
 #import "FLEXObjectInfoSection.h"
-@class FLEXCollectionContentSection;
-@protocol FLEXCollection;
+@class FLEXCollectionContentSection, FLEXTableViewCell;
+@protocol FLEXCollection, FLEXMutableCollection;
 
 typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollectionContentSection *section);
 
@@ -20,8 +20,8 @@ typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollection
 
 @property (nonatomic, readonly) NSUInteger count;
 
-- (id)copy;
-- (id)mutableCopy;
+- (id<FLEXCollection>)copy;
+- (id<FLEXMutableCollection>)mutableCopy;
 
 @optional
 
@@ -37,21 +37,54 @@ typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollection
 
 @end
 
+@protocol FLEXMutableCollection <FLEXCollection>
+- (void)filterUsingPredicate:(NSPredicate *)predicate;
+@end
+
 @interface NSArray (FLEXCollection) <FLEXCollection> @end
-@interface NSDictionary (FLEXCollection) <FLEXCollection> @end
 @interface NSSet (FLEXCollection) <FLEXCollection> @end
 @interface NSOrderedSet (FLEXCollection) <FLEXCollection> @end
+@interface NSDictionary (FLEXCollection) <FLEXCollection> @end
+
+@interface NSMutableArray (FLEXMutableCollection) <FLEXMutableCollection> @end
+@interface NSMutableSet (FLEXMutableCollection) <FLEXMutableCollection> @end
+@interface NSMutableOrderedSet (FLEXMutableCollection) <FLEXMutableCollection> @end
+@interface NSMutableDictionary (FLEXMutableCollection) <FLEXMutableCollection>
+- (void)filterUsingPredicate:(NSPredicate *)predicate;
+@end
+
 
 #pragma mark - FLEXCollectionContentSection
 /// A custom section for viewing collection elements.
 ///
 /// Tapping on a row pushes an object explorer for that element.
-@interface FLEXCollectionContentSection : FLEXTableViewSection <FLEXObjectInfoSection>
+@interface FLEXCollectionContentSection<__covariant ObjectType> : FLEXTableViewSection <FLEXObjectInfoSection>
 
 + (instancetype)forCollection:(id<FLEXCollection>)collection;
 /// The future given should be safe to call more than once.
 /// The result of calling this future multiple times may yield
 /// different results each time if the data is changing by nature.
 + (instancetype)forReusableFuture:(FLEXCollectionContentFuture)collectionFuture;
+
+/// Defaults to \c NO
+@property (nonatomic) BOOL hideSectionTitle;
+/// Defaults to \c nil
+@property (nonatomic) NSString *customTitle;
+/// Defaults to \c NO
+///
+/// Settings this to \c NO will not display the element index for ordered collections.
+/// This property only applies to \c NSArray or \c NSOrderedSet and their subclasses.
+@property (nonatomic) BOOL hideOrderIndexes;
+
+/// Set this property to provide a custom filter matcher.
+///
+/// By default, the collection will filter on the title and subtitle of the row.
+/// So if you don't ever call \c configureCell: for example, you will need to set
+/// this property so that your filter logic will match how you're setting up the cell. 
+@property (nonatomic) BOOL (^customFilter)(NSString *filterText, ObjectType element);
+
+/// Get the object in the collection associated with the given row.
+/// For dictionaries, this returns the value, not the key.
+- (ObjectType)objectForRow:(NSInteger)row;
 
 @end

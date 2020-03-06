@@ -21,13 +21,14 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 };
 
 @interface FLEXCollectionContentSection ()
-@property (nonatomic) id<FLEXCollection> cachedCollection;
+@property (nonatomic, copy) id<FLEXCollection> cachedCollection;
 @property (nonatomic, readonly) id<FLEXCollection> collection;
 @property (nonatomic, readonly) FLEXCollectionContentFuture collectionFuture;
 @property (nonatomic, readonly) FLEXCollectionType collectionType;
 @end
 
 @implementation FLEXCollectionContentSection
+@synthesize filterText = _filterText;
 
 #pragma mark Initialization
 
@@ -39,7 +40,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     FLEXCollectionContentSection *section = [self new];
     section->_collectionType = [self typeForCollection:collection];
     section->_collection = collection;
-    section.cachedCollection = collection.copy;
+    section.cachedCollection = collection;
     return section;
 }
 
@@ -51,14 +52,15 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     return section;
 }
 
+
 #pragma mark - Misc
 
 + (FLEXCollectionType)typeForCollection:(id<FLEXCollection>)collection {
     // Order matters here, as NSDictionary is keyed but it responds to allObjects
-    if ([collection respondsToSelector:@selector(objectAtIndexedSubscript:)]) {
+    if ([collection respondsToSelector:@selector(objectAtIndex:)]) {
         return FLEXOrderedCollection;
     }
-    if ([collection respondsToSelector:@selector(objectForKeyedSubscript:)]) {
+    if ([collection respondsToSelector:@selector(objectForKey:)]) {
         return FLEXKeyedCollection;
     }
     if ([collection respondsToSelector:@selector(allObjects)]) {
@@ -77,7 +79,10 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 - (NSString *)titleForRow:(NSInteger)row {
     switch (self.collectionType) {
         case FLEXOrderedCollection:
-            return @(row).stringValue;
+            if (!self.hideOrderIndexes) {
+                return @(row).stringValue;
+            }
+            // Fall-through
         case FLEXUnorderedCollection:
             return [self describe:[self objectForRow:row]];
         case FLEXKeyedCollection:
@@ -95,6 +100,10 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 - (NSString *)subtitleForRow:(NSInteger)row {
     switch (self.collectionType) {
         case FLEXOrderedCollection:
+            if (!self.hideOrderIndexes) {
+                nil;
+            }
+            // Fall-through
         case FLEXKeyedCollection:
             return [self describe:[self objectForRow:row]];
         case FLEXUnorderedCollection:
@@ -126,11 +135,39 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 #pragma mark - Overrides
 
 - (NSString *)title {
-    return FLEXPluralString(self.cachedCollection.count, @"Entries", @"Entry");
+    if (!self.hideSectionTitle) {
+        if (self.customTitle) {
+            return self.customTitle;
+        }
+        
+        return FLEXPluralString(self.cachedCollection.count, @"Entries", @"Entry");
+    }
+    
+    return nil;
 }
 
 - (NSInteger)numberOfRows {
     return self.cachedCollection.count;
+}
+
+- (void)setFilterText:(NSString *)filterText {
+    super.filterText = filterText;
+    
+    if (filterText.length) {
+        BOOL (^matcher)(id, id) = self.customFilter ?: ^BOOL(NSString *query, id obj) {
+            return [[self describe:obj] localizedCaseInsensitiveContainsString:query];
+        };
+        
+        NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {
+            return matcher(filterText, obj);
+        }];
+        
+        id<FLEXMutableCollection> tmp = self.collection.mutableCopy;
+        [tmp filterUsingPredicate:filter];
+        self.cachedCollection = tmp;
+    } else {
+        self.cachedCollection = self.collection;
+    }
 }
 
 - (void)reloadData {
@@ -150,14 +187,35 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 }
 
 - (NSString *)reuseIdentifierForRow:(NSInteger)row {
-    // Default for unordered, subtitle for others
-    return self.collectionType == FLEXUnorderedCollection ? kFLEXDefaultCell : kFLEXDetailCell;
+    return kFLEXDetailCell;
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
     cell.titleLabel.text = [self titleForRow:row];
     cell.subtitleLabel.text = [self subtitleForRow:row];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+}
+
+@end
+
+
+#pragma mark - NSMutableDictionary
+
+@implementation NSMutableDictionary (FLEXMutableCollection)
+
+- (void)filterUsingPredicate:(NSPredicate *)predicate {
+    id test = ^BOOL(id key, NSUInteger idx, BOOL *stop) {
+        if ([predicate evaluateWithObject:key]) {
+            return NO;
+        }
+        
+        return ![predicate evaluateWithObject:self[key]];
+    };
+    
+    NSArray *keys = self.allKeys;
+    NSIndexSet *remove = [keys indexesOfObjectsPassingTest:test];
+    
+    [self removeObjectsForKeys:[keys objectsAtIndexes:remove]];
 }
 
 @end
