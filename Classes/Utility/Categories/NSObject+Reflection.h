@@ -19,7 +19,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param returnType The encoded return type. \c void for exmaple would be \c @encode(void).
 /// @param count The number of parameters in this type encoding string.
 /// @return The type encoding string, or \c nil if \e returnType is \c NULL.
-extern NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...);
+NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...);
+
+NSArray<Class> *FLEXGetAllSubclasses(_Nullable Class cls, BOOL includeSelf);
+NSArray<Class> *FLEXGetClassHierarchy(_Nullable Class cls, BOOL includeSelf);
+NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(_Nullable Class cls);
+
 
 #pragma mark Reflection
 @interface NSObject (Reflection)
@@ -27,6 +32,7 @@ extern NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger coun
 @property (nonatomic, readonly       ) FLEXMirror *flex_reflection;
 @property (nonatomic, readonly, class) FLEXMirror *flex_reflection;
 
+/// Calls into /c FLEXGetAllSubclasses
 /// @return Every subclass of the receiving class, including the receiver itself.
 @property (nonatomic, readonly, class) NSArray<Class> *flex_allSubclasses;
 
@@ -42,10 +48,12 @@ extern NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger coun
 /// @return The old superclass.
 + (Class)flex_setSuperclass:(Class)superclass;
 
+/// Calls into \c FLEXGetClassHierarchy()
 /// @return a list of classes going up the class hierarchy,
 /// starting with the receiver and ending with the root class.
 @property (nonatomic, readonly, class) NSArray<Class> *flex_classHierarchy;
 
+/// Calls into \c FLEXGetConformedProtocols
 /// @return a list of protocols this class itself conforms to.
 @property (nonatomic, readonly, class) NSArray<FLEXProtocol *> *flex_protocols;
 

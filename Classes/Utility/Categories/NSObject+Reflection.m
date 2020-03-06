@@ -36,6 +36,71 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
     return encoding.copy;
 }
 
+NSArray<Class> *FLEXGetAllSubclasses(Class cls, BOOL includeSelf) {
+    if (!cls) {
+        return nil;
+    }
+    
+    Class *buffer = NULL;
+    
+    int count, size;
+    do {
+        count  = objc_getClassList(NULL, 0);
+        buffer = (Class *)realloc(buffer, count * sizeof(*buffer));
+        size   = objc_getClassList(buffer, count);
+    } while (size != count);
+    
+    NSMutableArray *classes = [NSMutableArray array];
+    if (includeSelf) {
+        [classes addObject:cls];
+    }
+    
+    for (int i = 0; i < count; i++) {
+        Class candidate = buffer[i];
+        Class superclass = candidate;
+        while ((superclass = class_getSuperclass(superclass))) {
+            if (superclass == cls) {
+                [classes addObject:candidate];
+                break;
+            }
+        }
+    }
+    
+    free(buffer);
+    return classes.copy;
+}
+
+NSArray<Class> *FLEXGetClassHierarchy(Class cls, BOOL includeSelf) {
+    if (!cls) {
+        return nil;
+    }
+    
+    NSMutableArray *classes = [NSMutableArray array];
+    if (includeSelf) {
+        [classes addObject:cls];
+    }
+    
+    while ((cls = [cls superclass])) {
+        [classes addObject:cls];
+    };
+
+    return classes.copy;
+}
+
+NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
+    if (!cls) {
+        return nil;
+    }
+    
+    unsigned int count = 0;
+    Protocol *__unsafe_unretained *list = class_copyProtocolList(cls, &count);
+    NSArray<Protocol *> *protocols = [NSArray arrayWithObjects:list count:count];
+    
+    return [protocols flex_mapped:^id(Protocol *pro, NSUInteger idx) {
+        return [FLEXProtocol protocol:pro];
+    }];
+}
+
 
 #pragma mark NSProxy
 
@@ -89,30 +154,7 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
 
 /// Code borrowed from MAObjCRuntime by Mike Ash
 + (NSArray *)flex_allSubclasses {
-    Class *buffer = NULL;
-    
-    int count, size;
-    do {
-        count  = objc_getClassList(NULL, 0);
-        buffer = (Class *)realloc(buffer, count * sizeof(*buffer));
-        size   = objc_getClassList(buffer, count);
-    } while (size != count);
-    
-    NSMutableArray *array = [NSMutableArray array];
-    for (int i = 0; i < count; i++) {
-        Class candidate = buffer[i];
-        Class superclass = candidate;
-        while (superclass) {
-            if (superclass == self) {
-                [array addObject:candidate];
-                break;
-            }
-            superclass = class_getSuperclass(superclass);
-        }
-    }
-    
-    free(buffer);
-    return array;
+    return FLEXGetAllSubclasses(self, YES);
 }
 
 - (Class)flex_setClass:(Class)cls {
@@ -135,23 +177,11 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
 }
 
 + (NSArray<Class> *)flex_classHierarchy {
-    NSMutableArray *classes = [NSMutableArray array];
-    Class cls = self;
-    do {
-        [classes addObject:cls];
-    } while ((cls = [cls superclass]));
-
-    return classes.copy;
+    return FLEXGetClassHierarchy(self, YES);
 }
 
 + (NSArray<FLEXProtocol *> *)flex_protocols {
-    unsigned int count = 0;
-    Protocol *__unsafe_unretained *list = class_copyProtocolList(self, &count);
-    NSArray<Protocol *> *protocols = [NSArray arrayWithObjects:list count:count];
-    
-    return [protocols flex_mapped:^id(Protocol *pro, NSUInteger idx) {
-        return [FLEXProtocol protocol:pro];
-    }];
+    return FLEXGetConformedProtocols(self);
 }
 
 @end
