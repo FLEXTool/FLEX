@@ -7,31 +7,57 @@
 //
 
 #import "FLEXClassShortcuts.h"
-#import "FLEXObjectExplorerFactory.h"
 #import "FLEXShortcut.h"
-#import "FLEXInstancesViewController.h"
+#import "FLEXObjectExplorerFactory.h"
+#import "FLEXObjectListViewController.h"
+#import "NSObject+Reflection.h"
 
-/// Pretty much only necessary because I want to provide
-/// a useful subtitle for the bundles of classes
-@interface FLEXBundleShortcut : NSObject <FLEXShortcut>
+@interface FLEXClassShortcuts ()
+@property (nonatomic, readonly) Class cls;
 @end
-#pragma mark - 
-@implementation FLEXBundleShortcut
 
-- (NSString *)titleWith:(id)object {
-    return @"Bundle";
+@implementation FLEXClassShortcuts
+
++ (instancetype)forObject:(Class)cls {
+    // These additional rows will appear at the beginning of the shortcuts section.
+    // The methods below are written in such a way that they will not interfere
+    // with properties/etc being registered alongside these
+    return [self forObject:cls additionalRows:@[
+        [FLEXActionShortcut title:@"Find Live Instances" subtitle:nil
+            viewer:^UIViewController *(id obj) {
+                return [FLEXObjectListViewController
+                    instancesOfClassWithName:NSStringFromClass(obj)
+                ];
+            }
+            accessoryType:^UITableViewCellAccessoryType(id obj) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ],
+        [FLEXActionShortcut title:@"List Subclasses" subtitle:nil
+            viewer:^UIViewController *(id obj) {
+                NSString *name = NSStringFromClass(obj);
+                return [FLEXObjectListViewController subclassesOfClassWithName:name];
+            }
+            accessoryType:^UITableViewCellAccessoryType(id view) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ],
+        [FLEXActionShortcut title:@"Explore Bundle for Class"
+            subtitle:^NSString *(id obj) {
+                return [self shortNameForBundlePath:[NSBundle bundleForClass:obj].executablePath];
+            }
+            viewer:^UIViewController *(id obj) {
+                NSBundle *bundle = [NSBundle bundleForClass:obj];
+                return [FLEXObjectExplorerFactory explorerViewControllerForObject:bundle];
+            }
+            accessoryType:^UITableViewCellAccessoryType(id view) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ],
+    ]];
 }
 
-- (NSString *)subtitleWith:(id)object {
-    return [self shortNameForBundlePath:[NSBundle bundleForClass:object].executablePath];
-}
-
-- (UIViewController *)viewerWith:(id)object {
-    NSBundle *bundle = [NSBundle bundleForClass:object];
-    return [FLEXObjectExplorerFactory explorerViewControllerForObject:bundle];
-}
-
-- (NSString *)shortNameForBundlePath:(NSString *)imageName {
++ (NSString *)shortNameForBundlePath:(NSString *)imageName {
     NSArray<NSString *> *components = [imageName componentsSeparatedByString:@"/"];
     if (components.count >= 2) {
         return [NSString stringWithFormat:@"%@/%@",
@@ -41,58 +67,6 @@
     }
 
     return imageName.lastPathComponent;
-}
-
-- (UITableViewCellAccessoryType)accessoryTypeWith:(id)object {
-    NSParameterAssert(object != nil);
-    return UITableViewCellAccessoryDisclosureIndicator;
-}
-
-- (NSString *)customReuseIdentifierWith:(id)object {
-    return nil;
-}
-
-- (void (^)(UIViewController *))didSelectActionWith:(id)object { 
-    return nil;
-}
-
-@end
-
-#pragma mark - 
-@interface FLEXClassShortcuts ()
-@property (nonatomic, readonly) Class cls;
-@end
-
-@implementation FLEXClassShortcuts
-
-#pragma mark Internal
-
-- (Class)cls {
-    return self.object;
-}
-
-
-#pragma mark Overrides
-
-+ (instancetype)forObject:(Class)cls {
-    // These additional rows will appear at the beginning of the shortcuts section.
-    // The methods below are written in such a way that they will not interfere
-    // with properties/etc being registered alongside these
-    return [self forObject:cls additionalRows:@[[FLEXBundleShortcut new], @"Live Instances"]];
-}
-
-- (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
-    if (row == 1) {
-        return [FLEXInstancesViewController
-            instancesTableViewControllerForClassName:NSStringFromClass(self.cls)
-        ];
-    }
-
-    return [super viewControllerToPushForRow:row];
-}
-
-- (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row {
-    return row == 1 ? UITableViewCellAccessoryDisclosureIndicator : [super accessoryTypeForRow:row];
 }
 
 @end

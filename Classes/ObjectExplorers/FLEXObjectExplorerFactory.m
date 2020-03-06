@@ -27,10 +27,13 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
     if (self == [FLEXObjectExplorerFactory class]) {
         #define ClassKey(name) (Class<NSCopying>)[name class]
         #define ClassKeyByName(str) (Class<NSCopying>)NSClassFromString(@ #str)
+        #define MetaclassKey(meta) (Class<NSCopying>)object_getClass([meta class])
         classesToRegisteredSections = [NSMutableDictionary dictionaryWithDictionary:@{
+            MetaclassKey(NSObject)     : [FLEXClassShortcuts class],
             ClassKey(NSArray)          : [FLEXCollectionContentSection class],
             ClassKey(NSSet)            : [FLEXCollectionContentSection class],
             ClassKey(NSDictionary)     : [FLEXCollectionContentSection class],
+            ClassKey(NSOrderedSet)     : [FLEXCollectionContentSection class],
             ClassKey(NSUserDefaults)   : [FLEXDefaultsContentSection class],
             ClassKey(UIViewController) : [FLEXViewControllerShortcuts class],
             ClassKey(UIView)           : [FLEXViewShortcuts class],
@@ -42,6 +45,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
         }];
         #undef ClassKey
         #undef ClassKeyByName
+        #undef MetaclassKey
     }
 }
 
