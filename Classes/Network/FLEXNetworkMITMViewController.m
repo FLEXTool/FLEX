@@ -15,6 +15,7 @@
 #import "FLEXNetworkTransactionTableViewCell.h"
 #import "FLEXNetworkTransactionDetailTableViewController.h"
 #import "FLEXNetworkSettingsTableViewController.h"
+#import "FLEXGlobalsViewController.h"
 #import "UIBarButtonItem+FLEX.h"
 #import "FLEXResources.h"
 
@@ -36,10 +37,15 @@
 
 #pragma mark - Lifecycle
 
+- (id)init {
+    return [self initWithStyle:UITableViewStylePlain];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
+    self.showSearchBarInitially = NO;
     
     [self addToolbarItems:@[[UIBarButtonItem
         itemWithImage:FLEXResources.gearIcon
@@ -115,7 +121,7 @@
 #pragma mark Transactions
 
 - (void)updateTransactions {
-    self.networkTransactions = [[FLEXNetworkRecorder defaultRecorder] networkTransactions];
+    self.networkTransactions = [FLEXNetworkRecorder.defaultRecorder networkTransactions];
 }
 
 - (void)setNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)networkTransactions {
@@ -163,24 +169,23 @@
 }
 
 - (NSString *)headerText {
-    NSString *headerText = nil;
-    if (FLEXNetworkObserver.isEnabled) {
-        long long bytesReceived = 0;
-        NSInteger totalRequests = 0;
-        if (self.searchController.isActive) {
-            bytesReceived = self.filteredBytesReceived;
-            totalRequests = self.filteredNetworkTransactions.count;
-        } else {
-            bytesReceived = self.bytesReceived;
-            totalRequests = self.networkTransactions.count;
-        }
-        NSString *byteCountText = [NSByteCountFormatter stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary];
-        NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
-        headerText = [NSString stringWithFormat:@"%ld %@ (%@ received)", (long)totalRequests, requestsText, byteCountText];
+    long long bytesReceived = 0;
+    NSInteger totalRequests = 0;
+    if (self.searchController.isActive) {
+        bytesReceived = self.filteredBytesReceived;
+        totalRequests = self.filteredNetworkTransactions.count;
     } else {
-        headerText = @"⚠️  Debugging Disabled (Enable in Settings)";
+        bytesReceived = self.bytesReceived;
+        totalRequests = self.networkTransactions.count;
     }
-    return headerText;
+    
+    NSString *byteCountText = [NSByteCountFormatter
+        stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary
+    ];
+    NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
+    return [NSString stringWithFormat:@"%@ %@ (%@ received)",
+        @(totalRequests), requestsText, byteCountText
+    ];
 }
 
 
@@ -190,8 +195,33 @@
     return @"📡  Network History";
 }
 
++ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
+    return ^(FLEXGlobalsViewController *host) {
+        if (FLEXNetworkObserver.isEnabled) {
+            [host.navigationController pushViewController:[
+                self globalsEntryViewController:row
+            ] animated:YES];
+        } else {
+            [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                make.title(@"Network Monitor Disabled");
+                make.message(@"You must enable network monitoring to proceed.");
+                
+                make.button(@"Turn On").handler(^(NSArray<NSString *> *strings) {
+                    FLEXNetworkObserver.enabled = YES;
+                    [host.navigationController pushViewController:[
+                        self globalsEntryViewController:row
+                    ] animated:YES];
+                }).cancelStyle();
+                make.button(@"Dismiss");
+            } showFrom:host];
+        }
+    };
+}
+
 + (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
-    return [self new];
+    UIViewController *controller = [self new];
+    controller.title = [self globalsEntryTitle:row];
+    return controller;
 }
 
 
@@ -207,6 +237,7 @@
         self.pendingReload = YES;
         return;
     }
+    
     // Let the previous row insert animation finish before starting a new one to avoid stomping.
     // We'll try calling the method again when the insertion completes, and we properly no-op if there haven't been changes.
     if (self.rowInsertInProgress) {
@@ -389,6 +420,7 @@
         }];
     }
 }
+
 
 #pragma mark UISearchControllerDelegate
 

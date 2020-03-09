@@ -52,6 +52,7 @@
     self.cells = mutableCells;
 }
 
+
 #pragma mark - Settings Actions
 
 - (void)networkDebuggingToggled:(UISwitch *)sender {
@@ -79,11 +80,8 @@
     self.popoverPresentationController.sourceRect = sender.bounds;
 }
 
-#pragma mark - Table view data source
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
+#pragma mark - Table View Data Source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.cells.count;
@@ -92,6 +90,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
     return self.cells[indexPath.row];
 }
+
 
 #pragma mark - Helpers
 

@@ -34,19 +34,20 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     self = [super init];
     if (self) {
         self.responseCache = [NSCache new];
-        NSUInteger responseCacheLimit = [[[NSUserDefaults standardUserDefaults] objectForKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey] unsignedIntegerValue];
-        if (responseCacheLimit) {
-            [self.responseCache setTotalCostLimit:responseCacheLimit];
-        } else {
-            // Default to 25 MB max. The cache will purge earlier if there is memory pressure.
-            [self.responseCache setTotalCostLimit:25 * 1024 * 1024];
-        }
+        NSUInteger responseCacheLimit = [[NSUserDefaults.standardUserDefaults
+            objectForKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey] unsignedIntegerValue
+        ];
+        // Default to 25 MB max. The cache will purge earlier if there is memory pressure.
+        self.responseCache.totalCostLimit = responseCacheLimit ?: 25 * 1024 * 1024;
+        [self.responseCache setTotalCostLimit:responseCacheLimit];
+        
         self.orderedTransactions = [NSMutableArray array];
         self.networkTransactionsForRequestIdentifiers = [NSMutableDictionary dictionary];
 
         // Serial queue used because we use mutable objects that are not thread safe
         self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_SERIAL);
     }
+    
     return self;
 }
 
@@ -56,24 +57,28 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_once(&onceToken, ^{
         defaultRecorder = [self new];
     });
+    
     return defaultRecorder;
 }
 
 #pragma mark - Public Data Access
 
 - (NSUInteger)responseCacheByteLimit {
-    return [self.responseCache totalCostLimit];
+    return self.responseCache.totalCostLimit;
 }
 
 - (void)setResponseCacheByteLimit:(NSUInteger)responseCacheByteLimit {
-    [self.responseCache setTotalCostLimit:responseCacheByteLimit];
-    [[NSUserDefaults standardUserDefaults] setObject:@(responseCacheByteLimit) forKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey];
+    self.responseCache.totalCostLimit = responseCacheByteLimit;
+    [NSUserDefaults.standardUserDefaults
+        setObject:@(responseCacheByteLimit)
+        forKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey
+    ];
 }
 
 - (NSArray<FLEXNetworkTransaction *> *)networkTransactions {
     __block NSArray<FLEXNetworkTransaction *> *transactions = nil;
     dispatch_sync(self.queue, ^{
-        transactions = [self.orderedTransactions copy];
+        transactions = self.orderedTransactions.copy;
     });
     return transactions;
 }
@@ -87,22 +92,24 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         [self.responseCache removeAllObjects];
         [self.orderedTransactions removeAllObjects];
         [self.networkTransactionsForRequestIdentifiers removeAllObjects];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [NSNotificationCenter.defaultCenter postNotificationName:kFLEXNetworkRecorderTransactionsClearedNotification object:self];
-        });
+        
+        [self notify:kFLEXNetworkRecorderTransactionsClearedNotification transaction:nil];
     });
 }
 
 #pragma mark - Network Events
 
-- (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse {
+- (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID
+                                     request:(NSURLRequest *)request
+                            redirectResponse:(NSURLResponse *)redirectResponse {
     for (NSString *host in self.hostBlacklist) {
         if ([request.URL.host hasSuffix:host]) {
             return;
         }
     }
     
-    NSDate *startDate = [NSDate date];
+    // Before async block to stay accurate
+    NSDate *startDate = NSDate.date;
 
     if (redirectResponse) {
         [self recordResponseReceivedWithRequestID:requestID response:redirectResponse];
@@ -124,13 +131,15 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 }
 
 - (void)recordResponseReceivedWithRequestID:(NSString *)requestID response:(NSURLResponse *)response {
-    NSDate *responseDate = [NSDate date];
+    // Before async block to stay accurate
+    NSDate *responseDate = NSDate.date;
 
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = self.networkTransactionsForRequestIdentifiers[requestID];
         if (!transaction) {
             return;
         }
+        
         transaction.response = response;
         transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
         transaction.latency = -[transaction.startTime timeIntervalSinceDate:responseDate];
@@ -145,8 +154,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
+        
         transaction.receivedDataLength += dataLength;
-
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -159,6 +168,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
+        
         transaction.transactionState = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceDate:finishedDate];
 
@@ -179,29 +189,32 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
             // Thumbnail image previews on a separate background queue
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSInteger maxPixelDimension = UIScreen.mainScreen.scale * 32.0;
-                transaction.responseThumbnail = [FLEXUtility thumbnailedImageWithMaxPixelDimension:maxPixelDimension fromImageData:responseBody];
+                transaction.responseThumbnail = [FLEXUtility
+                    thumbnailedImageWithMaxPixelDimension:maxPixelDimension
+                    fromImageData:responseBody
+                ];
                 [self postUpdateNotificationForTransaction:transaction];
             });
         } else if ([mimeType isEqual:@"application/json"]) {
-            transaction.responseThumbnail = [FLEXResources jsonIcon];
+            transaction.responseThumbnail = FLEXResources.jsonIcon;
         } else if ([mimeType isEqual:@"text/plain"]){
-            transaction.responseThumbnail = [FLEXResources textPlainIcon];
+            transaction.responseThumbnail = FLEXResources.textPlainIcon;
         } else if ([mimeType isEqual:@"text/html"]) {
-            transaction.responseThumbnail = [FLEXResources htmlIcon];
+            transaction.responseThumbnail = FLEXResources.htmlIcon;
         } else if ([mimeType isEqual:@"application/x-plist"]) {
-            transaction.responseThumbnail = [FLEXResources plistIcon];
+            transaction.responseThumbnail = FLEXResources.plistIcon;
         } else if ([mimeType isEqual:@"application/octet-stream"] || [mimeType isEqual:@"application/binary"]) {
-            transaction.responseThumbnail = [FLEXResources binaryIcon];
-        } else if ([mimeType rangeOfString:@"javascript"].length > 0) {
-            transaction.responseThumbnail = [FLEXResources jsIcon];
-        } else if ([mimeType rangeOfString:@"xml"].length > 0) {
-            transaction.responseThumbnail = [FLEXResources xmlIcon];
+            transaction.responseThumbnail = FLEXResources.binaryIcon;
+        } else if ([mimeType containsString:@"javascript"]) {
+            transaction.responseThumbnail = FLEXResources.jsIcon;
+        } else if ([mimeType containsString:@"xml"]) {
+            transaction.responseThumbnail = FLEXResources.xmlIcon;
         } else if ([mimeType hasPrefix:@"audio"]) {
-            transaction.responseThumbnail = [FLEXResources audioIcon];
+            transaction.responseThumbnail = FLEXResources.audioIcon;
         } else if ([mimeType hasPrefix:@"video"]) {
-            transaction.responseThumbnail = [FLEXResources videoIcon];
+            transaction.responseThumbnail = FLEXResources.videoIcon;
         } else if ([mimeType hasPrefix:@"text"]) {
-            transaction.responseThumbnail = [FLEXResources textIcon];
+            transaction.responseThumbnail = FLEXResources.textIcon;
         }
         
         [self postUpdateNotificationForTransaction:transaction];
@@ -214,6 +227,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
+        
         transaction.transactionState = FLEXNetworkTransactionStateFailed;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
@@ -228,8 +242,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
+        
         transaction.requestMechanism = mechanism;
-
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -237,16 +251,21 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 #pragma mark Notification Posting
 
 - (void)postNewTransactionNotificationWithTransaction:(FLEXNetworkTransaction *)transaction {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary<NSString *, id> *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
-        [NSNotificationCenter.defaultCenter postNotificationName:kFLEXNetworkRecorderNewTransactionNotification object:self userInfo:userInfo];
-    });
+    [self notify:kFLEXNetworkRecorderNewTransactionNotification transaction:transaction];
 }
 
 - (void)postUpdateNotificationForTransaction:(FLEXNetworkTransaction *)transaction {
+    [self notify:kFLEXNetworkRecorderTransactionUpdatedNotification transaction:transaction];
+}
+
+- (void)notify:(NSString *)name transaction:(FLEXNetworkTransaction *)transaction {
+    NSDictionary *userInfo = nil;
+    if (transaction) {
+        userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSDictionary<NSString *, id> *userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
-        [NSNotificationCenter.defaultCenter postNotificationName:kFLEXNetworkRecorderTransactionUpdatedNotification object:self userInfo:userInfo];
+        [NSNotificationCenter.defaultCenter postNotificationName:name object:self userInfo:userInfo];
     });
 }
 
