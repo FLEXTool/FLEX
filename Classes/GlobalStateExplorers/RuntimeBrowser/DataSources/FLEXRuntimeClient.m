@@ -1,17 +1,16 @@
 //
-//  FLEXRuntime.m
+//  FLEXRuntimeClient.m
 //  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBRuntime.h"
+#import "FLEXRuntimeClient.h"
 #import "NSObject+Reflection.h"
 #import "FLEXMethod.h"
 #import "NSArray+Functional.h"
 #import "FLEXRuntimeSafety.h"
-
 
 #define Equals(a, b)    ([a compare:b options:NSCaseInsensitiveSearch] == NSOrderedSame)
 #define Contains(a, b)  ([a rangeOfString:b options:NSCaseInsensitiveSearch].location != NSNotFound)
@@ -19,7 +18,7 @@
 #define HasSuffix(a, b) ([a rangeOfString:b options:NSCaseInsensitiveSearch].location == (a.length - b.length))
 
 
-@interface TBRuntime () {
+@interface FLEXRuntimeClient () {
     NSMutableArray<NSString*> *_imageDisplayNames;
 }
 
@@ -73,12 +72,12 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     return TBWildcardMap_(token, candidate, candidate, options);
 }
 
-@implementation TBRuntime
+@implementation FLEXRuntimeClient
 
 #pragma mark - Initialization
 
 + (instancetype)runtime {
-    static TBRuntime *runtime;
+    static FLEXRuntimeClient *runtime;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         runtime = [self new];
@@ -188,7 +187,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
 
 #pragma mark - Public
 
-- (NSMutableArray<NSString*> *)bundleNamesForToken:(TBToken *)token {
+- (NSMutableArray<NSString*> *)bundleNamesForToken:(FLEXSearchToken *)token {
     if (self.imagePaths.count) {
         TBWildcardOptions options = token.options;
         NSString *query = token.string;
@@ -208,7 +207,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     return [NSMutableArray array];
 }
 
-- (NSMutableArray<NSString*> *)bundlePathsForToken:(TBToken *)token {
+- (NSMutableArray<NSString*> *)bundlePathsForToken:(FLEXSearchToken *)token {
     if (self.imagePaths.count) {
         TBWildcardOptions options = token.options;
         NSString *query = token.string;
@@ -228,7 +227,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     return [NSMutableArray array];
 }
 
-- (NSMutableArray<NSString*> *)classesForToken:(TBToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
+- (NSMutableArray<NSString*> *)classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
     // Edge case where token is the class we want already; return superclasses
     if (token.isAbsolute) {
         if (FLEXClassIsSafe(NSClassFromString(token.string))) {
@@ -251,7 +250,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     return [NSMutableArray array];
 }
 
-- (NSMutableArray<NSString*> *)_classesForToken:(TBToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
+- (NSMutableArray<NSString*> *)_classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
     TBWildcardOptions options = token.options;
     NSString *query = token.string;
 
@@ -282,7 +281,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     }
 }
 
-- (NSArray<NSMutableArray<FLEXMethod *> *> *)methodsForToken:(TBToken *)token
+- (NSArray<NSMutableArray<FLEXMethod *> *> *)methodsForToken:(FLEXSearchToken *)token
                                                     instance:(NSNumber *)checkInstance
                                                    inClasses:(NSArray<NSString *> *)classes {
     if (classes.count) {

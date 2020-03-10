@@ -1,18 +1,17 @@
 //
-//  FLEXKeyPathTokenizer.h
+//  FLEXRuntimeKeyPathTokenizer.h
 //  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBKeyPath.h"
+#import "FLEXRuntimeKeyPath.h"
 
-
-@interface TBKeyPathTokenizer : NSObject
+@interface FLEXRuntimeKeyPathTokenizer : NSObject
 
 + (NSUInteger)tokenCountOfString:(NSString *)userInput;
-+ (TBKeyPath *)tokenizeString:(NSString *)userInput;
++ (FLEXRuntimeKeyPath *)tokenizeString:(NSString *)userInput;
 
 + (BOOL)allowedInKeyPath:(NSString *)text;
 

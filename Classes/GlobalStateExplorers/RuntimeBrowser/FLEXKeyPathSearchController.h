@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TBKeyPathToolbar.h"
+#import "FLEXRuntimeBrowserToolbar.h"
 #import "FLEXMethod.h"
 
-@protocol TBKeyPathSearchControllerDelegate <UITableViewDataSource>
+@protocol FLEXKeyPathSearchControllerDelegate <UITableViewDataSource>
 
 @property (nonatomic, readonly) UITableView *tableView;
 @property (nonatomic, readonly) UISearchController *searchController;
@@ -23,11 +23,11 @@
 @end
 
 
-@interface TBKeyPathSearchController : NSObject <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface FLEXKeyPathSearchController : NSObject <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 
-+ (instancetype)delegate:(id<TBKeyPathSearchControllerDelegate>)delegate;
++ (instancetype)delegate:(id<FLEXKeyPathSearchControllerDelegate>)delegate;
 
-@property (nonatomic) TBKeyPathToolbar *toolbar;
+@property (nonatomic) FLEXRuntimeBrowserToolbar *toolbar;
 
 /// Suggestions for the toolbar
 @property (nonatomic, readonly) NSArray<NSString *> *suggestions;

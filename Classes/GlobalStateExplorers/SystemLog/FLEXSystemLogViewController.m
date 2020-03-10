@@ -16,7 +16,7 @@
 #import "FLEXResources.h"
 #import "UIBarButtonItem+FLEX.h"
 #import "NSUserDefaults+FLEX.h"
-#import "fishhook.h"
+#import "flex_fishhook.h"
 #import <dlfcn.h>
 
 @interface FLEXSystemLogViewController ()

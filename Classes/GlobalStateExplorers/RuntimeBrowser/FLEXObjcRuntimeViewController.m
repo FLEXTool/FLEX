@@ -7,20 +7,17 @@
 //
 
 #import "FLEXObjcRuntimeViewController.h"
-#import "TBKeyPathSearchController.h"
-#import "TBKeyPathToolbar.h"
+#import "FLEXKeyPathSearchController.h"
+#import "FLEXRuntimeBrowserToolbar.h"
 #import "UIGestureRecognizer+Blocks.h"
 #import "FLEXTableView.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXAlert.h"
 
+@interface FLEXObjcRuntimeViewController () <FLEXKeyPathSearchControllerDelegate>
 
-@interface FLEXObjcRuntimeViewController () <TBKeyPathSearchControllerDelegate>
-
-@property (nonatomic, readonly ) TBKeyPathSearchController *keyPathController;
+@property (nonatomic, readonly ) FLEXKeyPathSearchController *keyPathController;
 @property (nonatomic, readonly ) UIView *promptView;
-
-// .@property (nonatomic, readonly) void (^callback)();
 
 @end
 
@@ -44,9 +41,9 @@
     // key path controller automatically assigns itself as the delegate of the search bar
     // To avoid a retain cycle below, use local variables
     UISearchBar *searchBar = self.searchController.searchBar;
-    TBKeyPathSearchController *keyPathController = [TBKeyPathSearchController delegate:self];
+    FLEXKeyPathSearchController *keyPathController = [FLEXKeyPathSearchController delegate:self];
     _keyPathController = keyPathController;
-    _keyPathController.toolbar = [TBKeyPathToolbar toolbarWithHandler:^(NSString *text, BOOL suggestion) {
+    _keyPathController.toolbar = [FLEXRuntimeBrowserToolbar toolbarWithHandler:^(NSString *text, BOOL suggestion) {
         if (suggestion) {
             [keyPathController didSelectKeyPathOption:text];
         } else {

@@ -1,5 +1,5 @@
 //
-//  FLEXToken.h
+//  FLEXSearchToken.h
 //  FLEX
 //
 //  Created by Tanner on 3/22/17.
@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-
 
 typedef NS_OPTIONS(NSUInteger, TBWildcardOptions) {
     TBWildcardOptionsNone   = 0,
@@ -18,7 +17,7 @@ typedef NS_OPTIONS(NSUInteger, TBWildcardOptions) {
 
 /// A token may contain wildcards at one or either end,
 /// but not in the middle of the token (as of now).
-@interface TBToken : NSObject
+@interface FLEXSearchToken : NSObject
 
 + (instancetype)any;
 + (instancetype)string:(NSString *)string options:(TBWildcardOptions)options;

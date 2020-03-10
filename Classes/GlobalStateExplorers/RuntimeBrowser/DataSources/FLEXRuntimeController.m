@@ -3,25 +3,25 @@
 //  FLEX
 //
 //  Created by Tanner on 3/23/17.
+//  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBRuntimeController.h"
-#import "TBRuntime.h"
+#import "FLEXRuntimeController.h"
+#import "FLEXRuntimeClient.h"
 #import "FLEXMethod.h"
 
-
-@interface TBRuntimeController ()
+@interface FLEXRuntimeController ()
 @property (nonatomic, readonly) NSCache *bundlePathsCache;
 @property (nonatomic, readonly) NSCache *bundleNamesCache;
 @property (nonatomic, readonly) NSCache *classNamesCache;
 @property (nonatomic, readonly) NSCache *methodsCache;
 @end
 
-@implementation TBRuntimeController
+@implementation FLEXRuntimeController
 
 #pragma mark Initialization
 
-static TBRuntimeController *controller = nil;
+static FLEXRuntimeController *controller = nil;
 + (instancetype)shared {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -45,7 +45,7 @@ static TBRuntimeController *controller = nil;
 
 #pragma mark Public
 
-+ (NSArray *)dataForKeyPath:(TBKeyPath *)keyPath {
++ (NSArray *)dataForKeyPath:(FLEXRuntimeKeyPath *)keyPath {
     if (keyPath.bundleKey) {
         if (keyPath.classKey) {
             if (keyPath.methodKey) {
@@ -61,17 +61,17 @@ static TBRuntimeController *controller = nil;
     }
 }
 
-+ (NSArray<NSArray<FLEXMethod *> *> *)methodsForToken:(TBToken *)token
++ (NSArray<NSArray<FLEXMethod *> *> *)methodsForToken:(FLEXSearchToken *)token
                          instance:(NSNumber *)inst
                         inClasses:(NSArray<NSString*> *)classes {
-    return [[TBRuntime runtime]
+    return [[FLEXRuntimeClient runtime]
         methodsForToken:token
         instance:inst
         inClasses:classes
     ];
 }
 
-+ (NSMutableArray<NSString *> *)classesForKeyPath:(TBKeyPath *)keyPath {
++ (NSMutableArray<NSString *> *)classesForKeyPath:(FLEXRuntimeKeyPath *)keyPath {
     return [[self shared] classesForKeyPath:keyPath];
 }
 
@@ -81,20 +81,20 @@ static TBRuntimeController *controller = nil;
         return @"(unspecified)";
     }
     
-    return [[TBRuntime runtime] shortNameForImageName:@(imageName)];
+    return [[FLEXRuntimeClient runtime] shortNameForImageName:@(imageName)];
 }
 
 + (NSString *)imagePathWithShortName:(NSString *)suffix {
-    return [[TBRuntime runtime] imageNameForShortName:suffix];
+    return [[FLEXRuntimeClient runtime] imageNameForShortName:suffix];
 }
 
 + (NSArray *)allBundleNames {
-    return [TBRuntime runtime].imageDisplayNames;
+    return [FLEXRuntimeClient runtime].imageDisplayNames;
 }
 
 #pragma mark Private
 
-- (NSMutableArray *)bundlePathsForToken:(TBToken *)token {
+- (NSMutableArray *)bundlePathsForToken:(FLEXSearchToken *)token {
     // Only cache if no wildcard
     BOOL shouldCache = token == TBWildcardOptionsNone;
 
@@ -104,16 +104,16 @@ static TBRuntimeController *controller = nil;
             return cached;
         }
 
-        NSMutableArray<NSString*> *bundles = [[TBRuntime runtime] bundlePathsForToken:token];
+        NSMutableArray<NSString*> *bundles = [[FLEXRuntimeClient runtime] bundlePathsForToken:token];
         [self.bundlePathsCache setObject:bundles forKey:token];
         return bundles;
     }
     else {
-        return [[TBRuntime runtime] bundlePathsForToken:token];
+        return [[FLEXRuntimeClient runtime] bundlePathsForToken:token];
     }
 }
 
-- (NSMutableArray<NSString *> *)bundleNamesForToken:(TBToken *)token {
+- (NSMutableArray<NSString *> *)bundleNamesForToken:(FLEXSearchToken *)token {
     // Only cache if no wildcard
     BOOL shouldCache = token == TBWildcardOptionsNone;
 
@@ -123,18 +123,18 @@ static TBRuntimeController *controller = nil;
             return cached;
         }
 
-        NSMutableArray<NSString*> *bundles = [[TBRuntime runtime] bundleNamesForToken:token];
+        NSMutableArray<NSString*> *bundles = [[FLEXRuntimeClient runtime] bundleNamesForToken:token];
         [self.bundleNamesCache setObject:bundles forKey:token];
         return bundles;
     }
     else {
-        return [[TBRuntime runtime] bundleNamesForToken:token];
+        return [[FLEXRuntimeClient runtime] bundleNamesForToken:token];
     }
 }
 
-- (NSMutableArray<NSString *> *)classesForKeyPath:(TBKeyPath *)keyPath {
-    TBToken *classToken = keyPath.classKey;
-    TBToken *bundleToken = keyPath.bundleKey;
+- (NSMutableArray<NSString *> *)classesForKeyPath:(FLEXRuntimeKeyPath *)keyPath {
+    FLEXSearchToken *classToken = keyPath.classKey;
+    FLEXSearchToken *bundleToken = keyPath.bundleKey;
     
     // Only cache if no wildcard
     BOOL shouldCache = bundleToken.options == 0 && classToken.options == 0;
@@ -149,7 +149,7 @@ static TBRuntimeController *controller = nil;
     }
 
     NSMutableArray *bundles = [self bundlePathsForToken:bundleToken];
-    NSMutableArray *classes = [[TBRuntime runtime] classesForToken:classToken inBundles:bundles];
+    NSMutableArray *classes = [[FLEXRuntimeClient runtime] classesForToken:classToken inBundles:bundles];
 
     if (shouldCache) {
         [self.classNamesCache setObject:classes forKey:key];
@@ -158,7 +158,7 @@ static TBRuntimeController *controller = nil;
     return classes;
 }
 
-- (NSArray<NSMutableArray<FLEXMethod *> *> *)methodsForKeyPath:(TBKeyPath *)keyPath {
+- (NSArray<NSMutableArray<FLEXMethod *> *> *)methodsForKeyPath:(FLEXRuntimeKeyPath *)keyPath {
     // Only cache if no wildcard, but check cache anyway bc I'm lazy
     NSArray<NSMutableArray *> *cached = [self.methodsCache objectForKey:keyPath];
     if (cached) {
@@ -166,7 +166,7 @@ static TBRuntimeController *controller = nil;
     }
 
     NSArray<NSString *> *classes = [self classesForKeyPath:keyPath];
-    NSArray<NSMutableArray<FLEXMethod *> *> *methodLists = [[TBRuntime runtime]
+    NSArray<NSMutableArray<FLEXMethod *> *> *methodLists = [[FLEXRuntimeClient runtime]
         methodsForToken:keyPath.methodKey
         instance:keyPath.instanceMethods
         inClasses:classes

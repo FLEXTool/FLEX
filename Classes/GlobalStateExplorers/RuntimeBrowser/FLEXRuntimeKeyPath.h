@@ -1,14 +1,13 @@
 //
-//  FLEXKeyPath.h
+//  FLEXRuntimeKeyPath.h
 //  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBToken.h"
+#import "FLEXSearchToken.h"
 @class FLEXMethod;
-
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,20 +20,20 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// The @code TBKeyPathTokenizer @endcode class is used to create
 /// a key path from a string.
-@interface TBKeyPath : NSObject
+@interface FLEXRuntimeKeyPath : NSObject
 
 + (instancetype)empty;
 
 /// @param method must start with either a wildcard or a + or -.
-+ (instancetype)bundle:(TBToken *)bundle
-                 class:(TBToken *)cls
-                method:(TBToken *)method
++ (instancetype)bundle:(FLEXSearchToken *)bundle
+                 class:(FLEXSearchToken *)cls
+                method:(FLEXSearchToken *)method
             isInstance:(NSNumber *)instance
                 string:(NSString *)keyPathString;
 
-@property (nonatomic, nullable, readonly) TBToken *bundleKey;
-@property (nonatomic, nullable, readonly) TBToken *classKey;
-@property (nonatomic, nullable, readonly) TBToken *methodKey;
+@property (nonatomic, nullable, readonly) FLEXSearchToken *bundleKey;
+@property (nonatomic, nullable, readonly) FLEXSearchToken *classKey;
+@property (nonatomic, nullable, readonly) FLEXSearchToken *methodKey;
 
 /// Indicates whether the method token specifies instance methods.
 /// Nil if not specified.

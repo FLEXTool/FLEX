@@ -6,9 +6,9 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBKeyPathSearchController.h"
-#import "TBKeyPathTokenizer.h"
-#import "TBRuntimeController.h"
+#import "FLEXKeyPathSearchController.h"
+#import "FLEXRuntimeKeyPathTokenizer.h"
+#import "FLEXRuntimeController.h"
 #import "NSString+FLEX.h"
 #import "NSArray+Functional.h"
 #import "UITextField+Range.h"
@@ -17,15 +17,15 @@
 #import "FLEXUtility.h"
 #import "FLEXObjectExplorerFactory.h"
 
-@interface TBKeyPathSearchController ()
-@property (nonatomic, readonly, weak) id<TBKeyPathSearchControllerDelegate> delegate;
+@interface FLEXKeyPathSearchController ()
+@property (nonatomic, readonly, weak) id<FLEXKeyPathSearchControllerDelegate> delegate;
 @property (nonatomic) NSTimer *timer;
 /// If \c keyPath is \c nil or if it only has a \c bundleKey, this is
 /// a list of bundle key path components like \c UICatalog or \c UIKit\.framework
 /// If \c keyPath has more than a \c bundleKey then it is a list of class names.
 @property (nonatomic) NSArray<NSString *> *bundlesOrClasses;
 /// nil when search bar is empty
-@property (nonatomic) TBKeyPath *keyPath;
+@property (nonatomic) FLEXRuntimeKeyPath *keyPath;
 
 @property (nonatomic, readonly) NSString *emptySuggestion;
 
@@ -42,11 +42,11 @@
 @property (nonatomic) NSArray<NSArray<FLEXMethod *> *> *classesToMethods;
 @end
 
-@implementation TBKeyPathSearchController
+@implementation FLEXKeyPathSearchController
 
-+ (instancetype)delegate:(id<TBKeyPathSearchControllerDelegate>)delegate {
-    TBKeyPathSearchController *controller = [self new];
-    controller->_bundlesOrClasses = [TBRuntimeController allBundleNames];
++ (instancetype)delegate:(id<FLEXKeyPathSearchControllerDelegate>)delegate {
+    FLEXKeyPathSearchController *controller = [self new];
+    controller->_bundlesOrClasses = [FLEXRuntimeController allBundleNames];
     controller->_delegate         = delegate;
     controller->_emptySuggestion  = NSBundle.mainBundle.executablePath.lastPathComponent;
 
@@ -73,7 +73,7 @@
     }
 }
 
-- (void)setToolbar:(TBKeyPathToolbar *)toolbar {
+- (void)setToolbar:(FLEXRuntimeBrowserToolbar *)toolbar {
     _toolbar = toolbar;
     self.delegate.searchController.searchBar.inputAccessoryView = toolbar;
 }
@@ -104,7 +104,7 @@
     NSString *keyPath = [orig stringByReplacingLastKeyPathComponent:text];
     self.delegate.searchController.searchBar.text = keyPath;
 
-    self.keyPath = [TBKeyPathTokenizer tokenizeString:keyPath];
+    self.keyPath = [FLEXRuntimeKeyPathTokenizer tokenizeString:keyPath];
 
     // Get classes if class was selected
     if (self.keyPath.classKey.isAbsolute && self.keyPath.methodKey.isAny) {
@@ -169,14 +169,14 @@
             // Here, our class key is 'absolute'; .classes is a list of superclasses
             // and we want to show the methods for those classes specifically
             // TODO: add caching to this somehow
-            NSMutableArray *methods = [TBRuntimeController
+            NSMutableArray *methods = [FLEXRuntimeController
                 methodsForToken:self.keyPath.methodKey
                 instance:self.keyPath.instanceMethods
                 inClasses:self.classes
             ].mutableCopy;
             
             // Remove classes without results if we're searching for a method
-            TBToken *methodKey = self.keyPath.methodKey;
+            FLEXSearchToken *methodKey = self.keyPath.methodKey;
             if (methodKey && !methodKey.isAny) {
                 [self setNonEmptyMethodLists:methods withClasses:self.classes.mutableCopy];
             } else {
@@ -184,13 +184,13 @@
             }
         }
         else {
-            TBKeyPath *keyPath = self.keyPath;
-            NSArray *models = [TBRuntimeController dataForKeyPath:keyPath];
+            FLEXRuntimeKeyPath *keyPath = self.keyPath;
+            NSArray *models = [FLEXRuntimeController dataForKeyPath:keyPath];
             if (keyPath.methodKey) { // We're looking at methods
                 self.bundlesOrClasses = nil;
                 
                 NSMutableArray *methods = models.mutableCopy;
-                NSMutableArray *classes = [TBRuntimeController classesForKeyPath:keyPath];
+                NSMutableArray *classes = [FLEXRuntimeController classesForKeyPath:keyPath];
                 self.classes = classes.copy;
                 [self setNonEmptyMethodLists:methods withClasses:classes];
             } else { // We're looking at bundles or classes
@@ -227,7 +227,7 @@
 
 - (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     // Check if character is even legal
-    if (![TBKeyPathTokenizer allowedInKeyPath:text]) {
+    if (![FLEXRuntimeKeyPathTokenizer allowedInKeyPath:text]) {
         return NO;
     }
     
@@ -240,7 +240,7 @@
     // Actually parse input
     @try {
         text = [searchBar.text stringByReplacingCharactersInRange:range withString:text] ?: text;
-        self.keyPath = [TBKeyPathTokenizer tokenizeString:text];
+        self.keyPath = [FLEXRuntimeKeyPathTokenizer tokenizeString:text];
         if (self.keyPath.classKey.isAbsolute && terminatedToken) {
             [self didSelectAbsoluteClass:self.keyPath.classKey.string];
         }
@@ -267,7 +267,7 @@
     }
     // ... or remove all rows
     else {
-        _bundlesOrClasses = [TBRuntimeController allBundleNames];
+        _bundlesOrClasses = [FLEXRuntimeController allBundleNames];
         _classesToMethods = nil;
         _classes = nil;
         _keyPath = nil;
@@ -277,7 +277,7 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    self.keyPath = [TBKeyPath empty];
+    self.keyPath = [FLEXRuntimeKeyPath empty];
     [self updateTable];
 }
 
@@ -397,7 +397,7 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     NSString *bundleSuffixOrClass = self.bundlesOrClasses[indexPath.row];
-    NSString *imagePath = [TBRuntimeController imagePathWithShortName:bundleSuffixOrClass];
+    NSString *imagePath = [FLEXRuntimeController imagePathWithShortName:bundleSuffixOrClass];
     NSBundle *bundle = [NSBundle bundleWithPath:imagePath.stringByDeletingLastPathComponent];
 
     if (bundle) {

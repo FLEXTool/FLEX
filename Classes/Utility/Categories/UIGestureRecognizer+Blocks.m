@@ -16,12 +16,12 @@ static void * actionKey;
 
 + (instancetype)action:(GestureBlock)action {
     UIGestureRecognizer *gesture = [[self alloc] initWithTarget:nil action:nil];
-    [gesture addTarget:gesture action:@selector(tb_invoke)];
+    [gesture addTarget:gesture action:@selector(flex_invoke)];
     gesture.action = action;
     return gesture;
 }
 
-- (void)tb_invoke {
+- (void)flex_invoke {
     self.action(self);
 }
 

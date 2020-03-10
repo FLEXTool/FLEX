@@ -1,36 +1,38 @@
 //
-//  FLEXToolbarButton.m
+//  FLEXKBToolbarButton.m
+//  FLEX
 //
 //  Created by Tanner on 6/11/17.
+//  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBToolbarButton.h"
+#import "FLEXKBToolbarButton.h"
 #import "UIFont+FLEX.h"
 #import "FLEXUtility.h"
 #import "CALayer+FLEX.h"
 
-@interface TBToolbarButton ()
+@interface FLEXKBToolbarButton ()
 @property (nonatomic      ) NSString *title;
-@property (nonatomic, copy) TBToolbarAction buttonPressBlock;
+@property (nonatomic, copy) FLEXKBToolbarAction buttonPressBlock;
 /// YES if appearance is set to `default`
 @property (nonatomic, readonly) BOOL useSystemAppearance;
 /// YES if the current trait collection is set to dark mode and \c useSystemAppearance is YES
 @property (nonatomic, readonly) BOOL usingDarkMode;
 @end
 
-@implementation TBToolbarButton
+@implementation FLEXKBToolbarButton
 
 + (instancetype)buttonWithTitle:(NSString *)title {
     return [[self alloc] initWithTitle:title];
 }
 
-+ (instancetype)buttonWithTitle:(NSString *)title action:(TBToolbarAction)eventHandler forControlEvents:(UIControlEvents)controlEvent {
-    TBToolbarButton *newButton = [self buttonWithTitle:title];
++ (instancetype)buttonWithTitle:(NSString *)title action:(FLEXKBToolbarAction)eventHandler forControlEvents:(UIControlEvents)controlEvent {
+    FLEXKBToolbarButton *newButton = [self buttonWithTitle:title];
     [newButton addEventHandler:eventHandler forControlEvents:controlEvent];
     return newButton;
 }
 
-+ (instancetype)buttonWithTitle:(NSString *)title action:(TBToolbarAction)eventHandler {
++ (instancetype)buttonWithTitle:(NSString *)title action:(FLEXKBToolbarAction)eventHandler {
     return [self buttonWithTitle:title action:eventHandler forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -63,7 +65,7 @@
     return self;
 }
 
-- (void)addEventHandler:(TBToolbarAction)eventHandler forControlEvents:(UIControlEvents)controlEvent {
+- (void)addEventHandler:(FLEXKBToolbarAction)eventHandler forControlEvents:(UIControlEvents)controlEvent {
     self.buttonPressBlock = eventHandler;
     [self addTarget:self action:@selector(buttonPressed) forControlEvents:controlEvent];
 }
@@ -113,7 +115,7 @@
 }
 
 - (BOOL)isEqual:(id)object {
-    if ([object isKindOfClass:[TBToolbarButton class]]) {
+    if ([object isKindOfClass:[FLEXKBToolbarButton class]]) {
         return [self.title isEqualToString:[object title]];
     }
 
@@ -151,7 +153,7 @@
 @end
 
 
-@implementation TBToolbarSuggestedButton
+@implementation FLEXKBToolbarSuggestedButton
 
 - (void)buttonPressed {
     self.buttonPressBlock(self.title, YES);

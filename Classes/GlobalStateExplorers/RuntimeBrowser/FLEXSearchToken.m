@@ -1,22 +1,22 @@
 //
-//  FLEXToken.m
+//  FLEXSearchToken.m
 //  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBToken.h"
+#import "FLEXSearchToken.h"
 
-
-@interface TBToken () {
-    NSString *tb_description;
+@interface FLEXSearchToken () {
+    NSString *flex_description;
 }
 @end
-@implementation TBToken
+
+@implementation FLEXSearchToken
 
 + (instancetype)any {
-    static TBToken *any = nil;
+    static FLEXSearchToken *any = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         any = [self string:nil options:TBWildcardOptionsAny];
@@ -26,7 +26,7 @@
 }
 
 + (instancetype)string:(NSString *)string options:(TBWildcardOptions)options {
-    TBToken *token  = [self new];
+    FLEXSearchToken *token  = [self new];
     token->_string  = string;
     token->_options = options;
     return token;
@@ -45,16 +45,16 @@
 }
 
 - (NSString *)description {
-    if (tb_description) {
-        return tb_description;
+    if (flex_description) {
+        return flex_description;
     }
 
     switch (_options) {
         case TBWildcardOptionsNone:
-            tb_description = _string;
+            flex_description = _string;
             break;
         case TBWildcardOptionsAny:
-            tb_description = @"*";
+            flex_description = @"*";
             break;
         default: {
             NSMutableString *desc = [NSMutableString string];
@@ -65,11 +65,11 @@
             if (_options & TBWildcardOptionsSuffix) {
                 [desc appendString:@"*"];
             }
-            tb_description = desc;
+            flex_description = desc;
         }
     }
 
-    return tb_description;
+    return flex_description;
 }
 
 - (NSUInteger)hash {
@@ -77,8 +77,8 @@
 }
 
 - (BOOL)isEqual:(id)object {
-    if ([object isKindOfClass:[TBToken class]]) {
-        TBToken *token = object;
+    if ([object isKindOfClass:[FLEXSearchToken class]]) {
+        FLEXSearchToken *token = object;
         return [_string isEqualToString:token->_string] && _options == token->_options;
     }
 

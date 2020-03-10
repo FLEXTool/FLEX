@@ -1,17 +1,19 @@
 //
 //  FLEXKeyboardToolbar.m
+//  FLEX
 //
 //  Created by Tanner on 6/11/17.
+//  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBKeyboardToolbar.h"
+#import "FLEXKeyboardToolbar.h"
 #import "FLEXUtility.h"
 
 #define kToolbarHeight 44
 #define kButtonSpacing 6
 #define kScrollViewHorizontalMargins 3
 
-@interface TBKeyboardToolbar ()
+@interface FLEXKeyboardToolbar ()
 
 /// The fake top border to replicate the toolbar.
 @property (nonatomic) CALayer      *topBorder;
@@ -24,7 +26,7 @@
 @property (nonatomic, readonly) BOOL usingDarkMode;
 @end
 
-@implementation TBKeyboardToolbar
+@implementation FLEXKeyboardToolbar
 
 + (instancetype)toolbarWithButtons:(NSArray *)buttons {
     return [[self alloc] initWithButtons:buttons];
@@ -164,7 +166,7 @@
     CGFloat top    = self.scrollView.contentInset.top;
     CGFloat bottom = self.scrollView.contentInset.bottom;
     
-    for (TBToolbarButton *button in self.buttons) {
+    for (FLEXKBToolbarButton *button in self.buttons) {
         button.appearance = self.appearance;
         
         originFrame             = button.frame;
@@ -191,7 +193,7 @@
     [self setNeedsLayout];
 }
 
-- (void)setButtons:(NSArray<TBToolbarButton *> *)buttons {
+- (void)setButtons:(NSArray<FLEXKBToolbarButton *> *)buttons {
     [_buttons makeObjectsPerformSelector:@selector(removeFromSuperview)];
     _buttons = buttons.copy;
     

@@ -1,41 +1,40 @@
 //
-//  FLEXKeyPath.m
+//  FLEXRuntimeKeyPath.m
 //  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBKeyPath.h"
+#import "FLEXRuntimeKeyPath.h"
 
-
-@interface TBKeyPath () {
-    NSString *tb_description;
+@interface FLEXRuntimeKeyPath () {
+    NSString *flex_description;
 }
 @end
 
-@implementation TBKeyPath
+@implementation FLEXRuntimeKeyPath
 
 + (instancetype)empty {
-    static TBKeyPath *empty = nil;
+    static FLEXRuntimeKeyPath *empty = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        TBToken *any = [TBToken any];
+        FLEXSearchToken *any = [FLEXSearchToken any];
 
         empty = [self new];
         empty->_bundleKey = any;
-        empty->tb_description = @"";
+        empty->flex_description = @"";
     });
 
     return empty;
 }
 
-+ (instancetype)bundle:(TBToken *)bundle
-                 class:(TBToken *)cls
-                method:(TBToken *)method
++ (instancetype)bundle:(FLEXSearchToken *)bundle
+                 class:(FLEXSearchToken *)cls
+                method:(FLEXSearchToken *)method
             isInstance:(NSNumber *)instance
                 string:(NSString *)keyPathString {
-    TBKeyPath *keyPath  = [self new];
+    FLEXRuntimeKeyPath *keyPath  = [self new];
     keyPath->_bundleKey = bundle;
     keyPath->_classKey  = cls;
     keyPath->_methodKey = method;
@@ -46,23 +45,23 @@
     if ([keyPathString hasSuffix:@"*"]) {
         keyPathString = [keyPathString substringToIndex:keyPathString.length];
     }
-    keyPath->tb_description = keyPathString;
+    keyPath->flex_description = keyPathString;
 
     return keyPath;
 }
 
 - (NSString *)description {
-    return tb_description;
+    return flex_description;
 }
 
 - (NSUInteger)hash {
-    return tb_description.hash;
+    return flex_description.hash;
 }
 
 - (BOOL)isEqual:(id)object {
-    if ([object isKindOfClass:[TBKeyPath class]]) {
-        TBKeyPath *kp = object;
-        return [tb_description isEqualToString:kp->tb_description];
+    if ([object isKindOfClass:[FLEXRuntimeKeyPath class]]) {
+        FLEXRuntimeKeyPath *kp = object;
+        return [flex_description isEqualToString:kp->flex_description];
     }
 
     return NO;

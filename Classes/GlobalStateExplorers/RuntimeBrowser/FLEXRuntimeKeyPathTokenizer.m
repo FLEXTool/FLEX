@@ -1,17 +1,16 @@
 //
-//  FLEXKeyPathTokenizer.m
+//  FLEXRuntimeKeyPathTokenizer.m
 //  FLEX
 //
 //  Created by Tanner on 3/22/17.
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "TBKeyPathTokenizer.h"
+#import "FLEXRuntimeKeyPathTokenizer.h"
 
 #define TBCountOfStringOccurence(target, str) ([target componentsSeparatedByString:str].count - 1)
 
-
-@implementation TBKeyPathTokenizer
+@implementation FLEXRuntimeKeyPathTokenizer
 
 #pragma mark Initialization
 
@@ -38,7 +37,7 @@ static NSCharacterSet *methodAllowed     = nil;
 
 #pragma mark Public
 
-+ (TBKeyPath *)tokenizeString:(NSString *)userInput {
++ (FLEXRuntimeKeyPath *)tokenizeString:(NSString *)userInput {
     if (!userInput.length) {
         return nil;
     }
@@ -54,11 +53,11 @@ static NSCharacterSet *methodAllowed     = nil;
 
     NSNumber *instance = nil;
     NSScanner *scanner = [NSScanner scannerWithString:userInput];
-    TBToken *bundle    = [self scanToken:scanner allowed:filenameAllowed first:filenameAllowed];
-    TBToken *cls       = [self scanToken:scanner allowed:identifierAllowed first:firstAllowed];
-    TBToken *method    = tokens > 2 ? [self scanMethodToken:scanner instance:&instance] : nil;
+    FLEXSearchToken *bundle    = [self scanToken:scanner allowed:filenameAllowed first:filenameAllowed];
+    FLEXSearchToken *cls       = [self scanToken:scanner allowed:identifierAllowed first:firstAllowed];
+    FLEXSearchToken *method    = tokens > 2 ? [self scanMethodToken:scanner instance:&instance] : nil;
 
-    return [TBKeyPath bundle:bundle
+    return [FLEXRuntimeKeyPath bundle:bundle
                        class:cls
                       method:method
                   isInstance:instance
@@ -82,10 +81,10 @@ static NSCharacterSet *methodAllowed     = nil;
     return tokenCount;
 }
 
-+ (TBToken *)scanToken:(NSScanner *)scanner allowed:(NSCharacterSet *)allowedChars first:(NSCharacterSet *)first {
++ (FLEXSearchToken *)scanToken:(NSScanner *)scanner allowed:(NSCharacterSet *)allowedChars first:(NSCharacterSet *)first {
     if (scanner.isAtEnd) {
         if ([scanner.string hasSuffix:@"."] && ![scanner.string hasSuffix:@"\\."]) {
-            return [TBToken string:nil options:TBWildcardOptionsAny];
+            return [FLEXSearchToken string:nil options:TBWildcardOptionsAny];
         }
         return nil;
     }
@@ -99,10 +98,10 @@ static NSCharacterSet *methodAllowed     = nil;
     }
 
     if ([scanner scanString:@"*." intoString:nil]) {
-        return [TBToken string:nil options:TBWildcardOptionsAny];
+        return [FLEXSearchToken string:nil options:TBWildcardOptionsAny];
     } else if ([scanner scanString:@"*" intoString:nil]) {
         if (scanner.isAtEnd) {
-            return [TBToken any];
+            return [FLEXSearchToken any];
         }
         
         options |= TBWildcardOptionsPrefix;
@@ -123,7 +122,7 @@ static NSCharacterSet *methodAllowed     = nil;
                     [token appendString:@"."];
                 } else if (scanner.isAtEnd && options == TBWildcardOptionsPrefix) {
                     // Only allow standalone '\' if prefixed by '*'
-                    return [TBToken any];
+                    return [FLEXSearchToken any];
                 } else {
                     // Token starts with a number, period, or something else not allowed,
                     // or token is a standalone '\' with no '*' prefix
@@ -142,7 +141,7 @@ static NSCharacterSet *methodAllowed     = nil;
                 [token appendString:@"."];
             } else if (scanner.isAtEnd) {
                 // Ignore forward slash not followed by period if at end
-                return [TBToken string:token options:options | TBWildcardOptionsSuffix];
+                return [FLEXSearchToken string:token options:options | TBWildcardOptionsSuffix];
             } else {
                 // Only periods can follow a forward slash
                 @throw NSInternalInconsistencyException;
@@ -175,13 +174,13 @@ static NSCharacterSet *methodAllowed     = nil;
         options |= TBWildcardOptionsSuffix;
     }
 
-    return [TBToken string:token options:options];
+    return [FLEXSearchToken string:token options:options];
 }
 
-+ (TBToken *)scanMethodToken:(NSScanner *)scanner instance:(NSNumber **)instance {
++ (FLEXSearchToken *)scanMethodToken:(NSScanner *)scanner instance:(NSNumber **)instance {
     if (scanner.isAtEnd) {
         if ([scanner.string hasSuffix:@"."]) {
-            return [TBToken string:nil options:TBWildcardOptionsAny];
+            return [FLEXSearchToken string:nil options:TBWildcardOptionsAny];
         }
         return nil;
     }
@@ -210,7 +209,7 @@ static NSCharacterSet *methodAllowed     = nil;
     }
 
     if (scanner.isAtEnd) {
-        return [TBToken string:@"" options:TBWildcardOptionsSuffix];
+        return [FLEXSearchToken string:@"" options:TBWildcardOptionsSuffix];
     }
 
     return [self scanToken:scanner allowed:methodAllowed first:firstAllowed];
