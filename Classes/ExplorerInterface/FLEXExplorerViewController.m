@@ -149,9 +149,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    if (self.window.isKeyWindow) {
-        [self.window resignKeyWindow];
-    }
+    // Commenting this out until I can figure out a better way to solve this
+//    if (self.window.isKeyWindow) {
+//        [self.window resignKeyWindow];
+//    }
     
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     UIInterfaceOrientationMask supportedOrientations = [FLEXUtility infoPlistSupportedInterfaceOrientationsMask];
@@ -554,26 +555,30 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)handleToolbarShowTabsGesture:(UILongPressGestureRecognizer *)sender {
-    // Back up the UIMenuController items since dismissViewController: will attempt to replace them
-    self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-    
-    // Don't use FLEXNavigationController because the tab viewer itself is not a tab
-    [super presentViewController:[[UINavigationController alloc]
-        initWithRootViewController:[FLEXTabsViewController new]
-    ] animated:YES completion:nil];
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
+        
+        // Don't use FLEXNavigationController because the tab viewer itself is not a tab
+        [super presentViewController:[[UINavigationController alloc]
+            initWithRootViewController:[FLEXTabsViewController new]
+        ] animated:YES completion:nil];
+    }
 }
 
 - (void)handleToolbarWindowManagerGesture:(UILongPressGestureRecognizer *)sender {
-    // Back up the UIMenuController items since dismissViewController: will attempt to replace them
-    self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-    
-    [super presentViewController:[FLEXNavigationController
-        withRootViewController:[FLEXWindowManagerController new]
-    ] animated:YES completion:nil];
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
+        
+        [super presentViewController:[FLEXNavigationController
+            withRootViewController:[FLEXWindowManagerController new]
+        ] animated:YES completion:nil];
+    }
 }
 
 - (void)handleToolbarShowViewControllersGesture:(UILongPressGestureRecognizer *)sender {
-    if (self.viewsAtTapPoint.count) {
+    if (sender.state == UIGestureRecognizerStateBegan && self.viewsAtTapPoint.count) {
         // Back up the UIMenuController items since dismissViewController: will attempt to replace them
         self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
         
