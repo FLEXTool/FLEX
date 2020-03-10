@@ -85,7 +85,7 @@ static uint8_t (*OSLogGetType)(void *);
     if (_persistent == persistent) return;
     
     _persistent = persistent;
-    self.messages = persistent ? [NSMutableArray array] : nil;
+    self.messages = persistent ? [NSMutableArray new] : nil;
 }
 
 - (BOOL)startMonitoring {

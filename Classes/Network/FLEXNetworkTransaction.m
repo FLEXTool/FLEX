@@ -35,7 +35,7 @@
             NSInputStream *bodyStream = [self.request.HTTPBodyStream copy];
             const NSUInteger bufferSize = 1024;
             uint8_t buffer[bufferSize];
-            NSMutableData *data = [NSMutableData data];
+            NSMutableData *data = [NSMutableData new];
             [bodyStream open];
             NSInteger readBytes = 0;
             do {

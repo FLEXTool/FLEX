@@ -22,7 +22,7 @@
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...) {
     if (returnType == NULL) return nil;
     
-    NSMutableString *encoding = [NSMutableString string];
+    NSMutableString *encoding = [NSMutableString new];
     [encoding appendFormat:@"%s%s%s", returnType, @encode(id), @encode(SEL)];
     
     va_list args;
@@ -50,7 +50,7 @@ NSArray<Class> *FLEXGetAllSubclasses(Class cls, BOOL includeSelf) {
         size   = objc_getClassList(buffer, count);
     } while (size != count);
     
-    NSMutableArray *classes = [NSMutableArray array];
+    NSMutableArray *classes = [NSMutableArray new];
     if (includeSelf) {
         [classes addObject:cls];
     }
@@ -75,7 +75,7 @@ NSArray<Class> *FLEXGetClassHierarchy(Class cls, BOOL includeSelf) {
         return nil;
     }
     
-    NSMutableArray *classes = [NSMutableArray array];
+    NSMutableArray *classes = [NSMutableArray new];
     if (includeSelf) {
         [classes addObject:cls];
     }
@@ -201,7 +201,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     unsigned int mcount;
     Method *objcmethods = class_copyMethodList([self class], &mcount);
 
-    NSMutableArray *methods = [NSMutableArray array];
+    NSMutableArray *methods = [NSMutableArray new];
     for (int i = 0; i < mcount; i++) {
         FLEXMethod *m = [FLEXMethod method:objcmethods[i] isInstanceMethod:YES];
         if (m) {
@@ -217,7 +217,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     unsigned int mcount;
     Method *objcmethods = class_copyMethodList(self.flex_metaclass, &mcount);
 
-    NSMutableArray *methods = [NSMutableArray array];
+    NSMutableArray *methods = [NSMutableArray new];
     for (int i = 0; i < mcount; i++) {
         FLEXMethod *m = [FLEXMethod method:objcmethods[i] isInstanceMethod:NO];
         if (m) {
@@ -295,7 +295,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     unsigned int ivcount;
     Ivar *objcivars = class_copyIvarList([self class], &ivcount);
     
-    NSMutableArray *ivars = [NSMutableArray array];
+    NSMutableArray *ivars = [NSMutableArray new];
     for (int i = 0; i < ivcount; i++) {
         [ivars addObject:[FLEXIvar ivar:objcivars[i]]];
     }
@@ -382,7 +382,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     unsigned int pcount;
     objc_property_t *objcproperties = class_copyPropertyList(self, &pcount);
     
-    NSMutableArray *properties = [NSMutableArray array];
+    NSMutableArray *properties = [NSMutableArray new];
     for (int i = 0; i < pcount; i++) {
         [properties addObject:[FLEXProperty property:objcproperties[i] onClass:self]];
     }
@@ -396,7 +396,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     unsigned int pcount;
     objc_property_t *objcproperties = class_copyPropertyList(metaclass, &pcount);
 
-    NSMutableArray *properties = [NSMutableArray array];
+    NSMutableArray *properties = [NSMutableArray new];
     for (int i = 0; i < pcount; i++) {
         [properties addObject:[FLEXProperty property:objcproperties[i] onClass:metaclass]];
     }

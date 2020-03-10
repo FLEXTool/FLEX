@@ -176,7 +176,7 @@
 }
 
 - (NSString *)fullDescription {
-    NSMutableArray<NSString *> *attributesStrings = [NSMutableArray array];
+    NSMutableArray<NSString *> *attributesStrings = [NSMutableArray new];
     FLEXPropertyAttributes *attributes = self.attributes;
 
     // Atomicity

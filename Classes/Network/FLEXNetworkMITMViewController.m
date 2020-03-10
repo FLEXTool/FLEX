@@ -266,7 +266,7 @@
                 [self tryUpdateTransactions];
             }];
 
-            NSMutableArray<NSIndexPath *> *indexPathsToReload = [NSMutableArray array];
+            NSMutableArray<NSIndexPath *> *indexPathsToReload = [NSMutableArray new];
             for (NSInteger row = 0; row < addedRowCount; row++) {
                 [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
             }

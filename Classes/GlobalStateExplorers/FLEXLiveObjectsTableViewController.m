@@ -70,8 +70,8 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     }];
     
     // Convert our CF primitive dictionary into a nicer mapping of class name strings to counts that we will use as the table's model.
-    NSMutableDictionary<NSString *, NSNumber *> *mutableCountsForClassNames = [NSMutableDictionary dictionary];
-    NSMutableDictionary<NSString *, NSNumber *> *mutableSizesForClassNames = [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, NSNumber *> *mutableCountsForClassNames = [NSMutableDictionary new];
+    NSMutableDictionary<NSString *, NSNumber *> *mutableSizesForClassNames = [NSMutableDictionary new];
     for (unsigned int i = 0; i < classCount; i++) {
         Class class = classes[i];
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));

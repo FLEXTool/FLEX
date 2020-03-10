@@ -238,7 +238,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 #pragma mark - Method Helpers (Public)
 
 + (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method {
-    NSMutableArray<NSString *> *components = [NSMutableArray array];
+    NSMutableArray<NSString *> *components = [NSMutableArray new];
 
     NSString *selectorName = NSStringFromSelector(method_getName(method));
     NSMutableArray<NSString *> *selectorComponents = [selectorName componentsSeparatedByString:@":"].mutableCopy;
@@ -678,7 +678,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
         NSArray<NSString *> *const fieldNames = [fieldNamesString
             componentsSeparatedByString:[NSString stringWithFormat:@"%c", FLEXTypeEncodingQuote]
         ];
-        NSMutableString *finalFieldNamesString = [NSMutableString string];
+        NSMutableString *finalFieldNamesString = [NSMutableString new];
         for (NSString *const fieldName in fieldNames) {
             if (fieldName.length > 0) {
                 if (finalFieldNamesString.length > 0) {

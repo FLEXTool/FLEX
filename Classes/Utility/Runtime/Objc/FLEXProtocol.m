@@ -28,7 +28,7 @@
     unsigned int prcount;
     Protocol *__unsafe_unretained*protocols = objc_copyProtocolList(&prcount);
     
-    NSMutableArray *all = [NSMutableArray array];
+    NSMutableArray *all = [NSMutableArray new];
     for(NSUInteger i = 0; i < prcount; i++)
         [all addObject:[self protocol:protocols[i]]];
     
@@ -73,22 +73,22 @@
     struct objc_method_description *objcrmethods = protocol_copyMethodDescriptionList(self.objc_protocol, YES, YES, &mdrcount);
     struct objc_method_description *objcomethods = protocol_copyMethodDescriptionList(self.objc_protocol, NO, YES, &mdocount);
     
-    NSMutableArray *properties = [NSMutableArray array];
+    NSMutableArray *properties = [NSMutableArray new];
     for (int i = 0; i < prcount; i++)
         [properties addObject:[FLEXProperty property:objcproperties[i]]];
     _properties = properties;
     
-    NSMutableArray *protocols = [NSMutableArray array];
+    NSMutableArray *protocols = [NSMutableArray new];
     for (int i = 0; i < pccount; i++)
         [protocols addObject:[FLEXProtocol protocol:objcprotocols[i]]];
     _protocols = protocols;
     
-    NSMutableArray *requiredMethods = [NSMutableArray array];
+    NSMutableArray *requiredMethods = [NSMutableArray new];
     for (int i = 0; i < mdrcount; i++)
         [requiredMethods addObject:[FLEXMethodDescription description:objcrmethods[i]]];
     _requiredMethods = requiredMethods;
     
-    NSMutableArray *optionalMethods = [NSMutableArray array];
+    NSMutableArray *optionalMethods = [NSMutableArray new];
     for (int i = 0; i < mdocount; i++)
         [optionalMethods addObject:[FLEXMethodDescription description:objcomethods[i]]];
     _optionalMethods = optionalMethods;

@@ -60,10 +60,10 @@
 
 - (void)main {
     NSFileManager *fileManager = NSFileManager.defaultManager;
-    NSMutableArray<NSString *> *searchPaths = [NSMutableArray array];
-    NSMutableDictionary<NSString *, NSNumber *> *sizeMapping = [NSMutableDictionary dictionary];
+    NSMutableArray<NSString *> *searchPaths = [NSMutableArray new];
+    NSMutableDictionary<NSString *, NSNumber *> *sizeMapping = [NSMutableDictionary new];
     uint64_t totalSize = 0;
-    NSMutableArray<NSString *> *stack = [NSMutableArray array];
+    NSMutableArray<NSString *> *stack = [NSMutableArray new];
     [stack flex_push:self.path];
     
     //recursive found all match searchString paths, and precomputing there size

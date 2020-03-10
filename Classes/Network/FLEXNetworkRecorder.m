@@ -41,8 +41,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         self.responseCache.totalCostLimit = responseCacheLimit ?: 25 * 1024 * 1024;
         [self.responseCache setTotalCostLimit:responseCacheLimit];
         
-        self.orderedTransactions = [NSMutableArray array];
-        self.networkTransactionsForRequestIdentifiers = [NSMutableDictionary dictionary];
+        self.orderedTransactions = [NSMutableArray new];
+        self.networkTransactionsForRequestIdentifiers = [NSMutableDictionary new];
 
         // Serial queue used because we use mutable objects that are not thread safe
         self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_SERIAL);

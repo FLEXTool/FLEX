@@ -119,7 +119,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 }
 
 - (NSString *)transactionDetailsLabelText {
-    NSMutableArray<NSString *> *detailComponents = [NSMutableArray array];
+    NSMutableArray<NSString *> *detailComponents = [NSMutableArray new];
 
     NSString *timestamp = [[self class] timestampStringFromRequestDate:self.transaction.startTime];
     if (timestamp.length > 0) {

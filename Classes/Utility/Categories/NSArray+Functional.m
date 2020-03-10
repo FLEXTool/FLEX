@@ -29,7 +29,7 @@
 }
 
 - (__kindof NSArray *)flex_flatmapped:(NSArray *(^)(id, NSUInteger))block {
-    NSMutableArray *array = [NSMutableArray array];
+    NSMutableArray *array = [NSMutableArray new];
     [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         NSArray *toAdd = block(obj, idx);
         if (toAdd) {

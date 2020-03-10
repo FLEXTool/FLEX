@@ -54,7 +54,7 @@
 - (NSArray<FLEXArgumentInputView *> *)argumentInputViews {
     Method method = self.method.objc_method;
     NSArray *methodComponents = [FLEXRuntimeUtility prettyArgumentComponentsForMethod:method];
-    NSMutableArray<FLEXArgumentInputView *> *argumentInputViews = [NSMutableArray array];
+    NSMutableArray<FLEXArgumentInputView *> *argumentInputViews = [NSMutableArray new];
     unsigned int argumentIndex = kFLEXNumberOfImplicitArgs;
 
     for (NSString *methodComponent in methodComponents) {
@@ -75,7 +75,7 @@
     [super actionButtonPressed:sender];
 
     // Gather arguments
-    NSMutableArray *arguments = [NSMutableArray array];
+    NSMutableArray *arguments = [NSMutableArray new];
     for (FLEXArgumentInputView *inputView in self.fieldEditorView.argumentInputViews) {
         // Use NSNull as a nil placeholder; it will be interpreted as nil
         [arguments addObject:inputView.inputValue ?: NSNull.null];

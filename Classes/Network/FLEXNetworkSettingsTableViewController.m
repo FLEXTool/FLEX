@@ -32,7 +32,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    NSMutableArray<UITableViewCell *> *mutableCells = [NSMutableArray array];
+    NSMutableArray<UITableViewCell *> *mutableCells = [NSMutableArray new];
 
     UITableViewCell *networkDebuggingCell = [self switchCellWithTitle:@"Network Debugging" toggleAction:@selector(networkDebuggingToggled:) isOn:FLEXNetworkObserver.isEnabled];
     [mutableCells addObject:networkDebuggingCell];

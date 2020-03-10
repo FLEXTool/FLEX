@@ -83,7 +83,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 }
 
 - (void)rebuildTableSections {
-    NSMutableArray<FLEXNetworkDetailSection *> *sections = [NSMutableArray array];
+    NSMutableArray<FLEXNetworkDetailSection *> *sections = [NSMutableArray new];
 
     FLEXNetworkDetailSection *generalSection = [[self class] generalSectionForTransaction:self.transaction];
     if (generalSection.rows.count > 0) {
@@ -246,7 +246,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 #pragma mark - Table Data Generation
 
 + (FLEXNetworkDetailSection *)generalSectionForTransaction:(FLEXNetworkTransaction *)transaction {
-    NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray array];
+    NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray new];
 
     FLEXNetworkDetailRow *requestURLRow = [FLEXNetworkDetailRow new];
     requestURLRow.title = @"Request URL";

@@ -22,7 +22,7 @@
 - (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        NSMutableArray<FLEXArgumentInputView *> *inputViews = [NSMutableArray array];
+        NSMutableArray<FLEXArgumentInputView *> *inputViews = [NSMutableArray new];
         NSArray<NSString *> *customTitles = [[self class] customFieldTitlesForTypeEncoding:typeEncoding];
         [FLEXRuntimeUtility enumerateTypesInStructEncoding:typeEncoding usingBlock:^(NSString *structName,
                                                                                      const char *fieldTypeEncoding,

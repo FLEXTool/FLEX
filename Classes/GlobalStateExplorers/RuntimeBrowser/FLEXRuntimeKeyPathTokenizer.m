@@ -90,7 +90,7 @@ static NSCharacterSet *methodAllowed     = nil;
     }
 
     TBWildcardOptions options = TBWildcardOptionsNone;
-    NSMutableString *token = [NSMutableString string];
+    NSMutableString *token = [NSMutableString new];
 
     // Token cannot start with '.'
     if ([scanner scanString:@"." intoString:nil]) {

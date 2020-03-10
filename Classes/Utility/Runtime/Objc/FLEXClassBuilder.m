@@ -74,7 +74,7 @@
 - (NSArray *)addMethods:(NSArray *)methods {
     NSParameterAssert(methods.count);
     
-    NSMutableArray *failed = [NSMutableArray array];
+    NSMutableArray *failed = [NSMutableArray new];
     for (FLEXMethodBase *m in methods) {
         if (!class_addMethod(self.workingClass, m.selector, m.implementation, m.typeEncoding.UTF8String)) {
             [failed addObject:m];
@@ -87,7 +87,7 @@
 - (NSArray *)addProperties:(NSArray *)properties {
     NSParameterAssert(properties.count);
     
-    NSMutableArray *failed = [NSMutableArray array];
+    NSMutableArray *failed = [NSMutableArray new];
     for (FLEXProperty *p in properties) {
         unsigned int pcount;
         objc_property_attribute_t *attributes = [p copyAttributesList:&pcount];
@@ -103,7 +103,7 @@
 - (NSArray *)addProtocols:(NSArray *)protocols {
     NSParameterAssert(protocols.count);
     
-    NSMutableArray *failed = [NSMutableArray array];
+    NSMutableArray *failed = [NSMutableArray new];
     for (FLEXProtocol *p in protocols) {
         if (!class_addProtocol(self.workingClass, p.objc_protocol)) {
             [failed addObject:p];
@@ -116,7 +116,7 @@
 - (NSArray *)addIvars:(NSArray *)ivars {
     NSParameterAssert(ivars.count);
     
-    NSMutableArray *failed = [NSMutableArray array];
+    NSMutableArray *failed = [NSMutableArray new];
     for (FLEXIvarBuilder *ivar in ivars) {
         if (!class_addIvar(self.workingClass, ivar.name.UTF8String, ivar.size, ivar.alignment, ivar.encoding.UTF8String)) {
             [failed addObject:ivar];

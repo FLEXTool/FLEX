@@ -57,7 +57,7 @@
             flex_description = @"*";
             break;
         default: {
-            NSMutableString *desc = [NSMutableString string];
+            NSMutableString *desc = [NSMutableString new];
             if (_options & TBWildcardOptionsPrefix) {
                 [desc appendString:@"*"];
             }

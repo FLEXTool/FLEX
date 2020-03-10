@@ -77,7 +77,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.observedViews = [NSMutableSet set];
+        self.observedViews = [NSMutableSet new];
     }
     return self;
 }
@@ -660,7 +660,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (NSArray<UIView *> *)viewsAtPoint:(CGPoint)tapPointInWindow skipHiddenViews:(BOOL)skipHidden {
-    NSMutableArray<UIView *> *views = [NSMutableArray array];
+    NSMutableArray<UIView *> *views = [NSMutableArray new];
     for (UIWindow *window in [FLEXUtility allWindows]) {
         // Don't include the explorer's own window or subviews.
         if (window != self.view.window && [window pointInside:tapPointInWindow withEvent:nil]) {
@@ -695,7 +695,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (NSArray<UIView *> *)recursiveSubviewsAtPoint:(CGPoint)pointInView
                                          inView:(UIView *)view
                                 skipHiddenViews:(BOOL)skipHidden {
-    NSMutableArray<UIView *> *subviewsAtPoint = [NSMutableArray array];
+    NSMutableArray<UIView *> *subviewsAtPoint = [NSMutableArray new];
     for (UIView *subview in view.subviews) {
         BOOL isHidden = subview.hidden || subview.alpha < 0.01;
         if (skipHidden && isHidden) {

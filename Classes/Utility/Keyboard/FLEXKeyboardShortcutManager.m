@@ -202,7 +202,7 @@
     self = [super init];
     
     if (self) {
-        _actionsForKeyInputs = [NSMutableDictionary dictionary];
+        _actionsForKeyInputs = [NSMutableDictionary new];
         _enabled = YES;
     }
     
@@ -304,7 +304,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
 }
 
 - (NSString *)keyboardShortcutsDescription {
-    NSMutableString *description = [NSMutableString string];
+    NSMutableString *description = [NSMutableString new];
     NSArray<FLEXKeyInput *> *keyInputs = [self.actionsForKeyInputs.allKeys
         sortedArrayUsingComparator:^NSComparisonResult(FLEXKeyInput *input1, FLEXKeyInput *input2) {
             return [input1.key caseInsensitiveCompare:input2.key];

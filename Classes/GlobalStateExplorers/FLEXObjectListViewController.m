@@ -113,7 +113,7 @@
 
 + (instancetype)instancesOfClassWithName:(NSString *)className {
     const char *classNameCString = className.UTF8String;
-    NSMutableArray *instances = [NSMutableArray array];
+    NSMutableArray *instances = [NSMutableArray new];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
         if (strcmp(classNameCString, class_getName(actualClass)) == 0) {
             // Note: objects of certain classes crash when retain is called.
@@ -153,7 +153,7 @@
         }
     });
     
-    NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray array];
+    NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray new];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
         // Get all the ivars on the object. Start with the class and and travel up the inheritance chain.
         // Once we find a match, record it and move on to the next object. There's no reason to find multiple matches within the same object.

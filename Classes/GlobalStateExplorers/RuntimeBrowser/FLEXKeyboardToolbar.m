@@ -96,7 +96,7 @@
 }
 
 - (UIView *)inputAccessoryView {
-    _topBorder       = [CALayer layer];
+    _topBorder       = [CALayer new];
     _topBorder.frame = CGRectMake(0.0, 0.0, self.bounds.size.width, 0.5);
     [self makeScrollView];
     

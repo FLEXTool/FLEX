@@ -17,7 +17,7 @@
 - (NSString *)propertyAttributesString {
     if (!self[kFLEXPropertyAttributeKeyTypeEncoding]) return nil;
     
-    NSMutableString *attributes = [NSMutableString string];
+    NSMutableString *attributes = [NSMutableString new];
     [attributes appendFormat:@"T%@,", self[kFLEXPropertyAttributeKeyTypeEncoding]];
     
     for (NSString *attribute in self.allKeys) {

@@ -447,7 +447,7 @@
 }
 
 - (void)reloadCurrentPath {
-    NSMutableArray<NSString *> *childPaths = [NSMutableArray array];
+    NSMutableArray<NSString *> *childPaths = [NSMutableArray new];
     NSArray<NSString *> *subpaths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.path error:NULL];
     for (NSString *subpath in subpaths) {
         [childPaths addObject:[self.path stringByAppendingPathComponent:subpath]];

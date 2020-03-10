@@ -28,7 +28,7 @@
 + (NSArray<FLEXKBToolbarButton*> *)buttonsForKeyPath:(FLEXRuntimeKeyPath *)keyPath
                                      suggestions:(NSArray<NSString *> *)suggestions
                                          handler:(FLEXKBToolbarAction)handler {
-    NSMutableArray *buttons = [NSMutableArray array];
+    NSMutableArray *buttons = [NSMutableArray new];
     FLEXSearchToken *lastKey = nil;
     BOOL lastKeyIsMethod = NO;
 

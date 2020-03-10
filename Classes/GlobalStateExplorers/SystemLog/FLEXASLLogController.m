@@ -46,7 +46,7 @@
     self = [super init];
     if (self) {
         _updateHandler = newMessagesHandler;
-        _logMessageIdentifiers = [NSMutableIndexSet indexSet];
+        _logMessageIdentifiers = [NSMutableIndexSet new];
         self.logUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval
                                                                target:self
                                                              selector:@selector(updateLogMessages)
@@ -98,7 +98,7 @@
     aslresponse response = [self ASLMessageListForCurrentProcess];
     aslmsg aslMessage = NULL;
 
-    NSMutableArray<FLEXSystemLogMessage *> *newMessages = [NSMutableArray array];
+    NSMutableArray<FLEXSystemLogMessage *> *newMessages = [NSMutableArray new];
 
     while ((aslMessage = asl_next(response))) {
         NSUInteger messageID = (NSUInteger)atoll(asl_get(aslMessage, ASL_KEY_MSG_ID));
@@ -135,7 +135,7 @@
     aslresponse response = [self ASLMessageListForCurrentProcess];
     aslmsg aslMessage = NULL;
 
-    NSMutableArray<FLEXSystemLogMessage *> *logMessages = [NSMutableArray array];
+    NSMutableArray<FLEXSystemLogMessage *> *logMessages = [NSMutableArray new];
     while ((aslMessage = asl_next(response))) {
         [logMessages addObject:[FLEXSystemLogMessage logMessageFromASLMessage:aslMessage]];
     }

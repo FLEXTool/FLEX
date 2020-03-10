@@ -193,7 +193,7 @@
 #pragma mark - Private
 
 - (NSMutableDictionary *)query {
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
     dictionary[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
     
     if (self.service) {

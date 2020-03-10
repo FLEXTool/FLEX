@@ -23,7 +23,7 @@
 - (NSDictionary *)propertyAttributes {
     if (!self.length) return nil;
     
-    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    NSMutableDictionary *attributes = [NSMutableDictionary new];
     
     NSArray *components = [self componentsSeparatedByString:@","];
     for (NSString *attribute in components) {

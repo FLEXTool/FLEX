@@ -182,7 +182,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
         return classNameStrings.mutableCopy;
     }
 
-    return [NSMutableArray array];
+    return [NSMutableArray new];
 }
 
 #pragma mark - Public
@@ -204,7 +204,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
         }];
     }
 
-    return [NSMutableArray array];
+    return [NSMutableArray new];
 }
 
 - (NSMutableArray<NSString*> *)bundlePathsForToken:(FLEXSearchToken *)token {
@@ -224,7 +224,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
         }];
     }
 
-    return [NSMutableArray array];
+    return [NSMutableArray new];
 }
 
 - (NSMutableArray<NSString*> *)classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
@@ -234,7 +234,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
             return [NSMutableArray arrayWithObject:token.string];
         }
 
-        return [NSMutableArray array];
+        return [NSMutableArray new];
     }
 
     if (bundles.count) {
@@ -247,7 +247,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
         }];
     }
 
-    return [NSMutableArray array];
+    return [NSMutableArray new];
 }
 
 - (NSMutableArray<NSString*> *)_classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
@@ -377,7 +377,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
         }
     }
     
-    return [NSMutableArray array];
+    return [NSMutableArray new];
 }
 
 @end

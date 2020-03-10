@@ -71,22 +71,22 @@
     _className = NSStringFromClass(cls);
     _isClass   = class_isMetaClass(cls); // or object_isClass(self.value)
     
-    NSMutableArray *properties = [NSMutableArray array];
+    NSMutableArray *properties = [NSMutableArray new];
     for (int i = 0; i < pcount; i++)
         [properties addObject:[FLEXProperty property:objcproperties[i]]];
     _properties = properties;
     
-    NSMutableArray *methods = [NSMutableArray array];
+    NSMutableArray *methods = [NSMutableArray new];
     for (int i = 0; i < mcount; i++)
         [methods addObject:[FLEXMethod method:objcmethods[i]]];
     _methods = methods;
     
-    NSMutableArray *ivars = [NSMutableArray array];
+    NSMutableArray *ivars = [NSMutableArray new];
     for (int i = 0; i < ivcount; i++)
         [ivars addObject:[FLEXIvar ivar:objcivars[i]]];
     _ivars = ivars;
     
-    NSMutableArray *protocols = [NSMutableArray array];
+    NSMutableArray *protocols = [NSMutableArray new];
     for (int i = 0; i < pccount; i++)
         [protocols addObject:[FLEXProtocol protocol:procs[i]]];
     _protocols = protocols;
