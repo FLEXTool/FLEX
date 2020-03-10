@@ -132,6 +132,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     }
 }
 
+
 #pragma mark - Overrides
 
 - (NSString *)title {
@@ -166,7 +167,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
         [tmp filterUsingPredicate:filter];
         self.cachedCollection = tmp;
     } else {
-        self.cachedCollection = self.collection;
+        self.cachedCollection = self.collection ?: self.collectionFuture(self);
     }
 }
 

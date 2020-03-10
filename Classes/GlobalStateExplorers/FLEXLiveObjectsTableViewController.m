@@ -33,7 +33,6 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-//    self.title = @"Live Objects";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.showsCarousel = YES;

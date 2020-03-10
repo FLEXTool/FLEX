@@ -30,6 +30,10 @@
     return [[self alloc] initWithCustomView:customView];
 }
 
++ (instancetype)backItemWithTitle:(NSString *)title {
+    return [self itemWithTitle:title target:nil action:nil];
+}
+
 + (instancetype)itemWithTitle:(NSString *)title target:(id)target action:(SEL)action {
     return [[self alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:target action:action];
 }

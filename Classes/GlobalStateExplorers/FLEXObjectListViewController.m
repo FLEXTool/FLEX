@@ -9,7 +9,7 @@
 #import "FLEXObjectListViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
-#import "FLEXCollectionContentSection.h"
+#import "FLEXMutableListSection.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXHeapEnumerator.h"
@@ -21,17 +21,17 @@
 
 
 @interface FLEXObjectListViewController ()
+@property (nonatomic, copy) NSArray<FLEXMutableListSection *> *sections;
+@property (nonatomic, copy) NSArray<FLEXMutableListSection *> *allSections;
 
-@property (nonatomic) NSArray<FLEXCollectionContentSection *> *sections;
-@property (nonatomic, readonly) NSArray<FLEXCollectionContentSection *> *allSections;
-
-/// Array of [[section], [section], ...]
-/// where [section] is [["row title", instance], ["row title", instance], ...]
-@property (nonatomic) NSArray<FLEXObjectRef *> *references;
+@property (nonatomic, readonly) NSArray<FLEXObjectRef *> *references;
+@property (nonatomic, readonly) NSArray<NSPredicate *> *predicates;
+@property (nonatomic, readonly) NSArray<NSString *> *sectionTitles;
 
 @end
 
 @implementation FLEXObjectListViewController
+@dynamic sections, allSections;
 
 #pragma mark - Reference Grouping
 
@@ -103,13 +103,9 @@
 
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        self.references = references;
-
-        if (predicates.count) {
-            [self buildSections:sectionTitles predicates:predicates];
-        } else {
-            _sections = _allSections = @[[self makeSection:references title:nil]];
-        }
+        _references = references;
+        _predicates = predicates;
+        _sectionTitles = sectionTitles;
     }
 
     return self;
@@ -200,7 +196,7 @@
 }
 
 
-#pragma mark - Lifecycle
+#pragma mark - Overrides
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -208,100 +204,50 @@
     self.showsSearchBar = YES;
 }
 
+- (NSArray<FLEXMutableListSection *> *)makeSections {
+    if (self.predicates.count) {
+        return [self buildSections:self.sectionTitles predicates:self.predicates];
+    } else {
+        return @[[self makeSection:self.references title:nil]];
+    }
+}
+
 
 #pragma mark - Private
 
-- (void)buildSections:(NSArray<NSString *> *)titles predicates:(NSArray<NSPredicate *> *)predicates {
+- (NSArray *)buildSections:(NSArray<NSString *> *)titles predicates:(NSArray<NSPredicate *> *)predicates {
     NSParameterAssert(titles.count == predicates.count);
     NSParameterAssert(titles); NSParameterAssert(predicates);
     
-    _sections = _allSections = [NSArray flex_forEachUpTo:titles.count map:^id(NSUInteger i) {
+    return [NSArray flex_forEachUpTo:titles.count map:^id(NSUInteger i) {
         NSArray *rows = [self.references filteredArrayUsingPredicate:predicates[i]];
         return [self makeSection:rows title:titles[i]];
     }];
 }
 
-- (FLEXCollectionContentSection *)makeSection:(NSArray *)rows title:(NSString *)title {
-    FLEXCollectionContentSection *section = [FLEXCollectionContentSection forCollection:rows];
-    // We need custom filtering because we do custom cell configuration
-    section.customFilter = ^BOOL(NSString *filterText, FLEXObjectRef *ref) {
-        if (ref.summary && [ref.summary localizedCaseInsensitiveContainsString:filterText]) {
-            return YES;
+- (FLEXMutableListSection *)makeSection:(NSArray *)rows title:(NSString *)title {
+    FLEXMutableListSection *section = [FLEXMutableListSection list:rows
+        cellConfiguration:^(FLEXTableViewCell *cell, FLEXObjectRef *ref, NSInteger row) {
+            cell.textLabel.text = ref.reference;
+            cell.detailTextLabel.text = ref.summary;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        } filterMatcher:^BOOL(NSString *filterText, FLEXObjectRef *ref) {
+            if (ref.summary && [ref.summary localizedCaseInsensitiveContainsString:filterText]) {
+                return YES;
+            }
+            
+            return [ref.reference localizedCaseInsensitiveContainsString:filterText];
         }
-        
-        return [ref.reference localizedCaseInsensitiveContainsString:filterText];
+    ];
+    
+    section.selectionHandler = ^(__kindof UIViewController *host, id element) {
+        [self.navigationController pushViewController:[
+            FLEXObjectExplorerFactory explorerViewControllerForObject:element
+        ] animated:YES];
     };
-    
-    // Use custom title, or hide title entirely
-    if (title) {
-        section.customTitle = title;
-    } else {
-        section.hideSectionTitle = YES;
-    }
-    
+
+    section.customTitle = title;    
     return section;
-}
-
-- (NSArray *)nonemptySections {
-    return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
-        return section.numberOfRows > 0;
-    }];
-}
-
-- (FLEXObjectRef *)referenceForIndexPath:(NSIndexPath *)ip {
-    return [self.sections[ip.section] objectForRow:ip.row];
-}
-
-
-#pragma mark - Search
-
-- (void)updateSearchResults:(NSString *)newText; {
-    // Sections will adjust data based on this property
-    for (FLEXTableViewSection *section in self.allSections) {
-        section.filterText = newText;
-    }
-
-    // Recalculate empty sections
-    self.sections = [self nonemptySections];
-
-    // Refresh table view
-    if (self.isViewLoaded) {
-        [self.tableView reloadData];
-    }
-}
-
-
-#pragma mark - Table View Data Source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.sections.count;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.sections[section].numberOfRows;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
-    FLEXObjectRef *ref = [self referenceForIndexPath:indexPath];
-    cell.textLabel.text = ref.reference;
-    cell.detailTextLabel.text = ref.summary;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    
-    return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.sections[section].title;
-}
-
-
-#pragma mark - Table View Delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.navigationController pushViewController:[FLEXObjectExplorerFactory
-        explorerViewControllerForObject:[self referenceForIndexPath:indexPath].object
-    ] animated:YES];
 }
 
 @end

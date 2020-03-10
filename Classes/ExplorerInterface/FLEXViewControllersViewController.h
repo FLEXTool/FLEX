@@ -6,11 +6,11 @@
 //  Copyright © 2020 Flipboard. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
+#import "FLEXFilteringTableViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLEXViewControllersViewController : FLEXTableViewController
+@interface FLEXViewControllersViewController : FLEXFilteringTableViewController
 
 + (instancetype)controllersForViews:(NSArray<UIView *> *)views;
 

@@ -27,12 +27,6 @@
 
 #pragma mark - Private properties
 @interface FLEXObjectExplorerViewController () <UIGestureRecognizerDelegate>
-
-@property (nonatomic, copy) NSString *filterText;
-/// Every section in the table view, regardless of whether or not a section is empty.
-@property (nonatomic, readonly) NSArray<FLEXTableViewSection *> *allSections;
-/// Only displayed sections of the table view; empty sections are purged from this array.
-@property (nonatomic) NSArray<FLEXTableViewSection *> *sections;
 @property (nonatomic, readonly) FLEXSingleRowSection *descriptionSection;
 @property (nonatomic, readonly) FLEXTableViewSection *customSection;
 @property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
@@ -65,7 +59,6 @@
         _object = target;
         _explorer = explorer;
         _customSection = customSection;
-        _allSections = [self makeSections];
     }
 
     return self;
@@ -73,21 +66,11 @@
 
 #pragma mark - View controller lifecycle
 
-- (void)loadView {
-    [super loadView];
-
-    // Register cell classes
-    for (FLEXTableViewSection *section in self.allSections) {
-        if (section.cellRegistrationMapping) {
-            [self.tableView registerCells:section.cellRegistrationMapping];
-        }
-    }
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     self.showsShareToolbarItem = YES;
+    self.wantsSectionIndexTitles = YES;
 
     // Use [object class] here rather than object_getClass
     // to avoid the KVO prefix for observed objects
@@ -120,7 +103,18 @@
 }
 
 
-#pragma mark - Private
+#pragma mark - Overrides
+
+/// Override to hide the description section when searching
+- (NSArray<FLEXTableViewSection *> *)nonemptySections {
+    if (self.shouldShowDescription) {
+        return super.nonemptySections;
+    }
+    
+    return [super.nonemptySections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
+        return section != self.descriptionSection;
+    }];
+}
 
 - (NSArray<FLEXTableViewSection *> *)makeSections {
     FLEXObjectExplorer *explorer = self.explorer;
@@ -174,19 +168,18 @@
     return sections.copy;
 }
 
-- (NSArray<FLEXTableViewSection *> *)nonemptySections {
-    return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
-        if (!self.shouldShowDescription && section == self.descriptionSection) {
-            return NO;
-        }
-        
-        return section.numberOfRows > 0;
-    }];
+- (void)reloadData {
+    // Check to see if class scope changed, update accordingly
+    if (self.explorer.classScope != self.selectedScope) {
+        self.explorer.classScope = self.selectedScope;
+        [self reloadSections];
+    }
+    
+    [super reloadData];
 }
 
-- (BOOL)sectionHasActions:(NSInteger)section {
-    return self.sections[section] == self.descriptionSection;
-}
+
+#pragma mark - Private
 
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
@@ -240,11 +233,12 @@
             UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
         });
         make.button(@"Copy Address").handler(^(NSArray<NSString *> *strings) {
-            [self copyObjectAddress:nil];
+            UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
         });
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
 }
+
 
 #pragma mark - Description
 
@@ -259,71 +253,10 @@
     return YES;
 }
 
-
-#pragma mark - Search
-
-- (void)updateSearchResults:(NSString *)newText; {
-    self.filterText = newText;
-
-    // Sections will adjust data based on this property
-    for (FLEXTableViewSection *section in self.allSections) {
-        section.filterText = newText;
-    }
-
-    // Check to see if class scope changed, update accordingly
-    if (self.explorer.classScope != self.selectedScope) {
-        self.explorer.classScope = self.selectedScope;
-        [self reloadSections];
-    }
-
-    [self reloadData];
-}
-
-
-#pragma mark - Reloading
-
-- (void)reloadData {
-    // Recalculate displayed sections
-    self.sections = [self nonemptySections];
-
-    // Refresh table view
-    if (self.isViewLoaded) {
-        [self.tableView reloadData];
-    }
-}
-
-- (void)reloadSections {
-    for (FLEXTableViewSection *section in self.allSections) {
-        [section reloadData];
-    }
-}
-
-
-#pragma mark - UITableViewDataSource
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.sections.count;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.sections[section].numberOfRows;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.sections[section].title;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *reuse = [self.sections[indexPath.section] reuseIdentifierForRow:indexPath.row];
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuse forIndexPath:indexPath];
-    [self.sections[indexPath.section] configureCell:cell forRow:indexPath.row];
-    return cell;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     // For the description section, we want that nice slim/snug looking row.
     // Other rows use the automatic size.
-    FLEXTableViewSection *section = self.sections[indexPath.section];
+    FLEXTableViewSection *section = self.filterDelegate.sections[indexPath.section];
     
     if (section == self.descriptionSection) {
         NSAttributedString *attributedText = [[NSAttributedString alloc]
@@ -342,43 +275,13 @@
     return UITableViewAutomaticDimension;
 }
 
-- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    return [self.sections flex_mapped:^id(FLEXTableViewSection *obj, NSUInteger idx) {
-        return @"⦁";
-    }];
-}
-
-
-#pragma mark - UITableViewDelegate
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.sections[indexPath.section] canSelectRow:indexPath.row];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXTableViewSection *section = self.sections[indexPath.section];
-
-    void (^action)(UIViewController *) = [section didSelectRowAction:indexPath.row];
-    UIViewController *details = [section viewControllerToPushForRow:indexPath.row];
-
-    if (action) {
-        action(self);
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    } else if (details) {
-        [self.navigationController pushViewController:details animated:YES];
-    } else {
-        [NSException raise:NSInternalInconsistencyException
-                    format:@"Row is selectable but has no action or view controller"];
-    }
-}
-
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [self sectionHasActions:indexPath.section];
+    return self.filterDelegate.sections[indexPath.section] == self.descriptionSection;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     // Only the description section has "actions"
-    if (self.sections[indexPath.section] == self.descriptionSection) {
+    if (self.filterDelegate.sections[indexPath.section] == self.descriptionSection) {
         return action == @selector(copy:);
     }
 
@@ -389,62 +292,6 @@
     if (action == @selector(copy:)) {
         UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
     }
-}
-
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    [self.sections[indexPath.section] didPressInfoButtonAction:indexPath.row](self);
-}
-
-#if FLEX_AT_LEAST_IOS13_SDK
-
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
-    FLEXTableViewSection *section = self.sections[indexPath.section];
-    NSString *title = [section menuTitleForRow:indexPath.row];
-    NSArray<UIMenuElement *> *menuItems = [section menuItemsForRow:indexPath.row sender:self];
-    
-    if (menuItems.count) {
-        return [UIContextMenuConfiguration
-            configurationWithIdentifier:nil
-            previewProvider:nil
-            actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
-                return [UIMenu menuWithTitle:title children:menuItems];
-            }
-        ];
-    }
-    
-    return nil;
-}
-
-#endif
-
-
-#pragma mark - UIMenuController
-
-/// Prevent the search bar from trying to use us as a responder
-///
-/// Our table cells will use the UITableViewDelegate methods
-/// to make sure we can perform the actions we want to
-- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    return NO;
-}
-
-- (void)copy:(NSIndexPath *)indexPath {
-    FLEXTableViewSection *section = self.sections[indexPath.section];
-    UIPasteboard.generalPasteboard.string = ({
-        NSString *copy = [section titleForRow:indexPath.row];
-        NSString *subtitle = [section subtitleForRow:indexPath.row];
-
-        if (subtitle.length) {
-            copy = [NSString stringWithFormat:@"%@\n\n%@", copy, subtitle];
-        }
-
-        // If no string was provided, don't overwrite the pasteboard
-        copy.length > 2 ? copy : UIPasteboard.generalPasteboard.string;
-    });
-}
-
-- (void)copyObjectAddress:(NSIndexPath *)indexPath {
-    UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
 }
 
 @end

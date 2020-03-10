@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
+#import "FLEXFilteringTableViewController.h"
 
-@interface FLEXObjectListViewController : FLEXTableViewController
+@interface FLEXObjectListViewController : FLEXFilteringTableViewController
 
 + (instancetype)instancesOfClassWithName:(NSString *)className;
 + (instancetype)subclassesOfClassWithName:(NSString *)className;

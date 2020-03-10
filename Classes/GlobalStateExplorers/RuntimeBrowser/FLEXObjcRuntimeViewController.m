@@ -30,8 +30,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
-    self.title = @"📚  Runtime Browser";
     
     // Search bar stuff, must be first because this creates self.searchController
     self.showsSearchBar = YES;
@@ -107,7 +105,9 @@
 }
 
 + (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
-    return [self new];
+    UIViewController *controller = [self new];
+    controller.title = [self globalsEntryTitle:row];
+    return controller;
 }
 
 @end

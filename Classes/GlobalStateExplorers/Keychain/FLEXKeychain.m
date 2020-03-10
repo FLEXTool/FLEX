@@ -86,7 +86,7 @@ static CFTypeRef FLEXKeychainAccessibilityType = NULL;
 }
 
 + (NSArray *)allAccounts {
-    return [self allAccounts:nil];
+    return [self allAccounts:nil] ?: @[];
 }
 
 + (NSArray *)allAccounts:(NSError *__autoreleasing *)error {

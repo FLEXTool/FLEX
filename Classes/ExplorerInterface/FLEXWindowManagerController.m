@@ -64,6 +64,8 @@
     } else {
         self.sections = @[@[self.keyWindow], self.windows];
     }
+    
+    [self.tableView reloadData];
 }
 
 - (void)dismissAnimated {

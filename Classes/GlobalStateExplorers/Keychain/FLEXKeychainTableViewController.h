@@ -7,8 +7,8 @@
 //
 
 #import "FLEXGlobalsEntry.h"
-#import "FLEXTableViewController.h"
+#import "FLEXFilteringTableViewController.h"
 
-@interface FLEXKeychainTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
+@interface FLEXKeychainTableViewController : FLEXFilteringTableViewController <FLEXGlobalsEntry>
 
 @end

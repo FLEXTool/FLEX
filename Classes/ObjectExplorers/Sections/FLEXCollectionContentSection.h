@@ -20,8 +20,8 @@ typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollection
 
 @property (nonatomic, readonly) NSUInteger count;
 
-- (id<FLEXCollection>)copy;
-- (id<FLEXMutableCollection>)mutableCopy;
+- (id)copy;
+- (id)mutableCopy;
 
 @optional
 
@@ -58,7 +58,15 @@ typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollection
 /// A custom section for viewing collection elements.
 ///
 /// Tapping on a row pushes an object explorer for that element.
-@interface FLEXCollectionContentSection<__covariant ObjectType> : FLEXTableViewSection <FLEXObjectInfoSection>
+@interface FLEXCollectionContentSection<__covariant ObjectType> : FLEXTableViewSection <FLEXObjectInfoSection> {
+    @protected
+    /// Unused if initialized with a future
+    id<FLEXCollection> _collection;
+    /// Unused if initialized with a collection
+    FLEXCollectionContentFuture _collectionFuture;
+    /// The filtered collection from \c _collection or \c _collectionFuture
+    id<FLEXCollection> _cachedCollection;
+}
 
 + (instancetype)forCollection:(id<FLEXCollection>)collection;
 /// The future given should be safe to call more than once.

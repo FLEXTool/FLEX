@@ -10,7 +10,7 @@
 #define _FLEXObjectExplorerViewController_h
 #endif
 
-#import "FLEXTableViewController.h"
+#import "FLEXFilteringTableViewController.h"
 #import "FLEXObjectExplorer.h"
 @class FLEXTableViewSection;
 
@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Below the description and before properties, some shortcuts will be displayed
 /// for certain classes like UIViews. At very bottom, there is an option to view
 /// a list of other objects found to be referencing the object being explored.
-@interface FLEXObjectExplorerViewController : FLEXTableViewController
+@interface FLEXObjectExplorerViewController : FLEXFilteringTableViewController
 
 /// Uses the default \c FLEXShortcutsSection for this object as a custom section.
 + (instancetype)exploringObject:(id)objectOrClass;

@@ -6,9 +6,9 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
+#import "FLEXFilteringTableViewController.h"
 
-@interface FLEXTableListViewController : FLEXTableViewController
+@interface FLEXTableListViewController : FLEXFilteringTableViewController
 
 + (BOOL)supportsExtension:(NSString *)extension;
 - (instancetype)initWithPath:(NSString *)path;

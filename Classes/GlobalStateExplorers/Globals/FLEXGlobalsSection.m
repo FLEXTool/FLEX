@@ -8,6 +8,7 @@
 
 #import "FLEXGlobalsSection.h"
 #import "NSArray+Functional.h"
+#import "UIFont+FLEX.h"
 
 @interface FLEXGlobalsSection ()
 /// Filtered rows
@@ -68,6 +69,8 @@
 }
 
 - (void)configureCell:(__kindof UITableViewCell *)cell forRow:(NSInteger)row {
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.textLabel.font = UIFont.flex_defaultTableCellFont;
     cell.textLabel.text = self.rows[row].entryNameFuture();
 }
 

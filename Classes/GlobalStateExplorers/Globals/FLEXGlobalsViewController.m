@@ -22,16 +22,18 @@
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXAddressExplorerCoordinator.h"
 #import "FLEXGlobalsSection.h"
+#import "UIBarButtonItem+FLEX.h"
 
 @interface FLEXGlobalsViewController ()
 /// Only displayed sections of the table view; empty sections are purged from this array.
-@property (nonatomic, copy) NSArray<FLEXGlobalsSection *> *sections;
+@property (nonatomic) NSArray<FLEXGlobalsSection *> *sections;
 /// Every section in the table view, regardless of whether or not a section is empty.
 @property (nonatomic, readonly) NSArray<FLEXGlobalsSection *> *allSections;
 @property (nonatomic, readonly) BOOL manuallyDeselectOnAppear;
 @end
 
 @implementation FLEXGlobalsViewController
+@dynamic sections, allSections;
 
 #pragma mark - Initialization
 
@@ -154,7 +156,7 @@
 }
 
 
-#pragma mark - UIViewController
+#pragma mark - Overrides
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -162,19 +164,7 @@
     self.title = @"💪  FLEX";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
-
-    // Table view data
-    _allSections = [[self class] defaultGlobalSections];
-    if ([FLEXManager sharedManager].userGlobalEntries.count) {
-        // Make custom section
-        NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
-        FLEXGlobalsSection *custom = [FLEXGlobalsSection
-            title:title
-            rows:FLEXManager.sharedManager.userGlobalEntries
-        ];
-        _allSections = [_allSections arrayByAddingObject:custom];
-    }
-    self.sections = self.allSections;
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem backItemWithTitle:@"Back"];
     
     _manuallyDeselectOnAppear = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 10;
 }
@@ -189,80 +179,20 @@
     }
 }
 
-
-#pragma mark - Search Bar
-
-- (void)updateSearchResults:(NSString *)newText {
-    // Sections will adjust data based on this property
-    for (FLEXTableViewSection *section in self.allSections) {
-        section.filterText = newText;
-    }
-
-    // Recalculate empty sections
-    self.sections = [self nonemptySections];
-
-    // Refresh table view
-    if (self.isViewLoaded) {
-        [self.tableView reloadData];
-    }
-}
-
-
-#pragma mark - Private
-
-- (NSArray<FLEXGlobalsSection *> *)nonemptySections {
-    return [self.allSections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
-        return section.numberOfRows > 0;
-    }];
-}
-
-
-#pragma mark - Table View Data Source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.sections.count;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.sections[section].numberOfRows;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = [UIFont systemFontOfSize:14.0];
+- (NSArray<FLEXGlobalsSection *> *)makeSections {
+    NSArray *sections = [self.class defaultGlobalSections];
+    
+    // Do we have custom sections to add?
+    if (FLEXManager.sharedManager.userGlobalEntries.count) {
+        NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
+        FLEXGlobalsSection *custom = [FLEXGlobalsSection
+            title:title
+            rows:FLEXManager.sharedManager.userGlobalEntries
+        ];
+        sections = [sections arrayByAddingObject:custom];
     }
     
-    [self.sections[indexPath.section] configureCell:cell forRow:indexPath.row];
-    
-    return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.sections[section].title;
-}
-
-#pragma mark - Table View Delegate
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXTableViewSection *section = self.sections[indexPath.section];
-
-    void (^action)(UIViewController *) = [section didSelectRowAction:indexPath.row];
-    UIViewController *details = [section viewControllerToPushForRow:indexPath.row];
-
-    if (action) {
-        action(self);
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    } else if (details) {
-        [self.navigationController pushViewController:details animated:YES];
-    } else {
-        [NSException raise:NSInternalInconsistencyException
-                    format:@"Row is selectable but has no action or view controller"];
-    }
+    return sections;
 }
 
 @end

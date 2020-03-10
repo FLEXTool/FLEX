@@ -8,12 +8,15 @@
 
 #import "FLEXViewControllersViewController.h"
 #import "FLEXObjectExplorerFactory.h"
+#import "FLEXMutableListSection.h"
 
 @interface FLEXViewControllersViewController ()
+@property (nonatomic, readonly) FLEXMutableListSection *section;
 @property (nonatomic, readonly) NSArray<UIViewController *> *controllers;
 @end
 
 @implementation FLEXViewControllersViewController
+@dynamic sections, allSections;
 
 #pragma mark - Initialization
 
@@ -24,7 +27,7 @@
 - (id)initWithViews:(NSArray<UIView *> *)views {
     NSParameterAssert(views.count);
     
-    self = [self init];
+    self = [self initWithStyle:UITableViewStylePlain];
     if (self) {
         _controllers = [views flex_mapped:^id(UIView *view, NSUInteger idx) {
             return [FLEXUtility viewControllerForView:view];
@@ -34,10 +37,6 @@
     return self;
 }
 
-- (id)init {
-    return [self initWithStyle:UITableViewStylePlain];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -45,45 +44,34 @@
     [self disableToolbar];
 }
 
+- (NSArray<FLEXTableViewSection *> *)makeSections {
+    _section = [FLEXMutableListSection list:self.controllers
+        cellConfiguration:^(UITableViewCell *cell, UIViewController *controller, NSInteger row) {
+            cell.textLabel.text = [NSString
+                stringWithFormat:@"%@ — %p", NSStringFromClass(controller.class), controller
+            ];
+            cell.detailTextLabel.text = controller.view.description;
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+    } filterMatcher:^BOOL(NSString *filterText, UIViewController *controller) {
+        return [NSStringFromClass(controller.class) localizedCaseInsensitiveContainsString:filterText];
+    }];
+    
+    self.section.selectionHandler = ^(UIViewController *host, UIViewController *controller) {
+        [host.navigationController pushViewController:
+            [FLEXObjectExplorerFactory explorerViewControllerForObject:controller]
+        animated:YES];
+    };
+    
+    self.section.customTitle = @"View Controllers";
+    return @[self.section];
+}
+
 
 #pragma mark - Private
 
 - (void)dismissAnimated {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-
-#pragma mark - Table View Data Source
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.controllers.count;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return @"View Controllers";
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
-    UIViewController *controller = self.controllers[indexPath.row];
-    
-    cell.textLabel.text = [NSString
-        stringWithFormat:@"%@ — %p", NSStringFromClass(controller.class), controller
-    ];
-    cell.detailTextLabel.text = controller.view.description;
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    
-    return cell;
-}
-
-
-#pragma mark - Table View Delegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.navigationController pushViewController:
-        [FLEXObjectExplorerFactory explorerViewControllerForObject:self.controllers[indexPath.row]]
-    animated:YES];
 }
 
 @end

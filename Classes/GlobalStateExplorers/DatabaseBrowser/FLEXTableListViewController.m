@@ -11,6 +11,7 @@
 #import "FLEXSQLiteDatabaseManager.h"
 #import "FLEXRealmDatabaseManager.h"
 #import "FLEXTableContentViewController.h"
+#import "FLEXMutableListSection.h"
 #import "NSArray+Functional.h"
 #import "FLEXAlert.h"
 
@@ -18,8 +19,7 @@
 @property (nonatomic, readonly) id<FLEXDatabaseManager> dbm;
 @property (nonatomic, readonly) NSString *path;
 
-@property (nonatomic) NSArray<NSString *> *tables;
-@property (nonatomic) NSArray<NSString *> *filteredTables;
+@property (nonatomic, readonly) FLEXMutableListSection<NSString *> *tables;
 
 + (NSArray<NSString *> *)supportedSQLiteExtensions;
 + (NSArray<NSString *> *)supportedRealmExtensions;
@@ -42,7 +42,6 @@
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
-    [self getAllTables];
     
     // Compose query button //
 
@@ -57,6 +56,35 @@
     ];
     
     [self addToolbarItems:@[composeQuery]];
+}
+
+- (NSArray<FLEXTableViewSection *> *)makeSections {
+    _tables = [FLEXMutableListSection list:[self.dbm queryAllTables]
+        cellConfiguration:^(__kindof UITableViewCell *cell, NSString *tableName, NSInteger row) {
+            cell.textLabel.text = tableName;
+        } filterMatcher:^BOOL(NSString *filterText, NSString *tableName) {
+            return [tableName localizedCaseInsensitiveContainsString:filterText];
+        }
+    ];
+    
+    self.tables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
+        NSArray *rows = [host.dbm queryAllDataInTable:tableName];
+        NSArray *columns = [host.dbm queryAllColumnsOfTable:tableName];
+        
+        UIViewController *resultsScreen = [FLEXTableContentViewController columns:columns rows:rows];
+        resultsScreen.title = tableName;
+        [host.navigationController pushViewController:resultsScreen animated:YES];
+    };
+    
+    return @[self.tables];
+}
+
+- (void)reloadData {
+    self.tables.customTitle = [NSString
+        stringWithFormat:@"Tables (%@)", @(self.tables.filteredList.count)
+    ];
+    
+    [super reloadData];
 }
     
 - (void)queryButtonPressed {
@@ -98,54 +126,6 @@
     return nil;
 }
 
-- (void)getAllTables {
-    self.tables = self.filteredTables = [self.dbm queryAllTables];
-}
-
-
-#pragma mark - Search bar
-
-- (void)updateSearchResults:(NSString *)searchText {
-    if (searchText.length) {
-        self.filteredTables = [self.tables flex_filtered:^BOOL(NSString *tableName, NSUInteger idx) {
-            return [tableName containsString:searchText];
-        }];
-    } else {
-        self.filteredTables = self.tables;
-    }
-    
-    [self.tableView reloadData];
-}
-
-
-#pragma mark - Table View Data Source
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.filteredTables.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FLEXTableListViewControllerCell"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:@"FLEXTableListViewControllerCell"];
-    }
-    cell.textLabel.text = self.filteredTables[indexPath.row];
-    return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSArray *rows = [self.dbm queryAllDataInTable:self.filteredTables[indexPath.row]];
-    NSArray *columns = [self.dbm queryAllColumnsOfTable:self.filteredTables[indexPath.row]];
-    
-    UIViewController *resultsScreen = [FLEXTableContentViewController columns:columns rows:rows];
-    resultsScreen.title = self.filteredTables[indexPath.row];
-    [self.navigationController pushViewController:resultsScreen animated:YES];
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return [NSString stringWithFormat:@"Tables (%lu)", (unsigned long)self.filteredTables.count];
-}
 
 #pragma mark - FLEXTableListViewController
 

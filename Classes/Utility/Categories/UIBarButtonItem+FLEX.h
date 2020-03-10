@@ -17,6 +17,7 @@
 @property (nonatomic, readonly, class) UIBarButtonItem *flex_fixedSpace;
 
 + (instancetype)itemWithCustomView:(UIView *)customView;
++ (instancetype)backItemWithTitle:(NSString *)title;
 
 + (instancetype)systemItem:(UIBarButtonSystemItem)item target:(id)target action:(SEL)action;
 

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FLEXTableView.h"
-@class FLEXScopeCarousel, FLEXWindow;
+@class FLEXScopeCarousel, FLEXWindow, FLEXTableViewSection;
 
 typedef CGFloat FLEXDebounceInterval;
 /// No delay, all events delivered
@@ -21,20 +21,33 @@ extern CGFloat const kFLEXDebounceForAsyncSearch;
 extern CGFloat const kFLEXDebounceForExpensiveIO;
 
 @protocol FLEXSearchResultsUpdating <NSObject>
+/// A method to handle search query update events.
+///
+/// \c searchBarDebounceInterval is used to reduce the frequency at which this
+/// method is called. This method is also called when the search bar becomes
+/// the first responder, and when the selected search bar scope index changes.
 - (void)updateSearchResults:(NSString *)newText;
 @end
 
 @interface FLEXTableViewController : UITableViewController <
-    UISearchResultsUpdating, UISearchControllerDelegate,
-    UISearchBarDelegate, FLEXSearchResultsUpdating
+    UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate
 >
 
 /// A grouped table view. Inset on iOS 13.
 ///
-/// Simply calls into initWithStyle:
+/// Simply calls into \c initWithStyle:
 - (id)init;
 
+/// Subclasses may override to configure the controller before \c viewDidLoad:
+- (id)initWithStyle:(UITableViewStyle)style;
+
 @property (nonatomic) FLEXTableView *tableView;
+
+/// If your subclass conforms to \c FLEXSearchResultsUpdating
+/// then this property is assigned to \c self automatically.
+///
+/// Setting \c filterDelegate will also set this property to that object.
+@property (nonatomic, weak) id<FLEXSearchResultsUpdating> searchDelegate;
 
 /// Defaults to NO.
 ///
@@ -97,13 +110,6 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 
 /// self.view.window as a \c FLEXWindow
 @property (nonatomic, readonly) FLEXWindow *window;
-
-/// Subclasses should override to handle search query update events.
-///
-/// searchBarDebounceInterval is used to reduce the frequency at which this method is called.
-/// This method is also called when the search bar becomes the first responder,
-/// and when the selected search bar scope index changes.
-- (void)updateSearchResults:(NSString *)newText;
 
 /// Convenient for doing some async processor-intensive searching
 /// in the background before updating the UI back on the main queue.

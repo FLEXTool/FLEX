@@ -72,6 +72,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         _manuallyDeactivateSearchOnDisappear = ({
             NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 11;
         });
+        
+        // We will be our own search delegate if we implement this method
+        if ([self respondsToSelector:@selector(updateSearchResults:)]) {
+            self.searchDelegate = (id)self;
+        }
     }
     
     return self;
@@ -125,7 +130,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             FLEXScopeCarousel *carousel = [FLEXScopeCarousel new];
             carousel.selectedIndexChangedAction = ^(NSInteger idx) {
                 __typeof(self) self = weakSelf;
-                [self updateSearchResults:self.searchText];
+                [self.searchDelegate updateSearchResults:self.searchText];
             };
 
             // UITableView won't update the header size unless you reset the header view
@@ -160,7 +165,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         self.carousel.selectedIndex = selectedScope;
     }
 
-    [self updateSearchResults:self.searchText];
+    [self.searchDelegate updateSearchResults:self.searchText];
 }
 
 - (NSString *)searchText {
@@ -186,8 +191,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
     _automaticallyShowsSearchBarCancelButton = value;
 }
-
-- (void)updateSearchResults:(NSString *)newText { }
 
 - (void)onBackgroundQueue:(NSArray *(^)(void))backgroundBlock thenOnMainQueue:(void(^)(NSArray *))mainBlock {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -532,7 +535,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         if (self.searchResultsUpdater) {
             [self.searchResultsUpdater updateSearchResults:text];
         } else {
-            [self updateSearchResults:text];
+            [self.searchDelegate updateSearchResults:text];
         }
     };
     
@@ -571,7 +574,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 }
 
 
-#pragma mark Table view
+#pragma mark Table View
 
 /// Not having a title in the first section looks weird with a rounded-corner table view style
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {

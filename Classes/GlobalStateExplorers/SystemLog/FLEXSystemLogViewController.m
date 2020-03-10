@@ -10,6 +10,7 @@
 #import "FLEXASLLogController.h"
 #import "FLEXOSLogController.h"
 #import "FLEXSystemLogCell.h"
+#import "FLEXMutableListSection.h"
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "FLEXResources.h"
@@ -19,9 +20,8 @@
 
 @interface FLEXSystemLogViewController ()
 
+@property (nonatomic, readonly) FLEXMutableListSection<FLEXSystemLogMessage *> *logMessages;
 @property (nonatomic, readonly) id<FLEXLogController> logController;
-@property (nonatomic, readonly) NSMutableArray<FLEXSystemLogMessage *> *logMessages;
-@property (nonatomic, copy) NSArray<FLEXSystemLogMessage *> *filteredLogMessages;
 
 @end
 
@@ -37,6 +37,8 @@ BOOL my_os_log_shim_enabled() {
 }
 
 @implementation FLEXSystemLogViewController
+
+#pragma mark - Initialization
 
 + (void)load {
     // Thanks to @Ram4096 on GitHub for telling me that
@@ -83,6 +85,9 @@ BOOL my_os_log_shim_enabled() {
     return [super initWithStyle:UITableViewStylePlain];
 }
 
+
+#pragma mark - Overrides
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -93,8 +98,7 @@ BOOL my_os_log_shim_enabled() {
         __strong __typeof(weakSelf) self = weakSelf;
         [self handleUpdateWithNewMessages:newMessages];
     };
-
-    _logMessages = [NSMutableArray array];
+    
     if (FLEXOSLogAvailable() && !FLEXNSLogHookWorks) {
         _logController = [FLEXOSLogController withUpdateHandler:logHandler];
     } else {
@@ -125,10 +129,48 @@ BOOL my_os_log_shim_enabled() {
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    [self.logController startMonitoring];
+}
+
+- (NSArray<FLEXTableViewSection *> *)makeSections {
+    _logMessages = [FLEXMutableListSection list:@[]
+        cellConfiguration:^(FLEXSystemLogCell *cell, FLEXSystemLogMessage *message, NSInteger row) {
+            cell.logMessage = message;
+            cell.highlightedText = self.filterText;
+            
+            if (row % 2 == 0) {
+                cell.backgroundColor = FLEXColor.primaryBackgroundColor;
+            } else {
+                cell.backgroundColor = FLEXColor.secondaryBackgroundColor;
+            }
+        } filterMatcher:^BOOL(NSString *filterText, FLEXSystemLogMessage *message) {
+            NSString *displayedText = [FLEXSystemLogCell displayedTextForLogMessage:message];
+            return [displayedText localizedCaseInsensitiveContainsString:filterText];
+        }
+    ];
+    
+    self.logMessages.cellRegistrationMapping = @{
+        kFLEXSystemLogCellIdentifier : [FLEXSystemLogCell class]
+    };
+    
+    return @[self.logMessages];
+}
+
+- (NSArray<FLEXTableViewSection *> *)nonemptySections {
+    return @[self.logMessages];
+}
+
+
+#pragma mark - Private
 - (void)handleUpdateWithNewMessages:(NSArray<FLEXSystemLogMessage *> *)newMessages {
     self.title = @"System Log";
 
-    [self.logMessages addObjectsFromArray:newMessages];
+    [self.logMessages mutate:^(NSMutableArray *list) {
+        [list addObjectsFromArray:newMessages];
+    }];
 
     // "Follow" the log as new messages stream in if we were previously near the bottom.
     BOOL wasNearBottom = self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.frame.size.height - 100.0;
@@ -138,11 +180,6 @@ BOOL my_os_log_shim_enabled() {
     }
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-    [self.logController startMonitoring];
-}
 
 - (void)scrollToLastRow {
     NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
@@ -163,9 +200,9 @@ BOOL my_os_log_shim_enabled() {
 
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(title).message(body).button(toggle).handler(^(NSArray<NSString *> *strings) {
-            [[NSUserDefaults standardUserDefaults] setBool:!persistent forKey:kFLEXiOSPersistentOSLogKey];
+            [NSUserDefaults.standardUserDefaults setBool:!persistent forKey:kFLEXiOSPersistentOSLogKey];
             logController.persistent = !persistent;
-            [logController.messages addObjectsFromArray:self.logMessages];
+            [logController.messages addObjectsFromArray:self.logMessages.list];
         });
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];
@@ -185,26 +222,8 @@ BOOL my_os_log_shim_enabled() {
 
 #pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.searchController.isActive ? self.filteredLogMessages.count : self.logMessages.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
-    FLEXSystemLogCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXSystemLogCellIdentifier forIndexPath:indexPath];
-    cell.logMessage = [self logMessageAtIndexPath:indexPath];
-    cell.highlightedText = self.searchText;
-    
-    if (indexPath.row % 2 == 0) {
-        cell.backgroundColor = [FLEXColor primaryBackgroundColor];
-    } else {
-        cell.backgroundColor = [FLEXColor secondaryBackgroundColor];
-    }
-    
-    return cell;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXSystemLogMessage *logMessage = [self logMessageAtIndexPath:indexPath];
+    FLEXSystemLogMessage *logMessage = self.logMessages.filteredList[indexPath.row];
     return [FLEXSystemLogCell preferredHeightForLogMessage:logMessage inWidth:self.tableView.bounds.size.width];
 }
 
@@ -222,29 +241,8 @@ BOOL my_os_log_shim_enabled() {
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         // We usually only want to copy the log message itself, not any metadata associated with it.
-        UIPasteboard.generalPasteboard.string = [self logMessageAtIndexPath:indexPath].messageText;
+        UIPasteboard.generalPasteboard.string = self.logMessages.filteredList[indexPath.row].messageText;
     }
-}
-
-- (FLEXSystemLogMessage *)logMessageAtIndexPath:(NSIndexPath *)indexPath {
-    return self.searchController.isActive ? self.filteredLogMessages[indexPath.row] : self.logMessages[indexPath.row];
-}
-
-
-#pragma mark - Search bar
-
-- (void)updateSearchResults:(NSString *)searchString {
-    [self onBackgroundQueue:^NSArray *{
-        return [self.logMessages filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(FLEXSystemLogMessage *logMessage, NSDictionary<NSString *, id> *bindings) {
-            NSString *displayedText = [FLEXSystemLogCell displayedTextForLogMessage:logMessage];
-            return [displayedText rangeOfString:searchString options:NSCaseInsensitiveSearch].length > 0;
-        }]];
-    } thenOnMainQueue:^(NSArray *filteredLogMessages) {
-        if ([self.searchText isEqual:searchString]) {
-            self.filteredLogMessages = filteredLogMessages;
-            [self.tableView reloadData];
-        }
-    }];
 }
 
 @end

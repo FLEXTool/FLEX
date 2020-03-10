@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
+#import "FLEXFilteringTableViewController.h"
 @protocol FLEXGlobalsTableViewControllerDelegate;
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
@@ -23,6 +23,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
     FLEXGlobalsSectionCount
 };
 
-@interface FLEXGlobalsViewController : FLEXTableViewController
+@interface FLEXGlobalsViewController : FLEXFilteringTableViewController
 
 @end

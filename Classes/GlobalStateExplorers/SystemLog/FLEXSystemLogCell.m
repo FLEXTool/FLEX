@@ -21,16 +21,14 @@ NSString *const kFLEXSystemLogCellIdentifier = @"FLEXSystemLogCellIdentifier";
 
 @implementation FLEXSystemLogCell
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        self.logMessageLabel = [UILabel new];
-        self.logMessageLabel.numberOfLines = 0;
-        self.separatorInset = UIEdgeInsetsZero;
-        self.selectionStyle = UITableViewCellSelectionStyleNone;
-        [self.contentView addSubview:self.logMessageLabel];
-    }
-    return self;
+- (void)postInit {
+    [super postInit];
+    
+    self.logMessageLabel = [UILabel new];
+    self.logMessageLabel.numberOfLines = 0;
+    self.separatorInset = UIEdgeInsetsZero;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    [self.contentView addSubview:self.logMessageLabel];
 }
 
 - (void)setLogMessage:(FLEXSystemLogMessage *)logMessage {

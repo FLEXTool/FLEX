@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 f. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXTableViewCell.h"
 
 @class FLEXSystemLogMessage;
 
 extern NSString *const kFLEXSystemLogCellIdentifier;
 
-@interface FLEXSystemLogCell : UITableViewCell
+@interface FLEXSystemLogCell : FLEXTableViewCell
 
 @property (nonatomic) FLEXSystemLogMessage *logMessage;
 @property (nonatomic, copy) NSString *highlightedText;

@@ -9,17 +9,22 @@
 #import "FLEXKeychain.h"
 #import "FLEXKeychainQuery.h"
 #import "FLEXKeychainTableViewController.h"
+#import "FLEXTableViewCell.h"
+#import "FLEXMutableListSection.h"
 #import "FLEXUtility.h"
 #import "UIPasteboard+FLEX.h"
 
 @interface FLEXKeychainTableViewController ()
-
-@property (nonatomic) NSMutableArray<NSDictionary *> *keychainItems;
-@property (nonatomic) NSString *headerTitle;
-
+@property (nonatomic, readonly) FLEXMutableListSection<NSDictionary *> *section;
 @end
 
 @implementation FLEXKeychainTableViewController
+
+- (id)init {
+    return [self initWithStyle:UITableViewStyleGrouped];
+}
+
+#pragma mark - Overrides
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -33,20 +38,67 @@
         ],
     ];
 
-    [self refreshkeychainItems];
-    [self updateHeaderTitle];
+    [self reloadData];
 }
 
-- (void)refreshkeychainItems {
-    self.keychainItems = [FLEXKeychain allAccounts].mutableCopy;
+- (NSArray<FLEXTableViewSection *> *)makeSections {
+    _section = [FLEXMutableListSection list:[FLEXKeychain allAccounts].mutableCopy
+        cellConfiguration:^(__kindof FLEXTableViewCell *cell, NSDictionary *item, NSInteger row) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+            id account = item[kFLEXKeychainAccountKey];
+            if ([account isKindOfClass:[NSString class]]) {
+                cell.textLabel.text = account;
+            } else {
+                cell.textLabel.text = [NSString stringWithFormat:
+                    @"[%@]\n\n%@",
+                    NSStringFromClass([account class]),
+                    [account description]
+                ];
+            }
+        } filterMatcher:^BOOL(NSString *filterText, NSDictionary *item) {
+            // Loop over contents of the keychain item looking for a match
+            for (NSString *field in item.allValues) {
+                if ([field isKindOfClass:[NSString class]]) {
+                    if ([field localizedCaseInsensitiveContainsString:filterText]) {
+                        return YES;
+                    }
+                }
+            }
+            
+            return NO;
+        }
+    ];
+    
+    return @[self.section];
 }
 
-- (void)updateHeaderTitle {
-    self.headerTitle = [NSString stringWithFormat:@"%@ items", @(self.keychainItems.count)];
+/// We always want to show this section
+- (NSArray<FLEXTableViewSection *> *)nonemptySections {
+    return @[self.section];
 }
+
+- (void)reloadSections {
+    self.section.list = [FLEXKeychain allAccounts].mutableCopy;
+}
+
+- (void)refreshSectionTitle {
+    self.section.customTitle = FLEXPluralString(
+        self.section.filteredList.count, @"items", @"item"
+    );
+}
+
+- (void)reloadData {
+    [self reloadSections];
+    [self refreshSectionTitle];
+    [super reloadData];
+}
+
+
+#pragma mark - Private
 
 - (FLEXKeychainQuery *)queryForItemAtIndex:(NSInteger)idx {
-    NSDictionary *item = self.keychainItems[idx];
+    NSDictionary *item = self.section.filteredList[idx];
 
     FLEXKeychainQuery *query = [FLEXKeychainQuery new];
     query.service = item[kFLEXKeychainWhereKey];
@@ -81,12 +133,11 @@
         make.message(@"This will remove all keychain items for this app.\n");
         make.message(@"This action cannot be undone. Are you sure?");
         make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
-            for (id account in self.keychainItems) {
+            for (id account in self.section.list) {
                 [self deleteItem:account];
             }
 
-            [self refreshkeychainItems];
-            [self.tableView reloadData];
+            [self reloadData];
         });
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
@@ -96,7 +147,7 @@
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Add Keychain Item");
         make.textField(@"Service name, i.e. Instagram");
-        make.textField(@"Account, i.e. username@example.com");
+        make.textField(@"Account");
         make.textField(@"Password");
         make.button(@"Cancel").cancelStyle();
         make.button(@"Save").handler(^(NSArray<NSString *> *strings) {
@@ -106,8 +157,7 @@
                 [FLEXAlert showAlert:@"Error" message:error.localizedDescription from:self];
             }
 
-            [self refreshkeychainItems];
-            [self.tableView reloadData];
+            [self reloadData];
         });
     } showFrom:self];
 }
@@ -129,48 +179,36 @@
 
 #pragma mark - Table View Data Source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.keychainItems.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.font = UIFont.flex_defaultTableCellFont;
-    }
-    
-    NSDictionary *item = self.keychainItems[indexPath.row];
-    id account = item[kFLEXKeychainAccountKey];
-    if ([account isKindOfClass:[NSString class]]) {
-        cell.textLabel.text = account;
-    } else {
-        cell.textLabel.text = [NSString stringWithFormat:
-            @"[%@]\n\n%@",
-            NSStringFromClass([account class]),
-            [account description]
-        ];
-    }
-    
-    return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.headerTitle;
-}
-
 - (void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)style forRowAtIndexPath:(NSIndexPath *)ip {
     if (style == UITableViewCellEditingStyleDelete) {
-        [self deleteItem:self.keychainItems[ip.row]];
-        [self.keychainItems removeObjectAtIndex:ip.row];
+        // Update the model
+        NSDictionary *toRemove = self.section.filteredList[ip.row];
+        [self deleteItem:toRemove];
+        [self.section mutate:^(NSMutableArray *list) {
+            [list removeObject:toRemove];
+        }];
+    
+        // Delete the row
         [tv deleteRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        // Update the title by refreshing the section without disturbing the delete animation
+        //
+        // This is an ugly hack, but literally nothing else works, save for manually getting
+        // the header and setting its title, which I personally think is worse since it
+        // would need to make assumptions about the default style of the header (CAPS)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self refreshSectionTitle];
+            [tv reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+        });
     }
 }
 
 
 #pragma mark - Table View Delegate
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXKeychainQuery *query = [self queryForItemAtIndex:indexPath.row];

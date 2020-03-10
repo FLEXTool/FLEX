@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Javier Soto on 7/26/14.
-//  Copyright (c) 2014 f. All rights reserved.
+//  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
 #import "FLEXGlobalsEntry.h"
@@ -55,6 +55,18 @@
     entry->_rowAction = [rowSelectedAction copy];
 
     return entry;
+}
+
+@end
+
+@interface FLEXGlobalsEntry (Debugging)
+@property (nonatomic, readonly) NSString *name;
+@end
+
+@implementation FLEXGlobalsEntry (Debugging)
+
+- (NSString *)name {
+    return self.entryNameFuture();
 }
 
 @end
