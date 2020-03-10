@@ -34,7 +34,7 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.depthIndicatorView = [UIView new];
-        self.depthIndicatorView.backgroundColor = [FLEXUtility hierarchyIndentPatternColor];
+        self.depthIndicatorView.backgroundColor = FLEXUtility.hierarchyIndentPatternColor;
         [self.contentView addSubview:self.depthIndicatorView];
         
         UIImage *defaultCircleImage = [FLEXUtility circularImageWithColor:UIColor.blackColor radius:5];
@@ -70,7 +70,7 @@
     
     // UITableViewCell changes all subviews in the contentView to backgroundColor = clearColor.
     // We want to preserve the hierarchy background color when highlighted.
-    self.depthIndicatorView.backgroundColor = [FLEXUtility hierarchyIndentPatternColor];
+    self.depthIndicatorView.backgroundColor = FLEXUtility.hierarchyIndentPatternColor;
     
     self.viewBackgroundColorView.backgroundColor = originalColour;
 }
@@ -80,7 +80,7 @@
     [super setSelected:selected animated:animated];
     
     // See setHighlighted above.
-    self.depthIndicatorView.backgroundColor = [FLEXUtility hierarchyIndentPatternColor];
+    self.depthIndicatorView.backgroundColor = FLEXUtility.hierarchyIndentPatternColor;
     
     self.viewBackgroundColorView.backgroundColor = originalColour;
 }

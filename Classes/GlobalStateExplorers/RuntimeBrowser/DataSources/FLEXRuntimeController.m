@@ -64,7 +64,7 @@ static FLEXRuntimeController *controller = nil;
 + (NSArray<NSArray<FLEXMethod *> *> *)methodsForToken:(FLEXSearchToken *)token
                          instance:(NSNumber *)inst
                         inClasses:(NSArray<NSString*> *)classes {
-    return [[FLEXRuntimeClient runtime]
+    return [FLEXRuntimeClient.runtime
         methodsForToken:token
         instance:inst
         inClasses:classes
@@ -81,15 +81,15 @@ static FLEXRuntimeController *controller = nil;
         return @"(unspecified)";
     }
     
-    return [[FLEXRuntimeClient runtime] shortNameForImageName:@(imageName)];
+    return [FLEXRuntimeClient.runtime shortNameForImageName:@(imageName)];
 }
 
 + (NSString *)imagePathWithShortName:(NSString *)suffix {
-    return [[FLEXRuntimeClient runtime] imageNameForShortName:suffix];
+    return [FLEXRuntimeClient.runtime imageNameForShortName:suffix];
 }
 
 + (NSArray *)allBundleNames {
-    return [FLEXRuntimeClient runtime].imageDisplayNames;
+    return FLEXRuntimeClient.runtime.imageDisplayNames;
 }
 
 #pragma mark Private
@@ -104,12 +104,12 @@ static FLEXRuntimeController *controller = nil;
             return cached;
         }
 
-        NSMutableArray<NSString*> *bundles = [[FLEXRuntimeClient runtime] bundlePathsForToken:token];
+        NSMutableArray<NSString*> *bundles = [FLEXRuntimeClient.runtime bundlePathsForToken:token];
         [self.bundlePathsCache setObject:bundles forKey:token];
         return bundles;
     }
     else {
-        return [[FLEXRuntimeClient runtime] bundlePathsForToken:token];
+        return [FLEXRuntimeClient.runtime bundlePathsForToken:token];
     }
 }
 
@@ -123,12 +123,12 @@ static FLEXRuntimeController *controller = nil;
             return cached;
         }
 
-        NSMutableArray<NSString*> *bundles = [[FLEXRuntimeClient runtime] bundleNamesForToken:token];
+        NSMutableArray<NSString*> *bundles = [FLEXRuntimeClient.runtime bundleNamesForToken:token];
         [self.bundleNamesCache setObject:bundles forKey:token];
         return bundles;
     }
     else {
-        return [[FLEXRuntimeClient runtime] bundleNamesForToken:token];
+        return [FLEXRuntimeClient.runtime bundleNamesForToken:token];
     }
 }
 
@@ -149,7 +149,7 @@ static FLEXRuntimeController *controller = nil;
     }
 
     NSMutableArray *bundles = [self bundlePathsForToken:bundleToken];
-    NSMutableArray *classes = [[FLEXRuntimeClient runtime] classesForToken:classToken inBundles:bundles];
+    NSMutableArray *classes = [FLEXRuntimeClient.runtime classesForToken:classToken inBundles:bundles];
 
     if (shouldCache) {
         [self.classNamesCache setObject:classes forKey:key];
@@ -166,7 +166,7 @@ static FLEXRuntimeController *controller = nil;
     }
 
     NSArray<NSString *> *classes = [self classesForKeyPath:keyPath];
-    NSArray<NSMutableArray<FLEXMethod *> *> *methodLists = [[FLEXRuntimeClient runtime]
+    NSArray<NSMutableArray<FLEXMethod *> *> *methodLists = [FLEXRuntimeClient.runtime
         methodsForToken:keyPath.methodKey
         instance:keyPath.instanceMethods
         inClasses:classes

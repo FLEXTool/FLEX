@@ -58,7 +58,7 @@
         forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier
     ];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.rowHeight = [FLEXNetworkTransactionTableViewCell preferredCellHeight];
+    self.tableView.rowHeight = FLEXNetworkTransactionTableViewCell.preferredCellHeight;
 
     [self registerForNotifications];
     [self updateTransactions];
@@ -337,9 +337,9 @@
     // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
     NSInteger totalRows = [tableView numberOfRowsInSection:indexPath.section];
     if ((totalRows - indexPath.row) % 2 == 0) {
-        cell.backgroundColor = [FLEXColor secondaryBackgroundColor];
+        cell.backgroundColor = FLEXColor.secondaryBackgroundColor;
     } else {
-        cell.backgroundColor = [FLEXColor primaryBackgroundColor];
+        cell.backgroundColor = FLEXColor.primaryBackgroundColor;
     }
 
     return cell;

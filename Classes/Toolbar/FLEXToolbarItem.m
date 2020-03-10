@@ -63,11 +63,11 @@
 }
 
 + (UIColor *)highlightedBackgroundColor {
-    return [FLEXColor toolbarItemHighlightedColor];
+    return FLEXColor.toolbarItemHighlightedColor;
 }
 
 + (UIColor *)selectedBackgroundColor {
-    return [FLEXColor toolbarItemSelectedColor];
+    return FLEXColor.toolbarItemSelectedColor;
 }
 
 + (UIColor *)defaultBackgroundColor {

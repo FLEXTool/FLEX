@@ -45,10 +45,10 @@
         return iv;
     };
 
-    _track = newSubviewImageView([FLEXResources rangeSliderTrack]);
-    _fill = newSubviewImageView([FLEXResources rangeSliderFill]);
-    _leftHandle = newSubviewImageView([FLEXResources rangeSliderLeftHandle]);
-    _rightHandle = newSubviewImageView([FLEXResources rangeSliderRightHandle]);
+    _track = newSubviewImageView(FLEXResources.rangeSliderTrack);
+    _fill = newSubviewImageView(FLEXResources.rangeSliderFill);
+    _leftHandle = newSubviewImageView(FLEXResources.rangeSliderLeftHandle);
+    _rightHandle = newSubviewImageView(FLEXResources.rangeSliderRightHandle);
 }
 
 #pragma mark - Setters / Private

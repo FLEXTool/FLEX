@@ -153,7 +153,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 //    }
     
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
-    UIInterfaceOrientationMask supportedOrientations = [FLEXUtility infoPlistSupportedInterfaceOrientationsMask];
+    UIInterfaceOrientationMask supportedOrientations = FLEXUtility.infoPlistSupportedInterfaceOrientationsMask;
     if (viewControllerToAsk && ![viewControllerToAsk isKindOfClass:[self class]]) {
         supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
     }
@@ -661,7 +661,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (NSArray<UIView *> *)viewsAtPoint:(CGPoint)tapPointInWindow skipHiddenViews:(BOOL)skipHidden {
     NSMutableArray<UIView *> *views = [NSMutableArray new];
-    for (UIWindow *window in [FLEXUtility allWindows]) {
+    for (UIWindow *window in FLEXUtility.allWindows) {
         // Don't include the explorer's own window or subviews.
         if (window != self.view.window && [window pointInside:tapPointInWindow withEvent:nil]) {
             [views addObject:window];

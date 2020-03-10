@@ -52,7 +52,7 @@
 
 - (void)createAvailableFonts {
     NSMutableArray<NSString *> *unsortedFontsArray = [NSMutableArray new];
-    for (NSString *eachFontFamily in [UIFont familyNames]) {
+    for (NSString *eachFontFamily in UIFont.familyNames) {
         for (NSString *eachFontName in [UIFont fontNamesForFamilyName:eachFontFamily]) {
             [unsortedFontsArray addObject:eachFontName];
         }

@@ -234,7 +234,7 @@
             [self updateWithColor:color];
         }
     } else {
-        [self updateWithColor:[UIColor clearColor]];
+        [self updateWithColor:UIColor.clearColor];
     }
 }
 

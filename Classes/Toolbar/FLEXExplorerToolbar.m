@@ -214,7 +214,7 @@
 }
 
 + (CGFloat)dragHandleWidth {
-    return [FLEXResources dragHandle].size.width;
+    return FLEXResources.dragHandle.size.width;
 }
 
 + (CGFloat)descriptionLabelHeight {

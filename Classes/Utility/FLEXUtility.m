@@ -160,7 +160,7 @@
     static UIColor *patternColor = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        UIImage *indentationPatternImage = [FLEXResources hierarchyIndentPattern];
+        UIImage *indentationPatternImage = FLEXResources.hierarchyIndentPattern;
         patternColor = [UIColor colorWithPatternImage:indentationPatternImage];
 
 #if FLEX_AT_LEAST_IOS13_SDK
@@ -169,7 +169,7 @@
             UIGraphicsBeginImageContextWithOptions(
                 indentationPatternImage.size, NO, indentationPatternImage.scale
             );
-            [[FLEXColor iconColor] set];
+            [FLEXColor.iconColor set];
             [indentationPatternImage drawInRect:CGRectMake(
                 0, 0, indentationPatternImage.size.width, indentationPatternImage.size.height
             )];
@@ -194,7 +194,7 @@
 }
 
 + (NSString *)applicationName {
-    return [FLEXUtility applicationImageName].lastPathComponent;
+    return FLEXUtility.applicationImageName.lastPathComponent;
 }
 
 + (NSString *)pointerToString:(void *)ptr {

@@ -28,7 +28,7 @@
 - (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock {
     NSParameterAssert(entryName);
     NSParameterAssert(objectFutureBlock);
-    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
+    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
 
     entryName = entryName.copy;
     FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString *{
@@ -43,7 +43,7 @@
 - (void)registerGlobalEntryWithName:(NSString *)entryName viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock {
     NSParameterAssert(entryName);
     NSParameterAssert(viewControllerFutureBlock);
-    NSAssert([NSThread isMainThread], @"This method must be called from the main thread.");
+    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
 
     entryName = entryName.copy;
     FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString *{
@@ -62,19 +62,19 @@
 
 - (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description {
 #if TARGET_OS_SIMULATOR
-    [[FLEXKeyboardShortcutManager sharedManager] registerSimulatorShortcutWithKey:key modifiers:modifiers action:action description:description];
+    [FLEXKeyboardShortcutManager.sharedManager registerSimulatorShortcutWithKey:key modifiers:modifiers action:action description:description];
 #endif
 }
 
 - (void)setSimulatorShortcutsEnabled:(BOOL)simulatorShortcutsEnabled {
 #if TARGET_OS_SIMULATOR
-    [[FLEXKeyboardShortcutManager sharedManager] setEnabled:simulatorShortcutsEnabled];
+    [FLEXKeyboardShortcutManager.sharedManager setEnabled:simulatorShortcutsEnabled];
 #endif
 }
 
 - (BOOL)simulatorShortcutsEnabled {
 #if TARGET_OS_SIMULATOR
-    return [[FLEXKeyboardShortcutManager sharedManager] isEnabled];
+    return FLEXKeyboardShortcutManager.sharedManager.isEnabled;
 #else
     return NO;
 #endif

@@ -101,7 +101,7 @@
 
     // Create new scene (possibly discarding old scene)
     SCNScene *scene = [SCNScene new];
-    scene.background.contents = [FLEXColor primaryBackgroundColor];
+    scene.background.contents = FLEXColor.primaryBackgroundColor;
     self.sceneView.scene = scene;
 
     NSInteger depth = 0;

@@ -113,12 +113,12 @@
 - (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path {
     NSString *pathExtension = path.pathExtension.lowercaseString;
     
-    NSArray<NSString *> *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    NSArray<NSString *> *sqliteExtensions = FLEXTableListViewController.supportedSQLiteExtensions;
     if ([sqliteExtensions indexOfObject:pathExtension] != NSNotFound) {
         return [FLEXSQLiteDatabaseManager managerForDatabase:path];
     }
     
-    NSArray<NSString *> *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    NSArray<NSString *> *realmExtensions = FLEXTableListViewController.supportedRealmExtensions;
     if (realmExtensions != nil && [realmExtensions indexOfObject:pathExtension] != NSNotFound) {
         return [FLEXRealmDatabaseManager managerForDatabase:path];
     }
@@ -132,12 +132,12 @@
 + (BOOL)supportsExtension:(NSString *)extension {
     extension = extension.lowercaseString;
     
-    NSArray<NSString *> *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    NSArray<NSString *> *sqliteExtensions = FLEXTableListViewController.supportedSQLiteExtensions;
     if (sqliteExtensions.count > 0 && [sqliteExtensions indexOfObject:extension] != NSNotFound) {
         return YES;
     }
     
-    NSArray<NSString *> *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    NSArray<NSString *> *realmExtensions = FLEXTableListViewController.supportedRealmExtensions;
     if (realmExtensions.count > 0 && [realmExtensions indexOfObject:extension] != NSNotFound) {
         return YES;
     }

@@ -103,7 +103,7 @@
     static BOOL canSaveToCameraRoll = NO, didShowWarning = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if ([UIDevice currentDevice].systemVersion.floatValue < 10) {
+        if (UIDevice.currentDevice.systemVersion.floatValue < 10) {
             canSaveToCameraRoll = YES;
             return;
         }

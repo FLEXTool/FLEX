@@ -232,7 +232,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     NSDictionary<NSString *, id> *titleAttributes = @{ NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:12.0],
                                                        NSForegroundColorAttributeName : [UIColor colorWithWhite:0.5 alpha:1.0] };
     NSDictionary<NSString *, id> *detailAttributes = @{ NSFontAttributeName : UIFont.flex_defaultTableCellFont,
-                                                        NSForegroundColorAttributeName : [FLEXColor primaryTextColor] };
+                                                        NSForegroundColorAttributeName : FLEXColor.primaryTextColor };
 
     NSString *title = [NSString stringWithFormat:@"%@: ", row.title];
     NSString *detailText = row.detailText ?: @"";
@@ -311,7 +311,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
     FLEXNetworkDetailRow *responseBodyRow = [FLEXNetworkDetailRow new];
     responseBodyRow.title = @"Response Body";
-    NSData *responseData = [[FLEXNetworkRecorder defaultRecorder] cachedResponseBodyForTransaction:transaction];
+    NSData *responseData = [FLEXNetworkRecorder.defaultRecorder cachedResponseBodyForTransaction:transaction];
     if (responseData.length > 0) {
         responseBodyRow.detailText = @"tap to view";
 
@@ -367,7 +367,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     startTimeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
 
     FLEXNetworkDetailRow *localStartTimeRow = [FLEXNetworkDetailRow new];
-    localStartTimeRow.title = [NSString stringWithFormat:@"Start Time (%@)", [[NSTimeZone localTimeZone] abbreviationForDate:transaction.startTime]];
+    localStartTimeRow.title = [NSString stringWithFormat:@"Start Time (%@)", [NSTimeZone.localTimeZone abbreviationForDate:transaction.startTime]];
     localStartTimeRow.detailText = [startTimeFormatter stringFromDate:transaction.startTime];
     [rows addObject:localStartTimeRow];
 
@@ -473,7 +473,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 }
 
 + (UIViewController *)detailViewControllerForMIMEType:(NSString *)mimeType data:(NSData *)data {
-    FLEXCustomContentViewerFuture makeCustomViewer = [FLEXManager sharedManager].customContentTypeViewers[mimeType.lowercaseString];
+    FLEXCustomContentViewerFuture makeCustomViewer = FLEXManager.sharedManager.customContentTypeViewers[mimeType.lowercaseString];
 
     if (makeCustomViewer) {
         UIViewController *viewer = makeCustomViewer(data);

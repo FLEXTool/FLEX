@@ -121,8 +121,8 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     id filterFunc = ^BOOL(FLEXMethod *method, NSUInteger idx) {
         return [method.name hasPrefix:@"flex_"];
     };
-    NSArray *instanceMethods = [[NSObject flex_allInstanceMethods] flex_filtered:filterFunc];
-    NSArray *classMethods = [[NSObject flex_allClassMethods] flex_filtered:filterFunc];
+    NSArray *instanceMethods = [NSObject.flex_allInstanceMethods flex_filtered:filterFunc];
+    NSArray *classMethods = [NSObject.flex_allClassMethods flex_filtered:filterFunc];
     
     FLEXClassBuilder *proxy     = [FLEXClassBuilder builderForClass:NSProxyClass];
     FLEXClassBuilder *proxyMeta = [FLEXClassBuilder builderForClass:NSProxy_meta];

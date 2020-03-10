@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
 - (id)initWithDelegate:(id)delegate viewsAtTap:(NSArray<UIView *> *)viewsAtTap selectedView:(UIView *)view {
     self = [super init];
     if (self) {
-        NSArray<UIWindow *> *allWindows = [FLEXUtility allWindows];
+        NSArray<UIWindow *> *allWindows = FLEXUtility.allWindows;
         _hierarchyDelegate = delegate;
         _treeViewController = [FLEXHierarchyTableViewController
             windows:allWindows viewsAtTap:viewsAtTap selectedView:view

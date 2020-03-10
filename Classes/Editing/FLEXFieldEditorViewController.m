@@ -53,7 +53,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [FLEXColor groupedBackgroundColor];
+    self.view.backgroundColor = FLEXColor.groupedBackgroundColor;
 
     // Create getter button
     _getterButton = [[UIBarButtonItem alloc]

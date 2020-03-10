@@ -153,7 +153,7 @@
         
         void (^sendEventSwizzleBlock)(UIApplication *, UIEvent *) = ^(UIApplication *slf, UIEvent *event) {
             if (event.type == UIEventTypeTouches) {
-                FLEXKeyboardShortcutManager *keyboardManager = [FLEXKeyboardShortcutManager sharedManager];
+                FLEXKeyboardShortcutManager *keyboardManager = FLEXKeyboardShortcutManager.sharedManager;
                 NSInteger pressureLevel = 0;
                 if (keyboardManager.isPressingShift) {
                     pressureLevel++;
@@ -247,11 +247,11 @@ static const long kFLEXCommandKeyCode = 0xe3;
         isKeyDown = [event _isKeyDown];
     }
     
-    BOOL interactionEnabled = ![UIApplication.sharedApplication isIgnoringInteractionEvents];
+    BOOL interactionEnabled = !UIApplication.sharedApplication.isIgnoringInteractionEvents;
     BOOL hasFirstResponder = NO;
     if (isKeyDown && modifiedInput.length > 0 && interactionEnabled) {
         UIResponder *firstResponder = nil;
-        for (UIWindow *window in [FLEXUtility allWindows]) {
+        for (UIWindow *window in FLEXUtility.allWindows) {
             firstResponder = [window valueForKey:@"firstResponder"];
             if (firstResponder) {
                 hasFirstResponder = YES;

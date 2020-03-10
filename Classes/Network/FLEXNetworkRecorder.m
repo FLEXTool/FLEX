@@ -109,7 +109,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     }
     
     // Before async block to stay accurate
-    NSDate *startDate = NSDate.date;
+    NSDate *startDate = [NSDate date];
 
     if (redirectResponse) {
         [self recordResponseReceivedWithRequestID:requestID response:redirectResponse];
@@ -132,7 +132,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordResponseReceivedWithRequestID:(NSString *)requestID response:(NSURLResponse *)response {
     // Before async block to stay accurate
-    NSDate *responseDate = NSDate.date;
+    NSDate *responseDate = [NSDate date];
 
     dispatch_async(self.queue, ^{
         FLEXNetworkTransaction *transaction = self.networkTransactionsForRequestIdentifiers[requestID];

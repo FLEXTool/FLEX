@@ -505,7 +505,7 @@ const unsigned int kFLEXNumberOfImplicitArgs = 2;
 + (id)objectValueFromEditableJSONString:(NSString *)string {
     id value = nil;
     // nil for empty string/whitespace
-    if ([string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].length) {
+    if ([string stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet].length) {
         value = [NSJSONSerialization
             JSONObjectWithData:[string dataUsingEncoding:NSUTF8StringEncoding]
             options:NSJSONReadingAllowFragments

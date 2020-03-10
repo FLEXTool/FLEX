@@ -12,7 +12,7 @@
 /// Accepts runtime queries given a token.
 @interface FLEXRuntimeClient : NSObject
 
-+ (instancetype)runtime;
+@property (nonatomic, readonly, class) FLEXRuntimeClient *runtime;
 
 /// Called automatically when \c FLEXRuntime is first used.
 /// You may call it again when you think a library has

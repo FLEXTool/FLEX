@@ -19,7 +19,7 @@
     static FLEXRuntimeKeyPath *empty = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        FLEXSearchToken *any = [FLEXSearchToken any];
+        FLEXSearchToken *any = FLEXSearchToken.any;
 
         empty = [self new];
         empty->_bundleKey = any;

@@ -277,7 +277,7 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    self.keyPath = [FLEXRuntimeKeyPath empty];
+    self.keyPath = FLEXRuntimeKeyPath.empty;
     [self updateTable];
 }
 

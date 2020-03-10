@@ -101,7 +101,7 @@ static NSCharacterSet *methodAllowed     = nil;
         return [FLEXSearchToken string:nil options:TBWildcardOptionsAny];
     } else if ([scanner scanString:@"*" intoString:nil]) {
         if (scanner.isAtEnd) {
-            return [FLEXSearchToken any];
+            return FLEXSearchToken.any;
         }
         
         options |= TBWildcardOptionsPrefix;
@@ -122,7 +122,7 @@ static NSCharacterSet *methodAllowed     = nil;
                     [token appendString:@"."];
                 } else if (scanner.isAtEnd && options == TBWildcardOptionsPrefix) {
                     // Only allow standalone '\' if prefixed by '*'
-                    return [FLEXSearchToken any];
+                    return FLEXSearchToken.any;
                 } else {
                     // Token starts with a number, period, or something else not allowed,
                     // or token is a standalone '\' with no '*' prefix

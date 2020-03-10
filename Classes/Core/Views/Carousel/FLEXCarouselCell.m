@@ -47,7 +47,7 @@
     if (self.selected) {
         self.titleLabel.textColor = self.tintColor;
     } else {
-        self.titleLabel.textColor = [FLEXColor deemphasizedTextColor];
+        self.titleLabel.textColor = FLEXColor.deemphasizedTextColor;
     }
 }
 

@@ -25,10 +25,10 @@
 @implementation FLEXTests
 
 - (void)testRuntimeAdditions {
-    XCTAssertEqual(1, [NSObject flex_classHierarchy].count);
-    XCTAssertEqual(4, [FLEXTests flex_classHierarchy].count);
-    XCTAssertEqual([FLEXTests flex_classHierarchy].firstObject, [self class]);
-    XCTAssertEqual([FLEXTests flex_classHierarchy].lastObject, [NSObject class]);
+    XCTAssertEqual(1, NSObject.flex_classHierarchy.count);
+    XCTAssertEqual(4, FLEXTests.flex_classHierarchy.count);
+    XCTAssertEqual(FLEXTests.flex_classHierarchy.firstObject, [self class]);
+    XCTAssertEqual(FLEXTests.flex_classHierarchy.lastObject, [NSObject class]);
 }
 
 - (void)testAssumptionsAboutClasses {
@@ -48,7 +48,7 @@
     XCTAssertEqual(object_getClass(meta), meta);
 
     // Superclass of a root class is nil
-    XCTAssertNil([NSObject superclass]);
+    XCTAssertNil(NSObject.superclass);
 }
 
 - (void)testAssumptionsAboutMessageSending {
@@ -94,7 +94,7 @@
 }
 
 - (void)testGetClassProperties {
-    NSArray *props = [NSBundle flex_allClassProperties];
+    NSArray *props = NSBundle.flex_allClassProperties;
     props = [props flex_filtered:^BOOL(FLEXProperty *obj, NSUInteger idx) {
         return [obj.name isEqualToString:@"mainBundle"];
     }];

@@ -54,7 +54,7 @@
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.font = [[self class] titleFont];
-        _titleLabel.textColor = [FLEXColor primaryTextColor];
+        _titleLabel.textColor = FLEXColor.primaryTextColor;
         _titleLabel.numberOfLines = 0;
         [self addSubview:_titleLabel];
     }

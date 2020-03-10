@@ -25,7 +25,7 @@
     if (self) {
         self.inputTextView = [UITextView new];
         self.inputTextView.font = [[self class] inputFont];
-        self.inputTextView.backgroundColor = [FLEXColor secondaryGroupedBackgroundColor];
+        self.inputTextView.backgroundColor = FLEXColor.secondaryGroupedBackgroundColor;
         self.inputTextView.layer.cornerRadius = 10.f;
         self.inputTextView.contentInset = UIEdgeInsetsMake(0, 5, 0, 0);
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
@@ -36,12 +36,12 @@
             [self.inputTextView.layer setValue:@YES forKey:@"continuousCorners"];
         } else {
             self.inputTextView.layer.borderWidth = 1.f;
-            self.inputTextView.layer.borderColor = [FLEXColor borderColor].CGColor;
+            self.inputTextView.layer.borderColor = FLEXColor.borderColor.CGColor;
         }
 
         self.placeholderLabel = [UILabel new];
         self.placeholderLabel.font = self.inputTextView.font;
-        self.placeholderLabel.textColor = [FLEXColor deemphasizedTextColor];
+        self.placeholderLabel.textColor = FLEXColor.deemphasizedTextColor;
         self.placeholderLabel.numberOfLines = 0;
 
         [self addSubview:self.inputTextView];

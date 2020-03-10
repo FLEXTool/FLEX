@@ -24,7 +24,7 @@
     if (self) {
         _view = view;
         _inScrollView = inScrollView;
-        _identifier = [NSUUID UUID].UUIDString;
+        _identifier = NSUUID.UUID.UUIDString;
 
         UIViewController *controller = [FLEXUtility viewControllerForView:view];
         if (controller) {

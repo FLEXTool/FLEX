@@ -40,7 +40,7 @@
     UITableViewCell *cacheMediaResponsesCell = [self switchCellWithTitle:@"Cache Media Responses" toggleAction:@selector(cacheMediaResponsesToggled:) isOn:NO];
     [mutableCells addObject:cacheMediaResponsesCell];
 
-    NSUInteger currentCacheLimit = [[FLEXNetworkRecorder defaultRecorder] responseCacheByteLimit];
+    NSUInteger currentCacheLimit = [FLEXNetworkRecorder.defaultRecorder responseCacheByteLimit];
     const NSUInteger fiftyMega = 50 * 1024 * 1024;
     NSString *cacheLimitTitle = [self titleForCacheLimitCellWithValue:currentCacheLimit];
     self.cacheLimitCell = [self sliderCellWithTitle:cacheLimitTitle changedAction:@selector(cacheLimitAdjusted:) minimum:0.0 maximum:fiftyMega initialValue:currentCacheLimit];
@@ -60,11 +60,11 @@
 }
 
 - (void)cacheMediaResponsesToggled:(UISwitch *)sender {
-    [[FLEXNetworkRecorder defaultRecorder] setShouldCacheMediaResponses:sender.isOn];
+    [FLEXNetworkRecorder.defaultRecorder setShouldCacheMediaResponses:sender.isOn];
 }
 
 - (void)cacheLimitAdjusted:(UISlider *)sender {
-    [[FLEXNetworkRecorder defaultRecorder] setResponseCacheByteLimit:sender.value];
+    [FLEXNetworkRecorder.defaultRecorder setResponseCacheByteLimit:sender.value];
     self.cacheLimitCell.textLabel.text = [self titleForCacheLimitCellWithValue:sender.value];
 }
 
@@ -72,7 +72,7 @@
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.button(@"Cancel").cancelStyle();
         make.button(@"Clear Recorded Requests").destructiveStyle().handler(^(NSArray *strings) {
-            [[FLEXNetworkRecorder defaultRecorder] clearRecordedActivity];
+            [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
         });
     } showFrom:self];
 

@@ -29,7 +29,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [FLEXColor primaryBackgroundColor];
+        self.backgroundColor = FLEXColor.primaryBackgroundColor;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.translatesAutoresizingMaskIntoConstraints = YES;
         _dynamicTypeHandlers = [NSMutableArray new];
@@ -104,7 +104,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 
     // Draw hairline
     CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetStrokeColorWithColor(context, [FLEXColor hairlineColor].CGColor);
+    CGContextSetStrokeColorWithColor(context, FLEXColor.hairlineColor.CGColor);
     CGContextSetLineWidth(context, width);
     CGContextMoveToPoint(context, 0, rect.size.height - width);
     CGContextAddLineToPoint(context, rect.size.width, rect.size.height - width);

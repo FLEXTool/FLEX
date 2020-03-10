@@ -42,7 +42,7 @@
 }
 
 - (NSArray<FLEXTableViewSection *> *)makeSections {
-    _section = [FLEXMutableListSection list:[FLEXKeychain allAccounts].mutableCopy
+    _section = [FLEXMutableListSection list:FLEXKeychain.allAccounts.mutableCopy
         cellConfiguration:^(__kindof FLEXTableViewCell *cell, NSDictionary *item, NSInteger row) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
@@ -79,7 +79,7 @@
 }
 
 - (void)reloadSections {
-    self.section.list = [FLEXKeychain allAccounts].mutableCopy;
+    self.section.list = FLEXKeychain.allAccounts.mutableCopy;
 }
 
 - (void)refreshSectionTitle {
