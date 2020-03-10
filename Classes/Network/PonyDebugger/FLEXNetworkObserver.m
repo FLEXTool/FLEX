@@ -80,7 +80,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 + (void)setEnabled:(BOOL)enabled {
     BOOL previouslyEnabled = [self isEnabled];
     
-    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:kFLEXNetworkObserverEnabledDefaultsKey];
+    [NSUserDefaults.standardUserDefaults setBool:enabled forKey:kFLEXNetworkObserverEnabledDefaultsKey];
     
     if (enabled) {
         // Inject if needed. This injection is protected with a dispatch_once, so we're ok calling it multiple times.
@@ -94,7 +94,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id <NSU
 }
 
 + (BOOL)isEnabled {
-    return [[[NSUserDefaults standardUserDefaults] objectForKey:kFLEXNetworkObserverEnabledDefaultsKey] boolValue];
+    return [[NSUserDefaults.standardUserDefaults objectForKey:kFLEXNetworkObserverEnabledDefaultsKey] boolValue];
 }
 
 + (void)load {

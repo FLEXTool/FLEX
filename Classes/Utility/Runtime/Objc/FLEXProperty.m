@@ -116,6 +116,8 @@
     // or the default, regardless of whether the default exists
     _likelyGetter = validGetter ?: defaultGetter;
     _likelySetter = validSetter ?: defaultSetter;
+    _likelyGetterString = NSStringFromSelector(_likelyGetter);
+    _likelySetterString = NSStringFromSelector(_likelySetter);
 
     _isClassProperty = _cls ? class_isMetaClass(_cls) : NO;
 }

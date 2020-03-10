@@ -45,10 +45,12 @@
 /// The (likely) setter, regardless of whether the property is readonly.
 /// For example, this might be the custom setter.
 @property (nonatomic, readonly) SEL likelySetter;
+@property (nonatomic, readonly) NSString *likelySetterString;
 /// Not valid unless initialized with the owning class.
 @property (nonatomic, readonly) BOOL likelySetterExists;
 /// The (likely) getter. For example, this might be the custom getter.
 @property (nonatomic, readonly) SEL likelyGetter;
+@property (nonatomic, readonly) NSString *likelyGetterString;
 /// Not valid unless initialized with the owning class.
 @property (nonatomic, readonly) BOOL likelyGetterExists;
 

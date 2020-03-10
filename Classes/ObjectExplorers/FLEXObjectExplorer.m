@@ -15,6 +15,7 @@
 #import "FLEXPropertyAttributes.h"
 #import "NSObject+Reflection.h"
 #import "FLEXMetadataSection.h"
+#import "NSUserDefaults+FLEX.h"
 
 @interface FLEXObjectExplorer () {
     NSMutableArray<NSArray<FLEXProperty *> *> *_allProperties;
@@ -93,6 +94,10 @@
     _allImageNames = [NSMutableArray new];
 
     [self reloadClassHierarchy];
+    
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    BOOL hideBackingIvars = defaults.flex_explorerHidesRedundantIvars;
+    BOOL hidePropertyMethods = defaults.flex_explorerHidesRedundantMethods;
 
     // Loop over each class and each superclass, collect
     // the fresh and unique metadata in each category
@@ -147,6 +152,53 @@
     }
     
     _classHierarchy = [FLEXStaticMetadata classHierarchy:self.classHierarchyClasses];
+    
+    // Potentially filter property-backing ivars
+    if (hideBackingIvars) {
+        NSArray<NSArray<FLEXIvar *> *> *ivars = _allIvars.copy;
+        _allIvars = [ivars flex_mapped:^id(NSArray<FLEXIvar *> *list, NSUInteger idx) {
+            // Get a set of all backing ivar names for the current class in the hierarchy
+            NSSet *ivarNames = [NSSet setWithArray:({
+                [_allProperties[idx] flex_mapped:^id(FLEXProperty *p, NSUInteger idx) {
+                    // Nil if no ivar, and array is flatted
+                    return p.attributes.backingIvar;
+                }];
+            })];
+            
+            // Remove ivars whose name is in the ivar names list
+            return [list flex_filtered:^BOOL(FLEXIvar *ivar, NSUInteger idx) {
+                return ![ivarNames containsObject:ivar.name];
+            }];
+        }];
+    }
+    
+    // Potentially filter property-backing methods
+    if (hidePropertyMethods) {
+        NSArray<NSArray<FLEXMethod *> *> *methods = _allMethods.copy;
+        _allMethods = [methods flex_mapped:^id(NSArray<FLEXMethod *> *list, NSUInteger idx) {
+            // Get a set of all property method names for the current class in the hierarchy
+            NSSet *methodNames = [NSSet setWithArray:({
+                [_allProperties[idx] flex_flatmapped:^NSArray *(FLEXProperty *p, NSUInteger idx) {
+                    if (p.likelyGetterExists) {
+                        if (p.likelySetterExists) {
+                            return @[p.likelyGetterString, p.likelySetterString];
+                        }
+                        
+                        return @[p.likelyGetterString];
+                    } else if (p.likelySetterExists) {
+                        return @[p.likelySetterString];
+                    }
+                    
+                    return nil;
+                }];
+            })];
+            
+            // Remove ivars whose name is in the ivar names list
+            return [list flex_filtered:^BOOL(FLEXMethod *method, NSUInteger idx) {
+                return ![methodNames containsObject:method.selectorString];
+            }];
+        }];
+    }
 
     // Set up UIKit helper data
     // Really, we only need to call this on properties and ivars
@@ -189,7 +241,8 @@
         } else {
             [names addObject:name];
 
-            // Skip methods and properties which are just overrides
+            // Skip methods and properties which are just overrides,
+            // potentially skip ivars and methods associated with properties
             switch (kind) {
                 case FLEXMetadataKindProperties:
                     if ([superclass instancesRespondToSelector:[obj likelyGetter]]) {

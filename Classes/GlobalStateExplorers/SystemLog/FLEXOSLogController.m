@@ -7,10 +7,9 @@
 //
 
 #import "FLEXOSLogController.h"
+#import "NSUserDefaults+FLEX.h"
 #include <dlfcn.h>
 #include "ActivityStreamAPI.h"
-
-NSString * const kFLEXiOSPersistentOSLogKey = @"com.flex.enablePersistentOSLogLogging";
 
 static os_activity_stream_for_pid_t OSActivityStreamForPID;
 static os_activity_stream_resume_t OSActivityStreamResume;
@@ -41,8 +40,7 @@ static uint8_t (*OSLogGetType)(void *);
 + (void)load {
     // Persist logs when the app launches on iOS 10 if we have persistent logs turned on
     if (FLEXOSLogAvailable()) {
-        BOOL persistent = [[NSUserDefaults standardUserDefaults] boolForKey:kFLEXiOSPersistentOSLogKey];
-        if (persistent) {
+        if (NSUserDefaults.standardUserDefaults.flex_cacheOSLogMessages) {
             [self sharedLogController].persistent = YES;
             [[self sharedLogController] startMonitoring];
         }

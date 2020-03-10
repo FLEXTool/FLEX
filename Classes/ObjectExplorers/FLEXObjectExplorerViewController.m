@@ -18,11 +18,13 @@
 #import "FLEXTabsViewController.h"
 #import "FLEXBookmarkManager.h"
 #import "FLEXTableView.h"
+#import "FLEXResources.h"
 #import "FLEXTableViewCell.h"
 #import "FLEXScopeCarousel.h"
 #import "FLEXMetadataSection.h"
 #import "FLEXSingleRowSection.h"
 #import "FLEXShortcutsSection.h"
+#import "NSUserDefaults+FLEX.h"
 #import <objc/runtime.h>
 
 #pragma mark - Private properties
@@ -86,6 +88,11 @@
     self.carousel.items = [self.explorer.classHierarchyClasses flex_mapped:^id(Class cls, NSUInteger idx) {
         return NSStringFromClass(cls);
     }];
+    
+    // ... button for extra options
+    [self addToolbarItems:@[[UIBarButtonItem
+        itemWithImage:FLEXResources.moreIcon target:self action:@selector(moreButtonPressed)
+    ]]];
 
     // Swipe gestures to swipe between classes in the hierarchy
     UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc]
@@ -100,6 +107,11 @@
     rightSwipe.delegate = self;
     [self.tableView addGestureRecognizer:leftSwipe];
     [self.tableView addGestureRecognizer:rightSwipe];
+}
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
+    [self.navigationController setToolbarHidden:NO animated:YES];
+    return YES;
 }
 
 
@@ -168,6 +180,9 @@
     return sections.copy;
 }
 
+/// In our case, all this does is reload the table view,
+/// or reload the sections' data if we changed places
+/// in the class hierarchy. Doesn't refresh \c self.explorer
 - (void)reloadData {
     // Check to see if class scope changed, update accordingly
     if (self.explorer.classScope != self.selectedScope) {
@@ -178,8 +193,30 @@
     [super reloadData];
 }
 
+- (void)shareButtonPressed {
+    [FLEXAlert makeSheet:^(FLEXAlert *make) {
+        make.button(@"Add to Bookmarks").handler(^(NSArray<NSString *> *strings) {
+            [FLEXBookmarkManager.bookmarks addObject:self.object];
+        });
+        make.button(@"Copy Description").handler(^(NSArray<NSString *> *strings) {
+            UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
+        });
+        make.button(@"Copy Address").handler(^(NSArray<NSString *> *strings) {
+            UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
+}
+
 
 #pragma mark - Private
+
+/// Unlike \c -reloadData, this refreshes everything, including the explorer.
+- (void)fullyReloadData {
+    [self.explorer reloadMetadata];
+    [self reloadSections];
+    [self reloadData];
+}
 
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
@@ -223,22 +260,42 @@
     
     return YES;
 }
-
-- (void)shareButtonPressed {
+    
+- (void)moreButtonPressed {
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    BOOL currentlyShowsRedundantIvars = !defaults.flex_explorerHidesRedundantIvars;
+    BOOL currentlyShowsRedundantMethods = !defaults.flex_explorerHidesRedundantMethods;
+    
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
-        make.button(@"Add to Bookmarks").handler(^(NSArray<NSString *> *strings) {
-            [FLEXBookmarkManager.bookmarks addObject:self.object];
-        });
-        make.button(@"Copy Description").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
-        });
-        make.button(@"Copy Address").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
-        });
+        make.title(@"Options");
+        
+        if (currentlyShowsRedundantIvars) {
+            make.button(@"Hide Property-Backing Ivars").handler(^(NSArray<NSString *> *strings) {
+                defaults.flex_explorerHidesRedundantIvars = YES;
+                [self fullyReloadData];
+            });
+        } else {
+            make.button(@"Show Property-Backing Ivars").handler(^(NSArray<NSString *> *strings) {
+                defaults.flex_explorerHidesRedundantIvars = NO;
+                [self fullyReloadData];
+            });
+        }
+        
+        if (currentlyShowsRedundantMethods) {
+            make.button(@"Hide Property-Backing Methods").handler(^(NSArray<NSString *> *strings) {
+                defaults.flex_explorerHidesRedundantMethods = YES;
+                [self fullyReloadData];
+            });
+        } else {
+            make.button(@"Show Property-Backing Methods").handler(^(NSArray<NSString *> *strings) {
+                defaults.flex_explorerHidesRedundantMethods = NO;
+                [self fullyReloadData];
+            });
+        }
+        
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
 }
-
 
 #pragma mark - Description
 

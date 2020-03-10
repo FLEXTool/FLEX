@@ -15,6 +15,7 @@
 #import "FLEXColor.h"
 #import "FLEXResources.h"
 #import "UIBarButtonItem+FLEX.h"
+#import "NSUserDefaults+FLEX.h"
 #import "fishhook.h"
 #import <dlfcn.h>
 
@@ -191,7 +192,7 @@ BOOL my_os_log_shim_enabled(void *addr) {
 
 - (void)showLogSettings {
     FLEXOSLogController *logController = (FLEXOSLogController *)self.logController;
-    BOOL persistent = [[NSUserDefaults standardUserDefaults] boolForKey:kFLEXiOSPersistentOSLogKey];
+    BOOL persistent = NSUserDefaults.standardUserDefaults.flex_cacheOSLogMessages;
     NSString *toggle = persistent ? @"Disable" : @"Enable";
     NSString *title = [@"Persistent logging: " stringByAppendingString:persistent ? @"ON" : @"OFF"];
     NSString *body = @"In iOS 10 and up, ASL is gone. The OS Log API is much more limited. "
@@ -200,7 +201,7 @@ BOOL my_os_log_shim_enabled(void *addr) {
 
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(title).message(body).button(toggle).handler(^(NSArray<NSString *> *strings) {
-            [NSUserDefaults.standardUserDefaults setBool:!persistent forKey:kFLEXiOSPersistentOSLogKey];
+            NSUserDefaults.standardUserDefaults.flex_cacheOSLogMessages = !persistent;
             logController.persistent = !persistent;
             [logController.messages addObjectsFromArray:self.logMessages.list];
         });

@@ -10,8 +10,6 @@
 
 #define FLEXOSLogAvailable() (NSProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 10)
 
-extern NSString * const kFLEXiOSPersistentOSLogKey;
-
 /// The log controller used for iOS 10 and up.
 @interface FLEXOSLogController : NSObject <FLEXLogController>
 

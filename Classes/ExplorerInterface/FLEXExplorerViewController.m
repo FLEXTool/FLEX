@@ -21,8 +21,7 @@
 #import "FLEXTabsViewController.h"
 #import "FLEXWindowManagerController.h"
 #import "FLEXViewControllersViewController.h"
-
-static NSString *const kFLEXToolbarTopMarginDefaultsKey = @"com.flex.FLEXToolbar.topMargin";
+#import "NSUserDefaults+FLEX.h"
 
 typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeDefault,
@@ -96,8 +95,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     self.explorerToolbar = [FLEXExplorerToolbar new];
 
     // Start the toolbar off below any bars that may be at the top of the view.
-    id toolbarOriginYDefault = [[NSUserDefaults standardUserDefaults] objectForKey:kFLEXToolbarTopMarginDefaultsKey];
-    CGFloat toolbarOriginY = toolbarOriginYDefault ? [toolbarOriginYDefault doubleValue] : 100;
+    CGFloat toolbarOriginY = NSUserDefaults.standardUserDefaults.flex_toolbarTopMargin;
 
     CGRect safeArea = [self viewSafeArea];
     CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(
@@ -520,10 +518,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 
     self.explorerToolbar.frame = unconstrainedFrame;
-
-    [NSUserDefaults.standardUserDefaults
-        setDouble:unconstrainedFrame.origin.y forKey:kFLEXToolbarTopMarginDefaultsKey
-    ];
+    NSUserDefaults.standardUserDefaults.flex_toolbarTopMargin = unconstrainedFrame.origin.y;
 }
 
 - (void)handleToolbarHintTapGesture:(UITapGestureRecognizer *)tapGR {
