@@ -31,8 +31,8 @@ static BOOL FLEXDidHookNSLog = NO;
 static BOOL FLEXNSLogHookWorks = NO;
 
 BOOL (*os_log_shim_enabled)(void *addr) = nil;
-BOOL (*orig_os_log_shim_enabled)() = nil;
-BOOL my_os_log_shim_enabled() {
+BOOL (*orig_os_log_shim_enabled)(void *addr) = nil;
+BOOL my_os_log_shim_enabled(void *addr) {
     return NO;
 }
 
@@ -58,7 +58,7 @@ BOOL my_os_log_shim_enabled() {
     
     if (FLEXDidHookNSLog && orig_os_log_shim_enabled != nil) {
         // Check if our rebinding worked
-        FLEXNSLogHookWorks = os_log_shim_enabled(addr) == NO;
+        FLEXNSLogHookWorks = my_os_log_shim_enabled(addr) == NO;
     }
     
     // So, just because we rebind the lazily loaded symbol for
@@ -92,6 +92,7 @@ BOOL my_os_log_shim_enabled() {
     [super viewDidLoad];
     
     self.showsSearchBar = YES;
+    self.showSearchBarInitially = NO;
 
     __weak __typeof(self) weakSelf = self;
     id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) {
@@ -105,7 +106,6 @@ BOOL my_os_log_shim_enabled() {
         _logController = [FLEXASLLogController withUpdateHandler:logHandler];
     }
 
-    [self.tableView registerClass:[FLEXSystemLogCell class] forCellReuseIdentifier:kFLEXSystemLogCellIdentifier];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.title = @"Loading...";
     
@@ -165,8 +165,9 @@ BOOL my_os_log_shim_enabled() {
 
 
 #pragma mark - Private
+
 - (void)handleUpdateWithNewMessages:(NSArray<FLEXSystemLogMessage *> *)newMessages {
-    self.title = @"System Log";
+    self.title = [self.class globalsEntryTitle:FLEXGlobalsRowSystemLog];
 
     [self.logMessages mutate:^(NSMutableArray *list) {
         [list addObjectsFromArray:newMessages];
@@ -174,12 +175,11 @@ BOOL my_os_log_shim_enabled() {
 
     // "Follow" the log as new messages stream in if we were previously near the bottom.
     BOOL wasNearBottom = self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.frame.size.height - 100.0;
-    [self.tableView reloadData];
+    [self reloadData];
     if (wasNearBottom) {
         [self scrollToLastRow];
     }
 }
-
 
 - (void)scrollToLastRow {
     NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
