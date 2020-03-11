@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXExplorerToolbar.h"
 
 #if !FLEX_AT_LEAST_IOS13_SDK
 @class UIWindowScene;
@@ -17,6 +17,7 @@
 @property (nonatomic, readonly, class) FLEXManager *sharedManager;
 
 @property (nonatomic, readonly) BOOL isHidden;
+@property (nonatomic, readonly) FLEXExplorerToolbar *toolbar;
 
 - (void)showExplorer;
 - (void)hideExplorer;

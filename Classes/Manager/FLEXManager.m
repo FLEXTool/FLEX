@@ -104,6 +104,10 @@
     return self.explorerWindow.isHidden;
 }
 
+- (FLEXExplorerToolbar *)toolbar {
+    return self.explorerViewController.explorerToolbar;
+}
+
 
 #pragma mark - FLEXWindowEventDelegate
 

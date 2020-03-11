@@ -134,7 +134,7 @@
 		94A5151E1C4CA1F10063292F /* FLEXExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A5151A1C4CA1F10063292F /* FLEXExplorerViewController.m */; };
 		94A5151F1C4CA1F10063292F /* FLEXWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 94A5151B1C4CA1F10063292F /* FLEXWindow.h */; };
 		94A515201C4CA1F10063292F /* FLEXWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A5151C1C4CA1F10063292F /* FLEXWindow.m */; };
-		94A515251C4CA2080063292F /* FLEXExplorerToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 94A515211C4CA2080063292F /* FLEXExplorerToolbar.h */; };
+		94A515251C4CA2080063292F /* FLEXExplorerToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 94A515211C4CA2080063292F /* FLEXExplorerToolbar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		94A515261C4CA2080063292F /* FLEXExplorerToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A515221C4CA2080063292F /* FLEXExplorerToolbar.m */; };
 		94A515271C4CA2080063292F /* FLEXToolbarItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 94A515231C4CA2080063292F /* FLEXToolbarItem.h */; };
 		94A515281C4CA2080063292F /* FLEXToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A515241C4CA2080063292F /* FLEXToolbarItem.m */; };

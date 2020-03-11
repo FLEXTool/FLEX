@@ -7,7 +7,6 @@
 //
 
 #import "FLEXExplorerViewController.h"
-#import "FLEXExplorerToolbar.h"
 #import "FLEXToolbarItem.h"
 #import "FLEXUtility.h"
 #import "FLEXWindow.h"
@@ -30,8 +29,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 };
 
 @interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>
-
-@property (nonatomic) FLEXExplorerToolbar *explorerToolbar;
 
 /// Tracks the currently active tool/mode
 @property (nonatomic) FLEXExplorerMode currentMode;
@@ -92,7 +89,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [super viewDidLoad];
 
     // Toolbar
-    self.explorerToolbar = [FLEXExplorerToolbar new];
+    _explorerToolbar = [FLEXExplorerToolbar new];
 
     // Start the toolbar off below any bars that may be at the top of the view.
     CGFloat toolbarOriginY = NSUserDefaults.standardUserDefaults.flex_toolbarTopMargin;

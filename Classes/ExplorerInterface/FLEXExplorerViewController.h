@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXExplorerToolbar.h"
 
 @class FLEXWindow;
 @protocol FLEXExplorerViewControllerDelegate;
@@ -16,6 +16,8 @@
 
 @property (nonatomic, weak) id <FLEXExplorerViewControllerDelegate> delegate;
 @property (nonatomic, readonly) BOOL wantsWindowToBecomeKey;
+
+@property (nonatomic, readonly) FLEXExplorerToolbar *explorerToolbar;
 
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates;
 
