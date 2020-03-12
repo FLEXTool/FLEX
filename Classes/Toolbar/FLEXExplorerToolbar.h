@@ -10,6 +10,8 @@
 
 @class FLEXExplorerToolbarItem;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// Users of the toolbar can configure the enabled state
 /// and event target/actions for each item.
 @interface FLEXExplorerToolbar : UIView
@@ -52,3 +54,5 @@
 @property (nonatomic, readonly) UIView *selectedViewDescriptionContainer;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -12,6 +12,8 @@
 @class UIWindowScene;
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FLEXManager : NSObject
 
 @property (nonatomic, readonly, class) FLEXManager *sharedManager;
@@ -36,4 +38,6 @@
 @end
 
 
-typedef UIViewController *(^FLEXCustomContentViewerFuture)(NSData *data);
+typedef UIViewController * _Nullable(^FLEXCustomContentViewerFuture)(NSData *data);
+
+NS_ASSUME_NONNULL_END

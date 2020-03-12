@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark Reuse identifiers
 
 typedef NSString * FLEXTableViewCellReuseIdentifier;
@@ -42,3 +44,5 @@ extern FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell;
 - (void)registerCells:(NSDictionary<NSString *, Class> *)registrationMapping;
 
 @end
+
+NS_ASSUME_NONNULL_END

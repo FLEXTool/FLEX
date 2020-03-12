@@ -14,9 +14,11 @@
 @class FLEXObjectExplorerViewController;
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FLEXObjectExplorerFactory : NSObject <FLEXGlobalsEntry>
 
-+ (FLEXObjectExplorerViewController *)explorerViewControllerForObject:(id)object;
++ (nullable FLEXObjectExplorerViewController *)explorerViewControllerForObject:(nullable id)object;
 
 /// Register a specific explorer view controller class to be used when exploring
 /// an object of a specific class. Calls will overwrite existing registrations.
@@ -24,3 +26,5 @@
 + (void)registerExplorerSection:(Class)sectionClass forClass:(Class)objectClass;
 
 @end
+
+NS_ASSUME_NONNULL_END

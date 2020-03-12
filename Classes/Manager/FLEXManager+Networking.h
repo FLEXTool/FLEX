@@ -8,6 +8,8 @@
 
 #import "FLEXManager.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FLEXManager (Networking)
 
 /// If this property is set to YES, FLEX will swizzle NSURLConnection*Delegate and NSURLSession*Delegate methods
@@ -34,3 +36,5 @@
             viewControllerFutureBlock:(FLEXCustomContentViewerFuture)viewControllerFutureBlock;
 
 @end
+
+NS_ASSUME_NONNULL_END
