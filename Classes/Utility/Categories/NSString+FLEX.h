@@ -6,8 +6,7 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "FLEXRuntimeUtility.h"
+#import "FLEXRuntimeConstants.h"
 
 @interface NSString (FLEXTypeEncoding)
 

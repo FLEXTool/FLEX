@@ -7,7 +7,7 @@
 //
 
 #import "FLEXExplorerViewController.h"
-#import "FLEXToolbarItem.h"
+#import "FLEXExplorerToolbarItem.h"
 #import "FLEXUtility.h"
 #import "FLEXWindow.h"
 #import "FLEXTabList.h"
@@ -369,7 +369,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)setupToolbarActions {
     FLEXExplorerToolbar *toolbar = self.explorerToolbar;
-    NSDictionary<NSString *, FLEXToolbarItem *> *actionsToItems = @{
+    NSDictionary<NSString *, FLEXExplorerToolbarItem *> *actionsToItems = @{
         NSStringFromSelector(@selector(selectButtonTapped:)):        toolbar.selectItem,
         NSStringFromSelector(@selector(hierarchyButtonTapped:)):     toolbar.hierarchyItem,
         NSStringFromSelector(@selector(recentButtonTapped:)):        toolbar.recentItem,
@@ -378,16 +378,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         NSStringFromSelector(@selector(closeButtonTapped:)):         toolbar.closeItem,
     };
     
-    [actionsToItems enumerateKeysAndObjectsUsingBlock:^(NSString *sel, FLEXToolbarItem *item, BOOL *stop) {
+    [actionsToItems enumerateKeysAndObjectsUsingBlock:^(NSString *sel, FLEXExplorerToolbarItem *item, BOOL *stop) {
         [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventTouchUpInside];
     }];
 }
 
-- (void)selectButtonTapped:(FLEXToolbarItem *)sender {
+- (void)selectButtonTapped:(FLEXExplorerToolbarItem *)sender {
     [self toggleSelectTool];
 }
 
-- (void)hierarchyButtonTapped:(FLEXToolbarItem *)sender {
+- (void)hierarchyButtonTapped:(FLEXExplorerToolbarItem *)sender {
     [self toggleViewsTool];
 }
 
@@ -396,20 +396,20 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return [UIApplication.sharedApplication valueForKey:statusBarString];
 }
 
-- (void)recentButtonTapped:(FLEXToolbarItem *)sender {
+- (void)recentButtonTapped:(FLEXExplorerToolbarItem *)sender {
     NSAssert(FLEXTabList.sharedList.activeTab, @"Must have active tab");
     [self presentViewController:FLEXTabList.sharedList.activeTab animated:YES completion:nil];
 }
 
-- (void)moveButtonTapped:(FLEXToolbarItem *)sender {
+- (void)moveButtonTapped:(FLEXExplorerToolbarItem *)sender {
     [self toggleMoveTool];
 }
 
-- (void)globalsButtonTapped:(FLEXToolbarItem *)sender {
+- (void)globalsButtonTapped:(FLEXExplorerToolbarItem *)sender {
     [self toggleMenuTool];
 }
 
-- (void)closeButtonTapped:(FLEXToolbarItem *)sender {
+- (void)closeButtonTapped:(FLEXExplorerToolbarItem *)sender {
     self.currentMode = FLEXExplorerModeDefault;
     [self.delegate explorerViewControllerDidFinish:self];
 }

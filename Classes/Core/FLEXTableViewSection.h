@@ -6,7 +6,9 @@
 //  Copyright © 2020 Flipboard. All rights reserved.
 //
 
-#import "FLEXUtility.h"
+#import <UIKit/UIKit.h>
+#import "FLEXMacros.h"
+#import "NSArray+Functional.h"
 @class FLEXTableView;
 
 NS_ASSUME_NONNULL_BEGIN

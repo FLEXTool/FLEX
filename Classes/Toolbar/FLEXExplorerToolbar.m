@@ -8,18 +8,18 @@
 
 #import "FLEXColor.h"
 #import "FLEXExplorerToolbar.h"
-#import "FLEXToolbarItem.h"
+#import "FLEXExplorerToolbarItem.h"
 #import "FLEXResources.h"
 #import "FLEXUtility.h"
 
 @interface FLEXExplorerToolbar ()
 
-@property (nonatomic, readwrite) FLEXToolbarItem *globalsItem;
-@property (nonatomic, readwrite) FLEXToolbarItem *hierarchyItem;
-@property (nonatomic, readwrite) FLEXToolbarItem *selectItem;
-@property (nonatomic, readwrite) FLEXToolbarItem *recentItem;
-@property (nonatomic, readwrite) FLEXToolbarItem *moveItem;
-@property (nonatomic, readwrite) FLEXToolbarItem *closeItem;
+@property (nonatomic, readwrite) FLEXExplorerToolbarItem *globalsItem;
+@property (nonatomic, readwrite) FLEXExplorerToolbarItem *hierarchyItem;
+@property (nonatomic, readwrite) FLEXExplorerToolbarItem *selectItem;
+@property (nonatomic, readwrite) FLEXExplorerToolbarItem *recentItem;
+@property (nonatomic, readwrite) FLEXExplorerToolbarItem *moveItem;
+@property (nonatomic, readwrite) FLEXExplorerToolbarItem *closeItem;
 @property (nonatomic, readwrite) UIView *dragHandle;
 
 @property (nonatomic) UIImageView *dragHandleImageView;
@@ -52,12 +52,12 @@
         [self addSubview:self.dragHandle];
         
         // Buttons
-        self.globalsItem   = [FLEXToolbarItem itemWithTitle:@"menu" image:FLEXResources.globalsIcon];
-        self.hierarchyItem = [FLEXToolbarItem itemWithTitle:@"views" image:FLEXResources.hierarchyIcon];
-        self.selectItem    = [FLEXToolbarItem itemWithTitle:@"select" image:FLEXResources.selectIcon];
-        self.recentItem    = [FLEXToolbarItem itemWithTitle:@"recent" image:FLEXResources.recentIcon];
-        self.moveItem      = [FLEXToolbarItem itemWithTitle:@"move" image:FLEXResources.moveIcon sibling:self.recentItem];
-        self.closeItem     = [FLEXToolbarItem itemWithTitle:@"close" image:FLEXResources.closeIcon];
+        self.globalsItem   = [FLEXExplorerToolbarItem itemWithTitle:@"menu" image:FLEXResources.globalsIcon];
+        self.hierarchyItem = [FLEXExplorerToolbarItem itemWithTitle:@"views" image:FLEXResources.hierarchyIcon];
+        self.selectItem    = [FLEXExplorerToolbarItem itemWithTitle:@"select" image:FLEXResources.selectIcon];
+        self.recentItem    = [FLEXExplorerToolbarItem itemWithTitle:@"recent" image:FLEXResources.recentIcon];
+        self.moveItem      = [FLEXExplorerToolbarItem itemWithTitle:@"move" image:FLEXResources.moveIcon sibling:self.recentItem];
+        self.closeItem     = [FLEXExplorerToolbarItem itemWithTitle:@"close" image:FLEXResources.closeIcon];
 
         // Selected view box //
         
@@ -105,7 +105,7 @@
     CGFloat originY = CGRectGetMinY(safeArea);
     CGFloat height = kToolbarItemHeight;
     CGFloat width = FLEXFloor((CGRectGetWidth(safeArea) - CGRectGetWidth(self.dragHandle.frame)) / self.toolbarItems.count);
-    for (FLEXToolbarItem *toolbarItem in self.toolbarItems) {
+    for (FLEXExplorerToolbarItem *toolbarItem in self.toolbarItems) {
         toolbarItem.currentItem.frame = CGRectMake(originX, originY, width, height);
         originX = CGRectGetMaxX(toolbarItem.currentItem.frame);
     }
@@ -160,13 +160,13 @@
 
 #pragma mark - Setter Overrides
 
-- (void)setToolbarItems:(NSArray<FLEXToolbarItem *> *)toolbarItems {
+- (void)setToolbarItems:(NSArray<FLEXExplorerToolbarItem *> *)toolbarItems {
     if (_toolbarItems == toolbarItems) {
         return;
     }
     
     // Remove old toolbar items, if any
-    for (FLEXToolbarItem *item in _toolbarItems) {
+    for (FLEXExplorerToolbarItem *item in _toolbarItems) {
         [item.currentItem removeFromSuperview];
     }
     
@@ -175,7 +175,7 @@
         toolbarItems = [toolbarItems subarrayWithRange:NSMakeRange(0, 5)];
     }
 
-    for (FLEXToolbarItem *item in toolbarItems) {
+    for (FLEXExplorerToolbarItem *item in toolbarItems) {
         [self addSubview:item.currentItem];
     }
 

@@ -9,7 +9,7 @@
 
 #import "FLEXProtocol.h"
 #import "FLEXProperty.h"
-#import <objc/runtime.h>
+#import "FLEXRuntimeUtility.h"
 
 
 @implementation FLEXProtocol

@@ -11,20 +11,6 @@
 #import "FLEXObjcInternal.h"
 #import "FLEXTypeEncodingParser.h"
 
-// See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html#//apple_ref/doc/uid/TP40008048-CH101-SW6
-NSString *const kFLEXPropertyAttributeKeyTypeEncoding = @"T";
-NSString *const kFLEXPropertyAttributeKeyBackingIvarName = @"V";
-NSString *const kFLEXPropertyAttributeKeyReadOnly = @"R";
-NSString *const kFLEXPropertyAttributeKeyCopy = @"C";
-NSString *const kFLEXPropertyAttributeKeyRetain = @"&";
-NSString *const kFLEXPropertyAttributeKeyNonAtomic = @"N";
-NSString *const kFLEXPropertyAttributeKeyCustomGetter = @"G";
-NSString *const kFLEXPropertyAttributeKeyCustomSetter = @"S";
-NSString *const kFLEXPropertyAttributeKeyDynamic = @"D";
-NSString *const kFLEXPropertyAttributeKeyWeak = @"W";
-NSString *const kFLEXPropertyAttributeKeyGarbageCollectable = @"P";
-NSString *const kFLEXPropertyAttributeKeyOldStyleTypeEncoding = @"t";
-
 static NSString *const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector = 0,
@@ -32,11 +18,7 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch = 2
 };
 
-// Arguments 0 and 1 are self and _cmd always
-const unsigned int kFLEXNumberOfImplicitArgs = 2;
-
 @implementation FLEXRuntimeUtility
-
 
 #pragma mark - General Helpers (Public)
 

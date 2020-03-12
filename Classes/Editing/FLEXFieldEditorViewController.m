@@ -10,6 +10,7 @@
 #import "FLEXFieldEditorView.h"
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXPropertyAttributes.h"
+#import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "UIBarButtonItem+FLEX.h"

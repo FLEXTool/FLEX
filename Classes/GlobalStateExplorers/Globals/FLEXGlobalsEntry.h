@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-@class FLEXGlobalsViewController;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -47,10 +46,10 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
 
 typedef NSString * _Nonnull (^FLEXGlobalsEntryNameFuture)(void);
 /// Simply return a view controller to be pushed on the navigation stack
-typedef UIViewController * _Nullable (^FLEXGlobalsTableViewControllerViewControllerFuture)(void);
+typedef UIViewController * _Nullable (^FLEXGlobalsEntryViewControllerFuture)(void);
 /// Do something like present an alert, then use the host
 /// view controller to present or push another view controller.
-typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsViewController * _Nonnull host);
+typedef void (^FLEXGlobalsEntryRowAction)(__kindof UITableViewController * _Nonnull host);
 
 /// For view controllers to conform to to indicate they support being used
 /// in the globals table view controller. These methods help create concrete entries.
@@ -74,23 +73,23 @@ typedef void (^FLEXGlobalsTableViewControllerRowAction)(FLEXGlobalsViewControlle
 @optional
 
 + (nullable UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row;
-+ (nullable FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row;
++ (nullable FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row;
 
 @end
 
 @interface FLEXGlobalsEntry : NSObject
 
 @property (nonatomic, readonly, nonnull)  FLEXGlobalsEntryNameFuture entryNameFuture;
-@property (nonatomic, readonly, nullable) FLEXGlobalsTableViewControllerViewControllerFuture viewControllerFuture;
-@property (nonatomic, readonly, nullable) FLEXGlobalsTableViewControllerRowAction rowAction;
+@property (nonatomic, readonly, nullable) FLEXGlobalsEntryViewControllerFuture viewControllerFuture;
+@property (nonatomic, readonly, nullable) FLEXGlobalsEntryRowAction rowAction;
 
 + (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)entry row:(FLEXGlobalsRow)row;
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
-               viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture;
+               viewControllerFuture:(FLEXGlobalsEntryViewControllerFuture)viewControllerFuture;
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
-                             action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction;
+                             action:(FLEXGlobalsEntryRowAction)rowSelectedAction;
 
 @end
 

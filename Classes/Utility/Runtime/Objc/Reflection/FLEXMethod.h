@@ -7,10 +7,8 @@
 //  Copyright (c) 2015 Tanner Bennett. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "FLEXRuntimeConstants.h"
 #import "FLEXMethodBase.h"
-#import "FLEXRuntimeUtility.h"
-#import <objc/runtime.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

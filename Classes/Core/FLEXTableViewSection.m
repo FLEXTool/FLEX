@@ -8,6 +8,7 @@
 
 #import "FLEXTableViewSection.h"
 #import "FLEXTableView.h"
+#import "FLEXUtility.h"
 #import "UIMenu+FLEX.h"
 
 #pragma clang diagnostic push
@@ -67,7 +68,7 @@
     return @"";
 }
 
-- (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender {
+- (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13)) {
     NSArray<NSString *> *copyItems = [self copyMenuItemsForRow:row];
     NSAssert(copyItems.count % 2 == 0, @"copyMenuItemsForRow: should return an even list");
     

@@ -1,5 +1,5 @@
 //
-//  FLEXToolbarItem.h
+//  FLEXExplorerToolbarItem.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 4/4/14.
@@ -10,17 +10,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLEXToolbarItem : UIButton
+@interface FLEXExplorerToolbarItem : UIButton
 
 + (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image;
 
 /// @param backupItem a toolbar item to use in place of this item when it becomes disabled.
 /// Items without a sibling item exhibit expected behavior when they become disabled, and are greyed out.
-+ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image sibling:(nullable FLEXToolbarItem *)backupItem;
++ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image sibling:(nullable FLEXExplorerToolbarItem *)backupItem;
 
 /// If a toolbar item has a sibling, the item will replace itself with its
 /// sibling when it becomes disabled, and vice versa when it becomes enabled again.
-@property (nonatomic, readonly) FLEXToolbarItem *sibling;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *sibling;
 
 /// When a toolbar item has a sibling and it becomes disabled, the sibling is the view
 /// that should be added to or removed from a new or existing toolbar. This property
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// @return the result of the item's sibling's \c currentItem,
 /// if this item has a sibling and this item is disabled, otherwise this item.
-@property (nonatomic, readonly) FLEXToolbarItem *currentItem;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *currentItem;
 
 @end
 

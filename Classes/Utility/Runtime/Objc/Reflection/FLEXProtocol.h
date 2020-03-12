@@ -7,8 +7,7 @@
 //  Copyright (c) 2015 Tanner Bennett. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "FLEXRuntimeUtility.h"
+#import "FLEXRuntimeConstants.h"
 @class FLEXProperty, FLEXMethodDescription;
 
 #pragma mark FLEXProtocol

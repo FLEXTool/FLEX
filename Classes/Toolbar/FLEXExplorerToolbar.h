@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class FLEXToolbarItem;
+@class FLEXExplorerToolbarItem;
 
 /// Users of the toolbar can configure the enabled state
 /// and event target/actions for each item.
@@ -16,26 +16,26 @@
 
 /// The items to be displayed in the toolbar. Defaults to:
 /// globalsItem, hierarchyItem, selectItem, moveItem, closeItem
-@property (nonatomic, copy) NSArray<FLEXToolbarItem *> *toolbarItems;
+@property (nonatomic, copy) NSArray<FLEXExplorerToolbarItem *> *toolbarItems;
 
 /// Toolbar item for selecting views.
-@property (nonatomic, readonly) FLEXToolbarItem *selectItem;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *selectItem;
 
 /// Toolbar item for presenting a list with the view hierarchy.
-@property (nonatomic, readonly) FLEXToolbarItem *hierarchyItem;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *hierarchyItem;
 
 /// Toolbar item for moving views.
 /// Its \c sibling is the \c lastTabItem
-@property (nonatomic, readonly) FLEXToolbarItem *moveItem;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *moveItem;
 
 /// Toolbar item for presenting the currently active tab.
-@property (nonatomic, readonly) FLEXToolbarItem *recentItem;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *recentItem;
 
 /// Toolbar item for presenting a screen with various tools for inspecting the app.
-@property (nonatomic, readonly) FLEXToolbarItem *globalsItem;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *globalsItem;
 
 /// Toolbar item for hiding the explorer.
-@property (nonatomic, readonly) FLEXToolbarItem *closeItem;
+@property (nonatomic, readonly) FLEXExplorerToolbarItem *closeItem;
 
 /// A view for moving the entire toolbar.
 /// Users of the toolbar can attach a pan gesture recognizer to decide how to reposition the toolbar.

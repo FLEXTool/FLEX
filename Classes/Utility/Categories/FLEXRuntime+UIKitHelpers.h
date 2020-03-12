@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXUtility.h"
 #import "FLEXProperty.h"
 #import "FLEXIvar.h"
 #import "FLEXMethod.h"

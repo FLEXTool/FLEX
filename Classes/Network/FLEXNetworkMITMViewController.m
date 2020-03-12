@@ -195,8 +195,8 @@
     return @"📡  Network History";
 }
 
-+ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
-    return ^(FLEXGlobalsViewController *host) {
++ (FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
+    return ^(UITableViewController *host) {
         if (FLEXNetworkObserver.isEnabled) {
             [host.navigationController pushViewController:[
                 self globalsEntryViewController:row

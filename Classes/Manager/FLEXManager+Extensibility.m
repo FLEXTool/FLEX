@@ -16,6 +16,7 @@
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXKeyboardHelpViewController.h"
 #import "FLEXFileBrowserTableViewController.h"
+#import "FLEXUtility.h"
 
 @interface FLEXManager (ExtensibilityPrivate)
 @property (nonatomic, readonly) UIViewController *topViewController;

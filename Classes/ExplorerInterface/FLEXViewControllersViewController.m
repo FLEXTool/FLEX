@@ -9,6 +9,7 @@
 #import "FLEXViewControllersViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXMutableListSection.h"
+#import "FLEXUtility.h"
 
 @interface FLEXViewControllersViewController ()
 @property (nonatomic, readonly) FLEXMutableListSection *section;

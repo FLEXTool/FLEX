@@ -10,6 +10,7 @@
 #import "FLEXMethod.h"
 #import "FLEXMirror.h"
 #import "FLEXTypeEncodingParser.h"
+#import "FLEXRuntimeUtility.h"
 
 @implementation FLEXMethod
 @dynamic implementation;

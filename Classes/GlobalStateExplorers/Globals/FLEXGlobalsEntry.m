@@ -34,7 +34,7 @@
 }
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
-               viewControllerFuture:(FLEXGlobalsTableViewControllerViewControllerFuture)viewControllerFuture {
+               viewControllerFuture:(FLEXGlobalsEntryViewControllerFuture)viewControllerFuture {
     NSParameterAssert(nameFuture);
     NSParameterAssert(viewControllerFuture);
 
@@ -46,7 +46,7 @@
 }
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
-                             action:(FLEXGlobalsTableViewControllerRowAction)rowSelectedAction {
+                             action:(FLEXGlobalsEntryRowAction)rowSelectedAction {
     NSParameterAssert(nameFuture);
     NSParameterAssert(rowSelectedAction);
 

@@ -1,5 +1,5 @@
 //
-//  FLEXToolbarItem.m
+//  FLEXExplorerToolbarItem.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 4/4/14.
@@ -7,12 +7,12 @@
 //
 
 #import "FLEXColor.h"
-#import "FLEXToolbarItem.h"
+#import "FLEXExplorerToolbarItem.h"
 #import "FLEXUtility.h"
 
-@interface FLEXToolbarItem ()
+@interface FLEXExplorerToolbarItem ()
 
-@property (nonatomic) FLEXToolbarItem *sibling;
+@property (nonatomic) FLEXExplorerToolbarItem *sibling;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic) UIImage *image;
 
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation FLEXToolbarItem
+@implementation FLEXExplorerToolbarItem
 
 #pragma mark - Public
 
@@ -30,10 +30,10 @@
     return [self itemWithTitle:title image:image sibling:nil];
 }
 
-+ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image sibling:(FLEXToolbarItem *)backupItem {
++ (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image sibling:(FLEXExplorerToolbarItem *)backupItem {
     NSParameterAssert(title); NSParameterAssert(image);
     
-    FLEXToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeSystem];
+    FLEXExplorerToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeSystem];
     toolbarItem.sibling = backupItem;
     toolbarItem.title = title;
     toolbarItem.image = image;
@@ -47,7 +47,7 @@
     return toolbarItem;
 }
 
-- (FLEXToolbarItem *)currentItem {
+- (FLEXExplorerToolbarItem *)currentItem {
     if (!self.enabled && self.sibling) {
         return self.sibling.currentItem;
     }
