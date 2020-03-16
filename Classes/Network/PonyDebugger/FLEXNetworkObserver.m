@@ -15,10 +15,13 @@
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXUtility.h"
+#import "NSObject+Reflection.h"
+#import "FLEXMethod.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
 #import <dispatch/queue.h>
+#include <dlfcn.h>
 
 NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNetworkObserverEnabledStateChangedNotification";
 static NSString *const kFLEXNetworkObserverEnabledDefaultsKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
@@ -275,40 +278,82 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
         // In iOS 7 resume lives in __NSCFLocalSessionTask
         // In iOS 8 resume lives in NSURLSessionTask
         // In iOS 9 resume lives in __NSCFURLSessionTask
-        Class class = Nil;
+        Class baseResumeClass = Nil;
         if (![NSProcessInfo.processInfo respondsToSelector:@selector(operatingSystemVersion)]) {
-            class = NSClassFromString(@"__NSCFLocalSessionTask");
-        } else if (NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 9) {
-            class = [NSURLSessionTask class];
+            // iOS ... 7
+            baseResumeClass = NSClassFromString(@"__NSCFLocalSessionTask");
         } else {
-            class = NSClassFromString(@"__NSCFURLSessionTask");
+            NSInteger majorVersion = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion;
+            if (majorVersion < 9) {
+                // iOS 8
+                baseResumeClass = [NSURLSessionTask class];
+            } else {
+                // iOS 9+
+                baseResumeClass = NSClassFromString(@"__NSCFURLSessionTask");
+            }
         }
         
-        SEL selector = @selector(resume);
-        SEL swizzledSelector = [FLEXUtility swizzledSelectorForSelector:selector];
-        Method originalResume = class_getInstanceMethod(class, selector);
-
-        void (^swizzleBlock)(NSURLSessionTask *) = ^(NSURLSessionTask *slf) {
+        // Hook the base implementation of -resume
+        IMP originalResume = [baseResumeClass instanceMethodForSelector:@selector(resume)];
+        [self swizzleResumeSelector:@selector(resume) forClass:baseResumeClass];
+        
+        // *Sigh*
+        //
+        // So, multiple versions of AFNetworking 2.5.X swizzle -resume in various and
+        // short-sighted ways. If you look through the version history from 2.5.0 upwards,
+        // you'll see a variety of techniques were tried, including taking a private
+        // subclass of NSURLSessionTask and calling class_addMethod with `originalResume`
+        // below, so that a duplicate implementation of -resume exists in that class.
+        //
+        // This technique in particular is troublesome, because the implementation in
+        // `baseResumeClass` is never called at all, which means our swizzle is never invoked.
+        //
+        // The only solution is a brute-force one: we must loop over the class tree
+        // below `baseResumeClass` and check for all classes that implement `af_resume`.
+        // if the IMP corresponding to that method is equal to `originalResume` then we
+        // swizzle that in addition to swizzling `resume` on `baseResumeClass` above.
+        //
+        // However, we only go to the trouble at all if NSSelectorFromString
+        // can even find an `"af_resume"` selector in the first place.
+        SEL sel_af_resume = NSSelectorFromString(@"af_resume");
+        if (sel_af_resume) {
+            NSMutableArray<Class> *classTree = FLEXGetAllSubclasses(baseResumeClass, NO).mutableCopy;
+            for (NSInteger i = 0; i < classTree.count; i++) {
+                [classTree addObjectsFromArray:FLEXGetAllSubclasses(classTree[i], NO)];
+            }
             
-            // iOS's internal HTTP parser finalization code is mysteriously not thread safe,
-            // invoking it asynchronously has a chance to cause a `double free` crash.
-            // This line below will ask for HTTPBody synchronously, make the HTTPParser
-            // parse the request, and cache them in advance. After that the HTTPParser
-            // will be finalized. Make sure other threads inspecting the request
-            // won't trigger a race to finalize the parser.
-            [slf.currentRequest HTTPBody];
-
-            [FLEXNetworkObserver.sharedObserver URLSessionTaskWillResume:slf];
-            ((void(*)(id, SEL))objc_msgSend)(
-                slf, swizzledSelector
-            );
-        };
-
-        IMP implementation = imp_implementationWithBlock(swizzleBlock);
-        class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalResume));
-        Method newResume = class_getInstanceMethod(class, swizzledSelector);
-        method_exchangeImplementations(originalResume, newResume);
+            for (Class current in classTree) {
+                IMP af_resume = [current instanceMethodForSelector:sel_af_resume];
+                if (af_resume == originalResume) {
+                    [self swizzleResumeSelector:sel_af_resume forClass:current];
+                }
+            }
+        }
     });
+}
+
++ (void)swizzleResumeSelector:(SEL)selector forClass:(Class)class {
+    SEL swizzledSelector = [FLEXUtility swizzledSelectorForSelector:selector];
+    Method originalResume = class_getInstanceMethod(class, selector);
+    IMP implementation = imp_implementationWithBlock(^(NSURLSessionTask *slf) {
+        
+        // iOS's internal HTTP parser finalization code is mysteriously not thread safe,
+        // invoking it asynchronously has a chance to cause a `double free` crash.
+        // This line below will ask for HTTPBody synchronously, make the HTTPParser
+        // parse the request, and cache them in advance. After that the HTTPParser
+        // will be finalized. Make sure other threads inspecting the request
+        // won't trigger a race to finalize the parser.
+        [slf.currentRequest HTTPBody];
+
+        [FLEXNetworkObserver.sharedObserver URLSessionTaskWillResume:slf];
+        ((void(*)(id, SEL))objc_msgSend)(
+            slf, swizzledSelector
+        );
+    });
+    
+    class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalResume));
+    Method newResume = class_getInstanceMethod(class, swizzledSelector);
+    method_exchangeImplementations(originalResume, newResume);
 }
 
 + (void)injectIntoNSURLConnectionAsynchronousClassMethod {
