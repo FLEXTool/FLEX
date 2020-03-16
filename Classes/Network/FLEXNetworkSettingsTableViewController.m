@@ -46,9 +46,6 @@
     self.cacheLimitCell = [self sliderCellWithTitle:cacheLimitTitle changedAction:@selector(cacheLimitAdjusted:) minimum:0.0 maximum:fiftyMega initialValue:currentCacheLimit];
     [mutableCells addObject:self.cacheLimitCell];
 
-    UITableViewCell *clearRecordedRequestsCell = [self buttonCellWithTitle:@"❌  Clear Recorded Requests" touchUpAction:@selector(clearRequestsTapped:) isDestructive:YES];
-    [mutableCells addObject:clearRecordedRequestsCell];
-
     self.cells = mutableCells;
 }
 
@@ -66,18 +63,6 @@
 - (void)cacheLimitAdjusted:(UISlider *)sender {
     [FLEXNetworkRecorder.defaultRecorder setResponseCacheByteLimit:sender.value];
     self.cacheLimitCell.textLabel.text = [self titleForCacheLimitCellWithValue:sender.value];
-}
-
-- (void)clearRequestsTapped:(UIButton *)sender {
-    [FLEXAlert makeSheet:^(FLEXAlert *make) {
-        make.button(@"Cancel").cancelStyle();
-        make.button(@"Clear Recorded Requests").destructiveStyle().handler(^(NSArray *strings) {
-            [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
-        });
-    } showFrom:self];
-
-    self.popoverPresentationController.sourceView = sender;
-    self.popoverPresentationController.sourceRect = sender.bounds;
 }
 
 
@@ -111,27 +96,6 @@
     [cell.contentView addSubview:theSwitch];
 
     return cell;
-}
-
-- (UITableViewCell *)buttonCellWithTitle:(NSString *)title touchUpAction:(SEL)action isDestructive:(BOOL)isDestructive {
-    UITableViewCell *buttonCell = [UITableViewCell new];
-    buttonCell.selectionStyle = UITableViewCellSelectionStyleNone;
-
-    UIButton *actionButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [actionButton setTitle:title forState:UIControlStateNormal];
-    if (isDestructive) {
-        actionButton.tintColor = UIColor.redColor;
-    }
-    actionButton.titleLabel.font = [[self class] cellTitleFont];
-    [actionButton addTarget:self action:@selector(clearRequestsTapped:) forControlEvents:UIControlEventTouchUpInside];
-
-    [buttonCell.contentView addSubview:actionButton];
-    actionButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    actionButton.frame = buttonCell.contentView.frame;
-    actionButton.contentEdgeInsets = UIEdgeInsetsMake(0.0, self.tableView.separatorInset.left, 0.0, self.tableView.separatorInset.left);
-    actionButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-
-    return buttonCell;
 }
 
 - (NSString *)titleForCacheLimitCellWithValue:(long long)cacheLimit {

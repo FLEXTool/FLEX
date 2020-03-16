@@ -47,11 +47,18 @@
     self.showsSearchBar = YES;
     self.showSearchBarInitially = NO;
     
-    [self addToolbarItems:@[[UIBarButtonItem
-        itemWithImage:FLEXResources.gearIcon
-        target:self
-        action:@selector(settingsButtonTapped:)
-    ]]];
+    [self addToolbarItems:@[
+        [UIBarButtonItem
+            itemWithImage:FLEXResources.gearIcon
+            target:self
+            action:@selector(settingsButtonTapped:)
+        ],
+        [[UIBarButtonItem
+          systemItem:UIBarButtonSystemItemTrash
+          target:self
+          action:@selector(trashButtonTapped:)
+        ] withTintColor:UIColor.redColor]
+    ]];
 
     [self.tableView
         registerClass:[FLEXNetworkTransactionTableViewCell class]
@@ -112,6 +119,18 @@
     // This is not a FLEXNavigationController because it is not intended as a new tab
     UIViewController *nav = [[UINavigationController alloc] initWithRootViewController:settings];
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)trashButtonTapped:(id)sender {
+    [FLEXAlert makeSheet:^(FLEXAlert *make) {
+        make.title(@"Clear All Recorded Requests?");
+        make.message(@"This cannot be undone.");
+        
+        make.button(@"Cancel").cancelStyle();
+        make.button(@"Clear All").destructiveStyle().handler(^(NSArray *strings) {
+            [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
+        });
+    } showFrom:self];
 }
 
 - (void)settingsViewControllerDoneTapped:(id)sender {

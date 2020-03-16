@@ -64,4 +64,9 @@
     return item;
 }
 
+- (UIBarButtonItem *)withTintColor:(UIColor *)tint {
+    self.tintColor = tint;
+    return self;
+}
+
 @end

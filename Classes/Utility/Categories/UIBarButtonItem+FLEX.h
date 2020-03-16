@@ -30,6 +30,9 @@
 + (instancetype)disabledItemWithTitle:(NSString *)title style:(UIBarButtonItemStyle)style;
 + (instancetype)disabledItemWithImage:(UIImage *)image;
 
+/// @return the receiver
+- (UIBarButtonItem *)withTintColor:(UIColor *)tint;
+
 - (void)_setWidth:(CGFloat)width;
 
 @end
