@@ -240,9 +240,9 @@
         }
     ];
     
-    section.selectionHandler = ^(__kindof UIViewController *host, id element) {
+    section.selectionHandler = ^(__kindof UIViewController *host, FLEXObjectRef *ref) {
         [self.navigationController pushViewController:[
-            FLEXObjectExplorerFactory explorerViewControllerForObject:element
+            FLEXObjectExplorerFactory explorerViewControllerForObject:ref.object
         ] animated:YES];
     };
 
