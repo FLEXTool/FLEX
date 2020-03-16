@@ -386,7 +386,7 @@
         }
     } else {
         if (self.filteredClasses.count) {
-            Class cls = NSClassFromString(self.filteredClasses[indexPath.section]);
+            Class cls = NSClassFromString(self.filteredClasses[indexPath.row]);
             NSParameterAssert(cls);
             [self.delegate didSelectClass:cls];
         } else {

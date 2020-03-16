@@ -20,6 +20,7 @@
 @interface FLEXNavigationController ()
 @property (nonatomic, readonly) BOOL toolbarWasHidden;
 @property (nonatomic) BOOL waitingToAddTab;
+@property (nonatomic) BOOL didSetupPendingDismissButtons;
 @property (nonatomic) UISwipeGestureRecognizer *navigationBarSwipeGesture;
 @end
 
@@ -51,6 +52,18 @@
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    if (self.beingPresented && !self.didSetupPendingDismissButtons) {
+        for (UIViewController *vc in self.viewControllers) {
+            [self addNavigationBarItemsToViewController:vc.navigationItem];
+        }
+        
+        self.didSetupPendingDismissButtons = YES;
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
@@ -78,6 +91,10 @@
 }
 
 - (void)addNavigationBarItemsToViewController:(UINavigationItem *)navigationItem {
+    if (!self.presentingViewController) {
+        return;
+    }
+    
     // Check if a done item already exists
     for (UIBarButtonItem *item in navigationItem.rightBarButtonItems) {
         if (item.style == UIBarButtonItemStyleDone) {
@@ -99,6 +116,10 @@
     } else {
         navigationItem.rightBarButtonItem = done;
     }
+    
+    // Keeps us from calling this method again on
+    // the same view controllers in -viewWillAppear:
+    self.didSetupPendingDismissButtons = YES;
 }
 
 - (void)addNavigationBarSwipeGesture {
