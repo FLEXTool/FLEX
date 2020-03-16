@@ -33,6 +33,8 @@
 @property (nonatomic, readonly) FLEXTableViewSection *customSection;
 @property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
 
+@property (nonatomic, readonly) NSArray<NSString *> *observedNotifications;
+
 @end
 
 @implementation FLEXObjectExplorerViewController
@@ -64,6 +66,14 @@
     }
 
     return self;
+}
+
+- (NSArray<NSString *> *)observedNotifications {
+    return @[
+        kFLEXDefaultsHidePropertyIvarsKey,
+        kFLEXDefaultsHidePropertyMethodsKey,
+        kFLEXDefaultsHideMethodOverridesKey,
+    ];
 }
 
 #pragma mark - View controller lifecycle
@@ -107,6 +117,24 @@
     rightSwipe.delegate = self;
     [self.tableView addGestureRecognizer:leftSwipe];
     [self.tableView addGestureRecognizer:rightSwipe];
+    
+    // Observe preferences which may change on other screens
+    //
+    // "If your app targets iOS 9.0 and later or macOS 10.11 and later,
+    // you don't need to unregister an observer in its dealloc method."
+    NSArray<NSString *> *observedNotifications = @[
+        kFLEXDefaultsHidePropertyIvarsKey,
+        kFLEXDefaultsHidePropertyMethodsKey,
+        kFLEXDefaultsHideMethodOverridesKey,
+    ];
+    for (NSString *pref in observedNotifications) {
+        [NSNotificationCenter.defaultCenter
+            addObserver:self
+            selector:@selector(fullyReloadData)
+            name:pref
+            object:nil
+        ];
+    }
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
@@ -263,32 +291,33 @@
     
 - (void)moreButtonPressed {
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
-    BOOL currentlyShowsRedundantIvars = !defaults.flex_explorerHidesRedundantIvars;
-    BOOL currentlyShowsRedundantMethods = !defaults.flex_explorerHidesRedundantMethods;
+    // Maps preference keys to a description of what they affect
+    NSDictionary<NSString *, NSString *> *explorerToggles = @{
+        kFLEXDefaultsHidePropertyIvarsKey:   @"Property-Backing Ivars",
+        kFLEXDefaultsHidePropertyMethodsKey: @"Property-Backing Methods",
+        kFLEXDefaultsHideMethodOverridesKey: @"Method Overrides",
+    };
+    
+    // Maps the key of the action itself to a map of a description
+    // of the action ("hide X") mapped to the current state.
+    //
+    // So keys that are hidden by default have NO mapped to "Show"
+    NSDictionary<NSString *, NSDictionary *> *nextStateDescriptions = @{
+        kFLEXDefaultsHidePropertyIvarsKey:   @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsHidePropertyMethodsKey: @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsHideMethodOverridesKey: @{ @NO: @"Show ", @YES: @"Hide " },
+    };
     
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.title(@"Options");
         
-        if (currentlyShowsRedundantIvars) {
-            make.button(@"Hide Property-Backing Ivars").handler(^(NSArray<NSString *> *strings) {
-                defaults.flex_explorerHidesRedundantIvars = YES;
-                [self fullyReloadData];
-            });
-        } else {
-            make.button(@"Show Property-Backing Ivars").handler(^(NSArray<NSString *> *strings) {
-                defaults.flex_explorerHidesRedundantIvars = NO;
-                [self fullyReloadData];
-            });
-        }
-        
-        if (currentlyShowsRedundantMethods) {
-            make.button(@"Hide Property-Backing Methods").handler(^(NSArray<NSString *> *strings) {
-                defaults.flex_explorerHidesRedundantMethods = YES;
-                [self fullyReloadData];
-            });
-        } else {
-            make.button(@"Show Property-Backing Methods").handler(^(NSArray<NSString *> *strings) {
-                defaults.flex_explorerHidesRedundantMethods = NO;
+        for (NSString *option in explorerToggles.allKeys) {
+            BOOL current = [defaults boolForKey:option];
+            NSString *title = [nextStateDescriptions[option][@(current)]
+                stringByAppendingString:explorerToggles[option]
+            ];
+            make.button(title).handler(^(NSArray<NSString *> *strings) {
+                [NSUserDefaults.standardUserDefaults toggleBoolForKey:option];
                 [self fullyReloadData];
             });
         }

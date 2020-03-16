@@ -96,8 +96,9 @@
     [self reloadClassHierarchy];
     
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
-    BOOL hideBackingIvars = defaults.flex_explorerHidesRedundantIvars;
-    BOOL hidePropertyMethods = defaults.flex_explorerHidesRedundantMethods;
+    BOOL hideBackingIvars = defaults.flex_explorerHidesPropertyIvars;
+    BOOL hidePropertyMethods = defaults.flex_explorerHidesPropertyMethods;
+    BOOL showMethodOverrides = defaults.flex_explorerShowsMethodOverrides;
 
     // Loop over each class and each superclass, collect
     // the fresh and unique metadata in each category
@@ -112,31 +113,37 @@
             metadataUniquedByName:[cls flex_allInstanceProperties]
             superclass:superclass
             kind:FLEXMetadataKindProperties
+            skip:showMethodOverrides
         ]];
         [_allClassProperties addObject:[self
             metadataUniquedByName:[cls flex_allClassProperties]
             superclass:superclass
             kind:FLEXMetadataKindClassProperties
+            skip:showMethodOverrides
         ]];
         [_allIvars addObject:[self
             metadataUniquedByName:[cls flex_allIvars]
             superclass:nil
             kind:FLEXMetadataKindIvars
+            skip:NO
         ]];
         [_allMethods addObject:[self
             metadataUniquedByName:[cls flex_allInstanceMethods]
             superclass:superclass
             kind:FLEXMetadataKindMethods
+            skip:showMethodOverrides
         ]];
         [_allClassMethods addObject:[self
             metadataUniquedByName:[cls flex_allClassMethods]
             superclass:superclass
             kind:FLEXMetadataKindClassMethods
+            skip:showMethodOverrides
         ]];
         [_allConformedProtocols addObject:[self
             metadataUniquedByName:[cls flex_protocols]
             superclass:superclass
             kind:FLEXMetadataKindProtocols
+            skip:NO
         ]];
         
         // TODO: join instance size, image name, and class hierarchy into a single model object
@@ -233,7 +240,14 @@
 /// Accepts an array of flex metadata objects and discards objects
 /// with duplicate names, as well as properties and methods which
 /// aren't "new" (i.e. those which the superclass responds to)
-- (NSArray *)metadataUniquedByName:(NSArray *)list superclass:(Class)superclass kind:(FLEXMetadataKind)kind {
+- (NSArray *)metadataUniquedByName:(NSArray *)list
+                        superclass:(Class)superclass
+                              kind:(FLEXMetadataKind)kind
+                              skip:(BOOL)skip {
+    if (skip) {
+        return list;
+    }
+    
     // Remove items with same name and return filtered list
     NSMutableSet *names = [NSMutableSet new];
     return [list flex_filtered:^BOOL(id obj, NSUInteger idx) {
