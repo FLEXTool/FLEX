@@ -52,7 +52,8 @@ static inline FLEXTypeInfo FLEXTypeInfoMakeU(ssize_t size, ssize_t align, BOOL f
 }
 
 BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *alignp) {
-    NSInteger size = 0, align = 0;
+    NSInteger size = 0;
+    ssize_t align = 0;
     size = [FLEXTypeEncodingParser sizeForTypeEncoding:@(type) alignment:&align];
     
     if (size == -1) {
@@ -137,7 +138,9 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     for (NSUInteger i = 0; i < idx; i++) {
         if (![parser scanPastArg]) {
             [NSException raise:NSRangeException
-                        format:@"Index %lu out of bounds for type encoding '%@'", idx, typeEncoding];
+                format:@"Index %@ out of bounds for type encoding '%@'", 
+                @(idx), typeEncoding
+            ];
         }
     }
 

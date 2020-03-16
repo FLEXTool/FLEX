@@ -44,10 +44,10 @@ struct block_object {
 @implementation FLEXBlockDescription
 
 + (instancetype)describing:(id)block {
-    return [[self alloc] initWithBlock:block];
+    return [[self alloc] initWithObjcBlock:block];
 }
 
-- (id)initWithBlock:(id)block {
+- (id)initWithObjcBlock:(id)block {
     self = [super init];
     if (self) {
         _block = block;

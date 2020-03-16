@@ -23,7 +23,7 @@ typedef void (^FLEXKBToolbarAction)(NSString *buttonTitle, BOOL isSuggestion);
 /// Adds the event handler for the button.
 ///
 /// @param eventHandler The event handler block.
-/// @param controlEvent The type of event.
+/// @param controlEvents The type of event.
 - (void)addEventHandler:(FLEXKBToolbarAction)eventHandler forControlEvents:(UIControlEvents)controlEvents;
 
 @end

@@ -35,6 +35,6 @@ Pod::Spec.new do |spec|
   spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
-  spec.compiler_flags   = "-Wno-unsupported-availability-guard"
+  spec.compiler_flags   = "-Wno-unsupported-availability-guard -Wno-strict-prototypes"
   spec.public_header_files = [ "Classes/**/FLEXManager.h", "Classes/FLEX.h" ]
 end

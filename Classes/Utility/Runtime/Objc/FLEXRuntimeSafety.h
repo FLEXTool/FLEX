@@ -11,8 +11,8 @@
 #pragma mark - Classes
 
 extern NSUInteger const kFLEXKnownUnsafeClassCount;
-extern const Class * FLEXKnownUnsafeClassList();
-extern NSSet * FLEXKnownUnsafeClassNames();
+extern const Class * FLEXKnownUnsafeClassList(void);
+extern NSSet * FLEXKnownUnsafeClassNames(void);
 extern CFSetRef FLEXKnownUnsafeClasses;
 
 static inline BOOL FLEXClassIsSafe(Class cls) {

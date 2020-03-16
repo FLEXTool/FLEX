@@ -153,13 +153,15 @@
     
     _classHierarchy = [FLEXStaticMetadata classHierarchy:self.classHierarchyClasses];
     
+    NSArray<NSArray<FLEXProperty *> *> *properties = _allProperties;
+    
     // Potentially filter property-backing ivars
     if (hideBackingIvars) {
         NSArray<NSArray<FLEXIvar *> *> *ivars = _allIvars.copy;
         _allIvars = [ivars flex_mapped:^id(NSArray<FLEXIvar *> *list, NSUInteger idx) {
             // Get a set of all backing ivar names for the current class in the hierarchy
             NSSet *ivarNames = [NSSet setWithArray:({
-                [_allProperties[idx] flex_mapped:^id(FLEXProperty *p, NSUInteger idx) {
+                [properties[idx] flex_mapped:^id(FLEXProperty *p, NSUInteger idx) {
                     // Nil if no ivar, and array is flatted
                     return p.attributes.backingIvar;
                 }];
@@ -178,7 +180,7 @@
         _allMethods = [methods flex_mapped:^id(NSArray<FLEXMethod *> *list, NSUInteger idx) {
             // Get a set of all property method names for the current class in the hierarchy
             NSSet *methodNames = [NSSet setWithArray:({
-                [_allProperties[idx] flex_flatmapped:^NSArray *(FLEXProperty *p, NSUInteger idx) {
+                [properties[idx] flex_flatmapped:^NSArray *(FLEXProperty *p, NSUInteger idx) {
                     if (p.likelyGetterExists) {
                         if (p.likelySetterExists) {
                             return @[p.likelyGetterString, p.likelySetterString];
