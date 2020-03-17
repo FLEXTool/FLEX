@@ -197,6 +197,7 @@ typedef struct HasUnion {
 
 - (void)testUnsupportedMethodSignatures {
     NSArray<NSString *> *unsupported = @[
+        @"v40@0:8{?=}16d32",
         @"{?=[4]}16@0:8}",
         @"i48@0:8^{__CVBuffer=}16I24(pj_timestamp={?=II}Q)28i36B40B44",
     ];
@@ -208,6 +209,25 @@ typedef struct HasUnion {
 
 - (void)testMethodSignatureCleaning {
     NSDictionary<NSString *, NSString *> *uncleanToClean = @{
+        @"^{Layer=^^?{Atomic={?=i}}{Data={Vec4<float>=ffff}b1{Vec2<double>=dd}{Rect=dddd}}"
+        "{Ref<CA::Render::Object>=^{Object}}{Ref<CA::Render::TypedArray<CA::Render::Layer> >="
+        "^{TypedArray<CA::Render::Layer>}}^{Layer}{Ref<CA::Render::Layer::Ext>=^{Ext}}"
+        "{Ref<CA::Render::TypedArray<CA::Render::Animation> >="
+        "^{TypedArray<CA::Render::Animation>}}{Ref<CA::Render::Handle>=^{Handle}}}36@0:"
+        "8^{Transaction=^{Shared}i^{HashTable<CA::Layer *, unsigned int *>}^{SpinLock}I"
+        "^{Level}^{List<void (^)()>}^{Command}^{Deleted}^{List<const void *>}^{Context}"
+        "^{HashTable<CA::Layer *, CA::Layer *>}^{__CFRunLoop}^{__CFRunLoopObserver}"
+        "^{LayoutList}^{List<CA::Layer *>}{Atomic={?=i}}b1b1b1b1b1}16I24^I28":
+            @"^{Layer=}36@0:8^{Transaction=}16I24^I28",
+        
+        @"{LSBinding=I^{LSBundleData=}I^{?}@@}16@0:8":
+            @"{LSBinding=I^{LSBundleData=}I^{?=}@@}16@0:8",
+        
+        @"@40@0:8@16r^{?=BQ^{?}}24^@32": @"@40@0:8@16r^{?=BQ^{?=}}24^@32",
+        
+        @"@36@0:8@16^{mig_subsystem=^?iiIQ[1{routine_descriptor=^?^?II^{?}I}]}24B32":
+            @"@36@0:8@16^{mig_subsystem=^?iiIQ[1{routine_descriptor=^?^?II^{?=}I}]}24B32",
+        
         @"@28@0:8r^{basic_string<char, std::__1::char_traits<char>, "
         "std::__1::allocator<char> >={__compressed_pair<std::__1::"
         "basic_string<char, std::__1::char_traits<char>, "

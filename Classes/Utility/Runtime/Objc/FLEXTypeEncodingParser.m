@@ -119,7 +119,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     while (!parser.scan.isAtEnd) {
         FLEXTypeInfo info = [parser parseNextType];
         
-        if (!info.supported || info.containsUnion) {
+        if (!info.supported || info.containsUnion || info.size == 0) {
             return NO;
         }
     }
@@ -301,15 +301,17 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             // (Unions are supported by NSGetSizeAndAlignment but not
             // supported by NSMethodSignature for some reason)
             if (needsCleaning) {
-                // if unsupported, no cleaning occurred in parseType:cleaned: above.
+                // If unsupported, no cleaning occurred in parseType:cleaned: above.
                 // Otherwise, the type is partially supported and we did clean it,
                 // and we will replace this type with the cleaned type from above.
                 if (!info.supported || info.containsUnion) {
                     cleaned = [self cleanPointeeTypeAtLocation:pointerTypeStart];
                 }
                 
+                NSInteger offset = self.cleanedReplacingOffset;
+                NSInteger location = pointerTypeStart - offset;
                 [self.cleaned replaceCharactersInRange:NSMakeRange(
-                    pointerTypeStart - self.cleanedReplacingOffset, pointerTypeLength
+                    location, pointerTypeLength
                 ) withString:cleaned];
             }
             
@@ -380,7 +382,11 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             // If we encounter the ?= portion of something like {?=b8b4b1b1b18[8S]}
             // then we skip over it, since it means nothing to us in this context.
             // It is completely optional, and if it fails, we go right back where we were.
-            [self scanTypeName];
+            if (![self scanTypeName] && self.nextChar == FLEXTypeEncodingUnknown) {
+                // Exception: we are trying to parse {?} which is invalid
+                self.scan.scanLocation = start;
+                return FLEXTypeInfoUnsupported;
+            }
         }
 
         // Sum sizes of members together:
@@ -832,8 +838,9 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
             return @"?";
             
         case FLEXTypeEncodingStructBegin: {
-            FLEXTypeInfo info = [self parseNextType];
+            FLEXTypeInfo info = [self.class parseType:self.unscanned];
             if (info.supported && !info.fixesApplied) {
+                [self scanPastArg];
                 return typeIsClean();
             }
             
