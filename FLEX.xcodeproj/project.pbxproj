@@ -1026,7 +1026,7 @@
 			children = (
 				94A515131C4CA1C00063292F /* FLEXManager.h */,
 				94A515151C4CA1D70063292F /* FLEXManager.m */,
-				94A515161C4CA1D70063292F /* FLEXManager+Private.h */,
+				C3F3417F242276D200A597D7 /* Private */,
 				C3531B9F23E796BD00A184AD /* FLEXManager+Extensibility.h */,
 				C3531BA023E796BD00A184AD /* FLEXManager+Extensibility.m */,
 				C3531B9B23E69BB200A184AD /* FLEXManager+Networking.h */,
@@ -1391,6 +1391,14 @@
 				C3F31D3C2267D883003C991A /* FLEXTableView.m */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		C3F3417F242276D200A597D7 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				94A515161C4CA1D70063292F /* FLEXManager+Private.h */,
+			);
+			path = Private;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
