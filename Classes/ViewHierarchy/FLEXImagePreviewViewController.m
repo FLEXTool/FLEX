@@ -102,6 +102,9 @@
     
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.image] applicationActivities:@[]];
     
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        activityVC.popoverPresentationController.sourceView = sender;
+    }
     if (!canSaveToCameraRoll && !didShowWarning) {
         activityVC.excludedActivityTypes = @[UIActivityTypeSaveToCameraRoll];
 
