@@ -358,6 +358,15 @@
     self.documentController = controller;
 }
 
+- (void)openFileController:(NSString *)fullPath rect:(CGRect)source
+{
+    UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
+    controller.URL = [NSURL fileURLWithPath:fullPath];
+
+    [controller presentOptionsMenuFromRect:source inView:self.view animated:YES];
+    self.documentController = controller;
+}
+
 - (void)fileBrowserRename:(UITableViewCell *)sender
 {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
@@ -427,10 +436,17 @@
 
     if (isDirectory) {
         // UIDocumentInteractionController for folders
-        [self openFileController:pathString];
+        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+            [self openFileController:pathString rect:sender.frame];
+        } else {
+            [self openFileController:pathString];
+        }
     } else {
         // Share sheet for files
         UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[filePath] applicationActivities:nil];
+        if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+            shareSheet.popoverPresentationController.sourceView = sender;
+        }
         [self presentViewController:shareSheet animated:true completion:nil];
     }
 }
