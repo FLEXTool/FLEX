@@ -19,7 +19,7 @@ CFSetRef FLEXKnownUnsafeIvars = nil;
     (class_getInstanceVariable([cls class], name) ?: (void *)kCFNull)
 
 __attribute__((constructor))
-void FLEXRuntimeSafteyInit() {
+static void FLEXRuntimeSafteyInit() {
     FLEXKnownUnsafeClasses = CFSetCreate(
         kCFAllocatorDefault,
         (const void **)(uintptr_t)FLEXKnownUnsafeClassList(),

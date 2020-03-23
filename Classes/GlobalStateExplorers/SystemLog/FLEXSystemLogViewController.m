@@ -33,7 +33,7 @@ static BOOL FLEXNSLogHookWorks = NO;
 
 BOOL (*os_log_shim_enabled)(void *addr) = nil;
 BOOL (*orig_os_log_shim_enabled)(void *addr) = nil;
-BOOL my_os_log_shim_enabled(void *addr) {
+static BOOL my_os_log_shim_enabled(void *addr) {
     return NO;
 }
 
@@ -51,17 +51,17 @@ BOOL my_os_log_shim_enabled(void *addr) {
         return;
     }
 
-    FLEXDidHookNSLog = rebind_symbols((struct rebinding[1]) {
+    FLEXDidHookNSLog = rebind_symbols((struct rebinding[1]) {{
         "os_log_shim_enabled",
         (void *)my_os_log_shim_enabled,
         (void **)&orig_os_log_shim_enabled
-    }, 1) == 0;
-    
+    }}, 1) == 0;
+
     if (FLEXDidHookNSLog && orig_os_log_shim_enabled != nil) {
         // Check if our rebinding worked
         FLEXNSLogHookWorks = my_os_log_shim_enabled(addr) == NO;
     }
-    
+
     // So, just because we rebind the lazily loaded symbol for
     // this function doesn't mean it's even going to be used.
     // While it seems to be sufficient for the simulator, for
@@ -100,7 +100,7 @@ BOOL my_os_log_shim_enabled(void *addr) {
         __strong __typeof(weakSelf) self = weakSelf;
         [self handleUpdateWithNewMessages:newMessages];
     };
-    
+
     if (FLEXOSLogAvailable() && !FLEXNSLogHookWorks) {
         _logController = [FLEXOSLogController withUpdateHandler:logHandler];
     } else {
@@ -109,9 +109,9 @@ BOOL my_os_log_shim_enabled(void *addr) {
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.title = @"Loading...";
-    
+
     // Toolbar buttons //
-    
+
     UIBarButtonItem *scrollDown = [UIBarButtonItem
         itemWithImage:FLEXResources.scrollToBottomIcon
         target:self
@@ -141,7 +141,7 @@ BOOL my_os_log_shim_enabled(void *addr) {
         cellConfiguration:^(FLEXSystemLogCell *cell, FLEXSystemLogMessage *message, NSInteger row) {
             cell.logMessage = message;
             cell.highlightedText = self.filterText;
-            
+
             if (row % 2 == 0) {
                 cell.backgroundColor = FLEXColor.primaryBackgroundColor;
             } else {
@@ -152,11 +152,11 @@ BOOL my_os_log_shim_enabled(void *addr) {
             return [displayedText localizedCaseInsensitiveContainsString:filterText];
         }
     ];
-    
+
     self.logMessages.cellRegistrationMapping = @{
         kFLEXSystemLogCellIdentifier : [FLEXSystemLogCell class]
     };
-    
+
     return @[self.logMessages];
 }
 
