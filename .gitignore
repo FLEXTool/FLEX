@@ -17,3 +17,6 @@ DerivedData
 *.ipa
 *.xcuserstate
 .DS_Store
+/Example/Pods
+Podfile.lock
+IDEWorkspaceChecks.plist
