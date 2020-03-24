@@ -400,7 +400,7 @@ static RegistrationBuckets *mMethods = nil;
         BOOL instanceShortcut = !isMeta;
         
         if (instanceMetadata) {
-            NSAssert(instanceShortcut,
+            NSAssert(!isMeta,
                 @"Instance metadata can only be added as an instance shortcut"
             );
         }
@@ -408,9 +408,9 @@ static RegistrationBuckets *mMethods = nil;
         Class metaclass = isMeta ? cls : object_getClass(cls);
         Class clsForMetadata = instanceMetadata ? cls : metaclass;
         
-        RegistrationBuckets *propertyBucket = instanceMetadata ? cProperties : mProperties;
-        RegistrationBuckets *methodBucket = instanceMetadata ? cMethods : mMethods;
-        RegistrationBuckets *ivarBucket = instanceMetadata ? cIvars : nil;
+        RegistrationBuckets *propertyBucket = instanceShortcut ? cProperties : mProperties;
+        RegistrationBuckets *methodBucket = instanceShortcut ? cMethods : mMethods;
+        RegistrationBuckets *ivarBucket = instanceShortcut ? cIvars : nil;
 
         if (self->_properties) {
             NSArray *items = [self->_properties flex_mapped:^id(NSString *name, NSUInteger idx) {
