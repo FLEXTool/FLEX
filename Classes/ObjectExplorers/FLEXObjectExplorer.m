@@ -26,6 +26,7 @@
     NSMutableArray<NSArray<FLEXProtocol *> *> *_allConformedProtocols;
     NSMutableArray<FLEXStaticMetadata *> *_allInstanceSizes;
     NSMutableArray<FLEXStaticMetadata *> *_allImageNames;
+    NSString *_objectDescription;
 }
 @end
 
@@ -55,26 +56,34 @@
 #pragma mark - Public
 
 - (NSString *)objectDescription {
-    // Hard-code UIColor description
-    if ([self.object isKindOfClass:[UIColor class]]) {
-        CGFloat h, s, l, r, g, b, a;
-        [self.object getRed:&r green:&g blue:&b alpha:&a];
-        [self.object getHue:&h saturation:&s brightness:&l alpha:nil];
+    if (!_objectDescription) {
+        // Hard-code UIColor description
+        if ([self.object isKindOfClass:[UIColor class]]) {
+            CGFloat h, s, l, r, g, b, a;
+            [self.object getRed:&r green:&g blue:&b alpha:&a];
+            [self.object getHue:&h saturation:&s brightness:&l alpha:nil];
 
-        return [NSString stringWithFormat:
-            @"HSL: (%.3f, %.3f, %.3f)\nRGB: (%.3f, %.3f, %.3f)\nAlpha: %.3f",
-            h, s, l, r, g, b, a
-        ];
+            return [NSString stringWithFormat:
+                @"HSL: (%.3f, %.3f, %.3f)\nRGB: (%.3f, %.3f, %.3f)\nAlpha: %.3f",
+                h, s, l, r, g, b, a
+            ];
+        }
+
+        NSString *description = [FLEXRuntimeUtility safeDescriptionForObject:self.object];
+
+        if (!description.length) {
+            NSString *address = [FLEXUtility addressOfObject:self.object];
+            return [NSString stringWithFormat:@"Object at %@ returned empty description", address];
+        }
+        
+        if (description.length > 10000) {
+            description = [description substringToIndex:10000];
+        }
+
+        _objectDescription = description;
     }
 
-    NSString *description = [FLEXRuntimeUtility safeDescriptionForObject:self.object];
-
-    if (!description.length) {
-        NSString *address = [FLEXUtility addressOfObject:self.object];
-        return [NSString stringWithFormat:@"Object at %@ returned empty description", address];
-    }
-
-    return description;
+    return _objectDescription;
 }
 
 - (void)setClassScope:(NSInteger)classScope {
@@ -92,6 +101,7 @@
     _allConformedProtocols = [NSMutableArray new];
     _allInstanceSizes = [NSMutableArray new];
     _allImageNames = [NSMutableArray new];
+    _objectDescription = nil;
 
     [self reloadClassHierarchy];
     

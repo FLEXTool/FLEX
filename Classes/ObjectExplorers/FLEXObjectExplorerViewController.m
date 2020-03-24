@@ -162,10 +162,10 @@
     // Description section is only for instances
     if (self.explorer.objectIsInstance) {
         _descriptionSection = [FLEXSingleRowSection
-             title:@"Description" reuse:kFLEXMultilineCell cell:^(FLEXTableViewCell *cell) {
-                 cell.titleLabel.font = UIFont.flex_defaultTableCellFont;
-                 cell.titleLabel.text = explorer.objectDescription;
-             }
+            title:@"Description" reuse:kFLEXMultilineCell cell:^(FLEXTableViewCell *cell) {
+                cell.titleLabel.font = UIFont.flex_defaultTableCellFont;
+                cell.titleLabel.text = explorer.objectDescription;
+            }
         ];
         self.descriptionSection.filterMatcher = ^BOOL(NSString *filterText) {
             return [explorer.objectDescription localizedCaseInsensitiveContainsString:filterText];

@@ -26,7 +26,7 @@
 }
 
 + (UIEdgeInsets)labelInsets {
-    return UIEdgeInsetsMake(10.0, 15.0, 10.0, 15.0);
+    return UIEdgeInsetsMake(10.0, 16.0, 10.0, 8.0);
 }
 
 + (CGFloat)preferredHeightWithAttributedText:(NSAttributedString *)attributedText
