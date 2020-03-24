@@ -903,8 +903,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)toggleMoveTool {
     if (self.currentMode == FLEXExplorerModeMove) {
-        self.currentMode = FLEXExplorerModeDefault;
-    } else {
+        self.currentMode = FLEXExplorerModeSelect;
+    } else if (self.currentMode == FLEXExplorerModeSelect && self.selectedView) {
         self.currentMode = FLEXExplorerModeMove;
     }
 }
