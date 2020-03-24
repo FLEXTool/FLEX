@@ -33,7 +33,7 @@ static BOOL FLEXNSLogHookWorks = NO;
 
 BOOL (*os_log_shim_enabled)(void *addr) = nil;
 BOOL (*orig_os_log_shim_enabled)(void *addr) = nil;
-BOOL my_os_log_shim_enabled(void *addr) {
+static BOOL my_os_log_shim_enabled(void *addr) {
     return NO;
 }
 
@@ -51,11 +51,11 @@ BOOL my_os_log_shim_enabled(void *addr) {
         return;
     }
 
-    FLEXDidHookNSLog = rebind_symbols((struct rebinding[1]) {
+    FLEXDidHookNSLog = rebind_symbols((struct rebinding[1]) {{
         "os_log_shim_enabled",
         (void *)my_os_log_shim_enabled,
         (void **)&orig_os_log_shim_enabled
-    }, 1) == 0;
+    }}, 1) == 0;
     
     if (FLEXDidHookNSLog && orig_os_log_shim_enabled != nil) {
         // Check if our rebinding worked
