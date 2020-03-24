@@ -17,6 +17,7 @@
 #import "FLEXUtility.h"
 #import "FLEXManager+Private.h"
 #import "FLEXTableView.h"
+#import "UIBarButtonItem+FLEX.h"
 
 typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
@@ -55,8 +56,17 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     // Force grouped style
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(handleTransactionUpdatedNotification:) name:kFLEXNetworkRecorderTransactionUpdatedNotification object:nil];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Copy curl" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonPressed:)];
+        [NSNotificationCenter.defaultCenter addObserver:self
+            selector:@selector(handleTransactionUpdatedNotification:)
+            name:kFLEXNetworkRecorderTransactionUpdatedNotification
+            object:nil
+        ];
+        self.toolbarItems = @[
+            UIBarButtonItem.flex_flexibleSpace,
+            [UIBarButtonItem
+                itemWithTitle:@"Copy curl" target:self action:@selector(copyButtonPressed:)
+            ]
+        ];
     }
     return self;
 }
