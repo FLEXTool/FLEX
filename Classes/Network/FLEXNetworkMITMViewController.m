@@ -267,7 +267,7 @@
     
     if (self.searchController.isActive) {
         [self updateTransactions];
-        [self updateSearchResults:nil];
+        [self updateSearchResults:self.searchText];
         return;
     }
 
@@ -437,7 +437,7 @@
 #pragma mark - Search Bar
 
 - (void)updateSearchResults:(NSString *)searchString {
-    if (!searchString) {
+    if (!searchString.length) {
         self.filteredNetworkTransactions = self.networkTransactions;
         [self.tableView reloadData];
     } else {
