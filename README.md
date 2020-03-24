@@ -130,7 +130,7 @@ The code injection is left as an exercise for the reader. :innocent:
 
 ## Installation
 
-FLEX requires an app that targets iOS 9 or higher.
+FLEX requires an app that targets iOS 9 or higher. To run the Example project, open a Terminal window in the Example/ folder and run `pod install`, then open the generated workspace.
 
 ### CocoaPods
 
@@ -150,7 +150,7 @@ github "flipboard/FLEX"
 
 ### Buck
 
-If you're using Buck, you may want to silence some of the warnings emitted by FLEX. You will need to build FLEX as an `apple_library` and pass the `-Wno-unsupported-availability-guard` flag, as well as the flags to disable any other warnings FLEX may have.
+If you're using Buck, you may want to silence some of the warnings emitted by FLEX. You will need to build FLEX as an `apple_library` and pass the `-Wno-unsupported-availability-guard` flag, as well as the other warning flags below to disable any other warnings FLEX may have.
 
 ### Manual
 
@@ -161,6 +161,7 @@ Manually add the files in `Classes/` to your Xcode project, or just drag in the 
 Add the following flags to  to **Other Warnings Flags** in **Build Settings:** 
 
 - `-Wno-deprecated-declarations`
+- `-Wno-strict-prototypes`
 - `-Wno-unsupported-availability-guard`
 
 ## Excluding FLEX from Release (App Store) Builds
@@ -207,6 +208,7 @@ In Xcode, navigate to `Build Settings > Build Options > Excluded Source File Nam
 
 ## Thanks & Credits
 FLEX builds on ideas and inspiration from open source tools that came before it. The following resources have been particularly helpful:
+- [MirrorKit](https://github.com/NSExceptional/MirrorKit): an Objective-C wrapper around the Objective-C runtime.
 - [DCIntrospect](https://github.com/domesticcatsoftware/DCIntrospect): view hierarchy debugging for the iOS simulator.
 - [PonyDebugger](https://github.com/square/PonyDebugger): network, core data, and view hierarchy debugging using the Chrome Developer Tools interface.
 - [Mike Ash](https://www.mikeash.com/pyblog/): well written, informative blog posts on all things obj-c and more. The links below were very useful for this project:
@@ -229,5 +231,4 @@ Please see our [Contributing Guide](https://github.com/Flipboard/FLEX/blob/maste
 
 ## TODO
 - Swift runtime introspection (swift classes, swift objects on the heap, etc.)
-- Improved file type detection and display in the file browser
 - Add new NSUserDefault key/value pairs on the fly
