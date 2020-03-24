@@ -15,10 +15,27 @@ extern const Class * FLEXKnownUnsafeClassList(void);
 extern NSSet * FLEXKnownUnsafeClassNames(void);
 extern CFSetRef FLEXKnownUnsafeClasses;
 
-static inline BOOL FLEXClassIsSafe(Class cls) {
-    if (!cls) return NO;
+static Class cNSObject = nil, cNSProxy = nil;
 
-    return !CFSetContainsValue(FLEXKnownUnsafeClasses, (__bridge void *)cls);
+__attribute__((constructor))
+static void FLEXInitKnownRootClasses() {
+    cNSObject = [NSObject class];
+    cNSProxy = [NSProxy class];
+}
+
+static inline BOOL FLEXClassIsSafe(Class cls) {
+    // Is it nil or known to be unsafe?
+    if (!cls || CFSetContainsValue(FLEXKnownUnsafeClasses, (__bridge void *)cls)) {
+        return NO;
+    }
+    
+    // Is it a known root class?
+    if (!class_getSuperclass(cls)) {
+        return cls == cNSObject || cls == cNSProxy;
+    }
+    
+    // Probably safe
+    return YES;
 }
 
 static inline BOOL FLEXClassNameIsSafe(NSString *cls) {
