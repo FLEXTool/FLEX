@@ -141,7 +141,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
         cellConfiguration:^(FLEXSystemLogCell *cell, FLEXSystemLogMessage *message, NSInteger row) {
             cell.logMessage = message;
             cell.highlightedText = self.filterText;
-    
+            
             if (row % 2 == 0) {
                 cell.backgroundColor = FLEXColor.primaryBackgroundColor;
             } else {
