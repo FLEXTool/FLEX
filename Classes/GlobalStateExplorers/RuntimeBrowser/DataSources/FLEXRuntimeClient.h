@@ -20,7 +20,7 @@
 - (void)reloadLibrariesList;
 
 /// An array of strings representing the currently loaded libraries.
-@property (nonatomic, readonly) NSArray<NSString*> *imageDisplayNames;
+@property (nonatomic, readonly) NSArray<NSString *> *imageDisplayNames;
 
 /// "Image name" is the path of the bundle
 - (NSString *)shortNameForImageName:(NSString *)imageName;
@@ -37,7 +37,7 @@
 /// @return A list of lists of \c FLEXMethods where
 /// each list corresponds to one of the given classes
 - (NSArray<NSMutableArray<FLEXMethod *> *> *)methodsForToken:(FLEXSearchToken *)token
-                                      instance:(NSNumber *)onlyInstanceMethods
-                                     inClasses:(NSArray<NSString*> *)classes;
+                                                    instance:(NSNumber *)onlyInstanceMethods
+                                                   inClasses:(NSArray<NSString *> *)classes;
 
 @end

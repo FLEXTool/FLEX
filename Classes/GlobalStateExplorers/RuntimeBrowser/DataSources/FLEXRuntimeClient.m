@@ -19,13 +19,13 @@
 
 
 @interface FLEXRuntimeClient () {
-    NSMutableArray<NSString*> *_imageDisplayNames;
+    NSMutableArray<NSString *> *_imageDisplayNames;
 }
 
 @property (nonatomic) NSMutableDictionary *bundles_pathToShort;
 @property (nonatomic) NSMutableDictionary *bundles_shortToPath;
 @property (nonatomic) NSCache *bundles_pathToClassNames;
-@property (nonatomic) NSMutableArray<NSString*> *imagePaths;
+@property (nonatomic) NSMutableArray<NSString *> *imagePaths;
 
 @end
 
@@ -159,7 +159,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     return _bundles_shortToPath[imageName];
 }
 
-- (NSMutableArray<NSString*> *)classNamesInImageAtPath:(NSString *)path {
+- (NSMutableArray<NSString *> *)classNamesInImageAtPath:(NSString *)path {
     // Check cache
     NSMutableArray *classNameStrings = [_bundles_pathToClassNames objectForKey:path];
     if (classNameStrings) {
@@ -187,7 +187,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
 
 #pragma mark - Public
 
-- (NSMutableArray<NSString*> *)bundleNamesForToken:(FLEXSearchToken *)token {
+- (NSMutableArray<NSString *> *)bundleNamesForToken:(FLEXSearchToken *)token {
     if (self.imagePaths.count) {
         TBWildcardOptions options = token.options;
         NSString *query = token.string;
@@ -207,7 +207,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     return [NSMutableArray new];
 }
 
-- (NSMutableArray<NSString*> *)bundlePathsForToken:(FLEXSearchToken *)token {
+- (NSMutableArray<NSString *> *)bundlePathsForToken:(FLEXSearchToken *)token {
     if (self.imagePaths.count) {
         TBWildcardOptions options = token.options;
         NSString *query = token.string;
@@ -227,7 +227,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
     return [NSMutableArray new];
 }
 
-- (NSMutableArray<NSString*> *)classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
+- (NSMutableArray<NSString *> *)classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString *> *)bundles {
     // Edge case where token is the class we want already; return superclasses
     if (token.isAbsolute) {
         if (FLEXClassIsSafe(NSClassFromString(token.string))) {
@@ -239,18 +239,18 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
 
     if (bundles.count) {
         // Get class names, remove unsafe classes
-        NSMutableArray<NSString*> *names = [self _classesForToken:token inBundles:bundles];
-        return [names flex_mapped:^NSString *(NSString *cls, NSUInteger idx) {
-            NSSet *ignored = FLEXKnownUnsafeClassNames();
-            BOOL safe = ![ignored containsObject:cls];
-            return safe ? cls : nil;
+        NSMutableArray<NSString *> *names = [self _classesForToken:token inBundles:bundles];
+        return [names flex_mapped:^NSString *(NSString *name, NSUInteger idx) {
+            Class cls = NSClassFromString(name);
+            BOOL safe = FLEXClassIsSafe(cls);
+            return safe ? name : nil;
         }];
     }
 
     return [NSMutableArray new];
 }
 
-- (NSMutableArray<NSString*> *)_classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString*> *)bundles {
+- (NSMutableArray<NSString *> *)_classesForToken:(FLEXSearchToken *)token inBundles:(NSMutableArray<NSString *> *)bundles {
     TBWildcardOptions options = token.options;
     NSString *query = token.string;
 

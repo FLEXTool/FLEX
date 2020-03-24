@@ -176,8 +176,10 @@
             ].mutableCopy;
             
             // Remove classes without results if we're searching for a method
-            FLEXSearchToken *methodKey = self.keyPath.methodKey;
-            if (methodKey && !methodKey.isAny) {
+            //
+            // Note: this will remove classes without any methods or overrides
+            // even if the query doesn't specify a method, like `*.*.`
+            if (self.keyPath.methodKey) {
                 [self setNonEmptyMethodLists:methods withClasses:self.classes.mutableCopy];
             } else {
                 self.filteredClasses = self.classes;
@@ -190,8 +192,10 @@
                 self.bundlesOrClasses = nil;
                 
                 NSMutableArray *methods = models.mutableCopy;
-                NSMutableArray *classes = [FLEXRuntimeController classesForKeyPath:keyPath];
-                self.classes = classes.copy;
+                NSMutableArray<NSString *> *classes = [
+                    FLEXRuntimeController classesForKeyPath:keyPath
+                ];
+                self.classes = classes;
                 [self setNonEmptyMethodLists:methods withClasses:classes];
             } else { // We're looking at bundles or classes
                 self.bundlesOrClasses = models;
@@ -213,7 +217,8 @@
 }
 
 /// Assign assign .filteredClasses and .classesToMethods after removing empty sections
-- (void)setNonEmptyMethodLists:(NSMutableArray<NSArray *> *)methods withClasses:(NSMutableArray *)classes {
+- (void)setNonEmptyMethodLists:(NSMutableArray<NSArray<FLEXMethod *> *> *)methods
+                   withClasses:(NSMutableArray<NSString *> *)classes {
     // Remove sections with no methods
     NSIndexSet *allEmpty = [methods indexesOfObjectsPassingTest:^BOOL(NSArray *list, NSUInteger idx, BOOL *stop) {
         return list.count == 0;

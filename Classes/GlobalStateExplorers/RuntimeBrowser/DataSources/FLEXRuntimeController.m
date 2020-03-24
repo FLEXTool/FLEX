@@ -142,14 +142,16 @@ static FLEXRuntimeController *controller = nil;
 
     if (shouldCache) {
         key = [@[bundleToken.description, classToken.description] componentsJoinedByString:@"+"];
-        NSMutableArray<NSString*> *cached = [self.classNamesCache objectForKey:key];
+        NSMutableArray<NSString *> *cached = [self.classNamesCache objectForKey:key];
         if (cached) {
             return cached;
         }
     }
 
-    NSMutableArray *bundles = [self bundlePathsForToken:bundleToken];
-    NSMutableArray *classes = [FLEXRuntimeClient.runtime classesForToken:classToken inBundles:bundles];
+    NSMutableArray<NSString *> *bundles = [self bundlePathsForToken:bundleToken];
+    NSMutableArray<NSString *> *classes = [FLEXRuntimeClient.runtime
+        classesForToken:classToken inBundles:bundles
+    ];
 
     if (shouldCache) {
         [self.classNamesCache setObject:classes forKey:key];
