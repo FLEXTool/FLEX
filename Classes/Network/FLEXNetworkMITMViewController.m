@@ -14,7 +14,7 @@
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkTransactionTableViewCell.h"
 #import "FLEXNetworkTransactionDetailTableViewController.h"
-#import "FLEXNetworkSettingsTableViewController.h"
+#import "FLEXNetworkSettingsController.h"
 #import "FLEXGlobalsViewController.h"
 #import "UIBarButtonItem+FLEX.h"
 #import "FLEXResources.h"
@@ -110,7 +110,7 @@
 #pragma mark Button Actions
 
 - (void)settingsButtonTapped:(id)sender {
-    UIViewController *settings = [FLEXNetworkSettingsTableViewController new];
+    UIViewController *settings = [FLEXNetworkSettingsController new];
     settings.navigationItem.rightBarButtonItem = FLEXBarButtonItemSystem(
         Done, self, @selector(settingsViewControllerDoneTapped:)
     );
@@ -393,6 +393,7 @@
 #if FLEX_AT_LEAST_IOS13_SDK
 
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
+    NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
     return [UIContextMenuConfiguration
         configurationWithIdentifier:nil
         previewProvider:nil
@@ -402,14 +403,25 @@
                 image:nil
                 identifier:nil
                 handler:^(__kindof UIAction *action) {
-                    NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
                     UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
+                }
+            ];
+            UIAction *blacklist = [UIAction
+                actionWithTitle:[NSString stringWithFormat:@"Blacklist '%@'", request.URL.host]
+                image:nil
+                identifier:nil
+                handler:^(__kindof UIAction *action) {
+                    NSMutableArray *blacklist =  FLEXNetworkRecorder.defaultRecorder.hostBlacklist;
+                    [blacklist addObject:request.URL.host];
+                    [FLEXNetworkRecorder.defaultRecorder clearBlacklistedTransactions];
+                    [FLEXNetworkRecorder.defaultRecorder synchronizeBlacklist];
+                    [self tryUpdateTransactions];
                 }
             ];
             return [UIMenu
                 menuWithTitle:@"" image:nil identifier:nil
                 options:UIMenuOptionsDisplayInline
-                children:@[copy]
+                children:@[copy, blacklist]
             ];
         }
     ];

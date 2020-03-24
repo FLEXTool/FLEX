@@ -13,8 +13,27 @@ NSString * const kFLEXDefaultsiOSPersistentOSLogKey = @"com.flipborad.flex.enabl
 NSString * const kFLEXDefaultsHidePropertyIvarsKey = @"com.flipboard.FLEX.hide_property_ivars";
 NSString * const kFLEXDefaultsHidePropertyMethodsKey = @"com.flipboard.FLEX.hide_property_methods";
 NSString * const kFLEXDefaultsHideMethodOverridesKey = @"com.flipboard.FLEX.hide_method_overrides";
+NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.network_host_blacklist";
+
+#define FLEXDefaultsPathForFile(name) ({ \
+    NSArray *paths = NSSearchPathForDirectoriesInDomains( \
+        NSLibraryDirectory, NSUserDomainMask, NO \
+    ); \
+    [paths[0] stringByAppendingPathComponent:@"Preferences"]; \
+})
 
 @implementation NSUserDefaults (FLEX)
+
+/// @param filename the name of a plist file without any extension
+- (NSString *)flex_defaultsPathForFile:(NSString *)filename {
+    filename = [filename stringByAppendingPathExtension:@"plist"];
+    
+    NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(
+        NSLibraryDirectory, NSUserDomainMask, YES
+    );
+    NSString *preferences = [paths[0] stringByAppendingPathComponent:@"Preferences"];
+    return [preferences stringByAppendingPathComponent:filename];
+}
 
 - (void)toggleBoolForKey:(NSString *)key {
     [self setBool:![self boolForKey:key] forKey:key];
@@ -79,6 +98,19 @@ NSString * const kFLEXDefaultsHideMethodOverridesKey = @"com.flipboard.FLEX.hide
         postNotificationName:kFLEXDefaultsHideMethodOverridesKey
         object:nil
     ];
+}
+
+- (NSArray<NSString *> *)flex_networkHostBlacklist {
+    return [NSArray arrayWithContentsOfFile:[
+        self flex_defaultsPathForFile:kFLEXDefaultsNetworkHostBlacklistKey
+    ]] ?: @[];
+}
+
+- (void)setFlex_networkHostBlacklist:(NSArray<NSString *> *)blacklist {
+    NSParameterAssert(blacklist);
+    [blacklist writeToFile:[
+        self flex_defaultsPathForFile:kFLEXDefaultsNetworkHostBlacklistKey
+    ] atomically:YES];
 }
 
 @end

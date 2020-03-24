@@ -10,8 +10,23 @@
 #import "FLEXManager+Private.h"
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkRecorder.h"
+#import "FLEXObjectExplorerFactory.h"
 
 @implementation FLEXManager (Networking)
+
++ (void)load {
+    // Register array/dictionary viewer for JSON responses
+    [self.sharedManager setCustomViewerForContentType:@"application/json"
+        viewControllerFutureBlock:^UIViewController *(NSData *data) {
+            id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+            if (jsonObject) {
+                return [FLEXObjectExplorerFactory explorerViewControllerForObject:jsonObject];
+            }
+        
+            return nil;
+        }
+    ];
+}
 
 - (BOOL)isNetworkDebuggingEnabled {
     return FLEXNetworkObserver.isEnabled;
@@ -29,15 +44,16 @@
     FLEXNetworkRecorder.defaultRecorder.responseCacheByteLimit = networkResponseCacheByteLimit;
 }
 
-- (NSArray<NSString *> *)networkRequestHostBlacklist {
+- (NSMutableArray<NSString *> *)networkRequestHostBlacklist {
     return FLEXNetworkRecorder.defaultRecorder.hostBlacklist;
 }
 
-- (void)setNetworkRequestHostBlacklist:(NSArray<NSString *> *)networkRequestHostBlacklist {
+- (void)setNetworkRequestHostBlacklist:(NSMutableArray<NSString *> *)networkRequestHostBlacklist {
     FLEXNetworkRecorder.defaultRecorder.hostBlacklist = networkRequestHostBlacklist;
 }
 
-- (void)setCustomViewerForContentType:(NSString *)contentType viewControllerFutureBlock:(FLEXCustomContentViewerFuture)viewControllerFutureBlock {
+- (void)setCustomViewerForContentType:(NSString *)contentType
+            viewControllerFutureBlock:(FLEXCustomContentViewerFuture)viewControllerFutureBlock {
     NSParameterAssert(contentType.length);
     NSParameterAssert(viewControllerFutureBlock);
     NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");

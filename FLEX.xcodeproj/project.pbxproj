@@ -91,8 +91,8 @@
 		3A4C95361B5B21410088C3F2 /* FLEXNetworkMITMViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94B51B5B21410088C3F2 /* FLEXNetworkMITMViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C95371B5B21410088C3F2 /* FLEXNetworkMITMViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94B61B5B21410088C3F2 /* FLEXNetworkMITMViewController.m */; };
 		3A4C95381B5B21410088C3F2 /* FLEXNetworkRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94B71B5B21410088C3F2 /* FLEXNetworkRecorder.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		3A4C953A1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94B91B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		3A4C953B1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.m */; };
+		3A4C953A1B5B21410088C3F2 /* FLEXNetworkSettingsController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94B91B5B21410088C3F2 /* FLEXNetworkSettingsController.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		3A4C953B1B5B21410088C3F2 /* FLEXNetworkSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsController.m */; };
 		3A4C953C1B5B21410088C3F2 /* FLEXNetworkTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94BB1B5B21410088C3F2 /* FLEXNetworkTransaction.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C953D1B5B21410088C3F2 /* FLEXNetworkTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94BC1B5B21410088C3F2 /* FLEXNetworkTransaction.m */; };
 		3A4C953E1B5B21410088C3F2 /* FLEXNetworkTransactionDetailTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94BD1B5B21410088C3F2 /* FLEXNetworkTransactionDetailTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -447,8 +447,8 @@
 		3A4C94B61B5B21410088C3F2 /* FLEXNetworkMITMViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkMITMViewController.m; sourceTree = "<group>"; };
 		3A4C94B71B5B21410088C3F2 /* FLEXNetworkRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkRecorder.h; sourceTree = "<group>"; };
 		3A4C94B81B5B21410088C3F2 /* FLEXNetworkRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkRecorder.m; sourceTree = "<group>"; };
-		3A4C94B91B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkSettingsTableViewController.h; sourceTree = "<group>"; };
-		3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkSettingsTableViewController.m; sourceTree = "<group>"; };
+		3A4C94B91B5B21410088C3F2 /* FLEXNetworkSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkSettingsController.h; sourceTree = "<group>"; };
+		3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkSettingsController.m; sourceTree = "<group>"; };
 		3A4C94BB1B5B21410088C3F2 /* FLEXNetworkTransaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkTransaction.h; sourceTree = "<group>"; };
 		3A4C94BC1B5B21410088C3F2 /* FLEXNetworkTransaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkTransaction.m; sourceTree = "<group>"; };
 		3A4C94BD1B5B21410088C3F2 /* FLEXNetworkTransactionDetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkTransactionDetailTableViewController.h; sourceTree = "<group>"; };
@@ -946,8 +946,8 @@
 				3A4C94B61B5B21410088C3F2 /* FLEXNetworkMITMViewController.m */,
 				3A4C94B71B5B21410088C3F2 /* FLEXNetworkRecorder.h */,
 				3A4C94B81B5B21410088C3F2 /* FLEXNetworkRecorder.m */,
-				3A4C94B91B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.h */,
-				3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.m */,
+				3A4C94B91B5B21410088C3F2 /* FLEXNetworkSettingsController.h */,
+				3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsController.m */,
 				3A4C94BB1B5B21410088C3F2 /* FLEXNetworkTransaction.h */,
 				3A4C94BC1B5B21410088C3F2 /* FLEXNetworkTransaction.m */,
 				3A4C94BD1B5B21410088C3F2 /* FLEXNetworkTransactionDetailTableViewController.h */,
@@ -1452,7 +1452,7 @@
 				C387C87A22DFCD6A00750E58 /* FLEXCarouselCell.h in Headers */,
 				C3511B9122D7C99E0057BAB7 /* FLEXGlobalsSection.h in Headers */,
 				C398625D23AD6E90007E6793 /* UIFont+FLEX.h in Headers */,
-				3A4C953A1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.h in Headers */,
+				3A4C953A1B5B21410088C3F2 /* FLEXNetworkSettingsController.h in Headers */,
 				C398626C23AD71C1007E6793 /* FLEXRuntimeController.h in Headers */,
 				779B1ED01C0C4D7C001F5E49 /* FLEXMultiColumnTableView.h in Headers */,
 				3A4C94D31B5B21410088C3F2 /* FLEXObjectExplorerFactory.h in Headers */,
@@ -1781,7 +1781,7 @@
 				3A4C94F41B5B21410088C3F2 /* FLEXArgumentInputFontView.m in Sources */,
 				C3694DBB23EA1096006625D7 /* FLEXTabsViewController.m in Sources */,
 				C3A9424623C641C1006871A3 /* SceneKit+Snapshot.m in Sources */,
-				3A4C953B1B5B21410088C3F2 /* FLEXNetworkSettingsTableViewController.m in Sources */,
+				3A4C953B1B5B21410088C3F2 /* FLEXNetworkSettingsController.m in Sources */,
 				3A4C94FC1B5B21410088C3F2 /* FLEXArgumentInputStringView.m in Sources */,
 				3A4C94F81B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.m in Sources */,
 				3A4C95351B5B21410088C3F2 /* FLEXSystemLogViewController.m in Sources */,
