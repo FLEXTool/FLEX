@@ -251,14 +251,16 @@
 }
 
 - (void)tryUpdateTransactions {
-    // Don't do any updating if we aren't in the view hierarchy
+    // Don't do any view updating if we aren't in the view hierarchy
     if (!self.viewIfLoaded.window) {
+        [self updateTransactions];
         self.pendingReload = YES;
         return;
     }
     
     // Let the previous row insert animation finish before starting a new one to avoid stomping.
-    // We'll try calling the method again when the insertion completes, and we properly no-op if there haven't been changes.
+    // We'll try calling the method again when the insertion completes,
+    // and we properly no-op if there haven't been changes.
     if (self.rowInsertInProgress) {
         return;
     }
