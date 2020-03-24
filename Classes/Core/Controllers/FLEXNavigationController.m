@@ -35,6 +35,12 @@
     
     self.waitingToAddTab = YES;
     
+    // Add gesture to reveal toolbar if hidden
+    self.navigationBar.userInteractionEnabled = YES;
+    [self.navigationBar addGestureRecognizer:[[UITapGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleNavigationBarTap:)
+    ]];
+    
     // Add gesture to dismiss if not presented with a sheet style
     if (@available(iOS 13, *)) {
         switch (self.modalPresentationStyle) {
@@ -133,7 +139,17 @@
 }
 
 - (void)handleNavigationBarSwipe:(UISwipeGestureRecognizer *)sender {
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    if (sender.state == UIGestureRecognizerStateRecognized) {
+        [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+     
+- (void)handleNavigationBarTap:(UIGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateRecognized) {
+        if (self.toolbarHidden) {
+            [self setToolbarHidden:NO animated:YES];
+        }
+    }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
