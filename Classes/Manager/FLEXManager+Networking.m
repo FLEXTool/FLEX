@@ -15,17 +15,18 @@
 @implementation FLEXManager (Networking)
 
 + (void)load {
-    // Register array/dictionary viewer for JSON responses
-    [self.sharedManager setCustomViewerForContentType:@"application/json"
-        viewControllerFutureBlock:^UIViewController *(NSData *data) {
-            id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            if (jsonObject) {
-                return [FLEXObjectExplorerFactory explorerViewControllerForObject:jsonObject];
+    dispatch_asnyc(dispatch_get_main_queue(), ^{
+        // Register array/dictionary viewer for JSON responses
+        [self.sharedManager setCustomViewerForContentType:@"application/json"
+            viewControllerFutureBlock:^UIViewController *(NSData *data) {
+                id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+                if (jsonObject) {
+                    return [FLEXObjectExplorerFactory explorerViewControllerForObject:jsonObject];
+                }
+                return nil;
             }
-        
-            return nil;
-        }
-    ];
+        ];
+    });
 }
 
 - (BOOL)isNetworkDebuggingEnabled {
