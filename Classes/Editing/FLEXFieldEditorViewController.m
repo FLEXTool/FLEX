@@ -38,14 +38,14 @@
     }
 
     FLEXFieldEditorViewController *editor = [self target:target];
-    editor.title = [@"Property: " stringByAppendingString:property.name];
+    editor.title = [@"Property: " stringByAppendingString:property.name.string];
     editor.property = property;
     return editor;
 }
 
 + (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar {
     FLEXFieldEditorViewController *editor = [self target:target];
-    editor.title = [@"Ivar: " stringByAppendingString:ivar.name];
+    editor.title = [@"Ivar: " stringByAppendingString:ivar.name.string];
     editor.ivar = ivar;
     return editor;
 }

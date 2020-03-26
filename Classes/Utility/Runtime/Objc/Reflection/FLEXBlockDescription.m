@@ -23,6 +23,8 @@
 
 #import "FLEXBlockDescription.h"
 #import "FLEXRuntimeUtility.h"
+#import "NSMutableAttributedString+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
 
 struct block_object {
     void *isa;
@@ -126,29 +128,29 @@ struct block_object {
     return YES;
 }
 
-- (NSString *)buildLikelyDeclaration {
+- (NSAttributedString *)buildLikelyDeclaration {
     NSMethodSignature *signature = self.signature;
     NSUInteger numberOfArguments = signature.numberOfArguments;
     const char *returnType       = signature.methodReturnType;
     
     // Return type
-    NSMutableString *decl = [NSMutableString stringWithString:@"^"];
+    NSMutableAttributedString *decl = [[NSMutableAttributedString alloc] initWithString:@"^"];
     if (returnType[0] != FLEXTypeEncodingVoid) {
-        [decl appendString:[FLEXRuntimeUtility readableTypeForEncoding:@(returnType)]];
-        [decl appendString:@" "];
+        [decl appendAttributedString:[FLEXRuntimeUtility readableTypeForEncoding:@(returnType)]];
+        [decl appendAttributedString:@" ".attributedString];
     }
     
     // Arguments
     if (numberOfArguments) {
-        [decl appendString:@"("];
+        [decl appendAttributedString:@"(".attributedString];
         for (NSUInteger i = 1; i < numberOfArguments; i++) {
             const char *argType = [self.signature getArgumentTypeAtIndex:i] ?: "?";
-            NSString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
-            [decl appendFormat:@"%@ arg%@, ", readableArgType, @(i)];
+            NSAttributedString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
+            [decl appendAttributedString:[NSAttributedString stringWithFormat:@"%@ arg%@, ", readableArgType, @(i)]];
         }
         
         [decl deleteCharactersInRange:NSMakeRange(decl.length-2, 2)];
-        [decl appendString:@")"];
+        [decl appendAttributedString:@")".attributedString];
     }
     
     return decl.copy;

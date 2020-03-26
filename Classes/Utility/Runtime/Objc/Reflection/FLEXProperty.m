@@ -62,7 +62,7 @@
     if (self) {
         _objc_property = property;
         _attributes    = [FLEXPropertyAttributes attributesForProperty:property];
-        _name          = @(property_getName(property) ?: "(nil)");
+        _name          = property_getName(property) ? [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding].otherInstanceVariablesAndGlobalsAttributedString : [NSAttributedString stringWithFormat:@"(%@)", @"nil".keywordsAttributedString];
         _cls           = cls;
 
         if (!_attributes) [NSException raise:NSInternalInconsistencyException format:@"Error retrieving property attributes"];
@@ -80,7 +80,7 @@
     self = [super init];
     if (self) {
         _attributes    = attributes;
-        _name          = name;
+        _name          = name.otherInstanceVariablesAndGlobalsAttributedString;
 
         [self examine];
     }
@@ -102,12 +102,8 @@
 
     SEL customGetter = self.attributes.customGetter;
     SEL customSetter = self.attributes.customSetter;
-    SEL defaultGetter = NSSelectorFromString(self.name);
-    SEL defaultSetter = NSSelectorFromString([NSString
-        stringWithFormat:@"set%c%@:",
-        (char)toupper([self.name characterAtIndex:0]),
-        [self.name substringFromIndex:1]
-    ]);
+    SEL defaultGetter = NSSelectorFromString(self.name.string);
+    SEL defaultSetter = NSSelectorFromString([NSString stringWithFormat:@"set%c%@:", (char)toupper([self.name.string characterAtIndex:0]), [self.name.string substringFromIndex:1]]);
 
     // Check if the likely getters/setters exist
     SEL validGetter = selectorIfValid(customGetter) ?: selectorIfValid(defaultGetter);
@@ -129,8 +125,8 @@
 
 - (NSString *)description {
     if (!_flex_description) {
-        NSString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.attributes.typeEncoding];
-        _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType].attributedString;
+        NSAttributedString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.attributes.typeEncoding];
+        _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType];
     }
 
     return _flex_description.string;
@@ -138,8 +134,8 @@
 
 - (NSAttributedString *)attributedDescription {
     if (!_flex_description) {
-        NSString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.attributes.typeEncoding];
-        _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType].attributedString;
+        NSAttributedString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.attributes.typeEncoding];
+        _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType];
     }
 
     return _flex_description;
@@ -161,12 +157,12 @@
 }
 
 - (void)replacePropertyOnClass:(Class)cls {
-    class_replaceProperty(cls, self.name.UTF8String, self.attributes.list, (unsigned int)self.attributes.count);
+    class_replaceProperty(cls, self.name.string.UTF8String, self.attributes.list, (unsigned int)self.attributes.count);
 }
 
 - (void)computeSymbolInfo:(BOOL)forceBundle {
     if ((!_multiple || !_uniqueCheckFlag) && _cls) {
-        _multiple = _objc_property != class_getProperty(_cls, self.name.UTF8String);
+        _multiple = _objc_property != class_getProperty(_cls, self.name.string.UTF8String);
 
         if (_multiple || forceBundle) {
             Dl_info exeInfo;
@@ -280,7 +276,7 @@
 
 - (FLEXMethodBase *)setterWithImplementation:(IMP)implementation {
     NSString *types        = [NSString stringWithFormat:@"%s%s%s%@", @encode(void), @encode(id), @encode(SEL), self.attributes.typeEncoding];
-    NSString *name         = [NSString stringWithFormat:@"set%@:", self.name.capitalizedString];
+    NSString *name         = [NSString stringWithFormat:@"set%@:", self.name.string.capitalizedString];
     FLEXMethodBase *setter = [FLEXMethodBase buildMethodNamed:name withTypes:types implementation:implementation];
     return setter;
 }

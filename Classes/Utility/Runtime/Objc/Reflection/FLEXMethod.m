@@ -112,7 +112,7 @@
 
 - (NSAttributedString *)prettyName {
     NSAttributedString *methodTypeString = (self.isInstanceMethod ? @"-" : @"+").attributedString;
-    NSAttributedString *readableReturnType = [FLEXRuntimeUtility readableTypeForEncoding:@(self.signature.methodReturnType ?: "")].attributedString;
+    NSAttributedString *readableReturnType = [FLEXRuntimeUtility readableTypeForEncoding:@(self.signature.methodReturnType ?: "")];
     
     NSMutableAttributedString *prettyName = [NSMutableAttributedString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
     NSArray *components = [self prettyArgumentComponents];
@@ -140,7 +140,7 @@
         assert(argIndex < self.signature.numberOfArguments);
         
         const char *argType = [self.signature getArgumentTypeAtIndex:argIndex] ?: "?";
-        NSAttributedString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)].attributedString;
+        NSAttributedString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
         NSAttributedString *prettyComponent = [NSAttributedString stringWithFormat:@"%@:(%@) ", selectorComponents[argIndex - 2].otherFunctionAndMethodNamesAttributedString, readableArgType];
 
         [components addObject:prettyComponent];

@@ -62,5 +62,10 @@
     [attributedString appendAttributedString:aString];
     return attributedString;
 }
+- (instancetype)stringByReplacingOccurrencesOfString:(NSAttributedString *)aString withString:(NSAttributedString *)replacement {
+    NSMutableAttributedString *attributedString = self.mutableCopy;
+    [attributedString replaceOccurencesOfString:aString withString:replacement];
+    return attributedString;
+}
 @end
 

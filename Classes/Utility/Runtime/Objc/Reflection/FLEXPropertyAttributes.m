@@ -11,7 +11,6 @@
 #import "FLEXRuntimeUtility.h"
 #import "NSString+ObjcRuntime.h"
 #import "NSDictionary+ObjcRuntime.h"
-#import "NSAttributedString+FLEX.h"
 #import "NSMutableAttributedString+FLEX.h"
 #import "NSString+SyntaxHighlighting.h"
 #import "NSObject+SyntaxHighlighting.h"

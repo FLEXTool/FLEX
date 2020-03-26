@@ -35,7 +35,7 @@
 @property (nonatomic, readonly) BOOL             isClassProperty;
 
 /// The name of the property.
-@property (nonatomic, readonly) NSString         *name;
+@property (nonatomic, readonly) NSAttributedString         *name;
 /// The type of the property. Get the full type from the attributes.
 @property (nonatomic, readonly) FLEXTypeEncoding type;
 /// The property's attributes.

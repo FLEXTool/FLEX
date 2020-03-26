@@ -11,7 +11,7 @@
 @implementation FLEXProperty (Compare)
 
 - (NSComparisonResult)compare:(FLEXProperty *)other {
-    NSComparisonResult r = [self.name caseInsensitiveCompare:other.name];
+    NSComparisonResult r = [self.name.string caseInsensitiveCompare:other.name.string];
     if (r == NSOrderedSame) {
         // TODO make sure empty image name sorts above an image name
         return [self.imageName ?: @"" compare:other.imageName];
@@ -25,7 +25,7 @@
 @implementation FLEXIvar (Compare)
 
 - (NSComparisonResult)compare:(FLEXIvar *)other {
-    return [self.name caseInsensitiveCompare:other.name];
+    return [self.name.string caseInsensitiveCompare:other.name.string];
 }
 
 @end

@@ -98,7 +98,7 @@
     for (FLEXProperty *p in properties) {
         unsigned int pcount;
         objc_property_attribute_t *attributes = [p copyAttributesList:&pcount];
-        if (!class_addProperty(self.workingClass, p.name.UTF8String, attributes, pcount)) {
+        if (!class_addProperty(self.workingClass, p.name.string.UTF8String, attributes, pcount)) {
             [failed addObject:p];
         }
         free(attributes);

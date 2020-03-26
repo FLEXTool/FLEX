@@ -47,7 +47,7 @@
 
     // Configure field editor view
     self.fieldEditorView.argumentInputViews = [self argumentInputViews];
-    self.fieldEditorView.fieldDescription = [NSAttributedString stringWithFormat:@"Signature:\n%@\n\nReturn Type:\n%s", self.method.description, [NSString stringWithFormat:@"%s", (char *)self.method.returnType].attributedString];
+    self.fieldEditorView.fieldDescription = [NSAttributedString stringWithFormat:@"Signature:\n%@\n\nReturn Type:\n%@", self.method.description, [NSString stringWithFormat:@"%s", (char *)self.method.returnType].attributedString];
 }
 
 - (NSArray<FLEXArgumentInputView *> *)argumentInputViews {

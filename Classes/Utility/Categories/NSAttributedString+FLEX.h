@@ -7,10 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSMutableAttributedString+FLEX.h"
 
 @interface NSAttributedString (FLEX)
 + (instancetype)stringByJoiningArray:(NSArray<NSAttributedString *> *)array withSeparator:(NSAttributedString *)separator;
 + (instancetype)stringWithFormat:(NSString *)format, ...;
 + (instancetype)stringWithAttributes:(NSDictionary *)attributes format:(NSString *)format, ...;
 - (instancetype)stringByAppendingAttributedString:(NSAttributedString *)aString;
+- (instancetype)stringByReplacingOccurrencesOfString:(NSAttributedString *)aString withString:(NSAttributedString *)replacement;
 @end

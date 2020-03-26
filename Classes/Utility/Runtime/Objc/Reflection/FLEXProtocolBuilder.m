@@ -72,7 +72,7 @@
 
     unsigned int count;
     objc_property_attribute_t *attributes = [property copyAttributesList:&count];
-    protocol_addProperty(self.workingProtocol, property.name.UTF8String, attributes, count, isRequired, YES);
+    protocol_addProperty(self.workingProtocol, property.name.string.UTF8String, attributes, count, isRequired, YES);
     free(attributes);
 }
 
