@@ -70,12 +70,15 @@
 
 #pragma mark - Overrides
 
-- (NSString *)titleForRow:(NSInteger)row {
-    return [self.metadata[row] description];
+- (NSAttributedString *)titleForRow:(NSInteger)row {
+    return [self.metadata[row] attributedDescription];
 }
 
-- (NSString *)subtitleForRow:(NSInteger)row {
-    return [self.metadata[row] previewWithTarget:self.explorer.object];
+- (NSAttributedString *)subtitleForRow:(NSInteger)row {
+    id str = [self.metadata[row] previewWithTarget:self.explorer.object]; // FIXME: Should always be NSAttributedString
+    if ([str isKindOfClass:NSString.class])
+        return ((NSString *)str).attributedString;
+    return str;
 }
 
 - (NSString *)title {
@@ -146,7 +149,7 @@
     // Remove excluded metadata
     if (self.excludedMetadata.count) {
         id filterBlock = ^BOOL(id<FLEXRuntimeMetadata> obj, NSUInteger idx) {
-            return ![self.excludedMetadata containsObject:obj.name];
+            return ![self.excludedMetadata containsObject:obj.name.string];
         };
 
         // Filter exclusions and sort
@@ -184,14 +187,14 @@
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
-    cell.titleLabel.text = [self titleForRow:row];
-    cell.subtitleLabel.text = [self subtitleForRow:row];
+    cell.titleLabel.attributedText = [self titleForRow:row];
+    cell.subtitleLabel.attributedText = [self subtitleForRow:row];
     cell.accessoryType = [self accessoryTypeForRow:row];
 }
 
 #if FLEX_AT_LEAST_IOS13_SDK
 
-- (NSString *)menuSubtitleForRow:(NSInteger)row {
+- (NSAttributedString *)menuSubtitleForRow:(NSInteger)row {
     return [self.metadata[row] contextualSubtitleWithTarget:self.explorer.object];
 }
 

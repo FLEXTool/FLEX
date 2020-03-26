@@ -90,10 +90,10 @@
     }
 }
 
-- (void)setFieldDescription:(NSString *)fieldDescription {
+- (void)setFieldDescription:(NSAttributedString *)fieldDescription {
     if (![_fieldDescription isEqual:fieldDescription]) {
         _fieldDescription = fieldDescription;
-        self.fieldDescriptionLabel.text = fieldDescription;
+        self.fieldDescriptionLabel.attributedText = fieldDescription;
         [self setNeedsLayout];
     }
 }

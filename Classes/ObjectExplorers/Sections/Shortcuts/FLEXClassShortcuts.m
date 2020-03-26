@@ -23,7 +23,7 @@
     // The methods below are written in such a way that they will not interfere
     // with properties/etc being registered alongside these
     return [self forObject:cls additionalRows:@[
-        [FLEXActionShortcut title:@"Find Live Instances" subtitle:nil
+        [FLEXActionShortcut title:@"Find Live Instances".attributedString subtitle:nil
             viewer:^UIViewController *(id obj) {
                 return [FLEXObjectListViewController
                     instancesOfClassWithName:NSStringFromClass(obj)
@@ -33,7 +33,7 @@
                 return UITableViewCellAccessoryDisclosureIndicator;
             }
         ],
-        [FLEXActionShortcut title:@"List Subclasses" subtitle:nil
+        [FLEXActionShortcut title:@"List Subclasses".attributedString subtitle:nil
             viewer:^UIViewController *(id obj) {
                 NSString *name = NSStringFromClass(obj);
                 return [FLEXObjectListViewController subclassesOfClassWithName:name];
@@ -42,9 +42,9 @@
                 return UITableViewCellAccessoryDisclosureIndicator;
             }
         ],
-        [FLEXActionShortcut title:@"Explore Bundle for Class"
-            subtitle:^NSString *(id obj) {
-                return [self shortNameForBundlePath:[NSBundle bundleForClass:obj].executablePath];
+        [FLEXActionShortcut title:@"Explore Bundle for Class".attributedString
+            subtitle:^NSAttributedString *(id obj) {
+                return [self shortNameForBundlePath:[NSBundle bundleForClass:obj].executablePath].attributedString;
             }
             viewer:^UIViewController *(id obj) {
                 NSBundle *bundle = [NSBundle bundleForClass:obj];

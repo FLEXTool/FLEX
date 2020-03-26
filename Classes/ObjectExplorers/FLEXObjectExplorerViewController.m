@@ -164,11 +164,11 @@
         _descriptionSection = [FLEXSingleRowSection
             title:@"Description" reuse:kFLEXMultilineCell cell:^(FLEXTableViewCell *cell) {
                 cell.titleLabel.font = UIFont.flex_defaultTableCellFont;
-                cell.titleLabel.text = explorer.objectDescription;
+                cell.titleLabel.attributedText = explorer.objectDescription;
             }
         ];
         self.descriptionSection.filterMatcher = ^BOOL(NSString *filterText) {
-            return [explorer.objectDescription localizedCaseInsensitiveContainsString:filterText];
+            return [explorer.objectDescription.string localizedCaseInsensitiveContainsString:filterText];
         };
     }
 
@@ -227,10 +227,10 @@
             [FLEXBookmarkManager.bookmarks addObject:self.object];
         });
         make.button(@"Copy Description").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
+            UIPasteboard.generalPasteboard.string = self.explorer.objectDescription.string;
         });
         make.button(@"Copy Address").handler(^(NSArray<NSString *> *strings) {
-            UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
+            UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object].string;
         });
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
@@ -345,10 +345,8 @@
     FLEXTableViewSection *section = self.filterDelegate.sections[indexPath.section];
     
     if (section == self.descriptionSection) {
-        NSAttributedString *attributedText = [[NSAttributedString alloc]
-            initWithString:self.explorer.objectDescription
-            attributes:@{ NSFontAttributeName : UIFont.flex_defaultTableCellFont }
-        ];
+        NSMutableAttributedString *attributedText = self.explorer.objectDescription.mutableCopy;
+        [attributedText addAttribute:NSFontAttributeName value:UIFont.flex_defaultTableCellFont range:NSMakeRange(0, attributedText.length)];
         
         return [FLEXMultilineTableViewCell
             preferredHeightWithAttributedText:attributedText
@@ -376,7 +374,7 @@
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
-        UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
+        UIPasteboard.generalPasteboard.string = self.explorer.objectDescription.string;
     }
 }
 

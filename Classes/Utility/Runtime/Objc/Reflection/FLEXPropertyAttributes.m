@@ -11,6 +11,9 @@
 #import "FLEXRuntimeUtility.h"
 #import "NSString+ObjcRuntime.h"
 #import "NSDictionary+ObjcRuntime.h"
+#import "NSMutableAttributedString+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 
 #pragma mark FLEXPropertyAttributes
@@ -30,7 +33,7 @@
 @property (nonatomic) BOOL isWeak;
 @property (nonatomic) BOOL isGarbageCollectable;
 
-- (NSString *)buildFullDeclaration;
+- (NSAttributedString *)buildFullDeclaration;
 
 @end
 
@@ -88,8 +91,21 @@
     ];
 }
 
+- (NSAttributedString *)attributedDescription {
+    return [NSAttributedString
+        stringWithFormat:@"<%@ \"%@\", ivar=%@, readonly=%d, nonatomic=%d, getter=%@, setter=%@>",
+        NSStringFromClass(self.class),
+        self.string,
+        self.backingIvar ?: @"none",
+        self.isReadOnly,
+        self.isNonatomic,
+        NSStringFromSelector(self.customGetter) ?: @"none",
+        NSStringFromSelector(self.customSetter) ?: @"none"
+    ];
+}
+
 - (objc_property_attribute_t *)copyAttributesList:(unsigned int *)attributesCount {
-    NSDictionary *attrs = self.string.propertyAttributes;
+    NSDictionary *attrs = self.string.string.propertyAttributes;
     objc_property_attribute_t *propertyAttributes = malloc(attrs.count * sizeof(objc_property_attribute_t));
 
     if (attributesCount) {
@@ -190,36 +206,43 @@
     return _list;
 }
 
-- (NSString *)buildFullDeclaration {
-    NSMutableString *decl = [NSMutableString new];
+- (NSAttributedString *)buildFullDeclaration {
+    NSMutableAttributedString *decl = [NSMutableAttributedString new];
 
-    [decl appendFormat:@"%@, ", _isNonatomic ? @"nonatomic" : @"atomic"];
-    [decl appendFormat:@"%@, ", _isReadOnly ? @"readonly" : @"readwrite"];
+    [decl appendAttributedString:[NSAttributedString stringWithFormat:@"%@, ", _isNonatomic ? @"nonatomic".keywordsAttributedString : @"atomic".keywordsAttributedString]];
+    [decl appendAttributedString:[NSAttributedString stringWithFormat:@"%@, ", _isReadOnly ? @"readonly".keywordsAttributedString : @"readwrite".keywordsAttributedString]];
 
     BOOL noExplicitMemorySemantics = YES;
     if (_isCopy) { noExplicitMemorySemantics = NO;
-        [decl appendString:@"copy, "];
+        [decl appendAttributedString:@"copy".keywordsAttributedString];
+        [decl appendAttributedString:@", ".attributedString];
     }
     if (_isRetained) { noExplicitMemorySemantics = NO;
-        [decl appendString:@"strong, "];
+        [decl appendAttributedString:@"strong".keywordsAttributedString];
+        [decl appendAttributedString:@", ".attributedString];
     }
     if (_isWeak) { noExplicitMemorySemantics = NO;
-        [decl appendString:@"weak, "];
+        [decl appendAttributedString:@"weak".keywordsAttributedString];
+        [decl appendAttributedString:@", ".attributedString];
     }
 
     if ([_typeEncoding hasPrefix:@"@"] && noExplicitMemorySemantics) {
         // *probably* strong if this is an object; strong is the default.
-        [decl appendString:@"strong, "];
+        [decl appendAttributedString:@"strong".keywordsAttributedString];
+        [decl appendAttributedString:@", ".attributedString];
     } else if (noExplicitMemorySemantics) {
         // *probably* assign if this is not an object
-        [decl appendString:@"assign, "];
+        [decl appendAttributedString:@"assign".keywordsAttributedString];
+        [decl appendAttributedString:@", ".attributedString];
     }
 
     if (_customGetter) {
-        [decl appendFormat:@"getter=%@, ", NSStringFromSelector(_customGetter)];
+        [decl appendAttributedString:[NSAttributedString stringWithFormat:@"getter=%@", NSStringFromSelector(_customGetter)]];
+        [decl appendAttributedString:@", ".attributedString];
     }
     if (_customSetter) {
-        [decl appendFormat:@"setter=%@, ", NSStringFromSelector(_customSetter)];
+        [decl appendAttributedString:[NSAttributedString stringWithFormat:@"setter=%@", NSStringFromSelector(_customSetter)]];
+        [decl appendAttributedString:@", ".attributedString];
     }
 
     [decl deleteCharactersInRange:NSMakeRange(decl.length-2, 2)];
@@ -312,7 +335,7 @@ PropertyWithDeltaFlag(BOOL, isGarbageCollectable, IsGarbageCollectable);
     return super.list;
 }
 
-- (NSString *)string {
+- (NSAttributedString *)string {
     // Regenerate string after mutations
     if (self.stringDelta || !_string) {
         self.stringDelta = NO;
@@ -354,7 +377,7 @@ PropertyWithDeltaFlag(BOOL, isGarbageCollectable, IsGarbageCollectable);
     return _dictionary;
 }
 
-- (NSString *)fullDeclaration {
+- (NSAttributedString *)fullDeclaration {
     if (self.declDelta || !_fullDeclaration) {
         _declDelta = NO;
         _fullDeclaration = [self buildFullDeclaration];

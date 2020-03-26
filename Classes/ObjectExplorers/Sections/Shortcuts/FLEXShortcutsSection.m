@@ -20,11 +20,11 @@
 #pragma mark Private
 
 @interface FLEXShortcutsSection ()
-@property (nonatomic, copy) NSArray<NSString *> *titles;
-@property (nonatomic, copy) NSArray<NSString *> *subtitles;
+@property (nonatomic, copy) NSArray<NSAttributedString *> *titles;
+@property (nonatomic, copy) NSArray<NSAttributedString *> *subtitles;
 
-@property (nonatomic, copy) NSArray<NSString *> *allTitles;
-@property (nonatomic, copy) NSArray<NSString *> *allSubtitles;
+@property (nonatomic, copy) NSArray<NSAttributedString *> *allTitles;
+@property (nonatomic, copy) NSArray<NSAttributedString *> *allSubtitles;
 
 // Shortcuts are not used if initialized with static titles and subtitles
 @property (nonatomic, copy) NSArray<id<FLEXShortcut>> *shortcuts;
@@ -35,13 +35,13 @@
 
 #pragma mark Initialization
 
-+ (instancetype)forObject:(id)objectOrClass rowTitles:(NSArray<NSString *> *)titles {
++ (instancetype)forObject:(id)objectOrClass rowTitles:(NSArray<NSAttributedString *> *)titles {
     return [self forObject:objectOrClass rowTitles:titles rowSubtitles:nil];
 }
 
 + (instancetype)forObject:(id)objectOrClass
-                rowTitles:(NSArray<NSString *> *)titles
-             rowSubtitles:(NSArray<NSString *> *)subtitles {
+                rowTitles:(NSArray<NSAttributedString *> *)titles
+             rowSubtitles:(NSArray<NSAttributedString *> *)subtitles {
     return [[self alloc] initWithObject:objectOrClass titles:titles subtitles:subtitles];
 }
 
@@ -60,8 +60,8 @@
 }
 
 - (id)initWithObject:(id)object
-              titles:(NSArray<NSString *> *)titles
-           subtitles:(NSArray<NSString *> *)subtitles {
+              titles:(NSArray<NSAttributedString *> *)titles
+           subtitles:(NSArray<NSAttributedString *> *)subtitles {
 
     NSParameterAssert(titles.count == subtitles.count || !subtitles);
     NSParameterAssert(titles.count);
@@ -130,8 +130,8 @@
     if (filterText.length) {
         // Tally up indexes of titles and subtitles matching the filter
         NSMutableIndexSet *filterMatches = [NSMutableIndexSet new];
-        id filterBlock = ^BOOL(NSString *obj, NSUInteger idx) {
-            if ([obj localizedCaseInsensitiveContainsString:filterText]) {
+        id filterBlock = ^BOOL(NSAttributedString *obj, NSUInteger idx) {
+            if ([obj.string localizedCaseInsensitiveContainsString:filterText]) {
                 [filterMatches addIndex:idx];
                 return YES;
             }
@@ -149,7 +149,7 @@
     } else {
         self.shortcuts = self.allShortcuts;
         self.titles    = self.allTitles;
-        self.subtitles = [self.allSubtitles flex_filtered:^BOOL(NSString *sub, NSUInteger idx) {
+        self.subtitles = [self.allSubtitles flex_filtered:^BOOL(NSAttributedString *sub, NSUInteger idx) {
             return sub.length > 0;
         }];
     }
@@ -218,21 +218,21 @@
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
-    cell.titleLabel.text = [self titleForRow:row];
+    cell.titleLabel.attributedText = [self titleForRow:row];
     cell.titleLabel.numberOfLines = self.numberOfLines;
-    cell.subtitleLabel.text = [self subtitleForRow:row];
+    cell.subtitleLabel.attributedText = [self subtitleForRow:row];
     cell.subtitleLabel.numberOfLines = self.numberOfLines;
     cell.accessoryType = [self accessoryTypeForRow:row];
 }
 
-- (NSString *)titleForRow:(NSInteger)row {
+- (NSAttributedString *)titleForRow:(NSInteger)row {
     return self.titles[row];
 }
 
-- (NSString *)subtitleForRow:(NSInteger)row {
+- (NSAttributedString *)subtitleForRow:(NSInteger)row {
     // Case: dynamic, uncached subtitles
     if (!self.cacheSubtitles) {
-        NSString *subtitle = [self.shortcuts[row] subtitleWith:self.object];
+        NSAttributedString *subtitle = [self.shortcuts[row] subtitleWith:self.object];
         return subtitle.length ? subtitle : nil;
     }
 

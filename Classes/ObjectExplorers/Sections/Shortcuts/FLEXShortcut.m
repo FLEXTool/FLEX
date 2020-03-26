@@ -17,7 +17,7 @@
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXMetadataSection.h"
 #import "FLEXTableView.h"
-
+#import "NSAttributedString+FLEX.h"
 
 #pragma mark - FLEXShortcut
 
@@ -64,15 +64,15 @@
     return [self.metadata currentValueWithTarget:object];
 }
 
-- (NSString *)titleWith:(id)object {
+- (NSAttributedString *)titleWith:(id)object {
     switch (self.metadataKind) {
         case FLEXMetadataKindClassProperties:
         case FLEXMetadataKindProperties:
             // Since we're outside of the "properties" section, prepend @property for clarity.
-            return [@"@property " stringByAppendingString:[_item description]];
+            return [@"@property ".keywordsAttributedString stringByAppendingAttributedString:[_item attributedDescription]];
 
         default:
-            return [_item description];
+            return [_item attributedDescription];
     }
 
     NSAssert(
@@ -80,18 +80,18 @@
         @"Unexpected type: %@", [_item class]
     );
 
-    return _item;
+    return ((NSString *)_item).attributedString;
 }
 
-- (NSString *)subtitleWith:(id)object {
+- (NSAttributedString *)subtitleWith:(id)object {
     if (self.metadataKind) {
-        return [self.metadata previewWithTarget:object] ?: @"nil";
+        return [self.metadata previewWithTarget:object] ?: @"nil".keywordsAttributedString;
     }
 
     // Item is probably a string; must return empty string since
     // these will be gathered into an array. If the object is a
     // just a string, it doesn't get a subtitle.
-    return @"";
+    return @"".attributedString;
 }
 
 - (void (^)(UIViewController *))didSelectActionWith:(id)object { 
@@ -137,8 +137,8 @@
 #pragma mark - FLEXActionShortcut
 
 @interface FLEXActionShortcut ()
-@property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) NSString *(^subtitleFuture)(id);
+@property (nonatomic, readonly) NSAttributedString *title;
+@property (nonatomic, readonly) NSAttributedString *(^subtitleFuture)(id);
 @property (nonatomic, readonly) UIViewController *(^viewerFuture)(id);
 @property (nonatomic, readonly) void (^selectionHandler)(UIViewController *, id);
 @property (nonatomic, readonly) UITableViewCellAccessoryType (^accessoryTypeFuture)(id);
@@ -146,21 +146,21 @@
 
 @implementation FLEXActionShortcut
 
-+ (instancetype)title:(NSString *)title
-             subtitle:(NSString *(^)(id))subtitle
++ (instancetype)title:(NSAttributedString *)title
+             subtitle:(NSAttributedString *(^)(id))subtitle
                viewer:(UIViewController *(^)(id))viewer
         accessoryType:(UITableViewCellAccessoryType (^)(id))type {
     return [[self alloc] initWithTitle:title subtitle:subtitle viewer:viewer selectionHandler:nil accessoryType:type];
 }
 
-+ (instancetype)title:(NSString *)title
-             subtitle:(NSString * (^)(id))subtitle
++ (instancetype)title:(NSAttributedString *)title
+             subtitle:(NSAttributedString * (^)(id))subtitle
      selectionHandler:(void (^)(UIViewController *, id))tapAction
         accessoryType:(UITableViewCellAccessoryType (^)(id))type {
     return [[self alloc] initWithTitle:title subtitle:subtitle viewer:nil selectionHandler:tapAction accessoryType:type];
 }
 
-- (id)initWithTitle:(NSString *)title
+- (id)initWithTitle:(NSAttributedString *)title
            subtitle:(id)subtitleFuture
              viewer:(id)viewerFuture
    selectionHandler:(id)tapAction
@@ -181,11 +181,11 @@
     return self;
 }
 
-- (NSString *)titleWith:(id)object {
+- (NSAttributedString *)titleWith:(id)object {
     return self.title;
 }
 
-- (NSString *)subtitleWith:(id)object {
+- (NSAttributedString *)subtitleWith:(id)object {
     return self.subtitleFuture(object);
 }
 

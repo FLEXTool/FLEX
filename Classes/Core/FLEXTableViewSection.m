@@ -10,6 +10,7 @@
 #import "FLEXTableView.h"
 #import "FLEXUtility.h"
 #import "UIMenu+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
@@ -53,19 +54,19 @@
 
 #if FLEX_AT_LEAST_IOS13_SDK
 
-- (NSString *)menuTitleForRow:(NSInteger)row {
-    NSString *title = [self titleForRow:row];
-    NSString *subtitle = [self menuSubtitleForRow:row];
+- (NSAttributedString *)menuTitleForRow:(NSInteger)row {
+    NSAttributedString *title = [self titleForRow:row];
+    NSAttributedString *subtitle = [self menuSubtitleForRow:row];
     
     if (subtitle.length) {
-        return [NSString stringWithFormat:@"%@\n\n%@", title, subtitle];
+        return [NSString stringWithFormat:@"%@\n\n%@", title, subtitle].attributedString;
     }
     
     return title;
 }
 
-- (NSString *)menuSubtitleForRow:(NSInteger)row {
-    return @"";
+- (NSAttributedString *)menuSubtitleForRow:(NSInteger)row {
+    return @"".attributedString;
 }
 
 - (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13)) {
@@ -120,8 +121,8 @@
     return nil;
 }
 
-- (NSString *)titleForRow:(NSInteger)row { return nil; }
-- (NSString *)subtitleForRow:(NSInteger)row { return nil; }
+- (NSAttributedString *)titleForRow:(NSInteger)row { return nil; }
+- (NSAttributedString *)subtitleForRow:(NSInteger)row { return nil; }
 
 @end
 

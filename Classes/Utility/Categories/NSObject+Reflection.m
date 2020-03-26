@@ -424,7 +424,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
 }
 
 + (void)flex_replaceProperty:(FLEXProperty *)property {
-    [self flex_replaceProperty:property.name attributes:property.attributes];
+    [self flex_replaceProperty:property.name.string attributes:property.attributes];
 }
 
 + (void)flex_replaceProperty:(NSString *)name attributes:(FLEXPropertyAttributes *)attributes {

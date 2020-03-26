@@ -18,7 +18,7 @@
 @property (nonatomic, readonly) Ivar             objc_ivar;
 
 /// The name of the instance variable.
-@property (nonatomic, readonly) NSString         *name;
+@property (nonatomic, readonly) NSAttributedString         *name;
 /// The type of the instance variable.
 @property (nonatomic, readonly) FLEXTypeEncoding type;
 /// The type encoding string of the instance variable.

@@ -25,3 +25,5 @@
 #import <FLEX/NSUserDefaults+FLEX.h>
 #import <FLEX/NSMapTable+FLEX_Subscripting.h>
 #import <FLEX/NSTimer+Blocks.h>
+#import <FLEX/NSAttributedString+FLEX.h>
+#import <FLEX/NSMutableAttributedString+FLEX.h>

@@ -76,11 +76,11 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 /// - Ordered: the index
 /// - Unordered: the object
 /// - Keyed: the key
-- (NSString *)titleForRow:(NSInteger)row {
+- (NSAttributedString *)titleForRow:(NSInteger)row {
     switch (self.collectionType) {
         case FLEXOrderedCollection:
             if (!self.hideOrderIndexes) {
-                return @(row).stringValue;
+                return @(row).stringValue.attributedString;
             }
             // Fall-through
         case FLEXUnorderedCollection:
@@ -97,7 +97,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 /// - Ordered: the object
 /// - Unordered: nothing
 /// - Keyed: the value
-- (NSString *)subtitleForRow:(NSInteger)row {
+- (NSAttributedString *)subtitleForRow:(NSInteger)row {
     switch (self.collectionType) {
         case FLEXOrderedCollection:
             if (!self.hideOrderIndexes) {
@@ -114,7 +114,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     }
 }
 
-- (NSString *)describe:(id)object {
+- (NSAttributedString *)describe:(id)object {
     return [FLEXRuntimeUtility summaryForObject:object];
 }
 
@@ -156,7 +156,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     
     if (filterText.length) {
         BOOL (^matcher)(id, id) = self.customFilter ?: ^BOOL(NSString *query, id obj) {
-            return [[self describe:obj] localizedCaseInsensitiveContainsString:query];
+            return [[self describe:obj].string localizedCaseInsensitiveContainsString:query];
         };
         
         NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {
@@ -192,8 +192,8 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
-    cell.titleLabel.text = [self titleForRow:row];
-    cell.subtitleLabel.text = [self subtitleForRow:row];
+    cell.titleLabel.attributedText = [self titleForRow:row];
+    cell.subtitleLabel.attributedText = [self subtitleForRow:row];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 

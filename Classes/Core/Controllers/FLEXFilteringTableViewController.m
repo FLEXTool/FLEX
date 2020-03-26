@@ -182,7 +182,7 @@
 
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     FLEXTableViewSection *section = self.filterDelegate.sections[indexPath.section];
-    NSString *title = [section menuTitleForRow:indexPath.row];
+    NSString *title = [section menuTitleForRow:indexPath.row].string;
     NSArray<UIMenuElement *> *menuItems = [section menuItemsForRow:indexPath.row sender:self];
     
     if (menuItems.count) {

@@ -229,10 +229,10 @@
     FLEXMutableListSection *section = [FLEXMutableListSection list:rows
         cellConfiguration:^(FLEXTableViewCell *cell, FLEXObjectRef *ref, NSInteger row) {
             cell.textLabel.text = ref.reference;
-            cell.detailTextLabel.text = ref.summary;
+            cell.detailTextLabel.attributedText = ref.summary;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         } filterMatcher:^BOOL(NSString *filterText, FLEXObjectRef *ref) {
-            if (ref.summary && [ref.summary localizedCaseInsensitiveContainsString:filterText]) {
+            if (ref.summary && [ref.summary.string localizedCaseInsensitiveContainsString:filterText]) {
                 return YES;
             }
             

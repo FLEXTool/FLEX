@@ -11,6 +11,8 @@
 #import "FLEXProtocol.h"
 #import "FLEXProperty.h"
 #import <objc/runtime.h>
+#import "NSAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 #define MutationAssertion(msg) if (self.isRegistered) { \
     [NSException \
@@ -58,6 +60,11 @@
             NSStringFromClass(self.class), self.name, self.isRegistered];
 }
 
+- (NSAttributedString *)attributedDescription {
+    return [NSAttributedString stringWithFormat:@"<%@ name=%@, registered=%d>",
+            NSStringFromClass(self.class), self.name, self.isRegistered];
+}
+
 #pragma mark Building
 
 - (void)addProperty:(FLEXProperty *)property isRequired:(BOOL)isRequired {
@@ -65,7 +72,7 @@
 
     unsigned int count;
     objc_property_attribute_t *attributes = [property copyAttributesList:&count];
-    protocol_addProperty(self.workingProtocol, property.name.UTF8String, attributes, count, isRequired, YES);
+    protocol_addProperty(self.workingProtocol, property.name.string.UTF8String, attributes, count, isRequired, YES);
     free(attributes);
 }
 

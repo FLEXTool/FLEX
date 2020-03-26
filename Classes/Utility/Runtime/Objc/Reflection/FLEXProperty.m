@@ -11,11 +11,14 @@
 #import "FLEXPropertyAttributes.h"
 #import "FLEXMethodBase.h"
 #import "FLEXRuntimeUtility.h"
+#import "NSAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
+#import "NSString+SyntaxHighlighting.h"
 #include <dlfcn.h>
 
 
 @interface FLEXProperty () {
-    NSString *_flex_description;
+    NSAttributedString *_flex_description;
 }
 @property (nonatomic          ) BOOL uniqueCheckFlag;
 @property (nonatomic, readonly) Class cls;
@@ -54,34 +57,34 @@
 
 - (id)initWithProperty:(objc_property_t)property onClass:(Class)cls {
     NSParameterAssert(property);
-    
+
     self = [super init];
     if (self) {
         _objc_property = property;
         _attributes    = [FLEXPropertyAttributes attributesForProperty:property];
-        _name          = @(property_getName(property) ?: "(nil)");
+        _name          = property_getName(property) ? [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding].otherInstanceVariablesAndGlobalsAttributedString : [NSAttributedString stringWithFormat:@"(%@)", @"nil".keywordsAttributedString];
         _cls           = cls;
-        
+
         if (!_attributes) [NSException raise:NSInternalInconsistencyException format:@"Error retrieving property attributes"];
         if (!_name) [NSException raise:NSInternalInconsistencyException format:@"Error retrieving property name"];
-        
+
         [self examine];
     }
-    
+
     return self;
 }
 
 - (id)initWithName:(NSString *)name attributes:(FLEXPropertyAttributes *)attributes {
     NSParameterAssert(name); NSParameterAssert(attributes);
-    
+
     self = [super init];
     if (self) {
         _attributes    = attributes;
-        _name          = name;
-        
+        _name          = name.otherInstanceVariablesAndGlobalsAttributedString;
+
         [self examine];
     }
-    
+
     return self;
 }
 
@@ -99,12 +102,8 @@
 
     SEL customGetter = self.attributes.customGetter;
     SEL customSetter = self.attributes.customSetter;
-    SEL defaultGetter = NSSelectorFromString(self.name);
-    SEL defaultSetter = NSSelectorFromString([NSString
-        stringWithFormat:@"set%c%@:",
-        (char)toupper([self.name characterAtIndex:0]),
-        [self.name substringFromIndex:1]
-    ]);
+    SEL defaultGetter = NSSelectorFromString(self.name.string);
+    SEL defaultSetter = NSSelectorFromString([NSString stringWithFormat:@"set%c%@:", (char)toupper([self.name.string characterAtIndex:0]), [self.name.string substringFromIndex:1]]);
 
     // Check if the likely getters/setters exist
     SEL validGetter = selectorIfValid(customGetter) ?: selectorIfValid(defaultGetter);
@@ -126,7 +125,16 @@
 
 - (NSString *)description {
     if (!_flex_description) {
-        NSString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.attributes.typeEncoding];
+        NSAttributedString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.attributes.typeEncoding];
+        _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType];
+    }
+
+    return _flex_description.string;
+}
+
+- (NSAttributedString *)attributedDescription {
+    if (!_flex_description) {
+        NSAttributedString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.attributes.typeEncoding];
         _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType];
     }
 
@@ -149,12 +157,12 @@
 }
 
 - (void)replacePropertyOnClass:(Class)cls {
-    class_replaceProperty(cls, self.name.UTF8String, self.attributes.list, (unsigned int)self.attributes.count);
+    class_replaceProperty(cls, self.name.string.UTF8String, self.attributes.list, (unsigned int)self.attributes.count);
 }
 
 - (void)computeSymbolInfo:(BOOL)forceBundle {
     if ((!_multiple || !_uniqueCheckFlag) && _cls) {
-        _multiple = _objc_property != class_getProperty(_cls, self.name.UTF8String);
+        _multiple = _objc_property != class_getProperty(_cls, self.name.string.UTF8String);
 
         if (_multiple || forceBundle) {
             Dl_info exeInfo;
@@ -175,7 +183,7 @@
     return _imageName;
 }
 
-- (NSString *)fullDescription {
+- (NSAttributedString *)fullDescription {
     NSMutableArray<NSString *> *attributesStrings = [NSMutableArray new];
     FLEXPropertyAttributes *attributes = self.attributes;
 
@@ -203,7 +211,7 @@
     } else {
         [attributesStrings addObject:@"readwrite"];
     }
-    
+
     // Class or not
     if (self.isClassProperty) {
         [attributesStrings addObject:@"class"];
@@ -219,13 +227,18 @@
         [attributesStrings addObject:[NSString stringWithFormat:@"setter=%s", sel_getName(customSetter)]];
     }
 
-    NSString *attributesString = [attributesStrings componentsJoinedByString:@", "];
-    return [NSString stringWithFormat:@"@property (%@) %@", attributesString, self.description];
+    NSMutableAttributedString *attributesString = [NSMutableAttributedString new];
+    for (int i = 0; i < attributesStrings.count; i++) {
+        [attributesString appendAttributedString:attributesStrings[i].keywordsAttributedString];
+        if (i != attributesStrings.count - 1)
+            [attributesString appendAttributedString:@", ".attributedString];
+    }
+    return [NSAttributedString stringWithFormat:@"%@ (%@) %@", @"@property".keywordsAttributedString, attributesString, self.attributedDescription];
 }
 
 - (id)getValue:(id)target {
     if (!target) return nil;
-    
+
     // We don't care about checking dynamically whether the getter
     // _now_ exists on this object. If the getter doesn't exist
     // when this property is initialized, it will never call it.
@@ -263,7 +276,7 @@
 
 - (FLEXMethodBase *)setterWithImplementation:(IMP)implementation {
     NSString *types        = [NSString stringWithFormat:@"%s%s%s%@", @encode(void), @encode(id), @encode(SEL), self.attributes.typeEncoding];
-    NSString *name         = [NSString stringWithFormat:@"set%@:", self.name.capitalizedString];
+    NSString *name         = [NSString stringWithFormat:@"set%@:", self.name.string.capitalizedString];
     FLEXMethodBase *setter = [FLEXMethodBase buildMethodNamed:name withTypes:types implementation:implementation];
     return setter;
 }

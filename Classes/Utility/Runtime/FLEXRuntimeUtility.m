@@ -10,6 +10,9 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
 #import "FLEXTypeEncodingParser.h"
+#import "NSString+SyntaxHighlighting.h"
+#import "NSMutableAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 static NSString *const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
@@ -97,42 +100,45 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 }
 
 /// Could be nil
-+ (NSString *)safeDescriptionForObject:(id)object {
++ (NSAttributedString *)safeDescriptionForObject:(id)object {
     // Don't assume that we have an NSObject subclass.
     // Check to make sure the object responds to the description method
+    if ([object respondsToSelector:@selector(attributedDescription)]) {
+        return [object attributedDescription];
+    }
     if ([object respondsToSelector:@selector(description)]) {
-        return [object description];
+        return [object description].attributedString;
     }
 
     return nil;
 }
 
 /// Never nil
-+ (NSString *)safeDebugDescriptionForObject:(id)object {
-    NSString *description = nil;
++ (NSAttributedString *)safeDebugDescriptionForObject:(id)object {
+    NSAttributedString *description = nil;
 
     // Don't assume that we have an NSObject subclass.
     // Check to make sure the object responds to the description method
     if ([object respondsToSelector:@selector(debugDescription)]) {
-        description = [object debugDescription];
+        description = [object debugDescription].attributedString;
     } else {
         description = [self safeDescriptionForObject:object];
     }
 
     if (!description.length) {
-        NSString *cls = NSStringFromClass(object_getClass(object));
+        NSMutableAttributedString *cls = NSStringFromClass(object_getClass(object)).mutableAttributedString;
         if (object_isClass(object)) {
-            description = [cls stringByAppendingString:@" class (no description)"];
+            description = [cls stringByAppendingAttributedString:@" class (no description)".attributedString];
         } else {
-            description = [cls stringByAppendingString:@" instance (no description)"];
+            description = [cls stringByAppendingAttributedString:@" instance (no description)".attributedString];
         }
     }
 
     return description;
 }
 
-+ (NSString *)summaryForObject:(id)value {
-    NSString *description = nil;
++ (NSAttributedString *)summaryForObject:(id)value {
+    NSAttributedString *description = nil;
 
     // Special case BOOL for better readability.
     if ([value isKindOfClass:[NSValue class]]) {
@@ -140,24 +146,25 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
         if (strcmp(type, @encode(BOOL)) == 0) {
             BOOL boolValue = NO;
             [value getValue:&boolValue];
-            return boolValue ? @"YES" : @"NO";
+            return boolValue ? @"YES".keywordsAttributedString : @"NO".keywordsAttributedString;
         } else if (strcmp(type, @encode(SEL)) == 0) {
             SEL selector = NULL;
             [value getValue:&selector];
-            return NSStringFromSelector(selector);
+            return NSStringFromSelector(selector).otherFunctionAndMethodNamesAttributedString;
         }
     }
 
     @try {
         // Single line display - replace newlines and tabs with spaces.
-        description = [[self safeDescriptionForObject:value] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-        description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
+        NSAttributedString *safeDescription = [self safeDescriptionForObject:value];
+        safeDescription = [safeDescription stringByReplacingOccurrencesOfString:@"\n".attributedString withString:@" ".attributedString];
+        safeDescription = [safeDescription stringByReplacingOccurrencesOfString:@"\t".attributedString withString:@" ".attributedString];
     } @catch (NSException *e) {
-        description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"];
+        description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"].attributedString;
     }
 
     if (!description) {
-        description = @"nil";
+        description = @"nil".keywordsAttributedString;
     }
 
     return description;
@@ -219,8 +226,8 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 
 #pragma mark - Method Helpers (Public)
 
-+ (NSArray<NSString *> *)prettyArgumentComponentsForMethod:(Method)method {
-    NSMutableArray<NSString *> *components = [NSMutableArray new];
++ (NSArray<NSAttributedString *> *)prettyArgumentComponentsForMethod:(Method)method {
+    NSMutableArray<NSAttributedString *> *components = [NSMutableArray new];
 
     NSString *selectorName = NSStringFromSelector(method_getName(method));
     NSMutableArray<NSString *> *selectorComponents = [selectorName componentsSeparatedByString:@":"].mutableCopy;
@@ -236,13 +243,9 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 
     for (unsigned int argIndex = 0; argIndex < selectorComponents.count; argIndex++) {
         char *argType = method_copyArgumentType(method, argIndex + kFLEXNumberOfImplicitArgs);
-        NSString *readableArgType = (argType != NULL) ? [self readableTypeForEncoding:@(argType)] : nil;
+        NSAttributedString *readableArgType = (argType != NULL) ? [self readableTypeForEncoding:@(argType)] : nil;
         free(argType);
-        NSString *prettyComponent = [NSString
-            stringWithFormat:@"%@:(%@) ",
-            selectorComponents[argIndex],
-            readableArgType
-        ];
+        NSAttributedString *prettyComponent = [NSAttributedString stringWithFormat:@"%@:(%@) ", selectorComponents[argIndex].otherFunctionAndMethodNamesAttributedString, readableArgType];
         [components addObject:prettyComponent];
     }
 
@@ -595,13 +598,7 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
                         runningFieldOffset += fieldAlignment - currentSizeSum;
                     }
                     
-                    typeBlock(
-                        structName,
-                        typeEncoding.UTF8String,
-                        [self readableTypeForEncoding:typeEncoding],
-                        runningFieldIndex,
-                        runningFieldOffset
-                    );
+                    typeBlock(structName, typeEncoding.UTF8String, [self readableTypeForEncoding:typeEncoding].string, runningFieldIndex, runningFieldOffset);
                     runningFieldOffset += fieldSize;
                     runningFieldIndex++;
                     typeStart = nextTypeStart;
@@ -625,23 +622,23 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     return attributesDictionary;
 }
 
-+ (NSString *)appendName:(NSString *)name toType:(NSString *)type {
++ (NSAttributedString *)appendName:(NSAttributedString *)name toType:(NSAttributedString *)type {
     if (!type.length) {
-        type = @"(?)";
+        type = [NSAttributedString stringWithFormat:@"(%@)", @"?".keywordsAttributedString];
     }
     
-    NSString *combined = nil;
-    if ([type characterAtIndex:type.length - 1] == FLEXTypeEncodingCString) {
-        combined = [type stringByAppendingString:name];
+    NSAttributedString *combined = nil;
+    if ([type.string characterAtIndex:type.length - 1] == FLEXTypeEncodingCString) {
+        combined = [type stringByAppendingAttributedString:name];
     } else {
-        combined = [type stringByAppendingFormat:@" %@", name];
+        combined = [type stringByAppendingAttributedString:[NSAttributedString stringWithFormat:@" %@", name]];
     }
     return combined;
 }
 
-+ (NSString *)readableTypeForEncoding:(NSString *)encodingString {
++ (NSAttributedString *)readableTypeForEncoding:(NSString *)encodingString {
     if (!encodingString.length) {
-        return @"?";
+        return @"?".keywordsAttributedString;
     }
 
     // See https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
@@ -669,18 +666,18 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
                 [finalFieldNamesString appendString:fieldName];
             }
         }
-        NSString *const recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:fieldNameOffset]];
-        return [NSString stringWithFormat:@"%@ %@", recursiveType, finalFieldNamesString];
+        NSAttributedString *const recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:fieldNameOffset]];
+        return [NSAttributedString stringWithFormat:@"%@ %@", recursiveType, finalFieldNamesString.otherFunctionAndMethodNamesAttributedString];
     }
 
     // Objects
     if (encodingCString[0] == FLEXTypeEncodingObjcObject) {
-        NSString *class = [encodingString substringFromIndex:1];
-        class = [class stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-        if (class.length == 0 || (class.length == 1 && [class characterAtIndex:0] == FLEXTypeEncodingUnknown)) {
-            class = @"id";
+        NSAttributedString *class = [encodingString substringFromIndex:1].otherClassNamesAttributedString.mutableCopy;
+        class = [class stringByReplacingOccurrencesOfString:@"\"".attributedString withString:@"".attributedString];
+        if (class.length == 0 || (class.length == 1 && [class.string characterAtIndex:0] == FLEXTypeEncodingUnknown)) {
+            class = @"id".keywordsAttributedString.mutableCopy;
         } else {
-            class = [class stringByAppendingString:@" *"];
+            class = [class stringByAppendingAttributedString:@" *".attributedString];
         }
         return class;
     }
@@ -689,73 +686,95 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     // Do this first since some of the direct translations (i.e. Method) contain a prefix.
 #define RECURSIVE_TRANSLATE(prefix, formatString) \
     if (encodingCString[0] == prefix) { \
-        NSString *recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:1]]; \
-        return [NSString stringWithFormat:formatString, recursiveType]; \
+        NSAttributedString *recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:1]]; \
+        return [NSAttributedString stringWithFormat:formatString, recursiveType]; \
+    }
+
+#define RECURSIVE_TRANSLATE_KEYWORD(prefix, keyword, formatString) \
+    if (encodingCString[0] == prefix) { \
+        NSAttributedString *recursiveType = [self readableTypeForEncoding:[encodingString substringFromIndex:1]]; \
+    return [NSAttributedString stringWithFormat:formatString, keyword.keywordsAttributedString, recursiveType]; \
     }
 
     // If there's a qualifier prefix on the encoding, translate it and then
     // recursively call this method with the rest of the encoding string.
     RECURSIVE_TRANSLATE('^', @"%@ *");
-    RECURSIVE_TRANSLATE('r', @"const %@");
-    RECURSIVE_TRANSLATE('n', @"in %@");
-    RECURSIVE_TRANSLATE('N', @"inout %@");
-    RECURSIVE_TRANSLATE('o', @"out %@");
-    RECURSIVE_TRANSLATE('O', @"bycopy %@");
-    RECURSIVE_TRANSLATE('R', @"byref %@");
-    RECURSIVE_TRANSLATE('V', @"oneway %@");
-    RECURSIVE_TRANSLATE('b', @"bitfield(%@)");
+    RECURSIVE_TRANSLATE_KEYWORD('r', @"const", @"%@ %@");
+    RECURSIVE_TRANSLATE_KEYWORD('n', @"in", @"%@ %@");
+    RECURSIVE_TRANSLATE_KEYWORD('N', @"inout", @"%@ %@");
+    RECURSIVE_TRANSLATE_KEYWORD('o', @"out", @"%@ %@");
+    RECURSIVE_TRANSLATE_KEYWORD('O', @"bycopy", @"%@ %@");
+    RECURSIVE_TRANSLATE_KEYWORD('R', @"byref", @"%@ %@");
+    RECURSIVE_TRANSLATE_KEYWORD('V', @"oneway", @"%@ %@");
+    RECURSIVE_TRANSLATE_KEYWORD('b', @"bitfield", @"%@(%@)");
 
 #undef RECURSIVE_TRANSLATE
 
   // C Types
-#define TRANSLATE(ctype) \
+    
+#define TRANSLATE_OTHER_TYPE(ctype) \
     if (strcmp(encodingCString, @encode(ctype)) == 0) { \
-        return (NSString *)CFSTR(#ctype); \
+        return ((NSString *)CFSTR(#ctype)).otherTypeNamesAttributedString; \
+    }
+
+#define TRANSLATE_OTHER_TYPE_PTR(ctype) \
+    if (strcmp(encodingCString, @encode(ctype)) == 0) { \
+        return [NSAttributedString stringWithFormat:@"%@ *", [(NSString *)CFSTR(#ctype) stringByReplacingOccurrencesOfString:@" *" withString:@""].keywordsAttributedString]; \
+    }
+
+#define TRANSLATE_KEYWORD(ctype) \
+    if (strcmp(encodingCString, @encode(ctype)) == 0) { \
+        return ((NSString *)CFSTR(#ctype)).keywordsAttributedString; \
+    }
+
+#define TRANSLATE_KEYWORD_PTR(ctype) \
+    if (strcmp(encodingCString, @encode(ctype)) == 0) { \
+        return [NSAttributedString stringWithFormat:@"%@ *", ((NSString *)CFSTR(#ctype)).keywordsAttributedString]; \
     }
 
     // Order matters here since some of the cocoa types are typedefed to c types.
     // We can't recover the exact mapping, but we choose to prefer the cocoa types.
     // This is not an exhaustive list, but it covers the most common types
-    TRANSLATE(CGRect);
-    TRANSLATE(CGPoint);
-    TRANSLATE(CGSize);
-    TRANSLATE(CGVector);
-    TRANSLATE(UIEdgeInsets);
+    TRANSLATE_OTHER_TYPE(CGRect);
+    TRANSLATE_OTHER_TYPE(CGPoint);
+    TRANSLATE_OTHER_TYPE(CGSize);
+    TRANSLATE_OTHER_TYPE(CGVector);
+    TRANSLATE_OTHER_TYPE(UIEdgeInsets);
     if (@available(iOS 11.0, *)) {
-      TRANSLATE(NSDirectionalEdgeInsets);
+      TRANSLATE_OTHER_TYPE(NSDirectionalEdgeInsets);
     }
-    TRANSLATE(UIOffset);
-    TRANSLATE(NSRange);
-    TRANSLATE(CGAffineTransform);
-    TRANSLATE(CATransform3D);
-    TRANSLATE(CGColorRef);
-    TRANSLATE(CGPathRef);
-    TRANSLATE(CGContextRef);
-    TRANSLATE(NSInteger);
-    TRANSLATE(NSUInteger);
-    TRANSLATE(CGFloat);
-    TRANSLATE(BOOL);
-    TRANSLATE(int);
-    TRANSLATE(short);
-    TRANSLATE(long);
-    TRANSLATE(long long);
-    TRANSLATE(unsigned char);
-    TRANSLATE(unsigned int);
-    TRANSLATE(unsigned short);
-    TRANSLATE(unsigned long);
-    TRANSLATE(unsigned long long);
-    TRANSLATE(float);
-    TRANSLATE(double);
-    TRANSLATE(long double);
-    TRANSLATE(char *);
-    TRANSLATE(Class);
-    TRANSLATE(objc_property_t);
-    TRANSLATE(Ivar);
-    TRANSLATE(Method);
-    TRANSLATE(Category);
-    TRANSLATE(NSZone *);
-    TRANSLATE(SEL);
-    TRANSLATE(void);
+    TRANSLATE_OTHER_TYPE(UIOffset);
+    TRANSLATE_OTHER_TYPE(NSRange);
+    TRANSLATE_OTHER_TYPE(CGAffineTransform);
+    TRANSLATE_OTHER_TYPE(CATransform3D);
+    TRANSLATE_OTHER_TYPE(CGColorRef);
+    TRANSLATE_OTHER_TYPE(CGPathRef);
+    TRANSLATE_OTHER_TYPE(CGContextRef);
+    TRANSLATE_OTHER_TYPE(NSInteger);
+    TRANSLATE_OTHER_TYPE(NSUInteger);
+    TRANSLATE_OTHER_TYPE(CGFloat);
+    TRANSLATE_KEYWORD(BOOL);
+    TRANSLATE_KEYWORD(int);
+    TRANSLATE_KEYWORD(short);
+    TRANSLATE_KEYWORD(long);
+    TRANSLATE_KEYWORD(long long);
+    TRANSLATE_KEYWORD(unsigned char);
+    TRANSLATE_KEYWORD(unsigned int);
+    TRANSLATE_KEYWORD(unsigned short);
+    TRANSLATE_KEYWORD(unsigned long);
+    TRANSLATE_KEYWORD(unsigned long long);
+    TRANSLATE_KEYWORD(float);
+    TRANSLATE_KEYWORD(double);
+    TRANSLATE_KEYWORD(long double);
+    TRANSLATE_KEYWORD_PTR(char);
+    TRANSLATE_OTHER_TYPE(Class);
+    TRANSLATE_OTHER_TYPE(objc_property_t);
+    TRANSLATE_OTHER_TYPE(Ivar);
+    TRANSLATE_OTHER_TYPE(Method);
+    TRANSLATE_OTHER_TYPE(Category);
+    TRANSLATE_OTHER_TYPE_PTR(NSZone *);
+    TRANSLATE_KEYWORD(SEL);
+    TRANSLATE_KEYWORD(void);
 
 #undef TRANSLATE
 
@@ -763,7 +782,7 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     if (encodingCString[0] == FLEXTypeEncodingStructBegin) {
         // Special case: std::string
         if ([encodingString hasPrefix:@"{basic_string<char"]) {
-            return @"std::string";
+            return [NSAttributedString stringWithFormat:@"%@::%@", @"std".otherTypeNamesAttributedString, @"string".keywordsAttributedString];
         }
 
         const char *equals = strchr(encodingCString, '=');
@@ -771,18 +790,16 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
             const char *nameStart = encodingCString + 1;
             // For anonymous structs
             if (nameStart[0] == FLEXTypeEncodingUnknown) {
-                return @"anonymous struct";
+                return [NSAttributedString stringWithFormat:@"anonymous %@", @"struct".keywordsAttributedString];
             } else {
-                NSString *const structName = [encodingString
-                    substringWithRange:NSMakeRange(nameStart - encodingCString, equals - nameStart)
-                ];
-                return structName;
+                NSString *const structName = [encodingString substringWithRange:NSMakeRange(nameStart - encodingCString, equals - nameStart)];
+                return structName.otherTypeNamesAttributedString;
             }
         }
     }
 
     // If we couldn't translate, just return the original encoding string
-    return encodingString;
+    return encodingString.otherTypeNamesAttributedString;
 }
 
 

@@ -12,6 +12,8 @@
 #import "FLEXMethodBase.h"
 #import "FLEXProtocol.h"
 #import <objc/runtime.h>
+#import "NSAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 
 #pragma mark FLEXClassBuilder
@@ -70,6 +72,11 @@
             NSStringFromClass(self.class), self.name, self.isRegistered];
 }
 
+- (NSAttributedString *)attributedDescription {
+    return [NSAttributedString stringWithFormat:@"<%@ name=%@, registered=%d>",
+            NSStringFromClass(self.class), self.name, self.isRegistered];
+}
+
 #pragma mark Building
 - (NSArray *)addMethods:(NSArray *)methods {
     NSParameterAssert(methods.count);
@@ -91,7 +98,7 @@
     for (FLEXProperty *p in properties) {
         unsigned int pcount;
         objc_property_attribute_t *attributes = [p copyAttributesList:&pcount];
-        if (!class_addProperty(self.workingClass, p.name.UTF8String, attributes, pcount)) {
+        if (!class_addProperty(self.workingClass, p.name.string.UTF8String, attributes, pcount)) {
             [failed addObject:p];
         }
         free(attributes);

@@ -64,13 +64,11 @@
     ];
 }
 
-- (NSString *)previewWithTarget:(id)object {
+- (NSAttributedString *)previewWithTarget:(id)object {
     if (object_isClass(object) && !self.isClassProperty) {
         return self.attributes.fullDeclaration;
     } else {
-        return [FLEXRuntimeUtility
-            summaryForObject:[self currentValueWithTarget:object]
-        ];
+        return [FLEXRuntimeUtility summaryForObject:[self currentValueWithTarget:object]];
     }
 }
 
@@ -161,7 +159,7 @@
     return items;
 }
 
-- (NSString *)contextualSubtitleWithTarget:(id)object {
+- (NSAttributedString *)contextualSubtitleWithTarget:(id)object {
     id target = [self appropriateTargetForPropertyType:object];
     if (target && self.attributes.typeEncoding.flex_typeIsObjectOrClass) {
         return [FLEXUtility addressOfObject:[self currentValueBeforeUnboxingWithTarget:target]];
@@ -195,13 +193,11 @@
     return nil;
 }
 
-- (NSString *)previewWithTarget:(id)object {
+- (NSAttributedString *)previewWithTarget:(id)object {
     if (object_isClass(object)) {
-        return self.details;
+        return self.details.attributedString;
     }
-    return [FLEXRuntimeUtility
-        summaryForObject:[self currentValueWithTarget:object]
-    ];
+    return [FLEXRuntimeUtility summaryForObject:[self currentValueWithTarget:object]];
 }
 
 - (UIViewController *)viewerWithTarget:(id)object {
@@ -286,7 +282,7 @@
     return items;
 }
 
-- (NSString *)contextualSubtitleWithTarget:(id)object {
+- (NSAttributedString *)contextualSubtitleWithTarget:(id)object {
     if (!object_isClass(object) && self.typeEncoding.flex_typeIsObjectOrClass) {
         return [FLEXUtility addressOfObject:[self getValue:object]];
     }
@@ -315,8 +311,8 @@
     return nil;
 }
 
-- (NSString *)previewWithTarget:(id)object {
-    return [self.selectorString stringByAppendingFormat:@"  —  %@", self.typeEncoding];
+- (NSAttributedString *)previewWithTarget:(id)object {
+    return [self.selectorString stringByAppendingFormat:@"  —  %@", self.typeEncoding].attributedString;
 }
 
 - (UIViewController *)viewerWithTarget:(id)object {
@@ -353,7 +349,7 @@
     ];
 }
 
-- (NSString *)contextualSubtitleWithTarget:(id)object {
+- (NSAttributedString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
 
@@ -388,12 +384,12 @@
 
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
     return [[super copiableMetadataWithTarget:object] arrayByAddingObjectsFromArray:@[
-        @"NSMethodSignature *", [FLEXUtility addressOfObject:self.signature],
+        @"NSMethodSignature *", [FLEXUtility addressOfObject:self.signature].string,
         @"Signature String",    self.signatureString ?: @"",
         @"Number of Arguments", @(self.numberOfArguments).stringValue,
         @"Return Type",         @(self.returnType ?: ""),
         @"Return Size",         @(self.returnSize).stringValue,
-        @"objc_method",       [FLEXUtility pointerToString:self.objc_method],
+        @"objc_method",       [FLEXUtility pointerToString:self.objc_method].string,
     ]];
 }
 
@@ -415,7 +411,7 @@
     return nil;
 }
 
-- (NSString *)previewWithTarget:(id)object {
+- (NSAttributedString *)previewWithTarget:(id)object {
     return nil;
 }
 
@@ -448,7 +444,7 @@
     ];
 }
 
-- (NSString *)contextualSubtitleWithTarget:(id)object {
+- (NSAttributedString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
 
@@ -460,10 +456,10 @@
 #pragma mark FLEXStaticMetadata
 @interface FLEXStaticMetadata () {
     @protected
-    NSString *_name;
+    NSAttributedString *_name;
 }
 @property (nonatomic) FLEXTableViewCellReuseIdentifier reuse;
-@property (nonatomic) NSString *subtitle;
+@property (nonatomic) NSAttributedString *subtitle;
 @property (nonatomic) id metadata;
 @end
 
@@ -498,14 +494,18 @@
             _reuse = kFLEXMultilineDetailCell;
         }
 
-        _name = title;
-        _subtitle = subtitle;
+        _name = title.attributedString;
+        _subtitle = subtitle.attributedString;
     }
 
     return self;
 }
 
 - (NSString *)description {
+    return self.name.string;
+}
+
+- (NSAttributedString *)attributedDescription {
     return self.name;
 }
 
@@ -525,7 +525,7 @@
     return nil;
 }
 
-- (NSString *)previewWithTarget:(id)object {
+- (NSAttributedString *)previewWithTarget:(id)object {
     return self.subtitle;
 }
 
@@ -548,10 +548,10 @@
 }
 
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
-    return @[self.name, self.subtitle];
+    return @[self.name.string, self.subtitle.string];
 }
 
-- (NSString *)contextualSubtitleWithTarget:(id)object {
+- (NSAttributedString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
 
@@ -568,7 +568,7 @@
     
     FLEXStaticMetadata_Class *metadata = [self new];
     metadata.metadata = cls;
-    metadata->_name = NSStringFromClass(cls);
+    metadata->_name = NSStringFromClass(cls).attributedString;
     metadata.reuse = kFLEXDefaultCell;
     return metadata;
 }
@@ -588,12 +588,12 @@
 
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
     return @[
-        @"Class Name", self.name,
-        @"Class", [FLEXUtility addressOfObject:self.metadata]
+        @"Class Name", self.name.string,
+        @"Class", [FLEXUtility addressOfObject:self.metadata].string
     ];
 }
 
-- (NSString *)contextualSubtitleWithTarget:(id)object {
+- (NSAttributedString *)contextualSubtitleWithTarget:(id)object {
     return [FLEXUtility addressOfObject:self.metadata];
 }
 

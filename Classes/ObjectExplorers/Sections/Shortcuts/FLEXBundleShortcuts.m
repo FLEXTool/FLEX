@@ -9,6 +9,7 @@
 #import "FLEXBundleShortcuts.h"
 #import "FLEXShortcut.h"
 #import "FLEXFileBrowserTableViewController.h"
+#import "NSString+SyntaxHighlighting.h"
 
 #pragma mark -
 @implementation FLEXBundleShortcuts
@@ -16,7 +17,7 @@
 
 + (instancetype)forObject:(NSBundle *)bundle {
     return [self forObject:bundle additionalRows:@[
-        [FLEXActionShortcut title:@"Browse Bundle Directory" subtitle:nil
+        [FLEXActionShortcut title:@"Browse Bundle Directory".attributedString subtitle:nil
             viewer:^UIViewController *(id view) {
                 return [FLEXFileBrowserTableViewController path:bundle.bundlePath];
             }

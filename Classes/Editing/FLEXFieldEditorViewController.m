@@ -14,6 +14,7 @@
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "UIBarButtonItem+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
@@ -22,7 +23,7 @@
 
 @property (nonatomic, readonly) id currentValue;
 @property (nonatomic, readonly) const FLEXTypeEncoding *typeEncoding;
-@property (nonatomic, readonly) NSString *fieldDescription;
+@property (nonatomic, readonly) NSAttributedString *fieldDescription;
 
 @end
 
@@ -37,14 +38,14 @@
     }
 
     FLEXFieldEditorViewController *editor = [self target:target];
-    editor.title = [@"Property: " stringByAppendingString:property.name];
+    editor.title = [@"Property: " stringByAppendingString:property.name.string];
     editor.property = property;
     return editor;
 }
 
 + (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar {
     FLEXFieldEditorViewController *editor = [self target:target];
-    editor.title = [@"Ivar: " stringByAppendingString:ivar.name];
+    editor.title = [@"Ivar: " stringByAppendingString:ivar.name.string];
     editor.ivar = ivar;
     return editor;
 }
@@ -142,11 +143,11 @@
     }
 }
 
-- (NSString *)fieldDescription {
+- (NSAttributedString *)fieldDescription {
     if (self.property) {
         return self.property.fullDescription;
     } else {
-        return self.ivar.description;
+        return self.ivar.description.attributedString;
     }
 }
 

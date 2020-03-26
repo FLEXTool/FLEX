@@ -35,7 +35,7 @@
 @property (nonatomic, readonly) BOOL             isClassProperty;
 
 /// The name of the property.
-@property (nonatomic, readonly) NSString         *name;
+@property (nonatomic, readonly) NSAttributedString         *name;
 /// The type of the property. Get the full type from the attributes.
 @property (nonatomic, readonly) FLEXTypeEncoding type;
 /// The property's attributes.
@@ -67,7 +67,7 @@
 
 /// @return The value of this property on \c target as given by \c -valueForKey:
 /// A source-like description of the property, with all of its attributes.
-@property (nonatomic, readonly) NSString *fullDescription;
+@property (nonatomic, readonly) NSAttributedString *fullDescription;
 
 /// If this is a class property, you must class the class object.
 - (id)getValue:(id)target;

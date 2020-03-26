@@ -11,9 +11,12 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXRuntimeSafety.h"
 #import "FLEXTypeEncodingParser.h"
+#import "NSAttributedString+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 @interface FLEXIvar () {
-    NSString *_flex_description;
+    NSAttributedString *_flex_description;
 }
 @end
 
@@ -54,7 +57,16 @@
 
 - (NSString *)description {
     if (!_flex_description) {
-        NSString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.typeEncoding];
+        NSAttributedString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.typeEncoding];
+        _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType];
+    }
+
+    return _flex_description.string;
+}
+
+- (NSAttributedString *)attributedDescription {
+    if (!_flex_description) {
+        NSAttributedString *readableType = [FLEXRuntimeUtility readableTypeForEncoding:self.typeEncoding];
         _flex_description = [FLEXRuntimeUtility appendName:self.name toType:readableType];
     }
 
@@ -62,12 +74,15 @@
 }
 
 - (NSString *)debugDescription {
-    return [NSString stringWithFormat:@"<%@ name=%@, encoding=%@, offset=%ld>",
-            NSStringFromClass(self.class), self.name, self.typeEncoding, (long)self.offset];
+    return [NSString stringWithFormat:@"<%@ name=%@, encoding=%@, offset=%ld>", NSStringFromClass(self.class), self.name, self.typeEncoding, (long)self.offset];
+}
+
+- (NSAttributedString *)attributedDebugDescription {
+    return [NSAttributedString stringWithFormat:@"<%@ name=%@, encoding=%@, offset=%@>", NSStringFromClass(self.class).otherClassNamesAttributedString, self.name, self.typeEncoding.otherTypeNamesAttributedString, [NSString stringWithFormat:@"%ld", (long)self.offset].numbersAttributedString];
 }
 
 - (void)examine {
-    _name         = @(ivar_getName(self.objc_ivar) ?: "(nil)");
+    _name         = ivar_getName(self.objc_ivar) ? [NSString stringWithCString:ivar_getName(self.objc_ivar) encoding:NSUTF8StringEncoding].otherInstanceVariablesAndGlobalsAttributedString : [NSAttributedString stringWithFormat:@"(%@)", @"nil".keywordsAttributedString];
     _offset       = ivar_getOffset(self.objc_ivar);
     _typeEncoding = @(ivar_getTypeEncoding(self.objc_ivar) ?: "");
     
@@ -83,10 +98,7 @@
         sizeForDetails = @"unknown size";
     }
 
-    _details = [NSString stringWithFormat:
-        @"%@, offset %@  —  %@",
-        sizeForDetails, @(_offset), typeForDetails
-    ];
+    _details = [NSString stringWithFormat:@"%@, offset %@  —  %@", sizeForDetails, @(_offset), typeForDetails];
 }
 
 - (id)getValue:(id)target {
@@ -97,7 +109,7 @@
 
 #ifdef __arm64__
     // See http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html
-    if (self.type == FLEXTypeEncodingObjcClass && [self.name isEqualToString:@"isa"]) {
+    if (self.type == FLEXTypeEncodingObjcClass && [self.name.string isEqualToString:@"isa"]) {
         value = object_getClass(target);
     } else
 #endif

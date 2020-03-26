@@ -42,6 +42,35 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, class) UIColor *hairlineColor;
 @property (readonly, class) UIColor *destructiveColor;
 
+// Syntax Colours
+@property (readonly, class) UIColor *plainTextColor;
+@property (readonly, class) UIColor *commentsColor;
+@property (readonly, class) UIColor *documentationMarkupColor;
+@property (readonly, class) UIColor *documentationMarkupKeywordsColor;
+@property (readonly, class) UIColor *marksColor;
+@property (readonly, class) UIColor *stringsColor;
+@property (readonly, class) UIColor *charactersColor;
+@property (readonly, class) UIColor *numbersColor;
+@property (readonly, class) UIColor *keywordsColor;
+@property (readonly, class) UIColor *preprocessorStatementsColor;
+@property (readonly, class) UIColor *URLsColor;
+@property (readonly, class) UIColor *attributesColor;
+@property (readonly, class) UIColor *typeDeclarationsColor;
+@property (readonly, class) UIColor *otherDeclarationsColor;
+@property (readonly, class) UIColor *projectClassNamesColor;
+@property (readonly, class) UIColor *projectFunctionAndMethodNamesColor;
+@property (readonly, class) UIColor *projectConstantsColor;
+@property (readonly, class) UIColor *projectTypeNamesColor;
+@property (readonly, class) UIColor *projectInstanceVariablesAndGlobalsColor;
+@property (readonly, class) UIColor *projectPreprocessorMacrosColor;
+@property (readonly, class) UIColor *otherClassNamesColor;
+@property (readonly, class) UIColor *otherFunctionAndMethodNamesColor;
+@property (readonly, class) UIColor *otherConstantsColor;
+@property (readonly, class) UIColor *otherTypeNamesColor;
+@property (readonly, class) UIColor *otherInstanceVariablesAndGlobalsColor;
+@property (readonly, class) UIColor *otherPreprocessorMacrosColor;
+@property (readonly, class) UIColor *headingColor;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -45,16 +45,16 @@
 + (NSUInteger)fieldNameOffsetForTypeEncoding:(const FLEXTypeEncoding *)typeEncoding;
 /// Given name "foo" and type "int" this would return "int foo", but
 /// given name "foo" and type "T *" it would return "T *foo"
-+ (NSString *)appendName:(NSString *)name toType:(NSString *)typeEncoding;
++ (NSAttributedString *)appendName:(NSAttributedString *)name toType:(NSAttributedString *)typeEncoding;
 
 /// @return The class hierarchy for the given object or class,
 /// from the current class to the root-most class.
 + (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass;
 
 /// Used to describe an object in brief within an explorer row
-+ (NSString *)summaryForObject:(id)value;
-+ (NSString *)safeDescriptionForObject:(id)object;
-+ (NSString *)safeDebugDescriptionForObject:(id)object;
++ (NSAttributedString *)summaryForObject:(id)value;
++ (NSAttributedString *)safeDescriptionForObject:(id)object;
++ (NSAttributedString *)safeDebugDescriptionForObject:(id)object;
 
 // Property Helpers
 + (BOOL)tryAddPropertyWithName:(const char *)name
@@ -84,6 +84,6 @@
 
 #pragma mark - Metadata Helpers
 
-+ (NSString *)readableTypeForEncoding:(NSString *)encodingString;
++ (NSAttributedString *)readableTypeForEncoding:(NSString *)encodingString;
 
 @end

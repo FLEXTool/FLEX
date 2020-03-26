@@ -16,6 +16,7 @@
 #import "NSObject+Reflection.h"
 #import "FLEXMetadataSection.h"
 #import "NSUserDefaults+FLEX.h"
+#import "NSAttributedString+FLEX.h"
 
 @interface FLEXObjectExplorer () {
     NSMutableArray<NSArray<FLEXProperty *> *> *_allProperties;
@@ -26,7 +27,7 @@
     NSMutableArray<NSArray<FLEXProtocol *> *> *_allConformedProtocols;
     NSMutableArray<FLEXStaticMetadata *> *_allInstanceSizes;
     NSMutableArray<FLEXStaticMetadata *> *_allImageNames;
-    NSString *_objectDescription;
+    NSAttributedString *_objectDescription;
 }
 @end
 
@@ -55,7 +56,7 @@
 
 #pragma mark - Public
 
-- (NSString *)objectDescription {
+- (NSAttributedString *)objectDescription {
     if (!_objectDescription) {
         // Hard-code UIColor description
         if ([self.object isKindOfClass:[UIColor class]]) {
@@ -63,21 +64,21 @@
             [self.object getRed:&r green:&g blue:&b alpha:&a];
             [self.object getHue:&h saturation:&s brightness:&l alpha:nil];
 
-            return [NSString stringWithFormat:
-                @"HSL: (%.3f, %.3f, %.3f)\nRGB: (%.3f, %.3f, %.3f)\nAlpha: %.3f",
-                h, s, l, r, g, b, a
-            ];
+            NSAttributedString *rString = [NSAttributedString stringWithAttributes:@{ NSForegroundColorAttributeName: UIColor.redColor } format:@"%.3f", r];
+            NSAttributedString *gString = [NSAttributedString stringWithAttributes:@{ NSForegroundColorAttributeName: UIColor.greenColor } format:@"%.3f", g];
+            NSAttributedString *bString = [NSAttributedString stringWithAttributes:@{ NSForegroundColorAttributeName: UIColor.blueColor } format:@"%.3f", b];
+            return [NSAttributedString stringWithFormat:@"HSL: (%.3f, %.3f, %.3f)\nRGB: (%@, %@, %@)\nAlpha: %.3f", h, s, l, rString, gString, bString, a];
         }
 
-        NSString *description = [FLEXRuntimeUtility safeDescriptionForObject:self.object];
+        NSAttributedString *description = [FLEXRuntimeUtility safeDescriptionForObject:self.object];
 
         if (!description.length) {
-            NSString *address = [FLEXUtility addressOfObject:self.object];
-            return [NSString stringWithFormat:@"Object at %@ returned empty description", address];
+            NSAttributedString *address = [FLEXUtility addressOfObject:self.object];
+            return [NSAttributedString stringWithFormat:@"Object at %@ returned empty description", address];
         }
         
         if (description.length > 10000) {
-            description = [description substringToIndex:10000];
+            description = [description attributedSubstringFromRange:NSMakeRange(0, 10000)];
         }
 
         _objectDescription = description;

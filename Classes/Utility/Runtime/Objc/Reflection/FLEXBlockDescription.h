@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly, nullable) NSMethodSignature *signature;
 @property (nonatomic, readonly, nullable) NSString *signatureString;
-@property (nonatomic, readonly, nullable) NSString *sourceDeclaration;
+@property (nonatomic, readonly, nullable) NSAttributedString *sourceDeclaration;
 @property (nonatomic, readonly) FLEXBlockOptions flags;
 @property (nonatomic, readonly) NSUInteger size;
 @property (nonatomic, readonly) NSString *summary;

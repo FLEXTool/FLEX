@@ -13,6 +13,7 @@
 #import <ImageIO/ImageIO.h>
 #import <zlib.h>
 #import <objc/runtime.h>
+#import "NSString+SyntaxHighlighting.h"
 
 @implementation FLEXUtility
 
@@ -197,12 +198,12 @@
     return FLEXUtility.applicationImageName.lastPathComponent;
 }
 
-+ (NSString *)pointerToString:(void *)ptr {
-    return [NSString stringWithFormat:@"%p", ptr];
++ (NSAttributedString *)pointerToString:(void *)ptr {
+    return [NSString stringWithFormat:@"%p", ptr].attributedString;
 }
 
-+ (NSString *)addressOfObject:(id)object {
-    return [NSString stringWithFormat:@"%p", object];
++ (NSAttributedString *)addressOfObject:(id)object {
+    return [NSString stringWithFormat:@"%p", object].attributedString;
 }
 
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString {
