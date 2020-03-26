@@ -28,9 +28,9 @@
             blockInfo.summary,
             blockInfo.sourceDeclaration,
             signature.debugDescription,
-            [FLEXActionShortcut title:@"View Method Signature"
-                subtitle:^NSString *(id block) {
-                    return signature.description ?: @"unsupported signature";
+            [FLEXActionShortcut title:@"View Method Signature".attributedString
+                subtitle:^NSAttributedString *(id block) {
+                    return signature.attributedDescription ?: @"unsupported signature".attributedString;
                 }
                 viewer:^UIViewController *(id block) {
                     return [FLEXObjectExplorerFactory explorerViewControllerForObject:signature];

@@ -48,9 +48,9 @@
     };
     
     return [self forObject:viewController additionalRows:@[
-        [FLEXActionShortcut title:@"Push View Controller"
-            subtitle:^NSString *(UIViewController *controller) {
-                return vcIsInuse(controller) ? @"In use, cannot push" : nil;
+        [FLEXActionShortcut title:@"Push View Controller".attributedString
+            subtitle:^NSAttributedString *(UIViewController *controller) {
+                return vcIsInuse(controller) ? @"In use, cannot push".attributedString : nil;
             }
             selectionHandler:^void(UIViewController *host, UIViewController *controller) {
                 if (!vcIsInuse(controller)) {

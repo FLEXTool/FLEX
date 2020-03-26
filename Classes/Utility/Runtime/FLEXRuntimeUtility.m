@@ -10,6 +10,9 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
 #import "FLEXTypeEncodingParser.h"
+#import "NSString+SyntaxHighlighting.h"
+#import "NSMutableAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 static NSString *const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
@@ -97,42 +100,42 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 }
 
 /// Could be nil
-+ (NSString *)safeDescriptionForObject:(id)object {
++ (NSAttributedString *)safeDescriptionForObject:(id)object {
     // Don't assume that we have an NSObject subclass.
     // Check to make sure the object responds to the description method
     if ([object respondsToSelector:@selector(description)]) {
-        return [object description];
+        return [object description].attributedString;
     }
 
     return nil;
 }
 
 /// Never nil
-+ (NSString *)safeDebugDescriptionForObject:(id)object {
-    NSString *description = nil;
++ (NSAttributedString *)safeDebugDescriptionForObject:(id)object {
+    NSAttributedString *description = nil;
 
     // Don't assume that we have an NSObject subclass.
     // Check to make sure the object responds to the description method
     if ([object respondsToSelector:@selector(debugDescription)]) {
-        description = [object debugDescription];
+        description = [object debugDescription].attributedString;
     } else {
         description = [self safeDescriptionForObject:object];
     }
 
     if (!description.length) {
-        NSString *cls = NSStringFromClass(object_getClass(object));
+        NSMutableAttributedString *cls = NSStringFromClass(object_getClass(object)).mutableAttributedString;
         if (object_isClass(object)) {
-            description = [cls stringByAppendingString:@" class (no description)"];
+            description = [cls stringByAppendingAttributedString:@" class (no description)".attributedString];
         } else {
-            description = [cls stringByAppendingString:@" instance (no description)"];
+            description = [cls stringByAppendingAttributedString:@" instance (no description)".attributedString];
         }
     }
 
     return description;
 }
 
-+ (NSString *)summaryForObject:(id)value {
-    NSString *description = nil;
++ (NSAttributedString *)summaryForObject:(id)value {
+    NSAttributedString *description = nil;
 
     // Special case BOOL for better readability.
     if ([value isKindOfClass:[NSValue class]]) {
@@ -140,24 +143,26 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
         if (strcmp(type, @encode(BOOL)) == 0) {
             BOOL boolValue = NO;
             [value getValue:&boolValue];
-            return boolValue ? @"YES" : @"NO";
+            return boolValue ? @"YES".keywordsAttributedString : @"NO".keywordsAttributedString;
         } else if (strcmp(type, @encode(SEL)) == 0) {
             SEL selector = NULL;
             [value getValue:&selector];
-            return NSStringFromSelector(selector);
+            return NSStringFromSelector(selector).attributedString;
         }
     }
 
     @try {
         // Single line display - replace newlines and tabs with spaces.
-        description = [[self safeDescriptionForObject:value] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
-        description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
+        NSMutableAttributedString *safeDescription = [self safeDescriptionForObject:value].mutableCopy;
+        [safeDescription replaceOccurencesOfString:@"\n".attributedString withString:@" ".attributedString];
+        [safeDescription replaceOccurencesOfString:@"\t".attributedString withString:@" ".attributedString];
+        description = safeDescription.copy;
     } @catch (NSException *e) {
-        description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"];
+        description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"].attributedString;
     }
 
     if (!description) {
-        description = @"nil";
+        description = @"nil".keywordsAttributedString;
     }
 
     return description;

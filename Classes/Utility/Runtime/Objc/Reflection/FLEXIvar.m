@@ -11,6 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXRuntimeSafety.h"
 #import "FLEXTypeEncodingParser.h"
+#import "NSAttributedString+FLEX.h"
 
 @interface FLEXIvar () {
     NSString *_flex_description;
@@ -83,10 +84,7 @@
         sizeForDetails = @"unknown size";
     }
 
-    _details = [NSString stringWithFormat:
-        @"%@, offset %@  —  %@",
-        sizeForDetails, @(_offset), typeForDetails
-    ];
+    _details = [NSString stringWithFormat:@"%@, offset %@  —  %@", sizeForDetails, @(_offset), typeForDetails];
 }
 
 - (id)getValue:(id)target {

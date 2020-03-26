@@ -20,8 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// them to the existing list of shortcuts for a class.
 @protocol FLEXShortcut <NSObject>
 
-- (nonnull  NSString *)titleWith:(id)object;
-- (nullable NSString *)subtitleWith:(id)object;
+- (nonnull  NSAttributedString *)titleWith:(id)object;
+- (nullable NSAttributedString *)subtitleWith:(id)object;
 - (nullable void (^)(UIViewController *host))didSelectActionWith:(id)object;
 /// Called when the row is selected
 - (nullable UIViewController *)viewerWith:(id)object;
@@ -56,13 +56,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Does not support the \c -editorWith: method.
 @interface FLEXActionShortcut : NSObject <FLEXShortcut>
 
-+ (instancetype)title:(NSString *)title
-             subtitle:(nullable NSString *(^)(id object))subtitleFuture
++ (instancetype)title:(NSAttributedString *)title
+             subtitle:(nullable NSAttributedString *(^)(id object))subtitleFuture
                viewer:(nullable UIViewController *(^)(id object))viewerFuture
         accessoryType:(nullable UITableViewCellAccessoryType(^)(id object))accessoryTypeFuture;
 
-+ (instancetype)title:(NSString *)title
-             subtitle:(nullable NSString *(^)(id object))subtitleFuture
++ (instancetype)title:(NSAttributedString *)title
+             subtitle:(nullable NSAttributedString *(^)(id object))subtitleFuture
      selectionHandler:(nullable void (^)(UIViewController *host, id object))tapAction
         accessoryType:(nullable UITableViewCellAccessoryType(^)(id object))accessoryTypeFuture;
 

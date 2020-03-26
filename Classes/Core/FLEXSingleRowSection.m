@@ -13,8 +13,8 @@
 @property (nonatomic, readonly) NSString *reuseIdentifier;
 @property (nonatomic, readonly) void (^cellConfiguration)(__kindof UITableViewCell *cell);
 
-@property (nonatomic) NSString *lastTitle;
-@property (nonatomic) NSString *lastSubitle;
+@property (nonatomic) NSAttributedString *lastTitle;
+@property (nonatomic) NSAttributedString *lastSubtitle;
 @end
 
 @implementation FLEXSingleRowSection
@@ -72,16 +72,16 @@
     cell.accessoryType = UITableViewCellAccessoryNone;
     
     self.cellConfiguration(cell);
-    self.lastTitle = cell.textLabel.text;
-    self.lastSubitle = cell.detailTextLabel.text;
+    self.lastTitle = cell.textLabel.attributedText;
+    self.lastSubtitle = cell.detailTextLabel.attributedText;
 }
 
-- (NSString *)titleForRow:(NSInteger)row {
+- (NSAttributedString *)titleForRow:(NSInteger)row {
     return self.lastTitle;
 }
 
-- (NSString *)subtitleForRow:(NSInteger)row {
-    return self.lastSubitle;
+- (NSAttributedString *)subtitleForRow:(NSInteger)row {
+    return self.lastSubtitle;
 }
 
 @end

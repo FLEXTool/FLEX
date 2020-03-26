@@ -8,6 +8,8 @@
 //
 
 #import "FLEXMethodBase.h"
+#import "NSAttributedString+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
 
 
 @implementation FLEXMethodBase
@@ -40,7 +42,15 @@
 
 - (NSString *)description {
     if (!_flex_description) {
-        _flex_description = [NSString stringWithFormat:@"%@ '%@'", _name, _typeEncoding];
+        _flex_description = [NSString stringWithFormat:@"%@ '%@'", _name, _typeEncoding].attributedString;
+    }
+
+    return _flex_description.string;
+}
+
+- (NSAttributedString *)attributedDescription {
+    if (!_flex_description) {
+        _flex_description = [NSString stringWithFormat:@"%@ '%@'", _name, _typeEncoding].attributedString;
     }
 
     return _flex_description;

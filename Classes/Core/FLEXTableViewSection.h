@@ -90,13 +90,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// By default, this is the title of the row.
 /// @return The title of the context menu, if any.
-- (nullable NSString *)menuTitleForRow:(NSInteger)row API_AVAILABLE(ios(13.0));
+- (nullable NSAttributedString *)menuTitleForRow:(NSInteger)row API_AVAILABLE(ios(13.0));
 /// Protected, not intended for public use. \c menuTitleForRow:
 /// already includes the value returned from this method.
 /// 
 /// By default, this returns \c @"". Subclasses may override to
 /// provide a detailed description of the target of the context menu.
-- (NSString *)menuSubtitleForRow:(NSInteger)row API_AVAILABLE(ios(13.0));
+- (NSAttributedString *)menuSubtitleForRow:(NSInteger)row API_AVAILABLE(ios(13.0));
 /// The context menu items, if any. Subclasses may override.
 /// By default, only inludes items for \c copyMenuItemsForRow:.
 - (nullable NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13.0));
@@ -124,10 +124,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// For use by whatever view controller uses your section. Not required.
 /// @return An optional title.
-- (nullable NSString *)titleForRow:(NSInteger)row;
+- (nullable NSAttributedString *)titleForRow:(NSInteger)row;
 /// For use by whatever view controller uses your section. Not required.
 /// @return An optional subtitle.
-- (nullable NSString *)subtitleForRow:(NSInteger)row;
+- (nullable NSAttributedString *)subtitleForRow:(NSInteger)row;
 
 @end
 

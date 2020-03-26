@@ -11,6 +11,8 @@
 #import "FLEXProtocol.h"
 #import "FLEXProperty.h"
 #import <objc/runtime.h>
+#import "NSAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 #define MutationAssertion(msg) if (self.isRegistered) { \
     [NSException \
@@ -55,6 +57,11 @@
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@ name=%@, registered=%d>",
+            NSStringFromClass(self.class), self.name, self.isRegistered];
+}
+
+- (NSAttributedString *)attributedDescription {
+    return [NSAttributedString stringWithFormat:@"<%@ name=%@, registered=%d>",
             NSStringFromClass(self.class), self.name, self.isRegistered];
 }
 

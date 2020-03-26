@@ -60,7 +60,7 @@
     return self;
 }
 
-- (NSString *)summary {
+- (NSAttributedString *)summary {
     if (self.wantsSummary) {
         if (!_summary) {
             _summary = [FLEXRuntimeUtility summaryForObject:self.object];

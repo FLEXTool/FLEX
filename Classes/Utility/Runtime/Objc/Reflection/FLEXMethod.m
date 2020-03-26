@@ -11,6 +11,8 @@
 #import "FLEXMirror.h"
 #import "FLEXTypeEncodingParser.h"
 #import "FLEXRuntimeUtility.h"
+#import "NSAttributedString+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
 
 @implementation FLEXMethod
 @dynamic implementation;
@@ -88,6 +90,14 @@
         _flex_description = [self prettyName];
     }
     
+    return _flex_description.string;
+}
+
+- (NSAttributedString *)attributedDescription {
+    if (!_flex_description) {
+        _flex_description = [self prettyName];
+    }
+
     return _flex_description;
 }
 
@@ -100,17 +110,17 @@
     return string;
 }
 
-- (NSString *)prettyName {
-    NSString *methodTypeString = self.isInstanceMethod ? @"-" : @"+";
-    NSString *readableReturnType = [FLEXRuntimeUtility readableTypeForEncoding:@(self.signature.methodReturnType ?: "")];
+- (NSAttributedString *)prettyName {
+    NSAttributedString *methodTypeString = (self.isInstanceMethod ? @"-" : @"+").attributedString;
+    NSAttributedString *readableReturnType = [FLEXRuntimeUtility readableTypeForEncoding:@(self.signature.methodReturnType ?: "")].attributedString;
     
-    NSString *prettyName = [NSString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
+    NSMutableAttributedString *prettyName = [NSMutableAttributedString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
     NSArray *components = [self prettyArgumentComponents];
 
     if (components.count) {
-        return [prettyName stringByAppendingString:[components componentsJoinedByString:@" "]];
+        return [prettyName stringByAppendingAttributedString:[NSAttributedString stringByJoiningArray:components withSeparator:@" ".attributedString]];
     } else {
-        return [prettyName stringByAppendingString:self.selectorString];
+        return [prettyName stringByAppendingAttributedString:self.selectorString.otherFunctionAndMethodNamesAttributedString];
     }
 }
 
@@ -123,19 +133,15 @@
     
     NSMutableArray *components = [NSMutableArray new];
 
-    NSArray *selectorComponents = [self.selectorString componentsSeparatedByString:@":"];
+    NSArray<NSString *> *selectorComponents = [self.selectorString componentsSeparatedByString:@":"];
     NSUInteger numberOfArguments = self.numberOfArguments;
     
     for (NSUInteger argIndex = 2; argIndex < numberOfArguments; argIndex++) {
         assert(argIndex < self.signature.numberOfArguments);
         
         const char *argType = [self.signature getArgumentTypeAtIndex:argIndex] ?: "?";
-        NSString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
-        NSString *prettyComponent = [NSString
-            stringWithFormat:@"%@:(%@) ",
-            selectorComponents[argIndex - 2],
-            readableArgType
-        ];
+        NSAttributedString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)].attributedString;
+        NSAttributedString *prettyComponent = [NSAttributedString stringWithFormat:@"%@:(%@) ", selectorComponents[argIndex - 2].otherFunctionAndMethodNamesAttributedString, readableArgType];
 
         [components addObject:prettyComponent];
     }
@@ -145,7 +151,7 @@
 
 - (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%@ selector=%@, signature=%@>",
-            NSStringFromClass(self.class), self.selectorString, self.signatureString];
+            NSStringFromClass(self.class), self.selectorString.otherFunctionAndMethodNamesAttributedString, self.signatureString];
 }
 
 - (void)examine {

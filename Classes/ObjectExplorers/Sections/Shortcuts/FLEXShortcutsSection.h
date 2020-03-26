@@ -25,11 +25,11 @@
 @interface FLEXShortcutsSection : FLEXTableViewSection <FLEXObjectInfoSection>
 
 /// Uses \c kFLEXDefaultCell
-+ (instancetype)forObject:(id)objectOrClass rowTitles:(NSArray<NSString *> *)titles;
++ (instancetype)forObject:(id)objectOrClass rowTitles:(NSArray<NSAttributedString *> *)titles;
 /// Uses \c kFLEXDetailCell for non-empty subtitles, otherwise uses \c kFLEXDefaultCell
 + (instancetype)forObject:(id)objectOrClass
-                rowTitles:(NSArray<NSString *> *)titles
-             rowSubtitles:(NSArray<NSString *> *)subtitles;
+                rowTitles:(NSArray<NSAttributedString *> *)titles
+             rowSubtitles:(NSArray<NSAttributedString *> *)subtitles;
 
 /// Uses \c kFLEXDefaultCell for rows that are given a title, otherwise
 /// this uses \c kFLEXDetailCell for any other allowed object.

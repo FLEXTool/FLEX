@@ -14,7 +14,7 @@
 
 @property (nonatomic, readonly) id object;
 /// Subclasses can override to provide a more useful description
-@property (nonatomic, readonly) NSString *objectDescription;
+@property (nonatomic, readonly) NSAttributedString *objectDescription;
 
 /// @return \c YES if \c object is an instance of a class,
 /// or \c NO if \c object is a class itself.

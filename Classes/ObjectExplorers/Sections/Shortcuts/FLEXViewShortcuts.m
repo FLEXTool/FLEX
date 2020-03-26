@@ -62,8 +62,8 @@
     UIViewController *controller = [FLEXViewShortcuts nearestViewControllerForView:view];
 
     return [self forObject:view additionalRows:@[
-        [FLEXActionShortcut title:@"Nearest View Controller"
-            subtitle:^NSString *(id view) {
+        [FLEXActionShortcut title:@"Nearest View Controller".attributedString
+            subtitle:^NSAttributedString *(id view) {
                 return [FLEXRuntimeUtility safeDescriptionForObject:controller];
             }
             viewer:^UIViewController *(id view) {
@@ -73,7 +73,7 @@
                 return controller ? UITableViewCellAccessoryDisclosureIndicator : 0;
             }
         ],
-        [FLEXActionShortcut title:@"Preview Image" subtitle:nil
+        [FLEXActionShortcut title:@"Preview Image".attributedString subtitle:nil
             viewer:^UIViewController *(id view) {
                 return [FLEXImagePreviewViewController previewForView:view];
             }

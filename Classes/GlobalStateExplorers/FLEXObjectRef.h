@@ -21,7 +21,7 @@
 @property (nonatomic, readonly) NSString *reference;
 /// For instances, this is the result of -[FLEXRuntimeUtility summaryForObject:]
 /// For classes, there is no summary.
-@property (nonatomic, readonly) NSString *summary;
+@property (nonatomic, readonly) NSAttributedString *summary;
 @property (nonatomic, readonly) id object;
 
 @end

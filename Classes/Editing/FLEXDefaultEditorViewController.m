@@ -11,6 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputViewFactory.h"
+#import "NSString+SyntaxHighlighting.h"
 
 @interface FLEXDefaultEditorViewController ()
 
@@ -37,7 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.fieldEditorView.fieldDescription = self.key;
+    self.fieldEditorView.fieldDescription = self.key.attributedString;
 
     id currentValue = [self.defaults objectForKey:self.key];
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory

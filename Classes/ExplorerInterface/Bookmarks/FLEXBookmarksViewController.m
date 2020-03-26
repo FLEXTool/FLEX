@@ -186,7 +186,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
     
     id object = self.bookmarks[indexPath.row];
-    cell.textLabel.text = [FLEXRuntimeUtility safeDescriptionForObject:object];
+    cell.textLabel.attributedText = [FLEXRuntimeUtility safeDescriptionForObject:object];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ — %p", [object class], object];
     
     return cell;

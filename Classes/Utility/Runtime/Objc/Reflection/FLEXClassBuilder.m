@@ -12,6 +12,8 @@
 #import "FLEXMethodBase.h"
 #import "FLEXProtocol.h"
 #import <objc/runtime.h>
+#import "NSAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 
 #pragma mark FLEXClassBuilder
@@ -67,6 +69,11 @@
 
 - (NSString *)description {
     return [NSString stringWithFormat:@"<%@ name=%@, registered=%d>",
+            NSStringFromClass(self.class), self.name, self.isRegistered];
+}
+
+- (NSAttributedString *)attributedDescription {
+    return [NSAttributedString stringWithFormat:@"<%@ name=%@, registered=%d>",
             NSStringFromClass(self.class), self.name, self.isRegistered];
 }
 

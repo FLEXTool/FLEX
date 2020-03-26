@@ -14,6 +14,8 @@
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXUtility.h"
+#import "NSAttributedString+FLEX.h"
+#import "NSString+SyntaxHighlighting.h"
 
 @interface FLEXMethodCallingViewController ()
 @property (nonatomic) FLEXMethod *method;
@@ -45,10 +47,7 @@
 
     // Configure field editor view
     self.fieldEditorView.argumentInputViews = [self argumentInputViews];
-    self.fieldEditorView.fieldDescription = [NSString stringWithFormat:
-        @"Signature:\n%@\n\nReturn Type:\n%s",
-        self.method.description, (char *)self.method.returnType
-    ];
+    self.fieldEditorView.fieldDescription = [NSAttributedString stringWithFormat:@"Signature:\n%@\n\nReturn Type:\n%s", self.method.description, [NSString stringWithFormat:@"%s", (char *)self.method.returnType].attributedString];
 }
 
 - (NSArray<FLEXArgumentInputView *> *)argumentInputViews {

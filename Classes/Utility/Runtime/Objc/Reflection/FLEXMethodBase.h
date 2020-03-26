@@ -20,7 +20,7 @@
     NSString *_typeEncoding;
     IMP      _implementation;
     
-    NSString *_flex_description;
+    NSAttributedString *_flex_description;
 }
 
 /// Constructs and returns an \c FLEXSimpleMethod instance with the given name, type encoding, and implementation.

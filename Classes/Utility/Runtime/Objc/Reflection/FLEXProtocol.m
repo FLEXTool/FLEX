@@ -10,6 +10,8 @@
 #import "FLEXProtocol.h"
 #import "FLEXProperty.h"
 #import "FLEXRuntimeUtility.h"
+#import "NSAttributedString+FLEX.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 
 @implementation FLEXProtocol
@@ -58,8 +60,18 @@
     return self.name;
 }
 
+- (NSAttributedString *)attributedDescription {
+    return self.name.attributedString;
+}
+
 - (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%@ name=%@, %lu properties, %lu required methods, %lu optional methods, %lu protocols>",
+            NSStringFromClass(self.class), self.name, (unsigned long)self.properties.count,
+            (unsigned long)self.requiredMethods.count, (unsigned long)self.optionalMethods.count, (unsigned long)self.protocols.count];
+}
+
+- (NSAttributedString *)attributedDebugDescription {
+    return [NSAttributedString stringWithFormat:@"<%@ name=%@, %lu properties, %lu required methods, %lu optional methods, %lu protocols>",
             NSStringFromClass(self.class), self.name, (unsigned long)self.properties.count,
             (unsigned long)self.requiredMethods.count, (unsigned long)self.optionalMethods.count, (unsigned long)self.protocols.count];
 }
@@ -139,8 +151,17 @@
     return NSStringFromSelector(self.selector);
 }
 
+- (NSAttributedString *)attributedDescription {
+    return NSStringFromSelector(self.selector).attributedString;
+}
+
 - (NSString *)debugDescription {
     return [NSString stringWithFormat:@"<%@ name=%@, type=%@>",
+            NSStringFromClass(self.class), NSStringFromSelector(self.selector), self.typeEncoding];
+}
+
+- (NSAttributedString *)attributedDebugDescription {
+    return [NSAttributedString stringWithFormat:@"<%@ name=%@, type=%@>",
             NSStringFromClass(self.class), NSStringFromSelector(self.selector), self.typeEncoding];
 }
 

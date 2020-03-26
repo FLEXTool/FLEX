@@ -52,9 +52,9 @@
 + (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass;
 
 /// Used to describe an object in brief within an explorer row
-+ (NSString *)summaryForObject:(id)value;
-+ (NSString *)safeDescriptionForObject:(id)object;
-+ (NSString *)safeDebugDescriptionForObject:(id)object;
++ (NSAttributedString *)summaryForObject:(id)value;
++ (NSAttributedString *)safeDescriptionForObject:(id)object;
++ (NSAttributedString *)safeDebugDescriptionForObject:(id)object;
 
 // Property Helpers
 + (BOOL)tryAddPropertyWithName:(const char *)name

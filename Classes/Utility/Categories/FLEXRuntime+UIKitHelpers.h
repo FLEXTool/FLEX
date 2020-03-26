@@ -11,12 +11,14 @@
 #import "FLEXIvar.h"
 #import "FLEXMethod.h"
 #import "FLEXProtocol.h"
+#import "NSObject+SyntaxHighlighting.h"
 
 @protocol FLEXRuntimeMetadata <NSObject>
 /// Used as the main title of the row
 - (NSString *)description;
+- (NSAttributedString *)attributedDescription;
 /// Used to compare metadata objects for uniqueness
-@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSAttributedString *name;
 /// YES for properties and ivars which surely support editing, NO for all methods.
 @property (nonatomic, readonly) BOOL isEditable;
 /// NO for ivars, YES for supported methods and properties
@@ -28,7 +30,7 @@
 /// Should return \c nil if not applicable
 - (id)currentValueWithTarget:(id)object;
 /// Used as the subtitle or description of a property, ivar, or method
-- (NSString *)previewWithTarget:(id)object;
+- (NSAttributedString *)previewWithTarget:(id)object;
 /// For methods, a method calling screen. For all else, an object explorer.
 - (UIViewController *)viewerWithTarget:(id)object;
 /// For methods and protocols, nil. For all else, an a field editor screen.
@@ -46,7 +48,7 @@
 /// of what to copy like "Name" and the values are what will be copied.
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object;
 /// Properties and ivars return the address of an object, if they hold one.
-- (NSString *)contextualSubtitleWithTarget:(id)object;
+- (NSAttributedString *)contextualSubtitleWithTarget:(id)object;
 
 #endif
 

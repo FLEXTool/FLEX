@@ -44,8 +44,8 @@
 + (NSString *)detailDescriptionForView:(UIView *)view;
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius;
 + (UIColor *)hierarchyIndentPatternColor;
-+ (NSString *)pointerToString:(void *)ptr;
-+ (NSString *)addressOfObject:(id)object;
++ (NSAttributedString *)pointerToString:(void *)ptr;
++ (NSAttributedString *)addressOfObject:(id)object;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
