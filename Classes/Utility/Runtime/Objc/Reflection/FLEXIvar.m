@@ -11,6 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXRuntimeSafety.h"
 #import "FLEXTypeEncodingParser.h"
+#include <dlfcn.h>
 
 @interface FLEXIvar () {
     NSString *_flex_description;
@@ -81,6 +82,11 @@
         _type = FLEXTypeEncodingNull;
         typeForDetails = @"no type info";
         sizeForDetails = @"unknown size";
+    }
+    
+    Dl_info exeInfo;
+    if (dladdr(_objc_ivar, &exeInfo)) {
+        _imagePath = exeInfo.dli_fname ? @(exeInfo.dli_fname) : nil;
     }
 
     _details = [NSString stringWithFormat:

@@ -11,6 +11,7 @@
 #import "FLEXMirror.h"
 #import "FLEXTypeEncodingParser.h"
 #import "FLEXRuntimeUtility.h"
+#include <dlfcn.h>
 
 @implementation FLEXMethod
 @dynamic implementation;
@@ -153,8 +154,13 @@
     _selector          = method_getName(_objc_method);
     _numberOfArguments = method_getNumberOfArguments(_objc_method);
     _name              = NSStringFromSelector(_selector);
-    _returnType        = (FLEXTypeEncoding *)_signature.methodReturnType;
+    _returnType        = (FLEXTypeEncoding *)_signature.methodReturnType ?: "";
     _returnSize        = _signature.methodReturnLength;
+    
+    Dl_info exeInfo;
+    if (dladdr(_objc_method, &exeInfo)) {
+        _imagePath = exeInfo.dli_fname ? @(exeInfo.dli_fname) : nil;
+    }
 }
 
 #pragma mark Public

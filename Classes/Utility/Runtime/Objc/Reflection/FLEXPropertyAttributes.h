@@ -60,6 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) SEL customGetter;
 /// The property's custom setter, if any.
 @property (nonatomic, readonly, nullable) SEL customSetter;
+/// The property's custom getter as a string, if any.
+@property (nonatomic, readonly, nullable) NSString *customGetterString;
+/// The property's custom setter as a string, if any.
+@property (nonatomic, readonly, nullable) NSString *customSetterString;
 
 @property (nonatomic, readonly) BOOL isReadOnly;
 @property (nonatomic, readonly) BOOL isCopy;

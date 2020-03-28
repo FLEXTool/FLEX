@@ -58,8 +58,10 @@
         _typeEncoding         = attributes[kFLEXPropertyAttributeKeyTypeEncoding];
         _backingIvar          = attributes[kFLEXPropertyAttributeKeyBackingIvarName];
         _oldTypeEncoding      = attributes[kFLEXPropertyAttributeKeyOldStyleTypeEncoding];
-        _customGetter         = NSSelectorFromString(attributes[kFLEXPropertyAttributeKeyCustomGetter]);
-        _customSetter         = NSSelectorFromString(attributes[kFLEXPropertyAttributeKeyCustomSetter]);
+        _customGetterString   = attributes[kFLEXPropertyAttributeKeyCustomGetter];
+        _customSetterString   = attributes[kFLEXPropertyAttributeKeyCustomSetter];
+        _customGetter         = NSSelectorFromString(_customGetterString);
+        _customSetter         = NSSelectorFromString(_customSetterString);
         _isReadOnly           = attributes[kFLEXPropertyAttributeKeyReadOnly] != nil;
         _isCopy               = attributes[kFLEXPropertyAttributeKeyCopy] != nil;
         _isRetained           = attributes[kFLEXPropertyAttributeKeyRetain] != nil;
@@ -361,6 +363,14 @@ PropertyWithDeltaFlag(BOOL, isGarbageCollectable, IsGarbageCollectable);
     }
 
     return _fullDeclaration;
+}
+
+- (NSString *)customGetterString {
+    return _customGetter ? NSStringFromSelector(_customGetter) : nil;
+}
+
+- (NSString *)customSetterString {
+    return _customSetter ? NSStringFromSelector(_customSetter) : nil;
 }
 
 @end

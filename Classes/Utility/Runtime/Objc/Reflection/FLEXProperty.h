@@ -59,8 +59,12 @@
 @property (nonatomic, readonly) BOOL multiple;
 /// @return The bundle of the image that contains this property definition,
 /// or \c nil if this property was not created with \c property:onClass or
-/// if this property is probably defined in the objc runtime.
+/// if this property was probably defined at runtime.
 @property (nonatomic, readonly) NSString *imageName;
+/// The full path of the image that contains this property definition,
+/// or \c nil if this property was not created with \c property:onClass or
+/// if this property was probably defined at runtime.
+@property (nonatomic, readonly) NSString *imagePath;
 
 /// For internal use
 @property (nonatomic) id tag;

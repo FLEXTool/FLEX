@@ -101,6 +101,45 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     }];
 }
 
+NSArray<FLEXIvar *> *FLEXGetAllIvars(_Nullable Class cls) {
+    if (!cls) return nil;
+    
+    unsigned int ivcount;
+    Ivar *objcivars = class_copyIvarList(cls, &ivcount);
+    NSArray *ivars = [NSArray flex_forEachUpTo:ivcount map:^id(NSUInteger i) {
+        return [FLEXIvar ivar:objcivars[i]];
+    }];
+
+    free(objcivars);
+    return ivars;
+}
+
+NSArray<FLEXProperty *> *FLEXGetAllProperties(_Nullable Class cls) {
+    if (!cls) return nil;
+    
+    unsigned int pcount;
+    objc_property_t *objcproperties = class_copyPropertyList(cls, &pcount);
+    NSArray *properties = [NSArray flex_forEachUpTo:pcount map:^id(NSUInteger i) {
+        return [FLEXProperty property:objcproperties[i] onClass:cls];
+    }];
+
+    free(objcproperties);
+    return properties;
+}
+
+NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
+    if (!cls) return nil;
+
+    unsigned int mcount;
+    Method *objcmethods = class_copyMethodList(cls, &mcount);
+    NSArray *methods = [NSArray flex_forEachUpTo:mcount map:^id(NSUInteger i) {
+        return [FLEXMethod method:objcmethods[i] isInstanceMethod:instance];
+    }];
+    
+    free(objcmethods);
+    return methods;
+}
+
 
 #pragma mark NSProxy
 
@@ -135,6 +174,11 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
         FLEXClassBuilder *swiftObjectMeta = [FLEXClassBuilder builderForClass:SwiftObject_meta];
         [swiftObject addMethods:instanceMethods];
         [swiftObjectMeta addMethods:classMethods];
+        
+        // So we can put Swift objects into dictionaries...
+        [swiftObjectMeta addMethods:@[
+            [NSObject flex_classMethodNamed:@"copyWithZone:"]]
+        ];
     }
 }
 
@@ -198,35 +242,11 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
 }
 
 + (NSArray<FLEXMethod *> *)flex_allInstanceMethods {
-    unsigned int mcount;
-    Method *objcmethods = class_copyMethodList([self class], &mcount);
-
-    NSMutableArray *methods = [NSMutableArray new];
-    for (int i = 0; i < mcount; i++) {
-        FLEXMethod *m = [FLEXMethod method:objcmethods[i] isInstanceMethod:YES];
-        if (m) {
-            [methods addObject:m];
-        }
-    }
-
-    free(objcmethods);
-    return methods;
+    return FLEXGetAllMethods(self, YES);
 }
 
 + (NSArray<FLEXMethod *> *)flex_allClassMethods {
-    unsigned int mcount;
-    Method *objcmethods = class_copyMethodList(self.flex_metaclass, &mcount);
-
-    NSMutableArray *methods = [NSMutableArray new];
-    for (int i = 0; i < mcount; i++) {
-        FLEXMethod *m = [FLEXMethod method:objcmethods[i] isInstanceMethod:NO];
-        if (m) {
-            [methods addObject:m];
-        }
-    }
-
-    free(objcmethods);
-    return methods;
+    return FLEXGetAllMethods(self.flex_metaclass, NO);
 }
 
 + (FLEXMethod *)flex_methodNamed:(NSString *)name {
@@ -292,16 +312,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
 @implementation NSObject (Ivars)
 
 + (NSArray<FLEXIvar *> *)flex_allIvars {
-    unsigned int ivcount;
-    Ivar *objcivars = class_copyIvarList([self class], &ivcount);
-    
-    NSMutableArray *ivars = [NSMutableArray new];
-    for (int i = 0; i < ivcount; i++) {
-        [ivars addObject:[FLEXIvar ivar:objcivars[i]]];
-    }
-
-    free(objcivars);
-    return ivars;
+    return FLEXGetAllIvars(self);
 }
 
 + (FLEXIvar *)flex_ivarNamed:(NSString *)name {
@@ -379,30 +390,11 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
 }
 
 + (NSArray<FLEXProperty *> *)flex_allInstanceProperties {
-    unsigned int pcount;
-    objc_property_t *objcproperties = class_copyPropertyList(self, &pcount);
-    
-    NSMutableArray *properties = [NSMutableArray new];
-    for (int i = 0; i < pcount; i++) {
-        [properties addObject:[FLEXProperty property:objcproperties[i] onClass:self]];
-    }
-
-    free(objcproperties);
-    return properties;
+    return FLEXGetAllProperties(self);
 }
 
 + (NSArray<FLEXProperty *> *)flex_allClassProperties {
-    Class metaclass = self.flex_metaclass;
-    unsigned int pcount;
-    objc_property_t *objcproperties = class_copyPropertyList(metaclass, &pcount);
-
-    NSMutableArray *properties = [NSMutableArray new];
-    for (int i = 0; i < pcount; i++) {
-        [properties addObject:[FLEXProperty property:objcproperties[i] onClass:metaclass]];
-    }
-
-    free(objcproperties);
-    return properties;
+    return FLEXGetAllProperties(self.flex_metaclass);
 }
 
 + (FLEXProperty *)flex_propertyNamed:(NSString *)name {

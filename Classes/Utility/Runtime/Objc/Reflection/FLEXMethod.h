@@ -59,6 +59,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) FLEXTypeEncoding  *returnType;
 /// The return size of the method.
 @property (nonatomic, readonly) NSUInteger        returnSize;
+/// The full path of the image that contains this method definition,
+/// or \c nil if this ivar was probably defined at runtime.
+@property (nonatomic, readonly) NSString          *imagePath;
 
 /// Like @code - (void)foo:(int)bar @endcode
 @property (nonatomic, readonly) NSString *description;

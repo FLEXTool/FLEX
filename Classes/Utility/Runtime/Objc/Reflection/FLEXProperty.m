@@ -24,6 +24,7 @@
 @implementation FLEXProperty
 @synthesize multiple = _multiple;
 @synthesize imageName = _imageName;
+@synthesize imagePath = _imagePath;
 
 #pragma mark Initializers
 
@@ -88,7 +89,9 @@
 #pragma mark Private
 
 - (void)examine {
-    _type = (FLEXTypeEncoding)[self.attributes.typeEncoding characterAtIndex:0];
+    if (self.attributes.typeEncoding.length) {
+        _type = (FLEXTypeEncoding)[self.attributes.typeEncoding characterAtIndex:0];
+    }
 
     // Return the given selector if the class responds to it
     Class cls = _cls;
@@ -153,13 +156,16 @@
 }
 
 - (void)computeSymbolInfo:(BOOL)forceBundle {
+    Dl_info exeInfo;
+    if (dladdr(_objc_property, &exeInfo)) {
+        _imagePath = exeInfo.dli_fname ? @(exeInfo.dli_fname) : nil;
+    }
+    
     if ((!_multiple || !_uniqueCheckFlag) && _cls) {
         _multiple = _objc_property != class_getProperty(_cls, self.name.UTF8String);
 
         if (_multiple || forceBundle) {
-            Dl_info exeInfo;
-            dladdr(_objc_property, &exeInfo);
-            NSString *path = @(exeInfo.dli_fname).stringByDeletingLastPathComponent;
+            NSString *path = _imagePath.stringByDeletingLastPathComponent;
             _imageName = [NSBundle bundleWithPath:path].executablePath.lastPathComponent;
         }
     }
@@ -168,6 +174,11 @@
 - (BOOL)multiple {
     [self computeSymbolInfo:NO];
     return _multiple;
+}
+
+- (NSString *)imagePath {
+    [self computeSymbolInfo:YES];
+    return _imagePath;
 }
 
 - (NSString *)imageName {

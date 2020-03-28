@@ -29,6 +29,9 @@
 @property (nonatomic, readonly) NSUInteger       size;
 /// Describes the type encoding, size, offset, and objc_ivar
 @property (nonatomic, readonly) NSString        *details;
+/// The full path of the image that contains this ivar definition,
+/// or \c nil if this ivar was probably defined at runtime.
+@property (nonatomic, readonly) NSString        *imagePath;
 
 /// For internal use
 @property (nonatomic) id tag;
