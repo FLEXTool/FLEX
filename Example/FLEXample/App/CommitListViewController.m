@@ -40,7 +40,10 @@
             self.commits.list = [Commit commitsFrom:data];
             [self fadeInNewRows];
         } else {
-            [FLEXAlert showAlert:@"Error" message:error.localizedDescription from:self];
+            [FLEXAlert showAlert:@"Error"
+                message:error.localizedDescription ?: @(statusCode).stringValue
+                from:self
+            ];
         }
     }];
 }
