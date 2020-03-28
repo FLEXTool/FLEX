@@ -14,13 +14,13 @@
 #import <Foundation/Foundation.h>
 #import "FLEXSQLResult.h"
 
+/// Conformers should automatically open and close the database
 @protocol FLEXDatabaseManager <NSObject>
 
 @required
 
+/// @return \c nil if the database couldn't be opened
 + (instancetype)managerForDatabase:(NSString *)path;
-
-- (BOOL)open;
 
 /// @return a list of all table names
 - (NSArray<NSString *> *)queryAllTables;

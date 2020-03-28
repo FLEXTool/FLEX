@@ -16,6 +16,12 @@
     return [[self alloc] initWithmessage:message columns:nil rows:nil];
 }
 
++ (instancetype)error:(NSString *)message {
+    FLEXSQLResult *result = [self message:message];
+    result->_isError = YES;
+    return result;
+}
+
 + (instancetype)columns:(NSArray<NSString *> *)columnNames rows:(NSArray<NSArray<NSString *> *> *)rowData {
     return [[self alloc] initWithmessage:nil columns:columnNames rows:rowData];
 }

@@ -14,12 +14,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Describes the result of a non-select query, or an error of any kind of query
 + (instancetype)message:(NSString *)message;
+/// Describes the result of a known failed execution
++ (instancetype)error:(NSString *)message;
+
 /// @param rowData A list of rows, where each element in the row
 /// corresponds to the column given in /c columnNames
 + (instancetype)columns:(NSArray<NSString *> *)columnNames
                 rows:(NSArray<NSArray<NSString *> *> *)rowData;
 
 @property (nonatomic, readonly, nullable) NSString *message;
+
+/// A value of YES means this is surely an error,
+/// but it still might be an error even with a value of NO
+@property (nonatomic, readonly) BOOL isError;
 
 /// A list of column names
 @property (nonatomic, readonly, nullable) NSArray<NSString *> *columns;

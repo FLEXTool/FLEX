@@ -20,7 +20,7 @@
 @interface FLEXRealmDatabaseManager ()
 
 @property (nonatomic, copy) NSString *path;
-@property (nonatomic) RLMRealm * realm;
+@property (nonatomic) RLMRealm *realm;
 
 @end
 
@@ -43,6 +43,10 @@ static Class RLMRealmClass = nil;
     self = [super init];
     if (self) {
         _path = path;
+        
+        if (![self open]) {
+            return nil;
+        }
     }
     
     return self;

@@ -9,7 +9,7 @@
 #import "FLEXSQLiteDatabaseManager.h"
 #import "FLEXManager.h"
 #import "NSArray+Functional.h"
-#import "FLEXSQLResult.h"
+#import "FLEXRuntimeConstants.h"
 #import <sqlite3.h>
 
 static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
@@ -36,6 +36,10 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
     return self;
 }
 
+- (void)dealloc {
+    [self close];
+}
+
 - (BOOL)open {
     if (self.db) {
         return YES;
@@ -52,8 +56,7 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 #endif
 
     if (err != SQLITE_OK) {
-        NSLog(@"error opening!: %d", err);
-        return NO;
+        return [self storeErrorForLastTask:@"Open"];
     }
     
     return YES;
@@ -81,12 +84,18 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
                 }
             }
         } else if (SQLITE_OK != rc) {
-            NSLog(@"error closing!: %d", rc);
+            [self storeErrorForLastTask:@"Close"];
+            self.db = nil;
+            return NO;
         }
     } while (retry);
     
     self.db = nil;
     return YES;
+}
+
+- (NSInteger)lastRowID {
+    return (NSInteger)sqlite3_last_insert_rowid(self.db);
 }
 
 - (NSArray<NSString *> *)queryAllTables {
@@ -111,13 +120,23 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 }
 
 - (FLEXSQLResult *)executeStatement:(NSString *)sql {
+    return [self executeStatement:sql arguments:nil];
+}
+
+- (FLEXSQLResult *)executeStatement:(NSString *)sql arguments:(NSDictionary *)args {
     [self open];
     
     FLEXSQLResult *result = nil;
     
     sqlite3_stmt *pstmt;
-    if (sqlite3_prepare_v2(_db, sql.UTF8String, -1, &pstmt, 0) == SQLITE_OK) {
+    int status;
+    if ((status = sqlite3_prepare_v2(_db, sql.UTF8String, -1, &pstmt, 0)) == SQLITE_OK) {
         NSMutableArray<NSArray *> *rows = [NSMutableArray new];
+        
+        // Bind parameters, if any
+        if (![self bindParameters:args toStatement:pstmt]) {
+            return self.lastResult;
+        }
         
         // Grab columns
         int columnCount = sqlite3_column_count(pstmt);
@@ -126,7 +145,6 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
         }];
         
         // Execute statement
-        int status;
         while ((status = sqlite3_step(pstmt)) == SQLITE_ROW) {
             // Grab rows if this is a selection query
             int dataCount = sqlite3_data_count(pstmt);
@@ -140,29 +158,110 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
         if (status == SQLITE_DONE) {
             if (rows.count) {
                 // We selected some rows
-                result = [FLEXSQLResult columns:columns rows:rows];
+                result = _lastResult = [FLEXSQLResult columns:columns rows:rows];
             } else {
                 // We executed a query like INSERT, UDPATE, or DELETE
                 int rowsAffected = sqlite3_changes(_db);
                 NSString *message = [NSString stringWithFormat:@"%d row(s) affected", rowsAffected];
-                result = [FLEXSQLResult message:message];
+                result = _lastResult = [FLEXSQLResult message:message];
             }
         } else {
             // An error occured executing the query
-            result = [FLEXSQLResult message:@(sqlite3_errmsg(_db) ?: "(Execution: empty error)")];
+            result = _lastResult = [self errorResult:@"Execution"];
         }
     } else {
         // An error occurred creating the prepared statement
-        result = [FLEXSQLResult message:@(sqlite3_errmsg(_db) ?: "(Prepared statement: empty error)")];
+        result = _lastResult = [self errorResult:@"Prepared statement"];
     }
     
     sqlite3_finalize(pstmt);
-    [self close];
     return result;
 }
 
 
 #pragma mark - Private
+
+/// @return YES on success, NO if an error was encountered and stored in \c lastResult
+- (BOOL)bindParameters:(NSDictionary *)args toStatement:(sqlite3_stmt *)pstmt {
+    for (NSString *param in args.allKeys) {
+        int status = SQLITE_OK, idx = sqlite3_bind_parameter_index(pstmt, param.UTF8String);
+        id value = args[param];
+        
+        if (idx == 0) {
+            // No parameter matching that arg
+            @throw NSInternalInconsistencyException;
+        }
+        
+        // Null
+        if ([value isKindOfClass:[NSNull class]]) {
+            status = sqlite3_bind_null(pstmt, idx);
+        }
+        // String params
+        else if ([value isKindOfClass:[NSString class]]) {
+            const char *str = [value UTF8String];
+            status = sqlite3_bind_text(pstmt, idx, str, (int)strlen(str), SQLITE_TRANSIENT);
+        }
+        // Data params
+        else if ([value isKindOfClass:[NSData class]]) {
+            const void *blob = [value bytes];
+            status = sqlite3_bind_blob64(pstmt, idx, blob, [value length], SQLITE_TRANSIENT);
+        }
+        // Primitive params
+        else if ([value isKindOfClass:[NSNumber class]]) {
+            FLEXTypeEncoding type = [value objCType][0];
+            switch (type) {
+                case FLEXTypeEncodingCBool:
+                case FLEXTypeEncodingChar:
+                case FLEXTypeEncodingUnsignedChar:
+                case FLEXTypeEncodingShort:
+                case FLEXTypeEncodingUnsignedShort:
+                case FLEXTypeEncodingInt:
+                case FLEXTypeEncodingUnsignedInt:
+                case FLEXTypeEncodingLong:
+                case FLEXTypeEncodingUnsignedLong:
+                case FLEXTypeEncodingLongLong:
+                case FLEXTypeEncodingUnsignedLongLong:
+                    status = sqlite3_bind_int64(pstmt, idx, (sqlite3_int64)[value longValue]);
+                    break;
+                
+                case FLEXTypeEncodingFloat:
+                case FLEXTypeEncodingDouble:
+                    status = sqlite3_bind_double(pstmt, idx, [value doubleValue]);
+                    break;
+                    
+                default:
+                    @throw NSInternalInconsistencyException;
+                    break;
+            }
+        }
+        // Unsupported type
+        else {
+            @throw NSInternalInconsistencyException;
+        }
+        
+        if (status != SQLITE_OK) {
+            return [self storeErrorForLastTask:
+                [NSString stringWithFormat:@"Binding param named '%@'", param]
+            ];
+        }
+    }
+    
+    return YES;
+}
+
+- (BOOL)storeErrorForLastTask:(NSString *)action {
+    _lastResult = [self errorResult:action];
+    return NO;
+}
+
+- (FLEXSQLResult *)errorResult:(NSString *)description {
+    const char *error = sqlite3_errmsg(_db);
+    NSString *message = error ? @(error) : [NSString
+        stringWithFormat:@"(%@: empty error", description
+    ];
+    
+    return [FLEXSQLResult error:message];
+}
 
 - (id)objectForColumnIndex:(int)columnIdx stmt:(sqlite3_stmt*)stmt {
     int columnType = sqlite3_column_type(stmt, columnIdx);
