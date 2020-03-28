@@ -71,4 +71,8 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
     stringWithFormat:(count == 1 ? singularFormat : pluralFormat), @(count)  \
 ]
 
+#define flex_dispatch_after(nSeconds, onQueue, block) \
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, \
+    (int64_t)(nSeconds * NSEC_PER_SEC)), onQueue, block)
+
 #endif /* FLEXMacros_h */

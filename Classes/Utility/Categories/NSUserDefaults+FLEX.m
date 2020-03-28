@@ -17,7 +17,7 @@ NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.net
 
 #define FLEXDefaultsPathForFile(name) ({ \
     NSArray *paths = NSSearchPathForDirectoriesInDomains( \
-        NSLibraryDirectory, NSUserDomainMask, NO \
+        NSLibraryDirectory, NSUserDomainMask, YES \
     ); \
     [paths[0] stringByAppendingPathComponent:@"Preferences"]; \
 })

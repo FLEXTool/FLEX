@@ -90,6 +90,13 @@
         @"currentTitle", @"currentImage", @"enabled", @"frame",
         @"superview", @"subviews"
     ]).forClass(UIButton.class);
+    
+    // UIImageView
+    self.append.properties(@[
+        @"image", @"animationImages", @"frame", @"bounds", @"center",
+        @"transform", @"alpha", @"hidden", @"clipsToBounds",
+        @"userInteractionEnabled", @"layer", @"superview", @"subviews",
+    ]).forClass(UIImageView.class);
 }
 
 @end

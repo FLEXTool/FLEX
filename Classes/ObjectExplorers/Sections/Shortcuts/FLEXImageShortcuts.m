@@ -8,20 +8,14 @@
 
 #import "FLEXImageShortcuts.h"
 #import "FLEXImagePreviewViewController.h"
+#import "FLEXShortcut.h"
 #import "FLEXAlert.h"
 
-@interface FLEXImageShortcuts ()
-@property (nonatomic, readonly) UIImage *image;
+@interface UIAlertController (FLEXImageShortcuts)
+- (void)flex_image:(UIImage *)image disSaveWithError:(NSError *)error :(void *)context;
 @end
 
 @implementation FLEXImageShortcuts
-
-#pragma mark - Internal
-
-- (UIImage *)image {
-    return self.object;
-}
-
 
 #pragma mark - Overrides
 
@@ -29,36 +23,45 @@
     // These additional rows will appear at the beginning of the shortcuts section.
     // The methods below are written in such a way that they will not interfere
     // with properties/etc being registered alongside these
-    return [self forObject:image additionalRows:@[@"View Image", @"Save Image"]];
+    return [self forObject:image additionalRows:@[
+        [FLEXActionShortcut title:@"View Image" subtitle:nil
+            viewer:^UIViewController *(id image) {
+                return [FLEXImagePreviewViewController forImage:image];
+            }
+            accessoryType:^UITableViewCellAccessoryType(id image) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ],
+        [FLEXActionShortcut title:@"Save Image" subtitle:nil
+            selectionHandler:^(UIViewController *host, id image) {
+                // Present modal alerting user about saving
+                UIAlertController *alert = [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                    make.title(@"Saving Image…");
+                }];
+                [host presentViewController:alert animated:YES completion:nil];
+            
+                // Save the image
+                UIImageWriteToSavedPhotosAlbum(
+                    image, alert, @selector(flex_image:disSaveWithError::), nil
+                );
+            }
+            accessoryType:^UITableViewCellAccessoryType(id image) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }
+        ]
+    ]];
 }
 
-/// View image
-- (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
-    if (row == 0) {
-        return [FLEXImagePreviewViewController forImage:self.image];
-    }
+@end
 
-    return [super viewControllerToPushForRow:row];
-}
 
-/// Save image
-- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
-    if (row == 1) {
-        return ^(UIViewController *host) {
-            UIImageWriteToSavedPhotosAlbum(self.image, nil, nil, nil);
-        };
-    }
+@implementation UIAlertController (FLEXImageShortcuts)
 
-    return [super didSelectRowAction:row];
-}
-
-/// "Save Image" does not need a disclosure indicator
-- (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row {
-    switch (row) {
-        case 0:  return UITableViewCellAccessoryDisclosureIndicator;
-        case 1:  return UITableViewCellAccessoryNone;
-        default: return [super accessoryTypeForRow:row];
-    }
+- (void)flex_image:(UIImage *)image disSaveWithError:(NSError *)error :(void *)context {
+    self.title = @"Image Saved";
+    flex_dispatch_after(1, dispatch_get_main_queue(), ^{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    });
 }
 
 @end

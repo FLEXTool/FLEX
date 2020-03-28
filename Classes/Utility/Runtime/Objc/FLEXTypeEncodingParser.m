@@ -34,21 +34,23 @@ typedef struct FLEXTypeInfo {
     /// so we need to track whenever a type contains a union
     /// so that we can clean it out of pointer types.
     BOOL containsUnion;
+    /// size can only be 0 if not void
+    BOOL isVoid;
 } FLEXTypeInfo;
 
 /// Type info for a completely unsupported type.
-static FLEXTypeInfo FLEXTypeInfoUnsupported = (FLEXTypeInfo){ -1, 0, NO, NO, NO };
+static FLEXTypeInfo FLEXTypeInfoUnsupported = (FLEXTypeInfo){ -1, 0, NO, NO, NO, NO };
 /// Type info for the void return type.
-static FLEXTypeInfo FLEXTypeInfoVoid = (FLEXTypeInfo){ 0, 0, YES, NO, NO };
+static FLEXTypeInfo FLEXTypeInfoVoid = (FLEXTypeInfo){ 0, 0, YES, NO, NO, YES };
 
 /// Builds type info for a fully or partially supported type.
 static inline FLEXTypeInfo FLEXTypeInfoMake(ssize_t size, ssize_t align, BOOL fixed) {
-    return (FLEXTypeInfo){ size, align, YES, fixed, NO };
+    return (FLEXTypeInfo){ size, align, YES, fixed, NO, NO };
 }
 
 /// Builds type info for a fully or partially supported type.
 static inline FLEXTypeInfo FLEXTypeInfoMakeU(ssize_t size, ssize_t align, BOOL fixed, BOOL hasUnion) {
-    return (FLEXTypeInfo){ size, align, YES, fixed, hasUnion };
+    return (FLEXTypeInfo){ size, align, YES, fixed, hasUnion, NO };
 }
 
 BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *alignp) {
@@ -119,7 +121,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     while (!parser.scan.isAtEnd) {
         FLEXTypeInfo info = [parser parseNextType];
         
-        if (!info.supported || info.containsUnion || info.size == 0) {
+        if (!info.supported || info.containsUnion || (info.size == 0 && !info.isVoid)) {
             return NO;
         }
     }
