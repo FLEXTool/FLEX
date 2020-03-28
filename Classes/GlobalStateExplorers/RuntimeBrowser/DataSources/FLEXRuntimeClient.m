@@ -11,6 +11,7 @@
 #import "FLEXMethod.h"
 #import "NSArray+Functional.h"
 #import "FLEXRuntimeSafety.h"
+#include <dlfcn.h>
 
 #define Equals(a, b)    ([a compare:b options:NSCaseInsensitiveSearch] == NSOrderedSame)
 #define Contains(a, b)  ([a rangeOfString:b options:NSCaseInsensitiveSearch].location != NSNotFound)
@@ -186,6 +187,38 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
 }
 
 #pragma mark - Public
+
++ (void)initializeWebKitLegacy {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        void *handle = dlopen(
+            "/System/Library/PrivateFrameworks/WebKitLegacy.framework/WebKitLegacy",
+            RTLD_LAZY
+        );
+        void (*WebKitInitialize)() = dlsym(handle, "WebKitInitialize");
+        if (WebKitInitialize) {
+            NSAssert(NSThread.isMainThread,
+                @"WebKitInitialize can only be called on the main thread"
+            );
+            WebKitInitialize();
+        }
+    });
+}
+
+- (NSArray<Class> *)copySafeClassList {
+    unsigned int count = 0;
+    Class *classes = objc_copyClassList(&count);
+    return [NSArray flex_forEachUpTo:count map:^id(NSUInteger i) {
+        Class cls = classes[i];
+        return FLEXClassIsSafe(cls) ? cls : nil;
+    }];
+}
+
+- (NSArray<Protocol *> *)copyProtocolList {
+    unsigned int count = 0;
+    Protocol *__unsafe_unretained *protocols = objc_copyProtocolList(&count);
+    return [NSArray arrayWithObjects:protocols count:count];
+}
 
 - (NSMutableArray<NSString *> *)bundleNamesForToken:(FLEXSearchToken *)token {
     if (self.imagePaths.count) {

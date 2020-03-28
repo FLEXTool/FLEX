@@ -8,7 +8,7 @@
 
 #import "FLEXRuntimeKeyPath.h"
 
-/// Wraps FLEXRuntimeClient and provides caching mechanisms
+/// Wraps FLEXRuntimeClient and provides extra caching mechanisms
 @interface FLEXRuntimeController : NSObject
 
 /// @return An array of strings if the key path only evaluates
@@ -30,6 +30,7 @@
 
 + (NSString *)imagePathWithShortName:(NSString *)suffix;
 
+/// Gives back short names. For example, "Foundation.framework"
 + (NSArray<NSString*> *)allBundleNames;
 
 @end

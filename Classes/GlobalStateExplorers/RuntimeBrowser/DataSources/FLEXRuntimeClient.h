@@ -19,6 +19,17 @@
 /// been loaded since this method was first called.
 - (void)reloadLibrariesList;
 
+/// You must call this method on the main thread
+/// before you attempt to call \c copySafeClassList.
++ (void)initializeWebKitLegacy;
+
+/// Do not call unless you absolutely need all classes. This will cause
+/// every class in the runtime to initialize itself, which is not common.
+/// Before you call this method, call \c initializeWebKitLegacy on the main thread.
+- (NSArray<Class> *)copySafeClassList;
+
+- (NSArray<Protocol *> *)copyProtocolList;
+
 /// An array of strings representing the currently loaded libraries.
 @property (nonatomic, readonly) NSArray<NSString *> *imageDisplayNames;
 

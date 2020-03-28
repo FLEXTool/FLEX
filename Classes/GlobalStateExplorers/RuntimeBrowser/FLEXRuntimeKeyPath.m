@@ -7,7 +7,7 @@
 //
 
 #import "FLEXRuntimeKeyPath.h"
-#include <dlfcn.h>
+#import "FLEXRuntimeClient.h"
 
 @interface FLEXRuntimeKeyPath () {
     NSString *flex_description;
@@ -49,27 +49,10 @@
     keyPath->flex_description = keyPathString;
     
     if (bundle.isAny && cls.isAny && method.isAny) {
-        [self initializeWebKitLegacy];
+        [FLEXRuntimeClient initializeWebKitLegacy];
     }
 
     return keyPath;
-}
-
-+ (void)initializeWebKitLegacy {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        void *handle = dlopen(
-            "/System/Library/PrivateFrameworks/WebKitLegacy.framework/WebKitLegacy",
-            RTLD_LAZY
-        );
-        void (*WebKitInitialize)() = dlsym(handle, "WebKitInitialize");
-        if (WebKitInitialize) {
-            NSAssert(NSThread.isMainThread,
-                @"WebKitInitialize can only be called on the main thread"
-            );
-            WebKitInitialize();
-        }
-    });
 }
 
 - (NSString *)description {
