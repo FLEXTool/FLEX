@@ -8,12 +8,19 @@
 
 #import "FLEXRuntimeExporter.h"
 #import "FLEXSQLiteDatabaseManager.h"
-#import "FLEX-Runtime.h"
 #import "NSObject+Reflection.h"
 #import "FLEXRuntimeController.h"
 #import "FLEXRuntimeClient.h"
 #import "NSArray+Functional.h"
+#import "FLEXTypeEncodingParser.h"
 #import <sqlite3.h>
+
+#import "FLEXProtocol.h"
+#import "FLEXProperty.h"
+#import "FLEXIvar.h"
+#import "FLEXMethodBase.h"
+#import "FLEXMethod.h"
+#import "FLEXPropertyAttributes.h"
 
 NSString * const kFREEnableForeignKeys = @"PRAGMA foreign_keys = ON;";
 
