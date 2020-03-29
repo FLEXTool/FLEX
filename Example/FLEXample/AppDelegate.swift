@@ -11,6 +11,7 @@ import UIKit
 @UIApplicationMain @objcMembers
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var repeatingLogExampleTimer: Timer!
+    var window: UIWindow?
 
     func application(_ application: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -29,9 +30,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // To show off the network logger, send several misc network requests
         MiscNetworkRequests.sendExampleRequests()
         
+        // For < iOS 13, set up the window here
+        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion < 13 {
+            let window = UIWindow(frame: UIScreen.main.bounds)
+            window.rootViewController = FLEXNavigationController(
+                rootViewController: CommitListViewController()
+            )
+            self.window = window
+            window.makeKeyAndVisible()
+            FLEXManager.shared.showExplorer()
+        }
+        
         return true
     }
 
+    @available(iOS 13.0, *)
     func application(_ application: UIApplication,
                      configurationForConnecting session: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
