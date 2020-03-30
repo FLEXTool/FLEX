@@ -14,6 +14,7 @@ extern NSString * const kFLEXDefaultsiOSPersistentOSLogKey;
 extern NSString * const kFLEXDefaultsHidePropertyIvarsKey;
 extern NSString * const kFLEXDefaultsHidePropertyMethodsKey;
 extern NSString * const kFLEXDefaultsHideMethodOverridesKey;
+extern NSString * const kFLEXDefaultsHideVariablePreviewsKey;
 extern NSString * const kFLEXDefaultsNetworkHostBlacklistKey;
 
 @interface NSUserDefaults (FLEX)
@@ -31,6 +32,8 @@ extern NSString * const kFLEXDefaultsNetworkHostBlacklistKey;
 @property (nonatomic) BOOL flex_explorerHidesPropertyMethods;
 /// NO by default
 @property (nonatomic) BOOL flex_explorerShowsMethodOverrides;
+/// NO by default
+@property (nonatomic) BOOL flex_explorerHidesVariablePreviews;
 
 // Not actually stored in defaults, but written to a file
 @property (nonatomic) NSArray<NSString *> *flex_networkHostBlacklist;

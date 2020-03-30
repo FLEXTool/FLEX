@@ -16,6 +16,7 @@
 #import "FLEXIvar.h"
 #import "FLEXMethod.h"
 #import "FLEXRuntime+UIKitHelpers.h"
+#import "FLEXObjectExplorer.h"
 
 #pragma mark Private
 
@@ -86,6 +87,7 @@
             return [FLEXShortcut shortcutFor:obj];
         }];
         _numberOfLines = 1;
+        
         // Populate titles and subtitles
         [self reloadData];
     }
@@ -156,6 +158,8 @@
 }
 
 - (void)reloadData {
+    [FLEXObjectExplorer configureDefaultsForItems:self.allShortcuts];
+    
     // Generate all (sub)titles from shortcuts
     if (self.allShortcuts) {
         self.allTitles = [self.allShortcuts flex_mapped:^id(FLEXShortcut *s, NSUInteger idx) {
@@ -303,15 +307,8 @@ static RegistrationBuckets *mMethods = nil;
             classKey = class_getSuperclass(classKey);
         }
     }
-
-    // .tag is used to cache whether the value of .isEditable;
-    // This could change at runtime so it is important that
-    // it is cached every time shortcuts are requeted and not
-    // just once at as shortcuts are initially registered
-    for (id<FLEXRuntimeMetadata> metadata in shortcuts) {
-        metadata.tag = metadata.isEditable ? @YES : nil;
-    }
-
+    
+    [FLEXObjectExplorer configureDefaultsForItems:shortcuts];
     return shortcuts;
 }
 

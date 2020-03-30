@@ -12,15 +12,25 @@
 #import "FLEXMethod.h"
 #import "FLEXProtocol.h"
 
-@protocol FLEXRuntimeMetadata <NSObject>
-/// Used as the main title of the row
-- (NSString *)description;
-/// Used to compare metadata objects for uniqueness
-@property (nonatomic, readonly) NSString *name;
+@class FLEXObjectExplorerDefaults;
+
+/// Model objects of an object explorer screen adopt this
+/// protocol in order respond to user defaults changes 
+@protocol FLEXObjectExplorerItem <NSObject>
+/// Current explorer settings. Set when settings change.
+@property (nonatomic) FLEXObjectExplorerDefaults *defaults;
+
 /// YES for properties and ivars which surely support editing, NO for all methods.
 @property (nonatomic, readonly) BOOL isEditable;
 /// NO for ivars, YES for supported methods and properties
 @property (nonatomic, readonly) BOOL isCallable;
+@end
+
+@protocol FLEXRuntimeMetadata <FLEXObjectExplorerItem>
+/// Used as the main title of the row
+- (NSString *)description;
+/// Used to compare metadata objects for uniqueness
+@property (nonatomic, readonly) NSString *name;
 
 /// For internal use
 @property (nonatomic) id tag;
@@ -76,3 +86,7 @@ typedef NS_ENUM(NSUInteger, FLEXStaticMetadataRowStyle) {
 + (NSArray<FLEXStaticMetadata *> *)classHierarchy:(NSArray<Class> *)classes;
 
 @end
+
+
+/// This is assigned to the \c tag property of each metadata.
+

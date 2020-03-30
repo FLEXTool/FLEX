@@ -18,8 +18,18 @@
 #import "NSArray+Functional.h"
 #import "NSString+FLEX.h"
 
+#define FLEXObjectExplorerDefaultsImpl \
+- (FLEXObjectExplorerDefaults *)defaults { \
+    return self.tag; \
+} \
+ \
+- (void)setDefaults:(FLEXObjectExplorerDefaults *)defaults { \
+    self.tag = defaults; \
+}
+
 #pragma mark FLEXProperty
 @implementation FLEXProperty (UIKitHelpers)
+FLEXObjectExplorerDefaultsImpl
 
 /// Decide whether to use potentialTarget or [potentialTarget class] to get or set property
 - (id)appropriateTargetForPropertyType:(id)potentialTarget {
@@ -67,11 +77,13 @@
 - (NSString *)previewWithTarget:(id)object {
     if (object_isClass(object) && !self.isClassProperty) {
         return self.attributes.fullDeclaration;
-    } else {
+    } else if (self.defaults.wantsDynamicPreviews) {
         return [FLEXRuntimeUtility
             summaryForObject:[self currentValueWithTarget:object]
         ];
     }
+    
+    return nil;
 }
 
 - (UIViewController *)viewerWithTarget:(id)object {
@@ -94,7 +106,7 @@
     // We use .tag to store the cached value of .isEditable that is
     // initialized by FLEXObjectExplorer in -reloadMetada
     if ([self getPotentiallyUnboxedValue:targetForValueCheck]) {
-        if (self.tag) {
+        if (self.defaults.isEditable) {
             // Editable non-nil value, both
             return UITableViewCellAccessoryDetailDisclosureButton;
         } else {
@@ -102,7 +114,7 @@
             return UITableViewCellAccessoryDisclosureIndicator;
         }
     } else {
-        if (self.tag) {
+        if (self.defaults.isEditable) {
             // Editable nil value, just (i)
             return UITableViewCellAccessoryDetailButton;
         } else {
@@ -177,6 +189,7 @@
 
 #pragma mark FLEXIvar
 @implementation FLEXIvar (UIKitHelpers)
+FLEXObjectExplorerDefaultsImpl
 
 - (BOOL)isEditable {
     const FLEXTypeEncoding *typeEncoding = self.typeEncoding.UTF8String;
@@ -198,10 +211,13 @@
 - (NSString *)previewWithTarget:(id)object {
     if (object_isClass(object)) {
         return self.details;
+    } else if (self.defaults.wantsDynamicPreviews) {
+        return [FLEXRuntimeUtility
+            summaryForObject:[self currentValueWithTarget:object]
+        ];
     }
-    return [FLEXRuntimeUtility
-        summaryForObject:[self currentValueWithTarget:object]
-    ];
+    
+    return nil;
 }
 
 - (UIViewController *)viewerWithTarget:(id)object {
@@ -222,7 +238,7 @@
 
     // Could use .isEditable here, but we use .tag for speed since it is cached
     if ([self getPotentiallyUnboxedValue:object]) {
-        if (self.tag) {
+        if (self.defaults.isEditable) {
             // Editable non-nil value, both
             return UITableViewCellAccessoryDetailDisclosureButton;
         } else {
@@ -230,7 +246,7 @@
             return UITableViewCellAccessoryDisclosureIndicator;
         }
     } else {
-        if (self.tag) {
+        if (self.defaults.isEditable) {
             // Editable nil value, just (i)
             return UITableViewCellAccessoryDetailButton;
         } else {
@@ -301,6 +317,7 @@
 
 #pragma mark FLEXMethod
 @implementation FLEXMethodBase (UIKitHelpers)
+FLEXObjectExplorerDefaultsImpl
 
 - (BOOL)isEditable {
     return NO;
@@ -402,6 +419,7 @@
 
 #pragma mark FLEXProtocol
 @implementation FLEXProtocol (UIKitHelpers)
+FLEXObjectExplorerDefaultsImpl
 
 - (BOOL)isEditable {
     return NO;
@@ -474,6 +492,8 @@
 @implementation FLEXStaticMetadata
 @synthesize name = _name;
 @synthesize tag = _tag;
+
+FLEXObjectExplorerDefaultsImpl
 
 + (NSArray<FLEXStaticMetadata *> *)classHierarchy:(NSArray<Class> *)classes {
     return [classes flex_mapped:^id(Class cls, NSUInteger idx) {

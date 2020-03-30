@@ -40,7 +40,7 @@
 
 + (instancetype)forObject:(UIViewController *)viewController {
     BOOL (^vcIsInuse)(UIViewController *) = ^BOOL(UIViewController *controller) {
-        if (controller.view.window) {
+        if (controller.viewIfLoaded.window) {
             return YES;
         }
 

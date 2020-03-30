@@ -33,6 +33,7 @@
 @end
 
 @implementation FLEXShortcut
+@synthesize defaults = _defaults;
 
 + (id<FLEXShortcut>)shortcutFor:(id)item {
     if ([item conformsToProtocol:@protocol(FLEXShortcut)]) {
@@ -85,7 +86,7 @@
 
 - (NSString *)subtitleWith:(id)object {
     if (self.metadataKind) {
-        return [self.metadata previewWithTarget:object] ?: @"nil";
+        return [self.metadata previewWithTarget:object];
     }
 
     // Item is probably a string; must return empty string since
@@ -124,6 +125,32 @@
     return kFLEXMultilineCell;
 }
 
+#pragma mark FLEXObjectExplorerDefaults
+
+- (void)setDefaults:(FLEXObjectExplorerDefaults *)defaults {
+    _defaults = defaults;
+    
+    if (_metadataKind) {
+        self.metadata.defaults = defaults;
+    }
+}
+
+- (BOOL)isEditable {
+    if (_metadataKind) {
+        return self.metadata.isEditable;
+    }
+    
+    return NO;
+}
+
+- (BOOL)isCallable {
+    if (_metadataKind) {
+        return self.metadata.isCallable;
+    }
+    
+    return NO;
+}
+
 #pragma mark - Helpers
 
 - (FLEXProperty *)property { return _item; }
@@ -145,6 +172,7 @@
 @end
 
 @implementation FLEXActionShortcut
+@synthesize defaults = _defaults;
 
 + (instancetype)title:(NSString *)title
              subtitle:(NSString *(^)(id))subtitle
@@ -186,7 +214,11 @@
 }
 
 - (NSString *)subtitleWith:(id)object {
-    return self.subtitleFuture(object);
+    if (self.defaults.wantsDynamicPreviews) {
+        return self.subtitleFuture(object);
+    }
+    
+    return nil;
 }
 
 - (void (^)(UIViewController *))didSelectActionWith:(id)object {
@@ -215,5 +247,8 @@
 
     return nil;
 }
+
+- (BOOL)isEditable { return NO; }
+- (BOOL)isCallable { return NO; }
 
 @end

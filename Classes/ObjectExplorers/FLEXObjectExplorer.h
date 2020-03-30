@@ -8,9 +8,21 @@
 
 #import "FLEXRuntime+UIKitHelpers.h"
 
+/// Carries state about the current user defaults settings
+@interface FLEXObjectExplorerDefaults : NSObject
++ (instancetype)canEdit:(BOOL)editable wantsPreviews:(BOOL)showPreviews;
+
+/// Only \c YES for properties and ivars
+@property (nonatomic, readonly) BOOL isEditable;
+/// Only affects properties and ivars
+@property (nonatomic, readonly) BOOL wantsDynamicPreviews;
+@end
+
 @interface FLEXObjectExplorer : NSObject
 
 + (instancetype)forObject:(id)objectOrClass;
+
++ (void)configureDefaultsForItems:(NSArray<id<FLEXObjectExplorerItem>> *)items;
 
 @property (nonatomic, readonly) id object;
 /// Subclasses can override to provide a more useful description

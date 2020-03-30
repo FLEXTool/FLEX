@@ -13,6 +13,7 @@ NSString * const kFLEXDefaultsiOSPersistentOSLogKey = @"com.flipborad.flex.enabl
 NSString * const kFLEXDefaultsHidePropertyIvarsKey = @"com.flipboard.FLEX.hide_property_ivars";
 NSString * const kFLEXDefaultsHidePropertyMethodsKey = @"com.flipboard.FLEX.hide_property_methods";
 NSString * const kFLEXDefaultsHideMethodOverridesKey = @"com.flipboard.FLEX.hide_method_overrides";
+NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.flipboard.FLEX.hide_variable_previews";
 NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.network_host_blacklist";
 
 #define FLEXDefaultsPathForFile(name) ({ \
@@ -96,6 +97,18 @@ NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.net
     [self setBool:show forKey:kFLEXDefaultsHideMethodOverridesKey];
     [NSNotificationCenter.defaultCenter
         postNotificationName:kFLEXDefaultsHideMethodOverridesKey
+        object:nil
+    ];
+}
+
+- (BOOL)flex_explorerHidesVariablePreviews {
+    return [self boolForKey:kFLEXDefaultsHideVariablePreviewsKey];
+}
+
+- (void)setFlex_explorerHidesVariablePreviews:(BOOL)hide {
+    [self setBool:hide forKey:kFLEXDefaultsHideVariablePreviewsKey];
+    [NSNotificationCenter.defaultCenter
+        postNotificationName:kFLEXDefaultsHideVariablePreviewsKey
         object:nil
     ];
 }

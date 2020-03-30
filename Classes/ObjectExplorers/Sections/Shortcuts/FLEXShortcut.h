@@ -6,7 +6,7 @@
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXObjectExplorer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// It is useful to make your own shortcuts to append/prepend
 /// them to the existing list of shortcuts for a class.
-@protocol FLEXShortcut <NSObject>
+@protocol FLEXShortcut <FLEXObjectExplorerItem>
 
 - (nonnull  NSString *)titleWith:(id)object;
 - (nullable NSString *)subtitleWith:(id)object;
