@@ -10,7 +10,9 @@
 
 @interface FLEXObjectListViewController : FLEXFilteringTableViewController
 
-+ (instancetype)instancesOfClassWithName:(NSString *)className;
+/// This will either return a list of the instances, or take you straight
+/// to the explorer itself if there is only one instance.
++ (UIViewController *)instancesOfClassWithName:(NSString *)className;
 + (instancetype)subclassesOfClassWithName:(NSString *)className;
 + (instancetype)objectsWithReferencesToObject:(id)object;
 

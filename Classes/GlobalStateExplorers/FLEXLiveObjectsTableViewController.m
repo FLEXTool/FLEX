@@ -224,8 +224,8 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *className = self.filteredClassNames[indexPath.row];
-    FLEXObjectListViewController *instancesViewController = [FLEXObjectListViewController instancesOfClassWithName:className];
-    [self.navigationController pushViewController:instancesViewController animated:YES];
+    UIViewController *instances = [FLEXObjectListViewController instancesOfClassWithName:className];
+    [self.navigationController pushViewController:instances animated:YES];
 }
 
 @end

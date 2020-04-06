@@ -111,7 +111,7 @@
     return self;
 }
 
-+ (instancetype)instancesOfClassWithName:(NSString *)className {
++ (UIViewController *)instancesOfClassWithName:(NSString *)className {
     const char *classNameCString = className.UTF8String;
     NSMutableArray *instances = [NSMutableArray new];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
@@ -127,6 +127,12 @@
     }];
     
     NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingAll:instances];
+    if (references.count == 1) {
+        return [FLEXObjectExplorerFactory
+                explorerViewControllerForObject:references.firstObject.object
+        ];
+    }
+    
     FLEXObjectListViewController *controller = [[self alloc] initWithReferences:references];
     controller.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)instances.count];
     return controller;
