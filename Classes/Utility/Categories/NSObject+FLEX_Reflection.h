@@ -1,5 +1,5 @@
 //
-//  NSObject+Reflection.h
+//  NSObject+FLEX_Reflection.h
 //  FLEX
 //
 //  Derived from MirrorKit.

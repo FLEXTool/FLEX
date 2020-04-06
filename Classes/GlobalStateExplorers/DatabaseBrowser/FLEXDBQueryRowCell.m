@@ -8,7 +8,7 @@
 
 #import "FLEXDBQueryRowCell.h"
 #import "FLEXMultiColumnTableView.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "UIFont+FLEX.h"
 #import "FLEXColor.h"
 

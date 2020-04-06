@@ -13,7 +13,7 @@
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXIvar.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "FLEXRuntime+UIKitHelpers.h"
 
 @interface FLEXMetadataSection ()

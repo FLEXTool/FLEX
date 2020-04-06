@@ -8,7 +8,7 @@
 
 #import "FLEXObjectRef.h"
 #import "FLEXRuntimeUtility.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 
 @interface FLEXObjectRef ()
 @property (nonatomic, readonly) BOOL wantsSummary;

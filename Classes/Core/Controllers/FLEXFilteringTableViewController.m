@@ -8,7 +8,7 @@
 
 #import "FLEXFilteringTableViewController.h"
 #import "FLEXTableViewSection.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 
 @interface FLEXFilteringTableViewController ()
 

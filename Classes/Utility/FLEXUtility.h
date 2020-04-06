@@ -13,7 +13,7 @@
 #import <objc/runtime.h>
 #import "FLEXTypeEncodingParser.h"
 #import "FLEXAlert.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "UIFont+FLEX.h"
 #import "NSMapTable+FLEX_Subscripting.h"
 #import "FLEXMacros.h"

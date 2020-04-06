@@ -8,7 +8,7 @@
 
 #import "FLEXSQLiteDatabaseManager.h"
 #import "FLEXManager.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "FLEXRuntimeConstants.h"
 #import <sqlite3.h>
 

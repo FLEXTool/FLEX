@@ -7,9 +7,9 @@
 //
 
 #import "FLEXRuntimeClient.h"
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXMethod.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "FLEXRuntimeSafety.h"
 #include <dlfcn.h>
 

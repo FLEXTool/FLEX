@@ -10,7 +10,7 @@
 #import "FLEXProtocol.h"
 #import "FLEXProperty.h"
 #import "FLEXRuntimeUtility.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #include <dlfcn.h>
 
 @implementation FLEXProtocol

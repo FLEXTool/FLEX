@@ -7,7 +7,7 @@
 //
 
 #import "FHSViewSnapshot.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 
 @implementation FHSViewSnapshot
 

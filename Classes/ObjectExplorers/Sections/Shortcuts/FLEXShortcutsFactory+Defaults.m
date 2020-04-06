@@ -9,7 +9,7 @@
 #import "FLEXShortcutsFactory+Defaults.h"
 #import "FLEXShortcut.h"
 #import "FLEXRuntimeUtility.h"
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 
 #pragma mark - Views
 

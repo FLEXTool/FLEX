@@ -1,5 +1,5 @@
 //
-//  NSObject+Reflection.m
+//  NSObject+FLEX_Reflection.m
 //  FLEX
 //
 //  Derived from MirrorKit.
@@ -7,7 +7,7 @@
 //  Copyright (c) 2015 Tanner Bennett. All rights reserved.
 //
 
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXClassBuilder.h"
 #import "FLEXMirror.h"
 #import "FLEXProperty.h"
@@ -15,7 +15,7 @@
 #import "FLEXIvar.h"
 #import "FLEXProtocol.h"
 #import "FLEXPropertyAttributes.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "FLEXUtility.h"
 
 

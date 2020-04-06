@@ -7,7 +7,7 @@
 //
 
 #import "FLEXGlobalsSection.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "UIFont+FLEX.h"
 
 @interface FLEXGlobalsSection ()

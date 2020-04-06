@@ -10,7 +10,7 @@
 #import "FLEXShortcut.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectListViewController.h"
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 
 @interface FLEXClassShortcuts ()
 @property (nonatomic, readonly) Class cls;

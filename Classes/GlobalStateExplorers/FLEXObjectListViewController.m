@@ -15,7 +15,7 @@
 #import "FLEXHeapEnumerator.h"
 #import "FLEXObjectRef.h"
 #import "NSString+FLEX.h"
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXTableViewCell.h"
 #import <malloc/malloc.h>
 

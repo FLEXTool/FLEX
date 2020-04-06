@@ -8,8 +8,8 @@
 
 #import <XCTest/XCTest.h>
 #import <objc/runtime.h>
-#import "NSObject+Reflection.h"
-#import "NSArray+Functional.h"
+#import "NSObject+FLEX_Reflection.h"
+#import "NSArray+FLEX.h"
 #import "FLEXPropertyAttributes.h"
 #import "FLEXProperty.h"
 #import "FLEXUtility.h"

@@ -7,7 +7,7 @@
 //
 
 #import "FLEXSQLResult.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 
 @implementation FLEXSQLResult
 @synthesize keyedRows = _keyedRows;

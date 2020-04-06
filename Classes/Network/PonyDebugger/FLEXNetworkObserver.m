@@ -15,7 +15,7 @@
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXUtility.h"
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXMethod.h"
 
 #import <objc/runtime.h>

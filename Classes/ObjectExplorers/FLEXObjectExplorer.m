@@ -9,11 +9,10 @@
 #import "FLEXObjectExplorer.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXRuntime+Compare.h"
 #import "FLEXRuntime+UIKitHelpers.h"
 #import "FLEXPropertyAttributes.h"
-#import "NSObject+Reflection.h"
 #import "FLEXMetadataSection.h"
 #import "NSUserDefaults+FLEX.h"
 

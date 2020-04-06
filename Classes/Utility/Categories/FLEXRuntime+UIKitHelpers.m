@@ -15,7 +15,7 @@
 #import "FLEXMethodCallingViewController.h"
 #import "FLEXTableView.h"
 #import "FLEXUtility.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "NSString+FLEX.h"
 
 #define FLEXObjectExplorerDefaultsImpl \

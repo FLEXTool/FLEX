@@ -12,7 +12,7 @@
 #import "FLEXRealmDatabaseManager.h"
 #import "FLEXTableContentViewController.h"
 #import "FLEXMutableListSection.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "FLEXAlert.h"
 
 @interface FLEXTableListViewController ()

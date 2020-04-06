@@ -5,7 +5,7 @@
 //  Created by Tanner on 3/23/17.
 //
 
-#import "NSTimer+Blocks.h"
+#import "NSTimer+FLEX.h"
 
 @interface Block : NSObject
 - (void)invoke;

@@ -1,12 +1,12 @@
 //
-//  NSArray+Functional.m
+//  NSArray+FLEX.m
 //  FLEX
 //
 //  Created by Tanner Bennett on 9/25/19.
 //  Copyright © 2019 Flipboard. All rights reserved.
 //
 
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 
 #define FLEXArrayClassIsMutable(me) ([[self class] isSubclassOfClass:[NSMutableArray class]])
 

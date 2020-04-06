@@ -13,7 +13,7 @@
 #import "FLEXAlert.h"
 #import "FLEXWindow.h"
 #import "FLEXResources.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "UIBarButtonItem+FLEX.h"
 
 BOOL const kFHSViewControllerExcludeFLEXWindows = YES;

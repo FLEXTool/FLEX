@@ -1,5 +1,5 @@
 //
-//  NSArray+Functional.h
+//  NSArray+FLEX.h
 //  FLEX
 //
 //  Created by Tanner Bennett on 9/25/19.

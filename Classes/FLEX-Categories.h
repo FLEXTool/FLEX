@@ -17,11 +17,11 @@
 #import <FLEX/UIMenu+FLEX.h>
 #import <FLEX/UITextField+Range.h>
 
-#import <FLEX/NSObject+Reflection.h>
-#import <FLEX/NSArray+Functional.h>
+#import <FLEX/NSObject+FLEX_Reflection.h>
+#import <FLEX/NSArray+FLEX.h>
 #import <FLEX/NSDictionary+ObjcRuntime.h>
 #import <FLEX/NSString+ObjcRuntime.h>
 #import <FLEX/NSString+FLEX.h>
 #import <FLEX/NSUserDefaults+FLEX.h>
 #import <FLEX/NSMapTable+FLEX_Subscripting.h>
-#import <FLEX/NSTimer+Blocks.h>
+#import <FLEX/NSTimer+FLEX.h>

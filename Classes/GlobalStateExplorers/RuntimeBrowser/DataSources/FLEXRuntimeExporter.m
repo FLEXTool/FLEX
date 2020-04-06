@@ -8,10 +8,10 @@
 
 #import "FLEXRuntimeExporter.h"
 #import "FLEXSQLiteDatabaseManager.h"
-#import "NSObject+Reflection.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXRuntimeController.h"
 #import "FLEXRuntimeClient.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "FLEXTypeEncodingParser.h"
 #import <sqlite3.h>
 

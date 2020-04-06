@@ -7,7 +7,7 @@
 //
 
 #import "FLEXRealmDatabaseManager.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 #import "FLEXSQLResult.h"
 
 #if __has_include(<Realm/Realm.h>)

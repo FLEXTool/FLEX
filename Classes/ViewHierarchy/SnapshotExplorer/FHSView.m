@@ -7,7 +7,7 @@
 
 #import "FHSView.h"
 #import "FLEXUtility.h"
-#import "NSArray+Functional.h"
+#import "NSArray+FLEX.h"
 
 @interface FHSView (Snapshotting)
 + (UIImage *)_snapshotView:(UIView *)view;
