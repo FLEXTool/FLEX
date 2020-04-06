@@ -13,6 +13,7 @@
 #import "FLEXMutableListSection.h"
 #import "FLEXUtility.h"
 #import "UIPasteboard+FLEX.h"
+#import "UIBarButtonItem+FLEX.h"
 
 @interface FLEXKeychainTableViewController ()
 @property (nonatomic, readonly) FLEXMutableListSection<NSDictionary *> *section;
@@ -30,12 +31,8 @@
     [super viewDidLoad];
     
     self.navigationItem.rightBarButtonItems = @[
-        [[UIBarButtonItem alloc]
-            initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(trashPressed)
-        ],
-        [[UIBarButtonItem alloc]
-            initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPressed)
-        ],
+        [UIBarButtonItem systemItem:UIBarButtonSystemItemTrash target:self action:@selector(trashPressed:)],
+        [UIBarButtonItem systemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPressed)],
     ];
 
     [self reloadData];
@@ -127,7 +124,7 @@
 
 #pragma mark Buttons
 
-- (void)trashPressed {
+- (void)trashPressed:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.title(@"Clear Keychain");
         make.message(@"This will remove all keychain items for this app.\n");
@@ -140,7 +137,7 @@
             [self reloadData];
         });
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self];
+    } showFrom:self source:sender];
 }
 
 - (void)addPressed {

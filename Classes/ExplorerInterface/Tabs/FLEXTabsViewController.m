@@ -109,7 +109,7 @@
     self.toolbarItems = @[
         UIBarButtonItem.flex_fixedSpace,
         UIBarButtonItem.flex_flexibleSpace,
-        FLEXBarButtonItemSystem(Add, self, @selector(addTabButtonPressed)),
+        FLEXBarButtonItemSystem(Add, self, @selector(addTabButtonPressed:)),
         UIBarButtonItem.flex_flexibleSpace,
         FLEXBarButtonItemSystem(Edit, self, @selector(toggleEditing)),
     ];
@@ -121,7 +121,7 @@
 - (void)setupEditingBarItems {
     self.navigationItem.rightBarButtonItem = nil;
     self.toolbarItems = @[
-        [UIBarButtonItem itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed)],
+        [UIBarButtonItem itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed:)],
         UIBarButtonItem.flex_flexibleSpace,
         [UIBarButtonItem disabledSystemItem:UIBarButtonSystemItemAdd],
         UIBarButtonItem.flex_flexibleSpace,
@@ -193,7 +193,7 @@
     }
 }
 
-- (void)addTabButtonPressed {
+- (void)addTabButtonPressed:(UIBarButtonItem *)sender {
     if (FLEXBookmarkManager.bookmarks.count) {
         [FLEXAlert makeSheet:^(FLEXAlert *make) {
             make.title(@"New Tab");
@@ -208,7 +208,7 @@
                 ] animated:YES completion:nil];
             });
             make.button(@"Cancel").cancelStyle();
-        } showFrom:self];
+        } showFrom:self source:sender];
     } else {
         // No bookmarks, just open the main menu
         [self addTabAndDismiss:[FLEXNavigationController
@@ -224,7 +224,7 @@
     }];
 }
 
-- (void)closeAllButtonPressed {
+- (void)closeAllButtonPressed:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         NSInteger count = self.openTabs.count;
         NSString *title = FLEXPluralFormatString(count, @"Close %@ tabs", @"Close %@ tab");
@@ -233,7 +233,7 @@
             [self toggleEditing];
         });
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self];
+    } showFrom:self source:sender];
 }
 
 - (void)closeAll {

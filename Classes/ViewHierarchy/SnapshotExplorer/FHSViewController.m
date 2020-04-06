@@ -162,7 +162,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
         UIBarButtonItem.flex_flexibleSpace,
         [UIBarButtonItem
             itemWithImage:FLEXResources.moreIcon
-            target:self action:@selector(didPressOptionsButton)
+            target:self action:@selector(didPressOptionsButton:)
         ],
         UIBarButtonItem.flex_flexibleSpace,
         [UIBarButtonItem itemWithCustomView:snapshotView.depthSlider]
@@ -205,7 +205,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 
 #pragma mark Events
 
-- (void)didPressOptionsButton {
+- (void)didPressOptionsButton:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         if (self.selectedView) {
             make.button(@"Hide selected view").handler(^(NSArray<NSString *> *strings) {
@@ -227,7 +227,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
             [self.snapshotView toggleShowBorders];
         });
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self];
+    } showFrom:self source:sender];
 }
 
 - (void)resizeToolbarItems:(CGSize)viewSize {

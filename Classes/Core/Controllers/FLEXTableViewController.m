@@ -222,7 +222,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    _shareToolbarItem = FLEXBarButtonItemSystem(Action, self, @selector(shareButtonPressed));
+    _shareToolbarItem = FLEXBarButtonItemSystem(Action, self, @selector(shareButtonPressed:));
     _bookmarksToolbarItem = [UIBarButtonItem
         itemWithImage:FLEXResources.bookmarksIcon target:self action:@selector(showBookmarks)
     ];
@@ -386,7 +386,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     [self setupToolbarItems];
 }
 
-- (void)shareButtonPressed {
+- (void)shareButtonPressed:(UIBarButtonItem *)sender {
 
 }
 

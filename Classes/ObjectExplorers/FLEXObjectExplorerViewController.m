@@ -102,7 +102,7 @@
     
     // ... button for extra options
     [self addToolbarItems:@[[UIBarButtonItem
-        itemWithImage:FLEXResources.moreIcon target:self action:@selector(moreButtonPressed)
+        itemWithImage:FLEXResources.moreIcon target:self action:@selector(moreButtonPressed:)
     ]]];
 
     // Swipe gestures to swipe between classes in the hierarchy
@@ -217,7 +217,7 @@
     [super reloadData];
 }
 
-- (void)shareButtonPressed {
+- (void)shareButtonPressed:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.button(@"Add to Bookmarks").handler(^(NSArray<NSString *> *strings) {
             [FLEXBookmarkManager.bookmarks addObject:self.object];
@@ -229,7 +229,7 @@
             UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
         });
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self];
+    } showFrom:self source:sender];
 }
 
 
@@ -285,7 +285,7 @@
     return YES;
 }
     
-- (void)moreButtonPressed {
+- (void)moreButtonPressed:(UIBarButtonItem *)sender {
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
     // Maps preference keys to a description of what they affect
     NSDictionary<NSString *, NSString *> *explorerToggles = @{
@@ -321,7 +321,7 @@
         }
         
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self];
+    } showFrom:self source:sender];
 }
 
 #pragma mark - Description

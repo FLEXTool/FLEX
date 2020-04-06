@@ -140,7 +140,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 @property (nonatomic) BOOL showsShareToolbarItem;
 /// Called when the share button is pressed.
 /// Default implementation does nothign. Subclasses may override.
-- (void)shareButtonPressed;
+- (void)shareButtonPressed:(UIBarButtonItem *)sender;
 
 /// Subclasses may call this to opt-out of all toolbar related behavior.
 /// This is necessary if you want to disable the gesture which reveals the toolbar.

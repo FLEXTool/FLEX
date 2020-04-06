@@ -68,7 +68,7 @@
 - (void)setupEditingBarItems {
     self.navigationItem.rightBarButtonItem = nil;
     self.toolbarItems = @[
-        [UIBarButtonItem itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed)],
+        [UIBarButtonItem itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed:)],
         UIBarButtonItem.flex_flexibleSpace,
         // We use a non-system done item because we change its title dynamically
         [UIBarButtonItem doneStyleitemWithTitle:@"Done" target:self action:@selector(toggleEditing)]
@@ -149,7 +149,7 @@
     }
 }
 
-- (void)closeAllButtonPressed {
+- (void)closeAllButtonPressed:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         NSInteger count = self.bookmarks.count;
         NSString *title = FLEXPluralFormatString(count, @"Remove %@ bookmarks", @"Remove %@ bookmark");
@@ -158,7 +158,7 @@
             [self toggleEditing];
         });
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self];
+    } showFrom:self source:sender];
 }
 
 - (void)closeAll {

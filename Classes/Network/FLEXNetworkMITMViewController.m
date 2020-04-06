@@ -109,7 +109,7 @@
 
 #pragma mark Button Actions
 
-- (void)settingsButtonTapped:(id)sender {
+- (void)settingsButtonTapped:(UIBarButtonItem *)sender {
     UIViewController *settings = [FLEXNetworkSettingsController new];
     settings.navigationItem.rightBarButtonItem = FLEXBarButtonItemSystem(
         Done, self, @selector(settingsViewControllerDoneTapped:)
@@ -121,7 +121,7 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)trashButtonTapped:(id)sender {
+- (void)trashButtonTapped:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.title(@"Clear All Recorded Requests?");
         make.message(@"This cannot be undone.");
@@ -130,7 +130,7 @@
         make.button(@"Clear All").destructiveStyle().handler(^(NSArray *strings) {
             [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
         });
-    } showFrom:self];
+    } showFrom:self source:sender];
 }
 
 - (void)settingsViewControllerDoneTapped:(id)sender {
