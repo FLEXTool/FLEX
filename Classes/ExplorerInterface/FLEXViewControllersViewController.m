@@ -42,6 +42,7 @@
     [super viewDidLoad];
     
     self.title = @"View Controllers at Tap";
+    self.showsSearchBar = YES;
     [self disableToolbar];
 }
 
