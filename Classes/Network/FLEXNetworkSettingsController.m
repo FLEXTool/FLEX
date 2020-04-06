@@ -11,6 +11,7 @@
 #import "FLEXUtility.h"
 #import "FLEXTableView.h"
 #import "FLEXColor.h"
+#import "NSUserDefaults+FLEX.h"
 
 @interface FLEXNetworkSettingsController () <UIActionSheetDelegate>
 @property (nonatomic) float cacheLimitValue;
@@ -18,6 +19,7 @@
 
 @property (nonatomic, readonly) UISwitch *observerSwitch;
 @property (nonatomic, readonly) UISwitch *cacheMediaSwitch;
+@property (nonatomic, readonly) UISwitch *jsonViewerSwitch;
 @property (nonatomic, readonly) UISlider *cacheLimitSlider;
 @property (nonatomic) UILabel *cacheLimitLabel;
 
@@ -32,8 +34,11 @@
     [self disableToolbar];
     self.hostBlacklist = FLEXNetworkRecorder.defaultRecorder.hostBlacklist.mutableCopy;
     
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    
     _observerSwitch = [UISwitch new];
     _cacheMediaSwitch = [UISwitch new];
+    _jsonViewerSwitch = [UISwitch new];
     _cacheLimitSlider = [UISlider new];
     
     self.observerSwitch.on = FLEXNetworkObserver.enabled;
@@ -45,6 +50,12 @@
     self.cacheMediaSwitch.on = FLEXNetworkRecorder.defaultRecorder.shouldCacheMediaResponses;
     [self.cacheMediaSwitch addTarget:self
         action:@selector(cacheMediaResponsesToggled:)
+        forControlEvents:UIControlEventValueChanged
+    ];
+    
+    self.jsonViewerSwitch.on = defaults.flex_registerDictionaryJSONViewerOnLaunch;
+    [self.jsonViewerSwitch addTarget:self
+        action:@selector(jsonViewerSettingToggled:)
         forControlEvents:UIControlEventValueChanged
     ];
     
@@ -84,12 +95,16 @@
     FLEXNetworkRecorder.defaultRecorder.shouldCacheMediaResponses = sender.isOn;
 }
 
+- (void)jsonViewerSettingToggled:(UISwitch *)sender {
+    [NSUserDefaults.standardUserDefaults toggleBoolForKey:kFLEXDefaultsRegisterJSONExplorerKey];
+}
+
 - (void)cacheLimitAdjusted:(UISlider *)sender {
     self.cacheLimitValue = sender.value;
 }
 
 
-#pragma mark - Table View
+#pragma mark - Table View Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.hostBlacklist.count ? 2 : 1;
@@ -97,7 +112,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
-        case 0: return 4;
+        case 0: return 5;
         case 1: return self.hostBlacklist.count;
         default: return 0;
     }
@@ -109,6 +124,17 @@
         case 1: return @"Host Blacklist";
         default: return nil;
     }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == 0) {
+        return @"By default, JSON is rendered in a webview. Turn on "
+        "\"View JSON as a dictionary/array\" to convert JSON payloads "
+        "to objects and view them in an object explorer. "
+        "This setting requires a restart of the app.";
+    }
+    
+    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath  {
@@ -132,10 +158,14 @@
                     cell.accessoryView = self.cacheMediaSwitch;
                     break;
                 case 2:
+                    cell.textLabel.text = @"View JSON as a dictionary/array";
+                    cell.accessoryView = self.jsonViewerSwitch;
+                    break;
+                case 3:
                     cell.textLabel.text = @"Reset Host Blacklist";
                     cell.textLabel.textColor = tableView.tintColor;
                     break;
-                case 3:
+                case 4:
                     cell.textLabel.text = self.cacheLimitCellTitle;
                     self.cacheLimitLabel = cell.textLabel;
                     [self.cacheLimitSlider removeFromSuperview];
@@ -178,6 +208,8 @@
 
     return cell;
 }
+
+#pragma mark - Table View Delegate
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)ip {
     // Can only select the "Reset Host Blacklist" row

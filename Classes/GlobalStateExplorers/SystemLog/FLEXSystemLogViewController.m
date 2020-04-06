@@ -42,6 +42,11 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 #pragma mark - Initialization
 
 + (void)load {
+    // User must opt-into disabling os_log
+    if (!NSUserDefaults.standardUserDefaults.flex_disableOSLog) {
+        return;
+    }
+    
     // Thanks to @Ram4096 on GitHub for telling me that
     // os_log is conditionally enabled by the SDK version
     void *addr = __builtin_return_address(0);
@@ -108,7 +113,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     }
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.title = @"Loading...";
+    self.title = @"Waiting for Logs...";
     
     // Toolbar buttons //
     
@@ -123,11 +128,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
         action:@selector(showLogSettings)
     ];
     
-    if (FLEXOSLogAvailable() && !FLEXNSLogHookWorks) {
-        [self addToolbarItems:@[scrollDown, settings]];
-    } else {
-        [self addToolbarItems:@[scrollDown]];
-    }
+    [self addToolbarItems:@[scrollDown, settings]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -191,17 +192,35 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 }
 
 - (void)showLogSettings {
-    FLEXOSLogController *logController = (FLEXOSLogController *)self.logController;
-    BOOL persistent = NSUserDefaults.standardUserDefaults.flex_cacheOSLogMessages;
-    NSString *toggle = persistent ? @"Disable" : @"Enable";
-    NSString *title = [@"Persistent logging: " stringByAppendingString:persistent ? @"ON" : @"OFF"];
-    NSString *body = @"In iOS 10 and up, ASL is gone. The OS Log API is much more limited. "
-    "To get as close to the old behavior as possible, logs must be collected manually at launch and stored.\n\n"
-    "Turn this feature on only when you need it.";
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    BOOL disableOSLog = defaults.flex_disableOSLog;
+    BOOL persistent = defaults.flex_cacheOSLogMessages;
 
+    NSString *aslToggle = disableOSLog ? @"Enable os_log (default)" : @"Disable os_log";
+    NSString *persistence = persistent ? @"Disable persistent logging" : @"Enable persistent logging";
+    
+    NSString *title = @"System Log Settings";
+    NSString *body = @"In iOS 10 and up, ASL has been replaced by os_log. "
+    "The os_log API is much more limited. Below, you can opt-into the old behavior "
+    "if you want cleaner, more reliable logs within FLEX, but this will break "
+    "anything that expects os_log to be working, such as Console.app. "
+    "This setting requires the app to restart to take effect. \n\n"
+    
+    "To get as close to the old behavior as possible with os_log enabled, logs must "
+    "be collected manually at launch and stored. This setting has no effect "
+    "on iOS 9 and below, or if os_log is disabled. "
+    "You should only enable persistent logging when you need it.";
+    
+    FLEXOSLogController *logController = (FLEXOSLogController *)self.logController;
+    
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
-        make.title(title).message(body).button(toggle).handler(^(NSArray<NSString *> *strings) {
-            NSUserDefaults.standardUserDefaults.flex_cacheOSLogMessages = !persistent;
+        make.title(title).message(body);
+        make.button(aslToggle).destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            [defaults toggleBoolForKey:kFLEXDefaultsDisableOSLogForceASLKey];
+        });
+        
+        make.button(persistence).handler(^(NSArray<NSString *> *strings) {
+            [defaults toggleBoolForKey:kFLEXDefaultsiOSPersistentOSLogKey];
             logController.persistent = !persistent;
             [logController.messages addObjectsFromArray:self.logMessages.list];
         });

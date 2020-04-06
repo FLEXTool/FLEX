@@ -15,6 +15,8 @@ NSString * const kFLEXDefaultsHidePropertyMethodsKey = @"com.flipboard.FLEX.hide
 NSString * const kFLEXDefaultsHideMethodOverridesKey = @"com.flipboard.FLEX.hide_method_overrides";
 NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.flipboard.FLEX.hide_variable_previews";
 NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.network_host_blacklist";
+NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
+NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
 
 #define FLEXDefaultsPathForFile(name) ({ \
     NSArray *paths = NSSearchPathForDirectoriesInDomains( \
@@ -24,6 +26,8 @@ NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.net
 })
 
 @implementation NSUserDefaults (FLEX)
+
+#pragma mark Internal
 
 /// @param filename the name of a plist file without any extension
 - (NSString *)flex_defaultsPathForFile:(NSString *)filename {
@@ -36,10 +40,14 @@ NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.net
     return [preferences stringByAppendingPathComponent:filename];
 }
 
+#pragma mark Helper
+
 - (void)toggleBoolForKey:(NSString *)key {
     [self setBool:![self boolForKey:key] forKey:key];
     [NSNotificationCenter.defaultCenter postNotificationName:key object:nil];
 }
+
+#pragma mark Misc
 
 - (double)flex_toolbarTopMargin {
     if ([self objectForKey:kFLEXDefaultsToolbarTopMarginKey]) {
@@ -53,6 +61,37 @@ NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.net
     [self setDouble:margin forKey:kFLEXDefaultsToolbarTopMarginKey];
 }
 
+- (NSArray<NSString *> *)flex_networkHostBlacklist {
+    return [NSArray arrayWithContentsOfFile:[
+        self flex_defaultsPathForFile:kFLEXDefaultsNetworkHostBlacklistKey
+    ]] ?: @[];
+}
+
+- (void)setFlex_networkHostBlacklist:(NSArray<NSString *> *)blacklist {
+    NSParameterAssert(blacklist);
+    [blacklist writeToFile:[
+        self flex_defaultsPathForFile:kFLEXDefaultsNetworkHostBlacklistKey
+    ] atomically:YES];
+}
+
+- (BOOL)flex_registerDictionaryJSONViewerOnLaunch {
+    return [self boolForKey:kFLEXDefaultsRegisterJSONExplorerKey];
+}
+
+- (void)setFlex_registerDictionaryJSONViewerOnLaunch:(BOOL)enable {
+    [self setBool:enable forKey:kFLEXDefaultsRegisterJSONExplorerKey];
+}
+
+#pragma mark System Log
+
+- (BOOL)flex_disableOSLog {
+    return [self boolForKey:kFLEXDefaultsDisableOSLogForceASLKey];
+}
+
+- (void)setFlex_disableOSLog:(BOOL)disable {
+    [self setBool:disable forKey:kFLEXDefaultsDisableOSLogForceASLKey];
+}
+
 - (BOOL)flex_cacheOSLogMessages {
     return [self boolForKey:kFLEXDefaultsiOSPersistentOSLogKey];
 }
@@ -64,6 +103,8 @@ NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.net
         object:nil
     ];
 }
+
+#pragma mark Object Explorer
 
 - (BOOL)flex_explorerHidesPropertyIvars {
     return [self boolForKey:kFLEXDefaultsHidePropertyIvarsKey];
@@ -111,19 +152,6 @@ NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.net
         postNotificationName:kFLEXDefaultsHideVariablePreviewsKey
         object:nil
     ];
-}
-
-- (NSArray<NSString *> *)flex_networkHostBlacklist {
-    return [NSArray arrayWithContentsOfFile:[
-        self flex_defaultsPathForFile:kFLEXDefaultsNetworkHostBlacklistKey
-    ]] ?: @[];
-}
-
-- (void)setFlex_networkHostBlacklist:(NSArray<NSString *> *)blacklist {
-    NSParameterAssert(blacklist);
-    [blacklist writeToFile:[
-        self flex_defaultsPathForFile:kFLEXDefaultsNetworkHostBlacklistKey
-    ] atomically:YES];
 }
 
 @end
