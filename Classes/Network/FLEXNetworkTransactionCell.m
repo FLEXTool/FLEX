@@ -1,5 +1,5 @@
 //
-//  FLEXNetworkTransactionTableViewCell.m
+//  FLEXNetworkTransactionCell.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/8/15.
@@ -7,14 +7,14 @@
 //
 
 #import "FLEXColor.h"
-#import "FLEXNetworkTransactionTableViewCell.h"
+#import "FLEXNetworkTransactionCell.h"
 #import "FLEXNetworkTransaction.h"
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
 
 NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactionCellIdentifier";
 
-@interface FLEXNetworkTransactionTableViewCell ()
+@interface FLEXNetworkTransactionCell ()
 
 @property (nonatomic) UIImageView *thumbnailImageView;
 @property (nonatomic) UILabel *nameLabel;
@@ -23,7 +23,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 
 @end
 
-@implementation FLEXNetworkTransactionTableViewCell
+@implementation FLEXNetworkTransactionCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];

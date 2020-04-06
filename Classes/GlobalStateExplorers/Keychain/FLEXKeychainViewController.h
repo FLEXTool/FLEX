@@ -1,5 +1,5 @@
 //
-//  FLEXKeychainTableViewController.h
+//  FLEXKeychainViewController.h
 //  FLEX
 //
 //  Created by ray on 2019/8/17.
@@ -9,6 +9,6 @@
 #import "FLEXGlobalsEntry.h"
 #import "FLEXFilteringTableViewController.h"
 
-@interface FLEXKeychainTableViewController : FLEXFilteringTableViewController <FLEXGlobalsEntry>
+@interface FLEXKeychainViewController : FLEXFilteringTableViewController <FLEXGlobalsEntry>
 
 @end

@@ -10,12 +10,12 @@
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcRuntimeViewController.h"
-#import "FLEXKeychainTableViewController.h"
+#import "FLEXKeychainViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
-#import "FLEXLiveObjectsTableViewController.h"
-#import "FLEXFileBrowserTableViewController.h"
-#import "FLEXCookiesTableViewController.h"
+#import "FLEXLiveObjectsController.h"
+#import "FLEXFileBrowserController.h"
+#import "FLEXCookiesViewController.h"
 #import "FLEXGlobalsEntry.h"
 #import "FLEXManager+Private.h"
 #import "FLEXSystemLogViewController.h"
@@ -56,18 +56,18 @@
 + (FLEXGlobalsEntry *)globalsEntryForRow:(FLEXGlobalsRow)row {
     switch (row) {
         case FLEXGlobalsRowAppKeychainItems:
-            return [FLEXKeychainTableViewController flex_concreteGlobalsEntry:row];
+            return [FLEXKeychainViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowAddressInspector:
             return [FLEXAddressExplorerCoordinator flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowBrowseRuntime:
             return [FLEXObjcRuntimeViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowLiveObjects:
-            return [FLEXLiveObjectsTableViewController flex_concreteGlobalsEntry:row];
+            return [FLEXLiveObjectsController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowCookies:
-            return [FLEXCookiesTableViewController flex_concreteGlobalsEntry:row];
+            return [FLEXCookiesViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowBrowseBundle:
         case FLEXGlobalsRowBrowseContainer:
-            return [FLEXFileBrowserTableViewController flex_concreteGlobalsEntry:row];
+            return [FLEXFileBrowserController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowSystemLog:
             return [FLEXSystemLogViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowNetworkHistory:

@@ -15,7 +15,7 @@
 #import "FLEXExplorerViewController.h"
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXKeyboardHelpViewController.h"
-#import "FLEXFileBrowserTableViewController.h"
+#import "FLEXFileBrowserController.h"
 #import "FLEXUtility.h"
 
 @interface FLEXManager (ExtensibilityPrivate)
@@ -156,7 +156,7 @@
     } description:@"End editing text\n\t\tDismiss top view controller"];
     
     [self registerSimulatorShortcutWithKey:@"o" modifiers:UIKeyModifierCommand|UIKeyModifierShift action:^{
-        [self toggleTopViewControllerOfClass:[FLEXFileBrowserTableViewController class]];
+        [self toggleTopViewControllerOfClass:[FLEXFileBrowserController class]];
     } description:@"Toggle file browser menu"];
 }
 

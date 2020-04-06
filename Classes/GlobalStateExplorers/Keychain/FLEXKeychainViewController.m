@@ -1,5 +1,5 @@
 //
-//  FLEXKeychainTableViewController.m
+//  FLEXKeychainViewController.m
 //  FLEX
 //
 //  Created by ray on 2019/8/17.
@@ -8,18 +8,18 @@
 
 #import "FLEXKeychain.h"
 #import "FLEXKeychainQuery.h"
-#import "FLEXKeychainTableViewController.h"
+#import "FLEXKeychainViewController.h"
 #import "FLEXTableViewCell.h"
 #import "FLEXMutableListSection.h"
 #import "FLEXUtility.h"
 #import "UIPasteboard+FLEX.h"
 #import "UIBarButtonItem+FLEX.h"
 
-@interface FLEXKeychainTableViewController ()
+@interface FLEXKeychainViewController ()
 @property (nonatomic, readonly) FLEXMutableListSection<NSDictionary *> *section;
 @end
 
-@implementation FLEXKeychainTableViewController
+@implementation FLEXKeychainViewController
 
 - (id)init {
     return [self initWithStyle:UITableViewStyleGrouped];
@@ -167,7 +167,7 @@
 }
 
 + (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
-    FLEXKeychainTableViewController *viewController = [self new];
+    FLEXKeychainViewController *viewController = [self new];
     viewController.title = [self globalsEntryTitle:row];
 
     return viewController;

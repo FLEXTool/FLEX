@@ -1,5 +1,5 @@
 //
-//  FLEXNetworkTransactionDetailTableViewController.h
+//  FLEXNetworkTransactionDetailController.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/10/15.
@@ -10,7 +10,7 @@
 
 @class FLEXNetworkTransaction;
 
-@interface FLEXNetworkTransactionDetailTableViewController : UITableViewController
+@interface FLEXNetworkTransactionDetailController : UITableViewController
 
 @property (nonatomic) FLEXNetworkTransaction *transaction;
 

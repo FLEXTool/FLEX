@@ -1,12 +1,12 @@
 //
-//  FLEXLiveObjectsTableViewController.m
+//  FLEXLiveObjectsController.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/28/14.
 //  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
-#import "FLEXLiveObjectsTableViewController.h"
+#import "FLEXLiveObjectsController.h"
 #import "FLEXHeapEnumerator.h"
 #import "FLEXObjectListViewController.h"
 #import "FLEXUtility.h"
@@ -18,7 +18,7 @@ static const NSInteger kFLEXLiveObjectsSortAlphabeticallyIndex = 0;
 static const NSInteger kFLEXLiveObjectsSortByCountIndex = 1;
 static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
-@interface FLEXLiveObjectsTableViewController ()
+@interface FLEXLiveObjectsController ()
 
 @property (nonatomic) NSDictionary<NSString *, NSNumber *> *instanceCountsForClassNames;
 @property (nonatomic) NSDictionary<NSString *, NSNumber *> *instanceSizesForClassNames;
@@ -28,7 +28,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 @end
 
-@implementation FLEXLiveObjectsTableViewController
+@implementation FLEXLiveObjectsController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -139,7 +139,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 }
 
 + (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
-    FLEXLiveObjectsTableViewController *liveObjectsViewController = [self new];
+    FLEXLiveObjectsController *liveObjectsViewController = [self new];
     liveObjectsViewController.title = [self globalsEntryTitle:row];
 
     return liveObjectsViewController;

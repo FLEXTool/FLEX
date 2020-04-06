@@ -1,5 +1,5 @@
 //
-//  FLEXNetworkTransactionDetailTableViewController.m
+//  FLEXNetworkTransactionDetailController.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/10/15.
@@ -7,7 +7,7 @@
 //
 
 #import "FLEXColor.h"
-#import "FLEXNetworkTransactionDetailTableViewController.h"
+#import "FLEXNetworkTransactionDetailController.h"
 #import "FLEXNetworkCurlLogger.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkTransaction.h"
@@ -44,13 +44,13 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 @end
 
-@interface FLEXNetworkTransactionDetailTableViewController ()
+@interface FLEXNetworkTransactionDetailController ()
 
 @property (nonatomic, copy) NSArray<FLEXNetworkDetailSection *> *sections;
 
 @end
 
-@implementation FLEXNetworkTransactionDetailTableViewController
+@implementation FLEXNetworkTransactionDetailController
 
 - (instancetype)initWithStyle:(UITableViewStyle)style {
     // Force grouped style

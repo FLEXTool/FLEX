@@ -1,12 +1,12 @@
 //
-//  FLEXFileBrowserTableViewController.m
+//  FLEXFileBrowserController.m
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/9/14.
 //
 //
 
-#import "FLEXFileBrowserTableViewController.h"
+#import "FLEXFileBrowserController.h"
 #import "FLEXUtility.h"
 #import "FLEXWebViewController.h"
 #import "FLEXImagePreviewViewController.h"
@@ -18,7 +18,7 @@
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end
 
-@interface FLEXFileBrowserTableViewController () <FLEXFileBrowserSearchOperationDelegate>
+@interface FLEXFileBrowserController () <FLEXFileBrowserSearchOperationDelegate>
 
 @property (nonatomic, copy) NSString *path;
 @property (nonatomic, copy) NSArray<NSString *> *childPaths;
@@ -30,7 +30,7 @@
 
 @end
 
-@implementation FLEXFileBrowserTableViewController
+@implementation FLEXFileBrowserController
 
 + (instancetype)path:(NSString *)path {
     return [[self alloc] initWithPath:path];
@@ -49,7 +49,7 @@
         
         
         //computing path size
-        FLEXFileBrowserTableViewController *__weak weakSelf = self;
+        FLEXFileBrowserController *__weak weakSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSFileManager *fileManager = NSFileManager.defaultManager;
             NSDictionary<NSString *, id> *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
@@ -66,7 +66,7 @@
             }
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                FLEXFileBrowserTableViewController *__strong strongSelf = weakSelf;
+                FLEXFileBrowserController *__strong strongSelf = weakSelf;
                 strongSelf.recursiveSize = @(totalSize);
                 [strongSelf.tableView reloadData];
             });

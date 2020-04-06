@@ -1,5 +1,5 @@
 //
-//  FLEXCookiesTableViewController.h
+//  FLEXCookiesViewController.h
 //  FLEX
 //
 //  Created by Rich Robinson on 19/10/2015.
@@ -9,6 +9,6 @@
 #import "FLEXGlobalsEntry.h"
 #import "FLEXFilteringTableViewController.h"
 
-@interface FLEXCookiesTableViewController : FLEXFilteringTableViewController <FLEXGlobalsEntry>
+@interface FLEXCookiesViewController : FLEXFilteringTableViewController <FLEXGlobalsEntry>
 
 @end

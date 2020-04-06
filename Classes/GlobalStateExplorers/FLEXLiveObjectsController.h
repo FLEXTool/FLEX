@@ -1,5 +1,5 @@
 //
-//  FLEXLiveObjectsTableViewController.h
+//  FLEXLiveObjectsController.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/28/14.
@@ -9,6 +9,6 @@
 #import "FLEXTableViewController.h"
 #import "FLEXGlobalsEntry.h"
 
-@interface FLEXLiveObjectsTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
+@interface FLEXLiveObjectsController : FLEXTableViewController <FLEXGlobalsEntry>
 
 @end

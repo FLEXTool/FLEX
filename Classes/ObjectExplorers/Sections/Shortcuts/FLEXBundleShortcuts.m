@@ -11,7 +11,7 @@
 #import "FLEXAlert.h"
 #import "FLEXRuntimeExporter.h"
 #import "FLEXTableListViewController.h"
-#import "FLEXFileBrowserTableViewController.h"
+#import "FLEXFileBrowserController.h"
 
 #pragma mark -
 @implementation FLEXBundleShortcuts
@@ -22,7 +22,7 @@
         [FLEXActionShortcut
             title:@"Browse Bundle Directory" subtitle:nil
             viewer:^UIViewController *(NSBundle *bundle) {
-                return [FLEXFileBrowserTableViewController path:bundle.bundlePath];
+                return [FLEXFileBrowserController path:bundle.bundlePath];
             }
             accessoryType:^UITableViewCellAccessoryType(NSBundle *bundle) {
                 return UITableViewCellAccessoryDisclosureIndicator;

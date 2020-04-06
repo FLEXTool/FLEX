@@ -12,8 +12,8 @@
 #import "FLEXNetworkTransaction.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkObserver.h"
-#import "FLEXNetworkTransactionTableViewCell.h"
-#import "FLEXNetworkTransactionDetailTableViewController.h"
+#import "FLEXNetworkTransactionCell.h"
+#import "FLEXNetworkTransactionDetailController.h"
 #import "FLEXNetworkSettingsController.h"
 #import "FLEXGlobalsViewController.h"
 #import "UIBarButtonItem+FLEX.h"
@@ -61,11 +61,11 @@
     ]];
 
     [self.tableView
-        registerClass:[FLEXNetworkTransactionTableViewCell class]
+        registerClass:[FLEXNetworkTransactionCell class]
         forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier
     ];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.rowHeight = FLEXNetworkTransactionTableViewCell.preferredCellHeight;
+    self.tableView.rowHeight = FLEXNetworkTransactionCell.preferredCellHeight;
 
     [self registerForNotifications];
     [self updateTransactions];
@@ -311,7 +311,7 @@
     FLEXNetworkTransaction *transaction = notification.userInfo[kFLEXNetworkRecorderUserInfoTransactionKey];
 
     // Update both the main table view and search table view if needed.
-    for (FLEXNetworkTransactionTableViewCell *cell in [self.tableView visibleCells]) {
+    for (FLEXNetworkTransactionCell *cell in [self.tableView visibleCells]) {
         if ([cell.transaction isEqual:transaction]) {
             // Using -[UITableView reloadRowsAtIndexPaths:withRowAnimation:] is overkill here and kicks off a lot of
             // work that can make the table view somewhat unresponsive when lots of updates are streaming in.
@@ -352,7 +352,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXNetworkTransactionTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
+    FLEXNetworkTransactionCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
     cell.transaction = [self transactionAtIndexPath:indexPath];
 
     // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
@@ -367,7 +367,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXNetworkTransactionDetailTableViewController *detailViewController = [FLEXNetworkTransactionDetailTableViewController new];
+    FLEXNetworkTransactionDetailController *detailViewController = [FLEXNetworkTransactionDetailController new];
     detailViewController.transaction = [self transactionAtIndexPath:indexPath];
     [self.navigationController pushViewController:detailViewController animated:YES];
 }

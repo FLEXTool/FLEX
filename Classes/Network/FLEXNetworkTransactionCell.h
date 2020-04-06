@@ -1,5 +1,5 @@
 //
-//  FLEXNetworkTransactionTableViewCell.h
+//  FLEXNetworkTransactionCell.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/8/15.
@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString *const kFLEXNetworkTransactionCellIdentifier;
+extern NSString * const kFLEXNetworkTransactionCellIdentifier;
 
 @class FLEXNetworkTransaction;
 
-@interface FLEXNetworkTransactionTableViewCell : UITableViewCell
+@interface FLEXNetworkTransactionCell : UITableViewCell
 
 @property (nonatomic) FLEXNetworkTransaction *transaction;
 

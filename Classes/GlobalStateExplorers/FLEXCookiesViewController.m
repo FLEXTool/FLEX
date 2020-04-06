@@ -1,22 +1,22 @@
 //
-//  FLEXCookiesTableViewController.m
+//  FLEXCookiesViewController.m
 //  FLEX
 //
 //  Created by Rich Robinson on 19/10/2015.
 //  Copyright © 2015 Flipboard. All rights reserved.
 //
 
-#import "FLEXCookiesTableViewController.h"
+#import "FLEXCookiesViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXMutableListSection.h"
 #import "FLEXUtility.h"
 
-@interface FLEXCookiesTableViewController ()
+@interface FLEXCookiesViewController ()
 @property (nonatomic, readonly) FLEXMutableListSection<NSHTTPCookie *> *cookies;
 @property (nonatomic) NSString *headerTitle;
 @end
 
-@implementation FLEXCookiesTableViewController
+@implementation FLEXCookiesViewController
 
 #pragma mark - Overrides
 

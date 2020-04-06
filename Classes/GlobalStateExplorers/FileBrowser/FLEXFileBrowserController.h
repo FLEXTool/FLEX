@@ -1,5 +1,5 @@
 //
-//  FLEXFileBrowserTableViewController.h
+//  FLEXFileBrowserController.h
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/9/14.
@@ -10,7 +10,7 @@
 #import "FLEXGlobalsEntry.h"
 #import "FLEXFileBrowserSearchOperation.h"
 
-@interface FLEXFileBrowserTableViewController : FLEXTableViewController <FLEXGlobalsEntry>
+@interface FLEXFileBrowserController : FLEXTableViewController <FLEXGlobalsEntry>
 
 + (instancetype)path:(NSString *)path;
 - (id)initWithPath:(NSString *)path;
