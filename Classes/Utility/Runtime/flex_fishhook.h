@@ -57,7 +57,7 @@ struct rebinding {
  * @return 0 on success
  */
 FISHHOOK_VISIBILITY
-int rebind_symbols(struct rebinding rebindings[], size_t rebindings_nel);
+int flex_rebind_symbols(struct rebinding rebindings[], size_t rebindings_nel);
 
 /**
  * Rebinds as above, but only in the specified image. The header should point
@@ -65,10 +65,10 @@ int rebind_symbols(struct rebinding rebindings[], size_t rebindings_nel);
  * @return 0 on success
  */
 FISHHOOK_VISIBILITY
-int rebind_symbols_image(void *header,
-                         intptr_t slide,
-                         struct rebinding rebindings[],
-                         size_t rebindings_nel);
+int flex_rebind_symbols_image(void *header,
+                              intptr_t slide,
+                              struct rebinding rebindings[],
+                              size_t rebindings_nel);
 
 #ifdef __cplusplus
 }

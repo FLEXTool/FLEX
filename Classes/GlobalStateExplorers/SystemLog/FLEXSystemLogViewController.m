@@ -56,7 +56,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
         return;
     }
 
-    FLEXDidHookNSLog = rebind_symbols((struct rebinding[1]) {{
+    FLEXDidHookNSLog = flex_rebind_symbols((struct rebinding[1]) {{
         "os_log_shim_enabled",
         (void *)my_os_log_shim_enabled,
         (void **)&orig_os_log_shim_enabled

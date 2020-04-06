@@ -60,10 +60,10 @@ struct rebindings_entry {
     struct rebindings_entry *next;
 };
 
-static struct rebindings_entry *_rebindings_head;
+static struct rebindings_entry *_flex_rebindings_head;
 
 /// @return 0 on success
-static int prepend_rebindings(struct rebindings_entry **rebindings_head,
+static int flex_prepend_rebindings(struct rebindings_entry **rebindings_head,
                               struct rebinding rebindings[],
                               size_t nel) {
     struct rebindings_entry *new_entry = (struct rebindings_entry *) malloc(sizeof(struct rebindings_entry));
@@ -85,7 +85,7 @@ static int prepend_rebindings(struct rebindings_entry **rebindings_head,
     return 0;
 }
 
-static vm_prot_t get_protection(void *sectionStart) {
+static vm_prot_t flex_get_protection(void *sectionStart) {
     mach_port_t task = mach_task_self();
     vm_size_t size = 0;
     vm_address_t address = (vm_address_t)sectionStart;
@@ -110,19 +110,19 @@ static vm_prot_t get_protection(void *sectionStart) {
         return VM_PROT_READ;
     }
 }
-static void perform_rebinding_with_section(struct rebindings_entry *rebindings,
-                                           section_t *section,
-                                           intptr_t slide,
-                                           nlist_t *symtab,
-                                           char *strtab,
-                                           uint32_t *indirect_symtab) {
+static void flex_perform_rebinding_with_section(struct rebindings_entry *rebindings,
+                                                section_t *section,
+                                                intptr_t slide,
+                                                nlist_t *symtab,
+                                                char *strtab,
+                                                uint32_t *indirect_symtab) {
     const bool isDataConst = strcmp(section->segname, "__DATA_CONST") == 0;
     uint32_t *indirect_symbol_indices = indirect_symtab + section->reserved1;
     void **indirect_symbol_bindings = (void **)((uintptr_t)slide + section->addr);
     vm_prot_t oldProtection = VM_PROT_READ;
     
     if (isDataConst) {
-        oldProtection = get_protection(rebindings);
+        oldProtection = flex_get_protection(rebindings);
         mprotect(indirect_symbol_bindings, section->size, PROT_READ | PROT_WRITE);
     }
     
@@ -177,9 +177,9 @@ static void perform_rebinding_with_section(struct rebindings_entry *rebindings,
     }
 }
 
-static void rebind_symbols_for_image(struct rebindings_entry *rebindings,
-                                     const struct mach_header *header,
-                                     intptr_t slide) {
+static void flex_rebind_symbols_for_image(struct rebindings_entry *rebindings,
+                                          const struct mach_header *header,
+                                          intptr_t slide) {
     Dl_info info;
     if (dladdr(header, &info) == 0) {
         return;
@@ -232,12 +232,12 @@ static void rebind_symbols_for_image(struct rebindings_entry *rebindings,
                 section_t *sect = (section_t *)(cur + sizeof(segment_command_t)) + j;
                 
                 if ((sect->flags & SECTION_TYPE) == S_LAZY_SYMBOL_POINTERS) {
-                    perform_rebinding_with_section(
+                    flex_perform_rebinding_with_section(
                         rebindings, sect, slide, symtab, strtab, indirect_symtab
                     );
                 }
                 if ((sect->flags & SECTION_TYPE) == S_NON_LAZY_SYMBOL_POINTERS) {
-                    perform_rebinding_with_section(
+                    flex_perform_rebinding_with_section(
                         rebindings, sect, slide, symtab, strtab, indirect_symtab
                     );
                 }
@@ -246,19 +246,19 @@ static void rebind_symbols_for_image(struct rebindings_entry *rebindings,
     }
 }
 
-static void _rebind_symbols_for_image(const struct mach_header *header,
-                                      intptr_t slide) {
-    rebind_symbols_for_image(_rebindings_head, header, slide);
+static void _flex_rebind_symbols_for_image(const struct mach_header *header,
+                                           intptr_t slide) {
+    flex_rebind_symbols_for_image(_flex_rebindings_head, header, slide);
 }
 
-int rebind_symbols_image(void *header,
-                         intptr_t slide,
-                         struct rebinding rebindings[],
-                         size_t rebindings_nel) {
+int flex_rebind_symbols_image(void *header,
+                              intptr_t slide,
+                              struct rebinding rebindings[],
+                              size_t rebindings_nel) {
     struct rebindings_entry *rebindings_head = NULL;
     
-    int retval = prepend_rebindings(&rebindings_head, rebindings, rebindings_nel);
-    rebind_symbols_for_image(rebindings_head, (const struct mach_header *) header, slide);
+    int retval = flex_prepend_rebindings(&rebindings_head, rebindings, rebindings_nel);
+    flex_rebind_symbols_for_image(rebindings_head, (const struct mach_header *) header, slide);
     
     if (rebindings_head) {
         free(rebindings_head->rebindings);
@@ -269,20 +269,20 @@ int rebind_symbols_image(void *header,
 }
 
 /// @return 0 on success
-int rebind_symbols(struct rebinding rebindings[], size_t rebindings_nel) {
-    int retval = prepend_rebindings(&_rebindings_head, rebindings, rebindings_nel);
+int flex_rebind_symbols(struct rebinding rebindings[], size_t rebindings_nel) {
+    int retval = flex_prepend_rebindings(&_flex_rebindings_head, rebindings, rebindings_nel);
     if (retval < 0) {
         return retval;
     }
     
     // If this was the first call, register callback for image additions (which is also invoked for
     // existing images, otherwise, just run on existing images
-    if (!_rebindings_head->next) {
-        _dyld_register_func_for_add_image(_rebind_symbols_for_image);
+    if (!_flex_rebindings_head->next) {
+        _dyld_register_func_for_add_image(_flex_rebind_symbols_for_image);
     } else {
         uint32_t c = _dyld_image_count();
         for (uint32_t i = 0; i < c; i++) {
-            _rebind_symbols_for_image(_dyld_get_image_header(i), _dyld_get_image_vmaddr_slide(i));
+            _flex_rebind_symbols_for_image(_dyld_get_image_header(i), _dyld_get_image_vmaddr_slide(i));
         }
     }
     
