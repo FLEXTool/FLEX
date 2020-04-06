@@ -90,28 +90,28 @@
     // Required instance methods
     objcrMethods = protocol_copyMethodDescriptionList(protocol, YES, YES, &mdrcount);
     NSArray *rMethods = [NSArray flex_forEachUpTo:mdrcount map:^id(NSUInteger i) {
-        return [FLEXMethodDescription description:objcrMethods[i]];
+        return [FLEXMethodDescription description:objcrMethods[i] instance:YES];
     }];
     free(objcrMethods);
     
     // Required class methods 
     objcrMethods = protocol_copyMethodDescriptionList(protocol, YES, NO, &mdrcount);
     _requiredMethods = [[NSArray flex_forEachUpTo:mdrcount map:^id(NSUInteger i) {
-        return [FLEXMethodDescription description:objcrMethods[i]];
+        return [FLEXMethodDescription description:objcrMethods[i] instance:NO];
     }] arrayByAddingObjectsFromArray:rMethods];
     free(objcrMethods);
     
     // Optional instance methods
     objcoMethods = protocol_copyMethodDescriptionList(protocol, NO, YES, &mdocount);
     NSArray *oMethods = [NSArray flex_forEachUpTo:mdocount map:^id(NSUInteger i) {
-        return [FLEXMethodDescription description:objcoMethods[i]];
+        return [FLEXMethodDescription description:objcoMethods[i] instance:YES];
     }];
     free(objcoMethods);
     
     // Optional class methods
     objcoMethods = protocol_copyMethodDescriptionList(protocol, NO, NO, &mdocount);
     _optionalMethods = [[NSArray flex_forEachUpTo:mdocount map:^id(NSUInteger i) {
-        return [FLEXMethodDescription description:objcoMethods[i]];
+        return [FLEXMethodDescription description:objcoMethods[i] instance:NO];
     }] arrayByAddingObjectsFromArray:oMethods];
     free(objcoMethods);
     
