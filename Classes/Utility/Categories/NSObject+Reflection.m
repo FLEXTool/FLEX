@@ -236,7 +236,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 @implementation NSObject (Methods)
 
 + (NSArray<FLEXMethod *> *)flex_allMethods {
-    NSMutableArray *instanceMethods = (id)self.flex_allInstanceMethods;
+    NSMutableArray *instanceMethods = self.flex_allInstanceMethods.mutableCopy;
     [instanceMethods addObjectsFromArray:self.flex_allClassMethods];
     return instanceMethods;
 }
@@ -384,7 +384,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 @implementation NSObject (Properties)
 
 + (NSArray<FLEXProperty *> *)flex_allProperties {
-    NSMutableArray *instanceProperties = (id)self.flex_allInstanceProperties;
+    NSMutableArray *instanceProperties = self.flex_allInstanceProperties.mutableCopy;
     [instanceProperties addObjectsFromArray:self.flex_allClassProperties];
     return instanceProperties;
 }
