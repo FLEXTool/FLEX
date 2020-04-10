@@ -58,6 +58,18 @@
     [self.userGlobalEntries addObject:entry];
 }
 
+- (void)registerGlobalEntryWithName:(NSString *)entryName actionFutureBlock:(void (^)(UITableViewController * _Nonnull))actionFutureBlock {
+    NSParameterAssert(entryName);
+    NSParameterAssert(actionFutureBlock);
+    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
+
+    entryName = entryName.copy;
+    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString * _Nonnull{
+        return entryName;
+    } action:actionFutureBlock];
+    
+    [self.userGlobalEntries addObject:entry];
+}
 
 #pragma mark - Simulator Shortcuts
 

@@ -38,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)registerGlobalEntryWithName:(NSString *)entryName
           viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock;
 
+- (void)registerGlobalEntryWithName:(NSString *)entryName
+                  actionFutureBlock:(void (^)(UITableViewController * _Nonnull))actionFutureBlock;
+
 #pragma mark - Simulator Shortcuts
 
 /// Simulator keyboard shortcuts are enabled by default.
