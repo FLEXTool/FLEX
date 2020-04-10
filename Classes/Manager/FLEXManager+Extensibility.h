@@ -38,6 +38,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)registerGlobalEntryWithName:(NSString *)entryName
           viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock;
 
+/// Adds an entry at the bottom of the list of Global State items.
+/// Call this method before this view controller is displayed.
+/// @param entryName The string to be displayed in the cell.
+/// @param actionFutureBlock When you tap on the row, this action
+/// block is invoked. The `UITableViewController` passed in is the
+/// host view controller, you can use it to present or push custom
+/// UIViewController.
+/// @note This method must be called from the main thread.
+/// The actionFutureBlock will be invoked from the main thread.
+/// @note The passed block will be copied and retain for the duration of the application,
+/// you may want to use __weak references.
 - (void)registerGlobalEntryWithName:(NSString *)entryName
                   actionFutureBlock:(void (^)(UITableViewController * _Nonnull))actionFutureBlock;
 
