@@ -43,7 +43,7 @@ Short version:
 
 ```swift
 // Swift
-FLEXManager.shared().showExplorer()
+FLEXManager.shared.showExplorer()
 ```
 
 More complete version:
