@@ -14,6 +14,7 @@
 #include <dlfcn.h>
 
 @implementation FLEXMethod
+@synthesize imagePath = _imagePath;
 @dynamic implementation;
 
 + (instancetype)buildMethodNamed:(NSString *)name withTypes:(NSString *)typeEncoding implementation:(IMP)implementation {
@@ -156,11 +157,6 @@
     _name              = NSStringFromSelector(_selector);
     _returnType        = (FLEXTypeEncoding *)_signature.methodReturnType ?: "";
     _returnSize        = _signature.methodReturnLength;
-    
-    Dl_info exeInfo;
-    if (dladdr(_objc_method, &exeInfo)) {
-        _imagePath = exeInfo.dli_fname ? @(exeInfo.dli_fname) : nil;
-    }
 }
 
 #pragma mark Public
@@ -182,6 +178,17 @@
     }
     
     return _typeEncoding;
+}
+
+- (NSString *)imagePath {
+    if (!_imagePath) {
+        Dl_info exeInfo;
+        if (dladdr(_objc_method, &exeInfo)) {
+            _imagePath = exeInfo.dli_fname ? @(exeInfo.dli_fname) : @"";
+        }
+    }
+    
+    return _imagePath;
 }
 
 #pragma mark Misc

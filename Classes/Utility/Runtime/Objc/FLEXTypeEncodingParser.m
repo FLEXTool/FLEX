@@ -546,10 +546,15 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
 }
 
 - (BOOL)canScanChar:(char)c {
-    NSScanner *scan = self.scan;
-    if (scan.scanLocation >= scan.string.length) return NO;
+    // By avoiding any ARC calls on these two objects which we know won't be
+    // free'd out from under us, we're making HUGE performance savings in this
+    // parser, because this method is one of the most-used methods of the parser.
+    // This is probably the most performance-critical method in this class.
+    __unsafe_unretained NSScanner *scan = self.scan;
+    __unsafe_unretained NSString *string = scan.string;
+    if (scan.scanLocation >= string.length) return NO;
     
-    return [scan.string characterAtIndex:scan.scanLocation] == c;
+    return [string characterAtIndex:scan.scanLocation] == c;
 }
 
 - (BOOL)scanChar:(char)c {
