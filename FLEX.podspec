@@ -32,7 +32,8 @@ Pod::Spec.new do |spec|
   spec.platform         = :ios, "9.0"
   spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,c,m,mm}"
-  spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security" ]
+  spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security", ]
+  spec.weak_frameworks  = [ "SceneKit" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
   spec.compiler_flags   = "-Wno-unsupported-availability-guard -Wno-strict-prototypes"
