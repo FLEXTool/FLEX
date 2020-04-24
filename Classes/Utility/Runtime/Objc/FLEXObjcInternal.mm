@@ -35,6 +35,10 @@
 // For vm_region_64
 #include <mach/mach.h>
 
+#if __arm64e__
+#include <ptrauth.h>
+#endif
+
 #define ALWAYS_INLINE inline __attribute__((always_inline))
 #define NEVER_INLINE inline __attribute__((noinline))
 
@@ -98,11 +102,16 @@ static BOOL flex_isExtTaggedPointer(const void *ptr)  {
 
 extern "C" {
 
-static BOOL FLEXPointerIsReadable(const void *inPtr) {
+BOOL FLEXPointerIsReadable(const void *inPtr) {
     kern_return_t error = KERN_SUCCESS;
 
     vm_size_t vmsize;
+#if __arm64e__
+    // On arm64e, we need to strip the PAC from the pointer so the adress is readable
+    vm_address_t address = (vm_address_t)ptrauth_strip(inPtr, ptrauth_key_function_pointer);
+#else
     vm_address_t address = (vm_address_t)inPtr;
+#endif
     vm_region_basic_info_data_t info;
     mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT_64;
     memory_object_name_t object;
@@ -127,7 +136,11 @@ static BOOL FLEXPointerIsReadable(const void *inPtr) {
     // Read the memory
     vm_offset_t readMem = 0;
     mach_msg_type_number_t size = 0;
+#if __arm64e__
+    address = (vm_address_t)ptrauth_strip(inPtr, ptrauth_key_function_pointer);
+#else
     address = (vm_address_t)inPtr;
+#endif
     error = vm_read(mach_task_self(), address, sizeof(uintptr_t), &readMem, &size);
     if (error != KERN_SUCCESS) {
         // vm_read returned an error
