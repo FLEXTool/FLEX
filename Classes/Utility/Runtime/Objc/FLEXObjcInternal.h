@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+BOOL FLEXPointerIsReadable(const void *inPtr);
+
 /// @brief Assumes memory is valid and readable.
 /// @discussion objc-internal.h, objc-private.h, and objc-config.h
 /// https://blog.timac.org/2016/1124-testing-if-an-arbitrary-pointer-is-a-valid-objective-c-object/
