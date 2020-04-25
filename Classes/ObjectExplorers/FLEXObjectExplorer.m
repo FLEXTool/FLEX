@@ -250,7 +250,11 @@
     // Set up UIKit helper data
     // Really, we only need to call this on properties and ivars
     // because no other metadata types support editing.
-    for (NSArray *matrix in @[_allProperties, _allIvars, /* _allMethods, _allClassMethods, _allConformedProtocols */]) {
+    NSArray<NSArray *>*metadatas = @[
+        _allProperties, _allClassProperties, _allIvars,
+       /* _allMethods, _allClassMethods, _allConformedProtocols */
+    ];
+    for (NSArray *matrix in metadatas) {
         for (NSArray *metadataByClass in matrix) {
             [FLEXObjectExplorer configureDefaultsForItems:metadataByClass];
         }
