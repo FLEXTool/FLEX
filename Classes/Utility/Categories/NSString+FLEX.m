@@ -75,6 +75,16 @@
     return [self characterAtIndex:(self.flex_typeIsConst ? 1 : 0)];
 }
 
+- (FLEXTypeEncoding)flex_pointeeType {
+    if (!self.length) return FLEXTypeEncodingNull;
+    
+    if (self.flex_firstNonConstType == FLEXTypeEncodingPointer) {
+        return [self characterAtIndex:(self.flex_typeIsConst ? 2 : 1)];
+    }
+    
+    return FLEXTypeEncodingNull;
+}
+
 - (BOOL)flex_typeIsObjectOrClass {
     FLEXTypeEncoding type = self.flex_firstNonConstType;
     return type == FLEXTypeEncodingObjcObject || type == FLEXTypeEncodingObjcClass;

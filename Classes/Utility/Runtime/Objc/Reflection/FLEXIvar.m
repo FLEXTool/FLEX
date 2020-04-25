@@ -11,6 +11,8 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXRuntimeSafety.h"
 #import "FLEXTypeEncodingParser.h"
+#import "NSString+FLEX.h"
+#include "FLEXObjcInternal.h"
 #include <dlfcn.h>
 
 @interface FLEXIvar () {
@@ -97,7 +99,9 @@
 
 - (id)getValue:(id)target {
     id value = nil;
-    if (!FLEXIvarIsSafe(_objc_ivar) || _type == FLEXTypeEncodingNull) {
+    if (!FLEXIvarIsSafe(_objc_ivar) ||
+        _type == FLEXTypeEncodingNull ||
+        FLEXIsTaggedPointer(target)) {
         return nil;
     }
 
@@ -147,9 +151,14 @@
 }
 
 - (id)getPotentiallyUnboxedValue:(id)target {
+    NSString *type = self.typeEncoding;
+    if (type.flex_typeIsNonObjcPointer && type.flex_pointeeType != FLEXTypeEncodingVoid) {
+        return [self getValue:target];
+    }
+    
     return [FLEXRuntimeUtility
         potentiallyUnwrapBoxedPointer:[self getValue:target]
-        type:self.typeEncoding.UTF8String
+        type:type.UTF8String
     ];
 }
 

@@ -14,8 +14,13 @@
 #import "FLEXProperty.h"
 #import "FLEXUtility.h"
 #import "FLEXMethod.h"
+#import "FLEXIvar.h"
 
-@interface Subclass : NSObject @end
+@interface Subclass : NSObject {
+    @public
+    NSUInteger *_indexes;
+}
+@end
 @implementation Subclass @end
 
 @interface FLEXTests : XCTestCase
@@ -99,6 +104,21 @@
         return [obj.name isEqualToString:@"mainBundle"];
     }];
     XCTAssert(props.count == 1);
+}
+
+- (void)testIvarUnboxing {
+    NSUInteger array[4] = { 0xaa, 0xbb, 0xcc, 0x00 };
+    Subclass *obj = [Subclass new];
+    obj->_indexes = array;
+    
+    FLEXIvar *ivar = [Subclass flex_ivarNamed:@"_indexes"];
+    
+    NSValue *arrayValue = [ivar getPotentiallyUnboxedValue:obj];
+    NSUInteger *pointerValue = arrayValue.pointerValue;
+    
+    XCTAssert(pointerValue != nil);
+    XCTAssertEqual(pointerValue, (NSUInteger *)&array);
+    XCTAssertEqual(pointerValue[0], 0xaa);
 }
 
 @end
