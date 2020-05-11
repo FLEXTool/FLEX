@@ -18,6 +18,12 @@
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end
 
+typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
+    FLEXFileBrowserSortAttributeNone = 0,
+    FLEXFileBrowserSortAttributeName,
+    FLEXFileBrowserSortAttributeCreationDate,
+};
+
 @interface FLEXFileBrowserController () <FLEXFileBrowserSearchOperationDelegate>
 
 @property (nonatomic, copy) NSString *path;
@@ -27,6 +33,7 @@
 @property (nonatomic) NSNumber *searchPathsSize;
 @property (nonatomic) NSOperationQueue *operationQueue;
 @property (nonatomic) UIDocumentInteractionController *documentController;
+@property (nonatomic) FLEXFileBrowserSortAttribute sortAttribute;
 
 @end
 
@@ -84,6 +91,39 @@
     
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceForAsyncSearch;
+    [self addToolbarItems:@[
+        [[UIBarButtonItem alloc] initWithTitle:@"Sort"
+                                         style:UIBarButtonItemStylePlain
+                                        target:self
+                                        action:@selector(sortDidTouchUpInside:)]
+    ]];
+}
+
+- (void)sortDidTouchUpInside:(UIBarButtonItem *)sortButton {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Sort"
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"None"
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        [self sortWithAttribute:FLEXFileBrowserSortAttributeNone];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Name"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        [self sortWithAttribute:FLEXFileBrowserSortAttributeName];
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Creation Date"
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction * _Nonnull action) {
+        [self sortWithAttribute:FLEXFileBrowserSortAttributeCreationDate];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)sortWithAttribute:(FLEXFileBrowserSortAttribute)attribute {
+    self.sortAttribute = attribute;
+    [self reloadDisplayedPaths];
 }
 
 #pragma mark - FLEXGlobalsEntry
@@ -451,6 +491,27 @@
     NSArray<NSString *> *subpaths = [NSFileManager.defaultManager contentsOfDirectoryAtPath:self.path error:NULL];
     for (NSString *subpath in subpaths) {
         [childPaths addObject:[self.path stringByAppendingPathComponent:subpath]];
+    }
+    if (self.sortAttribute != FLEXFileBrowserSortAttributeNone) {
+        [childPaths sortUsingComparator:^NSComparisonResult(NSString *path1, NSString *path2) {
+            switch (self.sortAttribute) {
+                case FLEXFileBrowserSortAttributeNone:
+                    // invalid state
+                    return NSOrderedSame;
+                case FLEXFileBrowserSortAttributeName:
+                    return [path1 compare:path2];
+                case FLEXFileBrowserSortAttributeCreationDate: {
+                    NSDictionary<NSFileAttributeKey, id> *path1Attributes = [NSFileManager.defaultManager attributesOfItemAtPath:path1
+                                                                                                                           error:NULL];
+                    NSDictionary<NSFileAttributeKey, id> *path2Attributes = [NSFileManager.defaultManager attributesOfItemAtPath:path2
+                                                                                                                           error:NULL];
+                    NSDate *path1Date = path1Attributes[NSFileCreationDate];
+                    NSDate *path2Date = path2Attributes[NSFileCreationDate];
+
+                    return [path1Date compare:path2Date];
+                }
+            }
+        }];
     }
     self.childPaths = childPaths;
 }
