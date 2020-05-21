@@ -341,9 +341,22 @@
     
     id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
     if ([NSJSONSerialization isValidJSONObject:jsonObject]) {
-        prettyString = [NSString stringWithCString:[NSJSONSerialization
-            dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL
-        ].bytes encoding:NSUTF8StringEncoding];
+        NSData *jsonData = [NSJSONSerialization
+                            dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL
+                            ];
+        
+        // Determine if string is null-terminated to prevent buffer overflow
+        char lastByte;
+        [jsonData getBytes:&lastByte range: NSMakeRange(jsonData.length - 1, 1)];
+        
+        if (lastByte == 0x0) {
+            // null-terminated
+            prettyString = [NSString stringWithUTF8String:jsonData.bytes];
+        } else {
+            // not null-terminated
+            prettyString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        }
+        
         // NSJSONSerialization escapes forward slashes.
         // We want pretty json, so run through and unescape the slashes.
         prettyString = [prettyString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
