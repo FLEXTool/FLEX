@@ -50,7 +50,11 @@ extern "C" {
 // originally _objc_isTaggedPointer //
 //////////////////////////////////////
 NS_INLINE BOOL flex_isTaggedPointer(const void *ptr)  {
-    return ((uintptr_t)ptr & _OBJC_TAG_MASK) == _OBJC_TAG_MASK;
+    #if OBJC_HAVE_TAGGED_POINTERS
+        return ((uintptr_t)ptr & _OBJC_TAG_MASK) == _OBJC_TAG_MASK;
+    #else
+        return NO;
+    #endif
 }
 
 #define FLEXIsTaggedPointer(obj) flex_isTaggedPointer((__bridge void *)obj)

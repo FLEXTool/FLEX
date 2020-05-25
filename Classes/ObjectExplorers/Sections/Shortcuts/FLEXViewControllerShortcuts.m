@@ -13,28 +13,9 @@
 #import "FLEXAlert.h"
 
 @interface FLEXViewControllerShortcuts ()
-@property (nonatomic, readonly) UIViewController *viewController;
-@property (nonatomic, readonly) BOOL viewControllerIsInUse;
 @end
 
 @implementation FLEXViewControllerShortcuts
-
-#pragma mark - Internal
-
-- (UIViewController *)viewController {
-    return self.object;
-}
-
-/// A view controller is "in use" if it's view is in a window,
-/// or if it belongs to a navigation stack which is in use.
-- (BOOL)viewControllerIsInUse {
-    if (self.viewController.view.window) {
-        return YES;
-    }
-
-    return self.viewController.navigationController != nil;
-}
-
 
 #pragma mark - Overrides
 

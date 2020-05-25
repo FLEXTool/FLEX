@@ -156,7 +156,7 @@ FLEXObjectExplorerDefaultsImpl
     if (targetNotNil) {
         id value = [self currentValueBeforeUnboxingWithTarget:object];
         [items addObjectsFromArray:@[
-            @"Value Preview",         [self previewWithTarget:object],
+            @"Value Preview",         [self previewWithTarget:object] ?: @"",
             @"Value Address",         returnsObject ? [FLEXUtility addressOfObject:value] : @"",
         ]];
     }
@@ -462,7 +462,7 @@ FLEXObjectExplorerDefaultsImpl
     NSString *conformances = [conformanceNames componentsJoinedByString:@"\n"];
     return @[
         @"Name",         self.name ?: @"",
-        @"Conformances", conformances,
+        @"Conformances", conformances ?: @"",
     ];
 }
 
