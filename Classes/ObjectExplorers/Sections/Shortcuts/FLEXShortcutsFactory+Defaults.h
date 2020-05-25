@@ -8,6 +8,8 @@
 
 #import "FLEXShortcutsSection.h"
 
+@interface FLEXShortcutsFactory (UIApplication) @end
+
 @interface FLEXShortcutsFactory (Views) @end
 
 @interface FLEXShortcutsFactory (ViewControllers) @end

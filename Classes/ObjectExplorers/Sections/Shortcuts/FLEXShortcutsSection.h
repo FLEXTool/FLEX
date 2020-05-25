@@ -59,6 +59,8 @@
 /// Subclasses \e may override this to hide the disclosure indicator
 /// for some rows. It is shown for all rows by default, unless
 /// you initialize it with \c forObject:rowTitles:rowSubtitles:
+///
+/// When you hide the disclosure indicator, the row is not selectable.
 - (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row;
 
 /// The number of lines for the title and subtitle labels. Defaults to 1.

@@ -11,6 +11,7 @@
 #import "FLEXClassShortcuts.h"
 #import "FLEXViewShortcuts.h"
 #import "FLEXViewControllerShortcuts.h"
+#import "FLEXUIAppShortcuts.h"
 #import "FLEXImageShortcuts.h"
 #import "FLEXLayerShortcuts.h"
 #import "FLEXColorPreviewSection.h"
@@ -35,6 +36,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
             ClassKey(NSOrderedSet)     : [FLEXCollectionContentSection class],
             ClassKey(NSUserDefaults)   : [FLEXDefaultsContentSection class],
             ClassKey(UIViewController) : [FLEXViewControllerShortcuts class],
+            ClassKey(UIApplication)    : [FLEXUIAppShortcuts class],
             ClassKey(UIView)           : [FLEXViewShortcuts class],
             ClassKey(UIImage)          : [FLEXImageShortcuts class],
             ClassKey(CALayer)          : [FLEXLayerShortcuts class],
