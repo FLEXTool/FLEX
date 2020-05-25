@@ -54,8 +54,8 @@
 #pragma mark - UIViewController methods
 
 - (void)keyboardDidShow:(NSNotification *)notification {
-    CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
+    CGRect keyboardRect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGSize keyboardSize = [self.view convertRect:keyboardRect fromView:nil].size;
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
     scrollInsets.bottom = keyboardSize.height;
     self.scrollView.contentInset = scrollInsets;
@@ -114,7 +114,11 @@
 #pragma mark - Public
 
 - (FLEXArgumentInputView *)firstInputView {
-    return [self.fieldEditorView argumentInputViews].firstObject;
+    return self.fieldEditorView.argumentInputViews.firstObject;
+}
+
+- (NSArray<FLEXArgumentInputView *> *)inputViews {
+    return self.fieldEditorView.argumentInputViews;
 }
 
 - (void)actionButtonPressed:(id)sender {
@@ -131,6 +135,22 @@
         // If we didn't get a returned object but the method call succeeded,
         // pop this view controller off the stack to indicate that the call went through.
         [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+#pragma mark - FLEXArgumentInputViewDelegate
+
+- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)inputView {
+    // Subclasses might want to do something here but we don't
+}
+
+- (void)argumentInputViewWantsNextAsFirstResponder:(FLEXArgumentInputView *)inputView {
+    if (self.inputViews.lastObject == inputView) {
+        // If this is our last or only input view, dismiss the keyboard
+        [inputView resignFirstResponder];
+    } else {
+        NSInteger idx = [self.inputViews indexOfObject:inputView];
+        [self.inputViews[idx+1] becomeFirstResponder];
     }
 }
 

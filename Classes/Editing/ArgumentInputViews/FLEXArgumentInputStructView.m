@@ -11,7 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXTypeEncodingParser.h"
 
-@interface FLEXArgumentInputStructView ()
+@interface FLEXArgumentInputStructView () <FLEXArgumentInputViewDelegate>
 
 @property (nonatomic) NSArray<FLEXArgumentInputView *> *argumentInputViews;
 
@@ -30,8 +30,11 @@
                                                                                      NSUInteger fieldIndex,
                                                                                      NSUInteger fieldOffset) {
             
-            FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:fieldTypeEncoding];
+            FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory
+                argumentInputViewForTypeEncoding:fieldTypeEncoding
+            ];
             inputView.targetSize = FLEXArgumentInputViewSizeSmall;
+            inputView.delegate = self;
             
             if (fieldIndex < customTitles.count) {
                 inputView.title = customTitles[fieldIndex];
@@ -125,15 +128,45 @@
     return boxedStruct;
 }
 
-- (BOOL)inputViewIsFirstResponder {
-    BOOL isFirstResponder = NO;
+- (FLEXArgumentInputView *)firstResponderInputView {
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         if ([inputView inputViewIsFirstResponder]) {
-            isFirstResponder = YES;
-            break;
+            return inputView;
         }
     }
-    return isFirstResponder;
+    
+    return nil;
+}
+
+- (BOOL)resignFirstResponder {
+    FLEXArgumentInputView *responder = [self firstResponderInputView];
+    if (responder) {
+        return [responder resignFirstResponder];
+    } else {
+        return [super resignFirstResponder];
+    }
+}
+
+
+#pragma mark - FLEXArgumentInputViewDelegate
+
+- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)inputView {
+    // Nothing to see here
+}
+
+- (void)argumentInputViewWantsNextAsFirstResponder:(FLEXArgumentInputView *)inputView {
+    if (self.argumentInputViews.lastObject == inputView) {
+        // If this is our last or only input view,
+        // notify the delegate or dismiss the keyboard
+        if (self.delegate) {
+            [self.delegate argumentInputViewWantsNextAsFirstResponder:self];
+        } else {
+            [inputView resignFirstResponder];
+        }
+    } else {
+        NSInteger idx = [self.argumentInputViews indexOfObject:inputView];
+        [self.argumentInputViews[idx+1] becomeFirstResponder];
+    }
 }
 
 

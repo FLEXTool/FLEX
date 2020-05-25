@@ -64,6 +64,7 @@
 
         inputView.backgroundColor = self.view.backgroundColor;
         inputView.title = methodComponent;
+        inputView.delegate = self;
         [argumentInputViews addObject:inputView];
         argumentIndex++;
     }

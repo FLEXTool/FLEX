@@ -8,11 +8,15 @@
 
 #import "FLEXArgumentInputView.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FLEXArgumentInputTextView : FLEXArgumentInputView <UITextViewDelegate>
 
 // For subclass eyes only
 
 @property (nonatomic, readonly) UITextView *inputTextView;
-@property (nonatomic) NSString *inputPlaceholderText;
+@property (nonatomic, nullable) NSString *inputPlaceholderText;
 
 @end
+
+NS_ASSUME_NONNULL_END

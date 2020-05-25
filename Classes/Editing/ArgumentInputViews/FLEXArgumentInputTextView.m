@@ -31,7 +31,7 @@
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextView.delegate = self;
-        self.inputTextView.inputAccessoryView = [self createToolBar];
+        self.inputAccessoryView = [self createToolBar];
         if (@available(iOS 11, *)) {
             [self.inputTextView.layer setValue:@YES forKey:@"continuousCorners"];
         } else {
@@ -51,6 +51,14 @@
     return self;
 }
 
+- (UIToolbar *)inputAccessoryView {
+    return (id)self.inputTextView.inputAccessoryView;
+}
+
+- (void)setInputAccessoryView:(UIToolbar *)inputAccessoryView {
+    self.inputTextView.inputAccessoryView = inputAccessoryView;
+}
+
 #pragma mark - Private
 
 - (UIToolbar *)createToolBar {
@@ -62,7 +70,7 @@
     ];
     UIBarButtonItem *pasteItem = [[UIBarButtonItem alloc]
         initWithTitle:@"Paste" style:UIBarButtonItemStyleDone
-        target:self.inputTextView action:@selector(paste:)
+        target:self action:@selector(paste:)
     ];
     UIBarButtonItem *doneItem = [[UIBarButtonItem alloc]
         initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -91,11 +99,33 @@
     return self.placeholderLabel.text;
 }
 
+- (void)paste:(id)sender {
+    [self.inputTextView paste:sender];
+    
+    if (self.delegate) {
+        [self.delegate argumentInputViewWantsNextAsFirstResponder:self];
+    } else {
+        [self.inputTextView resignFirstResponder];
+    }
+}
+
 
 #pragma mark - Superclass Overrides
 
 - (BOOL)inputViewIsFirstResponder {
     return self.inputTextView.isFirstResponder;
+}
+
+- (BOOL)becomeFirstResponder {
+    return [self.inputTextView becomeFirstResponder];
+}
+
+- (BOOL)resignFirstResponder {
+    if (self.inputViewIsFirstResponder) {
+        return self.inputTextView.resignFirstResponder;
+    } else {
+        return [super resignFirstResponder];
+    }
 }
 
 

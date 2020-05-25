@@ -118,8 +118,8 @@
     [self exploreObjectOrPopViewController:self.currentValue];
 }
 
-- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)argumentInputView {
-    if ([argumentInputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
+- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)inputView {
+    if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         [self actionButtonPressed:nil];
     }
 }

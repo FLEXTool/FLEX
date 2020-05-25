@@ -6,19 +6,20 @@
 //  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "FLEXArgumentInputView.h"
 
 @class FLEXFieldEditorView;
-@class FLEXArgumentInputView;
 
 /// Provides a screen for editing or configuring one or more variables.
-@interface FLEXVariableEditorViewController : UIViewController
+@interface FLEXVariableEditorViewController : UIViewController <FLEXArgumentInputViewDelegate>
 
 + (instancetype)target:(id)target;
 - (id)initWithTarget:(id)target;
 
 // Convenience accessor since many subclasses only use one input view
 @property (nonatomic, readonly) FLEXArgumentInputView *firstInputView;
+// Also a convenience accessor
+@property (nonatomic, readonly) NSArray<FLEXArgumentInputView *> *inputViews;
 
 // For subclass use only.
 @property (nonatomic, readonly) id target;

@@ -46,6 +46,7 @@
     ];
     inputView.backgroundColor = self.view.backgroundColor;
     inputView.inputValue = currentValue;
+    inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
