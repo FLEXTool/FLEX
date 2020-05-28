@@ -17,10 +17,11 @@
         [UIPasteboard.generalPasteboard setData:object forPasteboardType:@"public.data"];
     } else if ([object isKindOfClass:[NSNumber class]]) {
         UIPasteboard.generalPasteboard.string = [object stringValue];
+    } else {
+        // TODO: make this an alert instead of an exception
+        [NSException raise:NSInternalInconsistencyException
+                    format:@"Tried to copy unsupported type: %@", [object class]];
     }
-
-    [NSException raise:NSInternalInconsistencyException
-                format:@"Tried to copy unsupported type: %@", [object class]];
 }
 
 @end
