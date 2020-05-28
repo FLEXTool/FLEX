@@ -11,6 +11,10 @@
 @implementation UIPasteboard (FLEX)
 
 - (void)flex_copy:(id)object {
+    if (!object) {
+        return;
+    }
+    
     if ([object isKindOfClass:[NSString class]]) {
         UIPasteboard.generalPasteboard.string = object;
     } else if([object isKindOfClass:[NSData class]]) {
