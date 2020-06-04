@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/23/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXMethodCallingViewController.h"
@@ -13,87 +13,93 @@
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXArgumentInputView.h"
 #import "FLEXArgumentInputViewFactory.h"
+#import "FLEXUtility.h"
 
 @interface FLEXMethodCallingViewController ()
-
-@property (nonatomic, assign) Method method;
-
+@property (nonatomic) FLEXMethod *method;
 @end
 
 @implementation FLEXMethodCallingViewController
 
-- (id)initWithTarget:(id)target method:(Method)method
-{
++ (instancetype)target:(id)target method:(FLEXMethod *)method {
+    return [[self alloc] initWithTarget:target method:method];
+}
+
+- (id)initWithTarget:(id)target method:(FLEXMethod *)method {
+    NSParameterAssert(method.isInstanceMethod == !object_isClass(target));
+
     self = [super initWithTarget:target];
     if (self) {
         self.method = method;
-        self.title = [self isClassMethod] ? @"Class Method" : @"Method";
+        self.title = method.isInstanceMethod ? @"Method: " : @"Class Method: ";
+        self.title = [self.title stringByAppendingString:method.selectorString];
     }
+
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.fieldEditorView.fieldDescription = [FLEXRuntimeUtility prettyNameForMethod:self.method isClassMethod:[self isClassMethod]];
-    
-    NSArray *methodComponents = [FLEXRuntimeUtility prettyArgumentComponentsForMethod:self.method];
-    NSMutableArray *argumentInputViews = [NSMutableArray array];
+
+    self.actionButton.title = @"Call";
+
+    // Configure field editor view
+    self.fieldEditorView.argumentInputViews = [self argumentInputViews];
+    self.fieldEditorView.fieldDescription = [NSString stringWithFormat:
+        @"Signature:\n%@\n\nReturn Type:\n%s",
+        self.method.description, (char *)self.method.returnType
+    ];
+}
+
+- (NSArray<FLEXArgumentInputView *> *)argumentInputViews {
+    Method method = self.method.objc_method;
+    NSArray *methodComponents = [FLEXRuntimeUtility prettyArgumentComponentsForMethod:method];
+    NSMutableArray<FLEXArgumentInputView *> *argumentInputViews = [NSMutableArray new];
     unsigned int argumentIndex = kFLEXNumberOfImplicitArgs;
+
     for (NSString *methodComponent in methodComponents) {
-        char *argumentTypeEncoding = method_copyArgumentType(self.method, argumentIndex);
+        char *argumentTypeEncoding = method_copyArgumentType(method, argumentIndex);
         FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:argumentTypeEncoding];
         free(argumentTypeEncoding);
-        
+
         inputView.backgroundColor = self.view.backgroundColor;
         inputView.title = methodComponent;
         [argumentInputViews addObject:inputView];
         argumentIndex++;
     }
-    self.fieldEditorView.argumentInputViews = argumentInputViews;
+
+    return argumentInputViews;
 }
 
-- (BOOL)isClassMethod
-{
-    return self.target && self.target == [self.target class];
-}
-
-- (NSString *)titleForActionButton
-{
-    return @"Call";
-}
-
-- (void)actionButtonPressed:(id)sender
-{
+- (void)actionButtonPressed:(id)sender {
     [super actionButtonPressed:sender];
-    
-    NSMutableArray *arguments = [NSMutableArray array];
+
+    // Gather arguments
+    NSMutableArray *arguments = [NSMutableArray new];
     for (FLEXArgumentInputView *inputView in self.fieldEditorView.argumentInputViews) {
-        id argumentValue = inputView.inputValue;
-        if (!argumentValue) {
-            // Use NSNulls as placeholders in the array. They will be interpreted as nil arguments.
-            argumentValue = [NSNull null];
-        }
-        [arguments addObject:argumentValue];
+        // Use NSNull as a nil placeholder; it will be interpreted as nil
+        [arguments addObject:inputView.inputValue ?: NSNull.null];
     }
-    
+
+    // Call method
     NSError *error = nil;
-    id returnedObject = [FLEXRuntimeUtility performSelector:method_getName(self.method) onObject:self.target withArguments:arguments error:&error];
-    
+    id returnValue = [FLEXRuntimeUtility
+        performSelector:self.method.selector
+        onObject:self.target
+        withArguments:arguments
+        error:&error
+    ];
+
+    // Display return value or error
     if (error) {
-        NSString *title = @"Method Call Failed";
-        NSString *message = [error localizedDescription];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-    } else if (returnedObject) {
+        [FLEXAlert showAlert:@"Method Call Failed" message:error.localizedDescription from:self];
+    } else if (returnValue) {
         // For non-nil (or void) return types, push an explorer view controller to display the returned object
-        FLEXObjectExplorerViewController *explorerViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:returnedObject];
-        [self.navigationController pushViewController:explorerViewController animated:YES];
+        returnValue = [FLEXRuntimeUtility potentiallyUnwrapBoxedPointer:returnValue type:self.method.returnType];
+        FLEXObjectExplorerViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:returnValue];
+        [self.navigationController pushViewController:explorer animated:YES];
     } else {
-        // If we didn't get a returned object but the method call succeeded,
-        // pop this view controller off the stack to indicate that the call went through.
-        [self.navigationController popViewControllerAnimated:YES];
+        [self exploreObjectOrPopViewController:returnValue];
     }
 }
 

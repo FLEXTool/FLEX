@@ -3,13 +3,15 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/12/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 @interface FLEXImagePreviewViewController : UIViewController
 
-- (id)initWithImage:(UIImage *)image;
++ (instancetype)previewForView:(UIView *)view;
++ (instancetype)previewForLayer:(CALayer *)layer;
++ (instancetype)forImage:(UIImage *)image;
 
 @end

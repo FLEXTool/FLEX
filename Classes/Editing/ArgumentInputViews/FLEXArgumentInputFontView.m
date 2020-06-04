@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/28/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXArgumentInputFontView.h"
@@ -13,25 +13,22 @@
 
 @interface FLEXArgumentInputFontView ()
 
-@property (nonatomic, strong) FLEXArgumentInputView *fontNameInput;
-@property (nonatomic, strong) FLEXArgumentInputView *pointSizeInput;
+@property (nonatomic) FLEXArgumentInputView *fontNameInput;
+@property (nonatomic) FLEXArgumentInputView *pointSizeInput;
 
 @end
 
 @implementation FLEXArgumentInputFontView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.fontNameInput = [[FLEXArgumentInputFontsPickerView alloc] initWithArgumentTypeEncoding:FLEXEncodeClass(NSString)];
-        self.fontNameInput.backgroundColor = self.backgroundColor;
         self.fontNameInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.fontNameInput.title = @"Font Name:";
         [self addSubview:self.fontNameInput];
         
         self.pointSizeInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(CGFloat)];
-        self.pointSizeInput.backgroundColor = self.backgroundColor;
         self.pointSizeInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.pointSizeInput.title = @"Point Size:";
         [self addSubview:self.pointSizeInput];
@@ -39,15 +36,13 @@
     return self;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     self.fontNameInput.backgroundColor = backgroundColor;
     self.pointSizeInput.backgroundColor = backgroundColor;
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     if ([inputValue isKindOfClass:[UIFont class]]) {
         UIFont *font = (UIFont *)inputValue;
         self.fontNameInput.inputValue = font.fontName;
@@ -55,8 +50,7 @@
     }
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     CGFloat pointSize = 0;
     if ([self.pointSizeInput.inputValue isKindOfClass:[NSValue class]]) {
         NSValue *pointSizeValue = (NSValue *)self.pointSizeInput.inputValue;
@@ -67,16 +61,14 @@
     return [UIFont fontWithName:self.fontNameInput.inputValue size:pointSize];
 }
 
-- (BOOL)inputViewIsFirstResponder
-{
+- (BOOL)inputViewIsFirstResponder {
     return [self.fontNameInput inputViewIsFirstResponder] || [self.pointSizeInput inputViewIsFirstResponder];
 }
 
 
 #pragma mark - Layout and Sizing
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat runningOriginY = self.topInputFieldVerticalLayoutGuide;
@@ -89,13 +81,11 @@
     self.pointSizeInput.frame = CGRectMake(0, runningOriginY, pointSizeFitSize.width, pointSizeFitSize.height);
 }
 
-+ (CGFloat)verticalPaddingBetweenFields
-{
++ (CGFloat)verticalPaddingBetweenFields {
     return 10.0;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
     
     CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
@@ -111,11 +101,9 @@
 
 #pragma mark -
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
-    BOOL supported = type && strcmp(type, FLEXEncodeClass(UIFont)) == 0;
-    supported = supported || (value && [value isKindOfClass:[UIFont class]]);
-    return supported;
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
+    NSParameterAssert(type);
+    return strcmp(type, FLEXEncodeClass(UIFont)) == 0;
 }
 
 @end

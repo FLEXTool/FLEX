@@ -3,49 +3,52 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 2014-05-03.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#ifndef _FLEXObjectExplorerViewController_h
+#define _FLEXObjectExplorerViewController_h
+#endif
 
-typedef NS_ENUM(NSUInteger, FLEXObjectExplorerSection) {
-    FLEXObjectExplorerSectionDescription,
-    FLEXObjectExplorerSectionCustom,
-    FLEXObjectExplorerSectionProperties,
-    FLEXObjectExplorerSectionIvars,
-    FLEXObjectExplorerSectionMethods,
-    FLEXObjectExplorerSectionClassMethods,
-    FLEXObjectExplorerSectionSuperclasses,
-    FLEXObjectExplorerSectionReferencingInstances
-};
+#import "FLEXFilteringTableViewController.h"
+#import "FLEXObjectExplorer.h"
+@class FLEXTableViewSection;
 
-@interface FLEXObjectExplorerViewController : UITableViewController
+NS_ASSUME_NONNULL_BEGIN
 
-@property (nonatomic, strong) id object;
+/// A class that displays information about an object or class.
+///
+/// The explorer view controller uses \c FLEXObjectExplorer to provide a description
+/// of the object and list it's properties, ivars, methods, and it's superclasses.
+/// Below the description and before properties, some shortcuts will be displayed
+/// for certain classes like UIViews. At very bottom, there is an option to view
+/// a list of other objects found to be referencing the object being explored.
+@interface FLEXObjectExplorerViewController : FLEXFilteringTableViewController
 
-// Sublasses can override the methods below to provide data in a custom section.
-// The subclass should provide an array of "row cookies" to allow retreival of individual row data later on.
-// The objects in the rowCookies array will be used to call the row title, subtitle, etc methods to consturct the rows.
-// The cookies approach is used here because we may filter the visible rows based on the search text entered by the user.
-- (NSString *)customSectionTitle;
-- (NSArray *)customSectionRowCookies;
-- (NSString *)customSectionTitleForRowCookie:(id)rowCookie;
-- (NSString *)customSectionSubtitleForRowCookie:(id)rowCookie;
-- (BOOL)customSectionCanDrillIntoRowWithCookie:(id)rowCookie;
-- (UIViewController *)customSectionDrillInViewControllerForRowCookie:(id)rowCookie;
+/// Uses the default \c FLEXShortcutsSection for this object as a custom section.
++ (instancetype)exploringObject:(id)objectOrClass;
+/// No custom section unless you provide one.
++ (instancetype)exploringObject:(id)objectOrClass customSection:(nullable FLEXTableViewSection *)customSection;
 
-// More subclass configuration hooks.
+/// The object being explored, which may be an instance of a class or a class itself.
+@property (nonatomic, readonly) id object;
+/// This object provides the object's metadata for the explorer view controller.
+@property (nonatomic, readonly) FLEXObjectExplorer *explorer;
 
-/// Whether to allow showing/drilling in to current values for ivars and properties. Defalut is YES.
-- (BOOL)canHaveInstanceState;
+/// Called once to initialize the list of section objects.
+///
+/// Subclasses can override this to add, remove, or rearrange sections of the explorer.
+- (NSArray<FLEXTableViewSection *> *)makeSections;
+
+/// Whether to allow showing/drilling in to current values for ivars and properties. Default is YES.
+@property (nonatomic, readonly) BOOL canHaveInstanceState;
 
 /// Whether to allow drilling in to method calling interfaces for instance methods. Default is YES.
-- (BOOL)canCallInstanceMethods;
+@property (nonatomic, readonly) BOOL canCallInstanceMethods;
 
 /// If the custom section data makes the description redundant, subclasses can choose to hide it. Default is YES.
-- (BOOL)shouldShowDescription;
-
-/// Subclasses can reorder/change which sections can display directly by overriding this method.
-- (NSArray *)possibleExplorerSections;
+@property (nonatomic, readonly) BOOL shouldShowDescription;
 
 @end
+
+NS_ASSUME_NONNULL_END

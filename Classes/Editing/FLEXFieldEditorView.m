@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/16/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXFieldEditorView.h"
@@ -12,20 +12,19 @@
 
 @interface FLEXFieldEditorView ()
 
-@property (nonatomic, strong) UILabel *targetDescriptionLabel;
-@property (nonatomic, strong) UIView *targetDescriptionDivider;
-@property (nonatomic, strong) UILabel *fieldDescriptionLabel;
-@property (nonatomic, strong) UIView *fieldDescriptionDivider;
+@property (nonatomic) UILabel *targetDescriptionLabel;
+@property (nonatomic) UIView *targetDescriptionDivider;
+@property (nonatomic) UILabel *fieldDescriptionLabel;
+@property (nonatomic) UIView *fieldDescriptionDivider;
 
 @end
 
 @implementation FLEXFieldEditorView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.targetDescriptionLabel = [[UILabel alloc] init];
+        self.targetDescriptionLabel = [UILabel new];
         self.targetDescriptionLabel.numberOfLines = 0;
         self.targetDescriptionLabel.font = [[self class] labelFont];
         [self addSubview:self.targetDescriptionLabel];
@@ -33,7 +32,7 @@
         self.targetDescriptionDivider = [[self class] dividerView];
         [self addSubview:self.targetDescriptionDivider];
         
-        self.fieldDescriptionLabel = [[UILabel alloc] init];
+        self.fieldDescriptionLabel = [UILabel new];
         self.fieldDescriptionLabel.numberOfLines = 0;
         self.fieldDescriptionLabel.font = [[self class] labelFont];
         [self addSubview:self.fieldDescriptionLabel];
@@ -44,8 +43,7 @@
     return self;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat horizontalPadding = [[self class] horizontalPadding];
@@ -78,15 +76,13 @@
     }
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     self.targetDescriptionLabel.backgroundColor = backgroundColor;
     self.fieldDescriptionLabel.backgroundColor = backgroundColor;
 }
 
-- (void)setTargetDescription:(NSString *)targetDescription
-{
+- (void)setTargetDescription:(NSString *)targetDescription {
     if (![_targetDescription isEqual:targetDescription]) {
         _targetDescription = targetDescription;
         self.targetDescriptionLabel.text = targetDescription;
@@ -94,8 +90,7 @@
     }
 }
 
-- (void)setFieldDescription:(NSString *)fieldDescription
-{
+- (void)setFieldDescription:(NSString *)fieldDescription {
     if (![_fieldDescription isEqual:fieldDescription]) {
         _fieldDescription = fieldDescription;
         self.fieldDescriptionLabel.text = fieldDescription;
@@ -103,8 +98,7 @@
     }
 }
 
-- (void)setArgumentInputViews:(NSArray *)argumentInputViews
-{
+- (void)setArgumentInputViews:(NSArray<FLEXArgumentInputView *> *)argumentInputViews {
     if (![_argumentInputViews isEqual:argumentInputViews]) {
         
         for (FLEXArgumentInputView *inputView in _argumentInputViews) {
@@ -121,40 +115,33 @@
     }
 }
 
-+ (UIView *)dividerView
-{
-    UIView *dividerView = [[UIView alloc] init];
++ (UIView *)dividerView {
+    UIView *dividerView = [UIView new];
     dividerView.backgroundColor = [self dividerColor];
     return dividerView;
 }
 
-+ (UIColor *)dividerColor
-{
-    return [UIColor lightGrayColor];
++ (UIColor *)dividerColor {
+    return UIColor.lightGrayColor;
 }
 
-+ (CGFloat)horizontalPadding
-{
++ (CGFloat)horizontalPadding {
     return 10.0;
 }
 
-+ (CGFloat)verticalPadding
-{
++ (CGFloat)verticalPadding {
     return 20.0;
 }
 
-+ (UIFont *)labelFont
-{
-    return [FLEXUtility defaultFontOfSize:14.0];
++ (UIFont *)labelFont {
+    return [UIFont systemFontOfSize:14.0];
 }
 
-+ (CGFloat)dividerLineHeight
-{
++ (CGFloat)dividerLineHeight {
     return 1.0;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGFloat horizontalPadding = [[self class] horizontalPadding];
     CGFloat verticalPadding = [[self class] verticalPadding];
     CGFloat dividerLineHeight = [[self class] dividerLineHeight];

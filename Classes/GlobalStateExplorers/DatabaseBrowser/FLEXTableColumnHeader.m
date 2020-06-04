@@ -1,45 +1,47 @@
 //
 //  FLEXTableContentHeaderCell.m
-//  UICatalog
+//  FLEX
 //
 //  Created by Peng Tao on 15/11/26.
 //  Copyright © 2015年 f. All rights reserved.
 //
 
 #import "FLEXTableColumnHeader.h"
+#import "FLEXColor.h"
+#import "UIFont+FLEX.h"
+#import "FLEXUtility.h"
+
+@interface FLEXTableColumnHeader ()
+@property (nonatomic, readonly) UILabel *arrowLabel;
+@property (nonatomic, readonly) UIView *lineView;
+@end
 
 @implementation FLEXTableColumnHeader
-{
-    UILabel *_arrowLabel;
-}
 
-
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = FLEXColor.secondaryBackgroundColor;
         
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(5, 0, frame.size.width - 25, frame.size.height)];
-        label.font = [UIFont systemFontOfSize:13.0];
-        [self addSubview:label];
-        self.label = label;
+        _titleLabel = [UILabel new];
+        _titleLabel.font = UIFont.flex_defaultTableCellFont;
+        [self addSubview:_titleLabel];
         
-        
-        _arrowLabel = [[UILabel alloc] initWithFrame:CGRectMake(frame.size.width - 20, 0, 20, frame.size.height)];
-        _arrowLabel.font = [UIFont systemFontOfSize:13.0];
+        _arrowLabel = [UILabel new];
+        _arrowLabel.font = UIFont.flex_defaultTableCellFont;
         [self addSubview:_arrowLabel];
         
-        UIView *line = [[UIView alloc] initWithFrame:CGRectMake(frame.size.width - 1, 2, 1, frame.size.height - 4)];
-        line.backgroundColor = [UIColor colorWithWhite:0.803 alpha:0.850];
-        [self addSubview:line];
+        _lineView = [UIView new];
+        _lineView.backgroundColor = FLEXColor.hairlineColor;
+        [self addSubview:_lineView];
         
     }
     return self;
 }
 
-- (void)changeSortStatusWithType:(FLEXTableColumnHeaderSortType)type
-{
+- (void)setSortType:(FLEXTableColumnHeaderSortType)type {
+    _sortType = type;
+    
     switch (type) {
         case FLEXTableColumnHeaderSortTypeNone:
             _arrowLabel.text = @"";
@@ -53,8 +55,14 @@
     }
 }
 
-
-
-
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGSize size = self.frame.size;
+    
+    self.titleLabel.frame = CGRectMake(5, 0, size.width - 25, size.height);
+    self.arrowLabel.frame = CGRectMake(size.width - 20, 0, 20, size.height);
+    self.lineView.frame = CGRectMake(size.width - 1, 2, FLEXPointsToPixels(1), size.height - 4);
+}
 
 @end

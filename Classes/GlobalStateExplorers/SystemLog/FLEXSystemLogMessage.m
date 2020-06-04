@@ -1,6 +1,6 @@
 //
 //  FLEXSystemLogMessage.m
-//  UICatalog
+//  FLEX
 //
 //  Created by Ryan Olson on 1/25/15.
 //  Copyright (c) 2015 f. All rights reserved.
@@ -10,9 +10,10 @@
 
 @implementation FLEXSystemLogMessage
 
-+(instancetype)logMessageFromASLMessage:(aslmsg)aslMessage
-{
-    FLEXSystemLogMessage *logMessage = [[FLEXSystemLogMessage alloc] init];
++ (instancetype)logMessageFromASLMessage:(aslmsg)aslMessage {
+    NSDate *date = nil;
+    NSString *sender = nil, *text = nil;
+    long long identifier = 0;
 
     const char *timestamp = asl_get(aslMessage, ASL_KEY_TIME);
     if (timestamp) {
@@ -21,35 +22,67 @@
         if (nanoseconds) {
             timeInterval += [@(nanoseconds) doubleValue] / NSEC_PER_SEC;
         }
-        logMessage.date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+        date = [NSDate dateWithTimeIntervalSince1970:timeInterval];
     }
 
-    const char *sender = asl_get(aslMessage, ASL_KEY_SENDER);
-    if (sender) {
-        logMessage.sender = @(sender);
+    const char *s = asl_get(aslMessage, ASL_KEY_SENDER);
+    if (s) {
+        sender = @(s);
     }
 
     const char *messageText = asl_get(aslMessage, ASL_KEY_MSG);
     if (messageText) {
-        logMessage.messageText = @(messageText);
+        text = @(messageText);
     }
 
     const char *messageID = asl_get(aslMessage, ASL_KEY_MSG_ID);
     if (messageID) {
-        logMessage.messageID = [@(messageID) longLongValue];
+        identifier = [@(messageID) longLongValue];
     }
 
-    return logMessage;
+    FLEXSystemLogMessage *message = [[self alloc] initWithDate:date sender:sender text:text messageID:identifier];
+    message->_aslMessage = aslMessage;
+    return message;
 }
 
-- (BOOL)isEqual:(id)object
-{
-    return [object isKindOfClass:[FLEXSystemLogMessage class]] && self.messageID == [object messageID];
++ (instancetype)logMessageFromDate:(NSDate *)date text:(NSString *)text {
+    return [[self alloc] initWithDate:date sender:nil text:text messageID:0];
 }
 
-- (NSUInteger)hash
-{
+- (id)initWithDate:(NSDate *)date sender:(NSString *)sender text:(NSString *)text messageID:(long long)identifier {
+    self = [super init];
+    if (self) {
+        _date = date;
+        _sender = sender;
+        _messageText = text;
+        _messageID = identifier;
+    }
+
+    return self;
+}
+
+- (BOOL)isEqual:(id)object {
+    if ([object isKindOfClass:[self class]]) {
+        if (self.messageID) {
+            // Only ASL uses messageID, otherwise it is 0
+            return self.messageID == [object messageID];
+        } else {
+            // Test message texts and dates for OS Log
+            return [self.messageText isEqual:[object messageText]] &&
+                    [self.date isEqualToDate:[object date]];
+        }
+    }
+    
+    return NO;
+}
+
+- (NSUInteger)hash {
     return (NSUInteger)self.messageID;
+}
+
+- (NSString *)description {
+    NSString *escaped = [self.messageText stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"];
+    return [NSString stringWithFormat:@"(%@) %@", @(self.messageText.length), escaped];
 }
 
 @end

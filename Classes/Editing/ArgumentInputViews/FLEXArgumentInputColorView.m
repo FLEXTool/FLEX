@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/30/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXArgumentInputColorView.h"
@@ -14,8 +14,8 @@
 
 @interface FLEXColorComponentInputView : UIView
 
-@property (nonatomic, strong) UISlider *slider;
-@property (nonatomic, strong) UILabel *valueLabel;
+@property (nonatomic) UISlider *slider;
+@property (nonatomic) UILabel *valueLabel;
 
 @property (nonatomic, weak) id <FLEXColorComponentInputViewDelegate> delegate;
 
@@ -30,18 +30,16 @@
 
 @implementation FLEXColorComponentInputView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.slider = [[UISlider alloc] init];
-        self.slider.backgroundColor = self.backgroundColor;
+        self.slider = [UISlider new];
         [self.slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.slider];
         
-        self.valueLabel = [[UILabel alloc] init];
+        self.valueLabel = [UILabel new];
         self.valueLabel.backgroundColor = self.backgroundColor;
-        self.valueLabel.font = [FLEXUtility defaultFontOfSize:14.0];
+        self.valueLabel.font = [UIFont systemFontOfSize:14.0];
         self.valueLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:self.valueLabel];
         
@@ -50,15 +48,13 @@
     return self;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     self.slider.backgroundColor = backgroundColor;
     self.valueLabel.backgroundColor = backgroundColor;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     const CGFloat kValueLabelWidth = 50.0;
@@ -73,19 +69,16 @@
     self.valueLabel.frame = CGRectMake(valueLabelOriginX, valueLabelOriginY, kValueLabelWidth, self.valueLabel.frame.size.height);
 }
 
-- (void)sliderChanged:(id)sender
-{
+- (void)sliderChanged:(id)sender {
     [self.delegate colorComponentInputViewValueDidChange:self];
     [self updateValueLabel];
 }
 
-- (void)updateValueLabel
-{
+- (void)updateValueLabel {
     self.valueLabel.text = [NSString stringWithFormat:@"%.3f", self.slider.value];
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGFloat height = [self.slider sizeThatFits:size].height;
     return CGSizeMake(size.width, height);
 }
@@ -94,52 +87,48 @@
 
 @interface FLEXColorPreviewBox : UIView
 
-@property (nonatomic, strong) UIColor *color;
+@property (nonatomic) UIColor *color;
 
-@property (nonatomic, strong) UIView *colorOverlayView;
+@property (nonatomic) UIView *colorOverlayView;
 
 @end
 
 @implementation FLEXColorPreviewBox
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.layer.borderWidth = 1.0;
-        self.layer.borderColor = [[UIColor blackColor] CGColor];
+        self.layer.borderColor = UIColor.blackColor.CGColor;
         self.backgroundColor = [UIColor colorWithPatternImage:[[self class] backgroundPatternImage]];
         
         self.colorOverlayView = [[UIView alloc] initWithFrame:self.bounds];
         self.colorOverlayView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        self.colorOverlayView.backgroundColor = [UIColor clearColor];
+        self.colorOverlayView.backgroundColor = UIColor.clearColor;
         [self addSubview:self.colorOverlayView];
     }
     return self;
 }
 
-- (void)setColor:(UIColor *)color
-{
+- (void)setColor:(UIColor *)color {
     self.colorOverlayView.backgroundColor = color;
 }
 
-- (UIColor *)color
-{
+- (UIColor *)color {
     return self.colorOverlayView.backgroundColor;
 }
 
-+ (UIImage *)backgroundPatternImage
-{
++ (UIImage *)backgroundPatternImage {
     const CGFloat kSquareDimension = 5.0;
     CGSize squareSize = CGSizeMake(kSquareDimension, kSquareDimension);
     CGSize imageSize = CGSizeMake(2.0 * kSquareDimension, 2.0 * kSquareDimension);
     
-    UIGraphicsBeginImageContextWithOptions(imageSize, YES, [[UIScreen mainScreen] scale]);
+    UIGraphicsBeginImageContextWithOptions(imageSize, YES, UIScreen.mainScreen.scale);
     
-    [[UIColor whiteColor] setFill];
+    [UIColor.whiteColor setFill];
     UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
     
-    [[UIColor grayColor] setFill];
+    [UIColor.grayColor setFill];
     UIRectFill(CGRectMake(squareSize.width, 0, squareSize.width, squareSize.height));
     UIRectFill(CGRectMake(0, squareSize.height, squareSize.width, squareSize.height));
     
@@ -153,55 +142,53 @@
 
 @interface FLEXArgumentInputColorView () <FLEXColorComponentInputViewDelegate>
 
-@property (nonatomic, strong) FLEXColorPreviewBox *colorPreviewBox;
-@property (nonatomic, strong) UILabel *hexLabel;
-@property (nonatomic, strong) FLEXColorComponentInputView *alphaInput;
-@property (nonatomic, strong) FLEXColorComponentInputView *redInput;
-@property (nonatomic, strong) FLEXColorComponentInputView *greenInput;
-@property (nonatomic, strong) FLEXColorComponentInputView *blueInput;
+@property (nonatomic) FLEXColorPreviewBox *colorPreviewBox;
+@property (nonatomic) UILabel *hexLabel;
+@property (nonatomic) FLEXColorComponentInputView *alphaInput;
+@property (nonatomic) FLEXColorComponentInputView *redInput;
+@property (nonatomic) FLEXColorComponentInputView *greenInput;
+@property (nonatomic) FLEXColorComponentInputView *blueInput;
 
 @end
 
 @implementation FLEXArgumentInputColorView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        self.colorPreviewBox = [[FLEXColorPreviewBox alloc] init];
+        self.colorPreviewBox = [FLEXColorPreviewBox new];
         [self addSubview:self.colorPreviewBox];
         
-        self.hexLabel = [[UILabel alloc] init];
+        self.hexLabel = [UILabel new];
         self.hexLabel.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.9];
         self.hexLabel.textAlignment = NSTextAlignmentCenter;
-        self.hexLabel.font = [FLEXUtility defaultFontOfSize:12.0];
+        self.hexLabel.font = [UIFont systemFontOfSize:12.0];
         [self addSubview:self.hexLabel];
         
-        self.alphaInput = [[FLEXColorComponentInputView alloc] init];
-        self.alphaInput.slider.minimumTrackTintColor = [UIColor blackColor];
+        self.alphaInput = [FLEXColorComponentInputView new];
+        self.alphaInput.slider.minimumTrackTintColor = UIColor.blackColor;
         self.alphaInput.delegate = self;
         [self addSubview:self.alphaInput];
         
-        self.redInput = [[FLEXColorComponentInputView alloc] init];
-        self.redInput.slider.minimumTrackTintColor = [UIColor redColor];
+        self.redInput = [FLEXColorComponentInputView new];
+        self.redInput.slider.minimumTrackTintColor = UIColor.redColor;
         self.redInput.delegate = self;
         [self addSubview:self.redInput];
         
-        self.greenInput = [[FLEXColorComponentInputView alloc] init];
-        self.greenInput.slider.minimumTrackTintColor = [UIColor greenColor];
+        self.greenInput = [FLEXColorComponentInputView new];
+        self.greenInput.slider.minimumTrackTintColor = UIColor.greenColor;
         self.greenInput.delegate = self;
         [self addSubview:self.greenInput];
         
-        self.blueInput = [[FLEXColorComponentInputView alloc] init];
-        self.blueInput.slider.minimumTrackTintColor = [UIColor blueColor];
+        self.blueInput = [FLEXColorComponentInputView new];
+        self.blueInput.slider.minimumTrackTintColor = UIColor.blueColor;
         self.blueInput.delegate = self;
         [self addSubview:self.blueInput];
     }
     return self;
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     self.alphaInput.backgroundColor = backgroundColor;
     self.redInput.backgroundColor = backgroundColor;
@@ -209,8 +196,7 @@
     self.blueInput.backgroundColor = backgroundColor;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat runningOriginY = 0;
@@ -221,14 +207,14 @@
     
     [self.hexLabel sizeToFit];
     const CGFloat kLabelVerticalOutsetAmount = 0.0;
-    const CGFloat kLabelHorizonalOutsetAmount = 2.0;
-    UIEdgeInsets labelOutset = UIEdgeInsetsMake(-kLabelVerticalOutsetAmount, -kLabelHorizonalOutsetAmount, -kLabelVerticalOutsetAmount, -kLabelHorizonalOutsetAmount);
+    const CGFloat kLabelHorizontalOutsetAmount = 2.0;
+    UIEdgeInsets labelOutset = UIEdgeInsetsMake(-kLabelVerticalOutsetAmount, -kLabelHorizontalOutsetAmount, -kLabelVerticalOutsetAmount, -kLabelHorizontalOutsetAmount);
     self.hexLabel.frame = UIEdgeInsetsInsetRect(self.hexLabel.frame, labelOutset);
     CGFloat hexLabelOriginX = self.colorPreviewBox.layer.borderWidth;
     CGFloat hexLabelOriginY = CGRectGetMaxY(self.colorPreviewBox.frame) - self.colorPreviewBox.layer.borderWidth - self.hexLabel.frame.size.height;
     self.hexLabel.frame = CGRectMake(hexLabelOriginX, hexLabelOriginY, self.hexLabel.frame.size.width, self.hexLabel.frame.size.height);
     
-    NSArray *colorComponentInputViews = @[self.alphaInput, self.redInput, self.greenInput, self.blueInput];
+    NSArray<FLEXColorComponentInputView *> *colorComponentInputViews = @[self.alphaInput, self.redInput, self.greenInput, self.blueInput];
     for (FLEXColorComponentInputView *inputView in colorComponentInputViews) {
         CGSize fitSize = [inputView sizeThatFits:constrainSize];
         inputView.frame = CGRectMake(0, runningOriginY, fitSize.width, fitSize.height);
@@ -236,8 +222,7 @@
     }
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     if ([inputValue isKindOfClass:[UIColor class]]) {
         [self updateWithColor:inputValue];
     } else if ([inputValue isKindOfClass:[NSValue class]]) {
@@ -248,21 +233,20 @@
             UIColor *color = [[UIColor alloc] initWithCGColor:colorRef];
             [self updateWithColor:color];
         }
+    } else {
+        [self updateWithColor:UIColor.clearColor];
     }
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     return [UIColor colorWithRed:self.redInput.slider.value green:self.greenInput.slider.value blue:self.blueInput.slider.value alpha:self.alphaInput.slider.value];
 }
 
-- (void)colorComponentInputViewValueDidChange:(FLEXColorComponentInputView *)colorComponentInputView
-{
+- (void)colorComponentInputViewValueDidChange:(FLEXColorComponentInputView *)colorComponentInputView {
     [self updateColorPreview];
 }
 
-- (void)updateWithColor:(UIColor *)color
-{
+- (void)updateWithColor:(UIColor *)color {
     CGFloat red, green, blue, white, alpha;
     if ([color getRed:&red green:&green blue:&blue alpha:&alpha]) {
         self.alphaInput.slider.value = alpha;
@@ -286,8 +270,7 @@
     [self updateColorPreview];
 }
 
-- (void)updateColorPreview
-{
+- (void)updateColorPreview {
     self.colorPreviewBox.color = self.inputValue;
     unsigned char redByte = self.redInput.slider.value * 255;
     unsigned char greenByte = self.greenInput.slider.value * 255;
@@ -296,8 +279,7 @@
     [self setNeedsLayout];
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGFloat height = 0;
     height += [[self class] colorPreviewBoxHeight];
     height += [[self class] inputViewVerticalPadding];
@@ -311,19 +293,19 @@
     return CGSizeMake(size.width, height);
 }
 
-+ (CGFloat)inputViewVerticalPadding
-{
++ (CGFloat)inputViewVerticalPadding {
     return 10.0;
 }
 
-+ (CGFloat)colorPreviewBoxHeight
-{
++ (CGFloat)colorPreviewBoxHeight {
     return 40.0;
 }
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
-    return (type && (strcmp(type, @encode(CGColorRef)) == 0 || strcmp(type, FLEXEncodeClass(UIColor)) == 0)) || [value isKindOfClass:[UIColor class]];
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
+    NSParameterAssert(type);
+
+    // We don't care if currentValue is a color or not; we will default to +clearColor
+    return (strcmp(type, @encode(CGColorRef)) == 0) || (strcmp(type, FLEXEncodeClass(UIColor)) == 0);
 }
 
 @end

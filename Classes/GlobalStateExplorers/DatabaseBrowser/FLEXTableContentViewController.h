@@ -10,7 +10,7 @@
 
 @interface FLEXTableContentViewController : UIViewController
 
-@property (nonatomic, strong) NSArray *columnsArray;
-@property (nonatomic, strong) NSArray *contentsArray;
++ (instancetype)columns:(NSArray<NSString *> *)columnNames
+                   rows:(NSArray<NSArray<NSString *> *> *)rowData;
 
 @end

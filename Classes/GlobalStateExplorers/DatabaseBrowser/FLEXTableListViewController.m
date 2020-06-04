@@ -7,111 +7,137 @@
 //
 
 #import "FLEXTableListViewController.h"
-
 #import "FLEXDatabaseManager.h"
 #import "FLEXSQLiteDatabaseManager.h"
 #import "FLEXRealmDatabaseManager.h"
-
 #import "FLEXTableContentViewController.h"
+#import "FLEXMutableListSection.h"
+#import "NSArray+FLEX.h"
+#import "FLEXAlert.h"
 
 @interface FLEXTableListViewController ()
-{
-    id<FLEXDatabaseManager> _dbm;
-    NSString *_databasePath;
-}
+@property (nonatomic, readonly) id<FLEXDatabaseManager> dbm;
+@property (nonatomic, readonly) NSString *path;
 
-@property (nonatomic, strong) NSArray *tables;
+@property (nonatomic, readonly) FLEXMutableListSection<NSString *> *tables;
 
-+ (NSArray *)supportedSQLiteExtensions;
-+ (NSArray *)supportedRealmExtensions;
++ (NSArray<NSString *> *)supportedSQLiteExtensions;
++ (NSArray<NSString *> *)supportedRealmExtensions;
 
 @end
 
 @implementation FLEXTableListViewController
 
-- (instancetype)initWithPath:(NSString *)path
-{
+- (instancetype)initWithPath:(NSString *)path {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        _databasePath = [path copy];
-        _dbm = [self databaseManagerForFileAtPath:_databasePath];
-        [_dbm open];
-        [self getAllTables];
+        _path = path.copy;
+        _dbm = [self databaseManagerForFileAtPath:path];
     }
+    
     return self;
 }
 
-- (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path
-{
+- (void)viewDidLoad {
+    [super viewDidLoad];
+
+    self.showsSearchBar = YES;
+    
+    // Compose query button //
+
+    UIBarButtonItem *composeQuery = [[UIBarButtonItem alloc]
+        initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+        target:self
+        action:@selector(queryButtonPressed)
+    ];
+    // Cannot run custom queries on realm databases
+    composeQuery.enabled = [self.dbm
+        respondsToSelector:@selector(executeStatement:)
+    ];
+    
+    [self addToolbarItems:@[composeQuery]];
+}
+
+- (NSArray<FLEXTableViewSection *> *)makeSections {
+    _tables = [FLEXMutableListSection list:[self.dbm queryAllTables]
+        cellConfiguration:^(__kindof UITableViewCell *cell, NSString *tableName, NSInteger row) {
+            cell.textLabel.text = tableName;
+        } filterMatcher:^BOOL(NSString *filterText, NSString *tableName) {
+            return [tableName localizedCaseInsensitiveContainsString:filterText];
+        }
+    ];
+    
+    self.tables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
+        NSArray *rows = [host.dbm queryAllDataInTable:tableName];
+        NSArray *columns = [host.dbm queryAllColumnsOfTable:tableName];
+        
+        UIViewController *resultsScreen = [FLEXTableContentViewController columns:columns rows:rows];
+        resultsScreen.title = tableName;
+        [host.navigationController pushViewController:resultsScreen animated:YES];
+    };
+    
+    return @[self.tables];
+}
+
+- (void)reloadData {
+    self.tables.customTitle = [NSString
+        stringWithFormat:@"Tables (%@)", @(self.tables.filteredList.count)
+    ];
+    
+    [super reloadData];
+}
+    
+- (void)queryButtonPressed {
+    FLEXSQLiteDatabaseManager *database = self.dbm;
+    
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Execute an SQL query");
+        make.textField(nil);
+        make.button(@"Run").handler(^(NSArray<NSString *> *strings) {
+            FLEXSQLResult *result = [database executeStatement:strings[0]];
+            
+            if (result.message) {
+                [FLEXAlert showAlert:@"Message" message:result.message from:self];
+            } else {
+                UIViewController *resultsScreen = [FLEXTableContentViewController
+                    columns:result.columns rows:result.rows
+                ];
+                
+                [self.navigationController pushViewController:resultsScreen animated:YES];
+            }
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
+}
+    
+- (id<FLEXDatabaseManager>)databaseManagerForFileAtPath:(NSString *)path {
     NSString *pathExtension = path.pathExtension.lowercaseString;
     
-    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    NSArray<NSString *> *sqliteExtensions = FLEXTableListViewController.supportedSQLiteExtensions;
     if ([sqliteExtensions indexOfObject:pathExtension] != NSNotFound) {
-        return [[FLEXSQLiteDatabaseManager alloc] initWithPath:path];
+        return [FLEXSQLiteDatabaseManager managerForDatabase:path];
     }
     
-    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    NSArray<NSString *> *realmExtensions = FLEXTableListViewController.supportedRealmExtensions;
     if (realmExtensions != nil && [realmExtensions indexOfObject:pathExtension] != NSNotFound) {
-        return [[FLEXRealmDatabaseManager alloc] initWithPath:path];
+        return [FLEXRealmDatabaseManager managerForDatabase:path];
     }
     
     return nil;
 }
 
-- (void)getAllTables
-{
-    NSArray *resultArray = [_dbm queryAllTables];
-    NSMutableArray *array = [NSMutableArray array];
-    for (NSDictionary *dict in resultArray) {
-        [array addObject:dict[@"name"]];
-    }
-    self.tables = array;
-}
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.tables.count;
-}
+#pragma mark - FLEXTableListViewController
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FLEXTableListViewControllerCell"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier:@"FLEXTableListViewControllerCell"];
-    }
-    cell.textLabel.text = self.tables[indexPath.row];
-    return cell;
-}
-
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    FLEXTableContentViewController *contentViewController = [[FLEXTableContentViewController alloc] init];
-    
-    contentViewController.contentsArray = [_dbm queryAllDataWithTableName:self.tables[indexPath.row]];
-    contentViewController.columnsArray = [_dbm queryAllColumnsWithTableName:self.tables[indexPath.row]];
-    
-    contentViewController.title = self.tables[indexPath.row];
-    [self.navigationController pushViewController:contentViewController animated:YES];
-}
-
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return [NSString stringWithFormat:@"%lu tables", (unsigned long)self.tables.count];
-}
-
-+ (BOOL)supportsExtension:(NSString *)extension
-{
++ (BOOL)supportsExtension:(NSString *)extension {
     extension = extension.lowercaseString;
     
-    NSArray *sqliteExtensions = [FLEXTableListViewController supportedSQLiteExtensions];
+    NSArray<NSString *> *sqliteExtensions = FLEXTableListViewController.supportedSQLiteExtensions;
     if (sqliteExtensions.count > 0 && [sqliteExtensions indexOfObject:extension] != NSNotFound) {
         return YES;
     }
     
-    NSArray *realmExtensions = [FLEXTableListViewController supportedRealmExtensions];
+    NSArray<NSString *> *realmExtensions = FLEXTableListViewController.supportedRealmExtensions;
     if (realmExtensions.count > 0 && [realmExtensions indexOfObject:extension] != NSNotFound) {
         return YES;
     }
@@ -119,13 +145,11 @@
     return NO;
 }
 
-+ (NSArray *)supportedSQLiteExtensions
-{
++ (NSArray<NSString *> *)supportedSQLiteExtensions {
     return @[@"db", @"sqlite", @"sqlite3"];
 }
 
-+ (NSArray *)supportedRealmExtensions
-{
++ (NSArray<NSString *> *)supportedRealmExtensions {
     if (NSClassFromString(@"RLMRealm") == nil) {
         return nil;
     }

@@ -3,44 +3,59 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 4/18/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
+#import <Availability.h>
+#import <AvailabilityInternal.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import "FLEXTypeEncodingParser.h"
+#import "FLEXAlert.h"
+#import "NSArray+FLEX.h"
+#import "UIFont+FLEX.h"
+#import "NSMapTable+FLEX_Subscripting.h"
+#import "FLEXMacros.h"
 
-#define FLEXFloor(x) (floor([[UIScreen mainScreen] scale] * (x)) / [[UIScreen mainScreen] scale])
+#if !FLEX_AT_LEAST_IOS13_SDK
+@class UIWindowScene;
+#endif
 
 @interface FLEXUtility : NSObject
+
+/// The key window of the app, if it is not a \c FLEXWindow.
+/// If it is, then \c FLEXWindow.previousKeyWindow is returned.
+@property (nonatomic, readonly, class) UIWindow *appKeyWindow;
+/// @return the result of +[UIWindow allWindowsIncludingInternalWindows:onlyVisibleWindows:]
+@property (nonatomic, readonly, class) NSArray<UIWindow *> *allWindows;
+/// The first active \c UIWindowScene of the app.
+@property (nonatomic, readonly, class) UIWindowScene *activeScene API_AVAILABLE(ios(13.0));
+/// @return top-most view controller of the given window
++ (UIViewController *)topViewControllerInWindow:(UIWindow *)window;
 
 + (UIColor *)consistentRandomColorForObject:(id)object;
 + (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame;
 + (NSString *)stringForCGRect:(CGRect)rect;
 + (UIViewController *)viewControllerForView:(UIView *)view;
 + (UIViewController *)viewControllerForAncestralView:(UIView *)view;
++ (UIImage *)previewImageForView:(UIView *)view;
++ (UIImage *)previewImageForLayer:(CALayer *)layer;
 + (NSString *)detailDescriptionForView:(UIView *)view;
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius;
-+ (UIColor *)scrollViewGrayColor;
 + (UIColor *)hierarchyIndentPatternColor;
-+ (NSString *)applicationImageName;
-+ (NSString *)applicationName;
-+ (NSString *)safeDescriptionForObject:(id)object;
-+ (UIFont *)defaultFontOfSize:(CGFloat)size;
-+ (UIFont *)defaultTableViewCellLabelFont;
++ (NSString *)pointerToString:(void *)ptr;
++ (NSString *)addressOfObject:(id)object;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
-+ (NSString *)searchBarPlaceholderText;
-+ (BOOL)isImagePathExtension:(NSString *)extension;
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
-+ (NSDictionary *)dictionaryFromQuery:(NSString *)query;
++ (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response;
++ (NSArray<NSURLQueryItem *> *)itemsFromQueryString:(NSString *)query;
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
-
-+ (NSArray *)allWindows;
 
 // Swizzling utilities
 

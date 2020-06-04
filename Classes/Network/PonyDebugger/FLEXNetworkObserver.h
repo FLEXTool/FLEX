@@ -14,7 +14,7 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString *const kFLEXNetworkObserverEnabledStateChangedNotification;
+FOUNDATION_EXTERN NSString *const kFLEXNetworkObserverEnabledStateChangedNotification;
 
 /// This class swizzles NSURLConnection and NSURLSession delegate methods to observe events in the URL loading system.
 /// High level network events are sent to the default FLEXNetworkRecorder instance which maintains the request history and caches response bodies.
@@ -23,7 +23,6 @@ extern NSString *const kFLEXNetworkObserverEnabledStateChangedNotification;
 /// Swizzling occurs when the observer is enabled for the first time.
 /// This reduces the impact of FLEX if network debugging is not desired.
 /// NOTE: this setting persists between launches of the app.
-+ (void)setEnabled:(BOOL)enabled;
-+ (BOOL)isEnabled;
+@property (nonatomic, class, getter=isEnabled) BOOL enabled;
 
 @end

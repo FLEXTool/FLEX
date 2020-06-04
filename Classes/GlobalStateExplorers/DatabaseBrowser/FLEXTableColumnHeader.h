@@ -1,6 +1,6 @@
 //
 //  FLEXTableContentHeaderCell.h
-//  UICatalog
+//  FLEX
 //
 //  Created by Peng Tao on 15/11/26.
 //  Copyright © 2015年 f. All rights reserved.
@@ -14,11 +14,25 @@ typedef NS_ENUM(NSUInteger, FLEXTableColumnHeaderSortType) {
     FLEXTableColumnHeaderSortTypeDesc,
 };
 
+NS_INLINE FLEXTableColumnHeaderSortType FLEXNextTableColumnHeaderSortType(
+    FLEXTableColumnHeaderSortType current) {
+    switch (current) {
+        case FLEXTableColumnHeaderSortTypeAsc:
+            return FLEXTableColumnHeaderSortTypeDesc;
+        case FLEXTableColumnHeaderSortTypeNone:
+        case FLEXTableColumnHeaderSortTypeDesc:
+            return FLEXTableColumnHeaderSortTypeAsc;
+    }
+    
+    return FLEXTableColumnHeaderSortTypeNone;
+}
+
 @interface FLEXTableColumnHeader : UIView
 
-@property (nonatomic, strong) UILabel *label;
+@property (nonatomic) NSInteger index;
+@property (nonatomic, readonly) UILabel *titleLabel;
 
-- (void)changeSortStatusWithType:(FLEXTableColumnHeaderSortType)type;
+@property (nonatomic) FLEXTableColumnHeaderSortType sortType;
 
 @end
 

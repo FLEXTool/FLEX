@@ -7,247 +7,248 @@
 //
 
 #import "FLEXMultiColumnTableView.h"
-#import "FLEXTableContentCell.h"
+#import "FLEXDBQueryRowCell.h"
 #import "FLEXTableLeftCell.h"
+#import "FLEXColor.h"
 
-@interface FLEXMultiColumnTableView ()
-<UITableViewDataSource, UITableViewDelegate,UIScrollViewDelegate, FLEXTableContentCellDelegate>
+@interface FLEXMultiColumnTableView () <
+    UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate
+>
 
-@property (nonatomic, strong) UIScrollView *contentScrollView;
-@property (nonatomic, strong) UIScrollView *headerScrollView;
-@property (nonatomic, strong) UITableView  *leftTableView;
-@property (nonatomic, strong) UITableView  *contentTableView;
-@property (nonatomic, strong) UIView       *leftHeader;
+@property (nonatomic) UIScrollView *contentScrollView;
+@property (nonatomic) UIScrollView *headerScrollView;
+@property (nonatomic) UITableView  *leftTableView;
+@property (nonatomic) UITableView  *contentTableView;
+@property (nonatomic) UIView       *leftHeader;
 
-@property (nonatomic, strong) NSDictionary *sortStatusDict;
-@property (nonatomic, strong) NSArray *rowData;
+/// \c NSNotFound if no column selected
+@property (nonatomic) NSInteger sortColumn;
+@property (nonatomic) FLEXTableColumnHeaderSortType sortType;
+
+@property (nonatomic) NSArray *rowData;
+
+@property (nonatomic, readonly) NSInteger numberOfColumns;
+@property (nonatomic, readonly) NSInteger numberOfRows;
+@property (nonatomic, readonly) CGFloat topHeaderHeight;
+@property (nonatomic, readonly) CGFloat leftHeaderWidth;
+@property (nonatomic, readonly) CGFloat columnMargin;
+
 @end
 
 static const CGFloat kColumnMargin = 1;
 
 @implementation FLEXMultiColumnTableView
 
+#pragma mark - Initialization
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        [self loadUI];
+        self.autoresizingMask |= UIViewAutoresizingFlexibleWidth;
+        self.autoresizingMask |= UIViewAutoresizingFlexibleHeight;
+        self.autoresizingMask |= UIViewAutoresizingFlexibleTopMargin;
+        self.backgroundColor  = FLEXColor.groupedBackgroundColor;
+        
+        [self loadHeaderScrollView];
+        [self loadContentScrollView];
+        [self loadLeftView];
     }
+    
     return self;
 }
 
-- (void)didMoveToSuperview
-{
-    [super didMoveToSuperview];
-    [self reloadData];
-}
-
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat width  = self.frame.size.width;
     CGFloat height = self.frame.size.height;
-    CGFloat topheaderHeight = [self topHeaderHeight];
-    CGFloat leftHeaderWidth = [self leftHeaderWidth];
+    CGFloat topheaderHeight = self.topHeaderHeight;
+    CGFloat leftHeaderWidth = self.leftHeaderWidth;
+    CGFloat topInsets = 0.f;
+
+    if (@available (iOS 11.0, *)) {
+        topInsets = self.safeAreaInsets.top;
+    }
     
     CGFloat contentWidth = 0.0;
-    NSInteger rowsCount = [self numberOfColumns];
+    NSInteger rowsCount = self.numberOfColumns;
     for (int i = 0; i < rowsCount; i++) {
         contentWidth += [self contentWidthForColumn:i];
     }
     
-    self.leftTableView.frame           = CGRectMake(0, topheaderHeight, leftHeaderWidth, height - topheaderHeight);
-    self.headerScrollView.frame        = CGRectMake(leftHeaderWidth, 0, width - leftHeaderWidth, topheaderHeight);
-    self.headerScrollView.contentSize  = CGSizeMake( self.contentTableView.frame.size.width, self.headerScrollView.frame.size.height);
-    self.contentTableView.frame        = CGRectMake(0, 0, contentWidth + [self numberOfColumns] * [self columnMargin] , height - topheaderHeight);
-    self.contentScrollView.frame       = CGRectMake(leftHeaderWidth, topheaderHeight, width - leftHeaderWidth, height - topheaderHeight);
+    CGFloat contentHeight = height - topheaderHeight - topInsets;
+    
+    self.leftHeader.frame = CGRectMake(0, topInsets, self.leftHeaderWidth, self.topHeaderHeight);
+    self.leftTableView.frame = CGRectMake(
+        0, topheaderHeight + topInsets, leftHeaderWidth, contentHeight
+    );
+    self.headerScrollView.frame = CGRectMake(
+        leftHeaderWidth, topInsets, width - leftHeaderWidth, topheaderHeight
+    );
+    self.headerScrollView.contentSize = CGSizeMake(
+        self.contentTableView.frame.size.width, self.headerScrollView.frame.size.height
+    );
+    self.contentTableView.frame = CGRectMake(
+        0, 0, contentWidth + self.numberOfColumns * self.columnMargin , contentHeight
+    );
+    self.contentScrollView.frame = CGRectMake(
+        leftHeaderWidth, topheaderHeight + topInsets, width - leftHeaderWidth, contentHeight
+    );
     self.contentScrollView.contentSize = self.contentTableView.frame.size;
-    self.leftHeader.frame              = CGRectMake(0, 0, [self leftHeaderWidth], [self topHeaderHeight]);
 }
 
-
-- (void)loadUI
-{
-    [self loadHeaderScrollView];
-    [self loadContentScrollView];
-    [self loadLeftView];
-}
-
-- (void)reloadData
-{
-    [self loadLeftViewData];
-    [self loadContentData];
-    [self loadHeaderData];
-}
 
 #pragma mark - UI
 
-- (void)loadHeaderScrollView
-{
-    UIScrollView *headerScrollView = [[UIScrollView alloc] init];
-    headerScrollView.delegate      = self;
-    self.headerScrollView          = headerScrollView;
-    self.headerScrollView.backgroundColor =  [UIColor colorWithWhite:0.803 alpha:0.850];
+- (void)loadHeaderScrollView {
+    UIScrollView *headerScrollView   = [UIScrollView new];
+    headerScrollView.delegate        = self;
+    headerScrollView.backgroundColor = FLEXColor.secondaryGroupedBackgroundColor;
+    self.headerScrollView            = headerScrollView;
     
     [self addSubview:headerScrollView];
 }
 
-- (void)loadContentScrollView
-{
-    
-    UIScrollView *scrollView = [[UIScrollView alloc] init];
+- (void)loadContentScrollView {
+    UIScrollView *scrollView = [UIScrollView new];
     scrollView.bounces       = NO;
     scrollView.delegate      = self;
     
-    UITableView *tableView   = [[UITableView alloc] init];
+    UITableView *tableView   = [UITableView new];
     tableView.delegate       = self;
     tableView.dataSource     = self;
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [tableView registerClass:[FLEXDBQueryRowCell class]
+        forCellReuseIdentifier:kFLEXDBQueryRowCellReuse
+    ];
     
-    [self addSubview:scrollView];
     [scrollView addSubview:tableView];
+    [self addSubview:scrollView];
     
     self.contentScrollView = scrollView;
-    self.contentTableView    = tableView;
-    
+    self.contentTableView  = tableView;
 }
 
-- (void)loadLeftView
-{
-    UITableView *leftTableView = [[UITableView alloc] init];
+- (void)loadLeftView {
+    UITableView *leftTableView   = [UITableView new];
     leftTableView.delegate       = self;
     leftTableView.dataSource     = self;
     leftTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.leftTableView           = leftTableView;
     [self addSubview:leftTableView];
     
-    UIView *leftHeader = [[UIView alloc] init];
-    leftHeader.backgroundColor = [UIColor colorWithWhite:0.950 alpha:0.668];
+    UIView *leftHeader         = [UIView new];
+    leftHeader.backgroundColor = FLEXColor.secondaryBackgroundColor;
     self.leftHeader            = leftHeader;
     [self addSubview:leftHeader];
-    
 }
 
 
 #pragma mark - Data
 
-- (void)loadHeaderData
-{
-    NSArray *subviews = self.headerScrollView.subviews;
-    
-    for (UIView *subview in subviews) {
+- (void)reloadData {
+    [self loadLeftViewData];
+    [self loadContentData];
+    [self loadHeaderData];
+}
+
+- (void)loadHeaderData {
+    // Remove existing headers, if any
+    for (UIView *subview in self.headerScrollView.subviews) {
         [subview removeFromSuperview];
     }
-    CGFloat x = 0.0;
-    CGFloat w = 0.0;
-    for (int i = 0; i < [self numberOfColumns] ; i++) {
-        w = [self contentWidthForColumn:i] + [self columnMargin];
+    
+    CGFloat xOffset = 0.0;
+    for (NSInteger column = 0; column < self.numberOfColumns; column++) {
+        CGFloat width = [self contentWidthForColumn:column] + self.columnMargin;
         
-        FLEXTableColumnHeader *cell = [[FLEXTableColumnHeader alloc] initWithFrame:CGRectMake(x, 0, w, [self topHeaderHeight] - 1)];
-        cell.label.text = [self columnTitleForColumn:i];
-        [self.headerScrollView addSubview:cell];
+        FLEXTableColumnHeader *header = [[FLEXTableColumnHeader alloc]
+            initWithFrame:CGRectMake(xOffset, 0, width, self.topHeaderHeight - 1)
+        ];
+        header.titleLabel.text = [self columnTitle:column];
         
-        FLEXTableColumnHeaderSortType type = [self.sortStatusDict[[self columnTitleForColumn:i]] integerValue];
-        [cell changeSortStatusWithType:type];
+        if (column == self.sortColumn) {
+            header.sortType = self.sortType;
+        }
         
-        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                  action:@selector(contentHeaderTap:)];
-        [cell addGestureRecognizer:gesture];
-        cell.userInteractionEnabled = YES;
+        // Header tap gesture
+        UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc]
+            initWithTarget:self action:@selector(contentHeaderTap:)
+        ];
+        [header addGestureRecognizer:gesture];
+        header.userInteractionEnabled = YES;
         
-        x = x + w;
+        [self.headerScrollView addSubview:header];
+        xOffset += width;
     }
 }
 
-- (void)contentHeaderTap:(UIGestureRecognizer *)gesture
-{
-    FLEXTableColumnHeader *header = (FLEXTableColumnHeader *)gesture.view;
-    NSString *string = header.label.text;
-    FLEXTableColumnHeaderSortType currentType = [self.sortStatusDict[string] integerValue];
-    FLEXTableColumnHeaderSortType newType ;
+- (void)contentHeaderTap:(UIGestureRecognizer *)gesture {
+    NSInteger newSortColumn = [self.headerScrollView.subviews indexOfObject:gesture.view];
+    FLEXTableColumnHeaderSortType newType = FLEXNextTableColumnHeaderSortType(self.sortType);
     
-    switch (currentType) {
-        case FLEXTableColumnHeaderSortTypeNone:
-            newType = FLEXTableColumnHeaderSortTypeAsc;
-            break;
-        case FLEXTableColumnHeaderSortTypeAsc:
-            newType = FLEXTableColumnHeaderSortTypeDesc;
-            break;
-        case FLEXTableColumnHeaderSortTypeDesc:
-            newType = FLEXTableColumnHeaderSortTypeAsc;
-            break;
-    }
+    // Reset old header
+    FLEXTableColumnHeader *oldHeader = (id)self.headerScrollView.subviews[self.sortColumn];
+    oldHeader.sortType = FLEXTableColumnHeaderSortTypeNone;
     
-    self.sortStatusDict = @{header.label.text : @(newType)};
-    [header changeSortStatusWithType:newType];
-    [self.delegate multiColumnTableView:self didTapHeaderWithText:string sortType:newType];
+    // Update new header
+    FLEXTableColumnHeader *newHeader = (id)self.headerScrollView.subviews[newSortColumn];
+    newHeader.sortType = newType;
     
+    // Update self
+    self.sortColumn = newSortColumn;
+    self.sortType = newType;
+
+    // Notify delegate
+    [self.delegate multiColumnTableView:self didSelectHeaderForColumn:newSortColumn sortType:newType];
 }
 
-- (void)loadContentData
-{
+- (void)loadContentData {
     [self.contentTableView reloadData];
 }
 
-- (void)loadLeftViewData
-{
+- (void)loadLeftViewData {
     [self.leftTableView reloadData];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UIColor *backgroundColor = [UIColor whiteColor];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Alternating background color
+    UIColor *backgroundColor = FLEXColor.primaryBackgroundColor;
     if (indexPath.row % 2 != 0) {
-        backgroundColor = [UIColor colorWithWhite:0.950 alpha:0.750];
+        backgroundColor = FLEXColor.secondaryBackgroundColor;
     }
     
-    if (tableView != self.leftTableView) {
-        self.rowData = [self.dataSource contentAtRow:indexPath.row];
-        FLEXTableContentCell *cell = [FLEXTableContentCell cellWithTableView:tableView
-                                                                columnNumber:[self numberOfColumns]];
+    // Left side table view for row numbers
+    if (tableView == self.leftTableView) {
+        FLEXTableLeftCell *cell = [FLEXTableLeftCell cellWithTableView:tableView];
         cell.contentView.backgroundColor = backgroundColor;
-        cell.delegate = self;
-        
-        for (int i = 0 ; i < cell.labels.count; i++) {
-            
-            UILabel *label  = cell.labels[i];
-            label.textColor = [UIColor blackColor];
-            
-            NSString *content = [NSString stringWithFormat:@"%@",self.rowData[i]];
-            if ([content isEqualToString:@"<null>"]) {
-                label.textColor = [UIColor lightGrayColor];
-                content = @"NULL";
-            }
-            label.text            = content;
-            label.backgroundColor = backgroundColor;
-        }
+        cell.titlelabel.text = [self rowTitle:indexPath.row];
         return cell;
     }
+    // Right side table view for data
     else {
-        FLEXTableLeftCell *cell          = [FLEXTableLeftCell cellWithTableView:tableView];
+        self.rowData = [self.dataSource contentForRow:indexPath.row];
+        FLEXDBQueryRowCell *cell = [tableView
+            dequeueReusableCellWithIdentifier:kFLEXDBQueryRowCellReuse forIndexPath:indexPath
+        ];
+        
         cell.contentView.backgroundColor = backgroundColor;
-        cell.titlelabel.text             = [self rowTitleForRow:indexPath.row];
+        cell.data = [self.dataSource contentForRow:indexPath.row];
+        NSAssert(cell.data.count == self.numberOfColumns, @"Count of data provided was incorrect");
         return cell;
     }
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.dataSource numberOfRowsInTableView:self];
 }
 
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [self.dataSource multiColumnTableView:self heightForContentCellInRow:indexPath.row];
 }
 
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
+// Scroll all scroll views in sync
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (scrollView == self.contentScrollView) {
         self.headerScrollView.contentOffset = scrollView.contentOffset;
     }
@@ -262,80 +263,59 @@ static const CGFloat kColumnMargin = 1;
     }
 }
 
-#pragma mark -
+
 #pragma mark UITableView Delegate
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.leftTableView) {
-        [self.contentTableView selectRowAtIndexPath:indexPath
-                                           animated:NO
-                                     scrollPosition:UITableViewScrollPositionNone];
+        [self.contentTableView
+            selectRowAtIndexPath:indexPath
+            animated:NO
+            scrollPosition:UITableViewScrollPositionNone
+        ];
     }
     else if (tableView == self.contentTableView) {
-        [self.leftTableView selectRowAtIndexPath:indexPath
-                                        animated:NO
-                                  scrollPosition:UITableViewScrollPositionNone];
+        [self.delegate multiColumnTableView:self didSelectRow:indexPath.row];
     }
 }
 
-#pragma mark -
+
 #pragma mark DataSource Accessor
 
-- (NSInteger)numberOfrows
-{
+- (NSInteger)numberOfRows {
     return [self.dataSource numberOfRowsInTableView:self];
 }
 
-- (NSInteger)numberOfColumns
-{
+- (NSInteger)numberOfColumns {
     return [self.dataSource numberOfColumnsInTableView:self];
 }
 
-- (NSString *)columnTitleForColumn:(NSInteger)column
-{
-    return [self.dataSource columnNameInColumn:column];
+- (NSString *)columnTitle:(NSInteger)column {
+    return [self.dataSource columnTitle:column];
 }
 
-- (NSString *)rowTitleForRow:(NSInteger)row
-{
-    return [self.dataSource rowNameInRow:row];
+- (NSString *)rowTitle:(NSInteger)row {
+    return [self.dataSource rowTitle:row];
 }
 
-- (NSString *)contentAtColumn:(NSInteger)column row:(NSInteger)row;
-{
-    return [self.dataSource contentAtColumn:column row:row];
-}
-
-- (CGFloat)contentWidthForColumn:(NSInteger)column
-{
+- (CGFloat)contentWidthForColumn:(NSInteger)column {
     return [self.dataSource multiColumnTableView:self widthForContentCellInColumn:column];
 }
 
-- (CGFloat)contentHeightForRow:(NSInteger)row
-{
+- (CGFloat)contentHeightForRow:(NSInteger)row {
     return [self.dataSource multiColumnTableView:self heightForContentCellInRow:row];
 }
 
-- (CGFloat)topHeaderHeight
-{
+- (CGFloat)topHeaderHeight {
     return [self.dataSource heightForTopHeaderInTableView:self];
 }
 
-- (CGFloat)leftHeaderWidth
-{
+- (CGFloat)leftHeaderWidth {
     return [self.dataSource widthForLeftHeaderInTableView:self];
 }
 
-- (CGFloat)columnMargin
-{
+- (CGFloat)columnMargin {
     return kColumnMargin;
-}
-
-
-- (void)tableContentCell:(FLEXTableContentCell *)tableView labelDidTapWithText:(NSString *)text
-{
-    [self.delegate multiColumnTableView:self didTapLabelWithText:text];
 }
 
 @end
