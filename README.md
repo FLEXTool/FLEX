@@ -220,7 +220,8 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
 - [Gist](https://gist.github.com/samdmarshall/17f4e66b5e2e579fd396) from [@samdmarshall](https://github.com/samdmarshall): another example of enumerating malloc blocks.
 - [Non-pointer isa](http://www.sealiesoftware.com/blog/archive/2013/09/24/objc_explain_Non-pointer_isa.html): an explanation of changes to the isa field on iOS for ARM64 and mention of the useful `objc_debug_isa_class_mask` variable.
 - [GZIP](https://github.com/nicklockwood/GZIP): A library for compressing/decompressing data on iOS using libz.
-- [FMDB](https://github.com/ccgus/fmdb): This is an Objective-C wrapper around SQLite
+- [FMDB](https://github.com/ccgus/fmdb): This is an Objective-C wrapper around SQLite.
+- [InAppViewDebugger](https://github.com/indragiek/InAppViewDebugger): The inspiration and reference implementation for FLEX 4's 3D view explorer, by @indragiek.
 
 
 
