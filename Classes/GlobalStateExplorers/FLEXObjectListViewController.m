@@ -125,14 +125,14 @@
             }
         }
     }];
-    
+
     NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingAll:instances];
     if (references.count == 1) {
         return [FLEXObjectExplorerFactory
                 explorerViewControllerForObject:references.firstObject.object
         ];
     }
-    
+
     FLEXObjectListViewController *controller = [[self alloc] initWithReferences:references];
     controller.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)instances.count];
     return controller;
@@ -145,7 +145,7 @@
     controller.title = [NSString stringWithFormat:@"Subclasses of %@ (%lu)",
         className, (unsigned long)classes.count
     ];
-    
+
     return controller;
 }
 
@@ -158,7 +158,7 @@
             SwiftObjectClass = NSClassFromString(@"Swift._SwiftObject");
         }
     });
-    
+
     NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray new];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
         // Get all the ivars on the object. Start with the class and and travel up the inheritance chain.
@@ -167,15 +167,15 @@
         while (tryClass) {
             unsigned int ivarCount = 0;
             Ivar *ivars = class_copyIvarList(tryClass, &ivarCount);
-            
+
             for (unsigned int ivarIndex = 0; ivarIndex < ivarCount; ivarIndex++) {
                 Ivar ivar = ivars[ivarIndex];
                 NSString *typeEncoding = @(ivar_getTypeEncoding(ivar) ?: "");
-                
+
                 if (typeEncoding.flex_typeIsObjectOrClass) {
                     ptrdiff_t offset = ivar_getOffset(ivar);
                     uintptr_t *fieldPointer = (__bridge void *)tryObject + offset;
-                    
+
                     if (*fieldPointer == (uintptr_t)(__bridge void *)object) {
                         NSString *ivarName = @(ivar_getName(ivar) ?: "???");
                         [instances addObject:[FLEXObjectRef referencing:tryObject ivar:ivarName]];
@@ -183,7 +183,7 @@
                     }
                 }
             }
-            
+
             tryClass = class_getSuperclass(tryClass);
         }
     }];
@@ -206,7 +206,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.showsSearchBar = YES;
 }
 
@@ -224,7 +224,7 @@
 - (NSArray *)buildSections:(NSArray<NSString *> *)titles predicates:(NSArray<NSPredicate *> *)predicates {
     NSParameterAssert(titles.count == predicates.count);
     NSParameterAssert(titles); NSParameterAssert(predicates);
-    
+
     return [NSArray flex_forEachUpTo:titles.count map:^id(NSUInteger i) {
         NSArray *rows = [self.references filteredArrayUsingPredicate:predicates[i]];
         return [self makeSection:rows title:titles[i]];
@@ -241,18 +241,22 @@
             if (ref.summary && [ref.summary localizedCaseInsensitiveContainsString:filterText]) {
                 return YES;
             }
-            
+
             return [ref.reference localizedCaseInsensitiveContainsString:filterText];
         }
     ];
-    
+
+    __weak __typeof(self) weakSelf = self;
     section.selectionHandler = ^(__kindof UIViewController *host, FLEXObjectRef *ref) {
-        [self.navigationController pushViewController:[
-            FLEXObjectExplorerFactory explorerViewControllerForObject:ref.object
-        ] animated:YES];
+        __strong __typeof(self) strongSelf = weakSelf;
+        if (strongSelf) {
+            [strongSelf.navigationController pushViewController:[
+                FLEXObjectExplorerFactory explorerViewControllerForObject:ref.object
+            ] animated:YES];
+        }
     };
 
-    section.customTitle = title;    
+    section.customTitle = title;
     return section;
 }
 
