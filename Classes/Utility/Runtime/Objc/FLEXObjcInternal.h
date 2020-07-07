@@ -57,7 +57,7 @@ NS_INLINE BOOL flex_isTaggedPointer(const void *ptr)  {
     #endif
 }
 
-#define FLEXIsTaggedPointer(obj) flex_isTaggedPointer((__bridge void *)obj)
+#define FLEXPointerIsTaggedPointer(obj) flex_isTaggedPointer((__bridge void *)obj)
 
 BOOL FLEXPointerIsReadable(const void * ptr);
 
