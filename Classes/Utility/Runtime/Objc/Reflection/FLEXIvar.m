@@ -43,13 +43,13 @@
 
 - (id)initWithIvar:(Ivar)ivar {
     NSParameterAssert(ivar);
-    
+
     self = [super init];
     if (self) {
         _objc_ivar = ivar;
         [self examine];
     }
-    
+
     return self;
 }
 
@@ -73,7 +73,7 @@
     _name         = @(ivar_getName(self.objc_ivar) ?: "(nil)");
     _offset       = ivar_getOffset(self.objc_ivar);
     _typeEncoding = @(ivar_getTypeEncoding(self.objc_ivar) ?: "");
-    
+
     NSString *typeForDetails = _typeEncoding;
     NSString *sizeForDetails = nil;
     if (_typeEncoding.length) {
@@ -85,7 +85,7 @@
         typeForDetails = @"no type info";
         sizeForDetails = @"unknown size";
     }
-    
+
     Dl_info exeInfo;
     if (dladdr(_objc_ivar, &exeInfo)) {
         _imagePath = exeInfo.dli_fname ? @(exeInfo.dli_fname) : nil;
@@ -101,7 +101,7 @@
     id value = nil;
     if (!FLEXIvarIsSafe(_objc_ivar) ||
         _type == FLEXTypeEncodingNull ||
-        FLEXIsTaggedPointer(target)) {
+        FLEXPointerIsTaggedPointer(target)) {
         return nil;
     }
 
@@ -155,7 +155,7 @@
     if (type.flex_typeIsNonObjcPointer && type.flex_pointeeType != FLEXTypeEncodingVoid) {
         return [self getValue:target];
     }
-    
+
     return [FLEXRuntimeUtility
         potentiallyUnwrapBoxedPointer:[self getValue:target]
         type:type.UTF8String
