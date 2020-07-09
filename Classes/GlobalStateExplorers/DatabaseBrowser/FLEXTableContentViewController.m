@@ -113,7 +113,11 @@
     
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title([@"Row " stringByAppendingString:@(row).stringValue]);
-        make.message([fields componentsJoinedByString:@"\n\n"]);
+        NSString *message = [fields componentsJoinedByString:@"\n\n"];
+        make.message(message);
+        make.button(@"Copy").handler(^(NSArray<NSString *> *strings) {
+            UIPasteboard.generalPasteboard.string = message;
+        });
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];
 }
