@@ -12,7 +12,7 @@
 #import "FLEXColor.h"
 
 @interface FLEXMultiColumnTableView () <
-    UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate
+    UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, FLEXDBQueryRowCellLayoutSource
 >
 
 @property (nonatomic) UIScrollView *contentScrollView;
@@ -25,8 +25,6 @@
 @property (nonatomic) NSInteger sortColumn;
 @property (nonatomic) FLEXTableColumnHeaderSortType sortType;
 
-@property (nonatomic) NSArray *rowData;
-
 @property (nonatomic, readonly) NSInteger numberOfColumns;
 @property (nonatomic, readonly) NSInteger numberOfRows;
 @property (nonatomic, readonly) CGFloat topHeaderHeight;
@@ -38,6 +36,9 @@
 static const CGFloat kColumnMargin = 1;
 
 @implementation FLEXMultiColumnTableView
+{
+  NSArray<UIView *> *_headers;
+}
 
 #pragma mark - Initialization
 
@@ -71,9 +72,9 @@ static const CGFloat kColumnMargin = 1;
     }
     
     CGFloat contentWidth = 0.0;
-    NSInteger rowsCount = self.numberOfColumns;
-    for (int i = 0; i < rowsCount; i++) {
-        contentWidth += [self contentWidthForColumn:i];
+    NSInteger columnsCount = self.numberOfColumns;
+    for (int i = 0; i < columnsCount; i++) {
+        contentWidth += CGRectGetWidth(_headers[i].bounds);
     }
     
     CGFloat contentHeight = height - topheaderHeight - topInsets;
@@ -105,7 +106,7 @@ static const CGFloat kColumnMargin = 1;
     headerScrollView.delegate        = self;
     headerScrollView.backgroundColor = FLEXColor.secondaryGroupedBackgroundColor;
     self.headerScrollView            = headerScrollView;
-    
+
     [self addSubview:headerScrollView];
 }
 
@@ -147,9 +148,9 @@ static const CGFloat kColumnMargin = 1;
 #pragma mark - Data
 
 - (void)reloadData {
+    [self loadHeaderData];
     [self loadLeftViewData];
     [self loadContentData];
-    [self loadHeaderData];
 }
 
 - (void)loadHeaderData {
@@ -157,16 +158,15 @@ static const CGFloat kColumnMargin = 1;
     for (UIView *subview in self.headerScrollView.subviews) {
         [subview removeFromSuperview];
     }
+    NSMutableArray<UIView *> *headers = [NSMutableArray array];
     
     CGFloat xOffset = 0.0;
     for (NSInteger column = 0; column < self.numberOfColumns; column++) {
-        CGFloat width = [self contentWidthForColumn:column] + self.columnMargin;
-        
-        FLEXTableColumnHeader *header = [[FLEXTableColumnHeader alloc]
-            initWithFrame:CGRectMake(xOffset, 0, width, self.topHeaderHeight - 1)
-        ];
+        FLEXTableColumnHeader *header = [[FLEXTableColumnHeader alloc] initWithFrame:CGRectZero];
         header.titleLabel.text = [self columnTitle:column];
-        
+        CGFloat width = MAX([self minContentWidthForColumn:column], [header sizeThatFits:CGSizeMake(CGFLOAT_MAX, self.topHeaderHeight - 1)].width) + self.columnMargin;
+        header.frame = CGRectMake(xOffset, 0, width, self.topHeaderHeight - 1);
+
         if (column == self.sortColumn) {
             header.sortType = self.sortType;
         }
@@ -179,8 +179,10 @@ static const CGFloat kColumnMargin = 1;
         header.userInteractionEnabled = YES;
         
         [self.headerScrollView addSubview:header];
+        [headers addObject:header];
         xOffset += width;
     }
+    _headers = [headers copy];
 }
 
 - (void)contentHeaderTap:(UIGestureRecognizer *)gesture {
@@ -227,13 +229,13 @@ static const CGFloat kColumnMargin = 1;
     }
     // Right side table view for data
     else {
-        self.rowData = [self.dataSource contentForRow:indexPath.row];
         FLEXDBQueryRowCell *cell = [tableView
             dequeueReusableCellWithIdentifier:kFLEXDBQueryRowCellReuse forIndexPath:indexPath
         ];
         
         cell.contentView.backgroundColor = backgroundColor;
         cell.data = [self.dataSource contentForRow:indexPath.row];
+        cell.layoutSource = self;
         NSAssert(cell.data.count == self.numberOfColumns, @"Count of data provided was incorrect");
         return cell;
     }
@@ -280,6 +282,17 @@ static const CGFloat kColumnMargin = 1;
 }
 
 
+#pragma mark FLEXDBQueryRowCellLayoutSource
+
+- (CGFloat)dbQueryRowCell:(FLEXDBQueryRowCell *)dbQueryRowCell minXForColumn:(NSUInteger)column {
+    return CGRectGetMinX(_headers[column].frame);
+}
+
+- (CGFloat)dbQueryRowCell:(FLEXDBQueryRowCell *)dbQueryRowCell widthForColumn:(NSUInteger)column {
+    return CGRectGetWidth(_headers[column].bounds);
+}
+
+
 #pragma mark DataSource Accessor
 
 - (NSInteger)numberOfRows {
@@ -298,8 +311,8 @@ static const CGFloat kColumnMargin = 1;
     return [self.dataSource rowTitle:row];
 }
 
-- (CGFloat)contentWidthForColumn:(NSInteger)column {
-    return [self.dataSource multiColumnTableView:self widthForContentCellInColumn:column];
+- (CGFloat)minContentWidthForColumn:(NSInteger)column {
+    return [self.dataSource multiColumnTableView:self minWidthForContentCellInColumn:column];
 }
 
 - (CGFloat)contentHeightForRow:(NSInteger)row {
