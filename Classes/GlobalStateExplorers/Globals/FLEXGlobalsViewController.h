@@ -6,10 +6,11 @@
 //  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
-#import "FLEXFilteringTableViewController.h"
+#import <FLEX/FLEXFilteringTableViewController.h>
 @protocol FLEXGlobalsTableViewControllerDelegate;
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
+    FLEXGlobalsSectionCustom,
     /// NSProcessInfo, Network history, system log,
     /// heap, address explorer, libraries, app classes
     FLEXGlobalsSectionProcessAndEvents,
@@ -19,7 +20,6 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
     FLEXGlobalsSectionAppShortcuts,
     /// UIPasteBoard.general, UIScreen, UIDevice
     FLEXGlobalsSectionMisc,
-    FLEXGlobalsSectionCustom,
     FLEXGlobalsSectionCount
 };
 
