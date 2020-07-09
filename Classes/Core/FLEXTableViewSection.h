@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// A title to be displayed for the custom section.
 /// Subclasses may override or use the \c _title ivar.
-@property (nonatomic, readonly, nullable) NSString *title;
+@property (nonatomic, readonly, nullable, copy) NSString *title;
 /// The number of rows in this section. Subclasses must override.
 /// This should not change until \c filterText is changed or \c reloadData is called.
 @property (nonatomic, readonly) NSInteger numberOfRows;
@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Subclasses \e may override this as necessary, but are not required to.
 /// See \c FLEXTableView.h for more information.
 /// @return nil by default.
-@property (nonatomic, readonly, nullable) NSDictionary<NSString *, Class> *cellRegistrationMapping;
+@property (nonatomic, readonly, nullable, strong) NSDictionary<NSString *, Class> *cellRegistrationMapping;
 
 /// The section should filter itself based on the contents of this property
 /// as it is set. If it is set to nil or an empty string, it should not filter.
@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// It is common practice to use two arrays for the underlying model:
 /// One to hold all rows, and one to hold unfiltered rows. When \c setFilterText:
 /// is called, call \c super to store the new value, and re-filter your model accordingly.
-@property (nonatomic, nullable) NSString *filterText;
+@property (nonatomic, nullable, strong) NSString *filterText;
 
 /// Provides an avenue for the section to refresh data or change the number of rows.
 ///
