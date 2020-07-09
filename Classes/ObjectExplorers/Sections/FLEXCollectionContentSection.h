@@ -77,7 +77,7 @@ typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollection
 /// Defaults to \c NO
 @property (nonatomic) BOOL hideSectionTitle;
 /// Defaults to \c nil
-@property (nonatomic) NSString *customTitle;
+@property (nonatomic, copy) NSString *customTitle;
 /// Defaults to \c NO
 ///
 /// Settings this to \c NO will not display the element index for ordered collections.

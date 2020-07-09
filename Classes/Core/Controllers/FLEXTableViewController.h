@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXTableView.h"
+#import <FLEX/FLEXTableView.h>
 @class FLEXScopeCarousel, FLEXWindow, FLEXTableViewSection;
 
 typedef CGFloat FLEXDebounceInterval;
@@ -41,7 +41,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// Subclasses may override to configure the controller before \c viewDidLoad:
 - (id)initWithStyle:(UITableViewStyle)style;
 
-@property (nonatomic) FLEXTableView *tableView;
+@property (nonatomic, strong) FLEXTableView *tableView;
 
 /// If your subclass conforms to \c FLEXSearchResultsUpdating
 /// then this property is assigned to \c self automatically.
@@ -56,7 +56,7 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// A horizontally scrolling list with functionality similar to
 /// that of a search bar's scope bar. You'd want to use this when
 /// you have potentially more than 4 scope options.
-@property (nonatomic) FLEXScopeCarousel *carousel;
+@property (nonatomic, strong) FLEXScopeCarousel *carousel;
 
 /// Defaults to NO.
 ///
@@ -73,9 +73,9 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// self is used as the default search results updater and delegate.
 /// The search bar will not dim the background or hide the navigation bar by default.
 /// On iOS 11 and up, the search bar will appear in the navigation bar below the title.
-@property (nonatomic) UISearchController *searchController;
+@property (nonatomic, strong) UISearchController *searchController;
 /// Used to initialize the search controller. Defaults to nil.
-@property (nonatomic) UIViewController *searchResultsController;
+@property (nonatomic, strong) UIViewController *searchResultsController;
 /// Defaults to "Fast"
 ///
 /// Determines how often search bar results will be "debounced."
@@ -102,14 +102,14 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// Otherwise, this is the selected index of the carousel, or NSNotFound if using neither.
 @property (nonatomic) NSInteger selectedScope;
 /// self.searchController.searchBar.text
-@property (nonatomic, readonly) NSString *searchText;
+@property (nonatomic, readonly, copy) NSString *searchText;
 
 /// A totally optional delegate to forward search results updater calls to.
 /// If a delegate is set, updateSearchResults: is not called on this view controller. 
-@property (nonatomic, weak    ) id<FLEXSearchResultsUpdating> searchResultsUpdater;
+@property (nonatomic, weak) id<FLEXSearchResultsUpdating> searchResultsUpdater;
 
 /// self.view.window as a \c FLEXWindow
-@property (nonatomic, readonly) FLEXWindow *window;
+@property (nonatomic, readonly, strong) FLEXWindow *window;
 
 /// Convenient for doing some async processor-intensive searching
 /// in the background before updating the UI back on the main queue.
@@ -129,9 +129,9 @@ extern CGFloat const kFLEXDebounceForExpensiveIO;
 /// Subclasses may override. You should not need to call this method directly.
 - (void)setupToolbarItems;
 
-@property (nonatomic, readonly) UIBarButtonItem *shareToolbarItem;
-@property (nonatomic, readonly) UIBarButtonItem *bookmarksToolbarItem;
-@property (nonatomic, readonly) UIBarButtonItem *openTabsToolbarItem;
+@property (nonatomic, readonly, strong) UIBarButtonItem *shareToolbarItem;
+@property (nonatomic, readonly, strong) UIBarButtonItem *bookmarksToolbarItem;
+@property (nonatomic, readonly, strong) UIBarButtonItem *openTabsToolbarItem;
 
 /// Whether or not to display the "share" icon in the middle of the toolbar. NO by default.
 ///
