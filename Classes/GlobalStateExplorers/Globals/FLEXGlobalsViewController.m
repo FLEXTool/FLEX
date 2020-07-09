@@ -39,14 +39,14 @@
 
 + (NSString *)globalsTitleForSection:(FLEXGlobalsSectionKind)section {
     switch (section) {
+        case FLEXGlobalsSectionCustom:
+            return @"Custom Additions";
         case FLEXGlobalsSectionProcessAndEvents:
             return @"Process and Events";
         case FLEXGlobalsSectionAppShortcuts:
             return @"App Shortcuts";
         case FLEXGlobalsSectionMisc:
             return @"Miscellaneous";
-        case FLEXGlobalsSectionCustom:
-            return @"Custom Additions";
 
         default:
             @throw NSInternalInconsistencyException;
@@ -104,11 +104,11 @@
 }
 
 + (NSArray<FLEXGlobalsSection *> *)defaultGlobalSections {
-    static NSArray<FLEXGlobalsSection *> *sections = nil;
+    static NSMutableArray<FLEXGlobalsSection *> *sections = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSArray *rowsBySection = @[
-            @[
+        NSDictionary<NSNumber *, NSArray<FLEXGlobalsEntry *> *> *rowsBySection = @{
+            @(FLEXGlobalsSectionProcessAndEvents) : @[
                 [self globalsEntryForRow:FLEXGlobalsRowNetworkHistory],
                 [self globalsEntryForRow:FLEXGlobalsRowSystemLog],
                 [self globalsEntryForRow:FLEXGlobalsRowProcessInfo],
@@ -116,7 +116,7 @@
                 [self globalsEntryForRow:FLEXGlobalsRowAddressInspector],
                 [self globalsEntryForRow:FLEXGlobalsRowBrowseRuntime],
             ],
-            @[ // FLEXGlobalsSectionAppShortcuts
+            @(FLEXGlobalsSectionAppShortcuts) : @[
                 [self globalsEntryForRow:FLEXGlobalsRowBrowseBundle],
                 [self globalsEntryForRow:FLEXGlobalsRowBrowseContainer],
                 [self globalsEntryForRow:FLEXGlobalsRowMainBundle],
@@ -128,7 +128,7 @@
                 [self globalsEntryForRow:FLEXGlobalsRowRootViewController],
                 [self globalsEntryForRow:FLEXGlobalsRowCookies],
             ],
-            @[ // FLEXGlobalsSectionMisc
+            @(FLEXGlobalsSectionMisc) : @[
                 [self globalsEntryForRow:FLEXGlobalsRowPasteboard],
                 [self globalsEntryForRow:FLEXGlobalsRowMainScreen],
                 [self globalsEntryForRow:FLEXGlobalsRowCurrentDevice],
@@ -144,12 +144,13 @@
                 [self globalsEntryForRow:FLEXGlobalsRowMainThread],
                 [self globalsEntryForRow:FLEXGlobalsRowOperationQueue],
             ]
-        ];
-        
-        sections = [NSArray flex_forEachUpTo:rowsBySection.count map:^FLEXGlobalsSection *(NSUInteger i) {
+        };
+
+        sections = [NSMutableArray array];
+        for (FLEXGlobalsSectionKind i = FLEXGlobalsSectionCustom + 1; i < FLEXGlobalsSectionCount; ++i) {
             NSString *title = [self globalsTitleForSection:i];
-            return [FLEXGlobalsSection title:title rows:rowsBySection[i]];
-        }];
+            [sections addObject:[FLEXGlobalsSection title:title rows:rowsBySection[@(i)]]];
+        }
     });
     
     return sections;
@@ -180,8 +181,7 @@
 }
 
 - (NSArray<FLEXGlobalsSection *> *)makeSections {
-    NSArray *sections = [self.class defaultGlobalSections];
-    
+    NSMutableArray<FLEXGlobalsSection *> *sections = [NSMutableArray array];
     // Do we have custom sections to add?
     if (FLEXManager.sharedManager.userGlobalEntries.count) {
         NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
@@ -189,9 +189,11 @@
             title:title
             rows:FLEXManager.sharedManager.userGlobalEntries
         ];
-        sections = [sections arrayByAddingObject:custom];
+        [sections addObject:custom];
     }
-    
+
+    [sections addObjectsFromArray:[self.class defaultGlobalSections]];
+
     return sections;
 }
 
