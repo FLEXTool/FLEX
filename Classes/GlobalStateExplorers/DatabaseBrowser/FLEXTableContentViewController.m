@@ -7,6 +7,7 @@
 //
 
 #import "FLEXTableContentViewController.h"
+#import "FLEXTableRowDataViewController.h"
 #import "FLEXMultiColumnTableView.h"
 #import "FLEXWebViewController.h"
 #import "FLEXUtility.h"
@@ -167,6 +168,12 @@
         });
         make.button(@"Copy as CSV").handler(^(NSArray<NSString *> *strings) {
             UIPasteboard.generalPasteboard.string = [values componentsJoinedByString:@", "];
+        });
+        make.button(@"Focus on Row").handler(^(NSArray<NSString *> *strings) {
+            UIViewController *focusedRow = [FLEXTableRowDataViewController
+                rows:[NSDictionary dictionaryWithObjects:self.rows[row] forKeys:self.columns]
+            ];
+            [self.navigationController pushViewController:focusedRow animated:YES];
         });
         
         // Option to delete row
