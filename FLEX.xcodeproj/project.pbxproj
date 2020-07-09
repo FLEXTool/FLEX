@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03ED813D24B7D91200831CA0 /* FLEXTableRowDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 03ED813B24B7D91200831CA0 /* FLEXTableRowDataViewController.m */; };
+		03ED813E24B7D91200831CA0 /* FLEXTableRowDataViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 03ED813C24B7D91200831CA0 /* FLEXTableRowDataViewController.h */; };
 		04F1CA191C137CF1000A52B0 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 04F1CA181C137CF1000A52B0 /* LICENSE */; };
 		1C27A8B91F0E5A0400F0D02D /* FLEXTestsMethodsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */; };
 		1C27A8BB1F0E5A0400F0D02D /* FLEX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4C941F1B5B20570088C3F2 /* FLEX.framework */; };
@@ -374,6 +376,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03ED813B24B7D91200831CA0 /* FLEXTableRowDataViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTableRowDataViewController.m; sourceTree = "<group>"; };
+		03ED813C24B7D91200831CA0 /* FLEXTableRowDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXTableRowDataViewController.h; sourceTree = "<group>"; };
 		04F1CA181C137CF1000A52B0 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1C27A8B61F0E5A0300F0D02D /* FLEXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FLEXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTestsMethodsList.m; sourceTree = "<group>"; };
@@ -1057,6 +1061,8 @@
 				779B1ECB1C0C4D7C001F5E49 /* FLEXTableLeftCell.m */,
 				779B1ECC1C0C4D7C001F5E49 /* FLEXTableListViewController.h */,
 				779B1ECD1C0C4D7C001F5E49 /* FLEXTableListViewController.m */,
+				03ED813C24B7D91200831CA0 /* FLEXTableRowDataViewController.h */,
+				03ED813B24B7D91200831CA0 /* FLEXTableRowDataViewController.m */,
 				04F1CA181C137CF1000A52B0 /* LICENSE */,
 			);
 			path = DatabaseBrowser;
@@ -1511,6 +1517,7 @@
 				3A4C95301B5B21410088C3F2 /* FLEXSystemLogMessage.h in Headers */,
 				C398625523AD6C67007E6793 /* FLEXObjcRuntimeViewController.h in Headers */,
 				C3E5DA02231700EE00E655DB /* FLEXObjectInfoSection.h in Headers */,
+				03ED813E24B7D91200831CA0 /* FLEXTableRowDataViewController.h in Headers */,
 				C34D4EB023A2ABD900C1F903 /* FLEXLayerShortcuts.h in Headers */,
 				C3F646F623A04A7500D4A011 /* FLEXShortcut.h in Headers */,
 				C3531B9D23E69BB200A184AD /* FLEXManager+Networking.h in Headers */,
@@ -1891,6 +1898,7 @@
 				779B1ED31C0C4D7C001F5E49 /* FLEXTableColumnHeader.m in Sources */,
 				C30D2963261FAE9E00D89649 /* FLEXNSStringShortcuts.m in Sources */,
 				C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */,
+				03ED813D24B7D91200831CA0 /* FLEXTableRowDataViewController.m in Sources */,
 				C31D93E523E38CBE005517BF /* FLEXBlockShortcuts.m in Sources */,
 				C312A13123ECB5D300E38049 /* FLEXBookmarkManager.m in Sources */,
 				C34D4EB523A2AF2A00C1F903 /* FLEXColorPreviewSection.m in Sources */,
