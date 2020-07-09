@@ -25,7 +25,7 @@
 @property (nonatomic, copy) NSArray<FLEXTableViewSection *> *allSections;
 
 /// This computed property should filter \c allSections for assignment to \c sections
-@property (nonatomic, readonly) NSArray<FLEXTableViewSection *> *nonemptySections;
+@property (nonatomic, readonly, copy) NSArray<FLEXTableViewSection *> *nonemptySections;
 
 /// This should be able to re-initialize \c allSections
 - (NSArray<FLEXTableViewSection *> *)makeSections;
@@ -80,7 +80,7 @@
 /// if using \c self as the \c filterDelegate, as is the default.
 ///
 /// For example, the object explorer hides the description section when searching.
-@property (nonatomic, readonly) NSArray<FLEXTableViewSection *> *nonemptySections;
+@property (nonatomic, readonly, copy) NSArray<FLEXTableViewSection *> *nonemptySections;
 
 /// If using \c self as the \c filterDelegate, as is the default,
 /// subclasses should override to provide the sections for the table view.

@@ -36,7 +36,7 @@ typedef void (^FLEXMutableListCellForElement)(__kindof UITableViewCell *cell, id
 
 /// By default, rows are not selectable. If you want rows
 /// to be selectable, provide a selection handler here.
-@property (nonatomic) void (^selectionHandler)(__kindof UIViewController * host, id element);
+@property (nonatomic, copy) void (^selectionHandler)(__kindof UIViewController *host, id element);
 
 /// The objects representing all possible rows in the section.
 @property (nonatomic) NSArray<ObjectType> *list;

@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// A title to be displayed for the custom section.
 /// Subclasses may override or use the \c _title ivar.
-@property (nonatomic, readonly, nullable) NSString *title;
+@property (nonatomic, readonly, nullable, copy) NSString *title;
 /// The number of rows in this section. Subclasses must override.
 /// This should not change until \c filterText is changed or \c reloadData is called.
 @property (nonatomic, readonly) NSInteger numberOfRows;
