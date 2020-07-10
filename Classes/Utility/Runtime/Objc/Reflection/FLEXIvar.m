@@ -37,7 +37,8 @@
 }
 
 + (instancetype)named:(NSString *)name onClass:(Class)cls {
-    Ivar ivar = class_getInstanceVariable(cls, name.UTF8String);
+    Ivar _Nullable ivar = class_getInstanceVariable(cls, name.UTF8String);
+    NSAssert(ivar, @"Cannot find ivar with name %@ on class %@", name, cls);
     return [self ivar:ivar];
 }
 
