@@ -45,8 +45,9 @@
 }
 
 + (instancetype)named:(NSString *)name onClass:(Class)cls {
-    NSParameterAssert(class_getProperty(cls, name.UTF8String));
-    return [self property:class_getProperty(cls, name.UTF8String) onClass:cls];
+    objc_property_t _Nullable property = class_getProperty(cls, name.UTF8String);
+    NSAssert(property, @"Cannot find property with name %@ on class %@", name, cls);
+    return [self property:property onClass:cls];
 }
 
 + (instancetype)propertyWithName:(NSString *)name attributes:(FLEXPropertyAttributes *)attributes {
