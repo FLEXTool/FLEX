@@ -16,6 +16,12 @@
 @implementation FLEXShortcutsFactory (UIApplication)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
+    // sharedApplication class property possibly not added
+    // as a literal class property until iOS 10
+    FLEXRuntimeUtilityTryAddObjectProperty(
+        2, sharedApplication, UIApplication.flex_metaclass, UIApplication, PropertyKey(ReadOnly)
+    );
+    
     self.append.classProperties(@[@"sharedApplication"]).forClass(UIApplication.flex_metaclass);
     self.append.properties(@[
         @"delegate", @"keyWindow", @"windows"
