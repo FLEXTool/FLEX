@@ -16,7 +16,7 @@
 @implementation FLEXShortcutsFactory (UIApplication)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
-    self.append.classProperties(@[@"sharedApplication"]).forClass(UIApplication.flex_metaclass);
+    self.append.classProperties(@[@"sharedApplication"]).forClass(UIApplication.class);
     self.append.properties(@[
         @"delegate", @"keyWindow", @"windows"
     ]).forClass(UIApplication.class);
@@ -56,7 +56,7 @@
 
     // UIButton, private
     FLEXRuntimeUtilityTryAddObjectProperty(2, font, UIButton.class, UIFont, PropertyKey(ReadOnly));
-    
+
     // Only available since iOS 3.2, but we never supported iOS 3, so who cares
     NSArray *ivars = @[@"_gestureRecognizers"];
     NSArray *methods = @[@"sizeToFit", @"setNeedsLayout", @"removeFromSuperview"];
@@ -92,7 +92,7 @@
     }
 
     ivars = @[@"_targetActions", @"_gestureRecognizers"];
-    
+
     // Property was added in iOS 10 but we want it on iOS 9 too
     FLEXRuntimeUtilityTryAddObjectProperty(9, allTargets, UIControl.class, NSArray, PropertyKey(ReadOnly));
 
@@ -109,7 +109,7 @@
         @"currentTitle", @"currentImage", @"enabled", @"frame",
         @"superview", @"subviews"
     ]).forClass(UIButton.class);
-    
+
     // UIImageView
     self.append.properties(@[
         @"image", @"animationImages", @"frame", @"bounds", @"center",
@@ -126,9 +126,9 @@
 @implementation FLEXShortcutsFactory (ViewControllers)
 
 + (void)load { FLEX_EXIT_IF_TESTING()
-    // toolbarItems is not really a property, make it one 
+    // toolbarItems is not really a property, make it one
     FLEXRuntimeUtilityTryAddObjectProperty(3, toolbarItems, UIViewController.class, NSArray);
-    
+
     // UIViewController
     self.append
         .properties(@[
@@ -194,7 +194,7 @@
 + (void)load { FLEX_EXIT_IF_TESTING()
     // Property was added in iOS 10 but we want it on iOS 9 too
     FLEXRuntimeUtilityTryAddNonatomicProperty(9, item, UIActivityItemProvider.class, id, PropertyKey(ReadOnly));
-    
+
     self.append.properties(@[
         @"item", @"placeholderItem", @"activityType"
     ]).forClass(UIActivityItemProvider.class);
@@ -227,32 +227,32 @@
     ]).methods(@[
         @"dataTaskWithURL:", @"finishTasksAndInvalidate", @"invalidateAndCancel",
     ]).forClass(NSURLSession.class);
-    
+
     self.append.methods(@[
         @"cachedResponseForRequest:", @"storeCachedResponse:forRequest:",
         @"storeCachedResponse:forDataTask:", @"removeCachedResponseForRequest:",
         @"removeCachedResponseForDataTask:", @"removeCachedResponsesSinceDate:",
         @"removeAllCachedResponses",
     ]).forClass(NSURLCache.class);
-    
-    
+
+
     self.append.methods(@[
         @"postNotification:", @"postNotificationName:object:userInfo:",
         @"addObserver:selector:name:object:", @"removeObserver:",
         @"removeObserver:name:object:",
     ]).forClass(NSNotificationCenter.class);
-    
+
     // NSTimeZone class properties aren't real properties
     FLEXRuntimeUtilityTryAddObjectProperty(2, localTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
     FLEXRuntimeUtilityTryAddObjectProperty(2, systemTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
     FLEXRuntimeUtilityTryAddObjectProperty(2, defaultTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
     FLEXRuntimeUtilityTryAddObjectProperty(2, knownTimeZoneNames, NSTimeZone.flex_metaclass, NSArray);
     FLEXRuntimeUtilityTryAddObjectProperty(2, abbreviationDictionary, NSTimeZone.flex_metaclass, NSDictionary);
-    
+
     self.append.classMethods(@[
-        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:", @"", @"", @"", 
+        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:", @"", @"", @"",
     ]).forClass(NSTimeZone.flex_metaclass);
-    
+
     self.append.classProperties(@[
         @"defaultTimeZone", @"systemTimeZone", @"localTimeZone"
     ]).forClass(NSTimeZone.class);
