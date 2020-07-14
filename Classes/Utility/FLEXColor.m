@@ -38,7 +38,7 @@
 + (UIColor *)secondaryBackgroundColor {
     return FLEXDynamicColor(
         secondarySystemBackgroundColor,
-        colorWithHue:2.0/3.0 saturation:0.02 brightness:0.95 alpha:1
+        colorWithHue:2.0/3.0 saturation:0.02 brightness:0.97 alpha:1
     );
 }
 
@@ -57,6 +57,25 @@
     return [[self tertiaryBackgroundColor] colorWithAlphaComponent:alpha];
 }
 
++ (UIColor *)groupedBackgroundColor {
+    return FLEXDynamicColor(
+        systemGroupedBackgroundColor,
+        colorWithHue:2.0/3.0 saturation:0.02 brightness:0.97 alpha:1
+    );
+}
+
++ (UIColor *)groupedBackgroundColorWithAlpha:(CGFloat)alpha {
+    return [[self groupedBackgroundColor] colorWithAlphaComponent:alpha];
+}
+
++ (UIColor *)secondaryGroupedBackgroundColor {
+    return FLEXDynamicColor(secondarySystemGroupedBackgroundColor, whiteColor);
+}
+
++ (UIColor *)secondaryGroupedBackgroundColorWithAlpha:(CGFloat)alpha {
+    return [[self secondaryGroupedBackgroundColor] colorWithAlphaComponent:alpha];
+}
+
 #pragma mark - Text colors
 
 + (UIColor *)primaryTextColor {
@@ -64,7 +83,7 @@
 }
 
 + (UIColor *)deemphasizedTextColor {
-    return FLEXDynamicColor(tertiaryLabelColor, lightGrayColor);
+    return FLEXDynamicColor(secondaryLabelColor, lightGrayColor);
 }
 
 #pragma mark - UI Element Colors
@@ -111,7 +130,11 @@
 }
 
 + (UIColor *)hairlineColor {
-    return FLEXDynamicColor(systemGrayColor, grayColor);
+    return FLEXDynamicColor(systemGray3Color, colorWithWhite:0.75 alpha:1);
+}
+
++ (UIColor *)destructiveColor {
+    return FLEXDynamicColor(systemRedColor, redColor);
 }
 
 @end

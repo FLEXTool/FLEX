@@ -62,17 +62,42 @@ NSAssert(!self._action, @"Cannot mutate action after retreiving underlying UIAle
     return alert._controller;
 }
 
-+ (void)make:(FLEXAlertBuilder)block withStyle:(UIAlertControllerStyle)style showFrom:(UIViewController *)viewController {
++ (void)make:(FLEXAlertBuilder)block
+   withStyle:(UIAlertControllerStyle)style
+    showFrom:(UIViewController *)viewController
+      source:(id)viewOrBarItem {
     UIAlertController *alert = [self make:block withStyle:style];
+    if ([viewOrBarItem isKindOfClass:[UIBarButtonItem class]]) {
+        alert.popoverPresentationController.barButtonItem = viewOrBarItem;
+    } else if ([viewOrBarItem isKindOfClass:[UIView class]]) {
+        alert.popoverPresentationController.sourceView = viewOrBarItem;
+        alert.popoverPresentationController.sourceRect = [viewOrBarItem bounds];
+    } else if (viewOrBarItem) {
+        NSParameterAssert(
+            [viewOrBarItem isKindOfClass:[UIBarButtonItem class]] ||
+            [viewOrBarItem isKindOfClass:[UIView class]] ||
+            !viewOrBarItem
+        );
+    }
     [viewController presentViewController:alert animated:YES completion:nil];
 }
 
-+ (void)makeAlert:(FLEXAlertBuilder)block showFrom:(UIViewController *)viewController {
-    [self make:block withStyle:UIAlertControllerStyleAlert showFrom:viewController];
++ (void)makeAlert:(FLEXAlertBuilder)block showFrom:(UIViewController *)controller {
+    [self make:block withStyle:UIAlertControllerStyleAlert showFrom:controller source:nil];
 }
 
-+ (void)makeSheet:(FLEXAlertBuilder)block showFrom:(UIViewController *)viewController {
-    [self make:block withStyle:UIAlertControllerStyleActionSheet showFrom:viewController];
++ (void)makeSheet:(FLEXAlertBuilder)block showFrom:(UIViewController *)controller {
+    [self make:block withStyle:UIAlertControllerStyleActionSheet showFrom:controller source:nil];
+}
+
+/// Construct and display an action sheet-style alert
++ (void)makeSheet:(FLEXAlertBuilder)block
+         showFrom:(UIViewController *)controller
+           source:(id)viewOrBarItem {
+    [self make:block
+     withStyle:UIAlertControllerStyleActionSheet
+      showFrom:controller
+        source:viewOrBarItem];
 }
 
 + (UIAlertController *)makeAlert:(FLEXAlertBuilder)block {

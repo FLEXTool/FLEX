@@ -7,13 +7,13 @@
 //
 
 #import "FLEXAddressExplorerCoordinator.h"
-#import "FLEXGlobalsTableViewController.h"
+#import "FLEXGlobalsViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
 
-@interface FLEXGlobalsTableViewController (FLEXAddressExploration)
+@interface UITableViewController (FLEXAddressExploration)
 - (void)deselectSelectedRow;
 - (void)tryExploreAddress:(NSString *)addressString safely:(BOOL)safely;
 @end
@@ -23,11 +23,11 @@
 #pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
-    return @"🔎 Address Explorer";
+    return @"🔎  Address Explorer";
 }
 
-+ (FLEXGlobalsTableViewControllerRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
-    return ^(FLEXGlobalsTableViewController *host) {
++ (FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
+    return ^(UITableViewController *host) {
 
         NSString *title = @"Explore Object at Address";
         NSString *message = @"Paste a hexadecimal address below, starting with '0x'. "
@@ -59,7 +59,7 @@
 
 @end
 
-@implementation FLEXGlobalsTableViewController (FLEXAddressExploration)
+@implementation UITableViewController (FLEXAddressExploration)
 
 - (void)deselectSelectedRow {
     NSIndexPath *selected = self.tableView.indexPathForSelectedRow;

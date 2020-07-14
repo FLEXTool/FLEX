@@ -3,83 +3,101 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/15/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXObjectExplorerFactory.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "FLEXArrayExplorerViewController.h"
-#import "FLEXSetExplorerViewController.h"
-#import "FLEXDictionaryExplorerViewController.h"
-#import "FLEXDefaultsExplorerViewController.h"
-#import "FLEXViewControllerExplorerViewController.h"
-#import "FLEXViewExplorerViewController.h"
-#import "FLEXImageExplorerViewController.h"
-#import "FLEXClassExplorerViewController.h"
-#import "FLEXLayerExplorerViewController.h"
-#import "FLEXColorExplorerViewController.h"
-#import "FLEXBundleExplorerViewController.h"
-#import <objc/runtime.h>
+#import "FLEXGlobalsViewController.h"
+#import "FLEXClassShortcuts.h"
+#import "FLEXViewShortcuts.h"
+#import "FLEXViewControllerShortcuts.h"
+#import "FLEXUIAppShortcuts.h"
+#import "FLEXImageShortcuts.h"
+#import "FLEXLayerShortcuts.h"
+#import "FLEXColorPreviewSection.h"
+#import "FLEXDefaultsContentSection.h"
+#import "FLEXBundleShortcuts.h"
+#import "FLEXBlockShortcuts.h"
+#import "FLEXUtility.h"
 
 @implementation FLEXObjectExplorerFactory
+static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
 
-+ (FLEXObjectExplorerViewController *)explorerViewControllerForObject:(id)object
-{
-    // Bail for nil object. We can't explore nil.
++ (void)initialize {
+    if (self == [FLEXObjectExplorerFactory class]) {
+        #define ClassKey(name) (Class<NSCopying>)[name class]
+        #define ClassKeyByName(str) (Class<NSCopying>)NSClassFromString(@ #str)
+        #define MetaclassKey(meta) (Class<NSCopying>)object_getClass([meta class])
+        classesToRegisteredSections = [NSMutableDictionary dictionaryWithDictionary:@{
+            MetaclassKey(NSObject)     : [FLEXClassShortcuts class],
+            ClassKey(NSArray)          : [FLEXCollectionContentSection class],
+            ClassKey(NSSet)            : [FLEXCollectionContentSection class],
+            ClassKey(NSDictionary)     : [FLEXCollectionContentSection class],
+            ClassKey(NSOrderedSet)     : [FLEXCollectionContentSection class],
+            ClassKey(NSUserDefaults)   : [FLEXDefaultsContentSection class],
+            ClassKey(UIViewController) : [FLEXViewControllerShortcuts class],
+            ClassKey(UIApplication)    : [FLEXUIAppShortcuts class],
+            ClassKey(UIView)           : [FLEXViewShortcuts class],
+            ClassKey(UIImage)          : [FLEXImageShortcuts class],
+            ClassKey(CALayer)          : [FLEXLayerShortcuts class],
+            ClassKey(UIColor)          : [FLEXColorPreviewSection class],
+            ClassKey(NSBundle)         : [FLEXBundleShortcuts class],
+            ClassKeyByName(NSBlock)    : [FLEXBlockShortcuts class],
+        }];
+        #undef ClassKey
+        #undef ClassKeyByName
+        #undef MetaclassKey
+    }
+}
+
++ (FLEXObjectExplorerViewController *)explorerViewControllerForObject:(id)object {
+    // Can't explore nil
     if (!object) {
         return nil;
     }
-    
-    static NSDictionary<NSString *, Class> *explorerSubclassesForObjectTypeStrings = nil;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        explorerSubclassesForObjectTypeStrings = @{NSStringFromClass([NSArray class])          : [FLEXArrayExplorerViewController class],
-                                                   NSStringFromClass([NSSet class])            : [FLEXSetExplorerViewController class],
-                                                   NSStringFromClass([NSDictionary class])     : [FLEXDictionaryExplorerViewController class],
-                                                   NSStringFromClass([NSUserDefaults class])   : [FLEXDefaultsExplorerViewController class],
-                                                   NSStringFromClass([UIViewController class]) : [FLEXViewControllerExplorerViewController class],
-                                                   NSStringFromClass([UIView class])           : [FLEXViewExplorerViewController class],
-                                                   NSStringFromClass([UIImage class])          : [FLEXImageExplorerViewController class],
-                                                   NSStringFromClass([CALayer class])          : [FLEXLayerExplorerViewController class],
-                                                   NSStringFromClass([UIColor class])          : [FLEXColorExplorerViewController class],
-                                                   NSStringFromClass([NSBundle class])         : [FLEXBundleExplorerViewController class],
-                                                   };
-    });
-    
-    Class explorerClass = nil;
-    BOOL objectIsClass = class_isMetaClass(object_getClass(object));
-    if (objectIsClass) {
-        explorerClass = [FLEXClassExplorerViewController class];
-    } else {
-        explorerClass = [FLEXObjectExplorerViewController class];
-        for (NSString *objectTypeString in explorerSubclassesForObjectTypeStrings) {
-            Class objectClass = NSClassFromString(objectTypeString);
-            if ([object isKindOfClass:objectClass]) {
-                explorerClass = explorerSubclassesForObjectTypeStrings[objectTypeString];
-                break;
-            }
-        }
+
+    // If we're given an object, this will look up it's class hierarchy
+    // until it finds a registration. This will work for KVC classes,
+    // since they are children of the original class, and not siblings.
+    // If we are given an object, object_getClass will return a metaclass,
+    // and the same thing will happen. FLEXClassShortcuts is the default
+    // shortcut section for NSObject.
+    //
+    // TODO: rename it to FLEXNSObjectShortcuts or something?
+    Class sectionClass = nil;
+    Class cls = object_getClass(object);
+    do {
+        sectionClass = classesToRegisteredSections[(Class<NSCopying>)cls];
+    } while (!sectionClass && (cls = [cls superclass]));
+
+    if (!sectionClass) {
+        sectionClass = [FLEXShortcutsSection class];
     }
-    
-    FLEXObjectExplorerViewController *explorerViewController = [explorerClass new];
-    explorerViewController.object = object;
-    
-    return explorerViewController;
+
+    return [FLEXObjectExplorerViewController
+        exploringObject:object
+        customSection:[sectionClass forObject:object]
+    ];
+}
+
++ (void)registerExplorerSection:(Class)explorerClass forClass:(Class)objectClass {
+    classesToRegisteredSections[(Class<NSCopying>)objectClass] = explorerClass;
 }
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row 
-{
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row  {
     switch (row) {
         case FLEXGlobalsRowAppDelegate:
-            return @"👉  App delegate";
+            return @"🎟  App Delegate";
+        case FLEXGlobalsRowKeyWindow:
+            return @"🔑  Key Window";
         case FLEXGlobalsRowRootViewController:
-            return @"🌴  Root view controller";
+            return @"🌴  Root View Controller";
         case FLEXGlobalsRowProcessInfo:
             return @"🚦  NSProcessInfo.processInfo";
         case FLEXGlobalsRowUserDefaults:
-            return @"💾  Preferences (NSUserDefaults)";
+            return @"💾  Preferences";
         case FLEXGlobalsRowMainBundle:
             return @"📦  NSBundle.mainBundle";
         case FLEXGlobalsRowApplication:
@@ -90,12 +108,33 @@
             return @"📱  UIDevice.currentDevice";
         case FLEXGlobalsRowPasteboard:
             return @"📋  UIPasteboard.generalPasteboard";
+        case FLEXGlobalsRowURLSession:
+            return @"📡  NSURLSession.sharedSession";
+        case FLEXGlobalsRowURLCache:
+            return @"⏳  NSURLCache.sharedURLCache";
+        case FLEXGlobalsRowNotificationCenter:
+            return @"🔔  NSNotificationCenter.defaultCenter";
+        case FLEXGlobalsRowMenuController:
+            return @"📎  UIMenuController.sharedMenuController";
+        case FLEXGlobalsRowFileManager:
+            return @"🗄  NSFileManager.defaultManager";
+        case FLEXGlobalsRowTimeZone:
+            return @"🌎  NSTimeZone.systemTimeZone";
+        case FLEXGlobalsRowLocale:
+            return @"🗣  NSLocale.currentLocale";
+        case FLEXGlobalsRowCalendar:
+            return @"📅  NSCalendar.currentCalendar";
+        case FLEXGlobalsRowMainRunLoop:
+            return @"🏃🏻‍♂️  NSRunLoop.mainRunLoop";
+        case FLEXGlobalsRowMainThread:
+            return @"🧵  NSThread.mainThread";
+        case FLEXGlobalsRowOperationQueue:
+            return @"📚  NSOperationQueue.mainQueue";
         default: return nil;
     }
 }
 
-+ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row 
-{
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row  {
     switch (row) {
         case FLEXGlobalsRowAppDelegate: {
             id<UIApplicationDelegate> appDelegate = UIApplication.sharedApplication.delegate;
@@ -115,8 +154,62 @@
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
-        case FLEXGlobalsRowRootViewController:
-            return [self explorerViewControllerForObject:UIApplication.sharedApplication.delegate.window.rootViewController];
+            case FLEXGlobalsRowURLSession:
+            return [self explorerViewControllerForObject:NSURLSession.sharedSession];
+        case FLEXGlobalsRowURLCache:
+            return [self explorerViewControllerForObject:NSURLCache.sharedURLCache];
+        case FLEXGlobalsRowNotificationCenter:
+            return [self explorerViewControllerForObject:NSNotificationCenter.defaultCenter];
+        case FLEXGlobalsRowMenuController:
+            return [self explorerViewControllerForObject:UIMenuController.sharedMenuController];
+        case FLEXGlobalsRowFileManager:
+            return [self explorerViewControllerForObject:NSFileManager.defaultManager];
+        case FLEXGlobalsRowTimeZone:
+            return [self explorerViewControllerForObject:NSTimeZone.systemTimeZone];
+        case FLEXGlobalsRowLocale:
+            return [self explorerViewControllerForObject:NSLocale.currentLocale];
+        case FLEXGlobalsRowCalendar:
+            return [self explorerViewControllerForObject:NSCalendar.currentCalendar];
+        case FLEXGlobalsRowMainRunLoop:
+            return [self explorerViewControllerForObject:NSRunLoop.mainRunLoop];
+        case FLEXGlobalsRowMainThread:
+            return [self explorerViewControllerForObject:NSThread.mainThread];
+        case FLEXGlobalsRowOperationQueue:
+            return [self explorerViewControllerForObject:NSOperationQueue.mainQueue];
+            
+        case FLEXGlobalsRowKeyWindow:
+            return [FLEXObjectExplorerFactory
+                explorerViewControllerForObject:FLEXUtility.appKeyWindow
+            ];
+        case FLEXGlobalsRowRootViewController: {
+            id<UIApplicationDelegate> delegate = UIApplication.sharedApplication.delegate;
+            if ([delegate respondsToSelector:@selector(window)]) {
+                return [self explorerViewControllerForObject:delegate.window.rootViewController];
+            }
+
+            return nil;
+        }
+        default: return nil;
+    }
+}
+
++ (FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
+    switch (row) {
+        case FLEXGlobalsRowRootViewController: {
+            // Check if the app delegate responds to -window. If not, present an alert
+            return ^(UITableViewController *host) {
+                id<UIApplicationDelegate> delegate = UIApplication.sharedApplication.delegate;
+                if ([delegate respondsToSelector:@selector(window)]) {
+                    UIViewController *explorer = [self explorerViewControllerForObject:
+                        delegate.window.rootViewController
+                    ];
+                    [host.navigationController pushViewController:explorer animated:YES];
+                } else {
+                    NSString *msg = @"The app delegate doesn't respond to -window";
+                    [FLEXAlert showAlert:@":(" message:msg from:host];
+                }
+            };
+        }
         default: return nil;
     }
 }

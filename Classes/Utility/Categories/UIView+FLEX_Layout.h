@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Tanner Bennett on 7/18/19.
-//Copyright © 2019 Flipboard. All rights reserved.
+//  Copyright © 2019 Flipboard. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -17,5 +17,7 @@
 - (void)pinEdgesTo:(UIView *)view withInsets:(UIEdgeInsets)insets;
 - (void)pinEdgesToSuperview;
 - (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets;
+- (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets aboveView:(UIView *)sibling;
+- (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets belowView:(UIView *)sibling;
 
 @end

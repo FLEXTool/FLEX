@@ -3,14 +3,17 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/30/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSUInteger, FLEXArgumentInputViewSize) {
+    /// 2 lines, medium-sized
     FLEXArgumentInputViewSizeDefault = 0,
+    /// One line
     FLEXArgumentInputViewSizeSmall,
+    /// Several lines
     FLEXArgumentInputViewSizeLarge
 };
 

@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/4/15.
-//  Copyright (c) 2015 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -19,15 +19,22 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 @interface FLEXNetworkRecorder : NSObject
 
 /// In general, it only makes sense to have one recorder for the entire application.
-+ (instancetype)defaultRecorder;
+@property (nonatomic, readonly, class) FLEXNetworkRecorder *defaultRecorder;
 
 /// Defaults to 25 MB if never set. Values set here are persisted across launches of the app.
 @property (nonatomic) NSUInteger responseCacheByteLimit;
 
-/// If NO, the recorder not cache will not cache response for content types with an "image", "video", or "audio" prefix.
+/// If NO, the recorder not cache will not cache response for content types
+/// with an "image", "video", or "audio" prefix.
 @property (nonatomic) BOOL shouldCacheMediaResponses;
 
-@property (nonatomic, copy) NSArray<NSString *> *hostBlacklist;
+@property (nonatomic) NSMutableArray<NSString *> *hostBlacklist;
+
+/// Call this after adding to or setting the \c hostBlacklist to remove blacklisted transactions
+- (void)clearBlacklistedTransactions;
+
+/// Call this to save the blacklist to the disk to be loaded next time
+- (void)synchronizeBlacklist;
 
 
 // Accessing recorded network activity
@@ -45,7 +52,9 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 // Recording network activity
 
 /// Call when app is about to send HTTP request.
-- (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID request:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse;
+- (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID
+                                     request:(NSURLRequest *)request
+                            redirectResponse:(NSURLResponse *)redirectResponse;
 
 /// Call when HTTP response is available.
 - (void)recordResponseReceivedWithRequestID:(NSString *)requestID response:(NSURLResponse *)response;

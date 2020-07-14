@@ -1,132 +1,163 @@
 //
 //  FLEXFieldEditorViewController.m
-//  Flipboard
+//  FLEX
 //
-//  Created by Ryan Olson on 5/16/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Created by Tanner on 11/22/18.
+//  Copyright © 2018 Flipboard. All rights reserved.
 //
 
-#import "FLEXColor.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXFieldEditorView.h"
+#import "FLEXArgumentInputViewFactory.h"
+#import "FLEXPropertyAttributes.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXUtility.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXArgumentInputView.h"
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXObjectExplorerViewController.h"
+#import "FLEXColor.h"
+#import "UIBarButtonItem+FLEX.h"
 
-@interface FLEXFieldEditorViewController () <UIScrollViewDelegate>
+@interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
-@property (nonatomic) UIScrollView *scrollView;
+@property (nonatomic) FLEXProperty *property;
+@property (nonatomic) FLEXIvar *ivar;
 
-@property (nonatomic, readwrite) id target;
-@property (nonatomic, readwrite) FLEXFieldEditorView *fieldEditorView;
-@property (nonatomic, readwrite) UIBarButtonItem *setterButton;
+@property (nonatomic, readonly) id currentValue;
+@property (nonatomic, readonly) const FLEXTypeEncoding *typeEncoding;
+@property (nonatomic, readonly) NSString *fieldDescription;
 
 @end
 
 @implementation FLEXFieldEditorViewController
 
-- (id)initWithTarget:(id)target
-{
-    self = [super initWithNibName:nil bundle:nil];
-    if (self) {
-        self.target = target;
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+#pragma mark - Initialization
+
++ (instancetype)target:(id)target property:(FLEXProperty *)property {
+    id value = [property getValue:target];
+    if (![self canEditProperty:property onObject:target currentValue:value]) {
+        return nil;
     }
-    return self;
+
+    FLEXFieldEditorViewController *editor = [self target:target];
+    editor.title = [@"Property: " stringByAppendingString:property.name];
+    editor.property = property;
+    return editor;
 }
 
-- (void)dealloc
-{
-    [NSNotificationCenter.defaultCenter removeObserver:self];
++ (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar {
+    FLEXFieldEditorViewController *editor = [self target:target];
+    editor.title = [@"Ivar: " stringByAppendingString:ivar.name];
+    editor.ivar = ivar;
+    return editor;
 }
 
-- (void)keyboardDidShow:(NSNotification *)notification
-{
-    CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
-    UIEdgeInsets scrollInsets = self.scrollView.contentInset;
-    scrollInsets.bottom = keyboardSize.height;
-    self.scrollView.contentInset = scrollInsets;
-    self.scrollView.scrollIndicatorInsets = scrollInsets;
-    
-    // Find the active input view and scroll to make sure it's visible.
-    for (FLEXArgumentInputView *argumentInputView in self.fieldEditorView.argumentInputViews) {
-        if (argumentInputView.inputViewIsFirstResponder) {
-            CGRect scrollToVisibleRect = [self.scrollView convertRect:argumentInputView.bounds fromView:argumentInputView];
-            [self.scrollView scrollRectToVisible:scrollToVisibleRect animated:YES];
-            break;
-        }
-    }
-}
+#pragma mark - Overrides
 
-- (void)keyboardWillHide:(NSNotification *)notification
-{
-    UIEdgeInsets scrollInsets = self.scrollView.contentInset;
-    scrollInsets.bottom = 0.0;
-    self.scrollView.contentInset = scrollInsets;
-    self.scrollView.scrollIndicatorInsets = scrollInsets;
-}
-
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [FLEXColor scrollViewBackgroundColor];
-    
-    self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-    self.scrollView.backgroundColor = self.view.backgroundColor;
-    self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.scrollView.delegate = self;
-    [self.view addSubview:self.scrollView];
-    
-    self.fieldEditorView = [FLEXFieldEditorView new];
-    self.fieldEditorView.backgroundColor = self.view.backgroundColor;
-    self.fieldEditorView.targetDescription = [NSString stringWithFormat:@"%@ %p", [self.target class], self.target];
-    [self.scrollView addSubview:self.fieldEditorView];
-    
-    self.setterButton = [[UIBarButtonItem alloc] initWithTitle:[self titleForActionButton] style:UIBarButtonItemStyleDone target:self action:@selector(actionButtonPressed:)];
-    self.navigationItem.rightBarButtonItem = self.setterButton;
-}
 
-- (void)viewWillLayoutSubviews
-{
-    CGSize constrainSize = CGSizeMake(self.scrollView.bounds.size.width, CGFLOAT_MAX);
-    CGSize fieldEditorSize = [self.fieldEditorView sizeThatFits:constrainSize];
-    self.fieldEditorView.frame = CGRectMake(0, 0, fieldEditorSize.width, fieldEditorSize.height);
-    self.scrollView.contentSize = fieldEditorSize;
-}
+    self.view.backgroundColor = FLEXColor.groupedBackgroundColor;
 
-- (FLEXArgumentInputView *)firstInputView
-{
-    return [self.fieldEditorView argumentInputViews].firstObject;
-}
+    // Create getter button
+    _getterButton = [[UIBarButtonItem alloc]
+        initWithTitle:@"Get"
+        style:UIBarButtonItemStyleDone
+        target:self
+        action:@selector(getterButtonPressed:)
+    ];
+    self.toolbarItems = @[
+        UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.actionButton
+    ];
 
-- (void)actionButtonPressed:(id)sender
-{
-    // Subclasses can override
-    [self.fieldEditorView endEditing:YES];
-}
+    // Configure input view
+    self.fieldEditorView.fieldDescription = self.fieldDescription;
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:self.typeEncoding];
+    inputView.inputValue = self.currentValue;
+    inputView.delegate = self;
+    self.fieldEditorView.argumentInputViews = @[inputView];
 
-- (NSString *)titleForActionButton
-{
-    // Subclasses can override.
-    return @"Set";
-}
-
-- (void)exploreObjectOrPopViewController:(id)objectOrNil {
-    if (objectOrNil) {
-        // For non-nil (or void) return types, push an explorer view controller to display the object
-        FLEXObjectExplorerViewController *explorerViewController = [FLEXObjectExplorerFactory explorerViewControllerForObject:objectOrNil];
-        [self.navigationController pushViewController:explorerViewController animated:YES];
-    } else {
-        // If we didn't get a returned object but the method call succeeded,
-        // pop this view controller off the stack to indicate that the call went through.
-        [self.navigationController popViewControllerAnimated:YES];
+    // Don't show a "set" button for switches; we mutate when the switch is flipped
+    if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
+        self.actionButton.enabled = NO;
+        self.actionButton.title = @"Flip the switch to call the setter";
+        // Put getter button before setter button 
+        self.toolbarItems = @[
+            UIBarButtonItem.flex_flexibleSpace, self.actionButton, self.getterButton
+        ];
     }
+}
+
+- (void)actionButtonPressed:(id)sender {
+    [super actionButtonPressed:sender];
+
+    if (self.property) {
+        id userInputObject = self.firstInputView.inputValue;
+        NSArray *arguments = userInputObject ? @[userInputObject] : nil;
+        SEL setterSelector = self.property.likelySetter;
+        NSError *error = nil;
+        [FLEXRuntimeUtility performSelector:setterSelector onObject:self.target withArguments:arguments error:&error];
+        if (error) {
+            [FLEXAlert showAlert:@"Property Setter Failed" message:error.localizedDescription from:self];
+            sender = nil; // Don't pop back
+        }
+    } else {
+        // TODO: check mutability and use mutableCopy if necessary;
+        // this currently could and would assign NSArray to NSMutableArray
+        [self.ivar setValue:self.firstInputView.inputValue onObject:self.target];
+    }
+
+    // Go back after setting, but not for switches.
+    if (sender) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        self.firstInputView.inputValue = self.currentValue;
+    }
+}
+
+- (void)getterButtonPressed:(id)sender {
+    [self.fieldEditorView endEditing:YES];
+
+    [self exploreObjectOrPopViewController:self.currentValue];
+}
+
+- (void)argumentInputViewValueDidChange:(FLEXArgumentInputView *)argumentInputView {
+    if ([argumentInputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
+        [self actionButtonPressed:nil];
+    }
+}
+
+#pragma mark - Private
+
+- (id)currentValue {
+    if (self.property) {
+        return [self.property getValue:self.target];
+    } else {
+        return [self.ivar getValue:self.target];
+    }
+}
+
+- (const FLEXTypeEncoding *)typeEncoding {
+    if (self.property) {
+        return self.property.attributes.typeEncoding.UTF8String;
+    } else {
+        return self.ivar.typeEncoding.UTF8String;
+    }
+}
+
+- (NSString *)fieldDescription {
+    if (self.property) {
+        return self.property.fullDescription;
+    } else {
+        return self.ivar.description;
+    }
+}
+
++ (BOOL)canEditProperty:(FLEXProperty *)property onObject:(id)object currentValue:(id)value {
+    const FLEXTypeEncoding *typeEncoding = property.attributes.typeEncoding.UTF8String;
+    BOOL canEditType = [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:typeEncoding currentValue:value];
+    return canEditType && [object respondsToSelector:property.likelySetter];
+}
+
++ (BOOL)canEditIvar:(Ivar)ivar currentValue:(id)value {
+    return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:ivar_getTypeEncoding(ivar) currentValue:value];
 }
 
 @end

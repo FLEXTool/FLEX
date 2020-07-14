@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/16/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -15,6 +15,6 @@
 @property (nonatomic, copy) NSString *targetDescription;
 @property (nonatomic, copy) NSString *fieldDescription;
 
-@property (nonatomic) NSArray<FLEXArgumentInputView *> *argumentInputViews;
+@property (nonatomic, copy) NSArray<FLEXArgumentInputView *> *argumentInputViews;
 
 @end

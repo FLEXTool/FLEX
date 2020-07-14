@@ -3,10 +3,11 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/28/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXHeapEnumerator.h"
+#import "FLEXObjcInternal.h"
 #import <malloc/malloc.h>
 #import <mach/mach.h>
 #import <objc/runtime.h>
@@ -20,8 +21,7 @@ typedef struct {
 
 @implementation FLEXHeapEnumerator
 
-static void range_callback(task_t task, void *context, unsigned type, vm_range_t *ranges, unsigned rangeCount)
-{
+static void range_callback(task_t task, void *context, unsigned type, vm_range_t *ranges, unsigned rangeCount) {
     if (!context) {
         return;
     }
@@ -44,14 +44,12 @@ static void range_callback(task_t task, void *context, unsigned type, vm_range_t
     }
 }
 
-static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_address, __unused vm_size_t size, void **local_memory)
-{
+static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_address, __unused vm_size_t size, void **local_memory) {
     *local_memory = (void *)remote_address;
     return KERN_SUCCESS;
 }
 
-+ (void)enumerateLiveObjectsUsingBlock:(flex_object_enumeration_block_t)block
-{
++ (void)enumerateLiveObjectsUsingBlock:(flex_object_enumeration_block_t)block {
     if (!block) {
         return;
     }
@@ -87,26 +85,14 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
                 block(object, actualClass);
                 lock_zone(zone);
             };
-
-            // The largest realistic memory address varies by platform.
-            // Only 48 bits are used by 64 bit machines while
-            // 32 bit machines use all bits.
-            //
-            // __LP64__ is defined as 1 for both arm64 and x86_64
-            // via: clang -dM -arch [arm64|x86_64] -E -x c /dev/null | grep LP
-#if __LP64__
-            static uintptr_t MAX_REALISTIC_ADDRESS = 0x0000FFFFFFFFFFFF;
-            BOOL lockZoneValid = lock_zone != nil && (uintptr_t)lock_zone < MAX_REALISTIC_ADDRESS;
-            BOOL unlockZoneValid = unlock_zone != nil && (uintptr_t)unlock_zone < MAX_REALISTIC_ADDRESS;
-#else
-            BOOL lockZoneValid = lock_zone != nil;
-            BOOL unlockZoneValid = unlock_zone != nil;
-#endif
+            
+            BOOL lockZoneValid = FLEXPointerIsReadable(lock_zone);
+            BOOL unlockZoneValid =  FLEXPointerIsReadable(unlock_zone);
 
             // There is little documentation on when and why
             // any of these function pointers might be NULL
             // or garbage, so we resort to checking for NULL
-            // and impossible memory addresses at least
+            // and whether the pointer is readable
             if (introspection->enumerator && lockZoneValid && unlockZoneValid) {
                 lock_zone(zone);
                 introspection->enumerator(TASK_NULL, (void *)&callback, MALLOC_PTR_IN_USE_RANGE_TYPE, (vm_address_t)zone, reader, &range_callback);
@@ -116,8 +102,7 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     }
 }
 
-+ (void)updateRegisteredClasses
-{
++ (void)updateRegisteredClasses {
     if (!registeredClasses) {
         registeredClasses = CFSetCreateMutable(NULL, 0, NULL);
     } else {

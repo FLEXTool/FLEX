@@ -2,48 +2,127 @@
 //  FLEXTableViewSection.m
 //  FLEX
 //
-//  Created by Tanner Bennett on 7/11/19.
-//  Copyright © 2019 Flipboard. All rights reserved.
+//  Created by Tanner on 1/29/20.
+//  Copyright © 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXTableViewSection.h"
+#import "FLEXTableView.h"
+#import "FLEXUtility.h"
+#import "UIMenu+FLEX.h"
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 @implementation FLEXTableViewSection
 
-+ (instancetype)section:(NSInteger)section title:(NSString *)title rows:(NSArray *)rows {
-    FLEXTableViewSection *s = [self new];
-    s->_section = section;
-    s->_title = title;
-    s->_rows = rows.copy;
-
-    return s;
+- (NSInteger)numberOfRows {
+    return 0;
 }
 
-- (instancetype)newSectionWithRowsMatchingQuery:(NSString *)query {
-    // Find rows containing the search string
-    NSPredicate *containsString = [NSPredicate predicateWithBlock:^BOOL(id<FLEXPatternMatching> obj, NSDictionary *bindings) {
-        return [obj matches:query];
-    }];
-    NSArray *filteredRows = [self.rows filteredArrayUsingPredicate:containsString];
-    
-    // Only return new section if not empty
-    if (filteredRows.count) {
-        return [[self class] section:self.section title:self.title rows:filteredRows];
-    }
-    
+- (void)reloadData { }
+
+- (NSDictionary<NSString *,Class> *)cellRegistrationMapping {
     return nil;
 }
 
-- (NSInteger)count {
-    return self.rows.count;
+- (BOOL)canSelectRow:(NSInteger)row { return NO; }
+
+- (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
+    UIViewController *toPush = [self viewControllerToPushForRow:row];
+    if (toPush) {
+        return ^(UIViewController *host) {
+            [host.navigationController pushViewController:toPush animated:YES];
+        };
+    }
+
+    return nil;
 }
+
+- (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
+    return nil;
+}
+
+- (void (^)(__kindof UIViewController *))didPressInfoButtonAction:(NSInteger)row {
+    return nil;
+}
+
+- (NSString *)reuseIdentifierForRow:(NSInteger)row {
+    return kFLEXDefaultCell;
+}
+
+#if FLEX_AT_LEAST_IOS13_SDK
+
+- (NSString *)menuTitleForRow:(NSInteger)row {
+    NSString *title = [self titleForRow:row];
+    NSString *subtitle = [self menuSubtitleForRow:row];
+    
+    if (subtitle.length) {
+        return [NSString stringWithFormat:@"%@\n\n%@", title, subtitle];
+    }
+    
+    return title;
+}
+
+- (NSString *)menuSubtitleForRow:(NSInteger)row {
+    return @"";
+}
+
+- (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13)) {
+    NSArray<NSString *> *copyItems = [self copyMenuItemsForRow:row];
+    NSAssert(copyItems.count % 2 == 0, @"copyMenuItemsForRow: should return an even list");
+    
+    if (copyItems.count) {
+        NSInteger numberOfActions = copyItems.count / 2;
+        BOOL collapseMenu = numberOfActions > 4;
+        UIImage *copyIcon = [UIImage systemImageNamed:@"doc.on.doc"];
+        
+        NSMutableArray *actions = [NSMutableArray new];
+        
+        for (NSInteger i = 0; i < copyItems.count; i += 2) {
+            NSString *key = copyItems[i], *value = copyItems[i+1];
+            NSString *title = collapseMenu ? key : [@"Copy " stringByAppendingString:key];
+            
+            UIAction *copy = [UIAction
+                actionWithTitle:title
+                image:copyIcon
+                identifier:nil
+                handler:^(__kindof UIAction *action) {
+                    UIPasteboard.generalPasteboard.string = value;
+                }
+            ];
+            if (!value.length) {
+                copy.attributes = UIMenuElementAttributesDisabled;
+            }
+            
+            [actions addObject:copy];
+        }
+        
+        UIMenu *copyMenu = [UIMenu
+            inlineMenuWithTitle:@"Copy…" 
+            image:copyIcon
+            children:actions
+        ];
+        
+        if (collapseMenu) {
+            return @[[copyMenu collapsed]];
+        } else {
+            return @[copyMenu];
+        }
+    }
+    
+    return @[];
+}
+
+#endif
+
+- (NSArray<NSString *> *)copyMenuItemsForRow:(NSInteger)row {
+    return nil;
+}
+
+- (NSString *)titleForRow:(NSInteger)row { return nil; }
+- (NSString *)subtitleForRow:(NSInteger)row { return nil; }
 
 @end
 
-@implementation FLEXTableViewSection (Subscripting)
-
-- (id)objectAtIndexedSubscript:(NSUInteger)idx {
-    return self.rows[idx];
-}
-
-@end
+#pragma clang diagnostic pop

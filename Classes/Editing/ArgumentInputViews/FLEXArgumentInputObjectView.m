@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/15/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXArgumentInputObjectView.h"
@@ -25,8 +25,7 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
 
 @implementation FLEXArgumentInputObjectView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         // Start with the numbers and punctuation keyboard since quotes, curly braces, or
@@ -46,8 +45,7 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     return self;
 }
 
-- (void)didChangeType
-{
+- (void)didChangeType {
     self.inputType = self.objectTypeSegmentControl.selectedSegmentIndex;
 
     if (super.inputValue) {
@@ -61,8 +59,7 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     }
 }
 
-- (void)setInputType:(FLEXArgInputObjectType)inputType
-{
+- (void)setInputType:(FLEXArgInputObjectType)inputType {
     if (_inputType == inputType) return;
 
     _inputType = inputType;
@@ -98,14 +95,12 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     [self.superview setNeedsLayout];
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     super.inputValue = inputValue;
     [self populateTextAreaFromValue:inputValue];
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     switch (self.inputType) {
         case FLEXArgInputObjectTypeJSON:
             return [FLEXRuntimeUtility objectValueFromEditableJSONString:self.inputTextView.text];
@@ -122,8 +117,7 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     }
 }
 
-- (void)populateTextAreaFromValue:(id)value
-{
+- (void)populateTextAreaFromValue:(id)value {
     if (!value) {
         self.inputTextView.text = nil;
     } else {
@@ -138,16 +132,14 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     [self textViewDidChange:self.inputTextView];
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
     fitSize.height += [self.objectTypeSegmentControl sizeThatFits:size].height + kSegmentInputMargin;
 
     return fitSize;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     CGFloat segmentHeight = [self.objectTypeSegmentControl sizeThatFits:self.frame.size].height;
     self.objectTypeSegmentControl.frame = CGRectMake(
         0.0,
@@ -162,23 +154,20 @@ typedef NS_ENUM(NSUInteger, FLEXArgInputObjectType) {
     [super layoutSubviews];
 }
 
-- (CGFloat)topInputFieldVerticalLayoutGuide
-{
+- (CGFloat)topInputFieldVerticalLayoutGuide {
     // Our text view is offset from the segmented control
     CGFloat segmentHeight = [self.objectTypeSegmentControl sizeThatFits:self.frame.size].height;
     return segmentHeight + super.topInputFieldVerticalLayoutGuide + kSegmentInputMargin;
 }
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
     // Must be object type
-    return type[0] == '@';
+    return type[0] == FLEXTypeEncodingObjcObject || type[0] == FLEXTypeEncodingObjcClass;
 }
 
-+ (FLEXArgInputObjectType)preferredDefaultTypeForObjCType:(const char *)type withCurrentValue:(id)value
-{
-    NSParameterAssert(type[0] == '@');
++ (FLEXArgInputObjectType)preferredDefaultTypeForObjCType:(const char *)type withCurrentValue:(id)value {
+    NSParameterAssert(type[0] == FLEXTypeEncodingObjcObject || type[0] == FLEXTypeEncodingObjcClass);
 
     if (value) {
         // If there's a current value, it must be serializable to JSON

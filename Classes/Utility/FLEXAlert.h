@@ -29,7 +29,9 @@ typedef FLEXAlertAction *(^FLEXAlertActionHandler)(void(^handler)(NSArray<NSStri
 /// Construct and display an alert
 + (void)makeAlert:(FLEXAlertBuilder)block showFrom:(UIViewController *)viewController;
 /// Construct and display an action sheet-style alert
-+ (void)makeSheet:(FLEXAlertBuilder)block showFrom:(UIViewController *)viewController;
++ (void)makeSheet:(FLEXAlertBuilder)block
+         showFrom:(UIViewController *)viewController
+           source:(id)viewOrBarItem;
 
 /// Construct an alert
 + (UIAlertController *)makeAlert:(FLEXAlertBuilder)block;

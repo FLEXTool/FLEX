@@ -29,7 +29,7 @@
         query = [[NSMutableDictionary alloc]init];
         query[(__bridge id)kSecValueData] = self.passwordData;
 #if __IPHONE_4_0 && TARGET_OS_IPHONE
-        CFTypeRef accessibilityType = [FLEXKeychain accessibilityType];
+        CFTypeRef accessibilityType = FLEXKeychain.accessibilityType;
         if (accessibilityType) {
             query[(__bridge id)kSecAttrAccessible] = (__bridge id)accessibilityType;
         }
@@ -42,7 +42,7 @@
         }
         query[(__bridge id)kSecValueData] = self.passwordData;
 #if __IPHONE_4_0 && TARGET_OS_IPHONE
-        CFTypeRef accessibilityType = [FLEXKeychain accessibilityType];
+        CFTypeRef accessibilityType = FLEXKeychain.accessibilityType;
         if (accessibilityType) {
             query[(__bridge id)kSecAttrAccessible] = (__bridge id)accessibilityType;
         }
@@ -103,7 +103,7 @@
     query[(__bridge id)kSecReturnAttributes] = @YES;
     query[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitAll;
 #if __IPHONE_4_0 && TARGET_OS_IPHONE
-    CFTypeRef accessibilityType = [FLEXKeychain accessibilityType];
+    CFTypeRef accessibilityType = FLEXKeychain.accessibilityType;
     if (accessibilityType) {
         query[(__bridge id)kSecAttrAccessible] = (__bridge id)accessibilityType;
     }
@@ -116,7 +116,7 @@
         return nil;
     }
     
-    return (__bridge_transfer NSArray *)result;
+    return (__bridge_transfer NSArray *)result ?: @[];
 }
 
 
@@ -193,7 +193,7 @@
 #pragma mark - Private
 
 - (NSMutableDictionary *)query {
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    NSMutableDictionary *dictionary = [NSMutableDictionary new];
     dictionary[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
     
     if (self.service) {

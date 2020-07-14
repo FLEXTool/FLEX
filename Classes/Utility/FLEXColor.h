@@ -13,28 +13,34 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXColor : NSObject
 
-// Background colors, from intense to less intense
-+ (UIColor *)primaryBackgroundColor;
+@property (readonly, class) UIColor *primaryBackgroundColor;
 + (UIColor *)primaryBackgroundColorWithAlpha:(CGFloat)alpha;
 
-+ (UIColor *)secondaryBackgroundColor;
+@property (readonly, class) UIColor *secondaryBackgroundColor;
 + (UIColor *)secondaryBackgroundColorWithAlpha:(CGFloat)alpha;
 
-+ (UIColor *)tertiaryBackgroundColor;
+@property (readonly, class) UIColor *tertiaryBackgroundColor;
 + (UIColor *)tertiaryBackgroundColorWithAlpha:(CGFloat)alpha;
 
+@property (readonly, class) UIColor *groupedBackgroundColor;
++ (UIColor *)groupedBackgroundColorWithAlpha:(CGFloat)alpha;
+
+@property (readonly, class) UIColor *secondaryGroupedBackgroundColor;
++ (UIColor *)secondaryGroupedBackgroundColorWithAlpha:(CGFloat)alpha;
+
 // Text colors
-+ (UIColor *)primaryTextColor;
-+ (UIColor *)deemphasizedTextColor;
+@property (readonly, class) UIColor *primaryTextColor;
+@property (readonly, class) UIColor *deemphasizedTextColor;
 
 // UI element colors
-+ (UIColor *)tintColor;
-+ (UIColor *)scrollViewBackgroundColor;
-+ (UIColor *)iconColor;
-+ (UIColor *)borderColor;
-+ (UIColor *)toolbarItemHighlightedColor;
-+ (UIColor *)toolbarItemSelectedColor;
-+ (UIColor *)hairlineColor;
+@property (readonly, class) UIColor *tintColor;
+@property (readonly, class) UIColor *scrollViewBackgroundColor;
+@property (readonly, class) UIColor *iconColor;
+@property (readonly, class) UIColor *borderColor;
+@property (readonly, class) UIColor *toolbarItemHighlightedColor;
+@property (readonly, class) UIColor *toolbarItemSelectedColor;
+@property (readonly, class) UIColor *hairlineColor;
+@property (readonly, class) UIColor *destructiveColor;
 
 @end
 

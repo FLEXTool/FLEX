@@ -3,11 +3,12 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/30/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXArgumentInputView.h"
 #import "FLEXUtility.h"
+#import "FLEXColor.h"
 
 @interface FLEXArgumentInputView ()
 
@@ -18,8 +19,7 @@
 
 @implementation FLEXArgumentInputView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithFrame:CGRectZero];
     if (self) {
         self.typeEncoding = typeEncoding != NULL ? @(typeEncoding) : nil;
@@ -27,8 +27,7 @@
     return self;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     if (self.showsTitle) {
@@ -38,14 +37,12 @@
     }
 }
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     self.titleLabel.backgroundColor = backgroundColor;
 }
 
-- (void)setTitle:(NSString *)title
-{
+- (void)setTitle:(NSString *)title {
     if (![_title isEqual:title]) {
         _title = title;
         self.titleLabel.text = title;
@@ -53,26 +50,22 @@
     }
 }
 
-- (UILabel *)titleLabel
-{
+- (UILabel *)titleLabel {
     if (!_titleLabel) {
         _titleLabel = [UILabel new];
         _titleLabel.font = [[self class] titleFont];
-        _titleLabel.backgroundColor = self.backgroundColor;
-        _titleLabel.textColor = [UIColor colorWithWhite:0.3 alpha:1.0];
+        _titleLabel.textColor = FLEXColor.primaryTextColor;
         _titleLabel.numberOfLines = 0;
         [self addSubview:_titleLabel];
     }
     return _titleLabel;
 }
 
-- (BOOL)showsTitle
-{
+- (BOOL)showsTitle {
     return self.title.length > 0;
 }
 
-- (CGFloat)topInputFieldVerticalLayoutGuide
-{
+- (CGFloat)topInputFieldVerticalLayoutGuide {
     CGFloat verticalLayoutGuide = 0;
     if (self.showsTitle) {
         CGFloat titleHeight = [self.titleLabel sizeThatFits:self.bounds.size].height;
@@ -84,34 +77,29 @@
 
 #pragma mark - Subclasses Can Override
 
-- (BOOL)inputViewIsFirstResponder
-{
+- (BOOL)inputViewIsFirstResponder {
     return NO;
 }
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     return NO;
 }
 
 
 #pragma mark - Class Helpers
 
-+ (UIFont *)titleFont
-{
-    return [FLEXUtility defaultFontOfSize:12.0];
++ (UIFont *)titleFont {
+    return [UIFont systemFontOfSize:12.0];
 }
 
-+ (CGFloat)titleBottomPadding
-{
++ (CGFloat)titleBottomPadding {
     return 4.0;
 }
 
 
 #pragma mark - Sizing
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGFloat height = 0;
     
     if (self.title.length > 0) {

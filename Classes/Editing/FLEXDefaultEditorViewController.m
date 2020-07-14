@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 5/23/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXDefaultEditorViewController.h"
@@ -21,8 +21,7 @@
 
 @implementation FLEXDefaultEditorViewController
 
-- (id)initWithDefaults:(NSUserDefaults *)defaults key:(NSString *)key
-{
+- (id)initWithDefaults:(NSUserDefaults *)defaults key:(NSString *)key {
     self = [super initWithTarget:defaults];
     if (self) {
         self.key = key;
@@ -31,13 +30,11 @@
     return self;
 }
 
-- (NSUserDefaults *)defaults
-{
+- (NSUserDefaults *)defaults {
     return [self.target isKindOfClass:[NSUserDefaults class]] ? self.target : nil;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.fieldEditorView.fieldDescription = self.key;
@@ -52,8 +49,7 @@
     self.fieldEditorView.argumentInputViews = @[inputView];
 }
 
-- (void)actionButtonPressed:(id)sender
-{
+- (void)actionButtonPressed:(id)sender {
     [super actionButtonPressed:sender];
     
     id value = self.firstInputView.inputValue;
@@ -67,15 +63,13 @@
     self.firstInputView.inputValue = [self.defaults objectForKey:self.key];
 }
 
-- (void)getterButtonPressed:(id)sender
-{
+- (void)getterButtonPressed:(id)sender {
     [super getterButtonPressed:sender];
     id returnedObject = [self.defaults objectForKey:self.key];
     [self exploreObjectOrPopViewController:returnedObject];
 }
 
-+ (BOOL)canEditDefaultWithValue:(id)currentValue
-{
++ (BOOL)canEditDefaultWithValue:(id)currentValue {
     return [FLEXArgumentInputViewFactory
         canEditFieldWithTypeEncoding:FLEXEncodeObject(currentValue)
         currentValue:currentValue

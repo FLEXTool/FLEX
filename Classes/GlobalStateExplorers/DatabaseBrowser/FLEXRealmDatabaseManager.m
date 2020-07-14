@@ -7,6 +7,8 @@
 //
 
 #import "FLEXRealmDatabaseManager.h"
+#import "NSArray+FLEX.h"
+#import "FLEXSQLResult.h"
 
 #if __has_include(<Realm/Realm.h>)
 #import <Realm/Realm.h>
@@ -18,103 +20,84 @@
 @interface FLEXRealmDatabaseManager ()
 
 @property (nonatomic, copy) NSString *path;
-@property (nonatomic) RLMRealm * realm;
+@property (nonatomic) RLMRealm *realm;
 
 @end
 
-//#endif
-
 @implementation FLEXRealmDatabaseManager
+static Class RLMRealmClass = nil;
 
-- (instancetype)initWithPath:(NSString*)aPath
-{
-    Class realmClass = NSClassFromString(@"RLMRealm");
-    if (realmClass == nil) {
++ (void)load {
+    RLMRealmClass = NSClassFromString(@"RLMRealm");
+}
+
++ (instancetype)managerForDatabase:(NSString *)path {
+    return [[self alloc] initWithPath:path];
+}
+
+- (instancetype)initWithPath:(NSString *)path {
+    if (!RLMRealmClass) {
         return nil;
     }
     
     self = [super init];
-    
     if (self) {
-        _path = aPath;
+        _path = path;
+        
+        if (![self open]) {
+            return nil;
+        }
     }
+    
     return self;
 }
 
-- (BOOL)open
-{
-    Class realmClass = NSClassFromString(@"RLMRealm");
+- (BOOL)open {
     Class configurationClass = NSClassFromString(@"RLMRealmConfiguration");
-    
-    if (realmClass == nil || configurationClass == nil) {
+    if (!RLMRealmClass || !configurationClass) {
         return NO;
     }
     
     NSError *error = nil;
     id configuration = [configurationClass new];
     [(RLMRealmConfiguration *)configuration setFileURL:[NSURL fileURLWithPath:self.path]];
-    self.realm = [realmClass realmWithConfiguration:configuration error:&error];
+    self.realm = [RLMRealmClass realmWithConfiguration:configuration error:&error];
+    
     return (error == nil);
 }
 
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllTables
-{
-    NSMutableArray<NSDictionary<NSString *, id> *> *allTables = [NSMutableArray array];
-    RLMSchema *schema = [self.realm schema];
-    
-    NSMutableArray<NSString *> *tableNames = [NSMutableArray array];
-    for (RLMObjectSchema *objectSchema in schema.objectSchema) {
-        if (objectSchema.className == nil) {
-            continue;
-        }
-        [tableNames addObject:objectSchema.className];
-    }
-    
+- (NSArray<NSString *> *)queryAllTables {
+    // Map each schema to its name
+    NSArray<NSString *> *tableNames = [self.realm.schema.objectSchema flex_mapped:^id(RLMObjectSchema *schema, NSUInteger idx) {
+        return schema.className ?: nil;
+    }];
+
     NSArray<NSString *> *sortedTableNames = [tableNames sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    
-    for (NSString *tableName in sortedTableNames) {
-        NSDictionary<NSString *, id> *dictionary = @{@"name":tableName};
-        [allTables addObject:dictionary];
-    }
-    
-    return allTables;
+    return sortedTableNames;
 }
 
-- (NSArray<NSString *> *)queryAllColumnsWithTableName:(NSString *)tableName
-{
-    RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
-    if (objectSchema == nil) {
-        return nil;
-    }
-    
-    NSMutableArray<NSString *> *columnNames = [NSMutableArray array];
-    for (RLMProperty *property in objectSchema.properties) {
-        [columnNames addObject:property.name];
-    }
-    
-    return columnNames;
+- (NSArray<NSString *> *)queryAllColumnsOfTable:(NSString *)tableName {
+    RLMObjectSchema *objectSchema = [self.realm.schema schemaForClassName:tableName];
+    // Map each column to its name
+    return [objectSchema.properties flex_mapped:^id(RLMProperty *property, NSUInteger idx) {
+        return property.name;
+    }];
 }
 
-- (NSArray<NSDictionary<NSString *, id> *> *)queryAllDataWithTableName:(NSString *)tableName
-{
-    RLMObjectSchema *objectSchema = [[self.realm schema] schemaForClassName:tableName];
+- (NSArray<NSArray *> *)queryAllDataInTable:(NSString *)tableName {
+    RLMObjectSchema *objectSchema = [self.realm.schema schemaForClassName:tableName];
     RLMResults *results = [self.realm allObjects:tableName];
-    if (results.count == 0 || objectSchema == nil) {
+    if (results.count == 0 || !objectSchema) {
         return nil;
     }
     
-    NSMutableArray<NSDictionary<NSString *, id> *> *allDataEntries = [NSMutableArray array];
-    for (RLMObject *result in results) {
-        NSMutableDictionary<NSString *, id> *entry = [NSMutableDictionary dictionary];
-        for (RLMProperty *property in objectSchema.properties) {
-            id value = [result valueForKey:property.name];
-            entry[property.name] = (value) ? (value) : [NSNull null];
-        }
-        
-        [allDataEntries addObject:entry];
-    }
-    
-    return allDataEntries;
+    // Map results to an array of rows
+    return [NSArray flex_mapped:results block:^id(RLMObject *result, NSUInteger idx) {
+        // Map each row to an array of the values of its properties 
+        return [objectSchema.properties flex_mapped:^id(RLMProperty *property, NSUInteger idx) {
+            return [result valueForKey:property.name] ?: NSNull.null;
+        }];
+    }];
 }
 
 @end

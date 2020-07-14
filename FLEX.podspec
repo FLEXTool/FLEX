@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name             = "FLEX"
-  spec.version          = "3.1.2"
+  spec.version          = "4.1.1"
   spec.summary          = "A set of in-app debugging and exploration tools for iOS"
   spec.description      = <<-DESC
                         - Inspect and modify views in the hierarchy.
@@ -31,10 +31,15 @@ Pod::Spec.new do |spec|
   spec.social_media_url = "https://twitter.com/NSExceptional"
   spec.platform         = :ios, "9.0"
   spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
-  spec.source_files     = "Classes/**/*.{h,m,mm}"
-  spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security" ]
+  spec.source_files     = "Classes/**/*.{h,c,m,mm}"
+  spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security", "SceneKit" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
-  spec.compiler_flags   = "-Wno-unsupported-availability-guard"
-  spec.public_header_files = [ "Classes/**/FLEXManager.h", "Classes/FLEX.h" ]
+  spec.compiler_flags   = "-Wno-unsupported-availability-guard -Wno-strict-prototypes"
+  spec.public_header_files = [ "Classes/*.h", "Classes/Manager/*.h", "Classes/Toolbar/*.h",
+                               "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h",
+                               "Classes/Core/**/*.h", "Classes/Utility/Runtime/Objc/**/*.h",
+                               "Classes/ObjectExplorers/**/*.h", "Classes/Editing/**/*.h",
+                               "Classes/Utility/FLEXMacros.h", "Classes/Utility/Categories/*.h",
+                               "Classes/Utility/FLEXAlert.h", "Classes/Utility/FLEXResources.h" ]
 end

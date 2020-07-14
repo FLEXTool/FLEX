@@ -81,7 +81,7 @@
 #pragma mark - Method to test with
 
 - (NSArray *)prettyArgumentComponentsForMethod:(Method)method {
-    NSMutableArray *components = [NSMutableArray array];
+    NSMutableArray *components = [NSMutableArray new];
     
     NSString *selectorName = NSStringFromSelector(method_getName(method));
     NSArray *selectorComponents = [selectorName componentsSeparatedByString:@":"];

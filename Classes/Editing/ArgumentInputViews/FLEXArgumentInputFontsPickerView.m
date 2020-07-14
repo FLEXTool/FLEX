@@ -18,8 +18,7 @@
 
 @implementation FLEXArgumentInputFontsPickerView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
         self.targetSize = FLEXArgumentInputViewSizeSmall;
@@ -29,8 +28,7 @@
     return self;
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     self.inputTextView.text = inputValue;
     if ([self.availableFonts indexOfObject:inputValue] == NSNotFound) {
         [self.availableFonts insertObject:inputValue atIndex:0];
@@ -38,15 +36,13 @@
     [(UIPickerView *)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue] inComponent:0 animated:NO];
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     return self.inputTextView.text.length > 0 ? [self.inputTextView.text copy] : nil;
 }
 
 #pragma mark - private
 
-- (UIPickerView*)createFontsPicker
-{
+- (UIPickerView*)createFontsPicker {
     UIPickerView *fontsPicker = [UIPickerView new];
     fontsPicker.dataSource = self;
     fontsPicker.delegate = self;
@@ -54,10 +50,9 @@
     return fontsPicker;
 }
 
-- (void)createAvailableFonts
-{
-    NSMutableArray<NSString *> *unsortedFontsArray = [NSMutableArray array];
-    for (NSString *eachFontFamily in [UIFont familyNames]) {
+- (void)createAvailableFonts {
+    NSMutableArray<NSString *> *unsortedFontsArray = [NSMutableArray new];
+    for (NSString *eachFontFamily in UIFont.familyNames) {
         for (NSString *eachFontName in [UIFont fontNamesForFamilyName:eachFontFamily]) {
             [unsortedFontsArray addObject:eachFontName];
         }
@@ -67,20 +62,17 @@
 
 #pragma mark - UIPickerViewDataSource
 
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     return 1;
 }
 
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     return self.availableFonts.count;
 }
 
 #pragma mark - UIPickerViewDelegate
 
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
-{
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
     UILabel *fontLabel;
     if (!view) {
         fontLabel = [UILabel new];
@@ -97,8 +89,7 @@
     return fontLabel;
 }
 
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     self.inputTextView.text = self.availableFonts[row];
 }
 

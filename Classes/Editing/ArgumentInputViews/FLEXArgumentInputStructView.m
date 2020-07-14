@@ -3,12 +3,13 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 6/16/14.
-//  Copyright (c) 2014 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXArgumentInputStructView.h"
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXRuntimeUtility.h"
+#import "FLEXTypeEncodingParser.h"
 
 @interface FLEXArgumentInputStructView ()
 
@@ -18,22 +19,26 @@
 
 @implementation FLEXArgumentInputStructView
 
-- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding
-{
+- (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        NSMutableArray<FLEXArgumentInputView *> *inputViews = [NSMutableArray array];
+        NSMutableArray<FLEXArgumentInputView *> *inputViews = [NSMutableArray new];
         NSArray<NSString *> *customTitles = [[self class] customFieldTitlesForTypeEncoding:typeEncoding];
-        [FLEXRuntimeUtility enumerateTypesInStructEncoding:typeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+        [FLEXRuntimeUtility enumerateTypesInStructEncoding:typeEncoding usingBlock:^(NSString *structName,
+                                                                                     const char *fieldTypeEncoding,
+                                                                                     NSString *prettyTypeEncoding,
+                                                                                     NSUInteger fieldIndex,
+                                                                                     NSUInteger fieldOffset) {
             
             FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:fieldTypeEncoding];
-            inputView.backgroundColor = self.backgroundColor;
             inputView.targetSize = FLEXArgumentInputViewSizeSmall;
             
             if (fieldIndex < customTitles.count) {
                 inputView.title = customTitles[fieldIndex];
             } else {
-                inputView.title = [NSString stringWithFormat:@"%@ field %lu (%@)", structName, (unsigned long)fieldIndex, prettyTypeEncoding];
+                inputView.title = [NSString stringWithFormat:@"%@ field %lu (%@)",
+                    structName, (unsigned long)fieldIndex, prettyTypeEncoding
+                ];
             }
 
             [inputViews addObject:inputView];
@@ -47,29 +52,27 @@
 
 #pragma mark - Superclass Overrides
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor
-{
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
     [super setBackgroundColor:backgroundColor];
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         inputView.backgroundColor = backgroundColor;
     }
 }
 
-- (void)setInputValue:(id)inputValue
-{
+- (void)setInputValue:(id)inputValue {
     if ([inputValue isKindOfClass:[NSValue class]]) {
         const char *structTypeEncoding = [inputValue objCType];
         if (strcmp(self.typeEncoding.UTF8String, structTypeEncoding) == 0) {
             NSUInteger valueSize = 0;
-            @try {
-                // NSGetSizeAndAlignment barfs on type encoding for bitfields.
-                NSGetSizeAndAlignment(structTypeEncoding, &valueSize, NULL);
-            } @catch (NSException *exception) { }
             
-            if (valueSize > 0) {
+            if (FLEXGetSizeAndAlignment(structTypeEncoding, &valueSize, NULL)) {
                 void *unboxedValue = malloc(valueSize);
                 [inputValue getValue:unboxedValue];
-                [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+                [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName,
+                                                                                                   const char *fieldTypeEncoding,
+                                                                                                   NSString *prettyTypeEncoding,
+                                                                                                   NSUInteger fieldIndex,
+                                                                                                   NSUInteger fieldOffset) {
                     
                     void *fieldPointer = unboxedValue + fieldOffset;
                     FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
@@ -87,19 +90,18 @@
     }
 }
 
-- (id)inputValue
-{
+- (id)inputValue {
     NSValue *boxedStruct = nil;
     const char *structTypeEncoding = self.typeEncoding.UTF8String;
     NSUInteger structSize = 0;
-    @try {
-        // NSGetSizeAndAlignment barfs on type encoding for bitfields.
-        NSGetSizeAndAlignment(structTypeEncoding, &structSize, NULL);
-    } @catch (NSException *exception) { }
     
-    if (structSize > 0) {
+    if (FLEXGetSizeAndAlignment(structTypeEncoding, &structSize, NULL)) {
         void *unboxedStruct = malloc(structSize);
-        [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName, const char *fieldTypeEncoding, NSString *prettyTypeEncoding, NSUInteger fieldIndex, NSUInteger fieldOffset) {
+        [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName,
+                                                                                           const char *fieldTypeEncoding,
+                                                                                           NSString *prettyTypeEncoding,
+                                                                                           NSUInteger fieldIndex,
+                                                                                           NSUInteger fieldOffset) {
             
             void *fieldPointer = unboxedStruct + fieldOffset;
             FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
@@ -123,8 +125,7 @@
     return boxedStruct;
 }
 
-- (BOOL)inputViewIsFirstResponder
-{
+- (BOOL)inputViewIsFirstResponder {
     BOOL isFirstResponder = NO;
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         if ([inputView inputViewIsFirstResponder]) {
@@ -138,8 +139,7 @@
 
 #pragma mark - Layout and Sizing
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     CGFloat runningOriginY = self.topInputFieldVerticalLayoutGuide;
@@ -151,13 +151,11 @@
     }
 }
 
-+ (CGFloat)verticalPaddingBetweenFields
-{
++ (CGFloat)verticalPaddingBetweenFields {
     return 10.0;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size
-{
+- (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
     
     CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
@@ -174,13 +172,16 @@
 
 #pragma mark - Class Helpers
 
-+ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value
-{
-    return type && type[0] == FLEXTypeEncodingStructBegin;
++ (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
+    NSParameterAssert(type);
+    if (type[0] == FLEXTypeEncodingStructBegin) {
+        return FLEXGetSizeAndAlignment(type, nil, nil);
+    }
+
+    return NO;
 }
 
-+ (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding
-{
++ (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding {
     NSArray<NSString *> *customTitles = nil;
     if (strcmp(typeEncoding, @encode(CGRect)) == 0) {
         customTitles = @[@"CGPoint origin", @"CGSize size"];

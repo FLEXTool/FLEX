@@ -3,7 +3,7 @@
 //  Flipboard
 //
 //  Created by Ryan Olson on 2/8/15.
-//  Copyright (c) 2015 Flipboard. All rights reserved.
+//  Copyright (c) 2020 Flipboard. All rights reserved.
 //
 
 #import "FLEXNetworkTransaction.h"
@@ -16,8 +16,7 @@
 
 @implementation FLEXNetworkTransaction
 
-- (NSString *)description
-{
+- (NSString *)description {
     NSString *description = [super description];
 
     description = [description stringByAppendingFormat:@" id = %@;", self.requestID];
@@ -36,7 +35,7 @@
             NSInputStream *bodyStream = [self.request.HTTPBodyStream copy];
             const NSUInteger bufferSize = 1024;
             uint8_t buffer[bufferSize];
-            NSMutableData *data = [NSMutableData data];
+            NSMutableData *data = [NSMutableData new];
             [bodyStream open];
             NSInteger readBytes = 0;
             do {
@@ -50,8 +49,7 @@
     return _cachedRequestBody;
 }
 
-+ (NSString *)readableStringFromTransactionState:(FLEXNetworkTransactionState)state
-{
++ (NSString *)readableStringFromTransactionState:(FLEXNetworkTransactionState)state {
     NSString *readableString = nil;
     switch (state) {
         case FLEXNetworkTransactionStateUnstarted:

@@ -23,7 +23,6 @@ FOUNDATION_EXTERN NSString *const kFLEXNetworkObserverEnabledStateChangedNotific
 /// Swizzling occurs when the observer is enabled for the first time.
 /// This reduces the impact of FLEX if network debugging is not desired.
 /// NOTE: this setting persists between launches of the app.
-+ (void)setEnabled:(BOOL)enabled;
-+ (BOOL)isEnabled;
+@property (nonatomic, class, getter=isEnabled) BOOL enabled;
 
 @end
