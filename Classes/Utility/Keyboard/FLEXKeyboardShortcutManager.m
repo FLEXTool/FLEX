@@ -212,9 +212,14 @@
 - (void)registerSimulatorShortcutWithKey:(NSString *)key
                                modifiers:(UIKeyModifierFlags)modifiers
                                   action:(dispatch_block_t)action
-                             description:(NSString *)description {
+                             description:(NSString *)description
+                           allowOverride:(BOOL)allowOverride {
     FLEXKeyInput *keyInput = [FLEXKeyInput keyInputForKey:key flags:modifiers helpDescription:description];
-    [self.actionsForKeyInputs setObject:action forKey:keyInput];
+    if (!allowOverride && self.actionsForKeyInputs[keyInput] != nil) {
+        return;
+    } else {
+        [self.actionsForKeyInputs setObject:action forKey:keyInput];
+    }
 }
 
 static const long kFLEXControlKeyCode = 0xe0;
