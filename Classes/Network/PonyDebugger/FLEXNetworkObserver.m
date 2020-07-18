@@ -278,17 +278,18 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
         // In iOS 7 resume lives in __NSCFLocalSessionTask
         // In iOS 8 resume lives in NSURLSessionTask
         // In iOS 9 resume lives in __NSCFURLSessionTask
+        // In iOS 14 resume lives in NSURLSessionTask
         Class baseResumeClass = Nil;
         if (![NSProcessInfo.processInfo respondsToSelector:@selector(operatingSystemVersion)]) {
             // iOS ... 7
             baseResumeClass = NSClassFromString(@"__NSCFLocalSessionTask");
         } else {
             NSInteger majorVersion = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion;
-            if (majorVersion < 9) {
-                // iOS 8
+            if (majorVersion < 9 || majorVersion >= 14) {
+                // iOS 8 or iOS 14+
                 baseResumeClass = [NSURLSessionTask class];
             } else {
-                // iOS 9+
+                // iOS 9 ... 13
                 baseResumeClass = NSClassFromString(@"__NSCFURLSessionTask");
             }
         }
