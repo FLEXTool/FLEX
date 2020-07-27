@@ -41,7 +41,7 @@
         self.webView = [[WKWebView alloc] init];
         self.webView.UIDelegate = self;
         self.webView.navigationDelegate = self;
-        self.webView.configuration.dataDetectorTypes = UIDataDetectorTypeLink;
+        self.webView.configuration.dataDetectorTypes = WKDataDetectorTypeLink;
         self.webView.contentMode = UIViewContentModeScaleToFill;
         #if !TARGET_OS_IPHONE
             self.webView.allowsMagnification = YES;
