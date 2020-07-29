@@ -113,7 +113,7 @@ NSAssert(!self._action, @"Cannot mutate action after retreiving underlying UIAle
 - (FLEXAlertStringProperty)title {
     return ^FLEXAlert *(NSString *title) {
         if (self._controller.title) {
-            self._controller.title = [self._controller.title stringByAppendingString:title];
+            self._controller.title = [self._controller.title stringByAppendingString:title ?: @""];
         } else {
             self._controller.title = title;
         }
@@ -124,7 +124,7 @@ NSAssert(!self._action, @"Cannot mutate action after retreiving underlying UIAle
 - (FLEXAlertStringProperty)message {
     return ^FLEXAlert *(NSString *message) {
         if (self._controller.message) {
-            self._controller.message = [self._controller.message stringByAppendingString:message];
+            self._controller.message = [self._controller.message stringByAppendingString:message ?: @""];
         } else {
             self._controller.message = message;
         }
@@ -166,7 +166,7 @@ NSAssert(!self._action, @"Cannot mutate action after retreiving underlying UIAle
     return ^FLEXAlertAction *(NSString *title) {
         FLEXAlertActionMutationAssertion();
         if (self._title) {
-            self._title = [self._title stringByAppendingString:title];
+            self._title = [self._title stringByAppendingString:title ?: @""];
         } else {
             self._title = title;
         }
