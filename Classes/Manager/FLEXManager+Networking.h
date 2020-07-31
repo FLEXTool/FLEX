@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setCustomViewerForContentType:(NSString *)contentType
             viewControllerFutureBlock:(FLEXCustomContentViewerFuture)viewControllerFutureBlock;
 
++ (void)loadNetworking;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -59,6 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
                                   action:(dispatch_block_t)action
                              description:(NSString *)description;
 
++ (void)loadExtensibility;
+
 @end
 
 NS_ASSUME_NONNULL_END

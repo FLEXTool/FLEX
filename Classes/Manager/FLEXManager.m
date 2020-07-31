@@ -12,6 +12,9 @@
 #import "FLEXWindow.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXFileBrowserController.h"
+#import "FLEXManager+Extensibility.h"
+#import "FLEXManager+Networking.h"
+
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -43,6 +46,11 @@
         _customContentTypeViewers = [NSMutableDictionary new];
     }
     return self;
+}
+
++ (void)load {
+    [self loadExtensibility];
+    [self loadNetworking];
 }
 
 - (FLEXWindow *)explorerWindow {

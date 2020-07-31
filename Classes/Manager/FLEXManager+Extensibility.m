@@ -170,7 +170,7 @@
     } description:@"Toggle file browser menu"];
 }
 
-+ (void)load {
++ (void)loadExtensibility {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.sharedManager registerDefaultSimulatorShortcuts];
     });
