@@ -100,6 +100,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     self.showsSearchBar = YES;
     self.showSearchBarInitially = NO;
 
+#if __cplusplus
     __weak __typeof(self) weakSelf = self;
     id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) {
         __strong __typeof(weakSelf) strongSelf = weakSelf;
@@ -111,6 +112,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     } else {
         _logController = [FLEXASLLogController withUpdateHandler:logHandler];
     }
+#endif
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.title = @"Waiting for Logs...";
@@ -196,6 +198,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 }
 
 - (void)showLogSettings {
+#if __cplusplus
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
     BOOL disableOSLog = defaults.flex_disableOSLog;
     BOOL persistent = defaults.flex_cacheOSLogMessages;
@@ -230,6 +233,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
         });
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];
+#endif
 }
 
 

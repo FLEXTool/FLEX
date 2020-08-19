@@ -6,6 +6,8 @@
 //  Copyright © 2018 Flipboard. All rights reserved.
 //
 
+#if __cplusplus
+
 #import "FLEXOSLogController.h"
 #import "NSUserDefaults+FLEX.h"
 #include <dlfcn.h>
@@ -213,3 +215,5 @@ static uint8_t (*OSLogGetType)(void *);
 }
 
 @end
+
+#endif /* __cplusplus */
