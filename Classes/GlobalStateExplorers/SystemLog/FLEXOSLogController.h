@@ -6,8 +6,6 @@
 //  Copyright © 2018 Flipboard. All rights reserved.
 //
 
-#if __cplusplus
-
 #import "FLEXLogController.h"
 
 #define FLEXOSLogAvailable() (NSProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 10)
@@ -27,5 +25,3 @@
 @property (nonatomic) NSMutableArray<FLEXSystemLogMessage *> *messages;
 
 @end
-
-#endif /* __cplusplus */

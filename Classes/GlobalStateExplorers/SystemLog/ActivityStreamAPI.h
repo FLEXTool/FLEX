@@ -11,8 +11,6 @@
 //
 //===----------------------------------------------------------------------===//
 
-#if __cplusplus
-
 #ifndef ActivityStreamSPI_h
 #define ActivityStreamSPI_h
 
@@ -207,5 +205,3 @@ typedef void (*os_activity_stream_set_event_handler_t)(
                                                        os_activity_stream_t stream, os_activity_stream_event_block_t block);
 
 #endif /* ActivityStreamSPI_h */
-
-#endif /* __cplusplus */
