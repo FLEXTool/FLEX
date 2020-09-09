@@ -22,7 +22,7 @@ let package = Package(
             publicHeadersPath: "./",
             cSettings: [
                 .headerSearchPath("Core"),
-                .headerSearchPath("Core/Controllers"),
+                .headerSearchPath("Core/Controllers/"),
                 .headerSearchPath("Core/Views"),
                 .headerSearchPath("Core/Views/Cells"),
                 .headerSearchPath("Core/Views/Carousel"),
