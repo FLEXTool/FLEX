@@ -25,3 +25,7 @@
 @interface FLEXShortcutsFactory (Blocks) @end
 
 @interface FLEXShortcutsFactory (Foundation) @end
+
+@interface FLEXShortcutsFactory (Public)
++ (void)setupFLEXRuntimeAndShortcuts;
+@end
