@@ -15,7 +15,13 @@
 
 @implementation FLEXShortcutsFactory (UIApplication)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupUIApplicationShortcuts];
+}
+#endif
+
++ (void)setupUIApplicationShortcuts {
     // sharedApplication class property possibly not added
     // as a literal class property until iOS 10
     FLEXRuntimeUtilityTryAddObjectProperty(
@@ -40,7 +46,13 @@
 
 @implementation FLEXShortcutsFactory (Views)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupViewsShortcuts];
+}
+#endif
+
++ (void)setupViewsShortcuts {
     // A quirk of UIView and some other classes: a lot of the `@property`s are
     // not actually properties from the perspective of the runtime.
     //
@@ -126,13 +138,18 @@
 
 @end
 
-
 #pragma mark - View Controllers
 
 @implementation FLEXShortcutsFactory (ViewControllers)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
-    // toolbarItems is not really a property, make it one 
+    [self setupViewControllersShortcuts];
+}
+#endif
+
++ (void)setupViewControllersShortcuts {
+    // toolbarItems is not really a property, make it one
     FLEXRuntimeUtilityTryAddObjectProperty(3, toolbarItems, UIViewController.class, NSArray);
     
     // UIViewController
@@ -146,12 +163,17 @@
 
 @end
 
-
 #pragma mark - UIImage
 
 @implementation FLEXShortcutsFactory (UIImage)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupUIImageShortcuts];
+}
+#endif
+
++ (void)setupUIImageShortcuts {
     self.append.methods(@[
         @"CGImage", @"CIImage"
     ]).properties(@[
@@ -166,12 +188,17 @@
 
 @end
 
-
 #pragma mark - NSBundle
 
 @implementation FLEXShortcutsFactory (NSBundle)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupNSBundleShortcuts];
+}
+#endif
+
++ (void)setupNSBundleShortcuts {
     self.append.properties(@[
         @"bundleIdentifier", @"principalClass",
         @"infoDictionary", @"bundlePath",
@@ -181,23 +208,33 @@
 
 @end
 
-
 #pragma mark - Classes
 
 @implementation FLEXShortcutsFactory (Classes)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupClassesShortcuts];
+}
+#endif
+
++ (void)setupClassesShortcuts {
     self.append.classMethods(@[@"new", @"alloc"]).forClass(NSObject.flex_metaclass);
 }
 
 @end
 
-
 #pragma mark - Activities
 
 @implementation FLEXShortcutsFactory (Activities)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupActivitiesShortcuts];
+}
+#endif
+
++ (void)setupActivitiesShortcuts {
     // Property was added in iOS 10 but we want it on iOS 9 too
     FLEXRuntimeUtilityTryAddNonatomicProperty(9, item, UIActivityItemProvider.class, id, PropertyKey(ReadOnly));
     
@@ -212,12 +249,17 @@
 
 @end
 
-
 #pragma mark - Blocks
 
 @implementation FLEXShortcutsFactory (Blocks)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupBlocksShortcuts];
+}
+#endif
+
++ (void)setupBlocksShortcuts {
     self.append.methods(@[@"invoke"]).forClass(NSClassFromString(@"NSBlock"));
 }
 
@@ -227,7 +269,13 @@
 
 @implementation FLEXShortcutsFactory (Foundation)
 
+#ifndef DISABLE_FLEX_RUNTIME_LOAD
 + (void)load { FLEX_EXIT_IF_TESTING()
+    [self setupFoundationShortcuts];
+}
+#endif
+
++ (void)setupFoundationShortcuts {
     self.append.properties(@[
         @"configuration", @"delegate", @"delegateQueue", @"sessionDescription",
     ]).methods(@[
@@ -256,12 +304,32 @@
     FLEXRuntimeUtilityTryAddObjectProperty(2, abbreviationDictionary, NSTimeZone.flex_metaclass, NSDictionary);
     
     self.append.classMethods(@[
-        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:", @"", @"", @"", 
+        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:", @"", @"", @"",
     ]).forClass(NSTimeZone.flex_metaclass);
     
     self.append.classProperties(@[
         @"defaultTimeZone", @"systemTimeZone", @"localTimeZone"
     ]).forClass(NSTimeZone.class);
 }
+
+@end
+
+#pragma mark - Public
+
+@implementation FLEXShortcutsFactory (Public)
+
+#ifdef DISABLE_FLEX_RUNTIME_LOAD
++ (void)setupFLEXRuntimeAndShortcuts {
+    [self setupUIApplicationShortcuts];
+    [self setupViewsShortcuts];
+    [self setupViewControllersShortcuts];
+    [self setupUIImageShortcuts];
+    [self setupNSBundleShortcuts];
+    [self setupClassesShortcuts];
+    [self setupActivitiesShortcuts];
+    [self setupBlocksShortcuts];
+    [self setupFoundationShortcuts];
+}
+#endif
 
 @end
