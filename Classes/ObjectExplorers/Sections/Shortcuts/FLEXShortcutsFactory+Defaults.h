@@ -27,5 +27,7 @@
 @interface FLEXShortcutsFactory (Foundation) @end
 
 @interface FLEXShortcutsFactory (Public)
+#ifdef DISABLE_FLEX_RUNTIME_LOAD
 + (void)setupFLEXRuntimeAndShortcuts;
+#endif
 @end

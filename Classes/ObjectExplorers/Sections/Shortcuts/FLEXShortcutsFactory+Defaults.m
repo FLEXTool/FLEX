@@ -15,12 +15,11 @@
 
 @implementation FLEXShortcutsFactory (UIApplication)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupUIApplicationShortcuts];
-#endif
 }
+#endif
 
 + (void)setupUIApplicationShortcuts {
     // sharedApplication class property possibly not added
@@ -47,12 +46,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (Views)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupViewsShortcuts];
-#endif
 }
+#endif
 
 + (void)setupViewsShortcuts {
     // A quirk of UIView and some other classes: a lot of the `@property`s are
@@ -144,12 +142,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (ViewControllers)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupViewControllersShortcuts];
-#endif
 }
+#endif
 
 + (void)setupViewControllersShortcuts {
     // toolbarItems is not really a property, make it one
@@ -170,12 +167,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (UIImage)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupUIImageShortcuts];
-#endif
 }
+#endif
 
 + (void)setupUIImageShortcuts {
     self.append.methods(@[
@@ -196,12 +192,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (NSBundle)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupNSBundleShortcuts];
-#endif
 }
+#endif
 
 + (void)setupNSBundleShortcuts {
     self.append.properties(@[
@@ -217,12 +212,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (Classes)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupClassesShortcuts];
-#endif
 }
+#endif
 
 + (void)setupClassesShortcuts {
     self.append.classMethods(@[@"new", @"alloc"]).forClass(NSObject.flex_metaclass);
@@ -234,12 +228,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (Activities)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupActivitiesShortcuts];
-#endif
 }
+#endif
 
 + (void)setupActivitiesShortcuts {
     // Property was added in iOS 10 but we want it on iOS 9 too
@@ -260,12 +253,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (Blocks)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupBlocksShortcuts];
-#endif
 }
+#endif
 
 + (void)setupBlocksShortcuts {
     self.append.methods(@[@"invoke"]).forClass(NSClassFromString(@"NSBlock"));
@@ -277,12 +269,11 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (Foundation)
 
-+ (void)load {
-FLEX_EXIT_IF_TESTING()
 #ifndef DISABLE_FLEX_RUNTIME_LOAD
++ (void)load { FLEX_EXIT_IF_TESTING()
     [self setupFoundationShortcuts];
-#endif
 }
+#endif
 
 + (void)setupFoundationShortcuts {
     self.append.properties(@[
@@ -327,8 +318,8 @@ FLEX_EXIT_IF_TESTING()
 
 @implementation FLEXShortcutsFactory (Public)
 
-+ (void)setupFLEXRuntimeAndShortcuts {
 #ifdef DISABLE_FLEX_RUNTIME_LOAD
++ (void)setupFLEXRuntimeAndShortcuts {
     [self setupUIApplicationShortcuts];
     [self setupViewsShortcuts];
     [self setupViewControllersShortcuts];
@@ -338,7 +329,7 @@ FLEX_EXIT_IF_TESTING()
     [self setupActivitiesShortcuts];
     [self setupBlocksShortcuts];
     [self setupFoundationShortcuts];
-#endif
 }
+#endif
 
 @end
