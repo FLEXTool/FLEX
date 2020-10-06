@@ -337,21 +337,16 @@
 }
 
 + (NSString *)prettyJSONStringFromData:(NSData *)data {
-    NSString *prettyString = nil;
-    
-    id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+    NSString *stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSData *dataString = [stringData dataUsingEncoding:NSUTF8StringEncoding];
+    id jsonObject = [NSJSONSerialization JSONObjectWithData:dataString options:0 error:NULL];
     if ([NSJSONSerialization isValidJSONObject:jsonObject]) {
-        prettyString = [NSString stringWithCString:[NSJSONSerialization
-            dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL
-        ].bytes encoding:NSUTF8StringEncoding];
-        // NSJSONSerialization escapes forward slashes.
-        // We want pretty json, so run through and unescape the slashes.
-        prettyString = [prettyString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-    } else {
-        prettyString = [NSString stringWithCString:data.bytes encoding:NSUTF8StringEncoding];
+        NSData *jsonData  = [NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:NULL];
+        NSString *string = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        NSString *formattedJSON = [string stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
+        return formattedJSON;
     }
-    
-    return prettyString;
+    return NULL;
 }
 
 + (BOOL)isValidJSONData:(NSData *)data {
