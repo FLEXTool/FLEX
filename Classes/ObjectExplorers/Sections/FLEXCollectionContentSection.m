@@ -20,9 +20,13 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     FLEXKeyedCollection
 };
 
+
 @interface FLEXCollectionContentSection ()
+/// Generated from \c collectionFuture or \c collection
 @property (nonatomic, copy) id<FLEXCollection> cachedCollection;
+/// A static collection to display
 @property (nonatomic, readonly) id<FLEXCollection> collection;
+/// A collection that may change over time and can be called upon for new data
 @property (nonatomic, readonly) FLEXCollectionContentFuture collectionFuture;
 @property (nonatomic, readonly) FLEXCollectionType collectionType;
 @end
@@ -163,7 +167,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
             return matcher(filterText, obj);
         }];
         
-        id<FLEXMutableCollection> tmp = self.collection.mutableCopy;
+        id<FLEXMutableCollection> tmp = self.cachedCollection.mutableCopy;
         [tmp filterUsingPredicate:filter];
         self.cachedCollection = tmp;
     } else {
