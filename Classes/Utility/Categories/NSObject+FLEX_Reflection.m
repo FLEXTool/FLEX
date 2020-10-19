@@ -146,7 +146,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 @interface NSProxy (AnyObjectAdditions) @end
 @implementation NSProxy (AnyObjectAdditions)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     // We need to get all of the methods in this file and add them to NSProxy. 
     // To do this we we need the class itself and it's metaclass.
     // Edit: also add them to Swift._SwiftObject
