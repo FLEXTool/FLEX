@@ -15,7 +15,13 @@
 
 @implementation FLEXShortcutsFactory (UIApplication)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
+    // sharedApplication class property possibly not added
+    // as a literal class property until iOS 10
+    FLEXRuntimeUtilityTryAddObjectProperty(
+        2, sharedApplication, UIApplication.flex_metaclass, UIApplication, PropertyKey(ReadOnly)
+    );
+    
     self.append.classProperties(@[@"sharedApplication"]).forClass(UIApplication.flex_metaclass);
     self.append.properties(@[
         @"delegate", @"keyWindow", @"windows"
@@ -34,7 +40,7 @@
 
 @implementation FLEXShortcutsFactory (Views)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     // A quirk of UIView and some other classes: a lot of the `@property`s are
     // not actually properties from the perspective of the runtime.
     //
@@ -125,7 +131,7 @@
 
 @implementation FLEXShortcutsFactory (ViewControllers)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     // toolbarItems is not really a property, make it one 
     FLEXRuntimeUtilityTryAddObjectProperty(3, toolbarItems, UIViewController.class, NSArray);
     
@@ -145,7 +151,7 @@
 
 @implementation FLEXShortcutsFactory (UIImage)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     self.append.methods(@[
         @"CGImage", @"CIImage"
     ]).properties(@[
@@ -165,7 +171,7 @@
 
 @implementation FLEXShortcutsFactory (NSBundle)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     self.append.properties(@[
         @"bundleIdentifier", @"principalClass",
         @"infoDictionary", @"bundlePath",
@@ -180,7 +186,7 @@
 
 @implementation FLEXShortcutsFactory (Classes)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     self.append.classMethods(@[@"new", @"alloc"]).forClass(NSObject.flex_metaclass);
 }
 
@@ -191,7 +197,7 @@
 
 @implementation FLEXShortcutsFactory (Activities)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     // Property was added in iOS 10 but we want it on iOS 9 too
     FLEXRuntimeUtilityTryAddNonatomicProperty(9, item, UIActivityItemProvider.class, id, PropertyKey(ReadOnly));
     
@@ -211,7 +217,7 @@
 
 @implementation FLEXShortcutsFactory (Blocks)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     self.append.methods(@[@"invoke"]).forClass(NSClassFromString(@"NSBlock"));
 }
 
@@ -221,7 +227,7 @@
 
 @implementation FLEXShortcutsFactory (Foundation)
 
-+ (void)load { FLEX_EXIT_IF_TESTING()
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
     self.append.properties(@[
         @"configuration", @"delegate", @"delegateQueue", @"sessionDescription",
     ]).methods(@[

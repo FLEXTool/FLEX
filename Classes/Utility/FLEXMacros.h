@@ -9,8 +9,18 @@
 #ifndef FLEXMacros_h
 #define FLEXMacros_h
 
-// Used to prevent loading of pre-registered shortcuts and runtime categories in a test environment
-#define FLEX_EXIT_IF_TESTING() if (NSClassFromString(@"XCTest")) return;
+#define flex_keywordify class NSObject;
+#define ctor flex_keywordify __attribute__((constructor)) void __flex_ctor_##__LINE__()
+#define dtor flex_keywordify __attribute__((destructor)) void __flex_dtor_##__LINE__()
+
+// A macro to check if we are running in a test environment
+#define FLEX_IS_TESTING() (NSClassFromString(@"XCTest") != nil)
+
+/// Whether we want the majority of constructors to run upon load or not.
+extern BOOL FLEXConstructorsShouldRun();
+
+/// A macro to return from the current procedure if we don't want to run constructors
+#define FLEX_EXIT_IF_NO_CTORS() if (!FLEXConstructorsShouldRun()) return;
 
 /// Rounds down to the nearest "point" coordinate
 NS_INLINE CGFloat FLEXFloor(CGFloat x) {
