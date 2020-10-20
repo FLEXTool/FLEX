@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Ryan Olson on 9/19/15.
-//  Copyright © 2015 Flipboard. All rights reserved.
+//  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

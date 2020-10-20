@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Tanner Bennett on 3/26/20.
-//  Copyright (c) 2020 Flipboard. All rights reserved.
+//  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
 #import "FLEXRuntimeExporter.h"

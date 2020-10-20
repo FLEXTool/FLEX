@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Tanner Bennett on 7/24/18.
-//  Copyright (c) 2020 Flipboard. All rights reserved.
+//  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

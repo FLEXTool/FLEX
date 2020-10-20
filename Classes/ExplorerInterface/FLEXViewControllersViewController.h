@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Tanner Bennett on 2/13/20.
-//  Copyright © 2020 Flipboard. All rights reserved.
+//  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
 #import "FLEXFilteringTableViewController.h"

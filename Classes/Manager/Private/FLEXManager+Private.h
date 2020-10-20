@@ -3,7 +3,7 @@
 //  PebbleApp
 //
 //  Created by Javier Soto on 7/26/14.
-//  Copyright (c) 2014 Pebble Technology. All rights reserved.
+//  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
 #import "FLEXManager.h"

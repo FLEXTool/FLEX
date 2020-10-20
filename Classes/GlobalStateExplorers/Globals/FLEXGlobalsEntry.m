@@ -3,7 +3,7 @@
 //  FLEX
 //
 //  Created by Javier Soto on 7/26/14.
-//  Copyright (c) 2020 Flipboard. All rights reserved.
+//  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
 #import "FLEXGlobalsEntry.h"
