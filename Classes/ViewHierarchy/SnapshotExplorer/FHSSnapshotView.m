@@ -296,7 +296,7 @@
 - (void)depthSliderDidChange:(FHSRangeSlider *)slider {
     CGFloat min = slider.minValue, max = slider.maxValue;
     for (FHSSnapshotNodes *nodes in self.nodesMap.allValues) {
-        CGFloat depth = self.maxDepth - nodes.depth;
+        CGFloat depth = nodes.depth;
         nodes.snapshot.hidden = depth < min || max < depth;
     }
 }
