@@ -15,23 +15,24 @@
 @interface FLEXDefaultEditorViewController ()
 
 @property (nonatomic, readonly) NSUserDefaults *defaults;
-@property (nonatomic) NSString *key;
+@property (nonatomic, readonly) NSString *key;
 
 @end
 
 @implementation FLEXDefaultEditorViewController
 
-- (id)initWithDefaults:(NSUserDefaults *)defaults key:(NSString *)key {
-    self = [super initWithTarget:defaults];
-    if (self) {
-        self.key = key;
-        self.title = @"Edit Default";
-    }
-    return self;
++ (instancetype)target:(NSUserDefaults *)defaults key:(NSString *)key commitHandler:(void(^_Nullable)())onCommit {
+    FLEXDefaultEditorViewController *editor = [self target:defaults data:key commitHandler:onCommit];
+    editor.title = @"Edit Default";
+    return editor;
 }
 
 - (NSUserDefaults *)defaults {
-    return [self.target isKindOfClass:[NSUserDefaults class]] ? self.target : nil;
+    return [_target isKindOfClass:[NSUserDefaults class]] ? _target : nil;
+}
+
+- (NSString *)key {
+    return _data;
 }
 
 - (void)viewDidLoad {
@@ -50,8 +51,6 @@
 }
 
 - (void)actionButtonPressed:(id)sender {
-    [super actionButtonPressed:sender];
-    
     id value = self.firstInputView.inputValue;
     if (value) {
         [self.defaults setObject:value forKey:self.key];
@@ -59,14 +58,16 @@
         [self.defaults removeObjectForKey:self.key];
     }
     [self.defaults synchronize];
-
-    self.firstInputView.inputValue = [self.defaults objectForKey:self.key];
-}
-
-- (void)getterButtonPressed:(id)sender {
-    [super getterButtonPressed:sender];
-    id returnedObject = [self.defaults objectForKey:self.key];
-    [self exploreObjectOrPopViewController:returnedObject];
+    
+    // Dismiss keyboard and handle committed changes
+    [super actionButtonPressed:sender];
+    
+    // Go back after setting, but not for switches.
+    if (sender) {
+        [self.navigationController popViewControllerAnimated:YES];
+    } else {
+        self.firstInputView.inputValue = [self.defaults objectForKey:self.key];
+    }
 }
 
 + (BOOL)canEditDefaultWithValue:(id)currentValue {

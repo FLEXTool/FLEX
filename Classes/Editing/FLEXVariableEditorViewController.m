@@ -19,21 +19,22 @@
 
 @interface FLEXVariableEditorViewController () <UIScrollViewDelegate>
 @property (nonatomic) UIScrollView *scrollView;
-@property (nonatomic) id target;
 @end
 
 @implementation FLEXVariableEditorViewController
 
 #pragma mark - Initialization
 
-+ (instancetype)target:(id)target {
-    return [[self alloc] initWithTarget:target];
++ (instancetype)target:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)())onCommit {
+    return [[self alloc] initWithTarget:target data:data commitHandler:onCommit];
 }
 
-- (id)initWithTarget:(id)target {
+- (id)initWithTarget:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)())onCommit {
     self = [super init];
     if (self) {
-        self.target = target;
+        _target = target;
+        _data = data;
+        _commitHandler = onCommit;
         [NSNotificationCenter.defaultCenter
             addObserver:self selector:@selector(keyboardDidShow:)
             name:UIKeyboardDidShowNotification object:nil
@@ -120,6 +121,9 @@
 - (void)actionButtonPressed:(id)sender {
     // Subclasses can override
     [self.fieldEditorView endEditing:YES];
+    if (_commitHandler) {
+        _commitHandler();
+    }
 }
 
 - (void)exploreObjectOrPopViewController:(id)objectOrNil {

@@ -30,20 +30,20 @@
 
 #pragma mark - Initialization
 
-+ (instancetype)target:(id)target property:(FLEXProperty *)property {
++ (instancetype)target:(id)target property:(nonnull FLEXProperty *)property commitHandler:(void(^_Nullable)())onCommit {
     id value = [property getValue:target];
     if (![self canEditProperty:property onObject:target currentValue:value]) {
         return nil;
     }
 
-    FLEXFieldEditorViewController *editor = [self target:target];
+    FLEXFieldEditorViewController *editor = [self target:target data:property commitHandler:onCommit];
     editor.title = [@"Property: " stringByAppendingString:property.name];
     editor.property = property;
     return editor;
 }
 
-+ (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar {
-    FLEXFieldEditorViewController *editor = [self target:target];
++ (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar commitHandler:(void(^_Nullable)())onCommit {
+    FLEXFieldEditorViewController *editor = [self target:target data:ivar commitHandler:onCommit];
     editor.title = [@"Ivar: " stringByAppendingString:ivar.name];
     editor.ivar = ivar;
     return editor;
@@ -86,8 +86,6 @@
 }
 
 - (void)actionButtonPressed:(id)sender {
-    [super actionButtonPressed:sender];
-
     if (self.property) {
         id userInputObject = self.firstInputView.inputValue;
         NSArray *arguments = userInputObject ? @[userInputObject] : nil;
@@ -103,6 +101,9 @@
         // this currently could and would assign NSArray to NSMutableArray
         [self.ivar setValue:self.firstInputView.inputValue onObject:self.target];
     }
+    
+    // Dismiss keyboard and handle committed changes
+    [super actionButtonPressed:sender];
 
     // Go back after setting, but not for switches.
     if (sender) {

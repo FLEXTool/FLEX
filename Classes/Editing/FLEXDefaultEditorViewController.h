@@ -8,10 +8,14 @@
 
 #import "FLEXFieldEditorViewController.h"
 
-@interface FLEXDefaultEditorViewController : FLEXFieldEditorViewController
+NS_ASSUME_NONNULL_BEGIN
 
-- (id)initWithDefaults:(NSUserDefaults *)defaults key:(NSString *)key;
+@interface FLEXDefaultEditorViewController : FLEXVariableEditorViewController
 
-+ (BOOL)canEditDefaultWithValue:(id)currentValue;
++ (instancetype)target:(NSUserDefaults *)defaults key:(NSString *)key commitHandler:(void(^_Nullable)())onCommit;
+
++ (BOOL)canEditDefaultWithValue:(nullable id)currentValue;
 
 @end
+
+NS_ASSUME_NONNULL_END
