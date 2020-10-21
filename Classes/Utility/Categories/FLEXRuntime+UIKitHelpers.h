@@ -11,6 +11,7 @@
 #import "FLEXIvar.h"
 #import "FLEXMethod.h"
 #import "FLEXProtocol.h"
+#import "FLEXTableViewSection.h"
 
 @class FLEXObjectExplorerDefaults;
 
@@ -42,7 +43,8 @@
 /// For methods, a method calling screen. For all else, an object explorer.
 - (UIViewController *)viewerWithTarget:(id)object;
 /// For methods and protocols, nil. For all else, an a field editor screen.
-- (UIViewController *)editorWithTarget:(id)object;
+/// The given section is reloaded on commit of any changes.
+- (UIViewController *)editorWithTarget:(id)object section:(FLEXTableViewSection *)section;
 /// Used to determine present which interactions are possible to the user
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object;
 /// Return nil to use the default reuse identifier

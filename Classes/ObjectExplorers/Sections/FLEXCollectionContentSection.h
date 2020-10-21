@@ -95,4 +95,7 @@ typedef id<FLEXCollection>(^FLEXCollectionContentFuture)(__kindof FLEXCollection
 /// For dictionaries, this returns the value, not the key.
 - (ObjectType)objectForRow:(NSInteger)row;
 
+/// Subclasses may override.
+- (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row;
+
 @end

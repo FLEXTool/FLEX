@@ -180,7 +180,7 @@
 }
 
 - (UIViewController *)editorForRow:(NSInteger)row {
-    return [self.metadata[row] editorWithTarget:self.explorer.object];
+    return [self.metadata[row] editorWithTarget:self.explorer.object section:self];
 }
 
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {

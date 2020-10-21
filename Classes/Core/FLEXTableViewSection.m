@@ -22,6 +22,19 @@
 
 - (void)reloadData { }
 
+- (void)reloadData:(BOOL)updateTable {
+    [self reloadData];
+    if (updateTable) {
+        NSIndexSet *index = [NSIndexSet indexSetWithIndex:_sectionIndex];
+        [_tableView reloadSections:index withRowAnimation:UITableViewRowAnimationNone];
+    }
+}
+
+- (void)setTable:(UITableView *)tableView section:(NSInteger)index {
+    _tableView = tableView;
+    _sectionIndex = index;
+}
+
 - (NSDictionary<NSString *,Class> *)cellRegistrationMapping {
     return nil;
 }

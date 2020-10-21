@@ -12,6 +12,7 @@
 #import "FLEXSubtitleTableViewCell.h"
 #import "FLEXTableView.h"
 #import "FLEXObjectExplorerFactory.h"
+#import "FLEXDefaultEditorViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     FLEXUnsupportedCollection,
@@ -29,6 +30,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 /// A collection that may change over time and can be called upon for new data
 @property (nonatomic, readonly) FLEXCollectionContentFuture collectionFuture;
 @property (nonatomic, readonly) FLEXCollectionType collectionType;
+@property (nonatomic, readonly) BOOL isMutable;
 @end
 
 @implementation FLEXCollectionContentSection
@@ -45,6 +47,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     section->_collectionType = [self typeForCollection:collection];
     section->_collection = collection;
     section.cachedCollection = collection;
+    section->_isMutable = [collection respondsToSelector:@selector(filterUsingPredicate:)];
     return section;
 }
 
@@ -53,6 +56,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     section->_collectionFuture = collectionFuture;
     section.cachedCollection = collectionFuture(section);
     section->_collectionType = [self typeForCollection:section.cachedCollection];
+    section->_isMutable = [section->_cachedCollection respondsToSelector:@selector(filterUsingPredicate:)];
     return section;
 }
 
@@ -136,6 +140,11 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     }
 }
 
+- (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row {
+    return UITableViewCellAccessoryDisclosureIndicator;
+//    return self.isMutable ? UITableViewCellAccessoryDetailDisclosureButton : UITableViewCellAccessoryDisclosureIndicator;
+}
+
 
 #pragma mark - Overrides
 
@@ -198,7 +207,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 - (void)configureCell:(__kindof FLEXTableViewCell *)cell forRow:(NSInteger)row {
     cell.titleLabel.text = [self titleForRow:row];
     cell.subtitleLabel.text = [self subtitleForRow:row];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryType = [self accessoryTypeForRow:row];
 }
 
 @end
