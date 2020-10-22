@@ -15,17 +15,21 @@
 #import <zlib.h>
 
 BOOL FLEXConstructorsShouldRun() {
-    static BOOL _FLEXConstructorsShouldRun_storage = YES;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *key = @"FLEX_SKIP_INIT";
-        if (getenv(key.UTF8String) || [NSUserDefaults.standardUserDefaults boolForKey:key]) {
-            _FLEXConstructorsShouldRun_storage = NO;
-        }
-    });
-    
-    return _FLEXConstructorsShouldRun_storage;
+    #if FLEX_DISABLE_CTORS
+        return NO;
+    #else
+        static BOOL _FLEXConstructorsShouldRun_storage = YES;
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            NSString *key = @"FLEX_SKIP_INIT";
+            if (getenv(key.UTF8String) || [NSUserDefaults.standardUserDefaults boolForKey:key]) {
+                _FLEXConstructorsShouldRun_storage = NO;
+            }
+        });
+        
+        return _FLEXConstructorsShouldRun_storage;
+    #endif
 }
 
 @implementation FLEXUtility
