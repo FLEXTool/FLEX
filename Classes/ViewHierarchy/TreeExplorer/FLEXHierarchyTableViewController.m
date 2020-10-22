@@ -198,7 +198,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     
     // If the search bar text field is active, don't scroll on selection because we may want
     // to continue typing. Otherwise, scroll so that the selected cell is visible.
-    if (self.searchController.searchBar.isFirstResponder) {
+    if (!self.searchController.searchBar.isFirstResponder) {
         [self trySelectCellForSelectedView];
     }
 }
