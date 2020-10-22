@@ -21,6 +21,17 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     FLEXKeyedCollection
 };
 
+@interface NSArray (FLEXCollection) <FLEXCollection> @end
+@interface NSSet (FLEXCollection) <FLEXCollection> @end
+@interface NSOrderedSet (FLEXCollection) <FLEXCollection> @end
+@interface NSDictionary (FLEXCollection) <FLEXCollection> @end
+
+@interface NSMutableArray (FLEXMutableCollection) <FLEXMutableCollection> @end
+@interface NSMutableSet (FLEXMutableCollection) <FLEXMutableCollection> @end
+@interface NSMutableOrderedSet (FLEXMutableCollection) <FLEXMutableCollection> @end
+@interface NSMutableDictionary (FLEXMutableCollection) <FLEXMutableCollection>
+- (void)filterUsingPredicate:(NSPredicate *)predicate;
+@end
 
 @interface FLEXCollectionContentSection ()
 /// Generated from \c collectionFuture or \c collection
@@ -54,7 +65,7 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 + (id)forReusableFuture:(FLEXCollectionContentFuture)collectionFuture {
     FLEXCollectionContentSection *section = [self new];
     section->_collectionFuture = collectionFuture;
-    section.cachedCollection = collectionFuture(section);
+    section.cachedCollection = (id<FLEXCollection>)collectionFuture(section);
     section->_collectionType = [self typeForCollection:section.cachedCollection];
     section->_isMutable = [section->_cachedCollection respondsToSelector:@selector(filterUsingPredicate:)];
     return section;
@@ -180,13 +191,13 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
         [tmp filterUsingPredicate:filter];
         self.cachedCollection = tmp;
     } else {
-        self.cachedCollection = self.collection ?: self.collectionFuture(self);
+        self.cachedCollection = self.collection ?: (id<FLEXCollection>)self.collectionFuture(self);
     }
 }
 
 - (void)reloadData {
     if (self.collectionFuture) {
-        self.cachedCollection = self.collectionFuture(self);
+        self.cachedCollection = (id<FLEXCollection>)self.collectionFuture(self);
     } else {
         self.cachedCollection = self.collection.copy;
     }

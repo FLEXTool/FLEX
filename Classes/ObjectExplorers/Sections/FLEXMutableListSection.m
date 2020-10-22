@@ -47,7 +47,7 @@ configurationBlock:(FLEXMutableListCellForElement)cellConfig
 
 - (void)setList:(NSMutableArray *)list {
     NSParameterAssert(list);
-    _collection = list;
+    _collection = (id)list;
 
     [self reloadData];
 }
