@@ -56,6 +56,9 @@
 + (NSString *)safeDescriptionForObject:(id)object;
 + (NSString *)safeDebugDescriptionForObject:(id)object;
 
++ (BOOL)safeObject:(id)object isKindOfClass:(Class)cls;
++ (BOOL)safeObject:(id)object respondsToSelector:(SEL)sel;
+
 // Property Helpers
 + (BOOL)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs

@@ -100,7 +100,7 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 + (NSString *)safeDescriptionForObject:(id)object {
     // Don't assume that we have an NSObject subclass.
     // Check to make sure the object responds to the description method
-    if ([object respondsToSelector:@selector(description)]) {
+    if ([self safeObject:object respondsToSelector:@selector(description)]) {
         return [object description];
     }
 
@@ -113,7 +113,7 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 
     // Don't assume that we have an NSObject subclass.
     // Check to make sure the object responds to the description method
-    if ([object respondsToSelector:@selector(debugDescription)]) {
+    if ([self safeObject:object respondsToSelector:@selector(debugDescription)]) {
         description = [object debugDescription];
     } else {
         description = [self safeDescriptionForObject:object];
@@ -135,7 +135,7 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     NSString *description = nil;
 
     // Special case BOOL for better readability.
-    if ([value isKindOfClass:[NSValue class]]) {
+    if ([self safeObject:value isKindOfClass:[NSValue class]]) {
         const char *type = [value objCType];
         if (strcmp(type, @encode(BOOL)) == 0) {
             BOOL boolValue = NO;
@@ -161,6 +161,34 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     }
 
     return description;
+}
+
++ (BOOL)safeObject:(id)object isKindOfClass:(Class)cls {
+    static BOOL (*isKindOfClass)(id, SEL, Class) = nil;
+    static BOOL (*isKindOfClass_meta)(id, SEL, Class) = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        isKindOfClass = (BOOL(*)(id, SEL, Class))[NSObject instanceMethodForSelector:@selector(isKindOfClass:)];
+        isKindOfClass_meta = (BOOL(*)(id, SEL, Class))[NSObject methodForSelector:@selector(isKindOfClass:)];
+    });
+    
+    BOOL isClass = object_isClass(object);
+    return (isClass ? isKindOfClass_meta : isKindOfClass)(object, @selector(isKindOfClass:), cls);
+}
+
++ (BOOL)safeObject:(id)object respondsToSelector:(SEL)sel {
+    static BOOL (*respondsToSelector)(id, SEL, SEL) = nil;
+    static BOOL (*respondsToSelector_meta)(id, SEL, SEL) = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        respondsToSelector = (BOOL(*)(id, SEL, SEL))[NSObject instanceMethodForSelector:@selector(respondsToSelector:)];
+        respondsToSelector_meta = (BOOL(*)(id, SEL, SEL))[NSObject methodForSelector:@selector(respondsToSelector:)];
+    });
+    
+    BOOL isClass = object_isClass(object);
+    return (isClass ? respondsToSelector_meta : respondsToSelector)(
+        object, @selector(respondsToSelector:), sel
+    );
 }
 
 
@@ -267,7 +295,7 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     });
 
     // Bail if the object won't respond to this selector.
-    if (![object respondsToSelector:selector]) {
+    if (![self safeObject:object respondsToSelector:selector]) {
         if (error) {
             NSString *msg = [NSString
                 stringWithFormat:@"%@ does not respond to the selector %@",
