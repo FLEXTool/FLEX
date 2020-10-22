@@ -49,15 +49,15 @@
     
     [self addToolbarItems:@[
         [UIBarButtonItem
-            itemWithImage:FLEXResources.gearIcon
+            flex_itemWithImage:FLEXResources.gearIcon
             target:self
             action:@selector(settingsButtonTapped:)
         ],
         [[UIBarButtonItem
-          systemItem:UIBarButtonSystemItemTrash
+          flex_systemItem:UIBarButtonSystemItemTrash
           target:self
           action:@selector(trashButtonTapped:)
-        ] withTintColor:UIColor.redColor]
+        ] flex_withTintColor:UIColor.redColor]
     ]];
 
     [self.tableView

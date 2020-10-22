@@ -30,7 +30,7 @@
     self.title = @"FLEX Commit History";
     self.showsSearchBar = YES;
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem
-        itemWithTitle:@"FLEX" target:FLEXManager.sharedManager action:@selector(toggleExplorer)
+        flex_itemWithTitle:@"FLEX" target:FLEXManager.sharedManager action:@selector(toggleExplorer)
     ];
     
     // Load and process commits

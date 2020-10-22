@@ -42,7 +42,7 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
 
 #pragma mark Helper
 
-- (void)toggleBoolForKey:(NSString *)key {
+- (void)flex_toggleBoolForKey:(NSString *)key {
     [self setBool:![self boolForKey:key] forKey:key];
     [NSNotificationCenter.defaultCenter postNotificationName:key object:nil];
 }

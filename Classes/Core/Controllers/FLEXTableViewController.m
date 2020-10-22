@@ -224,10 +224,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     
     _shareToolbarItem = FLEXBarButtonItemSystem(Action, self, @selector(shareButtonPressed:));
     _bookmarksToolbarItem = [UIBarButtonItem
-        itemWithImage:FLEXResources.bookmarksIcon target:self action:@selector(showBookmarks)
+        flex_itemWithImage:FLEXResources.bookmarksIcon target:self action:@selector(showBookmarks)
     ];
     _openTabsToolbarItem = [UIBarButtonItem
-        itemWithImage:FLEXResources.openTabsIcon target:self action:@selector(showTabSwitcher)
+        flex_itemWithImage:FLEXResources.openTabsIcon target:self action:@selector(showTabSwitcher)
     ];
     
     self.leftmostToolbarItem = UIBarButtonItem.flex_fixedSpace;

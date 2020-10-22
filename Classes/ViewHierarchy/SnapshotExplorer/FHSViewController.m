@@ -120,7 +120,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
     // Initialize back bar button item for 3D view to look like a button
     self.navigationItem.hidesBackButton = YES;
     self.navigationItem.leftBarButtonItem = [UIBarButtonItem
-        itemWithImage:FLEXResources.toggle2DIcon
+        flex_itemWithImage:FLEXResources.toggle2DIcon
         target:self.navigationController
         action:@selector(toggleHierarchyMode)
     ];
@@ -158,14 +158,14 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 
     // Initialize our toolbar items
     self.toolbarItems = @[
-        [UIBarButtonItem itemWithCustomView:snapshotView.spacingSlider],
+        [UIBarButtonItem flex_itemWithCustomView:snapshotView.spacingSlider],
         UIBarButtonItem.flex_flexibleSpace,
         [UIBarButtonItem
-            itemWithImage:FLEXResources.moreIcon
+            flex_itemWithImage:FLEXResources.moreIcon
             target:self action:@selector(didPressOptionsButton:)
         ],
         UIBarButtonItem.flex_flexibleSpace,
-        [UIBarButtonItem itemWithCustomView:snapshotView.depthSlider]
+        [UIBarButtonItem flex_itemWithCustomView:snapshotView.depthSlider]
     ];
     [self resizeToolbarItems:self.view.frame.size];
 

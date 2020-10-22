@@ -64,7 +64,9 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         self.toolbarItems = @[
             UIBarButtonItem.flex_flexibleSpace,
             [UIBarButtonItem
-                itemWithTitle:@"Copy curl" target:self action:@selector(copyButtonPressed:)
+                flex_itemWithTitle:@"Copy curl"
+                target:self
+                action:@selector(copyButtonPressed:)
             ]
         ];
     }

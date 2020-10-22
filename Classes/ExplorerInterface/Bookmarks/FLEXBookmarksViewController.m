@@ -68,10 +68,10 @@
 - (void)setupEditingBarItems {
     self.navigationItem.rightBarButtonItem = nil;
     self.toolbarItems = @[
-        [UIBarButtonItem itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed:)],
+        [UIBarButtonItem flex_itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed:)],
         UIBarButtonItem.flex_flexibleSpace,
         // We use a non-system done item because we change its title dynamically
-        [UIBarButtonItem doneStyleitemWithTitle:@"Done" target:self action:@selector(toggleEditing)]
+        [UIBarButtonItem flex_doneStyleitemWithTitle:@"Done" target:self action:@selector(toggleEditing)]
     ];
     
     self.toolbarItems.firstObject.tintColor = FLEXColor.destructiveColor;

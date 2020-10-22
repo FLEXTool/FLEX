@@ -102,7 +102,7 @@
     
     // ... button for extra options
     [self addToolbarItems:@[[UIBarButtonItem
-        itemWithImage:FLEXResources.moreIcon target:self action:@selector(moreButtonPressed:)
+        flex_itemWithImage:FLEXResources.moreIcon target:self action:@selector(moreButtonPressed:)
     ]]];
 
     // Swipe gestures to swipe between classes in the hierarchy
@@ -315,7 +315,7 @@
                 stringByAppendingString:explorerToggles[option]
             ];
             make.button(title).handler(^(NSArray<NSString *> *strings) {
-                [NSUserDefaults.standardUserDefaults toggleBoolForKey:option];
+                [NSUserDefaults.standardUserDefaults flex_toggleBoolForKey:option];
                 [self fullyReloadData];
             });
         }

@@ -112,13 +112,13 @@
         }
         
         UIMenu *copyMenu = [UIMenu
-            inlineMenuWithTitle:@"Copy…" 
+            flex_inlineMenuWithTitle:@"Copy…" 
             image:copyIcon
             children:actions
         ];
         
         if (collapseMenu) {
-            return @[[copyMenu collapsed]];
+            return @[[copyMenu flex_collapsed]];
         } else {
             return @[copyMenu];
         }

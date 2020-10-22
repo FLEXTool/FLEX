@@ -118,12 +118,12 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     // Toolbar buttons //
 
     UIBarButtonItem *scrollDown = [UIBarButtonItem
-        itemWithImage:FLEXResources.scrollToBottomIcon
+        flex_itemWithImage:FLEXResources.scrollToBottomIcon
         target:self
         action:@selector(scrollToLastRow)
     ];
     UIBarButtonItem *settings = [UIBarButtonItem
-        itemWithImage:FLEXResources.gearIcon
+        flex_itemWithImage:FLEXResources.gearIcon
         target:self
         action:@selector(showLogSettings)
     ];
@@ -220,11 +220,11 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(title).message(body);
         make.button(aslToggle).destructiveStyle().handler(^(NSArray<NSString *> *strings) {
-            [defaults toggleBoolForKey:kFLEXDefaultsDisableOSLogForceASLKey];
+            [defaults flex_toggleBoolForKey:kFLEXDefaultsDisableOSLogForceASLKey];
         });
 
         make.button(persistence).handler(^(NSArray<NSString *> *strings) {
-            [defaults toggleBoolForKey:kFLEXDefaultsiOSPersistentOSLogKey];
+            [defaults flex_toggleBoolForKey:kFLEXDefaultsiOSPersistentOSLogKey];
             logController.persistent = !persistent;
             [logController.messages addObjectsFromArray:self.logMessages.list];
         });

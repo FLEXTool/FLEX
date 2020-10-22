@@ -10,7 +10,7 @@
 
 @implementation UIMenu (FLEX)
 
-+ (instancetype)inlineMenuWithTitle:(NSString *)title image:(UIImage *)image children:(NSArray<UIMenuElement *> *)children {
++ (instancetype)flex_inlineMenuWithTitle:(NSString *)title image:(UIImage *)image children:(NSArray *)children {
     return [UIMenu
         menuWithTitle:title
         image:image
@@ -20,7 +20,7 @@
     ];
 }
 
-- (instancetype)collapsed {
+- (instancetype)flex_collapsed {
     return [UIMenu
         menuWithTitle:@""
         image:nil

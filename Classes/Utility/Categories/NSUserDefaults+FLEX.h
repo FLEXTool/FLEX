@@ -22,7 +22,7 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 /// All BOOL preferences are NO by default
 @interface NSUserDefaults (FLEX)
 
-- (void)toggleBoolForKey:(NSString *)key;
+- (void)flex_toggleBoolForKey:(NSString *)key;
 
 @property (nonatomic) double flex_toolbarTopMargin;
 

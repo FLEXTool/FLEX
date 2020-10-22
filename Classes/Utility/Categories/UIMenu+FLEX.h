@@ -10,10 +10,10 @@
 
 @interface UIMenu (FLEX)
 
-+ (instancetype)inlineMenuWithTitle:(NSString *)title
-                              image:(UIImage *)image
-                           children:(NSArray<UIMenuElement *> *)children;
++ (instancetype)flex_inlineMenuWithTitle:(NSString *)title
+                                   image:(UIImage *)image
+                                children:(NSArray<UIMenuElement *> *)children;
 
-- (instancetype)collapsed;
+- (instancetype)flex_collapsed;
 
 @end
