@@ -64,7 +64,7 @@
     return item;
 }
 
-- (UIBarButtonItem *)withTintColor:(UIColor *)tint {
+- (UIBarButtonItem *)flex_withTintColor:(UIColor *)tint {
     self.tintColor = tint;
     return self;
 }
