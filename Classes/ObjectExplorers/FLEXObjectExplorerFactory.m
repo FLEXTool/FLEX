@@ -21,13 +21,13 @@
 #import "FLEXUtility.h"
 
 @implementation FLEXObjectExplorerFactory
-static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
+static NSMutableDictionary<NSString *, Class> *classesToRegisteredSections = nil;
 
 + (void)initialize {
     if (self == [FLEXObjectExplorerFactory class]) {
-        #define ClassKey(name) (Class<NSCopying>)[name class]
-        #define ClassKeyByName(str) (Class<NSCopying>)NSClassFromString(@ #str)
-        #define MetaclassKey(meta) (Class<NSCopying>)object_getClass([meta class])
+        #define ClassKey(name) NSStringFromClass([name class])
+        #define ClassKeyByName(str) NSStringFromClass(NSClassFromString(@ #str))
+        #define MetaclassKey(meta) NSStringFromClass(object_getClass([meta class]))
         classesToRegisteredSections = [NSMutableDictionary dictionaryWithDictionary:@{
             MetaclassKey(NSObject)     : [FLEXClassShortcuts class],
             ClassKey(NSArray)          : [FLEXCollectionContentSection class],
@@ -67,7 +67,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
     Class sectionClass = nil;
     Class cls = object_getClass(object);
     do {
-        sectionClass = classesToRegisteredSections[(Class<NSCopying>)cls];
+        sectionClass = classesToRegisteredSections[NSStringFromClass(cls)];
     } while (!sectionClass && (cls = [cls superclass]));
 
     if (!sectionClass) {
@@ -81,7 +81,7 @@ static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
 }
 
 + (void)registerExplorerSection:(Class)explorerClass forClass:(Class)objectClass {
-    classesToRegisteredSections[(Class<NSCopying>)objectClass] = explorerClass;
+    classesToRegisteredSections[NSStringFromClass(objectClass)] = explorerClass;
 }
 
 #pragma mark - FLEXGlobalsEntry
