@@ -58,6 +58,11 @@
     [self.userGlobalEntries addObject:entry];
 }
 
+- (void)clearGlobalEntries
+{
+  [self.userGlobalEntries removeAllObjects];
+}
+
 
 #pragma mark - Simulator Shortcuts
 
@@ -95,60 +100,60 @@
     [self registerDefaultSimulatorShortcutWithKey:@"f" modifiers:0 action:^{
         [self toggleExplorer];
     } description:@"Toggle FLEX toolbar"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:@"g" modifiers:0 action:^{
         [self showExplorerIfNeeded];
         [self.explorerViewController toggleMenuTool];
     } description:@"Toggle FLEX globals menu"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:@"v" modifiers:0 action:^{
         [self showExplorerIfNeeded];
         [self.explorerViewController toggleViewsTool];
     } description:@"Toggle view hierarchy menu"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:@"s" modifiers:0 action:^{
         [self showExplorerIfNeeded];
         [self.explorerViewController toggleSelectTool];
     } description:@"Toggle select tool"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:@"m" modifiers:0 action:^{
         [self showExplorerIfNeeded];
         [self.explorerViewController toggleMoveTool];
     } description:@"Toggle move tool"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:@"n" modifiers:0 action:^{
         [self toggleTopViewControllerOfClass:[FLEXNetworkMITMViewController class]];
     } description:@"Toggle network history view"];
-    
+
     // 't' is for testing: quickly present an object explorer for debugging
     [self registerDefaultSimulatorShortcutWithKey:@"t" modifiers:0 action:^{
         [self showExplorerIfNeeded];
-        
+
         [self.explorerViewController toggleToolWithViewControllerProvider:^UINavigationController *{
             return [FLEXNavigationController withRootViewController:[FLEXObjectExplorerFactory
                 explorerViewControllerForObject:NSBundle.mainBundle
             ]];
         } completion:nil];
     } description:@"Present an object explorer for debugging"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputDownArrow modifiers:0 action:^{
         if (self.isHidden || ![self.explorerViewController handleDownArrowKeyPressed]) {
             [self tryScrollDown];
         }
     } description:@"Cycle view selection\n\t\tMove view down\n\t\tScroll down"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputUpArrow modifiers:0 action:^{
         if (self.isHidden || ![self.explorerViewController handleUpArrowKeyPressed]) {
             [self tryScrollUp];
         }
     } description:@"Cycle view selection\n\t\tMove view up\n\t\tScroll up"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputRightArrow modifiers:0 action:^{
         if (!self.isHidden) {
             [self.explorerViewController handleRightArrowKeyPressed];
         }
     } description:@"Move selected view right"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputLeftArrow modifiers:0 action:^{
         if (self.isHidden) {
             [self tryGoBack];
@@ -156,15 +161,15 @@
             [self.explorerViewController handleLeftArrowKeyPressed];
         }
     } description:@"Move selected view left"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:@"?" modifiers:0 action:^{
         [self toggleTopViewControllerOfClass:[FLEXKeyboardHelpViewController class]];
     } description:@"Toggle (this) help menu"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputEscape modifiers:0 action:^{
         [[self.topViewController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     } description:@"End editing text\n\t\tDismiss top view controller"];
-    
+
     [self registerDefaultSimulatorShortcutWithKey:@"o" modifiers:UIKeyModifierCommand|UIKeyModifierShift action:^{
         [self toggleTopViewControllerOfClass:[FLEXFileBrowserController class]];
     } description:@"Toggle file browser menu"];
@@ -183,7 +188,7 @@
     if (@available(iOS 11, *)) {
         return scrollView.adjustedContentInset;
     }
-    
+
     return scrollView.contentInset;
 }
 

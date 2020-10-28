@@ -38,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)registerGlobalEntryWithName:(NSString *)entryName
           viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock;
 
+/// Removes all registered global entries.
+- (void)clearGlobalEntries;
+
 #pragma mark - Simulator Shortcuts
 
 /// Simulator keyboard shortcuts are enabled by default.
