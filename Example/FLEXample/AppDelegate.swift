@@ -21,11 +21,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UserDefaults.standard.set("foo", forKey: "FLEXamplePrefFoo")
         
         // To show off the system log viewer, send 10 example log messages at 3 second intervals
-        self.repeatingLogExampleTimer = Timer(
-            timeInterval: 3, target: self,
-            selector: #selector(sendExampleLogMessage),
-            userInfo: nil, repeats: true
-        )
+        self.repeatingLogExampleTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] (_) in
+            if let self = self {
+                NSLog("Example log \(self.exampleLogSent)")
+        
+                self.exampleLogSent += 1
+                if self.exampleLogSent > self.exampleLogLimit {
+                    self.repeatingLogExampleTimer.invalidate()
+                }
+            }
+        }
         
         // To show off the network logger, send several misc network requests
         MiscNetworkRequests.sendExampleRequests()
@@ -56,13 +61,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let exampleLogLimit = 10
     var exampleLogSent = 0
-
-    func sendExampleLogMessage() {
-        NSLog("Example log \(self.exampleLogSent)")
-        
-        self.exampleLogSent += 1
-        if self.exampleLogSent > self.exampleLogLimit {
-            self.repeatingLogExampleTimer.invalidate()
-        }
-    }
 }
