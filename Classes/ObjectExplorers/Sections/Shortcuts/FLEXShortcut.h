@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 /// Called when the (i) button is pressed if the accessory type includes it
-- (UIViewController *)editorWith:(id)object;
+- (UIViewController *)editorWith:(id)object forSection:(FLEXTableViewSection *)section;
 
 @end
 
