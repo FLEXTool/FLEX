@@ -360,7 +360,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 
 #if FLEX_AT_LEAST_IOS13_SDK
 
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
+contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
+                                    point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     __weak __typeof__(self) weakSelf = self;
     return [UIContextMenuConfiguration configurationWithIdentifier:nil
                                                    previewProvider:nil
