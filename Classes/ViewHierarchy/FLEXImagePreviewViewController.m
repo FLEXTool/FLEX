@@ -31,14 +31,12 @@
 }
 
 + (instancetype)forImage:(UIImage *)image {
-    if (!image) {
-        return nil;
-    }
-    
     return [[self alloc] initWithImage:image];
 }
 
 - (id)initWithImage:(UIImage *)image {
+    NSParameterAssert(image);
+    
     self = [super init];
     if (self) {
         self.title = @"Preview";

@@ -77,8 +77,9 @@
             viewer:^UIViewController *(id view) {
                 return [FLEXImagePreviewViewController previewForView:view];
             }
-            accessoryType:^UITableViewCellAccessoryType(id view) {
-                return UITableViewCellAccessoryDisclosureIndicator;
+            accessoryType:^UITableViewCellAccessoryType(UIView *view) {
+                // Disable preview if bounds are CGRectZero
+                return CGRectIsEmpty(view.bounds) ? UITableViewCellAccessoryDisclosureIndicator : 0;
             }
         ]
     ]];

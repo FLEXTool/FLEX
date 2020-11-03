@@ -135,7 +135,7 @@ BOOL FLEXConstructorsShouldRun() {
 
 + (UIImage *)previewImageForView:(UIView *)view {
     if (CGRectIsEmpty(view.bounds)) {
-        return nil;
+        return [UIImage new];
     }
     
     CGSize viewSize = view.bounds.size;
