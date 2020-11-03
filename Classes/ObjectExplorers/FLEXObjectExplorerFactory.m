@@ -21,13 +21,21 @@
 #import "FLEXUtility.h"
 
 @implementation FLEXObjectExplorerFactory
-static NSMutableDictionary<NSString *, Class> *classesToRegisteredSections = nil;
+static NSMutableDictionary<Class, Class> *classesToRegisteredSections = nil;
 
 + (void)initialize {
     if (self == [FLEXObjectExplorerFactory class]) {
-        #define ClassKey(name) NSStringFromClass([name class])
-        #define ClassKeyByName(str) NSStringFromClass(NSClassFromString(@ #str))
-        #define MetaclassKey(meta) NSStringFromClass(object_getClass([meta class]))
+        // DO NOT USE STRING KEYS HERE
+        // We NEED to use the class as a key, because we CANNOT
+        // differentiate a class's name from the metaclass's name.
+        // These mappings are per-class-object, not per-class-name.
+        //
+        // For example, if we used class names, this would result in
+        // the object explorer trying to render a color preview for
+        // the UIColor class object, which is not a color itself.
+        #define ClassKey(name) (Class<NSCopying>)[name class]
+        #define ClassKeyByName(str) (Class<NSCopying>)NSClassFromString(@ #str)
+        #define MetaclassKey(meta) (Class<NSCopying>)object_getClass([meta class])
         classesToRegisteredSections = [NSMutableDictionary dictionaryWithDictionary:@{
             MetaclassKey(NSObject)     : [FLEXClassShortcuts class],
             ClassKey(NSArray)          : [FLEXCollectionContentSection class],
@@ -67,7 +75,7 @@ static NSMutableDictionary<NSString *, Class> *classesToRegisteredSections = nil
     Class sectionClass = nil;
     Class cls = object_getClass(object);
     do {
-        sectionClass = classesToRegisteredSections[NSStringFromClass(cls)];
+        sectionClass = classesToRegisteredSections[(Class<NSCopying>)cls];
     } while (!sectionClass && (cls = [cls superclass]));
 
     if (!sectionClass) {
@@ -81,7 +89,7 @@ static NSMutableDictionary<NSString *, Class> *classesToRegisteredSections = nil
 }
 
 + (void)registerExplorerSection:(Class)explorerClass forClass:(Class)objectClass {
-    classesToRegisteredSections[NSStringFromClass(objectClass)] = explorerClass;
+    classesToRegisteredSections[(Class<NSCopying>)objectClass] = explorerClass;
 }
 
 #pragma mark - FLEXGlobalsEntry
