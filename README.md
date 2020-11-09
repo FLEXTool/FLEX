@@ -168,6 +168,27 @@ Add the following flags to  to **Other Warnings Flags** in **Build Settings:**
 - `-Wno-strict-prototypes`
 - `-Wno-unsupported-availability-guard`
 
+### Swift Package Manager
+
+Include the dependency in the `depdendencies` value of your `Package.swift`
+
+``` swift
+dependencies: [
+    .package(url: "https://github.com/FLEXTool/FLEX.git", .upToNextMajor(from: "4.3.0"))
+]
+```
+
+Next, include the library in your target:
+
+```js
+.target(
+    name: "YourDependency",
+    dependencies: [
+        "FLEX"
+    ]
+)
+```
+
 ## Excluding FLEX from Release (App Store) Builds
 
 FLEX makes it easy to explore the internals of your app, so it is not something you should expose to your users. Fortunately, it is easy to exclude FLEX files from Release builds. The strategies differ depending on how you integrated FLEX in your project, and are described below.
@@ -197,6 +218,13 @@ pod 'FLEX', :configurations => ['Debug']
 	Finally, add `$(SRCROOT)/Carthage/Build/iOS/FLEX.framework` as input file of this script phase.
 	
 <img width=75% height=75% src=https://user-images.githubusercontent.com/8371943/70274062-0d4b3f80-1771-11ea-94ea-ca7e7b5ca244.jpg>
+
+### Swift Package Manager
+
+In Xcode, navigate to `Build Settings > Build Options > Excluded Source File Names`. For your `Release` configuration, set it to `FLEX.o` like this to exclude all files with the `FLEX` prefix:
+
+<img width=75% height=75% src=https://user-images.githubusercontent.com/1234765/98673373-8545c080-2357-11eb-9587-0743998e23ba.png>
+
 
 ### FLEX files added manually to a project
 
