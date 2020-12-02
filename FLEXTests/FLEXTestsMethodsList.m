@@ -3,7 +3,7 @@
 //  FLEXTestMethodList
 //
 //  Created by Tigran Yesayan on 7/6/17.
-//  Copyright © 2017 Flipboard. All rights reserved.
+//  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>

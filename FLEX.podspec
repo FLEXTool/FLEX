@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
                         - Dynamically view and modify `NSUserDefaults` values.
                         DESC
 
-  spec.homepage         = "https://github.com/Flipboard/FLEX"
+  spec.homepage         = "https://github.com/FLEXTool/FLEX"
   spec.screenshots      = [ "http://engineering.flipboard.com/assets/flex/basic-view-exploration.gif",
                             "http://engineering.flipboard.com/assets/flex/advanced-view-editing.gif",
                             "http://engineering.flipboard.com/assets/flex/heap-browser.gif",
@@ -30,7 +30,7 @@ Pod::Spec.new do |spec|
   spec.author           = { "Tanner Bennett" => "tannerbennett@me.com" }
   spec.social_media_url = "https://twitter.com/NSExceptional"
   spec.platform         = :ios, "9.0"
-  spec.source           = { :git => "https://github.com/Flipboard/FLEX.git", :tag => "#{spec.version}" }
+  spec.source           = { :git => "https://github.com/FLEXTool/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,c,m,mm}"
   spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security", "SceneKit" ]
   spec.libraries        = [ "z", "sqlite3" ]

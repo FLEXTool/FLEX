@@ -8,15 +8,15 @@
 
 #import "NSUserDefaults+FLEX.h"
 
-NSString * const kFLEXDefaultsToolbarTopMarginKey = @"com.flex.FLEXToolbar.topMargin";
-NSString * const kFLEXDefaultsiOSPersistentOSLogKey = @"com.flipborad.flex.enable_persistent_os_log";
-NSString * const kFLEXDefaultsHidePropertyIvarsKey = @"com.flipboard.FLEX.hide_property_ivars";
-NSString * const kFLEXDefaultsHidePropertyMethodsKey = @"com.flipboard.FLEX.hide_property_methods";
-NSString * const kFLEXDefaultsHideMethodOverridesKey = @"com.flipboard.FLEX.hide_method_overrides";
-NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.flipboard.FLEX.hide_variable_previews";
-NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.flipboard.FLEX.network_host_blacklist";
-NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
-NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
+NSString * const kFLEXDefaultsToolbarTopMarginKey = @"com.FLEX.FLEXToolbar.topMargin";
+NSString * const kFLEXDefaultsiOSPersistentOSLogKey = @"com.FLEX.enable_persistent_os_log";
+NSString * const kFLEXDefaultsHidePropertyIvarsKey = @"com.FLEX.hide_property_ivars";
+NSString * const kFLEXDefaultsHidePropertyMethodsKey = @"com.FLEX.hide_property_methods";
+NSString * const kFLEXDefaultsHideMethodOverridesKey = @"com.FLEX.hide_method_overrides";
+NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.FLEX.hide_variable_previews";
+NSString * const kFLEXDefaultsNetworkHostBlacklistKey = @"com.FLEX.network_host_blacklist";
+NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.FLEX.try_disable_os_log";
+NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.FLEX.view_json_as_object";
 
 #define FLEXDefaultsPathForFile(name) ({ \
     NSArray *paths = NSSearchPathForDirectoriesInDomains( \

@@ -3,7 +3,7 @@
 //  FLEXample
 //
 //  Created by Tanner on 3/12/20.
-//  Copyright © 2020 Flipboard. All rights reserved.
+//  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
 #import "MiscNetworkRequests.h"
@@ -125,13 +125,13 @@
     // Remaining requests made through NSURLConnection with a delegate
     NSArray *requestURLStrings = @[ @"https://lorempixel.com/400/400/",
                                     @"https://google.com",
-                                    @"https://api.github.com/users/Flipboard/repos",
-                                    @"https://api.github.com/repos/Flipboard/FLEX/issues",
+                                    @"https://api.github.com/users/FLEXTool/repos",
+                                    @"https://api.github.com/repos/FLEXTool/FLEX/issues",
                                     @"https://cloud.githubusercontent.com/assets/516562/3971767/e4e21f58-27d6-11e4-9b07-4d1fe82b80ca.png",
                                     @"https://lorempixel.com/750/1334/" ];
     
     // Async NSURLConnection
-    [NSURLConnection sendAsynchronousRequest:[self request:@"https://api.github.com/repos/Flipboard/FLEX/issues"]
+    [NSURLConnection sendAsynchronousRequest:[self request:@"https://api.github.com/repos/FLEXTool/FLEX/issues"]
         queue:NSOperationQueue.mainQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
     }];
     

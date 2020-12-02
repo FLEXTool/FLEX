@@ -24,7 +24,7 @@
 #include <dlfcn.h>
 
 NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNetworkObserverEnabledStateChangedNotification";
-static NSString *const kFLEXNetworkObserverEnabledDefaultsKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
+static NSString *const kFLEXNetworkObserverEnabledDefaultsKey = @"com.FLEX.FLEXNetworkObserver.enableOnLaunch";
 
 typedef void (^NSURLSessionAsyncCompletion)(id fileURLOrData, NSURLResponse *response, NSError *error);
 typedef NSURLSessionTask * (^NSURLSessionNewTaskMethod)(NSURLSession *, id, NSURLSessionAsyncCompletion);
@@ -133,7 +133,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
 + (void)sniffWithoutDuplicationForObject:(NSObject *)object selector:(SEL)selector sniffingBlock:(void (^)(void))sniffingBlock originalImplementationBlock:(void (^)(void))originalImplementationBlock {
     // If we don't have an object to detect nested calls on, just run the original implementation and bail.
     // This case can happen if someone besides the URL loading system calls the delegate methods directly.
-    // See https://github.com/Flipboard/FLEX/issues/61 for an example.
+    // See https://github.com/FLEXTool/FLEX/issues/61 for an example.
     if (!object) {
         originalImplementationBlock();
         return;
@@ -1293,7 +1293,7 @@ static char const * const kFLEXRequestIDKey = "kFLEXRequestIDKey";
     if (self) {
         self.requestStatesForRequestIDs = [NSMutableDictionary new];
         self.queue = dispatch_queue_create(
-            "com.flex.FLEXNetworkObserver", DISPATCH_QUEUE_SERIAL
+            "com.FLEX.FLEXNetworkObserver", DISPATCH_QUEUE_SERIAL
         );
     }
     
