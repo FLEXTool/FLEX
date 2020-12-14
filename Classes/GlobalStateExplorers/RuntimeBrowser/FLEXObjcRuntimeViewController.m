@@ -13,6 +13,7 @@
 #import "FLEXTableView.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXAlert.h"
+#import "FLEXRuntimeClient.h"
 
 @interface FLEXObjcRuntimeViewController () <FLEXKeyPathSearchControllerDelegate>
 
@@ -27,6 +28,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Long press on navigation bar to initialize webkit legacy
+    //
+    // We call initializeWebKitLegacy automatically before you search
+    // all bundles just to be safe (since touching some classes before
+    // WebKit is initialized will initialize it on a thread other than
+    // the main thread), but sometimes you can encounter this crash
+    // without searching through all bundles, of course.
+    [self.navigationController.navigationBar addGestureRecognizer:[
+        [UILongPressGestureRecognizer alloc]
+            initWithTarget:[FLEXRuntimeClient class]
+            action:@selector(initializeWebKitLegacy)
+        ]
+    ];
     
     // Search bar stuff, must be first because this creates self.searchController
     self.showsSearchBar = YES;
