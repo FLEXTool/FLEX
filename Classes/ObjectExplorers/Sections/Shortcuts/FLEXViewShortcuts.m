@@ -74,7 +74,7 @@
             }
         ],
         [FLEXActionShortcut title:@"Preview Image" subtitle:^NSString *(UIView *view) {
-                return !CGRectIsEmpty(view.bounds) ? @"" : @"Unavailable because view.bounds is CGRectZero";
+                return !CGRectIsEmpty(view.bounds) ? @"" : @"Unavailable with empty bounds";
             }
             viewer:^UIViewController *(UIView *view) {
                 return [FLEXImagePreviewViewController previewForView:view];
