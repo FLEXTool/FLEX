@@ -45,6 +45,15 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     [self reloadTableData];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // This doesn't work unless it's wrapped in this dispatch_async call
+        [self.searchController.searchBar becomeFirstResponder];
+    });
+}
+
 - (NSArray<NSString *> *)allClassNames {
     return self.instanceCountsForClassNames.allKeys;
 }
