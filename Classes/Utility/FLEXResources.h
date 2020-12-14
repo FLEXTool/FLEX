@@ -52,7 +52,8 @@
 
 #pragma mark - Misc Icons
 
-@property(readonly, class) UIImage *checkerPattern;
-@property(readonly, class) UIImage *hierarchyIndentPattern;
+@property (readonly, class) UIImage *checkerPattern;
+@property (readonly, class) UIColor *checkerPatternColor;
+@property (readonly, class) UIImage *hierarchyIndentPattern;
 
 @end
