@@ -70,7 +70,7 @@
                 return [FLEXObjectExplorerFactory explorerViewControllerForObject:controller];
             }
             accessoryType:^UITableViewCellAccessoryType(id view) {
-                return controller ? UITableViewCellAccessoryDisclosureIndicator : 0;
+                return controller ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
             }
         ],
         [FLEXActionShortcut title:@"Preview Image" subtitle:^NSString *(UIView *view) {
@@ -81,7 +81,7 @@
             }
             accessoryType:^UITableViewCellAccessoryType(UIView *view) {
                 // Disable preview if bounds are CGRectZero
-                return !CGRectIsEmpty(view.bounds) ? UITableViewCellAccessoryDisclosureIndicator : 0;
+                return !CGRectIsEmpty(view.bounds) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
             }
         ]
     ]];

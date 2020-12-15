@@ -19,7 +19,7 @@
                 return [FLEXImagePreviewViewController previewForLayer:layer];
             }
             accessoryType:^UITableViewCellAccessoryType(CALayer *layer) {
-                return CGRectIsEmpty(layer.bounds) ? 0 : UITableViewCellAccessoryDisclosureIndicator;
+                return CGRectIsEmpty(layer.bounds) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator;
             }
         ]
     ]];
