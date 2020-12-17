@@ -30,10 +30,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItems = @[
-        [UIBarButtonItem flex_systemItem:UIBarButtonSystemItemTrash target:self action:@selector(trashPressed:)],
-        [UIBarButtonItem flex_systemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPressed)],
-    ];
+    [self addToolbarItems:@[
+        FLEXBarButtonItemSystem(Add, self, @selector(addPressed)),
+        [FLEXBarButtonItemSystem(Trash, self, @selector(trashPressed:)) flex_withTintColor:UIColor.redColor],
+    ]];
 
     [self reloadData];
 }
