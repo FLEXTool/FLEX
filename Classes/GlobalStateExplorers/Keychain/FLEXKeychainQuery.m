@@ -170,7 +170,7 @@
 
 - (NSString *)password {
     if (self.passwordData.length) {
-        return [NSString stringWithCString:self.passwordData.bytes encoding:NSUTF8StringEncoding];
+        return [[NSString alloc] initWithData:self.passwordData encoding:NSUTF8StringEncoding];
     }
     
     return nil;

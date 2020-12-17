@@ -426,7 +426,8 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     if (transaction.cachedRequestBody.length > 0) {
         NSString *contentType = [transaction.request valueForHTTPHeaderField:@"Content-Type"];
         if ([contentType hasPrefix:@"application/x-www-form-urlencoded"]) {
-            NSString *bodyString = [NSString stringWithCString:[self postBodyDataForTransaction:transaction].bytes encoding:NSUTF8StringEncoding];
+            NSData *body = [self postBodyDataForTransaction:transaction];
+            NSString *bodyString = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
             postBodySection.rows = [self networkDetailRowsFromQueryItems:[FLEXUtility itemsFromQueryString:bodyString]];
         }
     }
