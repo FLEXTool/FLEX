@@ -43,14 +43,15 @@
         cellConfiguration:^(__kindof FLEXTableViewCell *cell, NSDictionary *item, NSInteger row) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
-            id account = item[kFLEXKeychainAccountKey];
-            if ([account isKindOfClass:[NSString class]]) {
-                cell.textLabel.text = account;
+            id service = item[kFLEXKeychainWhereKey];
+            if ([service isKindOfClass:[NSString class]]) {
+                cell.textLabel.text = service;
+                cell.detailTextLabel.text = item[kFLEXKeychainAccountKey];
             } else {
                 cell.textLabel.text = [NSString stringWithFormat:
                     @"[%@]\n\n%@",
-                    NSStringFromClass([account class]),
-                    [account description]
+                    NSStringFromClass([service class]),
+                    [service description]
                 ];
             }
         } filterMatcher:^BOOL(NSString *filterText, NSDictionary *item) {
