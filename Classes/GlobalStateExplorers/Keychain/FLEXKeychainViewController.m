@@ -131,14 +131,30 @@
         make.message(@"This will remove all keychain items for this app.\n");
         make.message(@"This action cannot be undone. Are you sure?");
         make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
+            [self confirmClearKeychain];
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self source:sender];
+}
+
+- (void)confirmClearKeychain {
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"ARE YOU SURE?");
+        make.message(@"This action CANNOT BE UNDONE.\nAre you sure you want to continue?\n");
+        make.message(@"If you're sure, scroll to confirm.");
+        make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
             for (id account in self.section.list) {
                 [self deleteItem:account];
             }
 
             [self reloadData];
         });
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self source:sender];
+    } showFrom:self];
 }
 
 - (void)addPressed {
