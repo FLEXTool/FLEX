@@ -95,6 +95,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     unsigned int count = 0;
     Protocol *__unsafe_unretained *list = class_copyProtocolList(cls, &count);
     NSArray<Protocol *> *protocols = [NSArray arrayWithObjects:list count:count];
+    free(list);
     
     return [protocols flex_mapped:^id(Protocol *pro, NSUInteger idx) {
         return [FLEXProtocol protocol:pro];

@@ -76,11 +76,11 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
         _dynamicTypeObserver = [NSNotificationCenter.defaultCenter
             addObserverForName:UIContentSizeCategoryDidChangeNotification
             object:nil queue:nil usingBlock:^(NSNotification *note) {
+                __typeof(self) self = weakSelf;
                 [self.collectionView setNeedsLayout];
                 [self setNeedsUpdateConstraints];
 
                 // Notify observers
-                __typeof(self) self = weakSelf;
                 for (void (^block)(FLEXScopeCarousel *) in self.dynamicTypeHandlers) {
                     block(self);
                 }
