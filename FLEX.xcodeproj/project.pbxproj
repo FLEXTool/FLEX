@@ -17,6 +17,7 @@
 		224D49AB1C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 224D49A71C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m */; };
 		2EF6B04D1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF6B04B1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m */; };
 		2EF6B04E1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EF6B04C1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h */; };
+		325D7AAF2593AE4700CC6B10 /* Cursor.png in Resources */ = {isa = PBXBuildFile; fileRef = 325D7AAE2593AE4700CC6B10 /* Cursor.png */; };
 		32D4E15B259273E60027F238 /* fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* fakes.h */; };
 		32D4E15D2592749D0027F238 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
 		32D4E15E2592749D0027F238 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
@@ -375,6 +376,7 @@
 		224D49A71C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXSQLiteDatabaseManager.m; sourceTree = "<group>"; };
 		2EF6B04B1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkCurlLogger.m; sourceTree = "<group>"; };
 		2EF6B04C1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkCurlLogger.h; sourceTree = "<group>"; };
+		325D7AAE2593AE4700CC6B10 /* Cursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cursor.png; sourceTree = SOURCE_ROOT; };
 		32D4E15A259273E60027F238 /* fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fakes.h; sourceTree = "<group>"; };
 		32D4E15C2592749D0027F238 /* fakes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fakes.m; sourceTree = "<group>"; };
 		3A4C941F1B5B20570088C3F2 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -795,6 +797,7 @@
 		3A4C94221B5B20570088C3F2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				325D7AAE2593AE4700CC6B10 /* Cursor.png */,
 				3A4C94231B5B20570088C3F2 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -1694,6 +1697,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				04F1CA191C137CF1000A52B0 /* LICENSE in Resources */,
+				325D7AAF2593AE4700CC6B10 /* Cursor.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

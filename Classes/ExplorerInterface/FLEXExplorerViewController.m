@@ -28,7 +28,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
-@interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>
+@interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>{
+    UIImageView *cursorView;
+}
 
 /// Tracks the currently active tool/mode
 @property (nonatomic) FLEXExplorerMode currentMode;
@@ -73,9 +75,93 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// Used to preserve the target app's UIMenuController items.
 @property (nonatomic) NSArray<UIMenuItem *> *appMenuItems;
 #endif
+
+@property CGPoint lastTouchLocation;
+
 @end
 
 @implementation FLEXExplorerViewController
+
+#pragma mark - Cursor Input
+
+-(void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
+    
+    CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
+               NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
+    [self updateOutlineViewsForSelectionPoint:point];
+    if (presses.anyObject.type == UIPressTypeMenu) {
+        UIAlertController *alertController = (UIAlertController *)self.presentedViewController;
+        if (alertController) {
+            [self.presentedViewController dismissViewControllerAnimated:true completion:nil];
+        }
+        //go back?
+        //[self toggleSelectTool];
+        
+    }
+    else if (presses.anyObject.type == UIPressTypeUpArrow) {
+    }
+    else if (presses.anyObject.type == UIPressTypeDownArrow) {
+    }
+    else if (presses.anyObject.type == UIPressTypeSelect)
+    {
+        //if(self.currentMode == FLEXExplorerModeSelect){
+            //[self toggleMode];
+        //} else {
+            /* x. */
+            CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
+            NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
+        //}
+    }
+    
+    else if (presses.anyObject.type == UIPressTypePlayPause)
+    {
+        UIAlertController *alertController = (UIAlertController *)self.presentedViewController;
+        if (alertController)
+        {
+            [self.presentedViewController dismissViewControllerAnimated:true completion:nil];
+        } else {
+            
+        }
+    }
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    self.lastTouchLocation = CGPointMake(-1, -1);
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    for (UITouch *touch in touches)
+    {
+        CGPoint location = [touch locationInView:self.view];
+        
+        if(self.lastTouchLocation.x == -1 && self.lastTouchLocation.y == -1)
+        {
+            // Prevent cursor from recentering
+            self.lastTouchLocation = location;
+        }
+        else
+        {
+            CGFloat xDiff = location.x - self.lastTouchLocation.x;
+            CGFloat yDiff = location.y - self.lastTouchLocation.y;
+            CGRect rect = cursorView.frame;
+            
+            if(rect.origin.x + xDiff >= 0 && rect.origin.x + xDiff <= 1920)
+                rect.origin.x += xDiff;//location.x - self.startPos.x;//+= xDiff; //location.x;
+            
+            if(rect.origin.y + yDiff >= 0 && rect.origin.y + yDiff <= 1080)
+                rect.origin.y += yDiff;//location.y - self.startPos.y;//+= yDiff; //location.y;
+            
+            cursorView.frame = rect;
+            self.lastTouchLocation = location;
+        }
+        
+        // We only use one touch, break the loop
+        break;
+    }
+    
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -93,31 +179,31 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     // Toolbar
     _explorerToolbar = [FLEXExplorerToolbar new];
-
+    
     // Start the toolbar off below any bars that may be at the top of the view.
     CGFloat toolbarOriginY = NSUserDefaults.standardUserDefaults.flex_toolbarTopMargin;
-
+    
     CGRect safeArea = [self viewSafeArea];
     CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(
-        CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea)
-    )];
+                                                                       CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea)
+                                                                       )];
     [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(
-        CGRectGetMinX(safeArea), toolbarOriginY, toolbarSize.width, toolbarSize.height
-    )];
+                                                                 CGRectGetMinX(safeArea), toolbarOriginY, toolbarSize.width, toolbarSize.height
+                                                                 )];
     self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth |
-                                            UIViewAutoresizingFlexibleBottomMargin |
-                                            UIViewAutoresizingFlexibleTopMargin;
+    UIViewAutoresizingFlexibleBottomMargin |
+    UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.explorerToolbar];
     [self setupToolbarActions];
     [self setupToolbarGestures];
     
     // View selection
     UITapGestureRecognizer *selectionTapGR = [[UITapGestureRecognizer alloc]
-        initWithTarget:self action:@selector(handleSelectionTap:)
-    ];
+                                              initWithTarget:self action:@selector(handleSelectionTap:)
+                                              ];
     [self.view addGestureRecognizer:selectionTapGR];
     
     // View moving
@@ -128,6 +214,39 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Feedback
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
+    }
+    
+    cursorView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 64, 64)];
+    cursorView.center = CGPointMake(CGRectGetMidX([UIScreen mainScreen].bounds), CGRectGetMidY([UIScreen mainScreen].bounds));
+    cursorView.image = [UIImage imageNamed:@"Cursor"];
+    cursorView.backgroundColor = [UIColor clearColor];
+    cursorView.hidden = YES;
+    
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
+    [self.view addGestureRecognizer:longPress];
+    [self.view addSubview:cursorView];
+}
+
+
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateBegan) {
+        //[self toggleMode];
+        /*
+         //if ([_webview.scrollView zoomScale] != 1.0) {
+         if (![[_webview stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom;"]  isEqual: @"1.0"]) {
+         [_webview stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom = 1.0;"];
+         }
+         else {
+         [_webview stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom = 5.0;"];
+         }
+         */
+        
+    }
+    else if ( gesture.state == UIGestureRecognizerStateEnded) {
+        //[self toggleMode];
+        [self toggleSelectTool];
     }
 }
 
@@ -873,7 +992,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         
         // If we now have a selected view and we didn't have one previously, go to "select" mode.
         if (self.currentMode == FLEXExplorerModeDefault && selectedView) {
-            self.currentMode = FLEXExplorerModeSelect;
+            //self.currentMode = FLEXExplorerModeSelect;
+            [self toggleSelectTool];
         }
         
         // The selected view setter will also update the selected view overlay appropriately.
@@ -949,8 +1069,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleSelectTool {
     if (self.currentMode == FLEXExplorerModeSelect) {
         self.currentMode = FLEXExplorerModeDefault;
+        cursorView.hidden = true;
+        [self.explorerToolbar setUserInteractionEnabled:true];
     } else {
         self.currentMode = FLEXExplorerModeSelect;
+        cursorView.hidden = false;
+        [self.explorerToolbar setUserInteractionEnabled:false];
+        [self setNeedsFocusUpdate];
+        [self updateFocusIfNeeded];
     }
 }
 
