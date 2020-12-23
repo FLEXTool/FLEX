@@ -32,7 +32,7 @@ sed -i -- "s|API_UNAVAILABLE(tvos, watchos)|API_UNAVAILABLE(watchos)|"  /Applica
 sed -i -- "s|API_UNAVAILABLE(tvos)||" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIPickerView.h
 ```
 
-
+![tvOS Demo](view_selection.gif "tvOS Selection")
 
 [tvOS Demo](https://www.dropbox.com/s/v685gabrefo614f/better_flex.MP4?dl=1)
 
