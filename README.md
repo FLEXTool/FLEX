@@ -1,5 +1,39 @@
 # FLEX
 
+## tvOS Notes
+
+### General notes / usage
+- Best used with a jailbreak / FLEXInjected (avail from default repos now with 'com.nito.flexinjected')
+- Need to modify the SDK to build right now (will fix this later) - read patch notes after the bullets
+- After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
+- When in select mode press hold play/pause to return to the FLEX tab bar
+- When in select mode play/pause will also work to click items and is more reliable than selection with the remote touch pad
+- Press and hold select to drill down to details in views hierarchy list view controller
+
+### Missing features - on support road map
+- there is no way to go from view selection mode to getting a views additional details
+- there is no way to change the inheritance display options in the object details view either (selecting a property from a class). 
+- anything with a slider or switch view will appear empty in the places those elements appear
+- any view with a UIPickerView or date picker will either crash / render strangely (i stubbed those elements out with fake elements to get it building.)
+
+### Patch notes
+
+There is an excessive amount of stubbing / macroing to get this building, at a certain point i got exhausted and impatient, and i learned that while some classes, while prohibited, wont throw exceptions if they are used on tvOS.
+
+There may be additional classes this needs to be done with, these notes are imprecise but should give you an idea.
+
+```sed -i -- "s|#define __TVOS_UNAVAILABLE                    __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_UNAVAILABLE_NOTQUITE                    __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
+
+sed -i -- "s|#define __TVOS_PROHIBITED                     __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_PROHIBITED_NOTQUITE                     __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
+
+
+sed -i -- "s|API_UNAVAILABLE(tvos, watchos)|API_UNAVAILABLE(watchos)|"  /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIInterface.h
+
+sed -i -- "s|API_UNAVAILABLE(tvos)||" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIPickerView.h
+```
+
+
+
 [tvOS Demo](https://www.dropbox.com/s/v685gabrefo614f/better_flex.MP4?dl=1)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/FLEX.svg)](https://cocoapods.org/?q=FLEX)
