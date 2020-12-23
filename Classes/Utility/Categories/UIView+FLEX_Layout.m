@@ -8,6 +8,22 @@
 
 #import "UIView+FLEX_Layout.h"
 
+@implementation UIView (darkMode)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+#pragma clang diagnostic ignored "-Wunguarded-availability"
+- (BOOL)darkMode {
+
+    if ([[self traitCollection] respondsToSelector:@selector(userInterfaceStyle)]){
+        return ([[self traitCollection] userInterfaceStyle] == UIUserInterfaceStyleDark);
+    } else {
+        return false;
+    }
+    return false;
+}
+#pragma clang diagnostic pop
+@end
+
 @implementation UIView (FLEX_Layout)
 
 - (void)centerInView:(UIView *)view {

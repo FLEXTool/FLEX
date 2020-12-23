@@ -10,6 +10,10 @@
 
 #define Padding(p) UIEdgeInsetsMake(p, p, p, p)
 
+@interface UIView (darkMode)
+- (BOOL)darkMode;
+@end
+
 @interface UIView (FLEX_Layout)
 
 - (void)centerInView:(UIView *)view;

@@ -10,6 +10,7 @@
 #import "FLEXExplorerViewController.h"
 #import "FLEXTabList.h"
 #import "FLEXColor.h"
+#import "NSObject+FLEX_Reflection.h"
 
 @interface UINavigationController (Private) <UIGestureRecognizerDelegate>
 - (void)_gestureRecognizedInteractiveHide:(UIGestureRecognizer *)sender;
@@ -71,6 +72,14 @@
         
         self.didSetupPendingDismissButtons = YES;
     }
+    #if TARGET_OS_TV
+        if ([self darkMode]){
+            self.view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
+        } else {
+            self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+        }
+    #endif
+        
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -86,14 +95,7 @@
         }
     }
     //the timing is janky here but its better than nothing for now.
-#if TARGET_OS_TV
-    if ([[self view] darkMode]){
-        self.view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
-    } else {
-        self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
-    }
-#endif
-    
+
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {

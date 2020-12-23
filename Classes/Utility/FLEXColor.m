@@ -9,22 +9,6 @@
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
 
-@implementation UIView (darkMode)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wunguarded-availability"
-- (BOOL)darkMode {
-
-    if ([[self traitCollection] respondsToSelector:@selector(userInterfaceStyle)]){
-        return ([[self traitCollection] userInterfaceStyle] == UIUserInterfaceStyleDark);
-    } else {
-        return false;
-    }
-    return false;
-}
-#pragma clang diagnostic pop
-@end
-
 #if FLEX_AT_LEAST_IOS13_SDK
 #define FLEXDynamicColor(dynamic, static) ({ \
     UIColor *c; \
