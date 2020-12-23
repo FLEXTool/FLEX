@@ -105,36 +105,23 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         return;
     }
     CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
-               NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
+    NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
     if (self.currentMode == FLEXExplorerModeSelect){
         [self updateOutlineViewsForSelectionPoint:point];
     }
     if (presses.anyObject.type == UIPressTypeMenu) {
-        if (self.currentMode == FLEXExplorerModeMove || self.currentMode == FLEXExplorerModeSelect){
-            if (self.currentMode == FLEXExplorerModeMove || self.currentMode == FLEXExplorerModeSelect){
-                self.currentMode = FLEXExplorerModeDefault;
-                cursorView.hidden = true;
-                [self.explorerToolbar setUserInteractionEnabled:true];
-                [self updateFocusIfNeeded];
-            }
+        if (self.currentMode == FLEXExplorerModeMove){
+            self.currentMode = FLEXExplorerModeSelect;
+            cursorView.hidden = false;
+        } else if (self.currentMode == FLEXExplorerModeSelect){
+            self.currentMode = FLEXExplorerModeDefault;
+            cursorView.hidden = true;
+            [self enableToolbar];
         }
-    }
-    else if (presses.anyObject.type == UIPressTypeUpArrow) {
-    }
-    else if (presses.anyObject.type == UIPressTypeDownArrow) {
-    }
-    else if (presses.anyObject.type == UIPressTypeSelect)
-    {
-    
-    }
-    
-    else if (presses.anyObject.type == UIPressTypePlayPause)
-    {
-        UIAlertController *alertController = (UIAlertController *)self.presentedViewController;
-        if (alertController)
-        {
-            [self.presentedViewController dismissViewControllerAnimated:true completion:nil];
-        }
+    } else if (presses.anyObject.type == UIPressTypeUpArrow) {
+    } else if (presses.anyObject.type == UIPressTypeDownArrow) {
+    } else if (presses.anyObject.type == UIPressTypeSelect) {
+    } else if (presses.anyObject.type == UIPressTypePlayPause){
     }
 }
 
@@ -246,6 +233,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     doubleTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause], [NSNumber numberWithInteger:UIPressTypeSelect]];
+    doubleTap.numberOfTapsRequired = 2;
     [self.view addGestureRecognizer:doubleTap];
     
 #endif
@@ -259,7 +247,28 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             
         }
     }
+    
 }
+
+- (void)showObjectControllerForSelectedView {
+    FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
+    NSLog(@"[FLEXInjected] showObjectControllerForSelectedView: %@", viewExplorer);
+    if (!viewExplorer) return;
+    if ([self presentedViewController]){
+        FLEXHierarchyViewController *vc = (FLEXHierarchyViewController*)[self presentedViewController];
+        if ([vc respondsToSelector:@selector(pushViewController:animated:)]){
+            [vc pushViewController:viewExplorer animated:true];
+        }
+    } else {
+        [self toggleViewsToolWithCompletion:^{
+            FLEXHierarchyViewController *vc = (FLEXHierarchyViewController*)[self presentedViewController];
+            if ([vc respondsToSelector:@selector(pushViewController:animated:)]){
+                [vc pushViewController:viewExplorer animated:true];
+            }
+        }];
+    }
+}
+
 
 - (void)showTVOSOptionsAlert {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"What would you like to do?" message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -269,16 +278,26 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }];
     [alertController addAction:showViews];
     UIAlertAction *details = [UIAlertAction actionWithTitle:@"Show Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        //i dont know yet
+        [self showObjectControllerForSelectedView];
         [[FLEXManager sharedManager] showExplorer];
     }];
     [alertController addAction:details];
-    UIAlertAction *movement = [UIAlertAction actionWithTitle:@"Move View" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        self.currentMode = FLEXExplorerModeMove;
-        [[FLEXManager sharedManager] showExplorer];
-    }];
-    [alertController addAction:movement];
-    
+    if (self.currentMode == FLEXExplorerModeMove){
+        UIAlertAction *selection = [UIAlertAction actionWithTitle:@"Select View" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            self.currentMode = FLEXExplorerModeSelect;
+            cursorView.hidden = false;
+            [[FLEXManager sharedManager] showExplorer];
+        }];
+        [alertController addAction:selection];
+        
+    } else if (self.currentMode == FLEXExplorerModeSelect){
+        UIAlertAction *movement = [UIAlertAction actionWithTitle:@"Move View" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            self.currentMode = FLEXExplorerModeMove;
+            cursorView.hidden = true;
+            [[FLEXManager sharedManager] showExplorer];
+        }];
+        [alertController addAction:movement];
+    }
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [[FLEXManager sharedManager] showExplorer];
     }]];
@@ -1106,6 +1125,19 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return (id)self.view.window;
 }
 
+- (void)disableToolbar {
+    [self.explorerToolbar setUserInteractionEnabled:false];
+    [self.explorerToolbar setAlpha:0.5];
+    [self setNeedsFocusUpdate];
+    [self updateFocusIfNeeded];
+}
+
+- (void)enableToolbar {
+    [self.explorerToolbar setUserInteractionEnabled:true];
+    [self.explorerToolbar setAlpha:1.0];
+    [self setNeedsFocusUpdate];
+    [self updateFocusIfNeeded];
+}
 
 #pragma mark - Keyboard Shortcut Helpers
 
@@ -1113,13 +1145,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (self.currentMode == FLEXExplorerModeSelect) {
         self.currentMode = FLEXExplorerModeDefault;
         cursorView.hidden = true;
-        [self.explorerToolbar setUserInteractionEnabled:true];
+        [self enableToolbar];
     } else {
         self.currentMode = FLEXExplorerModeSelect;
         cursorView.hidden = false;
-        [self.explorerToolbar setUserInteractionEnabled:false];
-        [self setNeedsFocusUpdate];
-        [self updateFocusIfNeeded];
+        [self disableToolbar];
     }
 }
 

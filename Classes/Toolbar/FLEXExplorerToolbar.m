@@ -46,7 +46,11 @@
         // Drag handle
         self.dragHandle = [UIView new];
         self.dragHandle.backgroundColor = UIColor.clearColor;
+#if !TARGET_OS_TV
         self.dragHandleImageView = [[UIImageView alloc] initWithImage:FLEXResources.dragHandle];
+#else
+        self.dragHandleImageView = [[UIImageView alloc] initWithImage:nil];
+#endif
         self.dragHandleImageView.tintColor = [FLEXColor.iconColor colorWithAlphaComponent:0.666];
         [self.dragHandle addSubview:self.dragHandleImageView];
         [self addSubview:self.dragHandle];

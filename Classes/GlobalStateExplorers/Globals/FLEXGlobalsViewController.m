@@ -129,7 +129,9 @@
                 [self globalsEntryForRow:FLEXGlobalsRowCookies],
             ],
             @(FLEXGlobalsSectionMisc) : @[
+#if !TARGET_OS_TV
                 [self globalsEntryForRow:FLEXGlobalsRowPasteboard],
+#endif
                 [self globalsEntryForRow:FLEXGlobalsRowMainScreen],
                 [self globalsEntryForRow:FLEXGlobalsRowCurrentDevice],
                 [self globalsEntryForRow:FLEXGlobalsRowURLSession],
