@@ -63,19 +63,16 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
-    if ( gesture.state == UIGestureRecognizerStateBegan) {
-        
-    }
-    else if ( gesture.state == UIGestureRecognizerStateEnded) {
+    if ( gesture.state == UIGestureRecognizerStateEnded) {
         NSLog(@"do something different for long press!");
         UITableView *tv = [self tableView];
         //naughty naughty
         NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
         NSLog(@"[FLEX] focusedIndexPath: %@", focus);
         [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
-        
     }
 }
+
 - (void)addlongPressGestureRecognizer {
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
@@ -255,8 +252,10 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
         cell.textLabel.textColor = FLEXColor.deemphasizedTextColor;
         cell.detailTextLabel.textColor = FLEXColor.deemphasizedTextColor;
     } else {
+#if !TARGET_OS_TV
         cell.textLabel.textColor = FLEXColor.primaryTextColor;
         cell.detailTextLabel.textColor = FLEXColor.primaryTextColor;
+#endif
     }
     
     return cell;

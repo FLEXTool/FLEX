@@ -26,9 +26,12 @@
 #import "FLEXShortcutsSection.h"
 #import "NSUserDefaults+FLEX.h"
 #import <objc/runtime.h>
+#import <TargetConditionals.h>
 
 #pragma mark - Private properties
-@interface FLEXObjectExplorerViewController () <UIGestureRecognizerDelegate>
+@interface FLEXObjectExplorerViewController () <UIGestureRecognizerDelegate>{
+    BOOL _addedSwipeGestures;
+}
 @property (nonatomic, readonly) FLEXSingleRowSection *descriptionSection;
 @property (nonatomic, readonly) FLEXTableViewSection *customSection;
 @property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
@@ -130,6 +133,89 @@
             name:pref
             object:nil
         ];
+    }
+#if TARGET_OS_TV
+    [self addlongPressGestureRecognizer];
+    //[self addSwipeGestureRecognizers];
+#endif
+}
+
+- (void)addlongPressGestureRecognizer {
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self.tableView addGestureRecognizer:longPress];
+    
+}
+
+- (void)swipedLeft {
+    NSLog(@"[FLEXInjected] swipedLeft!");
+    //go to previous carousel item if possible
+    NSInteger currentIndex = self.carousel.selectedIndex;
+    if (currentIndex == 0) return;
+    if (self.selectedScope > 0) {
+        self.selectedScope -= 1;
+    }
+    NSInteger newIndex = currentIndex - 1;
+    [self.carousel setSelectedIndex:newIndex];
+}
+
+- (void)swipedRight {
+    NSLog(@"[FLEXInjected] swipedRight!");
+    //go to next carousel item if possible
+       NSInteger currentIndex = self.carousel.selectedIndex;
+       NSInteger newIndex = currentIndex + 1;
+    if (newIndex <= self.carousel.items.count - 1){
+        if (self.selectedScope != self.explorer.classHierarchy.count - 1) {
+            self.selectedScope += 1;
+        }
+        NSLog(@"[FLEXInjected] count: %lu new index: %lu", self.carousel.items.count, currentIndex);
+       [self.carousel setSelectedIndex:newIndex];
+        }
+}
+
+- (void)swipeGestureRecognized:(UISwipeGestureRecognizer *)gestureRecognizer{
+    NSLog(@"[FLEXInjected] gesture recognized: %lu", gestureRecognizer.direction);
+    switch (gestureRecognizer.direction) {
+        case UISwipeGestureRecognizerDirectionLeft:
+            
+            [self swipedLeft];
+            break;
+            
+        case UISwipeGestureRecognizerDirectionRight:
+            
+            [self swipedRight];
+            break;
+                    
+        default:
+            break;
+    }
+    
+}
+
+- (void)addSwipeGestureRecognizers {
+    if (_addedSwipeGestures == YES) return;
+    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureRecognized:)];
+    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:swipeLeft];
+    self.view.userInteractionEnabled = YES;
+    swipeLeft.delegate = self;
+    
+    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureRecognized:)];
+    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:swipeRight];
+    self.view.userInteractionEnabled = YES;
+    swipeRight.delegate = self;
+    _addedSwipeGestures = YES;
+}
+
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateEnded) {
+        NSLog(@"do something different for long press!");
+        UITableView *tv = [self tableView];
+        //naughty naughty
+        NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
+        NSLog(@"[FLEX] focusedIndexPath: %@", focus);
+        [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
     }
 }
 
@@ -254,11 +340,13 @@
             case UISwipeGestureRecognizerDirectionRight:
                 if (self.selectedScope > 0) {
                     self.selectedScope -= 1;
+                    [self.tableView reloadData];
                 }
                 break;
             case UISwipeGestureRecognizerDirectionLeft:
                 if (self.selectedScope != self.explorer.classHierarchy.count - 1) {
                     self.selectedScope += 1;
+                    [self.tableView reloadData];
                 }
                 break;
 

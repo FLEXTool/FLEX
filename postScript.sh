@@ -40,9 +40,9 @@ EXE_PATH=$FINAL_FW_PATH/$EXECUTABLE_NAME
 
 ldid -S $EXE_PATH
 rm -rf $FINAL_FW_PATH/_CodeSignature
-#/usr/local/bin/fakeroot dpkg-deb -b layout
-#scp layout.deb root@$ATV_DEVICE_IP:~
-#ssh root@$ATV_DEVICE_IP "dpkg -i layout.deb ; killall -9 PineBoard"
+/usr/local/bin/fakeroot dpkg-deb -b layout
+scp layout.deb root@$ATV_DEVICE_IP:~
+ssh root@$ATV_DEVICE_IP "dpkg -i layout.deb ; killall -9 PineBoard"
 
 exit 0
 

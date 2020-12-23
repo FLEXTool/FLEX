@@ -167,6 +167,9 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 }
 
 + (CGFloat)preferredCellHeight {
+#if TARGET_OS_TV
+    return 95.0;
+#endif
     return 65.0;
 }
 

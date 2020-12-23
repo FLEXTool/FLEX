@@ -86,6 +86,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 -(void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
     
+    if (self.currentMode != FLEXExplorerModeSelect){
+        [super pressesEnded:presses withEvent:event];
+        return;
+    }
     CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
                NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
     [self updateOutlineViewsForSelectionPoint:point];
@@ -94,8 +98,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         if (alertController) {
             [self.presentedViewController dismissViewControllerAnimated:true completion:nil];
         }
-        //go back?
-        //[self toggleSelectTool];
         
     }
     else if (presses.anyObject.type == UIPressTypeUpArrow) {
@@ -104,13 +106,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
     else if (presses.anyObject.type == UIPressTypeSelect)
     {
-        //if(self.currentMode == FLEXExplorerModeSelect){
-            //[self toggleMode];
-        //} else {
-            /* x. */
-            CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
-            NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
-        //}
+    
     }
     
     else if (presses.anyObject.type == UIPressTypePlayPause)
@@ -119,8 +115,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         if (alertController)
         {
             [self.presentedViewController dismissViewControllerAnimated:true completion:nil];
-        } else {
-            
         }
     }
 }
@@ -227,25 +221,22 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
     [self.view addGestureRecognizer:longPress];
     [self.view addSubview:cursorView];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    doubleTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause], [NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self.view addGestureRecognizer:doubleTap];
 }
 
+- (void)doubleTap:(UITapGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        if (self.currentMode == FLEXExplorerModeSelect){
+            [self toggleViewsTool];
+        }
+    }
+}
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
-    if ( gesture.state == UIGestureRecognizerStateBegan) {
-        //[self toggleMode];
-        /*
-         //if ([_webview.scrollView zoomScale] != 1.0) {
-         if (![[_webview stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom;"]  isEqual: @"1.0"]) {
-         [_webview stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom = 1.0;"];
-         }
-         else {
-         [_webview stringByEvaluatingJavaScriptFromString:@"document. body.style.zoom = 5.0;"];
-         }
-         */
-        
-    }
-    else if ( gesture.state == UIGestureRecognizerStateEnded) {
-        //[self toggleMode];
+    if ( gesture.state == UIGestureRecognizerStateEnded) {
         [self toggleSelectTool];
     }
 }

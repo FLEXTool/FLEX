@@ -44,7 +44,9 @@
     toolbarItem.titleLabel.font = [UIFont systemFontOfSize:12.0];
     [toolbarItem setTitle:title forState:UIControlStateNormal];
     [toolbarItem setImage:image forState:UIControlStateNormal];
+#if !TARGET_OS_TV
     [toolbarItem setTitleColor:FLEXColor.primaryTextColor forState:UIControlStateNormal];
+#endif
     [toolbarItem setTitleColor:FLEXColor.deemphasizedTextColor forState:UIControlStateDisabled];
     return toolbarItem;
 }
@@ -77,7 +79,7 @@
 }
 
 + (CGFloat)topMargin {
-    return 2.0;
+    return 20.0;
 }
 
 
@@ -130,6 +132,13 @@
 #pragma mark - UIButton Layout Overrides
 
 - (CGRect)titleRectForContentRect:(CGRect)contentRect {
+    
+    CGFloat padding = 0;
+    CGFloat titleBottomPadding = 0;
+#if TARGET_OS_TV
+    padding = 30;
+    titleBottomPadding = 5;
+#endif
     NSDictionary *attrs = [[self class] titleAttributes];
     // Bottom aligned and centered.
     CGRect titleRect = CGRectZero;
@@ -139,10 +148,12 @@
                                                 context:nil].size;
     titleSize = CGSizeMake(ceil(titleSize.width), ceil(titleSize.height));
     titleRect.size = titleSize;
-    titleRect.origin.y = contentRect.origin.y + CGRectGetMaxY(contentRect) - titleSize.height;
-    titleRect.origin.x = contentRect.origin.x + FLEXFloor((contentRect.size.width - titleSize.width) / 2.0);
+    titleRect.origin.y = contentRect.origin.y + CGRectGetMaxY(contentRect) - titleSize.height - titleBottomPadding;
+    titleRect.origin.x = contentRect.origin.x + FLEXFloor((contentRect.size.width-padding - titleSize.width) / 2.0);
     return titleRect;
 }
+
+#if !TARGET_OS_TV
 
 - (CGRect)imageRectForContentRect:(CGRect)contentRect {
     CGSize imageSize = self.image.size;
@@ -153,5 +164,7 @@
     CGRect imageRect = CGRectMake(originX, originY, imageSize.width, imageSize.height);
     return imageRect;
 }
+
+#endif
 
 @end

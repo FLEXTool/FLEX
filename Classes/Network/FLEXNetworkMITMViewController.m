@@ -66,8 +66,8 @@
     ];
 #if !TARGET_OS_TV
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.tableView.rowHeight = FLEXNetworkTransactionCell.preferredCellHeight;
 #endif
+    self.tableView.rowHeight = FLEXNetworkTransactionCell.preferredCellHeight;
     [self registerForNotifications];
     [self updateTransactions];
 }

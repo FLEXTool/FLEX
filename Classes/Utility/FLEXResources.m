@@ -8692,19 +8692,18 @@ static const u_int8_t FLEXHierarchyIndentPattern3x[] = {
 
 @implementation FLEXResources
 
+#define FLEXRetinaOnlyImage(base) ([self imageWithBytesNoCopy:(void *)(base) length:sizeof(base) scale:2.0])
+
 #define FLEXImage(base) ( \
     (UIScreen.mainScreen.scale > 1.5) ? \
         ( (UIScreen.mainScreen.scale > 2.5) ? \
             [self imageWithBytesNoCopy:(void *)base##3x length:sizeof(base##3x) scale:3.0] : \
             [self imageWithBytesNoCopy:(void *)base##2x length:sizeof(base##2x) scale:2.0] \
         ) : \
-        nil \
+        [self imageWithBytesNoCopy:(void *)base##2x length:sizeof(base##2x) scale:2.0] \
 )
 
 #define FLEXImageTemplate(base) ([FLEXImage(base) imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate])
-
-#define FLEXRetinaOnlyImage(base) ([self imageWithBytesNoCopy:(void *)(base) length:sizeof(base) scale:2.0])
-
 
 #pragma mark - FLEX Toolbar Icons
 
@@ -8843,7 +8842,7 @@ static const u_int8_t FLEXHierarchyIndentPattern3x[] = {
 }
 
 + (UIImage *)hierarchyIndentPattern {
-    return FLEXRetinaOnlyImage(FLEXHierarchyIndentPattern);
+    return FLEXImageTemplate(FLEXHierarchyIndentPattern);
 }
 
 

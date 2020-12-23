@@ -37,8 +37,9 @@
     UIFont *cellFont = UIFont.flex_defaultTableCellFont;
     self.titleLabel.font = cellFont;
     self.subtitleLabel.font = cellFont;
+#if !TARGET_OS_TV
     self.subtitleLabel.textColor = FLEXColor.deemphasizedTextColor;
-    
+#endif
     self.titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     self.subtitleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     
