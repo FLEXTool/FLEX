@@ -1635,6 +1635,7 @@
 				3A4C941B1B5B20570088C3F2 /* Frameworks */,
 				3A4C941C1B5B20570088C3F2 /* Headers */,
 				3A4C941D1B5B20570088C3F2 /* Resources */,
+				325D7AB02593AFF100CC6B10 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1702,6 +1703,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		325D7AB02593AFF100CC6B10 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/postScript.sh",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n#!/bin/bash\n\npushd \"$SRCROOT\"\n/bin/bash postScript.sh\n\n\n\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1C27A8B21F0E5A0300F0D02D /* Sources */ = {
