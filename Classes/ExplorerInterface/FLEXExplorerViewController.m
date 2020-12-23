@@ -21,6 +21,7 @@
 #import "FLEXWindowManagerController.h"
 #import "FLEXViewControllersViewController.h"
 #import "NSUserDefaults+FLEX.h"
+#import "FLEXManager.h"
 
 typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeDefault,
@@ -84,21 +85,39 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 #pragma mark - Cursor Input
 
+#if TARGET_OS_TV
+
+- (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    for (UIPress *press in presses) {
+        if (press.type == UIPressTypeMenu) {
+            
+        } else {
+            [super pressesBegan:presses withEvent:event];
+        }
+    }
+}
+
 -(void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
     
-    if (self.currentMode != FLEXExplorerModeSelect){
+    if (self.currentMode != FLEXExplorerModeSelect && self.currentMode != FLEXExplorerModeMove){
         [super pressesEnded:presses withEvent:event];
         return;
     }
     CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
                NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
-    [self updateOutlineViewsForSelectionPoint:point];
+    if (self.currentMode == FLEXExplorerModeSelect){
+        [self updateOutlineViewsForSelectionPoint:point];
+    }
     if (presses.anyObject.type == UIPressTypeMenu) {
-        UIAlertController *alertController = (UIAlertController *)self.presentedViewController;
-        if (alertController) {
-            [self.presentedViewController dismissViewControllerAnimated:true completion:nil];
+        if (self.currentMode == FLEXExplorerModeMove || self.currentMode == FLEXExplorerModeSelect){
+            if (self.currentMode == FLEXExplorerModeMove || self.currentMode == FLEXExplorerModeSelect){
+                self.currentMode = FLEXExplorerModeDefault;
+                cursorView.hidden = true;
+                [self.explorerToolbar setUserInteractionEnabled:true];
+                [self updateFocusIfNeeded];
+            }
         }
-        
     }
     else if (presses.anyObject.type == UIPressTypeUpArrow) {
     }
@@ -157,6 +176,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
 }
 
+#endif
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
@@ -209,13 +230,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
-    
+
+#if TARGET_OS_TV
     cursorView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 64, 64)];
     cursorView.center = CGPointMake(CGRectGetMidX([UIScreen mainScreen].bounds), CGRectGetMidY([UIScreen mainScreen].bounds));
     cursorView.image = [UIImage imageNamed:@"Cursor"];
     cursorView.backgroundColor = [UIColor clearColor];
     cursorView.hidden = YES;
-    
+
     
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
@@ -225,14 +247,44 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     doubleTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause], [NSNumber numberWithInteger:UIPressTypeSelect]];
     [self.view addGestureRecognizer:doubleTap];
+    
+#endif
 }
 
 - (void)doubleTap:(UITapGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        if (self.currentMode == FLEXExplorerModeSelect){
-            [self toggleViewsTool];
+        if (self.currentMode == FLEXExplorerModeSelect || self.currentMode == FLEXExplorerModeMove){
+            NSLog(@"[FLEXInjected] doubleTap: toggle views tool!");
+            [self showTVOSOptionsAlert];
+            
         }
     }
+}
+
+- (void)showTVOSOptionsAlert {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"What would you like to do?" message:nil preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *showViews = [UIAlertAction actionWithTitle:@"Show Views" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self toggleViewsTool];
+        [[FLEXManager sharedManager] showExplorer];
+    }];
+    [alertController addAction:showViews];
+    UIAlertAction *details = [UIAlertAction actionWithTitle:@"Show Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        //i dont know yet
+        [[FLEXManager sharedManager] showExplorer];
+    }];
+    [alertController addAction:details];
+    UIAlertAction *movement = [UIAlertAction actionWithTitle:@"Move View" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.currentMode = FLEXExplorerModeMove;
+        [[FLEXManager sharedManager] showExplorer];
+    }];
+    [alertController addAction:movement];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [[FLEXManager sharedManager] showExplorer];
+    }]];
+    
+    [self presentViewController:alertController animated:true completion:nil];
+    
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
@@ -1086,6 +1138,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleViewsToolWithCompletion:(void(^)(void))completion {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
         if (self.selectedView) {
+            NSLog(@"[FLEXInjected] we have a selected view still: %@", self.selectedView);
             return [FLEXHierarchyViewController
                 delegate:self
                 viewsAtTap:self.viewsAtTapPoint

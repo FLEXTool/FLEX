@@ -42,7 +42,7 @@ ldid -S $EXE_PATH
 rm -rf $FINAL_FW_PATH/_CodeSignature
 /usr/local/bin/fakeroot dpkg-deb -b layout
 scp layout.deb root@$ATV_DEVICE_IP:~
-ssh root@$ATV_DEVICE_IP "dpkg -i layout.deb ; killall -9 PineBoard"
+ssh root@$ATV_DEVICE_IP "dpkg -i layout.deb ; killall -9 nitoTV ; lsdtrip launch com.nito.nitoTV4"
 
 exit 0
 

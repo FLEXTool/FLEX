@@ -110,6 +110,7 @@
     CGFloat originY = CGRectGetMinY(safeArea);
     CGFloat height = kToolbarItemHeight;
     CGFloat width = FLEXFloor((CGRectGetWidth(safeArea) - CGRectGetWidth(self.dragHandle.frame)) / self.toolbarItems.count);
+    width = width - itemPadding;
     for (FLEXExplorerToolbarItem *toolbarItem in self.toolbarItems) {
         toolbarItem.currentItem.frame = CGRectMake(originX, originY, width, height);
         originX = CGRectGetMaxX(toolbarItem.currentItem.frame) + itemPadding;

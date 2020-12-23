@@ -122,7 +122,9 @@
     if (self.highlighted) {
         self.backgroundColor = self.class.highlightedBackgroundColor;
     } else if (self.selected) {
+#if !TARGET_OS_TV
         self.backgroundColor = self.class.selectedBackgroundColor;
+#endif
     } else {
         self.backgroundColor = self.class.defaultBackgroundColor;
     }
