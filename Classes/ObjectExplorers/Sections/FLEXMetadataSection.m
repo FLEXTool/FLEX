@@ -161,8 +161,11 @@
 
 - (BOOL)canSelectRow:(NSInteger)row {
     UITableViewCellAccessoryType accessory = [self accessoryTypeForRow:row];
+    #if !TARGET_OS_TV
     return accessory == UITableViewCellAccessoryDisclosureIndicator ||
         accessory == UITableViewCellAccessoryDetailDisclosureButton;
+    #endif
+    return accessory == UITableViewCellAccessoryDisclosureIndicator;
 }
 
 - (NSString *)reuseIdentifierForRow:(NSInteger)row {

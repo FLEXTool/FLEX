@@ -7,11 +7,13 @@
 //
 
 #import "FLEXArgumentInputSwitchView.h"
-
+#import "fakes.h"
 @interface FLEXArgumentInputSwitchView ()
-
+#if !TARGET_OS_TV
 @property (nonatomic) UISwitch *inputSwitch;
-
+#else
+@property (nonatomic) UIFakeSwitch *inputSwitch;
+#endif
 @end
 
 @implementation FLEXArgumentInputSwitchView
@@ -19,7 +21,11 @@
 - (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
+#if !TARGET_OS_TV
         self.inputSwitch = [UISwitch new];
+#else
+        self.inputSwitch = [UIFakeSwitch new];
+#endif
         [self.inputSwitch addTarget:self action:@selector(switchValueDidChange:) forControlEvents:UIControlEventValueChanged];
         [self.inputSwitch sizeToFit];
         [self addSubview:self.inputSwitch];

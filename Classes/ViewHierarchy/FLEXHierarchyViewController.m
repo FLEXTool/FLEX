@@ -14,6 +14,7 @@
 #import "FLEXResources.h"
 #import "UIBarButtonItem+FLEX.h"
 
+
 typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
     FLEXHierarchyViewModeTree = 1,
     FLEXHierarchyViewMode3DSnapshot
@@ -127,16 +128,20 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
         switch (mode) {
             case FLEXHierarchyViewModeTree:
                 [self popViewControllerAnimated:NO];
+#if !TARGET_OS_TV
                 self.toolbarHidden = YES;
+#endif
                 self.treeViewController.selectedView = self.selectedView;
                 break;
             case FLEXHierarchyViewMode3DSnapshot:
                 [self pushViewController:self.snapshotViewController animated:NO];
+#if !TARGET_OS_TV
                 self.toolbarHidden = NO;
+#endif
                 self.snapshotViewController.selectedView = self.selectedView;
                 break;
         }
-
+        
         // Change this last so that self.selectedView works right above
         _mode = mode;
     }

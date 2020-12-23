@@ -14,6 +14,7 @@
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "UIBarButtonItem+FLEX.h"
+#import <TargetConditionals.h>
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
@@ -63,9 +64,11 @@
         target:self
         action:@selector(getterButtonPressed:)
     ];
+    #if !TARGET_OS_TV
     self.toolbarItems = @[
         UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.actionButton
     ];
+    #endif
 
     // Configure input view
     self.fieldEditorView.fieldDescription = self.fieldDescription;
@@ -78,10 +81,12 @@
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         self.actionButton.enabled = NO;
         self.actionButton.title = @"Flip the switch to call the setter";
-        // Put getter button before setter button 
+        // Put getter button before setter button
+        #if !TARGET_OS_TV
         self.toolbarItems = @[
             UIBarButtonItem.flex_flexibleSpace, self.actionButton, self.getterButton
         ];
+        #endif
     }
 }
 

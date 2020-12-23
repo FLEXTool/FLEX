@@ -111,8 +111,9 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     } else {
         _logController = [FLEXASLLogController withUpdateHandler:logHandler];
     }
-
+#if !TARGET_OS_TV
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+#endif
     self.title = @"Waiting for Logs...";
 
     // Toolbar buttons //
@@ -265,12 +266,14 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         // We usually only want to copy the log message itself, not any metadata associated with it.
-        UIPasteboard.generalPasteboard.string = self.logMessages.filteredList[indexPath.row].messageText ?: @"";
+        #if !TARGET_OS_TV
+        UIPasteboard.generalPasteboard.string = self.logMessages.filteredList[indexPath.row].messageText;
+        #endif
     }
 }
 
 #if FLEX_AT_LEAST_IOS13_SDK
-
+#if !TARGET_OS_TV
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
 contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                                     point:(CGPoint)point __IOS_AVAILABLE(13.0) {
@@ -288,7 +291,7 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
         return [UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[copy]];
     }];
 }
-
+#endif
 #endif
 
 @end

@@ -31,7 +31,9 @@
 }
 
 + (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image sibling:(FLEXExplorerToolbarItem *)backupItem {
+#if !TARGET_OS_TV
     NSParameterAssert(title); NSParameterAssert(image);
+#endif
     
     FLEXExplorerToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeSystem];
     toolbarItem.sibling = backupItem;

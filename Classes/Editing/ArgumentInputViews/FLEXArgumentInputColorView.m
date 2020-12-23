@@ -9,12 +9,16 @@
 #import "FLEXArgumentInputColorView.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
-
+#import "fakes.h"
 @protocol FLEXColorComponentInputViewDelegate;
 
 @interface FLEXColorComponentInputView : UIView
 
+#if !TARGET_OS_TV
 @property (nonatomic) UISlider *slider;
+#else
+@property (nonatomic) UIFakeSlider *slider;
+#endif
 @property (nonatomic) UILabel *valueLabel;
 
 @property (nonatomic, weak) id <FLEXColorComponentInputViewDelegate> delegate;
@@ -33,7 +37,11 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+#if !TARGET_OS_TV
         self.slider = [UISlider new];
+#else
+        self.slider = [UIFakeSlider new];
+#endif
         [self.slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.slider];
         

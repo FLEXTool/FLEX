@@ -69,10 +69,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 /// All views that we're KVOing. Used to help us clean up properly.
 @property (nonatomic) NSMutableSet<UIView *> *observedViews;
-
+#if !TARGET_OS_TV
 /// Used to preserve the target app's UIMenuController items.
 @property (nonatomic) NSArray<UIMenuItem *> *appMenuItems;
-
+#endif
 @end
 
 @implementation FLEXExplorerViewController
@@ -390,7 +390,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     };
     
     [actionsToItems enumerateKeysAndObjectsUsingBlock:^(NSString *sel, FLEXExplorerToolbarItem *item, BOOL *stop) {
-        [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventTouchUpInside];
+        #if !TARGET_OS_TV
+            [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventTouchUpInside];
+        #else
+            [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventPrimaryActionTriggered];
+        #endif
     }];
 }
 
@@ -560,8 +564,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarShowTabsGesture:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        #if !TARGET_OS_TV
         self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-        
+        #endif
         // Don't use FLEXNavigationController because the tab viewer itself is not a tab
         [super presentViewController:[[UINavigationController alloc]
             initWithRootViewController:[FLEXTabsViewController new]
@@ -572,8 +577,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarWindowManagerGesture:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        #if !TARGET_OS_TV
         self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-        
+        #endif
         [super presentViewController:[FLEXNavigationController
             withRootViewController:[FLEXWindowManagerController new]
         ] animated:YES completion:nil];
@@ -583,8 +589,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarShowViewControllersGesture:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan && self.viewsAtTapPoint.count) {
         // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        #if !TARGET_OS_TV
         self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-        
+        #endif
         UIViewController *list = [FLEXViewControllersViewController
             controllersForViews:self.viewsAtTapPoint
         ];
@@ -887,12 +894,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (!@available(iOS 13, *)) {
         [self statusWindow].windowLevel = self.view.window.windowLevel + 1.0;
     }
-    
+    #if !TARGET_OS_TV
     // Back up and replace the UIMenuController items
     // Edit: no longer replacing the items, but still backing them
     // up in case we start replacing them again in the future
     self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-    
+    #endif
     // Show the view controller
     [super presentViewController:toPresent animated:animated completion:completion];
 }
@@ -900,14 +907,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion {    
     UIWindow *appWindow = self.window.previousKeyWindow;
     [appWindow makeKeyWindow];
+    #if !TARGET_OS_TV
     [appWindow.rootViewController setNeedsStatusBarAppearanceUpdate];
-    
     // Restore previous UIMenuController items
     // Back up and replace the UIMenuController items
     UIMenuController.sharedMenuController.menuItems = self.appMenuItems;
     [UIMenuController.sharedMenuController update];
     self.appMenuItems = nil;
-    
+    #endif
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for
     // scroll to top, but below FLEX otherwise for exploration.

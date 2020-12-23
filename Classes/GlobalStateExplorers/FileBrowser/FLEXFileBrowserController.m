@@ -335,6 +335,7 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    #if !TARGET_OS_TV
     UIMenuItem *rename = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
     UIMenuItem *delete = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
     UIMenuItem *copyPath = [[UIMenuItem alloc] initWithTitle:@"Copy Path" action:@selector(fileBrowserCopyPath:)];
@@ -343,6 +344,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     UIMenuController.sharedMenuController.menuItems = @[rename, delete, copyPath, share];
 
     return YES;
+    #else
+    return NO;
+    #endif
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
@@ -359,10 +363,8 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 }
 
 #if FLEX_AT_LEAST_IOS13_SDK
-
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
-contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
-                                    point:(CGPoint)point __IOS_AVAILABLE(13.0) {
+#if !TARGET_OS_TV
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     __weak __typeof__(self) weakSelf = self;
     return [UIContextMenuConfiguration configurationWithIdentifier:nil
                                                    previewProvider:nil
@@ -395,7 +397,7 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
         return [UIMenu menuWithTitle:@"Manage File" image:nil identifier:@"Manage File" options:UIMenuOptionsDisplayInline children:@[rename, delete, copyPath, share]];
     }];
 }
-
+#endif
 #endif
 
 - (void)openFileController:(NSString *)fullPath {
@@ -458,7 +460,9 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
 - (void)fileBrowserCopyPath:(UITableViewCell *)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
+    #if !TARGET_OS_TV
     UIPasteboard.generalPasteboard.string = fullPath;
+    #endif
 }
 
 - (void)fileBrowserShare:(UITableViewCell *)sender {
@@ -542,20 +546,20 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
     id target = [self.nextResponder targetForAction:action withSender:sender];
     [UIApplication.sharedApplication sendAction:action to:target from:self forEvent:nil];
 }
-
-- (void)fileBrowserRename:(UIMenuController *)sender {
+//really UIMenuController but this is to silence warnings
+- (void)fileBrowserRename:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserDelete:(UIMenuController *)sender {
+- (void)fileBrowserDelete:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserCopyPath:(UIMenuController *)sender {
+- (void)fileBrowserCopyPath:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserShare:(UIMenuController *)sender {
+- (void)fileBrowserShare:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 

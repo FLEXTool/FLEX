@@ -62,6 +62,27 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     return self;
 }
 
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateBegan) {
+        
+    }
+    else if ( gesture.state == UIGestureRecognizerStateEnded) {
+        NSLog(@"do something different for long press!");
+        UITableView *tv = [self tableView];
+        //naughty naughty
+        NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
+        NSLog(@"[FLEX] focusedIndexPath: %@", focus);
+        [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
+        
+    }
+}
+- (void)addlongPressGestureRecognizer {
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self.tableView addGestureRecognizer:longPress];
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -70,7 +91,12 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     
     // A little more breathing room
     self.tableView.rowHeight = 50.0;
+    #if !TARGET_OS_TV
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    #else
+    [self addlongPressGestureRecognizer];
+    self.tableView.rowHeight = 70.0;
+    #endif
     // Separator inset clashes with persistent cell selection
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     

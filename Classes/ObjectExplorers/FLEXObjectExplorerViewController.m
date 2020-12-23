@@ -134,7 +134,9 @@
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
+    #if !TARGET_OS_TV
     [self.navigationController setToolbarHidden:NO animated:YES];
+    #endif
     return YES;
 }
 
@@ -223,10 +225,14 @@
             [FLEXBookmarkManager.bookmarks addObject:self.object];
         });
         make.button(@"Copy Description").handler(^(NSArray<NSString *> *strings) {
+            #if !TARGET_OS_TV
             UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
+            #endif
         });
         make.button(@"Copy Address").handler(^(NSArray<NSString *> *strings) {
+            #if !TARGET_OS_TV
             UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
+            #endif
         });
         make.button(@"Cancel").cancelStyle();
     } showFrom:self source:sender];
@@ -264,6 +270,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
     // Prioritize important pan gestures over our swipe gesture
+    #if !TARGET_OS_TV
     if ([g2 isKindOfClass:[UIPanGestureRecognizer class]]) {
         if (g2 == self.navigationController.interactivePopGestureRecognizer ||
             g2 == self.navigationController.barHideOnSwipeGestureRecognizer ||
@@ -271,6 +278,13 @@
             return NO;
         }
     }
+    #else
+    if ([g2 isKindOfClass:[UIPanGestureRecognizer class]]) {
+           if (g2 == self.tableView.panGestureRecognizer) {
+               return NO;
+           }
+       }
+    #endif
     
     return YES;
 }
@@ -374,7 +388,9 @@
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
+#if !TARGET_OS_TV
         UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
+#endif
     }
 }
 

@@ -8843,7 +8843,7 @@ static const u_int8_t FLEXHierarchyIndentPattern3x[] = {
 }
 
 + (UIImage *)hierarchyIndentPattern {
-    return FLEXImageTemplate(FLEXHierarchyIndentPattern);
+    return FLEXRetinaOnlyImage(FLEXHierarchyIndentPattern);
 }
 
 

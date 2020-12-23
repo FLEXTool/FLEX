@@ -57,10 +57,26 @@
     return _explorerWindow;
 }
 
+- (void)tripleTap:(UITapGestureRecognizer *)tapRecognizer {
+    NSLog(@"[FLEXInjected] triple tap!");
+    [self showExplorer];
+}
+
+
+- (void)_addTVOSGestureRecognizer:(UIViewController *)explorer {
+    UITapGestureRecognizer *tripleTaps = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tripleTap:)];
+    tripleTaps.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
+    tripleTaps.numberOfTapsRequired = 3;
+    [explorer.view addGestureRecognizer:tripleTaps];
+}
+
 - (FLEXExplorerViewController *)explorerViewController {
     if (!_explorerViewController) {
         _explorerViewController = [FLEXExplorerViewController new];
         _explorerViewController.delegate = self;
+        #if TARGET_OS_TV
+                [self _addTVOSGestureRecognizer:_explorerViewController];
+        #endif
     }
 
     return _explorerViewController;
@@ -69,6 +85,10 @@
 - (void)showExplorer {
     UIWindow *flex = self.explorerWindow;
     flex.hidden = NO;
+    #if TARGET_OS_TV
+    FLEXWindow *exp = [self explorerWindow];
+    [exp makeKeyWindow];
+    #endif
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
         // Only look for a new scene if we don't have one

@@ -12,15 +12,23 @@
 #import "FLEXTableView.h"
 #import "FLEXColor.h"
 #import "NSUserDefaults+FLEX.h"
+#import "fakes.h"
+
 
 @interface FLEXNetworkSettingsController () <UIActionSheetDelegate>
 @property (nonatomic) float cacheLimitValue;
 @property (nonatomic, readonly) NSString *cacheLimitCellTitle;
-
+#if !TARGET_OS_TV
 @property (nonatomic, readonly) UISwitch *observerSwitch;
 @property (nonatomic, readonly) UISwitch *cacheMediaSwitch;
 @property (nonatomic, readonly) UISwitch *jsonViewerSwitch;
 @property (nonatomic, readonly) UISlider *cacheLimitSlider;
+#else
+@property (nonatomic, readonly) UIFakeSwitch *observerSwitch;
+@property (nonatomic, readonly) UIFakeSwitch *cacheMediaSwitch;
+@property (nonatomic, readonly) UIFakeSwitch *jsonViewerSwitch;
+@property (nonatomic, readonly) UIFakeSlider *cacheLimitSlider;
+#endif
 @property (nonatomic) UILabel *cacheLimitLabel;
 
 @property (nonatomic) NSMutableArray<NSString *> *hostBlacklist;
@@ -35,11 +43,17 @@
     self.hostBlacklist = FLEXNetworkRecorder.defaultRecorder.hostBlacklist.mutableCopy;
     
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
-    
+#if !TARGET_OS_TV
     _observerSwitch = [UISwitch new];
     _cacheMediaSwitch = [UISwitch new];
     _jsonViewerSwitch = [UISwitch new];
     _cacheLimitSlider = [UISlider new];
+#else
+    _observerSwitch = [UIFakeSwitch new];
+    _cacheMediaSwitch = [UIFakeSwitch new];
+    _jsonViewerSwitch = [UIFakeSwitch new];
+    _cacheLimitSlider = [UIFakeSlider new];
+#endif
     
     self.observerSwitch.on = FLEXNetworkObserver.enabled;
     [self.observerSwitch addTarget:self
@@ -64,7 +78,7 @@
         forControlEvents:UIControlEventValueChanged
     ];
     
-    UISlider *slider = self.cacheLimitSlider;
+    UIFakeSlider *slider = self.cacheLimitSlider;
     self.cacheLimitValue = FLEXNetworkRecorder.defaultRecorder.responseCacheByteLimit;
     const NSUInteger fiftyMega = 50 * 1024 * 1024;
     slider.minimumValue = 0;
@@ -99,7 +113,7 @@
     [NSUserDefaults.standardUserDefaults flex_toggleBoolForKey:kFLEXDefaultsRegisterJSONExplorerKey];
 }
 
-- (void)cacheLimitAdjusted:(UISlider *)sender {
+- (void)cacheLimitAdjusted:(UIFakeSlider *)sender {
     self.cacheLimitValue = sender.value;
 }
 
@@ -172,7 +186,7 @@
                     [cell.contentView addSubview:self.cacheLimitSlider];
                     
                     CGRect container = cell.contentView.frame;
-                    UISlider *slider = self.cacheLimitSlider;
+                    UIFakeSlider *slider = self.cacheLimitSlider;
                     [slider sizeToFit];
                     
                     CGFloat sliderWidth = 150.f;

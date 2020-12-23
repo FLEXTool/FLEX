@@ -100,9 +100,10 @@
         target:self
         action:@selector(actionButtonPressed:)
     ];
-    
+    #if !TARGET_OS_TV
     self.navigationController.toolbarHidden = NO;
     self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, self.actionButton];
+    #endif
 }
 
 - (void)viewWillLayoutSubviews {

@@ -29,8 +29,9 @@
     self.textView.backgroundColor = UIColor.blackColor;
     self.textView.textColor = UIColor.whiteColor;
     self.textView.font = [UIFont boldSystemFontOfSize:14.0];
+    #if !TARGET_OS_TV
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    
+    #endif
     self.title = @"Simulator Shortcuts";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed:)];
 }

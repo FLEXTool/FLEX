@@ -39,7 +39,9 @@
     [super viewDidLoad];
     
     self.title = @"Open Tabs";
+    #if !TARGET_OS_TV
     self.navigationController.hidesBarsOnSwipe = NO;
+    #endif
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     
     [self reloadData:NO];
@@ -106,6 +108,7 @@
 
 - (void)setupDefaultBarItems {
     self.navigationItem.rightBarButtonItem = FLEXBarButtonItemSystem(Done, self, @selector(dismissAnimated));
+    #if !TARGET_OS_TV
     self.toolbarItems = @[
         UIBarButtonItem.flex_fixedSpace,
         UIBarButtonItem.flex_flexibleSpace,
@@ -116,10 +119,12 @@
     
     // Disable editing if no tabs available
     self.toolbarItems.lastObject.enabled = self.openTabs.count > 0;
+    #endif
 }
 
 - (void)setupEditingBarItems {
     self.navigationItem.rightBarButtonItem = nil;
+    #if !TARGET_OS_TV
     self.toolbarItems = @[
         [UIBarButtonItem flex_itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed:)],
         UIBarButtonItem.flex_flexibleSpace,
@@ -130,6 +135,7 @@
     ];
     
     self.toolbarItems.firstObject.tintColor = FLEXColor.destructiveColor;
+    #endif
 }
 
 - (FLEXExplorerViewController *)corePresenter {
@@ -287,8 +293,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.editing) {
         // Case: editing with multi-select
+        #if !TARGET_OS_TV
         self.toolbarItems.lastObject.title = @"Close Selected";
         self.toolbarItems.lastObject.tintColor = FLEXColor.destructiveColor;
+        #endif
     } else {
         if (self.activeIndex == indexPath.row && self.corePresenter != self.presentingViewController) {
             // Case: selected the already active tab
@@ -307,8 +315,10 @@
     NSParameterAssert(self.editing);
     
     if (tableView.indexPathsForSelectedRows.count == 0) {
+        #if !TARGET_OS_TV
         self.toolbarItems.lastObject.title = @"Done";
         self.toolbarItems.lastObject.tintColor = self.view.tintColor;
+        #endif
     }
 }
 

@@ -161,15 +161,23 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
         case FLEXGlobalsRowCurrentDevice:
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
+#if !TARGET_OS_TV
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
-            case FLEXGlobalsRowURLSession:
+#else
+            return nil; //FIXME: Probably not a safe fix
+#endif
+        case FLEXGlobalsRowURLSession:
             return [self explorerViewControllerForObject:NSURLSession.sharedSession];
         case FLEXGlobalsRowURLCache:
             return [self explorerViewControllerForObject:NSURLCache.sharedURLCache];
         case FLEXGlobalsRowNotificationCenter:
             return [self explorerViewControllerForObject:NSNotificationCenter.defaultCenter];
         case FLEXGlobalsRowMenuController:
+#if !TARGET_OS_TV
             return [self explorerViewControllerForObject:UIMenuController.sharedMenuController];
+#else
+            return nil; //FIXME: Probably not a safe fix
+#endif
         case FLEXGlobalsRowFileManager:
             return [self explorerViewControllerForObject:NSFileManager.defaultManager];
         case FLEXGlobalsRowTimeZone:
@@ -187,14 +195,14 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
 
         case FLEXGlobalsRowKeyWindow:
             return [FLEXObjectExplorerFactory
-                explorerViewControllerForObject:FLEXUtility.appKeyWindow
-            ];
+                    explorerViewControllerForObject:FLEXUtility.appKeyWindow
+                    ];
         case FLEXGlobalsRowRootViewController: {
             id<UIApplicationDelegate> delegate = UIApplication.sharedApplication.delegate;
             if ([delegate respondsToSelector:@selector(window)]) {
                 return [self explorerViewControllerForObject:delegate.window.rootViewController];
             }
-
+            
             return nil;
         }
         default: return nil;

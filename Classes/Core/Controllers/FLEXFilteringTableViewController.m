@@ -188,7 +188,7 @@
 }
 
 #if FLEX_AT_LEAST_IOS13_SDK
-
+#if !TARGET_OS_TV
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     FLEXTableViewSection *section = self.filterDelegate.sections[indexPath.section];
     NSString *title = [section menuTitleForRow:indexPath.row];
@@ -206,7 +206,7 @@
     
     return nil;
 }
-
+#endif
 #endif
 
 @end

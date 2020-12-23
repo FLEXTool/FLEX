@@ -185,8 +185,10 @@
 - (BOOL)canSelectRow:(NSInteger)row {
     UITableViewCellAccessoryType type = [self.shortcuts[row] accessoryTypeWith:self.object];
     BOOL hasDisclosure = NO;
-    hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;	
+    hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;
+    #if !TARGET_OS_TV
     hasDisclosure |= type == UITableViewCellAccessoryDetailDisclosureButton;
+    #endif
     return hasDisclosure;
 }
 

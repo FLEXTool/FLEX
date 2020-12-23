@@ -62,7 +62,11 @@
 }
 
 - (UITableViewCellAccessoryType)accessoryTypeForRow:(NSInteger)row {
+#if !TARGET_OS_TV
     return UITableViewCellAccessoryDetailDisclosureButton;
+#else
+    return UITableViewCellAccessoryDisclosureIndicator;
+#endif
 }
 
 #pragma mark - Private

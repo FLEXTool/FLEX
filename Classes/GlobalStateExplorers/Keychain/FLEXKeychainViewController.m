@@ -234,13 +234,19 @@
         make.message(@"\nPassword: ").message(query.password);
 
         make.button(@"Copy Service").handler(^(NSArray<NSString *> *strings) {
+            #if !TARGET_OS_TV
             [UIPasteboard.generalPasteboard flex_copy:query.service];
+            #endif
         });
         make.button(@"Copy Account").handler(^(NSArray<NSString *> *strings) {
+            #if !TARGET_OS_TV
             [UIPasteboard.generalPasteboard flex_copy:query.account];
+            #endif
         });
         make.button(@"Copy Password").handler(^(NSArray<NSString *> *strings) {
+            #if !TARGET_OS_TV
             [UIPasteboard.generalPasteboard flex_copy:query.password];
+            #endif
         });
         make.button(@"Dismiss").cancelStyle();
         

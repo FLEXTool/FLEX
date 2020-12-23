@@ -66,7 +66,11 @@
 }
 
 - (void)initSpacingSlider {
+    #if !TARGET_OS_TV
     _spacingSlider = [UISlider new];
+    #else
+    _spacingSlider = [UIFakeSlider new];
+    #endif
     self.spacingSlider.minimumValue = 0;
     self.spacingSlider.maximumValue = 100;
     self.spacingSlider.continuous = YES;
@@ -80,7 +84,11 @@
 }
 
 - (void)initDepthSlider {
+    #if !TARGET_OS_TV
     _depthSlider = [FHSRangeSlider new];
+    #else
+    _depthSlider = [UIFakeSlider new];
+    #endif
     [self.depthSlider
         addTarget:self
         action:@selector(depthSliderDidChange:)
@@ -273,7 +281,7 @@
     }
 }
 
-- (void)spacingSliderDidChange:(UISlider *)slider {
+- (void)spacingSliderDidChange:(UIFakeSlider *)slider {
     // TODO: hiding the header when flat logic
 
     for (FHSSnapshotNodes *nodes in self.nodesMap.allValues) {
@@ -293,7 +301,7 @@
     }
 }
 
-- (void)depthSliderDidChange:(FHSRangeSlider *)slider {
+- (void)depthSliderDidChange:(UIFakeSlider *)slider {
     CGFloat min = slider.minValue, max = slider.maxValue;
     for (FHSSnapshotNodes *nodes in self.nodesMap.allValues) {
         CGFloat depth = nodes.depth;

@@ -33,7 +33,11 @@
 }
 
 + (instancetype)buttonWithTitle:(NSString *)title action:(FLEXKBToolbarAction)eventHandler {
+#if !TARGET_OS_TV
     return [self buttonWithTitle:title action:eventHandler forControlEvents:UIControlEventTouchUpInside];
+#else
+    return [self buttonWithTitle:title action:eventHandler forControlEvents:UIControlEventPrimaryActionTriggered];
+#endif
 }
 
 - (id)initWithTitle:(NSString *)title {

@@ -8,7 +8,7 @@
 
 #import "FHSViewSnapshot.h"
 #import "FHSRangeSlider.h"
-
+#import "fakes.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol FHSSnapshotViewDelegate <NSObject>
@@ -30,9 +30,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Views of these classes will have their headers hidden
 @property (nonatomic) NSArray<Class> *headerExclusions;
-
+#if !TARGET_OS_TV
 @property (nonatomic, readonly) UISlider *spacingSlider;
 @property (nonatomic, readonly) FHSRangeSlider *depthSlider;
+#else
+@property (nonatomic, readonly) UIFakeSlider *spacingSlider;
+@property (nonatomic, readonly) UIFakeSlider *depthSlider;
+#endif
 
 - (void)emphasizeViews:(NSArray<UIView *> *)emphasizedViews;
 

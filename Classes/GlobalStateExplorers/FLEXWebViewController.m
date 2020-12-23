@@ -73,7 +73,9 @@
 }
 
 - (void)copyButtonTapped:(id)sender {
+    #if !TARGET_OS_TV
     [UIPasteboard.generalPasteboard setString:self.originalText];
+    #endif
 }
 
 

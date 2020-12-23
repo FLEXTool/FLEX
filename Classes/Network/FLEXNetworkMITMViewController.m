@@ -64,9 +64,10 @@
         registerClass:[FLEXNetworkTransactionCell class]
         forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier
     ];
+#if !TARGET_OS_TV
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = FLEXNetworkTransactionCell.preferredCellHeight;
-
+#endif
     [self registerForNotifications];
     [self updateTransactions];
 }
@@ -386,12 +387,14 @@
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
+        #if !TARGET_OS_TV
         UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
+        #endif
     }
 }
 
 #if FLEX_AT_LEAST_IOS13_SDK
-
+#if !TARGET_OS_TV
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
     return [UIContextMenuConfiguration
@@ -426,7 +429,7 @@
         }
     ];
 }
-
+#endif
 #endif
 
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath {

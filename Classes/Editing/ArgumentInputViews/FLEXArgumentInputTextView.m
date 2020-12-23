@@ -31,7 +31,9 @@
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextView.delegate = self;
+        #if !TARGET_OS_TV
         self.inputTextView.inputAccessoryView = [self createToolBar];
+        #endif
         if (@available(iOS 11, *)) {
             [self.inputTextView.layer setValue:@YES forKey:@"continuousCorners"];
         } else {
@@ -52,7 +54,7 @@
 }
 
 #pragma mark - Private
-
+#if !TARGET_OS_TV
 - (UIToolbar *)createToolBar {
     UIToolbar *toolBar = [UIToolbar new];
     [toolBar sizeToFit];
@@ -71,7 +73,7 @@
     toolBar.items = @[spaceItem, pasteItem, doneItem];
     return toolBar;
 }
-
+#endif
 - (void)setInputPlaceholderText:(NSString *)placeholder {
     self.placeholderLabel.text = placeholder;
     if (placeholder.length) {

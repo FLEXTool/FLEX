@@ -110,7 +110,11 @@ FLEXObjectExplorerDefaultsImpl
     if ([self getPotentiallyUnboxedValue:targetForValueCheck]) {
         if (self.defaults.isEditable) {
             // Editable non-nil value, both
+            #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailDisclosureButton;
+            #else
+            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+            #endif
         } else {
             // Uneditable non-nil value, chevron only
             return UITableViewCellAccessoryDisclosureIndicator;
@@ -118,7 +122,11 @@ FLEXObjectExplorerDefaultsImpl
     } else {
         if (self.defaults.isEditable) {
             // Editable nil value, just (i)
+            #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailButton;
+            #else
+            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+            #endif
         } else {
             // Non-editable nil value, neither
             return UITableViewCellAccessoryNone;
@@ -244,7 +252,11 @@ FLEXObjectExplorerDefaultsImpl
     if ([self getPotentiallyUnboxedValue:object]) {
         if (self.defaults.isEditable) {
             // Editable non-nil value, both
+#if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailDisclosureButton;
+#else
+            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+#endif
         } else {
             // Uneditable non-nil value, chevron only
             return UITableViewCellAccessoryDisclosureIndicator;
@@ -252,7 +264,11 @@ FLEXObjectExplorerDefaultsImpl
     } else {
         if (self.defaults.isEditable) {
             // Editable nil value, just (i)
+#if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailButton;
+#else
+            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+#endif
         } else {
             // Non-editable nil value, neither
             return UITableViewCellAccessoryNone;
