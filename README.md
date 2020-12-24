@@ -6,13 +6,12 @@
 - Best used with a jailbreak / FLEXInjected (avail from default repos now with 'com.nito.flexinjected')
 - Need to modify the SDK to build right now (will fix this later) - read patch notes after the bullets
 - After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
-- When in select mode press hold play/pause to return to the FLEX tab bar
-- When in select mode play/pause will also work to click items and is more reliable than selection with the remote touch pad
+- When in select mode press the menu button will get you back to the tool bar
+- When in select mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
 - Press and hold select to drill down to details in views hierarchy list view controller
+- When in selection mode double tap on play/pause will bring up an alert with useful options (show views, details and move view are available there)
 
 ### Missing features - on support road map
-- there is no way to go from view selection mode to getting a views additional details
-- there is no way to change the inheritance display options in the object details view either (selecting a property from a class). 
 - anything with a slider or switch view will appear empty in the places those elements appear
 - any view with a UIPickerView or date picker will either crash / render strangely (i stubbed those elements out with fake elements to get it building.)
 
