@@ -48,6 +48,7 @@
 @interface LSApplicationProxy: NSObject
 +(id)applicationProxyForIdentifier:(id)sender;
 +(id)tv_applicationFlatIcon;
+-(BOOL)isContainerized;
 @end
 
 @implementation NSObject (Additions)
@@ -79,22 +80,31 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
     NSDictionary *ourDict = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.nito.flexinjected.plist"];
     NSNumber *value = [ourDict objectForKey:bundleID];
     if ([value boolValue] == YES) {
-    
+    BOOL sendAlert = true;
     id prox = [%c(LSApplicationProxy) applicationProxyForIdentifier:bundleID];
       UIImage *icon = nil;
       if (prox){
           NSLog(@"[FLEXInjected] found prox: %@", prox);
-          icon = [prox tv_applicationFlatIcon];
+          if ([prox isContainerized]){
+            sendAlert = false;
+          } else {
+                icon = [prox tv_applicationFlatIcon];
+          }
       } else {
           NSString *mcsPath = @"/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices";
           [[NSBundle bundleWithPath:mcsPath] load];
           prox = [%c(LSApplicationProxy) applicationProxyForIdentifier:bundleID];
-          icon = [prox tv_applicationFlatIcon];
+          if ([prox isContainerized]){
+            sendAlert = false;
+          } else {
+            icon = [prox tv_applicationFlatIcon];
+           }
       }
-     NSString *message = [NSString stringWithFormat:@"Injected into bundle: %@", bundleID];
-     sendNotification(@"FlexInjected", message, icon);
-     NSLog(@"[FLEXInjected) bundle ID %@", bundleID);
-    
+      if (sendAlert){
+        NSString *message = [NSString stringWithFormat:@"Injected into bundle: %@", bundleID];
+        sendNotification(@"FlexInjected", message, icon);
+        NSLog(@"[FLEXInjected) bundle ID %@", bundleID);
+      }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSLog(@"[FLEXInjected] weouchea...");
         NSString *p = @"/Library/Frameworks/FLEX.framework";
