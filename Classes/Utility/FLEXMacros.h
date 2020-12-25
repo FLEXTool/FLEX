@@ -85,4 +85,9 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, \
     (int64_t)(nSeconds * NSEC_PER_SEC)), onQueue, block)
 
+#define DLog(format, ...) CFShow((__bridge CFStringRef)[NSString stringWithFormat:format, ## __VA_ARGS__]);
+#define LOG_SELF        NSLog(@"[FLEXLog] %@ %@", self, NSStringFromSelector(_cmd))
+#define FXLog(format, ...) NSLog(@"[FLEXLog] %@",[NSString stringWithFormat:format, ## __VA_ARGS__]);
+#define DLOG_SELF DLog(@"%@ %@", self, NSStringFromSelector(_cmd))
+
 #endif /* FLEXMacros_h */

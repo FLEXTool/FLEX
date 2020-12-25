@@ -49,9 +49,9 @@
     _jsonViewerSwitch = [UISwitch new];
     _cacheLimitSlider = [UISlider new];
 #else
-    _observerSwitch = [UIFakeSwitch new];
-    _cacheMediaSwitch = [UIFakeSwitch new];
-    _jsonViewerSwitch = [UIFakeSwitch new];
+    _observerSwitch = [UIFakeSwitch newSwitch];
+    _cacheMediaSwitch = [UIFakeSwitch newSwitch];
+    _jsonViewerSwitch = [UIFakeSwitch newSwitch];
     _cacheLimitSlider = [UIFakeSlider new];
 #endif
     

@@ -14,7 +14,7 @@
     return 0;
 }
 - (NSInteger)numberOfRowsInComponent:(NSInteger)component {
-    return 0;;
+    return 0;
 }
 - (CGSize)rowSizeForComponent:(NSInteger)component {
     return CGSizeZero;
@@ -23,6 +23,7 @@
 - (nullable UIView *)viewForRow:(NSInteger)row forComponent:(NSInteger)component {
     return nil;
 }
+
 // Reloading whole view or single component
 - (void)reloadAllComponents {
     
@@ -41,10 +42,41 @@
 
 @end
 
+@interface UIFakeSwitch() {
+    BOOL _isOn;
+}
+@end
+
 @implementation UIFakeSwitch
 
+- (BOOL)isOn {
+    return _isOn;
+}
+
+- (void)setOn:(BOOL)on{
+    [self setOn:on animated:true];
+}
+
+- (NSString *)onTitle {
+    return @"TRUE";
+}
+
+- (NSString *)offTitle {
+    return @"FALSE";
+}
+
 - (void)setOn:(BOOL)on animated:(BOOL)animated {
-    
+    _isOn = on;
+    if (_isOn){
+        [self setTitle:[self onTitle] forState:UIControlStateNormal];
+    } else {
+        [self setTitle:[self offTitle] forState:UIControlStateNormal];
+    }
+    //[self sendActionsForControlEvents:[self allControlEvents]];
+}
+
++ (id)newSwitch {
+    return [UIFakeSwitch buttonWithType:UIButtonTypeSystem];
 }
 
 -(instancetype)initWithFrame:(CGRect)frame {
@@ -52,6 +84,7 @@
 }
 
 - (instancetype)initWithCoder:(id)coder {
+    LOG_SELF;
     return [super initWithCoder:coder];
 }
 

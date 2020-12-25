@@ -23,16 +23,22 @@
     if (self) {
 #if !TARGET_OS_TV
         self.inputSwitch = [UISwitch new];
-#else
-        self.inputSwitch = [UIFakeSwitch new];
-#endif
-        [self.inputSwitch addTarget:self action:@selector(switchValueDidChange:) forControlEvents:UIControlEventValueChanged];
         [self.inputSwitch sizeToFit];
+        [self.inputSwitch addTarget:self action:@selector(switchValueDidChange:) forControlEvents:UIControlEventValueChanged];
+        
+#else
+        self.inputSwitch = [UIFakeSwitch newSwitch];
+        [self.inputSwitch addTarget:self action:@selector(changeSwitchValue:) forControlEvents:UIControlEventPrimaryActionTriggered];
+#endif
         [self addSubview:self.inputSwitch];
     }
     return self;
 }
 
+- (void)changeSwitchValue:(UIFakeSwitch *)switchView {
+    [switchView setOn:!switchView.isOn];
+    [self switchValueDidChange:switchView];
+}
 
 #pragma mark Input/Output
 
@@ -65,8 +71,11 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+#if TARGET_OS_TV
+    self.inputSwitch.frame = CGRectMake(20, 50, 200, 60);
+#else
     self.inputSwitch.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.inputSwitch.frame.size.width, self.inputSwitch.frame.size.height);
+#endif
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {

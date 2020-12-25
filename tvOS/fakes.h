@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "FLEXMacros.h"
 
 @protocol UIFakePickerViewDataSource, UIFakePickerViewDelegate;
 
@@ -69,7 +69,7 @@
 
 
 
-@interface UIFakeSwitch : UIControl <NSCoding>
+@interface UIFakeSwitch : UIButton <NSCoding>
 @property(nullable, nonatomic, strong) UIColor *onTintColor;
 @property(nullable, nonatomic, strong) UIColor *thumbTintColor;
 @property(nullable, nonatomic, strong) UIImage *onImage;
@@ -78,6 +78,7 @@
 - (instancetype _Nonnull )initWithFrame:(CGRect)frame NS_DESIGNATED_INITIALIZER;      // This class enforces a size appropriate for the control, and so the frame size is ignored.
 - (nullable instancetype)initWithCoder:(NSCoder *_Nonnull)coder NS_DESIGNATED_INITIALIZER;
 - (void)setOn:(BOOL)on animated:(BOOL)animated; // does not send action
++ (id)newSwitch;
 @end
 
 @interface UIFakeSlider: UIControl <NSCoding>
