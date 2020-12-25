@@ -143,6 +143,7 @@
 }
 
 - (void)addNavigationBarSwipeGesture {
+#if !TARGET_OS_TV
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleNavigationBarSwipe:)
     ];
@@ -150,6 +151,7 @@
     swipe.delegate = self;
     self.navigationBarSwipeGesture = swipe;
     [self.navigationBar addGestureRecognizer:swipe];
+#endif
 }
 
 - (void)handleNavigationBarSwipe:(UISwipeGestureRecognizer *)sender {

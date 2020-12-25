@@ -20,9 +20,33 @@
 		325D7AAF2593AE4700CC6B10 /* Cursor.png in Resources */ = {isa = PBXBuildFile; fileRef = 325D7AAE2593AE4700CC6B10 /* Cursor.png */; };
 		325D7AB32593F25B00CC6B10 /* UIWindow+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AB12593F25B00CC6B10 /* UIWindow+FLEX.h */; };
 		325D7AB42593F25B00CC6B10 /* UIWindow+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AB22593F25B00CC6B10 /* UIWindow+FLEX.m */; };
+		325D7ACB259537F300CC6B10 /* IOHIDEvent+KIF.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AB6259537F300CC6B10 /* IOHIDEvent+KIF.h */; };
+		325D7ACC259537F300CC6B10 /* UIScreen+KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AB7259537F300CC6B10 /* UIScreen+KIFAdditions.m */; };
+		325D7ACD259537F300CC6B10 /* UIApplication-KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AB8259537F300CC6B10 /* UIApplication-KIFAdditions.h */; };
+		325D7ACE259537F300CC6B10 /* CGGeometry-KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AB9259537F300CC6B10 /* CGGeometry-KIFAdditions.m */; };
+		325D7ACF259537F300CC6B10 /* UIWindow-KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7ABA259537F300CC6B10 /* UIWindow-KIFAdditions.m */; };
+		325D7AD0259537F300CC6B10 /* UIView-Debugging.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7ABB259537F300CC6B10 /* UIView-Debugging.m */; };
+		325D7AD1259537F300CC6B10 /* UITouch-KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7ABC259537F300CC6B10 /* UITouch-KIFAdditions.m */; };
+		325D7AD2259537F300CC6B10 /* UIView-KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7ABD259537F300CC6B10 /* UIView-KIFAdditions.h */; };
+		325D7AD3259537F300CC6B10 /* NSError-KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7ABE259537F300CC6B10 /* NSError-KIFAdditions.h */; };
+		325D7AD4259537F300CC6B10 /* UIEvent+KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7ABF259537F300CC6B10 /* UIEvent+KIFAdditions.h */; };
+		325D7AD5259537F300CC6B10 /* UIWindow-KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AC0259537F300CC6B10 /* UIWindow-KIFAdditions.h */; };
+		325D7AD6259537F300CC6B10 /* CGGeometry-KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AC1259537F300CC6B10 /* CGGeometry-KIFAdditions.h */; };
+		325D7AD7259537F300CC6B10 /* UIApplication-KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AC2259537F300CC6B10 /* UIApplication-KIFAdditions.m */; };
+		325D7AD8259537F300CC6B10 /* UIScreen+KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AC3259537F300CC6B10 /* UIScreen+KIFAdditions.h */; };
+		325D7AD9259537F300CC6B10 /* IOHIDEvent+KIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AC4259537F300CC6B10 /* IOHIDEvent+KIF.m */; };
+		325D7ADA259537F300CC6B10 /* UIView-KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AC5259537F300CC6B10 /* UIView-KIFAdditions.m */; };
+		325D7ADB259537F400CC6B10 /* UITouch-KIFAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AC6259537F300CC6B10 /* UITouch-KIFAdditions.h */; };
+		325D7ADC259537F400CC6B10 /* UIView-Debugging.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AC7259537F300CC6B10 /* UIView-Debugging.h */; };
+		325D7ADD259537F400CC6B10 /* UIEvent+KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AC8259537F300CC6B10 /* UIEvent+KIFAdditions.m */; };
+		325D7ADE259537F400CC6B10 /* NSError-KIFAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AC9259537F300CC6B10 /* NSError-KIFAdditions.m */; };
+		325D7ADF259537F400CC6B10 /* LoadableCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7ACA259537F300CC6B10 /* LoadableCategory.h */; };
+		325D7AE325953F8E00CC6B10 /* KBSelectableTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AE125953F8E00CC6B10 /* KBSelectableTextView.m */; };
+		325D7AE425953F8E00CC6B10 /* KBSelectableTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AE225953F8E00CC6B10 /* KBSelectableTextView.h */; };
+		325D7AE725955C3500CC6B10 /* FLEXFontListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */; };
+		325D7AE825955C3500CC6B10 /* FLEXFontListTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */; };
 		32D4E15B259273E60027F238 /* fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* fakes.h */; };
 		32D4E15D2592749D0027F238 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
-		32D4E15E2592749D0027F238 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
 		3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94241B5B20570088C3F2 /* FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A4C94CD1B5B21410088C3F2 /* FLEXGlobalsEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94441B5B21410088C3F2 /* FLEXGlobalsEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A4C94CE1B5B21410088C3F2 /* FLEXGlobalsEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94451B5B21410088C3F2 /* FLEXGlobalsEntry.m */; };
@@ -381,6 +405,31 @@
 		325D7AAE2593AE4700CC6B10 /* Cursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cursor.png; sourceTree = SOURCE_ROOT; };
 		325D7AB12593F25B00CC6B10 /* UIWindow+FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIWindow+FLEX.h"; sourceTree = "<group>"; };
 		325D7AB22593F25B00CC6B10 /* UIWindow+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+FLEX.m"; sourceTree = "<group>"; };
+		325D7AB6259537F300CC6B10 /* IOHIDEvent+KIF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "IOHIDEvent+KIF.h"; sourceTree = "<group>"; };
+		325D7AB7259537F300CC6B10 /* UIScreen+KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScreen+KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7AB8259537F300CC6B10 /* UIApplication-KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIApplication-KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7AB9259537F300CC6B10 /* CGGeometry-KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CGGeometry-KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7ABA259537F300CC6B10 /* UIWindow-KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWindow-KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7ABB259537F300CC6B10 /* UIView-Debugging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView-Debugging.m"; sourceTree = "<group>"; };
+		325D7ABC259537F300CC6B10 /* UITouch-KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITouch-KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7ABD259537F300CC6B10 /* UIView-KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView-KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7ABE259537F300CC6B10 /* NSError-KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError-KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7ABF259537F300CC6B10 /* UIEvent+KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIEvent+KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7AC0259537F300CC6B10 /* UIWindow-KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWindow-KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7AC1259537F300CC6B10 /* CGGeometry-KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CGGeometry-KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7AC2259537F300CC6B10 /* UIApplication-KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIApplication-KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7AC3259537F300CC6B10 /* UIScreen+KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScreen+KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7AC4259537F300CC6B10 /* IOHIDEvent+KIF.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "IOHIDEvent+KIF.m"; sourceTree = "<group>"; };
+		325D7AC5259537F300CC6B10 /* UIView-KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView-KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7AC6259537F300CC6B10 /* UITouch-KIFAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITouch-KIFAdditions.h"; sourceTree = "<group>"; };
+		325D7AC7259537F300CC6B10 /* UIView-Debugging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView-Debugging.h"; sourceTree = "<group>"; };
+		325D7AC8259537F300CC6B10 /* UIEvent+KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIEvent+KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7AC9259537F300CC6B10 /* NSError-KIFAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError-KIFAdditions.m"; sourceTree = "<group>"; };
+		325D7ACA259537F300CC6B10 /* LoadableCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadableCategory.h; sourceTree = "<group>"; };
+		325D7AE125953F8E00CC6B10 /* KBSelectableTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KBSelectableTextView.m; sourceTree = "<group>"; };
+		325D7AE225953F8E00CC6B10 /* KBSelectableTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBSelectableTextView.h; sourceTree = "<group>"; };
+		325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFontListTableViewController.m; sourceTree = "<group>"; };
+		325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFontListTableViewController.h; sourceTree = "<group>"; };
 		32D4E15A259273E60027F238 /* fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fakes.h; sourceTree = "<group>"; };
 		32D4E15C2592749D0027F238 /* fakes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fakes.m; sourceTree = "<group>"; };
 		3A4C941F1B5B20570088C3F2 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -753,11 +802,53 @@
 			path = FLEXTests;
 			sourceTree = "<group>";
 		};
-		3A4C94151B5B20570088C3F2 = {
+		325D7AB5259537F300CC6B10 /* KIF */ = {
+			isa = PBXGroup;
+			children = (
+				325D7AB6259537F300CC6B10 /* IOHIDEvent+KIF.h */,
+				325D7AB7259537F300CC6B10 /* UIScreen+KIFAdditions.m */,
+				325D7AB8259537F300CC6B10 /* UIApplication-KIFAdditions.h */,
+				325D7AB9259537F300CC6B10 /* CGGeometry-KIFAdditions.m */,
+				325D7ABA259537F300CC6B10 /* UIWindow-KIFAdditions.m */,
+				325D7ABB259537F300CC6B10 /* UIView-Debugging.m */,
+				325D7ABC259537F300CC6B10 /* UITouch-KIFAdditions.m */,
+				325D7ABD259537F300CC6B10 /* UIView-KIFAdditions.h */,
+				325D7ABE259537F300CC6B10 /* NSError-KIFAdditions.h */,
+				325D7ABF259537F300CC6B10 /* UIEvent+KIFAdditions.h */,
+				325D7AC0259537F300CC6B10 /* UIWindow-KIFAdditions.h */,
+				325D7AC1259537F300CC6B10 /* CGGeometry-KIFAdditions.h */,
+				325D7AC2259537F300CC6B10 /* UIApplication-KIFAdditions.m */,
+				325D7AC3259537F300CC6B10 /* UIScreen+KIFAdditions.h */,
+				325D7AC4259537F300CC6B10 /* IOHIDEvent+KIF.m */,
+				325D7AC5259537F300CC6B10 /* UIView-KIFAdditions.m */,
+				325D7AC6259537F300CC6B10 /* UITouch-KIFAdditions.h */,
+				325D7AC7259537F300CC6B10 /* UIView-Debugging.h */,
+				325D7AC8259537F300CC6B10 /* UIEvent+KIFAdditions.m */,
+				325D7AC9259537F300CC6B10 /* NSError-KIFAdditions.m */,
+				325D7ACA259537F300CC6B10 /* LoadableCategory.h */,
+			);
+			name = KIF;
+			path = Classes/KIF;
+			sourceTree = "<group>";
+		};
+		325D7AE025953F8D00CC6B10 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
 				32D4E15A259273E60027F238 /* fakes.h */,
 				32D4E15C2592749D0027F238 /* fakes.m */,
+				325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */,
+				325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */,
+				325D7AE225953F8E00CC6B10 /* KBSelectableTextView.h */,
+				325D7AE125953F8E00CC6B10 /* KBSelectableTextView.m */,
+			);
+			path = tvOS;
+			sourceTree = "<group>";
+		};
+		3A4C94151B5B20570088C3F2 = {
+			isa = PBXGroup;
+			children = (
+				325D7AE025953F8D00CC6B10 /* tvOS */,
+				325D7AB5259537F300CC6B10 /* KIF */,
 				3A4C94211B5B20570088C3F2 /* FLEX */,
 				1C27A8B71F0E5A0400F0D02D /* FLEXTests */,
 				3A4C95451B5B216C0088C3F2 /* Frameworks */,
@@ -1437,6 +1528,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				779B1EDA1C0C4D7C001F5E49 /* FLEXTableListViewController.h in Headers */,
+				325D7AD5259537F300CC6B10 /* UIWindow-KIFAdditions.h in Headers */,
 				C3531BA523E88A2100A184AD /* FLEXNavigationController.h in Headers */,
 				3A4C94ED1B5B21410088C3F2 /* FLEXArgumentInputColorView.h in Headers */,
 				C3A9424523C641C1006871A3 /* SceneKit+Snapshot.h in Headers */,
@@ -1448,6 +1540,7 @@
 				3A4C95381B5B21410088C3F2 /* FLEXNetworkRecorder.h in Headers */,
 				3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */,
 				C383C3C523B6BB81007A321B /* FLEXCodeFontCell.h in Headers */,
+				325D7AD2259537F300CC6B10 /* UIView-KIFAdditions.h in Headers */,
 				C3F527C12318670F009CBA07 /* FLEXImageShortcuts.h in Headers */,
 				3A4C95051B5B21410088C3F2 /* FLEXArgumentInputViewFactory.h in Headers */,
 				C312A13423ECBE5800E38049 /* FLEXBookmarksViewController.h in Headers */,
@@ -1462,6 +1555,8 @@
 				3A4C953E1B5B21410088C3F2 /* FLEXNetworkTransactionDetailController.h in Headers */,
 				3A4C95301B5B21410088C3F2 /* FLEXSystemLogMessage.h in Headers */,
 				C398625523AD6C67007E6793 /* FLEXObjcRuntimeViewController.h in Headers */,
+				325D7AD3259537F300CC6B10 /* NSError-KIFAdditions.h in Headers */,
+				325D7AE825955C3500CC6B10 /* FLEXFontListTableViewController.h in Headers */,
 				C3E5DA02231700EE00E655DB /* FLEXObjectInfoSection.h in Headers */,
 				C34D4EB023A2ABD900C1F903 /* FLEXLayerShortcuts.h in Headers */,
 				C3F646F623A04A7500D4A011 /* FLEXShortcut.h in Headers */,
@@ -1507,6 +1602,7 @@
 				3A4C950F1B5B21410088C3F2 /* FLEXMethodCallingViewController.h in Headers */,
 				3A4C94F51B5B21410088C3F2 /* FLEXArgumentInputObjectView.h in Headers */,
 				C3A9424923C78878006871A3 /* FLEXHierarchyViewController.h in Headers */,
+				325D7ADF259537F400CC6B10 /* LoadableCategory.h in Headers */,
 				C3DFCD942416BC6500BB7084 /* FLEXFilteringTableViewController.h in Headers */,
 				3A4C94F11B5B21410088C3F2 /* FLEXArgumentInputFontsPickerView.h in Headers */,
 				C3BFD070233C23ED0015FB82 /* NSArray+FLEX.h in Headers */,
@@ -1521,11 +1617,14 @@
 				3A4C94FF1B5B21410088C3F2 /* FLEXArgumentInputSwitchView.h in Headers */,
 				C398625423AD6C67007E6793 /* FLEXRuntimeBrowserToolbar.h in Headers */,
 				3A4C94E71B5B21410088C3F2 /* FLEXHierarchyTableViewCell.h in Headers */,
+				325D7ADB259537F400CC6B10 /* UITouch-KIFAdditions.h in Headers */,
 				224D49AA1C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.h in Headers */,
+				325D7ADC259537F400CC6B10 /* UIView-Debugging.h in Headers */,
 				C386D6A9241995A800699085 /* FLEXTypeEncodingParser.h in Headers */,
 				3A4C95031B5B21410088C3F2 /* FLEXArgumentInputView.h in Headers */,
 				C398627623AD79B7007E6793 /* NSString+FLEX.h in Headers */,
 				94A5151D1C4CA1F10063292F /* FLEXExplorerViewController.h in Headers */,
+				325D7ACD259537F300CC6B10 /* UIApplication-KIFAdditions.h in Headers */,
 				C3F31D3F2267D883003C991A /* FLEXMultilineTableViewCell.h in Headers */,
 				71E1C2132307FBB800F5032A /* FLEXKeychain.h in Headers */,
 				C36FBFD7230F3B98008D95D5 /* FLEXMirror.h in Headers */,
@@ -1566,6 +1665,7 @@
 				C3A9424D23C78CFF006871A3 /* FHSViewSnapshot.h in Headers */,
 				C3EE76BF22DFC63600EC0AA0 /* FLEXScopeCarousel.h in Headers */,
 				C398627223AD7951007E6793 /* UIGestureRecognizer+Blocks.h in Headers */,
+				325D7AD4259537F300CC6B10 /* UIEvent+KIFAdditions.h in Headers */,
 				3A4C94E91B5B21410088C3F2 /* FLEXHierarchyTableViewController.h in Headers */,
 				3A4C94F31B5B21410088C3F2 /* FLEXArgumentInputFontView.h in Headers */,
 				C3A9423C23C54010006871A3 /* FHSSnapshotView.h in Headers */,
@@ -1587,19 +1687,23 @@
 				3A4C95421B5B21410088C3F2 /* FLEXNetworkObserver.h in Headers */,
 				C386D6EB24199E9600699085 /* FLEX-ObjectExploring.h in Headers */,
 				679F64861BD53B7B00A8C94C /* FLEXCookiesViewController.h in Headers */,
+				325D7AE425953F8E00CC6B10 /* KBSelectableTextView.h in Headers */,
 				C3F977872311B38F0032776D /* NSObject+FLEX_Reflection.h in Headers */,
 				C3DB9F642107FC9600B46809 /* FLEXObjectRef.h in Headers */,
 				3A4C95401B5B21410088C3F2 /* FLEXNetworkTransactionCell.h in Headers */,
+				325D7ACB259537F300CC6B10 /* IOHIDEvent+KIF.h in Headers */,
 				C398626523AD70F5007E6793 /* FLEXKBToolbarButton.h in Headers */,
 				3A4C95241B5B21410088C3F2 /* FLEXFileBrowserController.h in Headers */,
 				C31D93E423E38CBE005517BF /* FLEXBlockShortcuts.h in Headers */,
 				94AAF0381BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h in Headers */,
+				325D7AD6259537F300CC6B10 /* CGGeometry-KIFAdditions.h in Headers */,
 				71E1C2152307FBB800F5032A /* FLEXKeychainQuery.h in Headers */,
 				C36B096523E0D4A1008F5D47 /* UIMenu+FLEX.h in Headers */,
 				C36FBFD6230F3B98008D95D5 /* FLEXIvar.h in Headers */,
 				C3A9423823C51B8D006871A3 /* FHSRangeSlider.h in Headers */,
 				C398626123AD70DF007E6793 /* FLEXKeyboardToolbar.h in Headers */,
 				C386D6F2241A96AD00699085 /* FLEXMacros.h in Headers */,
+				325D7AD8259537F300CC6B10 /* UIScreen+KIFAdditions.h in Headers */,
 				94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */,
 				94A515181C4CA1D70063292F /* FLEXManager+Private.h in Headers */,
 				C383C3B923B6A62A007A321B /* FLEXRuntimeSafety.h in Headers */,
@@ -1737,7 +1841,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32D4E15E2592749D0027F238 /* fakes.m in Sources */,
 				C33C825B23159EAF00DD2451 /* FLEXTests.m in Sources */,
 				1C27A8B91F0E5A0400F0D02D /* FLEXTestsMethodsList.m in Sources */,
 				C3854DF023F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m in Sources */,
@@ -1780,8 +1883,11 @@
 				94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */,
 				C398624E23AD6C67007E6793 /* FLEXRuntimeKeyPath.m in Sources */,
 				C3694DC323EA147F006625D7 /* UIBarButtonItem+FLEX.m in Sources */,
+				325D7ACE259537F300CC6B10 /* CGGeometry-KIFAdditions.m in Sources */,
 				C36FBFD4230F3B98008D95D5 /* FLEXProtocol.m in Sources */,
 				C34D4EB123A2ABD900C1F903 /* FLEXLayerShortcuts.m in Sources */,
+				325D7ADA259537F300CC6B10 /* UIView-KIFAdditions.m in Sources */,
+				325D7ADE259537F400CC6B10 /* NSError-KIFAdditions.m in Sources */,
 				C38F3F32230C958F004E3731 /* FLEXAlert.m in Sources */,
 				C301994B2409B38A00759E8E /* CALayer+FLEX.m in Sources */,
 				3A4C95081B5B21410088C3F2 /* FLEXDefaultEditorViewController.m in Sources */,
@@ -1797,6 +1903,7 @@
 				3A4C94F01B5B21410088C3F2 /* FLEXArgumentInputDateView.m in Sources */,
 				C398627723AD79B7007E6793 /* NSString+FLEX.m in Sources */,
 				C36FBFDC230F3B98008D95D5 /* FLEXIvar.m in Sources */,
+				325D7AD1259537F300CC6B10 /* UITouch-KIFAdditions.m in Sources */,
 				C313854023F5C1A10046E63C /* FLEXViewControllersViewController.m in Sources */,
 				C3F527C22318670F009CBA07 /* FLEXImageShortcuts.m in Sources */,
 				679F64871BD53B7B00A8C94C /* FLEXCookiesViewController.m in Sources */,
@@ -1818,6 +1925,7 @@
 				3A4C94E41B5B21410088C3F2 /* FLEXRuntimeUtility.m in Sources */,
 				3A4C94D41B5B21410088C3F2 /* FLEXObjectExplorerFactory.m in Sources */,
 				94A515171C4CA1D70063292F /* FLEXManager.m in Sources */,
+				325D7AD0259537F300CC6B10 /* UIView-Debugging.m in Sources */,
 				C398626623AD70F5007E6793 /* FLEXKBToolbarButton.m in Sources */,
 				3A4C952F1B5B21410088C3F2 /* FLEXWebViewController.m in Sources */,
 				3A4C95041B5B21410088C3F2 /* FLEXArgumentInputView.m in Sources */,
@@ -1838,6 +1946,7 @@
 				3A4C95311B5B21410088C3F2 /* FLEXSystemLogMessage.m in Sources */,
 				C3F31D422267D883003C991A /* FLEXTableViewCell.m in Sources */,
 				3A4C94F41B5B21410088C3F2 /* FLEXArgumentInputFontView.m in Sources */,
+				325D7AE325953F8E00CC6B10 /* KBSelectableTextView.m in Sources */,
 				C3694DBB23EA1096006625D7 /* FLEXTabsViewController.m in Sources */,
 				C3A9424623C641C1006871A3 /* SceneKit+Snapshot.m in Sources */,
 				3A4C953B1B5B21410088C3F2 /* FLEXNetworkSettingsController.m in Sources */,
@@ -1850,10 +1959,12 @@
 				C3531BA223E796BD00A184AD /* FLEXManager+Extensibility.m in Sources */,
 				71E1C2172307FBB800F5032A /* FLEXKeychain.m in Sources */,
 				C3A9423923C51B8D006871A3 /* FHSRangeSlider.m in Sources */,
+				325D7AD9259537F300CC6B10 /* IOHIDEvent+KIF.m in Sources */,
 				C3F646F323A045DB00D4A011 /* FLEXClassShortcuts.m in Sources */,
 				C398625E23AD6E90007E6793 /* UIFont+FLEX.m in Sources */,
 				C387C88422E0D24A00750E58 /* UIView+FLEX_Layout.m in Sources */,
 				C32A195F231732E800EB02AC /* FLEXCollectionContentSection.m in Sources */,
+				325D7AD7259537F300CC6B10 /* UIApplication-KIFAdditions.m in Sources */,
 				C36FBFCD230F3B98008D95D5 /* FLEXMethod.m in Sources */,
 				779B1ED31C0C4D7C001F5E49 /* FLEXTableColumnHeader.m in Sources */,
 				C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */,
@@ -1863,12 +1974,14 @@
 				C36B097123E1EDCD008F5D47 /* FLEXTableViewSection.m in Sources */,
 				C3531BA623E88A2100A184AD /* FLEXNavigationController.m in Sources */,
 				3A4C94EA1B5B21410088C3F2 /* FLEXHierarchyTableViewController.m in Sources */,
+				325D7ACF259537F300CC6B10 /* UIWindow-KIFAdditions.m in Sources */,
 				32D4E15D2592749D0027F238 /* fakes.m in Sources */,
 				3A4C95331B5B21410088C3F2 /* FLEXSystemLogCell.m in Sources */,
 				C3A9423523C3F98E006871A3 /* FHSViewController.m in Sources */,
 				C3DB9F652107FC9600B46809 /* FLEXObjectRef.m in Sources */,
 				3A4C95021B5B21410088C3F2 /* FLEXArgumentInputTextView.m in Sources */,
 				C3531B9E23E69BB200A184AD /* FLEXManager+Networking.m in Sources */,
+				325D7AE725955C3500CC6B10 /* FLEXFontListTableViewController.m in Sources */,
 				C39EADC923F37B89005618BE /* FLEXTypeEncodingParser.m in Sources */,
 				C3F977882311B38F0032776D /* NSObject+FLEX_Reflection.m in Sources */,
 				C36B096623E0D4A1008F5D47 /* UIMenu+FLEX.m in Sources */,
@@ -1881,6 +1994,7 @@
 				C36FBFCB230F3B98008D95D5 /* FLEXMirror.m in Sources */,
 				C36FBFD5230F3B98008D95D5 /* FLEXMethodBase.m in Sources */,
 				3A4C95001B5B21410088C3F2 /* FLEXArgumentInputSwitchView.m in Sources */,
+				325D7ACC259537F300CC6B10 /* UIScreen+KIFAdditions.m in Sources */,
 				C386D6F02419A33F00699085 /* FLEXRuntimeConstants.m in Sources */,
 				C3F31D442267D883003C991A /* FLEXTableView.m in Sources */,
 				3A4C953F1B5B21410088C3F2 /* FLEXNetworkTransactionDetailController.m in Sources */,
@@ -1903,6 +2017,7 @@
 				3A4C950A1B5B21410088C3F2 /* FLEXFieldEditorView.m in Sources */,
 				3A4C95061B5B21410088C3F2 /* FLEXArgumentInputViewFactory.m in Sources */,
 				3A4C95291B5B21410088C3F2 /* FLEXObjectListViewController.m in Sources */,
+				325D7ADD259537F400CC6B10 /* UIEvent+KIFAdditions.m in Sources */,
 				C397E319240EC98F0091E4EC /* FLEXSQLResult.m in Sources */,
 				C31D93E923E38E97005517BF /* FLEXBlockDescription.m in Sources */,
 				71E1C2182307FBB800F5032A /* FLEXKeychainViewController.m in Sources */,

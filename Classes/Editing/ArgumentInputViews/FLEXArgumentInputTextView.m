@@ -12,7 +12,11 @@
 
 @interface FLEXArgumentInputTextView ()
 
+#if TARGET_OS_TV
+@property (nonatomic) KBSelectableTextView *inputTextView;
+#else
 @property (nonatomic) UITextView *inputTextView;
+#endif
 @property (nonatomic) UILabel *placeholderLabel;
 @property (nonatomic, readonly) NSUInteger numberOfInputLines;
 
@@ -23,7 +27,11 @@
 - (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
+        #if TARGET_OS_TV
+        self.inputTextView = [[KBSelectableTextView alloc] initWithFrame:CGRectZero];
+        #else
         self.inputTextView = [UITextView new];
+        #endif
         self.inputTextView.font = [[self class] inputFont];
         self.inputTextView.backgroundColor = FLEXColor.secondaryGroupedBackgroundColor;
         self.inputTextView.layer.cornerRadius = 10.f;
@@ -129,7 +137,11 @@
 }
 
 - (CGFloat)inputTextViewHeight {
-    return ceil([[self class] inputFont].lineHeight * self.numberOfInputLines) + 16.0;
+    CGFloat padding = 16.0;
+#if TARGET_OS_TV
+    padding = 40.0;
+#endif
+    return ceil([[self class] inputFont].lineHeight * self.numberOfInputLines) + padding;
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {

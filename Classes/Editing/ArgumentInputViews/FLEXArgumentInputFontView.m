@@ -10,6 +10,7 @@
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXArgumentInputFontsPickerView.h"
+#import <TargetConditionals.h>
 
 @interface FLEXArgumentInputFontView ()
 
@@ -74,11 +75,15 @@
     CGFloat runningOriginY = self.topInputFieldVerticalLayoutGuide;
     
     CGSize fontNameFitSize = [self.fontNameInput sizeThatFits:self.bounds.size];
-    self.fontNameInput.frame = CGRectMake(0, runningOriginY, fontNameFitSize.width, fontNameFitSize.height);
+    CGFloat padding = 0;
+#if TARGET_OS_TV
+    padding = 40;
+#endif
+    self.fontNameInput.frame = CGRectMake(0, runningOriginY, fontNameFitSize.width, fontNameFitSize.height + padding);
     runningOriginY = CGRectGetMaxY(self.fontNameInput.frame) + [[self class] verticalPaddingBetweenFields];
     
     CGSize pointSizeFitSize = [self.pointSizeInput sizeThatFits:self.bounds.size];
-    self.pointSizeInput.frame = CGRectMake(0, runningOriginY, pointSizeFitSize.width, pointSizeFitSize.height);
+    self.pointSizeInput.frame = CGRectMake(0, runningOriginY, pointSizeFitSize.width, pointSizeFitSize.height + padding);
 }
 
 + (CGFloat)verticalPaddingBetweenFields {

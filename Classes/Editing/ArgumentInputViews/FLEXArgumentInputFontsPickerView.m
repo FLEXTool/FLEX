@@ -8,7 +8,8 @@
 
 #import "FLEXArgumentInputFontsPickerView.h"
 #import "FLEXRuntimeUtility.h"
-
+#import "FLEXFontListTableViewController.h"
+#import "NSObject+FLEX_Reflection.h"
 @interface FLEXArgumentInputFontsPickerView ()
 
 @property (nonatomic) NSMutableArray<NSString *> *availableFonts;
@@ -23,7 +24,17 @@
     if (self) {
         self.targetSize = FLEXArgumentInputViewSizeSmall;
         [self createAvailableFonts];
+#if TARGET_OS_TV
+        FLEXFontListTableViewController *fontListController = [FLEXFontListTableViewController new];
+        fontListController.itemSelectedBlock = ^(NSString *fontName) {
+            [self.inputTextView setText:fontName];
+            [[self topViewController] dismissViewControllerAnimated:true completion:nil];
+        };
+        self.inputTextView.inputViewController = fontListController;
+        
+#else
         self.inputTextView.inputView = [self createFontsPicker];
+#endif
     }
     return self;
 }

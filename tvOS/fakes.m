@@ -8,6 +8,39 @@
 
 #import "fakes.h"
 
+@implementation UIFakePickerView
+
+- (NSInteger) numberOfComponents {
+    return 0;
+}
+- (NSInteger)numberOfRowsInComponent:(NSInteger)component {
+    return 0;;
+}
+- (CGSize)rowSizeForComponent:(NSInteger)component {
+    return CGSizeZero;
+}
+
+- (nullable UIView *)viewForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return nil;
+}
+// Reloading whole view or single component
+- (void)reloadAllComponents {
+    
+}
+- (void)reloadComponent:(NSInteger)component {
+    
+}
+
+// selection. in this case, it means showing the appropriate row in the middle
+- (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animated:(BOOL)animated {
+    
+}
+- (NSInteger)selectedRowInComponent:(NSInteger)component {
+    return -1;
+}
+
+@end
+
 @implementation UIFakeSwitch
 
 - (void)setOn:(BOOL)on animated:(BOOL)animated {

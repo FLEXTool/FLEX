@@ -8,10 +8,14 @@
 
 #import "FLEXKeyboardHelpViewController.h"
 #import "FLEXKeyboardShortcutManager.h"
-
+#import "KBSelectableTextView.h"
 @interface FLEXKeyboardHelpViewController ()
 
+#if TARGET_OS_TV
+@property (nonatomic) KBSelectableTextView *textView;
+#else
 @property (nonatomic) UITextView *textView;
+#endif
 
 @end
 
@@ -19,8 +23,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+#if TARGET_OS_TV
+    self.textView = [[KBSelectableTextView alloc] initWithFrame:self.view.bounds];
+#else
     self.textView = [[UITextView alloc] initWithFrame:self.view.bounds];
+#endif
     self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.textView];
 #if TARGET_OS_SIMULATOR

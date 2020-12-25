@@ -55,6 +55,8 @@
 #pragma mark - UIViewController methods
 
 - (void)keyboardDidShow:(NSNotification *)notification {
+    
+    NSLog(@"[FLEXLog] keyboardDidShow!");
     CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
@@ -73,6 +75,7 @@
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
+    NSLog(@"[FLEXLog] keyboardWillHide!");
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
     scrollInsets.bottom = 0.0;
     self.scrollView.contentInset = scrollInsets;
