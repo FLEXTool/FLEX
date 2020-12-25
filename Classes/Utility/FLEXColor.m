@@ -8,6 +8,17 @@
 
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
+#import <UIKit/UIInterface.h>
+
+/**
+ 
+ A note about tvOS Support: i tried to briefly undefine the API_UNAVAILABLE macro in an attempt to avoid the need to patch the SDK to get this working, this properties are actually available
+ on tvOS and if we don't use them the UI gets comlpetely out of whack.
+ 
+ */
+
+#undef API_UNAVAILABLE
+#define API_UNAVAILABLE(...) API_AVAILABLE(...)
 
 #if FLEX_AT_LEAST_IOS13_SDK
 #define FLEXDynamicColor(dynamic, static) ({ \

@@ -44,7 +44,9 @@
     if ([self.availableFonts indexOfObject:inputValue] == NSNotFound) {
         [self.availableFonts insertObject:inputValue atIndex:0];
     }
+#if !TARGET_OS_TV
     [(UIPickerView *)self.inputTextView.inputView selectRow:[self.availableFonts indexOfObject:inputValue] inComponent:0 animated:NO];
+#endif
 }
 
 - (id)inputValue {
@@ -52,14 +54,6 @@
 }
 
 #pragma mark - private
-
-- (UIPickerView*)createFontsPicker {
-    UIPickerView *fontsPicker = [UIPickerView new];
-    fontsPicker.dataSource = self;
-    fontsPicker.delegate = self;
-    fontsPicker.showsSelectionIndicator = YES;
-    return fontsPicker;
-}
 
 - (void)createAvailableFonts {
     NSMutableArray<NSString *> *unsortedFontsArray = [NSMutableArray new];
@@ -69,6 +63,16 @@
         }
     }
     self.availableFonts = [NSMutableArray arrayWithArray:[unsortedFontsArray sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)]];
+}
+
+#if !TARGET_OS_TV
+
+- (UIPickerView*)createFontsPicker {
+    UIPickerView *fontsPicker = [UIPickerView new];
+    fontsPicker.dataSource = self;
+    fontsPicker.delegate = self;
+    fontsPicker.showsSelectionIndicator = YES;
+    return fontsPicker;
 }
 
 #pragma mark - UIPickerViewDataSource
@@ -103,5 +107,7 @@
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     self.inputTextView.text = self.availableFonts[row];
 }
+
+#endif
 
 @end

@@ -25,7 +25,6 @@ There may be additional classes this needs to be done with, these notes are impr
 
 sed -i -- "s|#define __TVOS_PROHIBITED                     __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_PROHIBITED_NOTQUITE                     __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
 
-
 sed -i -- "s|API_UNAVAILABLE(tvos, watchos)|API_UNAVAILABLE(watchos)|"  /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIInterface.h
 
 sed -i -- "s|API_UNAVAILABLE(tvos)||" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIPickerView.h
