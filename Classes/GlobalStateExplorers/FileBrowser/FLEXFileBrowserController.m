@@ -32,7 +32,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 @property (nonatomic) NSNumber *recursiveSize;
 @property (nonatomic) NSNumber *searchPathsSize;
 @property (nonatomic) NSOperationQueue *operationQueue;
+#if !TARGET_OS_TV
 @property (nonatomic) UIDocumentInteractionController *documentController;
+#endif
 @property (nonatomic) FLEXFileBrowserSortAttribute sortAttribute;
 
 @end
@@ -401,11 +403,13 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 #endif
 
 - (void)openFileController:(NSString *)fullPath {
+#if !TARGET_OS_TV
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
     controller.URL = [NSURL fileURLWithPath:fullPath];
 
     [controller presentOptionsMenuFromRect:self.view.bounds inView:self.view animated:YES];
     self.documentController = controller;
+#endif
 }
 
 - (void)fileBrowserRename:(UITableViewCell *)sender {
@@ -466,6 +470,7 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 }
 
 - (void)fileBrowserShare:(UITableViewCell *)sender {
+#if !TARGET_OS_TV
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *pathString = [self filePathAtIndexPath:indexPath];
     NSURL *filePath = [NSURL fileURLWithPath:pathString];
@@ -478,11 +483,12 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
         [self openFileController:pathString];
     } else {
         // Share sheet for files
-#if !TARGET_OS_TV
+
         UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[filePath] applicationActivities:nil];
         [self presentViewController:shareSheet animated:true completion:nil];
-#endif
+
     }
+#endif
 }
 
 - (void)reloadDisplayedPaths {
