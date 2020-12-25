@@ -9,65 +9,45 @@
 #import <UIKit/UIKit.h>
 #import "FLEXMacros.h"
 
-@protocol UIFakePickerViewDataSource, UIFakePickerViewDelegate;
+typedef NS_ENUM(NSInteger, UIFakeDatePickerMode) {
+    UIFakeDatePickerModeTime,           // Displays hour, minute, and optionally AM/PM designation depending on the locale setting (e.g. 6 | 53 | PM)
+    UIFakeDatePickerModeDate,           // Displays month, day, and year depending on the locale setting (e.g. November | 15 | 2007)
+    UIFakeDatePickerModeDateAndTime,    // Displays date, hour, minute, and optionally AM/PM designation depending on the locale setting (e.g. Wed Nov 15 | 6 | 53 | PM)
+    UIFakeDatePickerModeCountDownTimer, // Displays hour and minute (e.g. 1 | 53)
+} ;
 
-@interface UIFakePickerView : UIView <NSCoding>
+typedef NS_ENUM(NSInteger, UIFakeDatePickerStyle) {
+    /// Automatically pick the best style available for the current platform & mode.
+    UIFakeDatePickerStyleAutomatic,
+    /// Use the wheels (UIPickerView) style.
+    UIFakeDatePickerStyleWheels,
+    /// Use a compact style for the date picker. Editing occurs in an overlay.
+    UIFakeDatePickerStyleCompact,
+};
 
-@property(nullable,nonatomic,weak) id<UIFakePickerViewDataSource> dataSource;                // default is nil. weak reference
-@property(nullable,nonatomic,weak) id<UIFakePickerViewDelegate>   delegate;                  // default is nil. weak reference
-@property(nonatomic) BOOL showsSelectionIndicator API_DEPRECATED("This property has no effect on iOS 7 and later.", ios(2.0, 13.0));
+@interface UIFakeDatePicker : UIControl <NSCoding>
+@property (nonatomic) UIFakeDatePickerMode datePickerMode; // default is UIFakeDatePickerModeDateAndTime
 
-// info that was fetched and cached from the data source and delegate
-@property(nonatomic,readonly) NSInteger numberOfComponents;
-- (NSInteger)numberOfRowsInComponent:(NSInteger)component;
-- (CGSize)rowSizeForComponent:(NSInteger)component;
+@property (nullable, nonatomic, strong) NSLocale   *locale;   // default is [NSLocale currentLocale]. setting nil returns to default
+@property (null_resettable, nonatomic, copy)   NSCalendar *calendar; // default is [NSCalendar currentCalendar]. setting nil returns to default
+@property (nullable, nonatomic, strong) NSTimeZone *timeZone; // default is nil. use current time zone or time zone from calendar
 
-// returns the view provided by the delegate via pickerView:viewForRow:forComponent:reusingView:
-// or nil if the row/component is not visible or the delegate does not implement
-// pickerView:viewForRow:forComponent:reusingView:
-- (nullable UIView *)viewForRow:(NSInteger)row forComponent:(NSInteger)component;
+@property (nonatomic, strong) NSDate * _Nonnull date;        // default is current dat _Nonnull e when picker created. Ignored in countdown timer mode. for that mode, picker starts at 0:00
+@property (nullable, nonatomic, strong) NSDate *minimumDate; // specify min/max date range. default is nil. When min > max, the values are ignored. Ignored in countdown timer mode
+@property (nullable, nonatomic, strong) NSDate *maximumDate; // default is nil
 
-// Reloading whole view or single component
-- (void)reloadAllComponents;
-- (void)reloadComponent:(NSInteger)component;
+@property (nonatomic) NSTimeInterval countDownDuration; // for UIFakeDatePickerModeCountDownTimer, ignored otherwise. default is 0.0. limit is 23:59 (86,399 seconds). value being set is div 60 (drops remaining seconds).
+@property (nonatomic) NSInteger      minuteInterval;    // display minutes wheel with interval. interval must be evenly divided into 60. default is 1. min is 1, max is 30
 
-// selection. in this case, it means showing the appropriate row in the middle
-- (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animated:(BOOL)animated;  // scrolls the specified row to center.
+- (void)setDate:(NSDate *_Nonnull)date animated:(BOOL)animated; // if a_Nonnullnimated is YES, animate the wheels of time to display the new date
 
-- (NSInteger)selectedRowInComponent:(NSInteger)component;                                   // returns selected row. -1 if nothing selected
+/// Request a style for the date picker. If the style changed, then the date picker may need to be resized and will generate a layout pass to display correctly.
+@property (nonatomic, readwrite, assign) UIFakeDatePickerStyle preferredDatePickerStyle;
 
-@end
-
-@protocol UIFakePickerViewDataSource<NSObject>
-@required
-
-// returns the number of 'columns' to display.
-- (NSInteger)numberOfComponentsInPickerView:(UIFakePickerView *_Nonnull)pickerView;
-
-// returns the # of rows in each component..
-- (NSInteger)pickerView:(UIFakePickerView *_Nonnull)pickerView numberOfRowsInComponent:(NSInteger)component;
-@end
-
-
-@protocol UIFakePickerViewDelegate<NSObject>
-@optional
-
-// returns width of column and height of row for each component.
-- (CGFloat)pickerView:(UIFakePickerView *_Nonnull)pickerView widthForComponent:(NSInteger)component ;
-- (CGFloat)pickerView:(UIFakePickerView *_Nonnull)pickerView rowHeightForComponent:(NSInteger)component ;
-
-// these methods return either a plain NSString, a NSAttributedString, or a view (e.g UILabel) to display the row for the component.
-// for the view versions, we cache any hidden and thus unused views and pass them back for reuse.
-// If you return back a different object, the old one will be released. the view will be centered in the row rect
-- (nullable NSString *)pickerView:(UIFakePickerView *_Nonnull)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component ;
-- (nullable NSAttributedString *)pickerView:(UIFakePickerView *_Nonnull)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component API_AVAILABLE(ios(6.0)) ; // attributed title is favored if both methods are implemented
-- (UIView *_Nonnull)pickerView:(UIFakePickerView *_Nonnull)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(nullable UIView *)view ;
-
-- (void)pickerView:(UIFakePickerView *_Nonnull)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component ;
+/// The style that the date picker is using for its layout. This property always returns a concrete style (never automatic).
+@property (nonatomic, readonly, assign) UIFakeDatePickerStyle datePickerStyle;
 
 @end
-
-
 
 @interface UIFakeSwitch : UIButton <NSCoding>
 @property(nullable, nonatomic, strong) UIColor *onTintColor;

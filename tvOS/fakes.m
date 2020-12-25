@@ -8,7 +8,19 @@
 
 #import "fakes.h"
 
-@implementation UIFakePickerView
+@implementation UIFakeDatePicker
+
+- (void)setCalendar:(NSCalendar *)calendar {
+
+}
+
+- (void)setDate:(NSDate *_Nonnull)date animated:(BOOL)animated {
+    
+}
+
+- (NSCalendar *)calendar {
+    return [NSCalendar currentCalendar];
+}
 
 - (NSInteger) numberOfComponents {
     return 0;
