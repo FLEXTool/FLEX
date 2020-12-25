@@ -24,7 +24,6 @@
 - (UIViewController *)topViewController;
 @end
 
-
 @implementation UIWindow (Additions)
 - (UIViewController *)visibleViewController {
     UIViewController *rootViewController = self.rootViewController;
@@ -72,7 +71,7 @@ static void sendNotification(NSString *title, NSString *message, UIImage *image)
     [[NSDistributedNotificationCenter defaultCenter] postNotificationName:@"com.nito.bulletinh4x/displayBulletin" object:nil userInfo:dict];
 }
 
-// The dylib constructor sets decryptedIPAPath, spawns a thread to do the app decryption, then exits.
+
 __attribute__ ((constructor)) static void FLEXInjected_main() {
     
     NSBundle *bundle = [NSBundle mainBundle];
@@ -80,48 +79,50 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
     NSDictionary *ourDict = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.nito.flexinjected.plist"];
     NSNumber *value = [ourDict objectForKey:bundleID];
     if ([value boolValue] == YES) {
-    BOOL sendAlert = true;
-    id prox = [%c(LSApplicationProxy) applicationProxyForIdentifier:bundleID];
-      UIImage *icon = nil;
-      if (prox){
-          NSLog(@"[FLEXInjected] found prox: %@", prox);
-          if ([prox isContainerized]){
-            //sendAlert = false;
-		icon = nil;
-	  } else {
-                icon = [prox tv_applicationFlatIcon];
-          }
-      } else {
-          NSString *mcsPath = @"/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices";
-          [[NSBundle bundleWithPath:mcsPath] load];
-          prox = [%c(LSApplicationProxy) applicationProxyForIdentifier:bundleID];
-          if ([prox isContainerized]){
-            //sendAlert = false;
-	    icon = nil;
-	  } else {
-            icon = [prox tv_applicationFlatIcon];
-           }
-      }
-      if (sendAlert){
-        NSString *message = [NSString stringWithFormat:@"Injected into bundle: %@", bundleID];
-        sendNotification(@"FLEXInjected", message, icon);
-        NSLog(@"[FLEXInjected) bundle ID %@", bundleID);
-      }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"[FLEXInjected] weouchea...");
-        NSString *p = @"/Library/Frameworks/FLEX.framework";
-        NSBundle *bundle = [NSBundle bundleWithPath:p];
-        [bundle load];
-        id flexManager = [%c(FLEXManager) sharedManager];
-        UIViewController *tvc = [[UIApplication sharedApplication] topViewController];
-        if([tvc respondsToSelector: @selector(tabBarController)]){
-            UITabBarController *tabBar = [tvc tabBarController];
-            if (tabBar) tvc = tabBar;
+        BOOL sendAlert = true;
+        id prox = [%c(LSApplicationProxy) applicationProxyForIdentifier:bundleID];
+        UIImage *icon = nil;
+        if (prox){
+            NSLog(@"[FLEXInjected] found prox: %@", prox);
+            if ([prox isContainerized]){
+                icon = nil;
+            } else {
+                if ([prox respondsToSelector:@selector(tv_applicationFlatIcon)]){
+                    icon = [prox tv_applicationFlatIcon];
+                }
+            }
+        } else { //no prox found
+            NSString *mcsPath = @"/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices";
+            [[NSBundle bundleWithPath:mcsPath] load];
+            prox = [%c(LSApplicationProxy) applicationProxyForIdentifier:bundleID];
+            if ([prox isContainerized]){
+                icon = nil;
+            } else {
+                if ([prox respondsToSelector:@selector(tv_applicationFlatIcon)]){
+                    icon = [prox tv_applicationFlatIcon];
+                }
+            }
         }
-        NSLog(@"[FLEXInjected] top view controller: %@ violated...", tvc);
-        [flexManager _addTVOSGestureRecognizer:tvc];
-        [flexManager showExplorer];
-    });
+        if (sendAlert){
+            NSString *message = [NSString stringWithFormat:@"Injected into bundle: %@", bundleID];
+            sendNotification(@"FLEXInjected", message, icon);
+            NSLog(@"[FLEXInjected) bundle ID %@", bundleID);
+        }
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            NSLog(@"[FLEXInjected] weouchea...");
+            NSString *p = @"/Library/Frameworks/FLEX.framework";
+            NSBundle *bundle = [NSBundle bundleWithPath:p];
+            [bundle load];
+            id flexManager = [%c(FLEXManager) sharedManager];
+            UIViewController *tvc = [[UIApplication sharedApplication] topViewController];
+            if([tvc respondsToSelector: @selector(tabBarController)]){
+                UITabBarController *tabBar = [tvc tabBarController];
+                if (tabBar) tvc = tabBar;
+            }
+            NSLog(@"[FLEXInjected] top view controller: %@ violated...", tvc);
+            [flexManager _addTVOSGestureRecognizer:tvc];
+            [flexManager showExplorer];
+        });
         
     }
 }
