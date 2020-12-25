@@ -1,6 +1,6 @@
 Package: com.nito.flexinjected
 Name: FLEXInjected
-Depends: mobilesubstrate, preferenceloader (>=1.5-15), applist (>=1.3-11), libflex (>=4.1.1b-5)
+Depends: mobilesubstrate, preferenceloader (>=1.5-15), applist (>=1.3-11), libflex (>=4.1.1b-6)
 Version: 1.2
 Architecture: appletvos-arm64
 Description: Inject FLEX into your favorite Applications utilizing applist
