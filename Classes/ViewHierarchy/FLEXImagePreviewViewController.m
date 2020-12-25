@@ -149,7 +149,7 @@
             canSaveToCameraRoll = YES;
         }
     });
-    
+#if !TARGET_OS_TV
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.image] applicationActivities:@[]];
     
     if (!canSaveToCameraRoll && !didShowWarning) {
@@ -164,6 +164,7 @@
     } else {
         [self presentViewController:activityVC animated:YES completion:nil];
     }
+#endif
 }
 
 @end

@@ -65,9 +65,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// A colored transparent overlay to indicate that the view is selected.
 @property (nonatomic) UIView *selectedViewOverlay;
 
+#if !TARGET_OS_TV
 /// Used to actuate changes in view selection on iOS 10+
 @property (nonatomic, readonly) UISelectionFeedbackGenerator *selectionFBG API_AVAILABLE(ios(10.0));
-
+#endif
 /// self.view.window as a \c FLEXWindow
 @property (nonatomic, readonly) FLEXWindow *window;
 
@@ -213,12 +214,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     self.movePanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovePan:)];
     self.movePanGR.enabled = self.currentMode == FLEXExplorerModeMove;
     [self.view addGestureRecognizer:self.movePanGR];
-    
+#if !TARGET_OS_TV
     // Feedback
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
-
+#endif
 #if TARGET_OS_TV
     cursorView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 64, 64)];
     cursorView.center = CGPointMake(CGRectGetMidX([UIScreen mainScreen].bounds), CGRectGetMidY([UIScreen mainScreen].bounds));
@@ -845,9 +846,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)actuateSelectionChangedFeedback {
+    #if !TARGET_OS_TV
     if (@available(iOS 10.0, *)) {
         [self.selectionFBG selectionChanged];
     }
+    #endif
 }
 
 - (void)updateOutlineViewsForSelectionPoint:(CGPoint)selectionPointInWindow {

@@ -21,13 +21,17 @@ There is an excessive amount of stubbing / macroing to get this building, at a c
 
 There may be additional classes this needs to be done with, these notes are imprecise but should give you an idea.
 
-```sed -i -- "s|#define __TVOS_UNAVAILABLE                    __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_UNAVAILABLE_NOTQUITE                    __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
+```
+## this line is 100% necessary
+sed -i -- "s|API_UNAVAILABLE(tvos, watchos)|API_UNAVAILABLE(watchos)|"  /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIInterface.h
+
+## these lines might not be necessary, try avoiding them at first to see what happens
+
+sed -i -- "s|#define __TVOS_UNAVAILABLE                    __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_UNAVAILABLE_NOTQUITE                    __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
 
 sed -i -- "s|#define __TVOS_PROHIBITED                     __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_PROHIBITED_NOTQUITE                     __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
 
-sed -i -- "s|API_UNAVAILABLE(tvos, watchos)|API_UNAVAILABLE(watchos)|"  /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIInterface.h
 
-sed -i -- "s|API_UNAVAILABLE(tvos)||" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIPickerView.h
 ```
 
 ![tvOS Demo](view_selection.gif "tvOS Selection")

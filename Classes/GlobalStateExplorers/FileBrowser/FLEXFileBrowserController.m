@@ -478,8 +478,10 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
         [self openFileController:pathString];
     } else {
         // Share sheet for files
+#if !TARGET_OS_TV
         UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[filePath] applicationActivities:nil];
         [self presentViewController:shareSheet animated:true completion:nil];
+#endif
     }
 }
 

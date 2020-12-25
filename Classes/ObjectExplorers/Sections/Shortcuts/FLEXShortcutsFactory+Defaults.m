@@ -198,6 +198,7 @@
 @implementation FLEXShortcutsFactory (Activities)
 
 + (void)load { FLEX_EXIT_IF_NO_CTORS()
+#if !TARGET_OS_TV
     // Property was added in iOS 10 but we want it on iOS 9 too
     FLEXRuntimeUtilityTryAddNonatomicProperty(9, item, UIActivityItemProvider.class, id, PropertyKey(ReadOnly));
     
@@ -208,6 +209,7 @@
     self.append.properties(@[
         @"activityItems", @"applicationActivities", @"excludedActivityTypes", @"completionHandler"
     ]).forClass(UIActivityViewController.class);
+#endif
 }
 
 @end
