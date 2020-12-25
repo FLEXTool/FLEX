@@ -96,17 +96,23 @@
     _fieldEditorView = [FLEXFieldEditorView new];
     self.fieldEditorView.targetDescription = [NSString stringWithFormat:@"%@ %p", [self.target class], self.target];
     [self.scrollView addSubview:self.fieldEditorView];
-    
+#if !TARGET_OS_TV
     _actionButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Set"
         style:UIBarButtonItemStyleDone
         target:self
         action:@selector(actionButtonPressed:)
     ];
-    #if !TARGET_OS_TV
+    
     self.navigationController.toolbarHidden = NO;
     self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, self.actionButton];
-    #endif
+#else
+    _actionButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [_actionButton setTitle:@"Set" forState:UIControlStateNormal];
+    [_actionButton addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
+    _actionButton.frame = CGRectMake(500, 600, 200, 60);
+    [self.view addSubview:_actionButton];
+#endif
 }
 
 - (void)viewWillLayoutSubviews {
