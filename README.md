@@ -12,8 +12,7 @@
 - When in selection mode double tap on play/pause will bring up an alert with useful options (show views, details and move view are available there)
 
 ### Missing features - on support road map
-- anything with a slider or switch view will appear empty in the places those elements appear
-- any view with a UIPickerView or date picker will either crash / render strangely (i stubbed those elements out with fake elements to get it building.)
+- anything with a slider variable will not work properly yet
 
 ### Patch notes
 
