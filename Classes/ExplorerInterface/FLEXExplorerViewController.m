@@ -22,6 +22,7 @@
 #import "FLEXViewControllersViewController.h"
 #import "NSUserDefaults+FLEX.h"
 #import "FLEXManager.h"
+#import "FLEXResources.h"
 
 typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeDefault,
@@ -221,7 +222,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 #if TARGET_OS_TV
     cursorView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 64, 64)];
     cursorView.center = CGPointMake(CGRectGetMidX([UIScreen mainScreen].bounds), CGRectGetMidY([UIScreen mainScreen].bounds));
-    cursorView.image = [UIImage imageNamed:@"Cursor"];
+    cursorView.image = [FLEXResources cursorImage];
     cursorView.backgroundColor = [UIColor clearColor];
     cursorView.hidden = YES;
 

@@ -80,7 +80,11 @@
 
 - (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
+#if TARGET_OS_TV
+    fitSize.height += 110;
+#else
     fitSize.height += self.inputSwitch.frame.size.height;
+#endif
     return fitSize;
 }
 
