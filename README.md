@@ -32,7 +32,7 @@ sed -i -- "s|API_UNAVAILABLE(tvos)||" /Applications/Xcode.app/Contents/Developer
 
 ![tvOS Demo](view_selection.gif "tvOS Selection")
 
-[tvOS Demo](https://www.dropbox.com/s/v685gabrefo614f/better_flex.MP4?dl=1)
+[tvOS Demo](https://lbry.tv/@nitoTV:4/FLEX-on-tvOS:7)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/FLEX.svg)](https://cocoapods.org/?q=FLEX)
  [![CocoaPods](https://img.shields.io/cocoapods/l/FLEX.svg)](https://github.com/Flipboard/FLEX/blob/master/LICENSE)

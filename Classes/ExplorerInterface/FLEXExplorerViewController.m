@@ -227,8 +227,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     cursorView.hidden = YES;
 
     
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
-    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause]];
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause], [NSNumber numberWithInteger:UIPressTypeSelect]];
     [self.view addGestureRecognizer:longPress];
     [self.view addSubview:cursorView];
     
