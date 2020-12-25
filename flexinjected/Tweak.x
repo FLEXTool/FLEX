@@ -86,8 +86,9 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
       if (prox){
           NSLog(@"[FLEXInjected] found prox: %@", prox);
           if ([prox isContainerized]){
-            sendAlert = false;
-          } else {
+            //sendAlert = false;
+		icon = nil;
+	  } else {
                 icon = [prox tv_applicationFlatIcon];
           }
       } else {
@@ -95,14 +96,15 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
           [[NSBundle bundleWithPath:mcsPath] load];
           prox = [%c(LSApplicationProxy) applicationProxyForIdentifier:bundleID];
           if ([prox isContainerized]){
-            sendAlert = false;
-          } else {
+            //sendAlert = false;
+	    icon = nil;
+	  } else {
             icon = [prox tv_applicationFlatIcon];
            }
       }
       if (sendAlert){
         NSString *message = [NSString stringWithFormat:@"Injected into bundle: %@", bundleID];
-        sendNotification(@"FlexInjected", message, icon);
+        sendNotification(@"FLEXInjected", message, icon);
         NSLog(@"[FLEXInjected) bundle ID %@", bundleID);
       }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
