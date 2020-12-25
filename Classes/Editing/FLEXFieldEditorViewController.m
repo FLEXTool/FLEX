@@ -137,6 +137,19 @@
     }
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+#if TARGET_OS_TV
+    CGRect getterFrame = _getterButton.frame;
+    CGFloat actionOffset = [[self actionButton] frame].origin.y;
+    //CGRect fieldEditorFrame = self.fieldEditorView.frame;
+    //CGFloat buttonOffset = (fieldEditorFrame.origin.y + fieldEditorFrame.size.height) + (130 + 67);
+    getterFrame.origin.y = actionOffset;
+    _getterButton.frame = getterFrame;
+    
+#endif
+}
+
 #pragma mark - Private
 
 - (id)currentValue {

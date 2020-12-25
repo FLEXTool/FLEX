@@ -26,6 +26,9 @@
 #pragma mark Initialization
 
 + (instancetype)previewForView:(UIView *)view {
+#if TARGET_OS_TV
+    return [self forImage:[FLEXUtility previewImageForLayer:view.layer]]; //for some reason the one view 'view' below literally never works on tvOS
+#endif
     return [self forImage:[FLEXUtility previewImageForView:view]];
 }
 
@@ -113,7 +116,26 @@
     self.scrollView.backgroundColor = self.backgroundColors[self.backgroundColorIndex];
 }
 
++ (NSString *)documentsFolder {
+     NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+     return [paths objectAtIndex:0];
+}
+
 - (void)actionButtonPressed:(id)sender {
+#if TARGET_OS_TV
+    NSString *outputFile = [[FLEXImagePreviewViewController documentsFolder] stringByAppendingPathComponent:@"FLEXViewImage.png"];
+    FXLog(@"exporting view image to file: %@", outputFile);
+    NSFileManager *man = [NSFileManager defaultManager];
+    if ([man fileExistsAtPath:outputFile]){
+        [man removeItemAtPath:outputFile error:nil];
+    }
+    [UIImagePNGRepresentation(self.image) writeToFile:outputFile atomically:true];
+    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@?sender=%@", outputFile, bundleID]];
+    [[UIApplication sharedApplication] openURL:url];
+    return;
+#endif
+    
     static BOOL canSaveToCameraRoll = NO, didShowWarning = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

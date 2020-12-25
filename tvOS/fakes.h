@@ -78,7 +78,7 @@
 - (instancetype _Nonnull )initWithFrame:(CGRect)frame NS_DESIGNATED_INITIALIZER;      // This class enforces a size appropriate for the control, and so the frame size is ignored.
 - (nullable instancetype)initWithCoder:(NSCoder *_Nonnull)coder NS_DESIGNATED_INITIALIZER;
 - (void)setOn:(BOOL)on animated:(BOOL)animated; // does not send action
-+ (id)newSwitch;
++ (id _Nonnull )newSwitch;
 @end
 
 @interface UIFakeSlider: UIControl <NSCoding>

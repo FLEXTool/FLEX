@@ -119,6 +119,14 @@
     CGSize constrainSize = CGSizeMake(self.scrollView.bounds.size.width, CGFLOAT_MAX);
     CGSize fieldEditorSize = [self.fieldEditorView sizeThatFits:constrainSize];
     self.fieldEditorView.frame = CGRectMake(0, 0, fieldEditorSize.width, fieldEditorSize.height);
+#if TARGET_OS_TV
+    CGRect actionFrame = _actionButton.frame;
+    CGRect fieldEditorFrame = self.fieldEditorView.frame;
+    CGFloat buttonOffset = (fieldEditorFrame.origin.y + fieldEditorFrame.size.height) + (130 + 67);
+    actionFrame.origin.y = buttonOffset;
+    _actionButton.frame = actionFrame;
+    
+#endif
     self.scrollView.contentSize = fieldEditorSize;
 }
 

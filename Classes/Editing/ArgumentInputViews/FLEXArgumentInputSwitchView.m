@@ -72,7 +72,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
 #if TARGET_OS_TV
-    self.inputSwitch.frame = CGRectMake(20, 50, 200, 60);
+    self.inputSwitch.frame = CGRectMake(50, 50, 200, 60);
 #else
     self.inputSwitch.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.inputSwitch.frame.size.width, self.inputSwitch.frame.size.height);
 #endif
