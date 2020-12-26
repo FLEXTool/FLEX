@@ -388,6 +388,7 @@
 		325D7AE225953F8E00CC6B10 /* KBSelectableTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBSelectableTextView.h; sourceTree = "<group>"; };
 		325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFontListTableViewController.m; sourceTree = "<group>"; };
 		325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFontListTableViewController.h; sourceTree = "<group>"; };
+		325D7B0E25973F2E00CC6B10 /* postScript.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = postScript.sh; sourceTree = SOURCE_ROOT; };
 		32D4E15A259273E60027F238 /* fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fakes.h; sourceTree = "<group>"; };
 		32D4E15C2592749D0027F238 /* fakes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fakes.m; sourceTree = "<group>"; };
 		3A4C941F1B5B20570088C3F2 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -763,6 +764,7 @@
 		325D7AE025953F8D00CC6B10 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				325D7B0E25973F2E00CC6B10 /* postScript.sh */,
 				32D4E15A259273E60027F238 /* fakes.h */,
 				32D4E15C2592749D0027F238 /* fakes.m */,
 				325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */,

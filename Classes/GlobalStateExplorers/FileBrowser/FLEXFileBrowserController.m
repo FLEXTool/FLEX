@@ -462,11 +462,12 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 }
 
 - (void)fileBrowserCopyPath:(UITableViewCell *)sender {
+#if !TARGET_OS_TV
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
-    #if !TARGET_OS_TV
+    
     UIPasteboard.generalPasteboard.string = fullPath;
-    #endif
+#endif
 }
 
 - (void)fileBrowserShare:(UITableViewCell *)sender {

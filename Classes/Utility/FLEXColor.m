@@ -12,13 +12,11 @@
 
 /**
  
- A note about tvOS Support: i tried to briefly undefine the API_UNAVAILABLE macro in an attempt to avoid the need to patch the SDK to get this working, this properties are actually available
- on tvOS and if we don't use them the UI gets comlpetely out of whack.
+ tvOS notes: alot of these properties are marked as unavailable on tvOS, not only is that a bald faced lie, but without using these values the UI gets completely screwy!
+ i initially tried to do some creative macro undef/redef but that didnt work, so going to use good ole KVC, valueForKey: works on class methods as well! and this will work
+ perfectly without needing to patch another SDK file for this to build for tvOS
  
  */
-
-#undef API_UNAVAILABLE
-#define API_UNAVAILABLE(...) API_AVAILABLE(...)
 
 #if FLEX_AT_LEAST_IOS13_SDK
 #define FLEXDynamicColor(dynamic, static) ({ \
@@ -39,7 +37,7 @@
 #pragma mark - Background Colors
 
 + (UIColor *)primaryBackgroundColor {
-    return FLEXDynamicColor(systemBackgroundColor, whiteColor);
+    return FLEXDynamicColor(valueForKey:@"systemBackgroundColor", whiteColor);
 }
 
 + (UIColor *)primaryBackgroundColorWithAlpha:(CGFloat)alpha {
@@ -48,7 +46,7 @@
 
 + (UIColor *)secondaryBackgroundColor {
     return FLEXDynamicColor(
-        secondarySystemBackgroundColor,
+        valueForKey:@"secondarySystemBackgroundColor",
         colorWithHue:2.0/3.0 saturation:0.02 brightness:0.97 alpha:1
     );
 }
@@ -61,7 +59,7 @@
     // All the background/fill colors are varying shades
     // of white and black with really low alpha levels.
     // We use systemGray4Color instead to avoid alpha issues.
-    return FLEXDynamicColor(systemGray4Color, lightGrayColor);
+    return FLEXDynamicColor(valueForKey:@"systemGray4Color", lightGrayColor);
 }
 
 + (UIColor *)tertiaryBackgroundColorWithAlpha:(CGFloat)alpha {
@@ -70,7 +68,7 @@
 
 + (UIColor *)groupedBackgroundColor {
     return FLEXDynamicColor(
-        systemGroupedBackgroundColor,
+        valueForKey:@"systemGroupedBackgroundColor",
         colorWithHue:2.0/3.0 saturation:0.02 brightness:0.97 alpha:1
     );
 }
@@ -80,7 +78,7 @@
 }
 
 + (UIColor *)secondaryGroupedBackgroundColor {
-    return FLEXDynamicColor(secondarySystemGroupedBackgroundColor, whiteColor);
+    return FLEXDynamicColor(valueForKey:@"secondarySystemGroupedBackgroundColor", whiteColor);
 }
 
 + (UIColor *)secondaryGroupedBackgroundColorWithAlpha:(CGFloat)alpha {
@@ -94,7 +92,7 @@
 }
 
 + (UIColor *)deemphasizedTextColor {
-    return FLEXDynamicColor(secondaryLabelColor, lightGrayColor);
+    return FLEXDynamicColor(valueForKey:@"secondaryLabelColor", lightGrayColor);
 }
 
 #pragma mark - UI Element Colors
@@ -102,9 +100,12 @@
 + (UIColor *)tintColor {
     #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
-        return UIColor.systemBlueColor;
+        return [UIColor valueForKey:@"systemBlueColor"];
     } else {
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         return UIApplication.sharedApplication.keyWindow.tintColor;
+        #pragma clang diagnostic pop
     }
     #else
     return UIApplication.sharedApplication.keyWindow.tintColor;
@@ -113,7 +114,7 @@
 
 + (UIColor *)scrollViewBackgroundColor {
     return FLEXDynamicColor(
-        systemGroupedBackgroundColor,
+        valueForKey:@"systemGroupedBackgroundColor",
         colorWithHue:2.0/3.0 saturation:0.02 brightness:0.95 alpha:1
     );
 }
@@ -128,24 +129,24 @@
 
 + (UIColor *)toolbarItemHighlightedColor {
     return FLEXDynamicColor(
-        quaternaryLabelColor,
+        valueForKey:@"quaternaryLabelColor",
         colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.6
     );
 }
 
 + (UIColor *)toolbarItemSelectedColor {
     return FLEXDynamicColor(
-        secondaryLabelColor,
+        valueForKey:@"secondaryLabelColor",
         colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.68
     );
 }
 
 + (UIColor *)hairlineColor {
-    return FLEXDynamicColor(systemGray3Color, colorWithWhite:0.75 alpha:1);
+    return FLEXDynamicColor(valueForKey:@"systemGray3Color", colorWithWhite:0.75 alpha:1);
 }
 
 + (UIColor *)destructiveColor {
-    return FLEXDynamicColor(systemRedColor, redColor);
+    return FLEXDynamicColor(valueForKey:@"systemRedColor", redColor);
 }
 
 @end

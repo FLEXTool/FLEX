@@ -5,12 +5,12 @@
 ### General notes / usage
 - If you don't want to build this yourself i keep the latest version synced in layout/Library/Frameworks
 - Best used with a jailbreak / FLEXInjected (avail from default repos now with 'com.nito.flexinjected')
-- Need to modify the SDK to build right now (will fix this later) - read patch notes after the bullets
+- You MIGHT Need to modify the SDK to build right now, working towards removing this necessity, getting closer!
 - After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
 - When in select mode press the menu button will get you back to the tool bar
 - When in select mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
 - Press and hold select to drill down to details in views hierarchy list view controller
-- When in selection mode double tap on play/pause will bring up an alert with useful options (show views, details and move view are available there)
+- When in selection mode double tap on play/pause OR press and hold select or play/pause to bring up an alert with useful options (view details, move view and show views are available there)
 
 ### Missing features - on support road map
 - anything with a slider variable will not work properly yet
@@ -22,16 +22,11 @@ There is an excessive amount of stubbing / macroing to get this building, at a c
 There may be additional classes this needs to be done with, these notes are imprecise but should give you an idea.
 
 ```
-## this line is 100% necessary
-sed -i -- "s|API_UNAVAILABLE(tvos, watchos)|API_UNAVAILABLE(watchos)|"  /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIInterface.h
-
 ## these lines might not be necessary, try avoiding them at first to see what happens
 
 sed -i -- "s|#define __TVOS_UNAVAILABLE                    __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_UNAVAILABLE_NOTQUITE                    __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
 
 sed -i -- "s|#define __TVOS_PROHIBITED                     __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_PROHIBITED_NOTQUITE                     __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
-
-
 ```
 
 ![tvOS Demo](view_selection.gif "tvOS Selection")
