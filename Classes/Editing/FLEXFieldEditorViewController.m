@@ -15,6 +15,7 @@
 #import "FLEXColor.h"
 #import "UIBarButtonItem+FLEX.h"
 #import <TargetConditionals.h>
+#import "FLEXArgumentInputDateView.h"
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
@@ -83,7 +84,6 @@
     inputView.inputValue = self.currentValue;
     inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
-
     // Don't show a "set" button for switches; we mutate when the switch is flipped
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         self.actionButton.enabled = NO;
@@ -140,6 +140,13 @@
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
 #if TARGET_OS_TV
+    
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:self.typeEncoding];
+    if ([inputView isKindOfClass:[FLEXArgumentInputDateView class]]){
+        [self actionButton].frame = CGRectMake(100, 400, 200, 60);
+        return;
+    }
+    
     CGRect getterFrame = _getterButton.frame;
     CGFloat actionOffset = [[self actionButton] frame].origin.y;
     //CGRect fieldEditorFrame = self.fieldEditorView.frame;

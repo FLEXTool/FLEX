@@ -9,10 +9,15 @@
 #import "FLEXWebViewController.h"
 #import "FLEXUtility.h"
 #import <WebKit/WebKit.h>
+#import <TargetConditionals.h>
 
 @interface FLEXWebViewController () <WKNavigationDelegate>
 
+#if !TARGET_OS_TV
 @property (nonatomic) WKWebView *webView;
+#else
+@property (nonatomic) UIWebView *webView;
+#endif
 @property (nonatomic) NSString *originalText;
 
 @end
@@ -22,14 +27,20 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        
+#if !TARGET_OS_TV
         WKWebViewConfiguration *configuration = [WKWebViewConfiguration new];
-
+        
         if (@available(iOS 10.0, *)) {
             configuration.dataDetectorTypes = UIDataDetectorTypeLink;
         }
-
+        
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         self.webView.navigationDelegate = self;
+#else
+        self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+        self.webView.delegate = self;
+#endif
     }
     return self;
 }
@@ -55,9 +66,15 @@
 
 - (void)dealloc {
     // WKWebView's delegate is assigned so we need to clear it manually.
+#if !TARGET_OS_TV
     if (_webView.navigationDelegate == self) {
         _webView.navigationDelegate = nil;
     }
+#else
+    if (_webView.delegate = self){
+        _webView.delegate = nil;
+    }
+#endif
 }
 
 - (void)viewDidLoad {
@@ -73,11 +90,37 @@
 }
 
 - (void)copyButtonTapped:(id)sender {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     [UIPasteboard.generalPasteboard setString:self.originalText];
-    #endif
+#endif
 }
 
+#pragma mark - UIWebView Delegate
+
+-(void) webViewDidStartLoad:(UIWebView *)webView {
+    LOG_SELF;
+}
+
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    FXLog(@"navtype: %lu", navigationType);
+    FXLog(@"urL: %@", request.URL);
+    FXLog(@"scheme: %@", request.URL.scheme);
+    FXLog(@"navigationType: %lu", navigationType);
+    if (navigationType == UIWebViewNavigationTypeOther){
+        return YES;
+    } else {
+        FLEXWebViewController *webVC = [[[self class] alloc] initWithURL:[request URL]];
+        webVC.title = [[request URL] absoluteString];
+        [self.navigationController pushViewController:webVC animated:YES];
+        return NO;//? maybe?
+    }
+    return YES;
+}
+
+-(void) webViewDidFinishLoad:(UIWebView *)webView {
+    LOG_SELF;
+    
+}
 
 #pragma mark - WKWebView Delegate
 

@@ -16,6 +16,7 @@
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "UIBarButtonItem+FLEX.h"
+#import "FLEXArgumentInputDateView.h"
 
 @interface FLEXVariableEditorViewController () <UIScrollViewDelegate>
 @property (nonatomic) UIScrollView *scrollView;
@@ -56,7 +57,6 @@
 
 - (void)keyboardDidShow:(NSNotification *)notification {
     
-    NSLog(@"[FLEXLog] keyboardDidShow!");
     CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
@@ -75,7 +75,7 @@
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
-    NSLog(@"[FLEXLog] keyboardWillHide!");
+
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
     scrollInsets.bottom = 0.0;
     self.scrollView.contentInset = scrollInsets;
@@ -120,11 +120,14 @@
     CGSize fieldEditorSize = [self.fieldEditorView sizeThatFits:constrainSize];
     self.fieldEditorView.frame = CGRectMake(0, 0, fieldEditorSize.width, fieldEditorSize.height);
 #if TARGET_OS_TV
+    
     CGRect actionFrame = _actionButton.frame;
     CGRect fieldEditorFrame = self.fieldEditorView.frame;
     CGFloat buttonOffset = (fieldEditorFrame.origin.y + fieldEditorFrame.size.height) + (130 + 67);
     actionFrame.origin.y = buttonOffset;
     _actionButton.frame = actionFrame;
+    
+    
     
 #endif
     self.scrollView.contentSize = fieldEditorSize;

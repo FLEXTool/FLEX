@@ -14,7 +14,7 @@
 @interface FLEXArgumentInputDateView ()
 
 #if TARGET_OS_TV
-@property (nonatomic) UIFakeDatePicker *datePicker;
+@property (nonatomic) KBDatePickerView *datePicker;
 #else
 @property (nonatomic) UIDatePicker *datePicker;
 #endif
@@ -33,7 +33,7 @@
         self.datePicker.calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         self.datePicker.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
 #else
-        self.datePicker = [UIFakeDatePicker new];
+        self.datePicker = [[KBDatePickerView alloc] init];
 #endif
         
         [self addSubview:self.datePicker];

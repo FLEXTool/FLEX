@@ -26,6 +26,8 @@
 		325D7AE825955C3500CC6B10 /* FLEXFontListTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */; };
 		325D7B11259763BD00CC6B10 /* KBSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7B0F259763BD00CC6B10 /* KBSlider.h */; };
 		325D7B12259763BD00CC6B10 /* KBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7B10259763BD00CC6B10 /* KBSlider.m */; };
+		325D7B3E2597BA2800CC6B10 /* KBDatePickerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7B3C2597BA2700CC6B10 /* KBDatePickerView.h */; };
+		325D7B3F2597BA2800CC6B10 /* KBDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7B3D2597BA2800CC6B10 /* KBDatePickerView.m */; };
 		32D4E15B259273E60027F238 /* fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* fakes.h */; };
 		32D4E15D2592749D0027F238 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
 		3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94241B5B20570088C3F2 /* FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -393,6 +395,8 @@
 		325D7B0E25973F2E00CC6B10 /* postScript.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = postScript.sh; sourceTree = SOURCE_ROOT; };
 		325D7B0F259763BD00CC6B10 /* KBSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBSlider.h; sourceTree = "<group>"; };
 		325D7B10259763BD00CC6B10 /* KBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KBSlider.m; sourceTree = "<group>"; };
+		325D7B3C2597BA2700CC6B10 /* KBDatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBDatePickerView.h; sourceTree = "<group>"; };
+		325D7B3D2597BA2800CC6B10 /* KBDatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KBDatePickerView.m; sourceTree = "<group>"; };
 		32D4E15A259273E60027F238 /* fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fakes.h; sourceTree = "<group>"; };
 		32D4E15C2592749D0027F238 /* fakes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fakes.m; sourceTree = "<group>"; };
 		3A4C941F1B5B20570088C3F2 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -777,6 +781,8 @@
 				325D7AE125953F8E00CC6B10 /* KBSelectableTextView.m */,
 				325D7B0F259763BD00CC6B10 /* KBSlider.h */,
 				325D7B10259763BD00CC6B10 /* KBSlider.m */,
+				325D7B3C2597BA2700CC6B10 /* KBDatePickerView.h */,
+				325D7B3D2597BA2800CC6B10 /* KBDatePickerView.m */,
 			);
 			path = tvOS;
 			sourceTree = "<group>";
@@ -1627,6 +1633,7 @@
 				71E1C2152307FBB800F5032A /* FLEXKeychainQuery.h in Headers */,
 				C36B096523E0D4A1008F5D47 /* UIMenu+FLEX.h in Headers */,
 				C36FBFD6230F3B98008D95D5 /* FLEXIvar.h in Headers */,
+				325D7B3E2597BA2800CC6B10 /* KBDatePickerView.h in Headers */,
 				C3A9423823C51B8D006871A3 /* FHSRangeSlider.h in Headers */,
 				C398626123AD70DF007E6793 /* FLEXKeyboardToolbar.h in Headers */,
 				C386D6F2241A96AD00699085 /* FLEXMacros.h in Headers */,
@@ -1810,6 +1817,7 @@
 				C398624E23AD6C67007E6793 /* FLEXRuntimeKeyPath.m in Sources */,
 				C3694DC323EA147F006625D7 /* UIBarButtonItem+FLEX.m in Sources */,
 				C36FBFD4230F3B98008D95D5 /* FLEXProtocol.m in Sources */,
+				325D7B3F2597BA2800CC6B10 /* KBDatePickerView.m in Sources */,
 				C34D4EB123A2ABD900C1F903 /* FLEXLayerShortcuts.m in Sources */,
 				C38F3F32230C958F004E3731 /* FLEXAlert.m in Sources */,
 				C301994B2409B38A00759E8E /* CALayer+FLEX.m in Sources */,

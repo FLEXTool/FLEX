@@ -8,52 +8,6 @@
 
 #import "fakes.h"
 
-@implementation UIFakeDatePicker
-
-- (void)setCalendar:(NSCalendar *)calendar {
-
-}
-
-- (void)setDate:(NSDate *_Nonnull)date animated:(BOOL)animated {
-    
-}
-
-- (NSCalendar *)calendar {
-    return [NSCalendar currentCalendar];
-}
-
-- (NSInteger) numberOfComponents {
-    return 0;
-}
-- (NSInteger)numberOfRowsInComponent:(NSInteger)component {
-    return 0;
-}
-- (CGSize)rowSizeForComponent:(NSInteger)component {
-    return CGSizeZero;
-}
-
-- (nullable UIView *)viewForRow:(NSInteger)row forComponent:(NSInteger)component {
-    return nil;
-}
-
-// Reloading whole view or single component
-- (void)reloadAllComponents {
-    
-}
-- (void)reloadComponent:(NSInteger)component {
-    
-}
-
-// selection. in this case, it means showing the appropriate row in the middle
-- (void)selectRow:(NSInteger)row inComponent:(NSInteger)component animated:(BOOL)animated {
-    
-}
-- (NSInteger)selectedRowInComponent:(NSInteger)component {
-    return -1;
-}
-
-@end
-
 @interface UIFakeSwitch() {
     BOOL _isOn;
 }
