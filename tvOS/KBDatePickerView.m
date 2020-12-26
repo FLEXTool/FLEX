@@ -11,7 +11,7 @@
 @property UILabel *monthLabel;
 @property UILabel *dayLabel;
 @property UILabel *yearLabel;
-
+@property UILabel *datePickerLabel;
 @end
 
 @implementation KBDatePickerView
@@ -39,6 +39,7 @@
     if (![self date]){
         [self setDate:[NSDate date]];
     }
+    _showDateLabel = true;
     [self layoutViews];
     return self;
 }
@@ -59,6 +60,18 @@
     } else {
         return 3;
     }
+}
+
+- (void)tableView:(UITableView *)tableView didUpdateFocusInContext:(UITableViewFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator {
+    [coordinator addCoordinatedAnimations:^{
+         
+        NSIndexPath *ip = context.nextFocusedIndexPath;
+        NSLog(@"[KBDatePicker] next ip: %@", ip);
+        [tableView selectRowAtIndexPath:ip animated:false scrollPosition:UITableViewScrollPositionTop];
+          
+      } completion:^{
+          
+      }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -127,6 +140,12 @@
     if (self.itemSelectedBlock){
         self.itemSelectedBlock(self.date);
     }
+    if (self.showDateLabel){
+        self.datePickerLabel.hidden = false;
+        self.datePickerLabel.text = self.date.description;
+    } else {
+        self.datePickerLabel.hidden = true;
+    }
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
@@ -179,6 +198,15 @@
     [self.yearLabel.centerXAnchor constraintEqualToAnchor:self.yearTable.centerXAnchor].active = true;
     [self.yearLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:20].active = true;
     [self.monthLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:20].active = true;
+    
+    self.datePickerLabel = [[UILabel alloc] init];
+    self.datePickerLabel.translatesAutoresizingMaskIntoConstraints = false;
+    self.datePickerLabel.hidden = !_showDateLabel;
+    [self addSubview:self.datePickerLabel];
+    [self.datePickerLabel.centerXAnchor constraintEqualToAnchor:self.centerXAnchor].active = true;
+    [self.datePickerLabel.topAnchor constraintEqualToAnchor:self.datePickerStackView.bottomAnchor constant:80].active = true;
+    
+    
 }
 
 @end
