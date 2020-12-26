@@ -143,7 +143,7 @@
     
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:self.typeEncoding];
     if ([inputView isKindOfClass:[FLEXArgumentInputDateView class]]){
-        [self actionButton].frame = CGRectMake(100, 400, 200, 60);
+        [self actionButton].frame = CGRectMake(100, 450, 200, 60);
         return;
     }
     
