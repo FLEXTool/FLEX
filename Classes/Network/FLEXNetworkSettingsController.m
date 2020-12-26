@@ -52,7 +52,7 @@
     _observerSwitch = [UIFakeSwitch newSwitch];
     _cacheMediaSwitch = [UIFakeSwitch newSwitch];
     _jsonViewerSwitch = [UIFakeSwitch newSwitch];
-    _cacheLimitSlider = [KBSlider new];
+    _cacheLimitSlider = [[KBSlider alloc] initWithFrame:CGRectMake(0, 0, 400, 53)];
 #endif
     
     self.observerSwitch.on = FLEXNetworkObserver.enabled;
