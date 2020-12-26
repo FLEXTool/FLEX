@@ -12,14 +12,15 @@
 - Press and hold select to drill down to details in views hierarchy list view controller
 - When in selection mode double tap on play/pause OR press and hold select or play/pause to bring up an alert with useful options (view details, move view and show views are available there)
 
-### Missing features - on support road map
-- anything with a slider variable will not work properly yet
+### Missing features
+- Snapshot view (i dont think this one is going to make it in)
+
 
 ### Patch notes
 
-There is an excessive amount of stubbing / macroing to get this building, at a certain point i got exhausted and impatient, and i learned that while some classes, while prohibited, wont throw exceptions if they are used on tvOS.
+Patching MIGHT no longer be necessary, its the only remaning work left for me to be satisified with tvOS support for the time being.
 
-There may be additional classes this needs to be done with, these notes are imprecise but should give you an idea.
+If anything does need patching it might be to get the UIWebView stuff working, it may even be a good idea to ditch it for the time being because its not working for some odd reason.
 
 ```
 ## these lines might not be necessary, try avoiding them at first to see what happens
