@@ -27,7 +27,7 @@
 @property (nonatomic, readonly) UIFakeSwitch *observerSwitch;
 @property (nonatomic, readonly) UIFakeSwitch *cacheMediaSwitch;
 @property (nonatomic, readonly) UIFakeSwitch *jsonViewerSwitch;
-@property (nonatomic, readonly) UIFakeSlider *cacheLimitSlider;
+@property (nonatomic, readonly) KBSlider *cacheLimitSlider;
 #endif
 @property (nonatomic) UILabel *cacheLimitLabel;
 
@@ -52,7 +52,7 @@
     _observerSwitch = [UIFakeSwitch newSwitch];
     _cacheMediaSwitch = [UIFakeSwitch newSwitch];
     _jsonViewerSwitch = [UIFakeSwitch newSwitch];
-    _cacheLimitSlider = [UIFakeSlider new];
+    _cacheLimitSlider = [KBSlider new];
 #endif
     
     self.observerSwitch.on = FLEXNetworkObserver.enabled;
@@ -78,7 +78,7 @@
         forControlEvents:UIControlEventValueChanged
     ];
     
-    UIFakeSlider *slider = self.cacheLimitSlider;
+    KBSlider *slider = self.cacheLimitSlider;
     self.cacheLimitValue = FLEXNetworkRecorder.defaultRecorder.responseCacheByteLimit;
     const NSUInteger fiftyMega = 50 * 1024 * 1024;
     slider.minimumValue = 0;
@@ -186,7 +186,7 @@
                     [cell.contentView addSubview:self.cacheLimitSlider];
                     
                     CGRect container = cell.contentView.frame;
-                    UIFakeSlider *slider = self.cacheLimitSlider;
+                    KBSlider *slider = self.cacheLimitSlider;
                     [slider sizeToFit];
                     
                     CGFloat sliderWidth = 150.f;

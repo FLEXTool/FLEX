@@ -24,6 +24,8 @@
 		325D7AE425953F8E00CC6B10 /* KBSelectableTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AE225953F8E00CC6B10 /* KBSelectableTextView.h */; };
 		325D7AE725955C3500CC6B10 /* FLEXFontListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */; };
 		325D7AE825955C3500CC6B10 /* FLEXFontListTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */; };
+		325D7B11259763BD00CC6B10 /* KBSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7B0F259763BD00CC6B10 /* KBSlider.h */; };
+		325D7B12259763BD00CC6B10 /* KBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7B10259763BD00CC6B10 /* KBSlider.m */; };
 		32D4E15B259273E60027F238 /* fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* fakes.h */; };
 		32D4E15D2592749D0027F238 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
 		3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94241B5B20570088C3F2 /* FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -389,6 +391,8 @@
 		325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXFontListTableViewController.m; sourceTree = "<group>"; };
 		325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXFontListTableViewController.h; sourceTree = "<group>"; };
 		325D7B0E25973F2E00CC6B10 /* postScript.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = postScript.sh; sourceTree = SOURCE_ROOT; };
+		325D7B0F259763BD00CC6B10 /* KBSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBSlider.h; sourceTree = "<group>"; };
+		325D7B10259763BD00CC6B10 /* KBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KBSlider.m; sourceTree = "<group>"; };
 		32D4E15A259273E60027F238 /* fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fakes.h; sourceTree = "<group>"; };
 		32D4E15C2592749D0027F238 /* fakes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fakes.m; sourceTree = "<group>"; };
 		3A4C941F1B5B20570088C3F2 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -771,6 +775,8 @@
 				325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */,
 				325D7AE225953F8E00CC6B10 /* KBSelectableTextView.h */,
 				325D7AE125953F8E00CC6B10 /* KBSelectableTextView.m */,
+				325D7B0F259763BD00CC6B10 /* KBSlider.h */,
+				325D7B10259763BD00CC6B10 /* KBSlider.m */,
 			);
 			path = tvOS;
 			sourceTree = "<group>";
@@ -1586,6 +1592,7 @@
 				3A4C952E1B5B21410088C3F2 /* FLEXWebViewController.h in Headers */,
 				32D4E15B259273E60027F238 /* fakes.h in Headers */,
 				C3A9424D23C78CFF006871A3 /* FHSViewSnapshot.h in Headers */,
+				325D7B11259763BD00CC6B10 /* KBSlider.h in Headers */,
 				C3EE76BF22DFC63600EC0AA0 /* FLEXScopeCarousel.h in Headers */,
 				C398627223AD7951007E6793 /* UIGestureRecognizer+Blocks.h in Headers */,
 				3A4C94E91B5B21410088C3F2 /* FLEXHierarchyTableViewController.h in Headers */,
@@ -1926,6 +1933,7 @@
 				3A4C94E81B5B21410088C3F2 /* FLEXHierarchyTableViewCell.m in Sources */,
 				3A4C950A1B5B21410088C3F2 /* FLEXFieldEditorView.m in Sources */,
 				3A4C95061B5B21410088C3F2 /* FLEXArgumentInputViewFactory.m in Sources */,
+				325D7B12259763BD00CC6B10 /* KBSlider.m in Sources */,
 				3A4C95291B5B21410088C3F2 /* FLEXObjectListViewController.m in Sources */,
 				C397E319240EC98F0091E4EC /* FLEXSQLResult.m in Sources */,
 				C31D93E923E38E97005517BF /* FLEXBlockDescription.m in Sources */,

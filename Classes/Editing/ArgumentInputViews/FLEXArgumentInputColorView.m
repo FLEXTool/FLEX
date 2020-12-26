@@ -17,7 +17,7 @@
 #if !TARGET_OS_TV
 @property (nonatomic) UISlider *slider;
 #else
-@property (nonatomic) UIFakeSlider *slider;
+@property (nonatomic) KBSlider *slider;
 #endif
 @property (nonatomic) UILabel *valueLabel;
 
@@ -40,7 +40,7 @@
 #if !TARGET_OS_TV
         self.slider = [UISlider new];
 #else
-        self.slider = [UIFakeSlider new];
+        self.slider = [[KBSlider alloc] initWithFrame:CGRectMake(0, 0, 1000, 53)];
 #endif
         [self.slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.slider];

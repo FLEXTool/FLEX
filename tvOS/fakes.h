@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FLEXMacros.h"
+#import "KBSlider.h"
 
 typedef NS_ENUM(NSInteger, UIFakeDatePickerMode) {
     UIFakeDatePickerModeTime,           // Displays hour, minute, and optionally AM/PM designation depending on the locale setting (e.g. 6 | 53 | PM)
