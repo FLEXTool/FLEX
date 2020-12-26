@@ -130,7 +130,7 @@
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
-    CGSize sup = [super sizeThatFits:size];
+    //CGSize sup = [super sizeThatFits:size];
     return CGSizeMake(720, 128+81+60+40);
 }
 

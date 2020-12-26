@@ -2,7 +2,7 @@ Package: libflex
 Section: Development
 Maintainer: Kevin Bradley
 Architecture: appletvos-arm64
-Version: 4.1.1-1
+Version: 4.1.2-1
 Depends: firmware (>= 9.0), mobilesubstrate
 Description: A library for Flipboard Explorer on tvOS
 Name: libFLEX
