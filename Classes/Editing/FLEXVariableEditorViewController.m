@@ -36,7 +36,8 @@
         _target = target;
         _data = data;
         _commitHandler = onCommit;
-        [NSNotificationCenter.defaultCenter
+#if !TARGET_OS_TV
+       [NSNotificationCenter.defaultCenter
             addObserver:self selector:@selector(keyboardDidShow:)
             name:UIKeyboardDidShowNotification object:nil
         ];
@@ -44,6 +45,7 @@
             addObserver:self selector:@selector(keyboardWillHide:)
             name:UIKeyboardWillHideNotification object:nil
         ];
+#endif
     }
     
     return self;
@@ -56,7 +58,7 @@
 #pragma mark - UIViewController methods
 
 - (void)keyboardDidShow:(NSNotification *)notification {
-    
+#if !TARGET_OS_TV 
     CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
@@ -72,6 +74,7 @@
             break;
         }
     }
+#endif
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {

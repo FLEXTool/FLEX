@@ -14,8 +14,11 @@
 #import "NSUserDefaults+FLEX.h"
 #import "fakes.h"
 
-
+#if !TARGET_OS_TV
 @interface FLEXNetworkSettingsController () <UIActionSheetDelegate>
+#else
+@interface FLEXNetworkSettingsController ()
+#endif
 @property (nonatomic) float cacheLimitValue;
 @property (nonatomic, readonly) NSString *cacheLimitCellTitle;
 #if !TARGET_OS_TV
@@ -101,15 +104,15 @@
 
 #pragma mark - Settings Actions
 
-- (void)networkDebuggingToggled:(UISwitch *)sender {
+- (void)networkDebuggingToggled:(UIFakeSwitch *)sender {
     FLEXNetworkObserver.enabled = sender.isOn;
 }
 
-- (void)cacheMediaResponsesToggled:(UISwitch *)sender {
+- (void)cacheMediaResponsesToggled:(UIFakeSwitch*)sender {
     FLEXNetworkRecorder.defaultRecorder.shouldCacheMediaResponses = sender.isOn;
 }
 
-- (void)jsonViewerSettingToggled:(UISwitch *)sender {
+- (void)jsonViewerSettingToggled:(UIFakeSwitch *)sender {
     [NSUserDefaults.standardUserDefaults flex_toggleBoolForKey:kFLEXDefaultsRegisterJSONExplorerKey];
 }
 

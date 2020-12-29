@@ -1105,7 +1105,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for
     // scroll to top, but below FLEX otherwise for exploration.
+#if !TARGET_OS_TV
     [self statusWindow].windowLevel = UIWindowLevelStatusBar;
+#endif
     
     [self updateButtonStates];
     

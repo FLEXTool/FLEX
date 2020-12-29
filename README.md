@@ -15,20 +15,8 @@
 ### Missing features
 - Snapshot view (i dont think this one is going to make it in)
 
-
 ### Patch notes
-
-Patching MIGHT no longer be necessary, its the only remaning work left for me to be satisified with tvOS support for the time being.
-
-If anything does need patching it might be to get the UIWebView stuff working, it may even be a good idea to ditch it for the time being because its not working for some odd reason.
-
-```
-## these lines might not be necessary, try avoiding them at first to see what happens
-
-sed -i -- "s|#define __TVOS_UNAVAILABLE                    __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_UNAVAILABLE_NOTQUITE                    __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
-
-sed -i -- "s|#define __TVOS_PROHIBITED                     __OS_AVAILABILITY(tvos,unavailable)|#define __TVOS_PROHIBITED_NOTQUITE                     __OS_AVAILABILITY(tvos,unavailable)|" /Applications/Xcode.app/Contents/Developer/Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/include/Availability.h
-```
+- You should no longer have to patch your SDK to build this for tvOS!!
 
 ![tvOS Demo](view_selection.gif "tvOS Selection")
 

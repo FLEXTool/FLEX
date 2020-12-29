@@ -37,7 +37,7 @@ pushd "$SRCROOT"
 find . -name ".DS_Store" | xargs rm -f
 
 EXE_PATH=$FINAL_FW_PATH/$EXECUTABLE_NAME
-
+exit 0
 ldid -S $EXE_PATH
 rm -rf $FINAL_FW_PATH/_CodeSignature
 /usr/local/bin/fakeroot dpkg-deb -b layout

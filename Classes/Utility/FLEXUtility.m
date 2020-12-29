@@ -262,13 +262,12 @@ BOOL FLEXConstructorsShouldRun() {
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask {
 #else
 + (NSUInteger)infoPlistSupportedInterfaceOrientationsMask {
+return 0;
 #endif
     NSArray<NSString *> *supportedOrientations = NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"];
     #if !TARGET_OS_TV
     UIInterfaceOrientationMask supportedOrientationsMask = 0;
-    #else
     NSUInteger supportedOrientationsMask = 0;
-    #endif
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"]) {
         supportedOrientationsMask |= UIInterfaceOrientationMaskPortrait;
     }
@@ -282,6 +281,7 @@ BOOL FLEXConstructorsShouldRun() {
         supportedOrientationsMask |= UIInterfaceOrientationMaskLandscapeLeft;
     }
     return supportedOrientationsMask;
+#endif
 }
 
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data {
