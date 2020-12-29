@@ -241,6 +241,7 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     self.minuteTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     self.minuteTable.tag = KBTableViewTagMinutes;
     self.amPMTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.amPMTable.contentInset = UIEdgeInsetsMake(0, 0, 40, 0);
     self.amPMTable.tag = KBTableViewTagAMPM;
     self.hourTable.delegate = self;
     self.hourTable.dataSource = self;

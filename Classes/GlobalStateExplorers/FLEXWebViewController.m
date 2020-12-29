@@ -10,13 +10,17 @@
 #import "FLEXUtility.h"
 #import <WebKit/WebKit.h>
 #import <TargetConditionals.h>
-
+#if !TARGET_OS_TV
 @interface FLEXWebViewController () <WKNavigationDelegate>
+#else
+@interface FLEXWebViewController ()
+#endif
+
 
 #if !TARGET_OS_TV
 @property (nonatomic) WKWebView *webView;
 #else
-@property (nonatomic) UIWebView *webView;
+@property (nonatomic) KBWebView *webView;
 #endif
 @property (nonatomic) NSString *originalText;
 
@@ -38,7 +42,7 @@
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         self.webView.navigationDelegate = self;
 #else
-        self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+        self.webView = [[objc_getClass("UIWebView") alloc] initWithFrame:CGRectZero];
         self.webView.delegate = self;
 #endif
     }
@@ -95,18 +99,18 @@
 #endif
 }
 
-#pragma mark - UIWebView Delegate
+#pragma mark - KBWebVIew Delegate
 
--(void) webViewDidStartLoad:(UIWebView *)webView {
+-(void) webViewDidStartLoad:(KBWebView *)webView {
     LOG_SELF;
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+- (BOOL)webView:(KBWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(NSInteger)navigationType {
     FXLog(@"navtype: %lu", navigationType);
     FXLog(@"urL: %@", request.URL);
     FXLog(@"scheme: %@", request.URL.scheme);
     FXLog(@"navigationType: %lu", navigationType);
-    if (navigationType == UIWebViewNavigationTypeOther){
+    if (navigationType == 5){//
         return YES;
     } else {
         FLEXWebViewController *webVC = [[[self class] alloc] initWithURL:[request URL]];
@@ -117,11 +121,12 @@
     return YES;
 }
 
--(void) webViewDidFinishLoad:(UIWebView *)webView {
+-(void) webViewDidFinishLoad:(KBWebView *)webView {
     LOG_SELF;
     
 }
 
+#if !TARGET_OS_TV
 #pragma mark - WKWebView Delegate
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
@@ -140,6 +145,7 @@
     decisionHandler(policy);
 }
 
+#endif
 
 #pragma mark - Class Helpers
 

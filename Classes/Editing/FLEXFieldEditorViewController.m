@@ -80,7 +80,7 @@
     [self.view addLayoutGuide:focusGuide];
     [focusGuide.topAnchor constraintEqualToAnchor:self.actionButton.topAnchor].active = true;
     [focusGuide.bottomAnchor constraintEqualToAnchor:self.getterButton.bottomAnchor].active = true;
-    focusGuide.preferredFocusEnvironments = @[self.actionButton, self.getterButton];
+    focusGuide.preferredFocusEnvironments = self.preferredFocusEnvironments;
     #endif
 
     // Configure input view
