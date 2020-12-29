@@ -99,7 +99,9 @@
 #endif
 }
 
-#pragma mark - KBWebVIew Delegate
+#if TARGET_OS_TV
+
+#pragma mark - KBWebView Delegate
 
 -(void) webViewDidStartLoad:(KBWebView *)webView {
     LOG_SELF;
@@ -126,7 +128,7 @@
     
 }
 
-#if !TARGET_OS_TV
+#else
 #pragma mark - WKWebView Delegate
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {

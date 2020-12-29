@@ -267,7 +267,6 @@ return 0;
     NSArray<NSString *> *supportedOrientations = NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"];
     #if !TARGET_OS_TV
     UIInterfaceOrientationMask supportedOrientationsMask = 0;
-    NSUInteger supportedOrientationsMask = 0;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"]) {
         supportedOrientationsMask |= UIInterfaceOrientationMaskPortrait;
     }

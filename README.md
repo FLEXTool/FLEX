@@ -5,7 +5,6 @@
 ### General notes / usage
 - If you don't want to build this yourself i keep the latest version synced in layout/Library/Frameworks
 - Best used with a jailbreak / FLEXInjected (avail from default repos now with 'com.nito.flexinjected')
-- You MIGHT Need to modify the SDK to build right now, working towards removing this necessity, getting closer!
 - After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
 - When in select mode press the menu button will get you back to the tool bar
 - When in select mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.

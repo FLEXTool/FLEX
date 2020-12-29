@@ -117,7 +117,6 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
 
 - (void)menuGestureRecognized:(UITapGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateEnded){
-        LOG_SELF;
         id superview = [self superview];
         if ([superview respondsToSelector:@selector(delegate)]){
             UIViewController *vc = [superview delegate];
@@ -126,8 +125,7 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
             [vc updateFocusIfNeeded];
         }
         
-        return;
-        
+      /*
         //[self setPreferredFocusedItem:self.toggleTypeButton]; //PRIVATE_API call, trying to avoid those to stay app store friendly!
         UIApplication *sharedApp = [UIApplication sharedApplication];
 #pragma clang diagnostic push
@@ -138,8 +136,9 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
         if (rootViewController.view == self.superview){
             [rootViewController setNeedsFocusUpdate];
             [rootViewController updateFocusIfNeeded];
-        }
+        } */
     }
+       
 }
 
 + (NSDateFormatter *)sharedDateFormatter {
