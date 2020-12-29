@@ -7,7 +7,8 @@
 @interface FLEXManager: NSObject
 +(id)sharedManager;
 -(void)showExplorer;
-- (void)_addTVOSGestureRecognizer:(UIViewController *)explorer;
+-(void)showHintsIfNecessary;
+-(void)_addTVOSGestureRecognizer:(UIViewController *)explorer;
 @end
 
 @interface NSDistributedNotificationCenter : NSNotificationCenter
@@ -125,6 +126,9 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
             NSLog(@"[FLEXInjected] top view controller: %@ violated...", tvc);
             [flexManager _addTVOSGestureRecognizer:tvc];
             [flexManager showExplorer];
+            if ([flexManager respondsToSelector:@selector(showHintsIfNecessary)]){
+                [flexManager showHintsIfNecessary];
+            }
         });
         
     }

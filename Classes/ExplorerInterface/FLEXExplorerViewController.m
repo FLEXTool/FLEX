@@ -273,7 +273,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)showTVOSOptionsAlert {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"What would you like to do?" message:nil preferredStyle:UIAlertControllerStyleAlert];
-   
+    
     UIAlertAction *details = [UIAlertAction actionWithTitle:@"Show Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         [self showObjectControllerForSelectedView];
         [[FLEXManager sharedManager] showExplorer];
@@ -296,10 +296,18 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         [alertController addAction:movement];
     }
     UIAlertAction *showViews = [UIAlertAction actionWithTitle:@"Show Views" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-           [self toggleViewsTool];
-           [[FLEXManager sharedManager] showExplorer];
+        [self toggleViewsTool];
+        [[FLEXManager sharedManager] showExplorer];
+    }];
+    [alertController addAction:showViews];
+    
+    UIAlertAction *showUsageHints = [UIAlertAction actionWithTitle:@"Show Usage Hints" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [[FLEXManager sharedManager] showHintsAlert];
+        //[[FLEXManager sharedManager] showExplorer];
        }];
-       [alertController addAction:showViews];
+       [alertController addAction:showUsageHints];
+    
+    
     [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [[FLEXManager sharedManager] showExplorer];
     }]];

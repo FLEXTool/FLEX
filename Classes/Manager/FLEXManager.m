@@ -12,6 +12,7 @@
 #import "FLEXWindow.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXFileBrowserController.h"
+#import "NSObject+FLEX_Reflection.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -57,9 +58,67 @@
     return _explorerWindow;
 }
 
+- (void)showHintsIfNecessary {
+    BOOL dontShowHints = [[NSUserDefaults standardUserDefaults] boolForKey:@"DontShowHintsOnLaunch"];
+    if (!dontShowHints){
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self showHintsAlert];
+        });
+    }
+}
+
+- (void)showHintsAlert {
+    
+    UIAlertController *alertController = [UIAlertController
+                                          alertControllerWithTitle:@"Usage Guide"
+                                          message:@"Triple tap 'Play/Pause' to hide or show the explorer view.\nIn selection mode 'Menu' will exit to the toolbar, and a long press on 'Select' or 'Play/Pause' will bring up a contextual menu for view info & movement.\nWhen browsing view/object details a long press on 'Select' will bring up the controller to edit view details.\n If you inject into HeadBoard the siri remote will NOT work for navigation and you will need to use something like AirMagic to navigate."
+                                          preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *hideForeverAction = [UIAlertAction
+                                        actionWithTitle:@"Don't Show This Again"
+                                        style:UIAlertActionStyleDestructive
+                                        handler:^(UIAlertAction *action)
+                                        {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"DontShowHintsOnLaunch"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self showExplorer];
+    }];
+    UIAlertAction *showForeverAction = [UIAlertAction
+                                        actionWithTitle:@"Always Show On Launch"
+                                        style:UIAlertActionStyleDestructive
+                                        handler:^(UIAlertAction *action)
+                                        {
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DontShowHintsOnLaunch"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self showExplorer];
+    }];
+    UIAlertAction *cancelAction = [UIAlertAction
+                                   actionWithTitle:@"Dismiss"
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction *action)
+                                   {
+        [self showExplorer];
+    }];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DontShowHintsOnLaunch"]) {
+        [alertController addAction:showForeverAction];
+    }
+    else {
+        [alertController addAction:hideForeverAction];
+    }
+    [alertController addAction:cancelAction];
+    
+    #if TARGET_OS_TV
+    [[self topViewController] presentViewController:alertController animated:YES completion:nil];
+    #endif
+}
+
 - (void)tripleTap:(UITapGestureRecognizer *)tapRecognizer {
     FXLog(@"triple tap!");
-    [self showExplorer];
+    if ([self isHidden]){
+        [self showExplorer];
+    } else {
+        [self hideExplorer];
+    }
 }
 
 
