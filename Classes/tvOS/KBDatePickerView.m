@@ -58,6 +58,16 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
 @end
 @implementation KBTableView
 
+- (instancetype)initWithTag:(KBTableViewTag)tag delegate:(id)delegate {
+    self = [super initWithFrame:CGRectZero style:UITableViewStylePlain];
+    if (self){
+        self.tag = tag;
+        self.dataSource = delegate;
+        self.delegate = delegate;
+    }
+    return self;
+}
+
 - (NSArray *)visibleValues {
     __block NSMutableArray *visibleValues = [NSMutableArray new];
     [self.visibleCells enumerateObjectsUsingBlock:^(__kindof UITableViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -245,19 +255,10 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     }
     
     [self setupTimeData];
-    self.hourTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.hourTable.tag = KBTableViewTagHours;
-    self.minuteTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.minuteTable.tag = KBTableViewTagMinutes;
-    self.amPMTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.hourTable = [[KBTableView alloc] initWithTag:KBTableViewTagHours delegate:self];
+    self.minuteTable = [[KBTableView alloc] initWithTag:KBTableViewTagMinutes delegate:self];
+    self.amPMTable = [[KBTableView alloc] initWithTag:KBTableViewTagAMPM delegate:self];
     self.amPMTable.contentInset = UIEdgeInsetsMake(0, 0, 40, 0);
-    self.amPMTable.tag = KBTableViewTagAMPM;
-    self.hourTable.delegate = self;
-    self.hourTable.dataSource = self;
-    self.minuteTable.delegate = self;
-    self.minuteTable.dataSource = self;
-    self.amPMTable.delegate = self;
-    self.amPMTable.dataSource = self;
     _tableViews = @[_hourTable, _minuteTable, _amPMTable];
 }
 
@@ -288,18 +289,9 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     self.dayLabel.translatesAutoresizingMaskIntoConstraints = false;
     self.dayLabel.text = @"Day";
     
-    self.monthTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.monthTable.tag = KBTableViewTagMonths;
-    self.yearTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.yearTable.tag = KBTableViewTagYears;
-    self.dayTable = [[KBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    self.dayTable.tag = KBTableViewTagDays;
-    self.monthTable.delegate = self;
-    self.monthTable.dataSource = self;
-    self.yearTable.delegate = self;
-    self.yearTable.dataSource = self;
-    self.dayTable.delegate = self;
-    self.dayTable.dataSource = self;
+    self.monthTable = [[KBTableView alloc] initWithTag:KBTableViewTagMonths delegate:self];
+    self.yearTable = [[KBTableView alloc] initWithTag:KBTableViewTagYears delegate:self];
+    self.dayTable = [[KBTableView alloc] initWithTag:KBTableViewTagDays delegate:self];
     _tableViews = @[_monthTable, _dayTable, _yearTable];
     [self addSubview:self.monthLabel];
     [self addSubview:self.yearLabel];

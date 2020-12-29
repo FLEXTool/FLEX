@@ -77,6 +77,7 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *bundleID = [bundle bundleIdentifier];
     NSDictionary *ourDict = [[NSDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.nito.flexinjected.plist"];
+    NSArray *iconBlacklist = @[@"com.apple.PineBoard", @"com.apple.HeadBoard"];
     NSNumber *value = [ourDict objectForKey:bundleID];
     if ([value boolValue] == YES) {
         BOOL sendAlert = true;
@@ -87,7 +88,7 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
             if ([prox isContainerized]){
                 icon = nil;
             } else {
-                if ([prox respondsToSelector:@selector(tv_applicationFlatIcon)]){
+                if ([prox respondsToSelector:@selector(tv_applicationFlatIcon)] && ![iconBlacklist containsObject:bundleID]){
                     icon = [prox tv_applicationFlatIcon];
                 }
             }
@@ -98,16 +99,18 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
             if ([prox isContainerized]){
                 icon = nil;
             } else {
-                if ([prox respondsToSelector:@selector(tv_applicationFlatIcon)]){
+                if ([prox respondsToSelector:@selector(tv_applicationFlatIcon)] && ![iconBlacklist containsObject:bundleID]){
                     icon = [prox tv_applicationFlatIcon];
                 }
             }
         }
+        NSLog(@"[FLEXInjected] found icon: %@", icon);
         if (sendAlert){
             NSString *message = [NSString stringWithFormat:@"Injected into bundle: %@", bundleID];
             sendNotification(@"FLEXInjected", message, icon);
             NSLog(@"[FLEXInjected) bundle ID %@", bundleID);
         }
+        NSLog(@"[FLEXInjected] post send alert");
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             NSLog(@"[FLEXInjected] weouchea...");
             NSString *p = @"/Library/Frameworks/FLEX.framework";

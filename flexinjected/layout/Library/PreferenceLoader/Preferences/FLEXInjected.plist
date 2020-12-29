@@ -20,6 +20,19 @@
 			<string>FLEX</string>
 		</dict>
 		<dict>
+			<key>ALSectionDescriptors</key>
+			<array>
+				<dict>
+					<key>cell-class-name</key>
+					<string>ALSwitchCell</string>
+					<key>icon-size</key>
+					<integer>29</integer>
+					<key>suppress-hidden-apps</key>
+					<false/>
+					<key>title</key>
+					<string>Applications</string>
+				</dict>
+			</array>
 			<key>ALAllowsSelection</key>
 			<string>1</string>
 			<key>ALChangeNotification</key>
