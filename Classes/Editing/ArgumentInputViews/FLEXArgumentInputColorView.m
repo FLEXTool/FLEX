@@ -66,13 +66,17 @@
     [super layoutSubviews];
     
     const CGFloat kValueLabelWidth = 50.0;
-    
+    UIEdgeInsets sliderInset = UIEdgeInsetsZero;
+#if TARGET_OS_TV
+    sliderInset.left = 40;
+    sliderInset.right = 40;
+#endif
     [self.slider sizeToFit];
-    CGFloat sliderWidth = self.bounds.size.width - kValueLabelWidth;
-    self.slider.frame = CGRectMake(0, 0, sliderWidth, self.slider.frame.size.height);
+    CGFloat sliderWidth = self.bounds.size.width - kValueLabelWidth - sliderInset.left - sliderInset.right;
+    self.slider.frame = CGRectMake(sliderInset.left, 0, sliderWidth, self.slider.frame.size.height);
     
     [self.valueLabel sizeToFit];
-    CGFloat valueLabelOriginX = CGRectGetMaxX(self.slider.frame);
+    CGFloat valueLabelOriginX = CGRectGetMaxX(self.slider.frame) + sliderInset.right/2.0;
     CGFloat valueLabelOriginY = FLEXFloor((self.slider.frame.size.height - self.valueLabel.frame.size.height) / 2.0);
     self.valueLabel.frame = CGRectMake(valueLabelOriginX, valueLabelOriginY, kValueLabelWidth, self.valueLabel.frame.size.height);
 }
