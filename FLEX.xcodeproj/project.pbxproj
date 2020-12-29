@@ -17,6 +17,7 @@
 		224D49AB1C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 224D49A71C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m */; };
 		2EF6B04D1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EF6B04B1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m */; };
 		2EF6B04E1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EF6B04C1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h */; };
+		323F6BC4259AF7430055BDD6 /* Macros.h in Headers */ = {isa = PBXBuildFile; fileRef = 323F6BC3259AF7430055BDD6 /* Macros.h */; };
 		325D7AAF2593AE4700CC6B10 /* Cursor.png in Resources */ = {isa = PBXBuildFile; fileRef = 325D7AAE2593AE4700CC6B10 /* Cursor.png */; };
 		325D7AB32593F25B00CC6B10 /* UIWindow+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7AB12593F25B00CC6B10 /* UIWindow+FLEX.h */; };
 		325D7AB42593F25B00CC6B10 /* UIWindow+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7AB22593F25B00CC6B10 /* UIWindow+FLEX.m */; };
@@ -385,6 +386,7 @@
 		224D49A71C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXSQLiteDatabaseManager.m; sourceTree = "<group>"; };
 		2EF6B04B1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkCurlLogger.m; sourceTree = "<group>"; };
 		2EF6B04C1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkCurlLogger.h; sourceTree = "<group>"; };
+		323F6BC3259AF7430055BDD6 /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		325D7AAE2593AE4700CC6B10 /* Cursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cursor.png; sourceTree = SOURCE_ROOT; };
 		325D7AB12593F25B00CC6B10 /* UIWindow+FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIWindow+FLEX.h"; sourceTree = "<group>"; };
 		325D7AB22593F25B00CC6B10 /* UIWindow+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+FLEX.m"; sourceTree = "<group>"; };
@@ -772,6 +774,7 @@
 		325D7AE025953F8D00CC6B10 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
+				323F6BC3259AF7430055BDD6 /* Macros.h */,
 				325D7B0E25973F2E00CC6B10 /* postScript.sh */,
 				32D4E15A259273E60027F238 /* fakes.h */,
 				32D4E15C2592749D0027F238 /* fakes.m */,
@@ -1555,6 +1558,7 @@
 				3A4C94FF1B5B21410088C3F2 /* FLEXArgumentInputSwitchView.h in Headers */,
 				C398625423AD6C67007E6793 /* FLEXRuntimeBrowserToolbar.h in Headers */,
 				3A4C94E71B5B21410088C3F2 /* FLEXHierarchyTableViewCell.h in Headers */,
+				323F6BC4259AF7430055BDD6 /* Macros.h in Headers */,
 				224D49AA1C673AB5000EAB86 /* FLEXSQLiteDatabaseManager.h in Headers */,
 				C386D6A9241995A800699085 /* FLEXTypeEncodingParser.h in Headers */,
 				3A4C95031B5B21410088C3F2 /* FLEXArgumentInputView.h in Headers */,

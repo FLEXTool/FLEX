@@ -76,6 +76,11 @@
     [_getterButton addTarget:self action:@selector(getterButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
     _getterButton.frame = CGRectMake(100, 600, 200, 60);
     [self.view addSubview:_getterButton];
+    UIFocusGuide *focusGuide = [[UIFocusGuide alloc] init];
+    [self.view addLayoutGuide:focusGuide];
+    [focusGuide.topAnchor constraintEqualToAnchor:self.actionButton.topAnchor].active = true;
+    [focusGuide.bottomAnchor constraintEqualToAnchor:self.getterButton.bottomAnchor].active = true;
+    focusGuide.preferredFocusEnvironments = @[self.actionButton, self.getterButton];
     #endif
 
     // Configure input view
@@ -95,6 +100,19 @@
         ];
         #endif
     }
+}
+
+- (NSArray *)preferredFocusEnvironments {
+    if ([self actionButton] && _getterButton){
+        return @[[self actionButton],_getterButton];
+    } else {
+        if ([self actionButton]){
+            return @[[self actionButton]];
+        } else if (_getterButton){
+            return @[_getterButton];
+        }
+    }
+    return nil;
 }
 
 - (void)actionButtonPressed:(id)sender {
@@ -143,7 +161,7 @@
     
     FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:self.typeEncoding];
     if ([inputView isKindOfClass:[FLEXArgumentInputDateView class]]){
-        [self actionButton].frame = CGRectMake(100, 450, 200, 60);
+        [self actionButton].frame = CGRectMake(100, 400, 200, 60);
         return;
     }
     
