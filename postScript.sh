@@ -3,6 +3,8 @@
 export PATH=/usr/bin/opt/local/bin:/opt/local/sbin:/usr/local/git:$PATH
 export SRCROOT="$SRCROOT"
 
+echo "## check $SRCROOT/postScript.sh for a helpful post script"
+
 # only used if we SCP the deb over, and this only happens if dpkg-deb and fauxsu are installed
 ATV_DEVICE_IP=guest-room.local
 

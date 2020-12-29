@@ -3,16 +3,16 @@
 ## tvOS Notes
 
 ### General notes / usage
-- If you don't want to build this yourself i keep the latest version synced in layout/Library/Frameworks
-- Best used with a jailbreak / FLEXInjected (avail from default repos now with 'com.nito.flexinjected')
+- Most easily used with a jailbreak / FLEXInjected (avail from default repos now with 'com.nito.flexinjected')
 - After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
-- When in select mode press the menu button will get you back to the tool bar
-- When in select mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
-- Press and hold select to drill down to details in views hierarchy list view controller
-- When in selection mode double tap on play/pause OR press and hold select or play/pause to bring up an alert with useful options (view details, move view and show views are available there)
+- When in 'select' mode press the 'menu' button to return to the toolbar
+- When in 'select' mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
+- Press and hold 'select' to drill down to details in views hierarchy list view controller
+- When in selection mode double tap on 'play/pause' OR press and hold 'select' or 'play/pause' to bring up an alert with useful options ('view details', 'move view' and 'show views' are available there)
 
 ### Missing features
 - Snapshot view (i dont think this one is going to make it in)
+- Searching (hope to implement this at some point)
 
 ### Patch notes
 - You should no longer have to patch your SDK to build this for tvOS!!
