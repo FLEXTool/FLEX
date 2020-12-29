@@ -58,7 +58,7 @@
 }
 
 - (void)tripleTap:(UITapGestureRecognizer *)tapRecognizer {
-    NSLog(@"[FLEXInjected] triple tap!");
+    FXLog(@"triple tap!");
     [self showExplorer];
 }
 

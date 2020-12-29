@@ -31,6 +31,7 @@
         self.inputTextView = [[KBSelectableTextView alloc] initWithFrame:CGRectZero];
         #else
         self.inputTextView = [UITextView new];
+        self.inputTextView.inputAccessoryView = [self createToolBar];
         #endif
         self.inputTextView.font = [[self class] inputFont];
         self.inputTextView.backgroundColor = FLEXColor.secondaryGroupedBackgroundColor;
@@ -39,9 +40,6 @@
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextView.delegate = self;
-        #if !TARGET_OS_TV
-        self.inputTextView.inputAccessoryView = [self createToolBar];
-        #endif
         if (@available(iOS 11, *)) {
             [self.inputTextView.layer setValue:@YES forKey:@"continuousCorners"];
         } else {

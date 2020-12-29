@@ -92,7 +92,7 @@
     // Don't show a "set" button for switches; we mutate when the switch is flipped
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         self.actionButton.enabled = NO;
-#if !TARGET_OS_TV
+        #if !TARGET_OS_TV
         self.actionButton.title = @"Flip the switch to call the setter";
         // Put getter button before setter button
         self.toolbarItems = @[

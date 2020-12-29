@@ -175,9 +175,6 @@ BOOL FLEXConstructorsShouldRun() {
 }
 
 + (UIColor *)hierarchyIndentPatternColor {
-//#if TARGET_OS_TV
-  //  return [UIColor colorWithPatternImage:FLEXResources.hierarchyIndentPattern];
-//#endif
     static UIColor *patternColor = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

@@ -136,7 +136,6 @@
     }
 #if TARGET_OS_TV
     [self addlongPressGestureRecognizer];
-    //[self addSwipeGestureRecognizers];
 #endif
 }
 
@@ -145,67 +144,6 @@
     longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
     [self.tableView addGestureRecognizer:longPress];
     
-}
-
-- (void)swipedLeft {
-    NSLog(@"[FLEXInjected] swipedLeft!");
-    //go to previous carousel item if possible
-    NSInteger currentIndex = self.carousel.selectedIndex;
-    if (currentIndex == 0) return;
-    if (self.selectedScope > 0) {
-        self.selectedScope -= 1;
-    }
-    NSInteger newIndex = currentIndex - 1;
-    [self.carousel setSelectedIndex:newIndex];
-}
-
-- (void)swipedRight {
-    NSLog(@"[FLEXInjected] swipedRight!");
-    //go to next carousel item if possible
-       NSInteger currentIndex = self.carousel.selectedIndex;
-       NSInteger newIndex = currentIndex + 1;
-    if (newIndex <= self.carousel.items.count - 1){
-        if (self.selectedScope != self.explorer.classHierarchy.count - 1) {
-            self.selectedScope += 1;
-        }
-        NSLog(@"[FLEXInjected] count: %lu new index: %lu", self.carousel.items.count, currentIndex);
-       [self.carousel setSelectedIndex:newIndex];
-        }
-}
-
-- (void)swipeGestureRecognized:(UISwipeGestureRecognizer *)gestureRecognizer{
-    NSLog(@"[FLEXInjected] gesture recognized: %lu", gestureRecognizer.direction);
-    switch (gestureRecognizer.direction) {
-        case UISwipeGestureRecognizerDirectionLeft:
-            
-            [self swipedLeft];
-            break;
-            
-        case UISwipeGestureRecognizerDirectionRight:
-            
-            [self swipedRight];
-            break;
-                    
-        default:
-            break;
-    }
-    
-}
-
-- (void)addSwipeGestureRecognizers {
-    if (_addedSwipeGestures == YES) return;
-    UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureRecognized:)];
-    swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.view addGestureRecognizer:swipeLeft];
-    self.view.userInteractionEnabled = YES;
-    swipeLeft.delegate = self;
-    
-    UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureRecognized:)];
-    swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.view addGestureRecognizer:swipeRight];
-    self.view.userInteractionEnabled = YES;
-    swipeRight.delegate = self;
-    _addedSwipeGestures = YES;
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {

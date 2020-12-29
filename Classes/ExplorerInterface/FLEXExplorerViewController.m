@@ -65,16 +65,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// A colored transparent overlay to indicate that the view is selected.
 @property (nonatomic) UIView *selectedViewOverlay;
 
-#if !TARGET_OS_TV
-/// Used to actuate changes in view selection on iOS 10+
-@property (nonatomic, readonly) UISelectionFeedbackGenerator *selectionFBG API_AVAILABLE(ios(10.0));
-#endif
 /// self.view.window as a \c FLEXWindow
 @property (nonatomic, readonly) FLEXWindow *window;
 
 /// All views that we're KVOing. Used to help us clean up properly.
 @property (nonatomic) NSMutableSet<UIView *> *observedViews;
+
 #if !TARGET_OS_TV
+/// Used to actuate changes in view selection on iOS 10+
+@property (nonatomic, readonly) UISelectionFeedbackGenerator *selectionFBG API_AVAILABLE(ios(10.0));
+
 /// Used to preserve the target app's UIMenuController items.
 @property (nonatomic) NSArray<UIMenuItem *> *appMenuItems;
 #endif
@@ -107,7 +107,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         return;
     }
     CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
-    NSLog(@"[FLEXInjected] clicked point: %@", NSStringFromCGPoint(point));
+    FXLog(@"clicked point: %@", NSStringFromCGPoint(point));
     if (self.currentMode == FLEXExplorerModeSelect){
         [self updateOutlineViewsForSelectionPoint:point];
     }
@@ -219,8 +219,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
-#endif
-#if TARGET_OS_TV
+#else
     cursorView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 64, 64)];
     cursorView.center = CGPointMake(CGRectGetMidX([UIScreen mainScreen].bounds), CGRectGetMidY([UIScreen mainScreen].bounds));
     cursorView.image = [FLEXResources cursorImage];
@@ -244,7 +243,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)doubleTap:(UITapGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
         if (self.currentMode == FLEXExplorerModeSelect || self.currentMode == FLEXExplorerModeMove){
-            NSLog(@"[FLEXInjected] doubleTap: toggle views tool!");
+            FXLog(@"doubleTap: toggle views tool!");
             [self showTVOSOptionsAlert];
             
         }
@@ -254,7 +253,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)showObjectControllerForSelectedView {
     FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
-    NSLog(@"[FLEXInjected] showObjectControllerForSelectedView: %@", viewExplorer);
+    FXLog(@"showObjectControllerForSelectedView: %@", viewExplorer);
     if (!viewExplorer) return;
     if ([self presentedViewController]){
         FLEXHierarchyViewController *vc = (FLEXHierarchyViewController*)[self presentedViewController];
@@ -1101,13 +1100,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     UIMenuController.sharedMenuController.menuItems = self.appMenuItems;
     [UIMenuController.sharedMenuController update];
     self.appMenuItems = nil;
-    #endif
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for
     // scroll to top, but below FLEX otherwise for exploration.
-#if !TARGET_OS_TV
     [self statusWindow].windowLevel = UIWindowLevelStatusBar;
-#endif
+    #endif
     
     [self updateButtonStates];
     
@@ -1175,7 +1172,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleViewsToolWithCompletion:(void(^)(void))completion {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
         if (self.selectedView) {
-            NSLog(@"[FLEXInjected] we have a selected view still: %@", self.selectedView);
+            FXLog(@"we have a selected view still: %@", self.selectedView);
             return [FLEXHierarchyViewController
                 delegate:self
                 viewsAtTap:self.viewsAtTapPoint
