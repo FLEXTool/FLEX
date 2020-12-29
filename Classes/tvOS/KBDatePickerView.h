@@ -2,6 +2,10 @@
 #import "Macros.h"
 #define NUMBER_OF_CELLS 100000
 
+@interface NSString (format)
++ (id _Nonnull )kb_stringWithFormat:(const char*) fmt,...;
+@end
+
 @interface UIView (Helper)
 -(void)removeAllSubviews;
 @end

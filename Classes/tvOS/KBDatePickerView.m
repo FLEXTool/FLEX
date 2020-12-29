@@ -4,6 +4,17 @@
 DEFINE_ENUM(KBTableViewTag, TABLE_TAG)
 DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
 
+@implementation NSString (format)
++ (id)kb_stringWithFormat:(const char*) fmt,...{
+    va_list args;
+    char temp[2048];
+    va_start(args, fmt);
+    vsprintf(temp, fmt, args);
+    va_end(args);
+    return [[NSString alloc] initWithUTF8String:temp];
+}
+@end
+
 @interface UITableView (yep)
 - (NSIndexPath *)_focusedCellIndexPath;
 @end
@@ -74,7 +85,6 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     }
 }
 
-
 @end
 
 @interface KBDatePickerView () {
@@ -125,20 +135,20 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
             [vc updateFocusIfNeeded];
         }
         
-      /*
-        //[self setPreferredFocusedItem:self.toggleTypeButton]; //PRIVATE_API call, trying to avoid those to stay app store friendly!
-        UIApplication *sharedApp = [UIApplication sharedApplication];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        UIWindow *window = [sharedApp keyWindow];
-#pragma clang diagnostic pop
-        UIViewController *rootViewController = [window rootViewController];
-        if (rootViewController.view == self.superview){
-            [rootViewController setNeedsFocusUpdate];
-            [rootViewController updateFocusIfNeeded];
-        } */
+        /*
+         //[self setPreferredFocusedItem:self.toggleTypeButton]; //PRIVATE_API call, trying to avoid those to stay app store friendly!
+         UIApplication *sharedApp = [UIApplication sharedApplication];
+         #pragma clang diagnostic push
+         #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+         UIWindow *window = [sharedApp keyWindow];
+         #pragma clang diagnostic pop
+         UIViewController *rootViewController = [window rootViewController];
+         if (rootViewController.view == self.superview){
+         [rootViewController setNeedsFocusUpdate];
+         [rootViewController updateFocusIfNeeded];
+         } */
     }
-       
+    
 }
 
 + (NSDateFormatter *)sharedDateFormatter {
@@ -319,7 +329,7 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     self.unsupportedLabel.translatesAutoresizingMaskIntoConstraints = false;
     [self.unsupportedLabel.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active = true;
     [self.unsupportedLabel.centerXAnchor constraintEqualToAnchor:self.centerXAnchor].active = true;
-    self.unsupportedLabel.text = [self kb_stringWithFormat:"Error: currently '%s' is an unsuppported configuration.", [NSStringFromKBDatePickerMode(self.datePickerMode) UTF8String]];
+    self.unsupportedLabel.text = [NSString kb_stringWithFormat:"Error: currently '%s' is an unsuppported configuration.", [NSStringFromKBDatePickerMode(self.datePickerMode) UTF8String]];
 }
 
 - (void)layoutForDateAndTime {
@@ -394,9 +404,9 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     }
     for (int i = startIndex; i < count+startIndex; i++){
         if (leadingZero){
-            [_newArray addObject:[self kb_stringWithFormat:"%02i", i]];
+            [_newArray addObject:[NSString kb_stringWithFormat:"%02i", i]];
         } else {
-            [_newArray addObject:[self kb_stringWithFormat:"%i", i]];
+            [_newArray addObject:[NSString kb_stringWithFormat:"%i", i]];
         }
     }
     return _newArray;
@@ -417,19 +427,18 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
             [self scrollToValue:monthSymbol inTableViewType:KBTableViewTagMonths animated:animated];
         }
         NSInteger dayIndex = components.day;
-        NSString *dayString = [self kb_stringWithFormat:"%i",dayIndex];
+        NSString *dayString = [NSString kb_stringWithFormat:"%i",dayIndex];
         if (![[_dayTable selectedValue] isEqualToString:dayString]){
             [self scrollToValue:dayString inTableViewType:KBTableViewTagDays animated:animated];
         }
         NSInteger yearIndex = components.year-1;
         //DPLog(@"year index: %lu", yearIndex);
-        NSString *yearString = [self kb_stringWithFormat:"%i",yearIndex];
+        NSString *yearString = [NSString kb_stringWithFormat:"%i",yearIndex];
         //DPLog(@"year index: %@", yearString);
         if (![[_yearTable selectedValue] isEqualToString:yearString]){
             _yearSelected = yearIndex;
             [self scrollToValue:yearString inTableViewType:KBTableViewTagYears animated:animated];
         }
-        //[_yearTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:0] animated:animated scrollPosition:UITableViewScrollPositionTop];
         [self delayedUpdateFocus];
     }
 }
@@ -595,7 +604,7 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     UIView *previousCell = context.previouslyFocusedView;
     UIView *newCell = context.nextFocusedView;
     return (previousCell.superview == newCell.superview);
-        
+    
 }
 
 - (void)tableView:(UITableView *)tableView didUpdateFocusInContext:(UITableViewFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator {
@@ -655,18 +664,12 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
 
 
 - (void)populateDaysForCurrentMonth {
-    //NSDateComponents *comp = [self currentComponents:NSCalendarUnitMonth];
     NSRange days = [[self calendar] rangeOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitMonth forDate:self.date];
-    //DPLog(@"month : %lu days %lu for: %@", comp.month, days.length, self.date);
     _currentMonthDayCount = days.length; //this is used to push a date back if they've gone too far.
     if (!self.dayData){ //only need to populate it once
         self.dayData = [self createNumberArray:31 zeroIndex:false leadingZero:false];
         [self.dayTable reloadData];
     }
-    //NSString *currentDay = [self kb_stringWithFormat:"%lu", _daySelected];
-    //DPLog(@"_daySelected: %@ _yearTable.selectedValue: %@", currentDay, _yearTable.selectedValue);
-    //[self scrollToValue:currentDay inTableViewType:KBTableViewTagDays animated:false];
-
 }
 
 - (void)setupTimeData {
@@ -682,14 +685,6 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     return 24000;
 }
 
-- (id)kb_stringWithFormat:(const char*) fmt,... {
-    va_list args;
-    char temp[2048];
-    va_start(args, fmt);
-    vsprintf(temp, fmt, args);
-    va_end(args);
-    return [[NSString alloc] initWithUTF8String:temp];
-}
 
 - (void)loadTimeFromDateAnimated:(BOOL)animated {
     
@@ -703,8 +698,8 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
         NSIndexPath *amPMIndex = [NSIndexPath indexPathForRow:1 inSection:0];
         [self.amPMTable scrollToRowAtIndexPath:amPMIndex atScrollPosition:UITableViewScrollPositionTop animated:false];
     }
-    NSString *hourValue = [self kb_stringWithFormat:"%lu", hour];
-    NSString *minuteValue = [self kb_stringWithFormat:"%lu", minutes];
+    NSString *hourValue = [NSString kb_stringWithFormat:"%lu", hour];
+    NSString *minuteValue = [NSString kb_stringWithFormat:"%lu", minutes];
     DPLog(@"hours %@ minutes %@", hourValue, minuteValue);
     if (![[self.hourTable selectedValue] isEqualToString:hourValue]){
         [self scrollToValue:hourValue inTableViewType:KBTableViewTagHours animated:animated];
@@ -753,13 +748,9 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
             break;
             
         case KBTableViewTagMonths:
-            //value = "December";
-            currentValue = self.monthTable.selectedValue; //March
-            relationalIndex = [self.monthData indexOfObject:currentValue]; //2
-            foundIndex = [self.monthData indexOfObject:value]; //11
-            
-            //11 - 2 = 9 : go up 9 indexes
-            //2 - 11 = -9 : go back 9 indexes
+            currentValue = self.monthTable.selectedValue;
+            relationalIndex = [self.monthData indexOfObject:currentValue];
+            foundIndex = [self.monthData indexOfObject:value];
             if (foundIndex != NSNotFound){
                 shiftIndex = foundIndex - relationalIndex;
                 if (self.monthTable.selectedIndexPath && currentValue){
@@ -771,7 +762,6 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
                 [self.monthTable scrollToRowAtIndexPath:ip atScrollPosition:UITableViewScrollPositionTop animated:animated];
                 [_monthTable selectRowAtIndexPath:ip animated:animated scrollPosition:UITableViewScrollPositionTop];
                 [self delayedUpdateFocus];
-                //[self.monthTable scrollToRowAtIndexPath:ip atScrollPosition:UITableViewScrollPositionTop animated:animated];
             }
             break;
             
@@ -786,7 +776,7 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
             }
             break;
         case KBTableViewTagYears:
-            foundIndex = [value integerValue]; //FIXME: this will not work when custom min/max dates are set!
+            foundIndex = [value integerValue];
             if (_minYear > 1){
                 NSInteger intValue = [value integerValue];
                 foundIndex = intValue - _minYear;
@@ -860,13 +850,11 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
         if (!cell){
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"year"];
         }
-        //NSInteger year = [[self calendar] component:NSCalendarUnitYear fromDate:self.date];
         if (_minYear > 1){
-            cell.textLabel.text = [self kb_stringWithFormat:"%lu", _minYear+indexPath.row+1];
+            cell.textLabel.text = [NSString kb_stringWithFormat:"%lu", _minYear+indexPath.row+1];
         } else {
-            cell.textLabel.text = [self kb_stringWithFormat:"%lu", indexPath.row+1];
+            cell.textLabel.text = [NSString kb_stringWithFormat:"%lu", indexPath.row+1];
         }
-        //cell.textLabel.text = [NSString stringWithFormat:@"%lu", year - 1 + indexPath.row];
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
     }
     return cell;
@@ -888,7 +876,6 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
         NSString *strDate = [dateFormatter stringFromDate:self.date];
         DPLog(@"strDate: %@", strDate); // Result: strDate: 2014/05/19 10:51:50
         self.datePickerLabel.text = strDate;
-        //self.datePickerLabel.text = self.date.description;
     } else {
         self.datePickerLabel.hidden = true;
     }
