@@ -56,7 +56,7 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     NSIndexPath *_selectedIndexPath;
 }
 @end
-@implementation KBTableView //nothing to implement yet, just getting some properties
+@implementation KBTableView
 
 - (NSArray *)visibleValues {
     __block NSMutableArray *visibleValues = [NSMutableArray new];
