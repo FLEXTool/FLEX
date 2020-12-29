@@ -36,10 +36,13 @@
     self.waitingToAddTab = YES;
     
     // Add gesture to reveal toolbar if hidden
-    self.navigationBar.userInteractionEnabled = YES;
-    [self.navigationBar addGestureRecognizer:[[UITapGestureRecognizer alloc]
+    UITapGestureRecognizer *navbarTapGesture = [[UITapGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleNavigationBarTap:)
-    ]];
+    ];
+    
+    // Don't cancel touches to work around bug on versions of iOS prior to 13
+    navbarTapGesture.cancelsTouchesInView = NO;
+    [self.navigationBar addGestureRecognizer:navbarTapGesture];
     
     // Add gesture to dismiss if not presented with a sheet style
     if (@available(iOS 13, *)) {
