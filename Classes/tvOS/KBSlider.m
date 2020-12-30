@@ -134,15 +134,23 @@
     return _storedValue;
 }
 
+- (void)setValue:(CGFloat)value afterDelay:(NSInteger)delay {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self setValue:value];
+    });
+}
+
 - (void)setValue:(CGFloat)newValue {
     _storedValue = MIN(_maximumValue, newValue);
     _storedValue = MAX(_minimumValue, _storedValue);
+    if (_trackView.bounds.size.width == 0){
+        [self setValue:newValue afterDelay:0.1];
+    }
     CGFloat offset = _trackView.bounds.size.width * (_storedValue - _minimumValue) / (_maximumValue - _minimumValue);
     offset = MIN(_trackView.bounds.size.width, offset);
     if(isnan(offset)){
         return;
     }
-    NSLog(@"[KBSlider] attempting to set offset value: %f", offset);
     _thumbViewCenterXConstraint.constant = offset;
 }
 
