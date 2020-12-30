@@ -3,6 +3,7 @@
 export PATH=/usr/bin/opt/local/bin:/opt/local/sbin:/usr/local/git:$PATH
 export SRCROOT="$SRCROOT"
 
+echo "should SCP: -$SHOULD_SCP-"
 echo "## check $SRCROOT/postScript.sh for a helpful post script"
 
 # only used if we SCP the deb over, and this only happens if dpkg-deb and fauxsu are installed
@@ -40,12 +41,13 @@ find . -name ".DS_Store" | xargs rm -f
 
 EXE_PATH=$FINAL_FW_PATH/$EXECUTABLE_NAME
 #exit 0
+if [ "$SHOULD_SCP" == "1"  ]; then 
 ldid -S $EXE_PATH
 rm -rf $FINAL_FW_PATH/_CodeSignature
-/usr/local/bin/fakeroot dpkg-deb -b layout
-scp layout.deb root@$ATV_DEVICE_IP:~
-ssh root@$ATV_DEVICE_IP "dpkg -i layout.deb ; killall -9 nitoTV ; lsdtrip launch com.nito.nitoTV4"
-
+    /usr/local/bin/fakeroot dpkg-deb -b layout
+    scp layout.deb root@$ATV_DEVICE_IP:~
+    ssh root@$ATV_DEVICE_IP "dpkg -i layout.deb ; killall -9 nitoTV ; lsdtrip launch com.nito.nitoTV4"
+fi
 exit 0
 
 

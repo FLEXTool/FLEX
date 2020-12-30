@@ -2777,6 +2777,7 @@
 				INSTALL_PATH = "@rpath";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 4.3.0;
 				OTHER_LDFLAGS = (
 					"-undefined",
 					dynamic_lookup,
@@ -2816,6 +2817,7 @@
 				INSTALL_PATH = "@rpath";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 4.3.0;
 				OTHER_LDFLAGS = (
 					"-undefined",
 					dynamic_lookup,
