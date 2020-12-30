@@ -27,6 +27,6 @@
 + (instancetype)flex_forEachUpTo:(NSUInteger)bound map:(T(^)(NSUInteger i))block;
 + (instancetype)flex_mapped:(id<NSFastEnumeration>)collection block:(id(^)(T obj, NSUInteger idx))mapFunc;
 
-- (instancetype)sortedUsingSelector:(SEL)selector;
+- (instancetype)flex_sortedUsingSelector:(SEL)selector;
 
 @end

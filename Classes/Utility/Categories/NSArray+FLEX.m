@@ -104,7 +104,7 @@
     return array;
 }
 
-- (instancetype)sortedUsingSelector:(SEL)selector {
+- (instancetype)flex_sortedUsingSelector:(SEL)selector {
     if (FLEXArrayClassIsMutable(self)) {
         NSMutableArray *me = (id)self;
         [me sortUsingSelector:selector];

@@ -77,7 +77,7 @@
     self.selectionIndicatorStripe.translatesAutoresizingMaskIntoConstraints = NO;
 
     UIView *superview = self.contentView;
-    [self.titleLabel pinEdgesToSuperviewWithInsets:UIEdgeInsetsMake(10, 15, 8 + stripeHeight, 15)];
+    [self.titleLabel flex_pinEdgesToSuperviewWithInsets:UIEdgeInsetsMake(10, 15, 8 + stripeHeight, 15)];
 
     [self.selectionIndicatorStripe.leadingAnchor constraintEqualToAnchor:superview.leadingAnchor].active = YES;
     [self.selectionIndicatorStripe.bottomAnchor constraintEqualToAnchor:superview.bottomAnchor].active = YES;

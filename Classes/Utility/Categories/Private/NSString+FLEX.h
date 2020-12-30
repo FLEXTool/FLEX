@@ -27,7 +27,7 @@
 
 @interface NSString (KeyPaths)
 
-- (NSString *)stringByRemovingLastKeyPathComponent;
-- (NSString *)stringByReplacingLastKeyPathComponent:(NSString *)replacement;
+- (NSString *)flex_stringByRemovingLastKeyPathComponent;
+- (NSString *)flex_stringByReplacingLastKeyPathComponent:(NSString *)replacement;
 
 @end

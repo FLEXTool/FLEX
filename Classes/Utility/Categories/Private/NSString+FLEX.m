@@ -128,7 +128,7 @@
 
 @implementation NSString (KeyPaths)
 
-- (NSString *)stringByRemovingLastKeyPathComponent {
+- (NSString *)flex_stringByRemovingLastKeyPathComponent {
     if (![self containsString:@"."]) {
         return @"";
     }
@@ -138,7 +138,7 @@
     return mself;
 }
 
-- (NSString *)stringByReplacingLastKeyPathComponent:(NSString *)replacement {
+- (NSString *)flex_stringByReplacingLastKeyPathComponent:(NSString *)replacement {
     // replacement should not have any escaped '.' in it,
     // so we escape all '.'
     if ([replacement containsString:@"."]) {

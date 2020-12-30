@@ -118,7 +118,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 - (void)updateConstraints {
     if (!self.constraintsInstalled) {
         self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.collectionView pinEdgesToSuperview];
+        [self.collectionView flex_pinEdgesToSuperview];
         
         self.constraintsInstalled = YES;
     }

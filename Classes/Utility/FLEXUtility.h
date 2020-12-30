@@ -15,7 +15,6 @@
 #import "FLEXAlert.h"
 #import "NSArray+FLEX.h"
 #import "UIFont+FLEX.h"
-#import "NSMapTable+FLEX_Subscripting.h"
 #import "FLEXMacros.h"
 
 #if !FLEX_AT_LEAST_IOS13_SDK
