@@ -74,7 +74,7 @@
     _getterButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_getterButton setTitle:@"Get" forState:UIControlStateNormal];
     [_getterButton addTarget:self action:@selector(getterButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
-    _getterButton.frame = CGRectMake(100, 600, 200, 60);
+    _getterButton.frame = CGRectMake(100, 600, 200, 70);
     [self.view addSubview:_getterButton];
     UIFocusGuide *focusGuide = [[UIFocusGuide alloc] init];
     [self.view addLayoutGuide:focusGuide];

@@ -7,6 +7,54 @@
 //
 
 #import "fakes.h"
+#import "NSObject+FLEX_Reflection.h"
+@interface UIImage (private)
++(UIImage *)symbolImageNamed:(NSString *)symbolName;
+@end
+@interface KBSearchButton()
+@property UITextField *searchField;
+@end
+
+@implementation KBSearchButton
+
+
++ (instancetype)buttonWithType:(UIButtonType)buttonType {
+    KBSearchButton *button = [super buttonWithType:buttonType];
+    [button setImage:[UIImage symbolImageNamed:@"magnifyingglass"] forState:UIControlStateNormal];
+    button.frame = CGRectMake(0, 0, 150, 70);
+    UITextField *tf = [[UITextField alloc]init];
+    tf.clearButtonMode = UITextFieldViewModeAlways;
+    button.searchField = tf;
+    tf.delegate = button;
+    [button addSubview:tf];
+    [button addTarget:button action:@selector(triggerSearchField) forControlEvents:UIControlEventPrimaryActionTriggered];
+    [button addListeners];
+    return button;
+}
+
+- (void)textChanged:(NSNotification *)n {
+    self.searchBar.text = self.searchField.text;
+}
+
+- (void)addListeners {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(textChanged:) name:UITextFieldTextDidChangeNotification object:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)triggerSearchField {
+    self.searchField.text = self.searchBar.text;
+    //[self.searchBar becomeFirstResponder];
+    [self.searchField becomeFirstResponder];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UIViewController *vc = [self topViewController];
+        vc.view.alpha = 0.6;
+    });
+}
+
+@end
 
 @interface UIFakeSwitch() {
     BOOL _isOn;

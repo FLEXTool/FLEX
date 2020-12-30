@@ -113,7 +113,7 @@
     _actionButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_actionButton setTitle:@"Set" forState:UIControlStateNormal];
     [_actionButton addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
-    _actionButton.frame = CGRectMake(500, 600, 200, 60);
+    _actionButton.frame = CGRectMake(500, 600, 200, 70);
     [self.view addSubview:_actionButton];
 #endif
 }

@@ -16,6 +16,7 @@
 #import "FLEXResources.h"
 #import "UIBarButtonItem+FLEX.h"
 #import <objc/runtime.h>
+#import "fakes.h"
 
 @interface Block : NSObject
 - (void)invoke;
@@ -39,6 +40,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @property (nonatomic) UIBarButtonItem *middleToolbarItem;
 @property (nonatomic) UIBarButtonItem *middleLeftToolbarItem;
 @property (nonatomic) UIBarButtonItem *leftmostToolbarItem;
+
+#if TARGET_OS_TV
+@property (nonatomic) UISearchContainerViewController *searchContainer;
+#endif
+
 @end
 
 @implementation FLEXTableViewController
@@ -104,12 +110,17 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         self.searchController.searchResultsUpdater = (id)self;
         self.searchController.delegate = (id)self;
         #if !TARGET_OS_TV
+        self.searchController.searchBar.delegate = self;
         self.searchController.dimsBackgroundDuringPresentation = NO;
+        #else
+        KBSearchButton *sb = [KBSearchButton buttonWithType:UIButtonTypeSystem];
+        sb.searchBar = self.searchController.searchBar;
+        UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithCustomView:sb];
+        self.navigationItem.leftBarButtonItem = searchButton;
         #endif
         self.searchController.hidesNavigationBarDuringPresentation = NO;
         /// Not necessary in iOS 13; remove this when iOS 13 is the minimum deployment target
-        self.searchController.searchBar.delegate = self;
-
+        
         self.automaticallyShowsSearchBarCancelButton = YES;
 
         #if FLEX_AT_LEAST_IOS13_SDK
@@ -117,14 +128,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             self.searchController.automaticallyShowsScopeBar = NO;
         }
         #endif
-        #if !TARGET_OS_TV
         [self addSearchController:self.searchController];
-        #endif
     } else {
         // Search already shown and just set to NO, so remove it
-        #if !TARGET_OS_TV
         [self removeSearchController:self.searchController];
-        #endif
     }
 }
 
@@ -279,7 +286,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             #endif
         }
     }
-
+    #if TARGET_OS_TV
+    UIEdgeInsets insets = self.tableView.contentInset;
+    insets.top+=20;
+    self.tableView.contentInset = insets;
+    #endif
     [self setupToolbarItems];
 }
 
@@ -465,18 +476,32 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         self.tableView.tableHeaderView = nil;
     } else {
         if (self.showsSearchBar) {
-            #if !TARGET_OS_TV
             [self removeSearchController:self.searchController];
             [self addSearchController:self.searchController];
-            #endif
         } else {
             self.tableView.tableHeaderView = nil;
             _tableHeaderViewContainer = nil;
         }
     }
 }
-#if !TARGET_OS_TV
+
+- (void)addChildViewController:(UIViewController *)childController {
+    [super addChildViewController:childController];
+    childController.view.frame = self.view.frame;
+}
+
+
 - (void)addSearchController:(UISearchController *)controller {
+    #if TARGET_OS_TV
+    //self.tableView.tableHeaderView = controller.searchBar;
+    /*
+    self.searchContainer = [[UISearchContainerViewController alloc] initWithSearchController:controller];
+    [self addChildViewController:self.searchContainer];
+    [self.view addSubview:self.searchContainer.view];
+    [self.searchContainer didMoveToParentViewController:self];
+    [self.searchController.searchBar becomeFirstResponder];
+     */
+    #else
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = controller;
     } else {
@@ -498,9 +523,18 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         self.tableHeaderViewContainer.frame = frame;
         [self layoutTableHeaderIfNeeded];
     }
+    #endif
 }
 
 - (void)removeSearchController:(UISearchController *)controller {
+    #if TARGET_OS_TV
+    /*
+    [self.searchContainer willMoveToParentViewController:nil];
+    [self.searchContainer.view removeFromSuperview];
+    [self.searchContainer removeFromParentViewController];
+     */
+    self.navigationItem.leftBarButtonItem = nil;
+    #else
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = nil;
     } else {
@@ -515,8 +549,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             _tableHeaderViewContainer = nil;
         }
     }
+    #endif
 }
-#endif
+
 - (UIView *)tableHeaderViewContainer {
     if (!_tableHeaderViewContainer) {
         _tableHeaderViewContainer = [UIView new];

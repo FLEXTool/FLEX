@@ -11,6 +11,11 @@
 #import "KBSlider.h"
 #import "KBDatePickerView.h"
 
+@interface KBSearchButton: UIButton <UITextFieldDelegate>
+- (void)triggerSearchField;
+@property UISearchBar *searchBar;
+@end
+
 @interface UIFakeSwitch : UIButton <NSCoding>
 @property(nullable, nonatomic, strong) UIColor *onTintColor;
 @property(nullable, nonatomic, strong) UIColor *thumbTintColor;
