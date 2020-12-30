@@ -18,6 +18,7 @@
 - You should no longer have to patch your SDK to build this for tvOS!!
 
 ![tvOS Demo](view_selection.gif "tvOS Selection")
+![tvOS Color and Text](tvOS_color_text.gif "tvOS Selection")
 
 [tvOS Demo](https://lbry.tv/@nitoTV:4/FLEX-on-tvOS:7)
 
