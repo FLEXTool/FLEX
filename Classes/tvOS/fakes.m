@@ -12,11 +12,10 @@
 +(UIImage *)symbolImageNamed:(NSString *)symbolName;
 @end
 @interface KBSearchButton()
-@property UITextField *searchField;
+@property UITextField *searchField; //helps us get a keyboard onscreen and acts as a proxy to move text to our UISearchBar
 @end
 
 @implementation KBSearchButton
-
 
 + (instancetype)buttonWithType:(UIButtonType)buttonType {
     KBSearchButton *button = [super buttonWithType:buttonType];
@@ -48,6 +47,7 @@
     self.searchField.text = self.searchBar.text;
     //[self.searchBar becomeFirstResponder];
     [self.searchField becomeFirstResponder];
+    //wait for 0.1 seconds and then decrease the opacity of UISystemInputViewController presenting our UIKeyboard
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIViewController *vc = [self topViewController];
         vc.view.alpha = 0.6;
@@ -98,7 +98,6 @@
 }
 
 - (instancetype)initWithCoder:(id)coder {
-    LOG_SELF;
     return [super initWithCoder:coder];
 }
 

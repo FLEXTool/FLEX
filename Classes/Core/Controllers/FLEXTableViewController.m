@@ -95,6 +95,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     return (id)self.view.window;
 }
 
+/**
+ 
+ search is handled a bit differently on tvOS and i couldnt get its pardigm to cooperate, thankfully the UISearchController never needs to be visible to actually work its magic.
+ since 3D snapshot viewing doesn't exist on tvOS the leftBarButtonItem is the perfect spot to add a 'search' button. this search button will present a new text entry controller
+ the alpha on this viewController is decreased to 0.6 to make it possible to view the filtering changes underneath in realtime. The zero rect textfield associated with
+ the search button acts as a proxy to transfer the text to our search bar as necessary
+ 
+ */
+
 - (void)setShowsSearchBar:(BOOL)showsSearchBar {
     if (_showsSearchBar == showsSearchBar) return;
     _showsSearchBar = showsSearchBar;
@@ -509,11 +518,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 - (void)removeSearchController:(UISearchController *)controller {
     #if TARGET_OS_TV
-    /*
-    [self.searchContainer willMoveToParentViewController:nil];
-    [self.searchContainer.view removeFromSuperview];
-    [self.searchContainer removeFromParentViewController];
-     */
     self.navigationItem.leftBarButtonItem = nil;
     #else
     if (@available(iOS 11.0, *)) {
