@@ -41,10 +41,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @property (nonatomic) UIBarButtonItem *middleLeftToolbarItem;
 @property (nonatomic) UIBarButtonItem *leftmostToolbarItem;
 
-#if TARGET_OS_TV
-@property (nonatomic) UISearchContainerViewController *searchContainer;
-#endif
-
 @end
 
 @implementation FLEXTableViewController
@@ -112,11 +108,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         #if !TARGET_OS_TV
         self.searchController.searchBar.delegate = self;
         self.searchController.dimsBackgroundDuringPresentation = NO;
-        #else
-        KBSearchButton *sb = [KBSearchButton buttonWithType:UIButtonTypeSystem];
-        sb.searchBar = self.searchController.searchBar;
-        UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithCustomView:sb];
-        self.navigationItem.leftBarButtonItem = searchButton;
         #endif
         self.searchController.hidesNavigationBarDuringPresentation = NO;
         /// Not necessary in iOS 13; remove this when iOS 13 is the minimum deployment target
@@ -485,23 +476,13 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
-- (void)addChildViewController:(UIViewController *)childController {
-    [super addChildViewController:childController];
-    childController.view.frame = self.view.frame;
-}
-
-
 - (void)addSearchController:(UISearchController *)controller {
-    #if TARGET_OS_TV
-    //self.tableView.tableHeaderView = controller.searchBar;
-    /*
-    self.searchContainer = [[UISearchContainerViewController alloc] initWithSearchController:controller];
-    [self addChildViewController:self.searchContainer];
-    [self.view addSubview:self.searchContainer.view];
-    [self.searchContainer didMoveToParentViewController:self];
-    [self.searchController.searchBar becomeFirstResponder];
-     */
-    #else
+#if TARGET_OS_TV
+    KBSearchButton *sb = [KBSearchButton buttonWithType:UIButtonTypeSystem];
+    sb.searchBar = self.searchController.searchBar;
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithCustomView:sb];
+    self.navigationItem.leftBarButtonItem = searchButton;
+#else
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = controller;
     } else {
@@ -515,15 +496,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         // Move the carousel down if it's already there
         if (self.showsCarousel) {
             self.carousel.frame = FLEXRectSetY(
-                self.carousel.frame, subviewFrame.size.height
-            );
+                                               self.carousel.frame, subviewFrame.size.height
+                                               );
             frame.size.height += self.carousel.frame.size.height;
         }
         
         self.tableHeaderViewContainer.frame = frame;
         [self layoutTableHeaderIfNeeded];
     }
-    #endif
+#endif
 }
 
 - (void)removeSearchController:(UISearchController *)controller {
