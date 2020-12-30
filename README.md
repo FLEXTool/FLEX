@@ -1,27 +1,5 @@
 # FLEX
 
-## tvOS Notes
-
-### General notes / usage
-- Most easily used with a jailbreak / FLEXInjected (avail from default repos now with 'com.nito.flexinjected')
-- After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
-- When in 'select' mode press the 'menu' button to return to the toolbar
-- When in 'select' mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
-- Press and hold 'select' to drill down to details in views hierarchy list view controller
-- When in selection mode double tap on 'play/pause' OR press and hold 'select' or 'play/pause' to bring up an alert with useful options ('view details', 'move view' and 'show views' are available there)
-
-### Missing features
-- Snapshot view (i dont think this one is going to make it in)
-- Searching (hope to implement this at some point)
-
-### Patch notes
-- You should no longer have to patch your SDK to build this for tvOS!!
-
-![tvOS Demo](view_selection.gif "tvOS Selection")
-![tvOS Color and Text](tvOS_color_text.gif "tvOS Selection")
-
-[tvOS Demo](https://lbry.tv/@nitoTV:4/FLEX-on-tvOS:7)
-
 [![CocoaPods](https://img.shields.io/cocoapods/v/FLEX.svg)](https://cocoapods.org/?q=FLEX)
  [![CocoaPods](https://img.shields.io/cocoapods/l/FLEX.svg)](https://github.com/Flipboard/FLEX/blob/master/LICENSE)
  [![CocoaPods](https://img.shields.io/cocoapods/p/FLEX.svg)]()
@@ -29,7 +7,7 @@
  [![Build Status](https://travis-ci.org/Flipboard/FLEX.svg?branch=master)](https://travis-ci.org/Flipboard/FLEX)
  [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for iOS development. When presented, FLEX shows a toolbar that lives in a window above your application. From this toolbar, you can view and modify nearly every piece of state in your running application.
+FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for iOS & tvOS development. When presented, FLEX shows a toolbar that lives in a window above your application. From this toolbar, you can view and modify nearly every piece of state in your running application.
 
 <img alt="Demo" width=36% height=36% src=https://user-images.githubusercontent.com/8371943/70185687-e842c800-16af-11ea-8ef9-9e071380a462.gif>
 
@@ -141,6 +119,27 @@ Go digging for all things public and private. To learn more about a class, you c
 FLEX allows you to edit defaults that are any combination of strings, numbers, arrays, and dictionaries. The input is parsed as `JSON`. If other kinds of objects are set for a defaults key (i.e. `NSDate`), you can view them but not edit them.
 
 <img alt="NSUserDefaults Editing" width=36% height=36% src=https://user-images.githubusercontent.com/8371943/70271889-edb21800-176c-11ea-92b4-71e07d2b6ce7.gif>
+
+## tvOS Notes
+
+### General notes / usage
+- When in 'select' mode press the 'menu' button to return to the toolbar
+- When in 'select' mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
+- Press and hold 'select' to drill down to details in views hierarchy list view controller
+- When in selection mode double tap on 'play/pause' OR press and hold 'select' or 'play/pause' to bring up an alert with useful options ('view details', 'move view' and 'show views' are available there)
+
+### FLEXInjected notes
+- Easily used with a jailbreak: FLEXInjected (avail from default repos now with 'com.nito.flexinjected', bottom of featured section first item in 'Utilities')
+- After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
+
+### Missing features
+- Snapshot view (i dont think this one is going to make it in)
+- Searching (hope to implement this at some point)
+
+![tvOS Selection and Movement](view_selection.gif "tvOS Selection")
+![tvOS Color and Text](tvOS_color_text.gif "tvOS Selection")
+
+[tvOS Video Demo](https://lbry.tv/@nitoTV:4/FLEX-on-tvOS:7)
 
 ### Learning from Other Apps
 The code injection is left as an exercise for the reader. :innocent:
