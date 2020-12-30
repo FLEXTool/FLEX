@@ -122,6 +122,10 @@ FLEX allows you to edit defaults that are any combination of strings, numbers, a
 
 ## tvOS Notes
 
+### Installation notes
+
+Check releases or build and add the framework manually, this will need review and merging in to the main repo & a cocoapod / carthage et al update to get the framework added in any other way for tvOS versions. ./tvOSBuild.sh is added for convenience and will yield a framework in the build/Release-appletvos folder.
+
 ### General notes / usage
 - When in 'select' mode press the 'menu' button to return to the toolbar
 - When in 'select' mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
