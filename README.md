@@ -141,7 +141,7 @@ Check releases or build and add the framework manually, this will need review an
 
 ![tvOS Selection and Movement](tvos_flexing.gif "tvOS FLEX")
 
-[tvOS Video Demo](https://lbry.tv/@nitoTV:4/FLEX-on-tvOS:7)
+[tvOS Video Demo](https://lbry.tv/@nitoTV:4/tvOS-FLEXING:4)
 
 ### Learning from Other Apps
 The code injection is left as an exercise for the reader. :innocent:
