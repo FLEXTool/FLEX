@@ -239,7 +239,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.view addGestureRecognizer:doubleTap];
     
     UITapGestureRecognizer *rightTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
-    rightTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+    rightTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
     [self.view addGestureRecognizer:rightTap];
     
 #endif

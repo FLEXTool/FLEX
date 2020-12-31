@@ -71,7 +71,7 @@
     
     UIAlertController *alertController = [UIAlertController
                                           alertControllerWithTitle:@"Usage Guide"
-                                          message:@"Triple tap 'Play/Pause' to hide or show the explorer view.\nIn selection mode 'Menu' will exit to the toolbar, and a long press on 'Select', 'Play/Pause' or a right siri tap/arrow click will bring up a contextual menu for view info & movement.\nWhen browsing view/object details a long press on 'Select' or a right siri tap/arrow click will bring up the controller to edit view details.\nIf you inject into HeadBoard the siri remote will NOT work for navigation and you will need to use something like AirMagic to navigate."
+                                          message:@"Triple tap 'Play/Pause' to toggle explorer view visibility.\nIn selection mode 'Menu' will re-enable the toolbar, and a long press on 'Select', 'Play/Pause' or a 'Right siri tap' triggers a contextual menu for view info & movement.\nBrowsing object details long press on 'Select' or a 'Right siri tap' triggers a detail editor.\nInjecting into HeadBoard BREAKS SIRI REMOTE. Suggest AirMagic to navigate."
                                           preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *hideForeverAction = [UIAlertAction
