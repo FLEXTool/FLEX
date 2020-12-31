@@ -40,6 +40,8 @@
  
  */
 
+/// some of the iOS versions of these values are at different indexes - reused the same names and just replaced UI->TV images of these are available in tvOSAccessoryImages
+
 typedef NS_ENUM(NSInteger, TVTableViewCellAccessoryType) {
     TVTableViewCellAccessoryNone,
     TVTableViewCellAccessoryDisclosureIndicator,
