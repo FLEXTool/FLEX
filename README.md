@@ -139,8 +139,7 @@ Check releases or build and add the framework manually, this will need review an
 ### Missing features
 - Snapshot view (i dont think this one is going to make it in)
 
-![tvOS Selection and Movement](view_selection.gif "tvOS Selection")
-![tvOS Color and Text](tvOS_color_text.gif "tvOS Selection")
+![tvOS Selection and Movement](tvos_flexing.gif "tvOS FLEX")
 
 [tvOS Video Demo](https://lbry.tv/@nitoTV:4/FLEX-on-tvOS:7)
 
