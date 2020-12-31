@@ -128,8 +128,8 @@ Check releases or build and add the framework manually, this will need review an
 
 ### General notes / usage
 - When in 'select' mode press the 'menu' button to return to the toolbar
-- When in 'select' mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable.
-- Press and hold 'select' to drill down to details in views hierarchy list view controller
+- When in 'select' mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable. Tapping right on a siri remote / clicking right on an older silver remote will work as well
+- Press and hold 'select' to drill down to details in views hierarchy list view controller. Tapping right on a siri remote / clicking right on an older silver remote will work as well
 - When in selection mode double tap on 'play/pause' OR press and hold 'select' or 'play/pause' to bring up an alert with useful options ('view details', 'move view' and 'show views' are available there)
 
 ### FLEXInjected notes
@@ -138,7 +138,6 @@ Check releases or build and add the framework manually, this will need review an
 
 ### Missing features
 - Snapshot view (i dont think this one is going to make it in)
-- Searching (hope to implement this at some point)
 
 ![tvOS Selection and Movement](view_selection.gif "tvOS Selection")
 ![tvOS Color and Text](tvOS_color_text.gif "tvOS Selection")
