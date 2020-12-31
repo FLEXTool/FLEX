@@ -137,7 +137,9 @@
                 [self globalsEntryForRow:FLEXGlobalsRowURLSession],
                 [self globalsEntryForRow:FLEXGlobalsRowURLCache],
                 [self globalsEntryForRow:FLEXGlobalsRowNotificationCenter],
+#if !TARGET_OS_TV
                 [self globalsEntryForRow:FLEXGlobalsRowMenuController],
+#endif
                 [self globalsEntryForRow:FLEXGlobalsRowFileManager],
                 [self globalsEntryForRow:FLEXGlobalsRowTimeZone],
                 [self globalsEntryForRow:FLEXGlobalsRowLocale],

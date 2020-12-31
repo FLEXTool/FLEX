@@ -16,6 +16,7 @@
     UIColor *_minimumTrackTintColor;
     UIColor *_thumbTintColor;
     CGFloat _focusScaleFactor;
+    BOOL _continuous;
     
     BOOL _isEnabled;
     BOOL _isSelected;
@@ -84,7 +85,7 @@
     
     _storedValue = _defaultValue;
     _dPadState = DPadStateSelect;
-    _isContinuous = _defaultIsContinuous;
+    _continuous = _defaultIsContinuous;
     
     _minimumTrackViewImages = [NSMutableDictionary new];
     _maximumTrackViewImages = [NSMutableDictionary new];
@@ -99,6 +100,14 @@
     _stepValue = _defaultStepValue;
     [self setEnabled:true];
     
+}
+
+- (BOOL)isContinuous {
+    return _continuous;
+}
+
+- (void)setContinuous:(BOOL)continuous {
+    _continuous = continuous;
 }
 
 - (void)setSelected:(BOOL)selected {

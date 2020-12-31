@@ -30,12 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Views of these classes will have their headers hidden
 @property (nonatomic) NSArray<Class> *headerExclusions;
+@property (nonatomic, readonly) FHSRangeSlider *depthSlider; //this is a UIControl, it wont work OOB on tvOS but the snapshot viewer isnt working on tvOS anyway, moot for now.
 #if !TARGET_OS_TV
 @property (nonatomic, readonly) UISlider *spacingSlider;
-@property (nonatomic, readonly) FHSRangeSlider *depthSlider;
 #else
-@property (nonatomic, readonly) UIFakeSlider *spacingSlider;
-@property (nonatomic, readonly) UIFakeSlider *depthSlider;
+@property (nonatomic, readonly) KBSlider *spacingSlider;
 #endif
 
 - (void)emphasizeViews:(NSArray<UIView *> *)emphasizedViews;

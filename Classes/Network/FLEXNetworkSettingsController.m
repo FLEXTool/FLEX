@@ -116,7 +116,7 @@
     [NSUserDefaults.standardUserDefaults flex_toggleBoolForKey:kFLEXDefaultsRegisterJSONExplorerKey];
 }
 
-- (void)cacheLimitAdjusted:(UIFakeSlider *)sender {
+- (void)cacheLimitAdjusted:(KBSlider *)sender {
     self.cacheLimitValue = sender.value;
 }
 

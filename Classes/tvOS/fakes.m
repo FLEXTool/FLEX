@@ -67,6 +67,39 @@
     return _isOn;
 }
 
+- (void)initDefaults {
+    self.onTintColor = [UIColor greenColor];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self){
+        [self initDefaults];
+    }
+    return self;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self){
+        [self initDefaults];
+    }
+    return self;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self){
+        [self initDefaults];
+    }
+    return self;
+}
+
+- (UIColor *)backgroundColor {
+    if ([self isOn]) return self.onTintColor;
+    return [super backgroundColor];
+}
+
 - (void)setOn:(BOOL)on{
     [self setOn:on animated:true];
 }
@@ -90,56 +123,10 @@
 }
 
 + (id)newSwitch {
-    return [UIFakeSwitch buttonWithType:UIButtonTypeSystem];
-}
-
--(instancetype)initWithFrame:(CGRect)frame {
-    return [super initWithFrame:frame];
-}
-
-- (instancetype)initWithCoder:(id)coder {
-    return [super initWithCoder:coder];
+    UIFakeSwitch *new = [UIFakeSwitch buttonWithType:UIButtonTypeSystem];
+    [new initDefaults];
+    return new;
 }
 
 @end
 
-@implementation UIFakeSlider
-
-- (void)setValue:(float)value animated:(BOOL)animated {
-    
-}
-
-- (void)setThumbImage:(nullable UIImage *)image forState:(UIControlState)state {
-    
-}
-- (void)setMinimumTrackImage:(nullable UIImage *)image forState:(UIControlState)state {
-    
-}
-- (void)setMaximumTrackImage:(nullable UIImage *)image forState:(UIControlState)state {
-    
-}
-
-- (nullable UIImage *)thumbImageForState:(UIControlState)state {
-    return nil;
-}
-- (nullable UIImage *)minimumTrackImageForState:(UIControlState)state {
-    return nil;
-}
-- (nullable UIImage *)maximumTrackImageForState:(UIControlState)state {
-    return nil;
-}
-
-- (CGRect)minimumValueImageRectForBounds:(CGRect)bounds {
-    return CGRectZero;
-}
-- (CGRect)maximumValueImageRectForBounds:(CGRect)bounds {
-    return CGRectZero;
-}
-- (CGRect)trackRectForBounds:(CGRect)bounds {
-    return CGRectZero;
-}
-- (CGRect)thumbRectForBounds:(CGRect)bounds trackRect:(CGRect)rect value:(float)value {
-    return CGRectZero;
-}
-
-@end

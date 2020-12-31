@@ -24,7 +24,7 @@ typedef NS_ENUM(NSInteger, DPadState) {
 @property CGFloat value;
 @property CGFloat minimumValue;
 @property CGFloat maximumValue;
-@property BOOL isContinuous;
+@property(nonatomic,getter=isContinuous) BOOL continuous;
 @property UIColor *maximumTrackTintColor;
 @property UIColor *minimumTrackTintColor;
 @property UIColor *thumbTintColor;

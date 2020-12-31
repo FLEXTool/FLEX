@@ -69,7 +69,7 @@
     #if !TARGET_OS_TV
     _spacingSlider = [UISlider new];
     #else
-    _spacingSlider = [UIFakeSlider new];
+    _spacingSlider = [KBSlider new];
     #endif
     self.spacingSlider.minimumValue = 0;
     self.spacingSlider.maximumValue = 100;
@@ -84,11 +84,7 @@
 }
 
 - (void)initDepthSlider {
-    #if !TARGET_OS_TV
     _depthSlider = [FHSRangeSlider new];
-    #else
-    _depthSlider = [UIFakeSlider new];
-    #endif
     [self.depthSlider
         addTarget:self
         action:@selector(depthSliderDidChange:)
@@ -281,7 +277,7 @@
     }
 }
 
-- (void)spacingSliderDidChange:(UIFakeSlider *)slider {
+- (void)spacingSliderDidChange:(KBSlider *)slider { //easier to make a KBSlider since they are API compatible - one less #if macro!
     // TODO: hiding the header when flat logic
 
     for (FHSSnapshotNodes *nodes in self.nodesMap.allValues) {
@@ -301,7 +297,7 @@
     }
 }
 
-- (void)depthSliderDidChange:(UIFakeSlider *)slider {
+- (void)depthSliderDidChange:(FHSRangeSlider *)slider {
     CGFloat min = slider.minValue, max = slider.maxValue;
     for (FHSSnapshotNodes *nodes in self.nodesMap.allValues) {
         CGFloat depth = nodes.depth;
