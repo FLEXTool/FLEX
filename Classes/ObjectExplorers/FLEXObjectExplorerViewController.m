@@ -143,6 +143,9 @@
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
     [self.tableView addGestureRecognizer:longPress];
+    UITapGestureRecognizer *rightTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    rightTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+    [self.tableView addGestureRecognizer:rightTap];
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {

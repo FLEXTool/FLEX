@@ -102,6 +102,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 -(void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
     
+    FXLog(@"presses.anyObject.type: %lu", presses.anyObject.type);
     if (self.currentMode != FLEXExplorerModeSelect && self.currentMode != FLEXExplorerModeMove){
         [super pressesEnded:presses withEvent:event];
         return;
@@ -237,13 +238,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     doubleTap.numberOfTapsRequired = 2;
     [self.view addGestureRecognizer:doubleTap];
     
+    UITapGestureRecognizer *rightTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    rightTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+    [self.view addGestureRecognizer:rightTap];
+    
 #endif
 }
 
 - (void)doubleTap:(UITapGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
         if (self.currentMode == FLEXExplorerModeSelect || self.currentMode == FLEXExplorerModeMove){
-            FXLog(@"doubleTap: toggle views tool!");
             [self showTVOSOptionsAlert];
             
         }
@@ -253,7 +257,6 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)showObjectControllerForSelectedView {
     FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
-    FXLog(@"showObjectControllerForSelectedView: %@", viewExplorer);
     if (!viewExplorer) return;
     if ([self presentedViewController]){
         FLEXHierarchyViewController *vc = (FLEXHierarchyViewController*)[self presentedViewController];
