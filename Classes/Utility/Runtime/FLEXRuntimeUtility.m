@@ -96,6 +96,15 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     return superClasses;
 }
 
++ (NSString *)safeClassNameForObject:(id)object {
+    // Don't assume that we have an NSObject subclass
+    if ([self safeObject:object respondsToSelector:@selector(class)]) {
+        return NSStringFromClass([object class]);
+    }
+
+    return NSStringFromClass(object_getClass(object));
+}
+
 /// Could be nil
 + (NSString *)safeDescriptionForObject:(id)object {
     // Don't assume that we have an NSObject subclass; not all objects respond to -description

@@ -87,7 +87,7 @@
 
     // Use [object class] here rather than object_getClass
     // to avoid the KVO prefix for observed objects
-    self.title = [[self.object class] description];
+    self.title = [FLEXRuntimeUtility safeClassNameForObject:self.object];
 
     // Search
     self.showsSearchBar = YES;

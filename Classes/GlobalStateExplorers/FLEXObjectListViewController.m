@@ -228,7 +228,7 @@ NSString const * FLEXTitleForObjectReferenceSection(FLEXObjectReferenceSection s
         sectionTitles:sectionTitles
     ];
     viewController.title = [NSString stringWithFormat:@"Referencing %@ %p",
-        NSStringFromClass(object_getClass(object)), object
+        [FLEXRuntimeUtility safeClassNameForObject:object], object
     ];
     return viewController;
 }

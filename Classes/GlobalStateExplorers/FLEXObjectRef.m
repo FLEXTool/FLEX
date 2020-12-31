@@ -47,7 +47,7 @@
         _object = object;
         _wantsSummary = showSummary;
 
-        NSString *class = NSStringFromClass(object_getClass(object));
+        NSString *class = [FLEXRuntimeUtility safeClassNameForObject:object];
         if (ivar) {
             _reference = [NSString stringWithFormat:@"%@ %@", class, ivar];
         } else if (showSummary) {
