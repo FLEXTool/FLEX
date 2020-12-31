@@ -535,4 +535,17 @@ return 0;
     }
 }
 
+#if TARGET_OS_TV
+    + (BOOL)airdropAvailable {
+        return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"airdropper://"]];
+    }
+    
+    + (void)airDropFile:(NSString *)file {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@", file]];
+        UIApplication *application = [UIApplication sharedApplication];
+        [application openURL:url options:@{} completionHandler:nil];
+    }
+    
+#endif
+    
 @end

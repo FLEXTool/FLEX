@@ -17,6 +17,9 @@
 #import "FLEXUtility.h"
 #import "NSArray+FLEX.h"
 #import "NSString+FLEX.h"
+#if TARGET_OS_TV
+#import "fakes.h"
+#endif
 
 #define FLEXObjectExplorerDefaultsImpl \
 - (FLEXObjectExplorerDefaults *)defaults { \
@@ -113,7 +116,7 @@ FLEXObjectExplorerDefaultsImpl
             #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailDisclosureButton;
             #else
-            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailDisclosureButton;
             #endif
         } else {
             // Uneditable non-nil value, chevron only
@@ -125,7 +128,7 @@ FLEXObjectExplorerDefaultsImpl
             #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailButton;
             #else
-            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailButton;
             #endif
         } else {
             // Non-editable nil value, neither
@@ -255,7 +258,7 @@ FLEXObjectExplorerDefaultsImpl
 #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailDisclosureButton;
 #else
-            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailDisclosureButton;
 #endif
         } else {
             // Uneditable non-nil value, chevron only
@@ -267,7 +270,7 @@ FLEXObjectExplorerDefaultsImpl
 #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailButton;
 #else
-            return UITableViewCellAccessoryDisclosureIndicator; //FIXME: not a proper fix
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailButton;
 #endif
         } else {
             // Non-editable nil value, neither

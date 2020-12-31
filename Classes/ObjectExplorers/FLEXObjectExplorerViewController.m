@@ -143,7 +143,6 @@
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
     longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
     [self.tableView addGestureRecognizer:longPress];
-    
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {

@@ -99,6 +99,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
                                         target:self
                                         action:@selector(sortDidTouchUpInside:)]
     ]];
+#if TARGET_OS_TV
+    [self addlongPressGestureRecognizer];
+#endif
 }
 
 - (void)sortDidTouchUpInside:(UIBarButtonItem *)sortButton {
@@ -231,6 +234,62 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     }
 
     return cell;
+}
+
+- (void)addlongPressGestureRecognizer {
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self.tableView addGestureRecognizer:longPress];
+}
+
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateEnded) {
+        
+        UITableViewCell *cell = [gesture.view valueForKey:@"_focusedCell"];
+        [self showActionForCell:cell];
+    }
+}
+
+- (void)fileBrowserOpen:(UITableViewCell *)cell {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSString *fullPath = [self filePathAtIndexPath:indexPath];
+
+    BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:self.path isDirectory:NULL];
+    if (stillExists) {
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title([NSString stringWithFormat:@"Open %@?", fullPath.lastPathComponent]);
+            make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
+                FXLog(@"TODO: implement opening files here!");
+            });
+            make.button(@"Cancel").cancelStyle();
+        } showFrom:self];
+    } else {
+        [FLEXAlert showAlert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
+    }
+}
+
+- (void)showActionForCell:(UITableViewCell *)cell {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSString *fullPath = [self filePathAtIndexPath:indexPath];
+    FXLog(@"showActionForCell: %@", fullPath);
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Choose an action for this file");
+        make.button(@"Open").handler(^(NSArray<NSString *> *strings) {
+            [self fileBrowserOpen:cell];
+        });
+        make.button(@"Rename").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            [self fileBrowserRename:cell];
+        });
+        make.button(@"Delete").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            [self fileBrowserDelete:cell];
+        });
+        if ([FLEXUtility airdropAvailable]){
+            make.button(@"Share").handler(^(NSArray<NSString *> *strings) {
+                [self fileBrowserShare:cell];
+            });
+        }
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -476,9 +535,15 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     NSURL *filePath = [NSURL fileURLWithPath:pathString];
 #if TARGET_OS_TV
     //This only helps on jailbroken AppleTV - it will allow you to share the files over AirDrop, no share option exists otherwise.
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@", pathString]];
-    UIApplication *application = [UIApplication sharedApplication];
-    [application openURL:url options:@{} completionHandler:nil];
+    if ([FLEXUtility airdropAvailable]){
+        [FLEXUtility airDropFile:pathString];
+        //NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@", pathString]];
+        //UIApplication *application = [UIApplication sharedApplication];
+        //[application openURL:url options:@{} completionHandler:nil];
+    } else {
+        [FLEXAlert showAlert:@"Oh no" message:@"A jailbroken AppleTV is required to share files through AirDrop, sorry!" from:self];
+    }
+    
 #else
     BOOL isDirectory = NO;
     [NSFileManager.defaultManager fileExistsAtPath:pathString isDirectory:&isDirectory];

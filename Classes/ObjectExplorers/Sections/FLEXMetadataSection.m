@@ -15,6 +15,9 @@
 #import "FLEXIvar.h"
 #import "NSArray+FLEX.h"
 #import "FLEXRuntime+UIKitHelpers.h"
+#if TARGET_OS_TV
+#import "fakes.h"
+#endif
 
 @interface FLEXMetadataSection ()
 @property (nonatomic, readonly) FLEXObjectExplorer *explorer;
@@ -164,6 +167,9 @@
     #if !TARGET_OS_TV
     return accessory == UITableViewCellAccessoryDisclosureIndicator ||
         accessory == UITableViewCellAccessoryDetailDisclosureButton;
+    #else
+        return accessory == UITableViewCellAccessoryDisclosureIndicator ||
+        accessory == TVTableViewCellAccessoryDetailDisclosureButton;
     #endif
     return accessory == UITableViewCellAccessoryDisclosureIndicator;
 }

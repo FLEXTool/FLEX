@@ -123,17 +123,21 @@
 
 - (void)actionButtonPressed:(id)sender {
 #if TARGET_OS_TV
-    NSString *outputFile = [[FLEXImagePreviewViewController documentsFolder] stringByAppendingPathComponent:@"FLEXViewImage.png"];
-    FXLog(@"exporting view image to file: %@", outputFile);
-    NSFileManager *man = [NSFileManager defaultManager];
-    if ([man fileExistsAtPath:outputFile]){
-        [man removeItemAtPath:outputFile error:nil];
+    if ([FLEXUtility airdropAvailable]){
+         NSString *outputFile = [[FLEXImagePreviewViewController documentsFolder] stringByAppendingPathComponent:@"FLEXViewImage.png"];
+           FXLog(@"exporting view image to file: %@", outputFile);
+           NSFileManager *man = [NSFileManager defaultManager];
+           if ([man fileExistsAtPath:outputFile]){
+               [man removeItemAtPath:outputFile error:nil];
+           }
+           [UIImagePNGRepresentation(self.image) writeToFile:outputFile atomically:true];
+           NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
+           NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@?sender=%@", outputFile, bundleID]];
+           [[UIApplication sharedApplication] openURL:url];
+           return;
+    } else {
+        [FLEXAlert showAlert:@"Oh no" message:@"A jailbroken AppleTV is required to share files through AirDrop, sorry!" from:self];
     }
-    [UIImagePNGRepresentation(self.image) writeToFile:outputFile atomically:true];
-    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@?sender=%@", outputFile, bundleID]];
-    [[UIApplication sharedApplication] openURL:url];
-    return;
 #endif
     
     static BOOL canSaveToCameraRoll = NO, didShowWarning = NO;

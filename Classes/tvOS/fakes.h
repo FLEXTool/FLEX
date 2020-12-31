@@ -40,6 +40,18 @@
  
  */
 
+typedef NS_ENUM(NSInteger, TVTableViewCellAccessoryType) {
+    TVTableViewCellAccessoryNone,
+    TVTableViewCellAccessoryDisclosureIndicator,
+    TVTableViewCellAccessoryCheckmark               = 3,
+    TVTableViewCellAccessoryChevron                 = 5,
+    TVTableViewCellAccessoryChevronOpen,
+    TVTableViewCellAccessoryChevronDisclosureButton,
+    TVTableViewCellAccessoryChevronOpenDisclosureButton,
+    TVTableViewCellAccessoryDetailDisclosureButton      = 10,
+    TVTableViewCellAccessoryDetailButton                = 12
+};
+
 @interface KBSearchButton: UIButton <UITextFieldDelegate>
 @property UISearchBar * _Nullable searchBar; //keep a reference to the search bar to add our text value to the search bar field immediately.
 - (void)triggerSearchField;

@@ -9,7 +9,9 @@
 #import "FLEXDefaultsContentSection.h"
 #import "FLEXDefaultEditorViewController.h"
 #import "FLEXUtility.h"
-
+#if TARGET_OS_TV
+#import "fakes.h"
+#endif
 @interface FLEXDefaultsContentSection ()
 @property (nonatomic) NSUserDefaults *defaults;
 @property (nonatomic) NSArray *keys;
@@ -65,7 +67,7 @@
 #if !TARGET_OS_TV
     return UITableViewCellAccessoryDetailDisclosureButton;
 #else
-    return UITableViewCellAccessoryDisclosureIndicator;
+    return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailDisclosureButton;
 #endif
 }
 

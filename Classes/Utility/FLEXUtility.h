@@ -50,6 +50,8 @@
 #if !TARGET_OS_TV
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
 #else
++ (BOOL)airdropAvailable;
++ (void)airDropFile:(NSString *)file;
 + (NSUInteger)infoPlistSupportedInterfaceOrientationsMask;
 #endif
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
