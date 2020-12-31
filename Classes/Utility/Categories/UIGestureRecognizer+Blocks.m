@@ -14,22 +14,22 @@
 
 static void * actionKey;
 
-+ (instancetype)action:(GestureBlock)action {
++ (instancetype)flex_action:(GestureBlock)action {
     UIGestureRecognizer *gesture = [[self alloc] initWithTarget:nil action:nil];
     [gesture addTarget:gesture action:@selector(flex_invoke)];
-    gesture.action = action;
+    gesture.flex_action = action;
     return gesture;
 }
 
 - (void)flex_invoke {
-    self.action(self);
+    self.flex_action(self);
 }
 
-- (GestureBlock)action {
+- (GestureBlock)flex_action {
     return objc_getAssociatedObject(self, &actionKey);
 }
 
-- (void)setAction:(GestureBlock)action {
+- (void)flex_setAction:(GestureBlock)action {
     objc_setAssociatedObject(self, &actionKey, action, OBJC_ASSOCIATION_COPY);
 }
 

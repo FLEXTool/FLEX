@@ -26,14 +26,14 @@
 
 @implementation UIView (FLEX_Layout)
 
-- (void)centerInView:(UIView *)view {
+- (void)flex_centerInView:(UIView *)view {
     [NSLayoutConstraint activateConstraints:@[
         [self.centerXAnchor constraintEqualToAnchor:view.centerXAnchor],
         [self.centerYAnchor constraintEqualToAnchor:view.centerYAnchor],
     ]];
 }
 
-- (void)pinEdgesTo:(UIView *)view {
+- (void)flex_pinEdgesTo:(UIView *)view {
    [NSLayoutConstraint activateConstraints:@[
        [self.topAnchor constraintEqualToAnchor:view.topAnchor],
        [self.leftAnchor constraintEqualToAnchor:view.leftAnchor],
@@ -42,7 +42,7 @@
    ]]; 
 }
 
-- (void)pinEdgesTo:(UIView *)view withInsets:(UIEdgeInsets)i {
+- (void)flex_pinEdgesTo:(UIView *)view withInsets:(UIEdgeInsets)i {
     [NSLayoutConstraint activateConstraints:@[
         [self.topAnchor constraintEqualToAnchor:view.topAnchor constant:i.top],
         [self.leftAnchor constraintEqualToAnchor:view.leftAnchor constant:i.left],
@@ -51,15 +51,15 @@
     ]];
 }
 
-- (void)pinEdgesToSuperview {
-    [self pinEdgesTo:self.superview];
+- (void)flex_pinEdgesToSuperview {
+    [self flex_pinEdgesTo:self.superview];
 }
 
-- (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets {
-    [self pinEdgesTo:self.superview withInsets:insets];
+- (void)flex_pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets {
+    [self flex_pinEdgesTo:self.superview withInsets:insets];
 }
 
-- (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)i aboveView:(UIView *)sibling {
+- (void)flex_pinEdgesToSuperviewWithInsets:(UIEdgeInsets)i aboveView:(UIView *)sibling {
     UIView *view = self.superview;
     [NSLayoutConstraint activateConstraints:@[
         [self.topAnchor constraintEqualToAnchor:view.topAnchor constant:i.top],
@@ -69,7 +69,7 @@
     ]];
 }
 
-- (void)pinEdgesToSuperviewWithInsets:(UIEdgeInsets)i belowView:(UIView *)sibling {
+- (void)flex_pinEdgesToSuperviewWithInsets:(UIEdgeInsets)i belowView:(UIView *)sibling {
     UIView *view = self.superview;
     [NSLayoutConstraint activateConstraints:@[
         [self.topAnchor constraintEqualToAnchor:sibling.bottomAnchor constant:i.top],

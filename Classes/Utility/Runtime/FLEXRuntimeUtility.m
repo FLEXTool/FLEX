@@ -96,10 +96,18 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     return superClasses;
 }
 
++ (NSString *)safeClassNameForObject:(id)object {
+    // Don't assume that we have an NSObject subclass
+    if ([self safeObject:object respondsToSelector:@selector(class)]) {
+        return NSStringFromClass([object class]);
+    }
+
+    return NSStringFromClass(object_getClass(object));
+}
+
 /// Could be nil
 + (NSString *)safeDescriptionForObject:(id)object {
-    // Don't assume that we have an NSObject subclass.
-    // Check to make sure the object responds to the description method
+    // Don't assume that we have an NSObject subclass; not all objects respond to -description
     if ([self safeObject:object respondsToSelector:@selector(description)]) {
         return [object description];
     }
@@ -111,8 +119,6 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 + (NSString *)safeDebugDescriptionForObject:(id)object {
     NSString *description = nil;
 
-    // Don't assume that we have an NSObject subclass.
-    // Check to make sure the object responds to the description method
     if ([self safeObject:object respondsToSelector:@selector(debugDescription)]) {
         description = [object debugDescription];
     } else {
@@ -177,18 +183,18 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 }
 
 + (BOOL)safeObject:(id)object respondsToSelector:(SEL)sel {
-    static BOOL (*respondsToSelector)(id, SEL, SEL) = nil;
-    static BOOL (*respondsToSelector_meta)(id, SEL, SEL) = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        respondsToSelector = (BOOL(*)(id, SEL, SEL))[NSObject instanceMethodForSelector:@selector(respondsToSelector:)];
-        respondsToSelector_meta = (BOOL(*)(id, SEL, SEL))[NSObject methodForSelector:@selector(respondsToSelector:)];
-    });
-    
+    // If we're given a class, we want to know if classes respond to this selector.
+    // Similarly, if we're given an instance, we want to know if instances respond. 
     BOOL isClass = object_isClass(object);
-    return (isClass ? respondsToSelector_meta : respondsToSelector)(
-        object, @selector(respondsToSelector:), sel
-    );
+    Class cls = isClass ? object : object_getClass(object);
+    // BOOL isMetaclass = class_isMetaClass(cls);
+    
+    if (isClass) {
+        // In theory, this should also work for metaclasses...
+        return class_getClassMethod(cls, sel) != nil;
+    } else {
+        return class_getInstanceMethod(cls, sel) != nil;
+    }
 }
 
 

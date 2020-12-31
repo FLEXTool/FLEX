@@ -567,6 +567,7 @@
 		C36B096623E0D4A1008F5D47 /* UIMenu+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C36B096423E0D4A1008F5D47 /* UIMenu+FLEX.m */; };
 		C36B097023E1EDCD008F5D47 /* FLEXTableViewSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C36B096E23E1EDCD008F5D47 /* FLEXTableViewSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C36B097123E1EDCD008F5D47 /* FLEXTableViewSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C36B096F23E1EDCD008F5D47 /* FLEXTableViewSection.m */; };
+		C36E1B26259D64CC00FEFEF6 /* FLEXNewRootClass.m in Sources */ = {isa = PBXBuildFile; fileRef = C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C36FBFCB230F3B98008D95D5 /* FLEXMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = C36FBFB9230F3B97008D95D5 /* FLEXMirror.m */; };
 		C36FBFCC230F3B98008D95D5 /* FLEXProtocolBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = C36FBFBA230F3B97008D95D5 /* FLEXProtocolBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C36FBFCD230F3B98008D95D5 /* FLEXMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = C36FBFBB230F3B97008D95D5 /* FLEXMethod.m */; };
@@ -946,6 +947,8 @@
 		C36B096423E0D4A1008F5D47 /* UIMenu+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIMenu+FLEX.m"; sourceTree = "<group>"; };
 		C36B096E23E1EDCD008F5D47 /* FLEXTableViewSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXTableViewSection.h; sourceTree = "<group>"; };
 		C36B096F23E1EDCD008F5D47 /* FLEXTableViewSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTableViewSection.m; sourceTree = "<group>"; };
+		C36E1B24259D64CC00FEFEF6 /* FLEXNewRootClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXNewRootClass.h; sourceTree = "<group>"; };
+		C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXNewRootClass.m; sourceTree = "<group>"; };
 		C36FBFB9230F3B97008D95D5 /* FLEXMirror.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMirror.m; sourceTree = "<group>"; };
 		C36FBFBA230F3B97008D95D5 /* FLEXProtocolBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXProtocolBuilder.h; sourceTree = "<group>"; };
 		C36FBFBB230F3B97008D95D5 /* FLEXMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMethod.m; sourceTree = "<group>"; };
@@ -1497,6 +1500,23 @@
 			path = Objc;
 			sourceTree = "<group>";
 		};
+		C31E4E53259D4A4100712288 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				C362AE7F23C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h */,
+				C362AE8023C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m */,
+				C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */,
+				C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */,
+				C3F9777F2311B38F0032776D /* NSDictionary+ObjcRuntime.h */,
+				C3F9777E2311B38E0032776D /* NSDictionary+ObjcRuntime.m */,
+				C3F9777D2311B38E0032776D /* NSString+ObjcRuntime.h */,
+				C3F977802311B38F0032776D /* NSString+ObjcRuntime.m */,
+				C398627423AD79B6007E6793 /* NSString+FLEX.h */,
+				C398627523AD79B7007E6793 /* NSString+FLEX.m */,
+			);
+			path = Private;
+			sourceTree = "<group>";
+		};
 		C33CF16B22D664E600F9C6C0 /* FileBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -1573,6 +1593,15 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		C36E1B27259D64D300FEFEF6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C36E1B24259D64CC00FEFEF6 /* FLEXNewRootClass.h */,
+				C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		C36FBFB8230F3B52008D95D5 /* Runtime */ = {
 			isa = PBXGroup;
 			children = (
@@ -1626,10 +1655,9 @@
 		C387C88022E0D22600750E58 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				C31E4E53259D4A4100712288 /* Private */,
 				C3DFCDB62418336D00BB7084 /* NSUserDefaults+FLEX.h */,
 				C3DFCDB72418336D00BB7084 /* NSUserDefaults+FLEX.m */,
-				C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */,
-				C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */,
 				C398627023AD7951007E6793 /* UIGestureRecognizer+Blocks.h */,
 				C398627123AD7951007E6793 /* UIGestureRecognizer+Blocks.m */,
 				C3F646BF239EAA8F00D4A011 /* UIPasteboard+FLEX.h */,
@@ -1644,18 +1672,10 @@
 				C3BFD06F233C23ED0015FB82 /* NSArray+FLEX.m */,
 				C3F977812311B38F0032776D /* NSObject+FLEX_Reflection.h */,
 				C3F977822311B38F0032776D /* NSObject+FLEX_Reflection.m */,
-				C3F9777F2311B38F0032776D /* NSDictionary+ObjcRuntime.h */,
-				C3F9777E2311B38E0032776D /* NSDictionary+ObjcRuntime.m */,
-				C3F9777D2311B38E0032776D /* NSString+ObjcRuntime.h */,
-				C3F977802311B38F0032776D /* NSString+ObjcRuntime.m */,
-				C398627423AD79B6007E6793 /* NSString+FLEX.h */,
-				C398627523AD79B7007E6793 /* NSString+FLEX.m */,
 				C3E5D9FB2316E83700E655DB /* FLEXRuntime+Compare.h */,
 				C3E5D9FC2316E83700E655DB /* FLEXRuntime+Compare.m */,
 				C34C9BDB23A7F2740031CA3E /* FLEXRuntime+UIKitHelpers.h */,
 				C34C9BDC23A7F2740031CA3E /* FLEXRuntime+UIKitHelpers.m */,
-				C362AE7F23C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h */,
-				C362AE8023C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m */,
 				C36B096323E0D4A1008F5D47 /* UIMenu+FLEX.h */,
 				C36B096423E0D4A1008F5D47 /* UIMenu+FLEX.m */,
 				C3694DC023EA147F006625D7 /* UIBarButtonItem+FLEX.h */,
@@ -2277,7 +2297,7 @@
 					3A4C941E1B5B20570088C3F2 = {
 						CreatedOnToolsVersion = 6.4;
 						LastSwiftMigration = 1130;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -2353,6 +2373,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C36E1B26259D64CC00FEFEF6 /* FLEXNewRootClass.m in Sources */,
 				C33C825B23159EAF00DD2451 /* FLEXTests.m in Sources */,
 				1C27A8B91F0E5A0400F0D02D /* FLEXTestsMethodsList.m in Sources */,
 				C3854DF023F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m in Sources */,
@@ -2956,9 +2977,10 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2996,9 +3018,10 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;

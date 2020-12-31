@@ -20,6 +20,28 @@
 #import <malloc/malloc.h>
 
 
+typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
+    FLEXObjectReferenceSectionMain,
+    FLEXObjectReferenceSectionAutoLayout,
+    FLEXObjectReferenceSectionKVO,
+    FLEXObjectReferenceSectionFLEX,
+    
+    FLEXObjectReferenceSectionCount
+};
+
+NSArray<NSString *> * FLEXObjectReferenceSectionTitles() {
+    return @[
+        @"", @"AutoLayout", @"Key-Value Observing", @"FLEX"
+    ];
+}
+
+NSString const * FLEXTitleForObjectReferenceSection(FLEXObjectReferenceSection section) {
+    switch (section) {
+        case FLEXObjectReferenceSectionCount: @throw NSInternalInconsistencyException;
+        default: return FLEXObjectReferenceSectionTitles()[section];
+    }
+}
+
 @interface FLEXObjectListViewController ()
 @property (nonatomic, copy) NSArray<FLEXMutableListSection *> *sections;
 @property (nonatomic, copy) NSArray<FLEXMutableListSection *> *allSections;
@@ -38,7 +60,7 @@
 + (NSPredicate *)defaultPredicateForSection:(NSInteger)section {
     // These are the types of references that we typically don't care about.
     // We want this list of "object-ivar pairs" split into two sections.
-    BOOL(^isObserver)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
+    BOOL(^isKVORelated)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
         NSString *row = ref.reference;
         return [row isEqualToString:@"__NSObserver object"] ||
                [row isEqualToString:@"_CFXNotificationObjcObserverRegistration _object"];
@@ -65,28 +87,38 @@
                ([row hasPrefix:@"_NSAutoresizingMask"] && [row hasSuffix:@" _referenceItem"]) ||
                [ignored containsObject:row];
     };
+    
+    /// These are FLEX classes and usually you aren't looking for FLEX references inside FLEX itself
+    BOOL(^isFLEXClass)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
+        return [ref.reference hasPrefix:@"FLEX"];
+    };
 
     BOOL(^isEssential)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
-        return !(isObserver(ref, bindings) || isConstraintRelated(ref, bindings));
+        return !(
+            isKVORelated(ref, bindings) ||
+            isConstraintRelated(ref, bindings) ||
+            isFLEXClass(ref, bindings)
+        );
     };
 
     switch (section) {
-        case 0: return [NSPredicate predicateWithBlock:isEssential];
-        case 1: return [NSPredicate predicateWithBlock:isConstraintRelated];
-        case 2: return [NSPredicate predicateWithBlock:isObserver];
+        case FLEXObjectReferenceSectionMain:
+            return [NSPredicate predicateWithBlock:isEssential];
+        case FLEXObjectReferenceSectionAutoLayout:
+            return [NSPredicate predicateWithBlock:isConstraintRelated];
+        case FLEXObjectReferenceSectionKVO:
+            return [NSPredicate predicateWithBlock:isKVORelated];
+        case FLEXObjectReferenceSectionFLEX:
+            return [NSPredicate predicateWithBlock:isFLEXClass];
 
         default: return nil;
     }
 }
 
 + (NSArray<NSPredicate *> *)defaultPredicates {
-    return @[[self defaultPredicateForSection:0],
-             [self defaultPredicateForSection:1],
-             [self defaultPredicateForSection:2]];
-}
-
-+ (NSArray<NSString *> *)defaultSectionTitles {
-    return @[@"", @"AutoLayout", @"Trivial"];
+    return [NSArray flex_forEachUpTo:FLEXObjectReferenceSectionCount map:^id(NSUInteger i) {
+        return [self defaultPredicateForSection:i];
+    }];
 }
 
 
@@ -189,14 +221,14 @@
     }];
 
     NSArray<NSPredicate *> *predicates = [self defaultPredicates];
-    NSArray<NSString *> *sectionTitles = [self defaultSectionTitles];
+    NSArray<NSString *> *sectionTitles = FLEXObjectReferenceSectionTitles();
     FLEXObjectListViewController *viewController = [[self alloc]
         initWithReferences:instances
         predicates:predicates
         sectionTitles:sectionTitles
     ];
     viewController.title = [NSString stringWithFormat:@"Referencing %@ %p",
-        NSStringFromClass(object_getClass(object)), object
+        [FLEXRuntimeUtility safeClassNameForObject:object], object
     ];
     return viewController;
 }

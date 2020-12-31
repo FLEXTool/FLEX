@@ -53,6 +53,7 @@
 
 /// Used to describe an object in brief within an explorer row
 + (NSString *)summaryForObject:(id)value;
++ (NSString *)safeClassNameForObject:(id)object;
 + (NSString *)safeDescriptionForObject:(id)object;
 + (NSString *)safeDebugDescriptionForObject:(id)object;
 

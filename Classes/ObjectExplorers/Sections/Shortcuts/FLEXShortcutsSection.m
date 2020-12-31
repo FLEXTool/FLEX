@@ -377,8 +377,6 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
                 [bucket addObjectsFromArray:items];
             }
         }
-        
-        [self reset];
     }
 }
 
@@ -480,6 +478,8 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
             }];
             [self _register:items to:ivarBucket class:cls];
         }
+        
+        [self reset];
     };
 }
 
