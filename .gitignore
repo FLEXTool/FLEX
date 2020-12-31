@@ -24,3 +24,4 @@ IDEWorkspaceChecks.plist
 #tvOS specific
 libflex_*
 flexinjected/packages/*
+layout/Library/Frameworks/*.framework
