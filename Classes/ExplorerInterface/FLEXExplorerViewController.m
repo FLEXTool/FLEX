@@ -300,7 +300,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         make.button(@"Show Usage Hints").handler(^(NSArray<NSString *> *strings) {
             [[FLEXManager sharedManager] showHintsAlert];
         });
-        make.button(@"Cancel").cancelStyle();
+        make.button(@"Cancel").cancelStyle().handler(^(NSArray<NSString *> *strings) {
+            [[FLEXManager sharedManager] showExplorer];
+        });
     } showFrom:self];
 }
 
