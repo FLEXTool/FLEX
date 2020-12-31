@@ -18,7 +18,7 @@
         [curlCommandString appendFormat:@"-H \'%@: %@\' ", key, val];
     }];
 
-    NSArray<NSHTTPCookie *> *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:request.URL];
+    NSArray<NSHTTPCookie *> *cookies = [NSHTTPCookieStorage.sharedHTTPCookieStorage cookiesForURL:request.URL];
     if (cookies) {
         [curlCommandString appendFormat:@"-H \'Cookie:"];
         for (NSHTTPCookie *cookie in cookies) {
@@ -28,12 +28,8 @@
     }
 
     if (request.HTTPBody) {
-        if ([request.allHTTPHeaderFields[@"Content-Length"] intValue] < 1024) {
-            [curlCommandString appendFormat:@"-d \'%@\'",
-             [[NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding]];
-        } else {
-            [curlCommandString appendFormat:@"[TOO MUCH DATA TO INCLUDE]"];
-        }
+        NSString *body = [[NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding];
+        [curlCommandString appendFormat:@"-d \'%@\'", body];
     }
 
     return curlCommandString;
