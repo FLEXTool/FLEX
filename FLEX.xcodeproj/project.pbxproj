@@ -204,6 +204,7 @@
 		C36B096623E0D4A1008F5D47 /* UIMenu+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C36B096423E0D4A1008F5D47 /* UIMenu+FLEX.m */; };
 		C36B097023E1EDCD008F5D47 /* FLEXTableViewSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C36B096E23E1EDCD008F5D47 /* FLEXTableViewSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C36B097123E1EDCD008F5D47 /* FLEXTableViewSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C36B096F23E1EDCD008F5D47 /* FLEXTableViewSection.m */; };
+		C36E1B26259D64CC00FEFEF6 /* FLEXNewRootClass.m in Sources */ = {isa = PBXBuildFile; fileRef = C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C36FBFCB230F3B98008D95D5 /* FLEXMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = C36FBFB9230F3B97008D95D5 /* FLEXMirror.m */; };
 		C36FBFCC230F3B98008D95D5 /* FLEXProtocolBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = C36FBFBA230F3B97008D95D5 /* FLEXProtocolBuilder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C36FBFCD230F3B98008D95D5 /* FLEXMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = C36FBFBB230F3B97008D95D5 /* FLEXMethod.m */; };
@@ -567,6 +568,8 @@
 		C36B096423E0D4A1008F5D47 /* UIMenu+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIMenu+FLEX.m"; sourceTree = "<group>"; };
 		C36B096E23E1EDCD008F5D47 /* FLEXTableViewSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXTableViewSection.h; sourceTree = "<group>"; };
 		C36B096F23E1EDCD008F5D47 /* FLEXTableViewSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTableViewSection.m; sourceTree = "<group>"; };
+		C36E1B24259D64CC00FEFEF6 /* FLEXNewRootClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXNewRootClass.h; sourceTree = "<group>"; };
+		C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXNewRootClass.m; sourceTree = "<group>"; };
 		C36FBFB9230F3B97008D95D5 /* FLEXMirror.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMirror.m; sourceTree = "<group>"; };
 		C36FBFBA230F3B97008D95D5 /* FLEXProtocolBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXProtocolBuilder.h; sourceTree = "<group>"; };
 		C36FBFBB230F3B97008D95D5 /* FLEXMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMethod.m; sourceTree = "<group>"; };
@@ -738,6 +741,7 @@
 				1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */,
 				C3854DEF23F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m */,
 				1C27A8BA1F0E5A0400F0D02D /* Info.plist */,
+				C36E1B27259D64D300FEFEF6 /* Supporting Files */,
 			);
 			path = FLEXTests;
 			sourceTree = "<group>";
@@ -1178,6 +1182,15 @@
 				C383C3C423B6BB81007A321B /* FLEXCodeFontCell.m */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		C36E1B27259D64D300FEFEF6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C36E1B24259D64CC00FEFEF6 /* FLEXNewRootClass.h */,
+				C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */,
+			);
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		C36FBFB8230F3B52008D95D5 /* Runtime */ = {
@@ -1658,7 +1671,7 @@
 					3A4C941E1B5B20570088C3F2 = {
 						CreatedOnToolsVersion = 6.4;
 						LastSwiftMigration = 1130;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1704,6 +1717,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C36E1B26259D64CC00FEFEF6 /* FLEXNewRootClass.m in Sources */,
 				C33C825B23159EAF00DD2451 /* FLEXTests.m in Sources */,
 				1C27A8B91F0E5A0400F0D02D /* FLEXTestsMethodsList.m in Sources */,
 				C3854DF023F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m in Sources */,
@@ -2047,9 +2061,10 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2066,6 +2081,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flipboard.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2080,9 +2096,10 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = NO;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CODE_SIGN_STYLE = Manual;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2099,6 +2116,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flipboard.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				WARNING_CFLAGS = "-Wno-unsupported-availability-guard";
