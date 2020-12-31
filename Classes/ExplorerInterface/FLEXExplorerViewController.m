@@ -273,50 +273,35 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-
 - (void)showTVOSOptionsAlert {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"What would you like to do?" message:nil preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *details = [UIAlertAction actionWithTitle:@"Show Details" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self showObjectControllerForSelectedView];
-        [[FLEXManager sharedManager] showExplorer];
-    }];
-    [alertController addAction:details];
-    if (self.currentMode == FLEXExplorerModeMove){
-        UIAlertAction *selection = [UIAlertAction actionWithTitle:@"Select View" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            self.currentMode = FLEXExplorerModeSelect;
-            cursorView.hidden = false;
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"What would you like to do?");
+        make.button(@"Show Details").handler(^(NSArray<NSString *> *strings) {
+            [self showObjectControllerForSelectedView];
             [[FLEXManager sharedManager] showExplorer];
-        }];
-        [alertController addAction:selection];
-        
-    } else if (self.currentMode == FLEXExplorerModeSelect){
-        UIAlertAction *movement = [UIAlertAction actionWithTitle:@"Move View" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            self.currentMode = FLEXExplorerModeMove;
-            cursorView.hidden = true;
+        });
+        if (self.currentMode == FLEXExplorerModeMove){
+            make.button(@"Select View").handler(^(NSArray<NSString *> *strings) {
+                self.currentMode = FLEXExplorerModeSelect;
+                cursorView.hidden = false;
+                [[FLEXManager sharedManager] showExplorer];
+            });
+        } else if (self.currentMode == FLEXExplorerModeSelect){
+            make.button(@"Move View").handler(^(NSArray<NSString *> *strings) {
+                self.currentMode = FLEXExplorerModeMove;
+                cursorView.hidden = true;
+                [[FLEXManager sharedManager] showExplorer];
+            });
+        }
+        make.button(@"Show Views").handler(^(NSArray<NSString *> *strings) {
+            [self toggleViewsTool];
             [[FLEXManager sharedManager] showExplorer];
-        }];
-        [alertController addAction:movement];
-    }
-    UIAlertAction *showViews = [UIAlertAction actionWithTitle:@"Show Views" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self toggleViewsTool];
-        [[FLEXManager sharedManager] showExplorer];
-    }];
-    [alertController addAction:showViews];
-    
-    UIAlertAction *showUsageHints = [UIAlertAction actionWithTitle:@"Show Usage Hints" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[FLEXManager sharedManager] showHintsAlert];
-        //[[FLEXManager sharedManager] showExplorer];
-       }];
-       [alertController addAction:showUsageHints];
-    
-    
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [[FLEXManager sharedManager] showExplorer];
-    }]];
-    
-    [self presentViewController:alertController animated:true completion:nil];
-    
+        });
+        make.button(@"Show Usage Hints").handler(^(NSArray<NSString *> *strings) {
+            [[FLEXManager sharedManager] showHintsAlert];
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
