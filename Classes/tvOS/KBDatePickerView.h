@@ -50,8 +50,4 @@ DECLARE_ENUM(KBDatePickerMode, PICKER_MODE)
 +(id _Nonnull )todayInYear:(NSInteger)year;
 + (NSDateFormatter * _Nonnull )sharedDateFormatter;
 @end
-
-#define DLog(format, ...) CFShow((__bridge CFStringRef)[NSString stringWithFormat:format, ## __VA_ARGS__]);
-#define LOG_SELF        NSLog(@"[KBDatePickerView] %@ %@", self, NSStringFromSelector(_cmd))
 #define DPLog(format, ...) NSLog(@"[KBDatePickerView] %@",[NSString stringWithFormat:format, ## __VA_ARGS__]);
-#define DLOG_SELF DLog(@"%@ %@", self, NSStringFromSelector(_cmd))
