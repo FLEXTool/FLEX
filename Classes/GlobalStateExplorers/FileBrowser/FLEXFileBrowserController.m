@@ -271,7 +271,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     }
 }
 
+//this should only ever be used on tvOS so that #if TARGET_OS is a suffucient fix to keep this from having errors building on iOS
 - (void)showActionForCell:(UITableViewCell *)cell {
+#if TARGET_OS_TV
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
     FXLog(@"showActionForCell: %@", fullPath);
@@ -293,6 +295,7 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
         }
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
+#endif
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
