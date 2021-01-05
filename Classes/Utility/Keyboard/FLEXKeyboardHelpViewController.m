@@ -8,10 +8,14 @@
 
 #import "FLEXKeyboardHelpViewController.h"
 #import "FLEXKeyboardShortcutManager.h"
-
+#import "KBSelectableTextView.h"
 @interface FLEXKeyboardHelpViewController ()
 
+#if TARGET_OS_TV
+@property (nonatomic) KBSelectableTextView *textView;
+#else
 @property (nonatomic) UITextView *textView;
+#endif
 
 @end
 
@@ -19,8 +23,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+#if TARGET_OS_TV
+    self.textView = [[KBSelectableTextView alloc] initWithFrame:self.view.bounds];
+#else
     self.textView = [[UITextView alloc] initWithFrame:self.view.bounds];
+#endif
     self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.textView];
 #if TARGET_OS_SIMULATOR
@@ -29,8 +36,9 @@
     self.textView.backgroundColor = UIColor.blackColor;
     self.textView.textColor = UIColor.whiteColor;
     self.textView.font = [UIFont boldSystemFontOfSize:14.0];
+    #if !TARGET_OS_TV
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    
+    #endif
     self.title = @"Simulator Shortcuts";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(donePressed:)];
 }

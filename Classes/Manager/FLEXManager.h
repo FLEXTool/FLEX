@@ -25,6 +25,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)hideExplorer;
 - (void)toggleExplorer;
 
+///tvOS specific
+
+- (void)showHintsAlert;
+
 /// Use this to present the explorer in a specific scene when the one
 /// it chooses by default is not the one you wish to display it in.
 - (void)showExplorerFromScene:(UIWindowScene *)scene API_AVAILABLE(ios(13.0));

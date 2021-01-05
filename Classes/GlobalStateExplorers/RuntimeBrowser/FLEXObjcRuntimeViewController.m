@@ -91,7 +91,9 @@
         make.message(path);
 
         make.button(@"Copy Path").handler(^(NSArray<NSString *> *strings) {
+#if !TARGET_OS_TV
             UIPasteboard.generalPasteboard.string = path;
+#endif
         });
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];

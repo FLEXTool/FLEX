@@ -32,7 +32,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 @property (nonatomic) NSNumber *recursiveSize;
 @property (nonatomic) NSNumber *searchPathsSize;
 @property (nonatomic) NSOperationQueue *operationQueue;
+#if !TARGET_OS_TV
 @property (nonatomic) UIDocumentInteractionController *documentController;
+#endif
 @property (nonatomic) FLEXFileBrowserSortAttribute sortAttribute;
 
 @end
@@ -97,6 +99,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
                                         target:self
                                         action:@selector(sortDidTouchUpInside:)]
     ]];
+#if TARGET_OS_TV
+    [self addlongPressGestureRecognizer];
+#endif
 }
 
 - (void)sortDidTouchUpInside:(UIBarButtonItem *)sortButton {
@@ -231,6 +236,65 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     return cell;
 }
 
+- (void)addlongPressGestureRecognizer {
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self.tableView addGestureRecognizer:longPress];
+    UITapGestureRecognizer *rightTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    rightTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+    [self.tableView addGestureRecognizer:rightTap];
+}
+
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateEnded) {
+        
+        UITableViewCell *cell = [gesture.view valueForKey:@"_focusedCell"];
+        [self showActionForCell:cell];
+    }
+}
+
+- (void)fileBrowserOpen:(UITableViewCell *)cell {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSString *fullPath = [self filePathAtIndexPath:indexPath];
+
+    BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:self.path isDirectory:NULL];
+    if (stillExists) {
+        [FLEXAlert makeAlert:^(FLEXAlert *make) {
+            make.title([NSString stringWithFormat:@"Open %@?", fullPath.lastPathComponent]);
+            make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
+                FXLog(@"TODO: implement opening files here!");
+            });
+            make.button(@"Cancel").cancelStyle();
+        } showFrom:self];
+    } else {
+        [FLEXAlert showAlert:@"File Removed" message:@"The file at the specified path no longer exists." from:self];
+    }
+}
+
+- (void)showActionForCell:(UITableViewCell *)cell {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSString *fullPath = [self filePathAtIndexPath:indexPath];
+    FXLog(@"showActionForCell: %@", fullPath);
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Choose an action for this file");
+        make.button(@"Open").handler(^(NSArray<NSString *> *strings) {
+            [self fileBrowserOpen:cell];
+        });
+        make.button(@"Rename").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            [self fileBrowserRename:cell];
+        });
+        make.button(@"Delete").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            [self fileBrowserDelete:cell];
+        });
+        if ([FLEXUtility airdropAvailable]){
+            make.button(@"Share").handler(^(NSArray<NSString *> *strings) {
+                [self fileBrowserShare:cell];
+            });
+        }
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
@@ -335,6 +399,7 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    #if !TARGET_OS_TV
     UIMenuItem *rename = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
     UIMenuItem *delete = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
     UIMenuItem *copyPath = [[UIMenuItem alloc] initWithTitle:@"Copy Path" action:@selector(fileBrowserCopyPath:)];
@@ -343,6 +408,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     UIMenuController.sharedMenuController.menuItems = @[rename, delete, copyPath, share];
 
     return YES;
+    #else
+    return NO;
+    #endif
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
@@ -359,10 +427,8 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 }
 
 #if FLEX_AT_LEAST_IOS13_SDK
-
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
-contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
-                                    point:(CGPoint)point __IOS_AVAILABLE(13.0) {
+#if !TARGET_OS_TV
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     __weak __typeof__(self) weakSelf = self;
     return [UIContextMenuConfiguration configurationWithIdentifier:nil
                                                    previewProvider:nil
@@ -395,15 +461,17 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
         return [UIMenu menuWithTitle:@"Manage File" image:nil identifier:@"Manage File" options:UIMenuOptionsDisplayInline children:@[rename, delete, copyPath, share]];
     }];
 }
-
+#endif
 #endif
 
 - (void)openFileController:(NSString *)fullPath {
+#if !TARGET_OS_TV
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];
     controller.URL = [NSURL fileURLWithPath:fullPath];
 
     [controller presentOptionsMenuFromRect:self.view.bounds inView:self.view animated:YES];
     self.documentController = controller;
+#endif
 }
 
 - (void)fileBrowserRename:(UITableViewCell *)sender {
@@ -456,16 +524,30 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
 }
 
 - (void)fileBrowserCopyPath:(UITableViewCell *)sender {
+#if !TARGET_OS_TV
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
+    
     UIPasteboard.generalPasteboard.string = fullPath;
+#endif
 }
 
 - (void)fileBrowserShare:(UITableViewCell *)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *pathString = [self filePathAtIndexPath:indexPath];
     NSURL *filePath = [NSURL fileURLWithPath:pathString];
-
+#if TARGET_OS_TV
+    //This only helps on jailbroken AppleTV - it will allow you to share the files over AirDrop, no share option exists otherwise.
+    if ([FLEXUtility airdropAvailable]){
+        [FLEXUtility airDropFile:pathString];
+        //NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@", pathString]];
+        //UIApplication *application = [UIApplication sharedApplication];
+        //[application openURL:url options:@{} completionHandler:nil];
+    } else {
+        [FLEXAlert showAlert:@"Oh no" message:@"A jailbroken AppleTV is required to share files through AirDrop, sorry!" from:self];
+    }
+    
+#else
     BOOL isDirectory = NO;
     [NSFileManager.defaultManager fileExistsAtPath:pathString isDirectory:&isDirectory];
 
@@ -474,9 +556,12 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
         [self openFileController:pathString];
     } else {
         // Share sheet for files
+
         UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[filePath] applicationActivities:nil];
         [self presentViewController:shareSheet animated:true completion:nil];
+
     }
+#endif
 }
 
 - (void)reloadDisplayedPaths {
@@ -542,20 +627,20 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
     id target = [self.nextResponder targetForAction:action withSender:sender];
     [UIApplication.sharedApplication sendAction:action to:target from:self forEvent:nil];
 }
-
-- (void)fileBrowserRename:(UIMenuController *)sender {
+//really UIMenuController but this is to silence warnings
+- (void)fileBrowserRename:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserDelete:(UIMenuController *)sender {
+- (void)fileBrowserDelete:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserCopyPath:(UIMenuController *)sender {
+- (void)fileBrowserCopyPath:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 
-- (void)fileBrowserShare:(UIMenuController *)sender {
+- (void)fileBrowserShare:(UIViewController *)sender {
     [self forwardAction:_cmd withSender:sender];
 }
 

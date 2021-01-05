@@ -17,6 +17,9 @@
 #import "FLEXUtility.h"
 #import "NSArray+FLEX.h"
 #import "NSString+FLEX.h"
+#if TARGET_OS_TV
+#import "fakes.h"
+#endif
 
 #define FLEXObjectExplorerDefaultsImpl \
 - (FLEXObjectExplorerDefaults *)defaults { \
@@ -110,7 +113,11 @@ FLEXObjectExplorerDefaultsImpl
     if ([self getPotentiallyUnboxedValue:targetForValueCheck]) {
         if (self.defaults.isEditable) {
             // Editable non-nil value, both
+            #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailDisclosureButton;
+            #else
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailDisclosureButton;
+            #endif
         } else {
             // Uneditable non-nil value, chevron only
             return UITableViewCellAccessoryDisclosureIndicator;
@@ -118,7 +125,11 @@ FLEXObjectExplorerDefaultsImpl
     } else {
         if (self.defaults.isEditable) {
             // Editable nil value, just (i)
+            #if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailButton;
+            #else
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailButton;
+            #endif
         } else {
             // Non-editable nil value, neither
             return UITableViewCellAccessoryNone;
@@ -244,7 +255,11 @@ FLEXObjectExplorerDefaultsImpl
     if ([self getPotentiallyUnboxedValue:object]) {
         if (self.defaults.isEditable) {
             // Editable non-nil value, both
+#if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailDisclosureButton;
+#else
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailDisclosureButton;
+#endif
         } else {
             // Uneditable non-nil value, chevron only
             return UITableViewCellAccessoryDisclosureIndicator;
@@ -252,7 +267,11 @@ FLEXObjectExplorerDefaultsImpl
     } else {
         if (self.defaults.isEditable) {
             // Editable nil value, just (i)
+#if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailButton;
+#else
+            return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailButton;
+#endif
         } else {
             // Non-editable nil value, neither
             return UITableViewCellAccessoryNone;

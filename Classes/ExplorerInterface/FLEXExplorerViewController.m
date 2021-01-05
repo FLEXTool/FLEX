@@ -21,6 +21,8 @@
 #import "FLEXWindowManagerController.h"
 #import "FLEXViewControllersViewController.h"
 #import "NSUserDefaults+FLEX.h"
+#import "FLEXManager.h"
+#import "FLEXResources.h"
 
 typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeDefault,
@@ -28,7 +30,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
-@interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>
+@interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>{
+    UIImageView *cursorView;
+}
 
 /// Tracks the currently active tool/mode
 @property (nonatomic) FLEXExplorerMode currentMode;
@@ -61,21 +65,108 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// A colored transparent overlay to indicate that the view is selected.
 @property (nonatomic) UIView *selectedViewOverlay;
 
-/// Used to actuate changes in view selection on iOS 10+
-@property (nonatomic, readonly) UISelectionFeedbackGenerator *selectionFBG API_AVAILABLE(ios(10.0));
-
 /// self.view.window as a \c FLEXWindow
 @property (nonatomic, readonly) FLEXWindow *window;
 
 /// All views that we're KVOing. Used to help us clean up properly.
 @property (nonatomic) NSMutableSet<UIView *> *observedViews;
 
+#if !TARGET_OS_TV
+/// Used to actuate changes in view selection on iOS 10+
+@property (nonatomic, readonly) UISelectionFeedbackGenerator *selectionFBG API_AVAILABLE(ios(10.0));
+
 /// Used to preserve the target app's UIMenuController items.
 @property (nonatomic) NSArray<UIMenuItem *> *appMenuItems;
+#endif
+
+@property CGPoint lastTouchLocation;
 
 @end
 
 @implementation FLEXExplorerViewController
+
+#pragma mark - Cursor Input
+
+#if TARGET_OS_TV
+
+- (void)pressesBegan:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event
+{
+    for (UIPress *press in presses) {
+        if (press.type == UIPressTypeMenu) {
+            
+        } else {
+            [super pressesBegan:presses withEvent:event];
+        }
+    }
+}
+
+-(void)pressesEnded:(NSSet<UIPress *> *)presses withEvent:(UIPressesEvent *)event {
+    
+    FXLog(@"presses.anyObject.type: %lu", presses.anyObject.type);
+    if (self.currentMode != FLEXExplorerModeSelect && self.currentMode != FLEXExplorerModeMove){
+        [super pressesEnded:presses withEvent:event];
+        return;
+    }
+    CGPoint point = [self.view convertPoint:cursorView.frame.origin toView:nil];
+    FXLog(@"clicked point: %@", NSStringFromCGPoint(point));
+    if (self.currentMode == FLEXExplorerModeSelect){
+        [self updateOutlineViewsForSelectionPoint:point];
+    }
+    if (presses.anyObject.type == UIPressTypeMenu) {
+        if (self.currentMode == FLEXExplorerModeMove){
+            self.currentMode = FLEXExplorerModeSelect;
+            cursorView.hidden = false;
+        } else if (self.currentMode == FLEXExplorerModeSelect){
+            self.currentMode = FLEXExplorerModeDefault;
+            cursorView.hidden = true;
+            [self enableToolbar];
+        }
+    } else if (presses.anyObject.type == UIPressTypeUpArrow) {
+    } else if (presses.anyObject.type == UIPressTypeDownArrow) {
+    } else if (presses.anyObject.type == UIPressTypeSelect) {
+    } else if (presses.anyObject.type == UIPressTypePlayPause){
+    }
+}
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    self.lastTouchLocation = CGPointMake(-1, -1);
+}
+
+- (void)touchesMoved:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event
+{
+    for (UITouch *touch in touches)
+    {
+        CGPoint location = [touch locationInView:self.view];
+        
+        if(self.lastTouchLocation.x == -1 && self.lastTouchLocation.y == -1)
+        {
+            // Prevent cursor from recentering
+            self.lastTouchLocation = location;
+        }
+        else
+        {
+            CGFloat xDiff = location.x - self.lastTouchLocation.x;
+            CGFloat yDiff = location.y - self.lastTouchLocation.y;
+            CGRect rect = cursorView.frame;
+            
+            if(rect.origin.x + xDiff >= 0 && rect.origin.x + xDiff <= 1920)
+                rect.origin.x += xDiff;//location.x - self.startPos.x;//+= xDiff; //location.x;
+            
+            if(rect.origin.y + yDiff >= 0 && rect.origin.y + yDiff <= 1080)
+                rect.origin.y += yDiff;//location.y - self.startPos.y;//+= yDiff; //location.y;
+            
+            cursorView.frame = rect;
+            self.lastTouchLocation = location;
+        }
+        
+        // We only use one touch, break the loop
+        break;
+    }
+    
+}
+
+#endif
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -93,41 +184,131 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     // Toolbar
     _explorerToolbar = [FLEXExplorerToolbar new];
-
+    
     // Start the toolbar off below any bars that may be at the top of the view.
     CGFloat toolbarOriginY = NSUserDefaults.standardUserDefaults.flex_toolbarTopMargin;
-
+    
     CGRect safeArea = [self viewSafeArea];
     CGSize toolbarSize = [self.explorerToolbar sizeThatFits:CGSizeMake(
-        CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea)
-    )];
+                                                                       CGRectGetWidth(self.view.bounds), CGRectGetHeight(safeArea)
+                                                                       )];
     [self updateToolbarPositionWithUnconstrainedFrame:CGRectMake(
-        CGRectGetMinX(safeArea), toolbarOriginY, toolbarSize.width, toolbarSize.height
-    )];
+                                                                 CGRectGetMinX(safeArea), toolbarOriginY, toolbarSize.width, toolbarSize.height
+                                                                 )];
     self.explorerToolbar.autoresizingMask = UIViewAutoresizingFlexibleWidth |
-                                            UIViewAutoresizingFlexibleBottomMargin |
-                                            UIViewAutoresizingFlexibleTopMargin;
+    UIViewAutoresizingFlexibleBottomMargin |
+    UIViewAutoresizingFlexibleTopMargin;
     [self.view addSubview:self.explorerToolbar];
     [self setupToolbarActions];
     [self setupToolbarGestures];
     
     // View selection
     UITapGestureRecognizer *selectionTapGR = [[UITapGestureRecognizer alloc]
-        initWithTarget:self action:@selector(handleSelectionTap:)
-    ];
+                                              initWithTarget:self action:@selector(handleSelectionTap:)
+                                              ];
     [self.view addGestureRecognizer:selectionTapGR];
     
     // View moving
     self.movePanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovePan:)];
     self.movePanGR.enabled = self.currentMode == FLEXExplorerModeMove;
     [self.view addGestureRecognizer:self.movePanGR];
-    
+#if !TARGET_OS_TV
     // Feedback
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
+    }
+#else
+    cursorView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 64, 64)];
+    cursorView.center = CGPointMake(CGRectGetMidX([UIScreen mainScreen].bounds), CGRectGetMidY([UIScreen mainScreen].bounds));
+    cursorView.image = [FLEXResources cursorImage];
+    cursorView.backgroundColor = [UIColor clearColor];
+    cursorView.hidden = YES;
+
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause], [NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self.view addGestureRecognizer:longPress];
+    [self.view addSubview:cursorView];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    doubleTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause], [NSNumber numberWithInteger:UIPressTypeSelect]];
+    doubleTap.numberOfTapsRequired = 2;
+    [self.view addGestureRecognizer:doubleTap];
+    
+    UITapGestureRecognizer *rightTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    rightTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+    [self.view addGestureRecognizer:rightTap];
+    
+#endif
+}
+
+- (void)doubleTap:(UITapGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        if (self.currentMode == FLEXExplorerModeSelect || self.currentMode == FLEXExplorerModeMove){
+            [self showTVOSOptionsAlert];
+            
+        }
+    }
+    
+}
+
+- (void)showObjectControllerForSelectedView {
+    FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:self.selectedView];
+    if (!viewExplorer) return;
+    if ([self presentedViewController]){
+        FLEXHierarchyViewController *vc = (FLEXHierarchyViewController*)[self presentedViewController];
+        if ([vc respondsToSelector:@selector(pushViewController:animated:)]){
+            [vc pushViewController:viewExplorer animated:true];
+        }
+    } else {
+        [self toggleViewsToolWithCompletion:^{
+            FLEXHierarchyViewController *vc = (FLEXHierarchyViewController*)[self presentedViewController];
+            if ([vc respondsToSelector:@selector(pushViewController:animated:)]){
+                [vc pushViewController:viewExplorer animated:true];
+            }
+        }];
+    }
+}
+
+- (void)showTVOSOptionsAlert {
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"What would you like to do?");
+        make.button(@"Show Details").handler(^(NSArray<NSString *> *strings) {
+            [self showObjectControllerForSelectedView];
+            [[FLEXManager sharedManager] showExplorer];
+        });
+        if (self.currentMode == FLEXExplorerModeMove){
+            make.button(@"Select View").handler(^(NSArray<NSString *> *strings) {
+                self.currentMode = FLEXExplorerModeSelect;
+                cursorView.hidden = false;
+                [[FLEXManager sharedManager] showExplorer];
+            });
+        } else if (self.currentMode == FLEXExplorerModeSelect){
+            make.button(@"Move View").handler(^(NSArray<NSString *> *strings) {
+                self.currentMode = FLEXExplorerModeMove;
+                cursorView.hidden = true;
+                [[FLEXManager sharedManager] showExplorer];
+            });
+        }
+        make.button(@"Show Views").handler(^(NSArray<NSString *> *strings) {
+            [self toggleViewsTool];
+            [[FLEXManager sharedManager] showExplorer];
+        });
+        make.button(@"Show Usage Hints").handler(^(NSArray<NSString *> *strings) {
+            [[FLEXManager sharedManager] showHintsAlert];
+        });
+        make.button(@"Cancel").cancelStyle().handler(^(NSArray<NSString *> *strings) {
+            [[FLEXManager sharedManager] showExplorer];
+        });
+    } showFrom:self];
+}
+
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateEnded) {
+        [self toggleSelectTool];
     }
 }
 
@@ -390,7 +571,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     };
     
     [actionsToItems enumerateKeysAndObjectsUsingBlock:^(NSString *sel, FLEXExplorerToolbarItem *item, BOOL *stop) {
-        [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventTouchUpInside];
+        #if !TARGET_OS_TV
+            [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventTouchUpInside];
+        #else
+            [item addTarget:self action:NSSelectorFromString(sel) forControlEvents:UIControlEventPrimaryActionTriggered];
+        #endif
     }];
 }
 
@@ -560,8 +745,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarShowTabsGesture:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        #if !TARGET_OS_TV
         self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-        
+        #endif
         // Don't use FLEXNavigationController because the tab viewer itself is not a tab
         [super presentViewController:[[UINavigationController alloc]
             initWithRootViewController:[FLEXTabsViewController new]
@@ -572,8 +758,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarWindowManagerGesture:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        #if !TARGET_OS_TV
         self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-        
+        #endif
         [super presentViewController:[FLEXNavigationController
             withRootViewController:[FLEXWindowManagerController new]
         ] animated:YES completion:nil];
@@ -583,8 +770,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)handleToolbarShowViewControllersGesture:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan && self.viewsAtTapPoint.count) {
         // Back up the UIMenuController items since dismissViewController: will attempt to replace them
+        #if !TARGET_OS_TV
         self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-        
+        #endif
         UIViewController *list = [FLEXViewControllersViewController
             controllersForViews:self.viewsAtTapPoint
         ];
@@ -655,9 +843,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)actuateSelectionChangedFeedback {
+    #if !TARGET_OS_TV
     if (@available(iOS 10.0, *)) {
         [self.selectionFBG selectionChanged];
     }
+    #endif
 }
 
 - (void)updateOutlineViewsForSelectionPoint:(CGPoint)selectionPointInWindow {
@@ -866,7 +1056,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         
         // If we now have a selected view and we didn't have one previously, go to "select" mode.
         if (self.currentMode == FLEXExplorerModeDefault && selectedView) {
-            self.currentMode = FLEXExplorerModeSelect;
+            //self.currentMode = FLEXExplorerModeSelect;
+            [self toggleSelectTool];
         }
         
         // The selected view setter will also update the selected view overlay appropriately.
@@ -887,12 +1078,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (!@available(iOS 13, *)) {
         [self statusWindow].windowLevel = self.view.window.windowLevel + 1.0;
     }
-    
+    #if !TARGET_OS_TV
     // Back up and replace the UIMenuController items
     // Edit: no longer replacing the items, but still backing them
     // up in case we start replacing them again in the future
     self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
-    
+    #endif
     // Show the view controller
     [super presentViewController:toPresent animated:animated completion:completion];
 }
@@ -900,18 +1091,18 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion {    
     UIWindow *appWindow = self.window.previousKeyWindow;
     [appWindow makeKeyWindow];
+    #if !TARGET_OS_TV
     [appWindow.rootViewController setNeedsStatusBarAppearanceUpdate];
-    
     // Restore previous UIMenuController items
     // Back up and replace the UIMenuController items
     UIMenuController.sharedMenuController.menuItems = self.appMenuItems;
     [UIMenuController.sharedMenuController update];
     self.appMenuItems = nil;
-    
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for
     // scroll to top, but below FLEX otherwise for exploration.
     [self statusWindow].windowLevel = UIWindowLevelStatusBar;
+    #endif
     
     [self updateButtonStates];
     
@@ -936,14 +1127,31 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return (id)self.view.window;
 }
 
+- (void)disableToolbar {
+    [self.explorerToolbar setUserInteractionEnabled:false];
+    [self.explorerToolbar setAlpha:0.5];
+    [self setNeedsFocusUpdate];
+    [self updateFocusIfNeeded];
+}
+
+- (void)enableToolbar {
+    [self.explorerToolbar setUserInteractionEnabled:true];
+    [self.explorerToolbar setAlpha:1.0];
+    [self setNeedsFocusUpdate];
+    [self updateFocusIfNeeded];
+}
 
 #pragma mark - Keyboard Shortcut Helpers
 
 - (void)toggleSelectTool {
     if (self.currentMode == FLEXExplorerModeSelect) {
         self.currentMode = FLEXExplorerModeDefault;
+        cursorView.hidden = true;
+        [self enableToolbar];
     } else {
         self.currentMode = FLEXExplorerModeSelect;
+        cursorView.hidden = false;
+        [self disableToolbar];
     }
 }
 
@@ -962,6 +1170,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleViewsToolWithCompletion:(void(^)(void))completion {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
         if (self.selectedView) {
+            FXLog(@"we have a selected view still: %@", self.selectedView);
             return [FLEXHierarchyViewController
                 delegate:self
                 viewsAtTap:self.viewsAtTapPoint

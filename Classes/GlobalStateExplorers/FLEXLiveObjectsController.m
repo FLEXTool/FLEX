@@ -38,10 +38,10 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.showsCarousel = YES;
     self.carousel.items = @[@"A→Z", @"Count", @"Size"];
-    
+    #if !TARGET_OS_TV
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];
-    
+    #endif
     [self reloadTableData];
 }
 
@@ -101,7 +101,9 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
 - (void)refreshControlDidRefresh:(id)sender {
     [self reloadTableData];
+    #if !TARGET_OS_TV
     [self.refreshControl endRefreshing];
+    #endif
 }
 
 - (void)updateHeaderTitle {

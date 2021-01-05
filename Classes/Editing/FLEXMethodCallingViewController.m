@@ -39,9 +39,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+#if !TARGET_OS_TV
     self.actionButton.title = @"Call";
-
+#else
+    [self.actionButton setTitle:@"Call" forState:UIControlStateNormal];
+#endif
     // Configure field editor view
     self.fieldEditorView.argumentInputViews = [self argumentInputViews];
     self.fieldEditorView.fieldDescription = [NSString stringWithFormat:

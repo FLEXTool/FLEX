@@ -1,4 +1,5 @@
 # FLEX
+
 [![CocoaPods](https://img.shields.io/cocoapods/v/FLEX.svg)](https://cocoapods.org/?q=FLEX)
  [![CocoaPods](https://img.shields.io/cocoapods/l/FLEX.svg)](https://github.com/Flipboard/FLEX/blob/master/LICENSE)
  [![CocoaPods](https://img.shields.io/cocoapods/p/FLEX.svg)]()
@@ -6,7 +7,7 @@
  [![Build Status](https://travis-ci.org/Flipboard/FLEX.svg?branch=master)](https://travis-ci.org/Flipboard/FLEX)
  [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for iOS development. When presented, FLEX shows a toolbar that lives in a window above your application. From this toolbar, you can view and modify nearly every piece of state in your running application.
+FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for iOS & tvOS development. When presented, FLEX shows a toolbar that lives in a window above your application. From this toolbar, you can view and modify nearly every piece of state in your running application.
 
 <img alt="Demo" width=36% height=36% src=https://user-images.githubusercontent.com/8371943/70185687-e842c800-16af-11ea-8ef9-9e071380a462.gif>
 
@@ -118,6 +119,29 @@ Go digging for all things public and private. To learn more about a class, you c
 FLEX allows you to edit defaults that are any combination of strings, numbers, arrays, and dictionaries. The input is parsed as `JSON`. If other kinds of objects are set for a defaults key (i.e. `NSDate`), you can view them but not edit them.
 
 <img alt="NSUserDefaults Editing" width=36% height=36% src=https://user-images.githubusercontent.com/8371943/70271889-edb21800-176c-11ea-92b4-71e07d2b6ce7.gif>
+
+## tvOS Notes
+
+### Installation notes
+
+Check releases or build and add the framework manually, this will need review and merging in to the main repo & a cocoapod / carthage et al update to get the framework added in any other way for tvOS versions. ./tvOSBuild.sh is added for convenience and will yield a framework in the build/Release-appletvos folder.
+
+### General notes / usage
+- When in 'select' mode press the 'menu' button to return to the toolbar
+- When in 'select' mode play/pause will also work to click items and is more reliable than selection with the remote touch pad, tapping rather than clicking the touchpad is also more reliable. Tapping right on a siri remote / clicking right on an older silver remote will work as well
+- Press and hold 'select' to drill down to details in views hierarchy list view controller. Tapping right on a siri remote / clicking right on an older silver remote will work as well
+- When in selection mode double tap on 'play/pause' OR press and hold 'select' or 'play/pause' to bring up an alert with useful options ('view details', 'move view' and 'show views' are available there)
+
+### FLEXInjected notes
+- Easily used with a jailbreak: FLEXInjected (avail from default repos now with 'com.nito.flexinjected', bottom of featured section first item in 'Utilities')
+- After toggling via FLEXInjected it will take 10 seconds after launch for the toolbar to appear, if closed - triple tap play/pause to bring it back
+
+### Missing features
+- Snapshot view (i dont think this one is going to make it in)
+
+![tvOS](tvos_flexing.gif "tvOS FLEX")
+
+[tvOS Video Demo](https://lbry.tv/@nitoTV:4/tvOS-FLEXING:4)
 
 ### Learning from Other Apps
 The code injection is left as an exercise for the reader. :innocent:

@@ -20,3 +20,8 @@ DerivedData
 /Example/Pods
 Podfile.lock
 IDEWorkspaceChecks.plist
+
+#tvOS specific
+libflex_*
+flexinjected/packages/*
+layout/Library/Frameworks/*.framework

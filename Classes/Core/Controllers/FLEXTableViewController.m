@@ -16,6 +16,7 @@
 #import "FLEXResources.h"
 #import "UIBarButtonItem+FLEX.h"
 #import <objc/runtime.h>
+#import "fakes.h"
 
 @interface Block : NSObject
 - (void)invoke;
@@ -39,6 +40,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 @property (nonatomic) UIBarButtonItem *middleToolbarItem;
 @property (nonatomic) UIBarButtonItem *middleLeftToolbarItem;
 @property (nonatomic) UIBarButtonItem *leftmostToolbarItem;
+
 @end
 
 @implementation FLEXTableViewController
@@ -52,7 +54,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 - (id)init {
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
+        #if !TARGET_OS_TV
         self = [self initWithStyle:UITableViewStyleInsetGrouped];
+        #else
+        self = [self initWithStyle:UITableViewStyleGrouped];
+        #endif
     } else {
         self = [self initWithStyle:UITableViewStyleGrouped];
     }
@@ -89,6 +95,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     return (id)self.view.window;
 }
 
+/**
+ 
+ search is handled a bit differently on tvOS and i couldnt get its pardigm to cooperate, thankfully the UISearchController never needs to be visible to actually work its magic.
+ since 3D snapshot viewing doesn't exist on tvOS the leftBarButtonItem is the perfect spot to add a 'search' button. this search button will present a new text entry controller
+ the alpha on this viewController is decreased to 0.6 to make it possible to view the filtering changes underneath in realtime. The zero rect textfield associated with
+ the search button acts as a proxy to transfer the text to our search bar as necessary
+ 
+ */
+
 - (void)setShowsSearchBar:(BOOL)showsSearchBar {
     if (_showsSearchBar == showsSearchBar) return;
     _showsSearchBar = showsSearchBar;
@@ -99,11 +114,13 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         self.searchController.searchBar.placeholder = @"Filter";
         self.searchController.searchResultsUpdater = (id)self;
         self.searchController.delegate = (id)self;
+        #if !TARGET_OS_TV
+        self.searchController.searchBar.delegate = self;
         self.searchController.dimsBackgroundDuringPresentation = NO;
+        #endif
         self.searchController.hidesNavigationBarDuringPresentation = NO;
         /// Not necessary in iOS 13; remove this when iOS 13 is the minimum deployment target
-        self.searchController.searchBar.delegate = self;
-
+        
         self.automaticallyShowsSearchBarCancelButton = YES;
 
         #if FLEX_AT_LEAST_IOS13_SDK
@@ -111,7 +128,6 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             self.searchController.automaticallyShowsScopeBar = NO;
         }
         #endif
-        
         [self addSearchController:self.searchController];
     } else {
         // Search already shown and just set to NO, so remove it
@@ -209,9 +225,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 }
 
 - (void)disableToolbar {
+    #if !TARGET_OS_TV
     self.navigationController.toolbarHidden = YES;
     self.navigationController.hidesBarsOnSwipe = NO;
     self.toolbarItems = nil;
+    #endif
 }
 
 
@@ -241,9 +259,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
     // Toolbar
+    #if !TARGET_OS_TV
     self.navigationController.toolbarHidden = NO;
     self.navigationController.hidesBarsOnSwipe = YES;
-
+    #endif
     // On iOS 13, the root view controller shows it's search bar no matter what.
     // Turning this off avoids some weird flash the navigation bar does when we
     // toggle navigationItem.hidesSearchBarWhenScrolling on and off. The flash
@@ -262,10 +281,16 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     // When going back, make the search bar reappear instead of hiding
     if (@available(iOS 11.0, *)) {
         if ((self.pinSearchBar || self.showSearchBarInitially) && !self.didInitiallyRevealSearchBar) {
+            #if !TARGET_OS_TV
             self.navigationItem.hidesSearchBarWhenScrolling = NO;
+            #endif
         }
     }
-
+    #if TARGET_OS_TV
+    UIEdgeInsets insets = self.tableView.contentInset;
+    insets.top+=20;
+    self.tableView.contentInset = insets;
+    #endif
     [self setupToolbarItems];
 }
 
@@ -280,7 +305,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             // the search bar appear initially results in a bugged search bar that
             // becomes transparent and floats over the screen as you scroll
             [UIView animateWithDuration:0.2 animations:^{
+                #if !TARGET_OS_TV
                 self.navigationItem.hidesSearchBarWhenScrolling = YES;
+                #endif
                 [self.navigationController.view setNeedsLayout];
                 [self.navigationController.view layoutIfNeeded];
             }];
@@ -313,7 +340,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     if (!self.isViewLoaded) {
         return;
     }
-    
+    #if !TARGET_OS_TV
     self.toolbarItems = @[
         self.leftmostToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
@@ -331,7 +358,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         // This does not work for anything but fixed spaces for some reason
         // item.width = 60;
     }
-    
+    #endif
     // Disable tabs entirely when not presented by FLEXExplorerViewController
     UIViewController *presenter = self.navigationController.presentingViewController;
     if (![presenter isKindOfClass:[FLEXExplorerViewController class]]) {
@@ -459,6 +486,12 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 }
 
 - (void)addSearchController:(UISearchController *)controller {
+#if TARGET_OS_TV
+    KBSearchButton *sb = [KBSearchButton buttonWithType:UIButtonTypeSystem];
+    sb.searchBar = self.searchController.searchBar;
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithCustomView:sb];
+    self.navigationItem.leftBarButtonItem = searchButton;
+#else
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = controller;
     } else {
@@ -472,17 +505,21 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         // Move the carousel down if it's already there
         if (self.showsCarousel) {
             self.carousel.frame = FLEXRectSetY(
-                self.carousel.frame, subviewFrame.size.height
-            );
+                                               self.carousel.frame, subviewFrame.size.height
+                                               );
             frame.size.height += self.carousel.frame.size.height;
         }
         
         self.tableHeaderViewContainer.frame = frame;
         [self layoutTableHeaderIfNeeded];
     }
+#endif
 }
 
 - (void)removeSearchController:(UISearchController *)controller {
+    #if TARGET_OS_TV
+    self.navigationItem.leftBarButtonItem = nil;
+    #else
     if (@available(iOS 11.0, *)) {
         self.navigationItem.searchController = nil;
     } else {
@@ -497,6 +534,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             _tableHeaderViewContainer = nil;
         }
     }
+    #endif
 }
 
 - (UIView *)tableHeaderViewContainer {
@@ -548,7 +586,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     }
 }
 
-
+#if !TARGET_OS_TV
 #pragma mark UISearchControllerDelegate
 
 - (void)willPresentSearchController:(UISearchController *)searchController {
@@ -572,16 +610,18 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     [self updateSearchResultsForSearchController:self.searchController];
 }
-
+#endif
 
 #pragma mark Table View
 
 /// Not having a title in the first section looks weird with a rounded-corner table view style
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (@available(iOS 13, *)) {
+        #if !TARGET_OS_TV
         if (self.style == UITableViewStyleInsetGrouped) {
             return @" ";
         }
+        #endif
     }
 
     return nil; // For plain/gropued style

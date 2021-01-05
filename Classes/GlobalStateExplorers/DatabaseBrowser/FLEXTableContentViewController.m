@@ -116,7 +116,9 @@
         NSString *message = [fields componentsJoinedByString:@"\n\n"];
         make.message(message);
         make.button(@"Copy").handler(^(NSArray<NSString *> *strings) {
+            #if !TARGET_OS_TV
             UIPasteboard.generalPasteboard.string = message;
+            #endif
         });
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];

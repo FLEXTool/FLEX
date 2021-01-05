@@ -9,12 +9,16 @@
 #import "FLEXArgumentInputColorView.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
-
+#import "fakes.h"
 @protocol FLEXColorComponentInputViewDelegate;
 
 @interface FLEXColorComponentInputView : UIView
 
+#if !TARGET_OS_TV
 @property (nonatomic) UISlider *slider;
+#else
+@property (nonatomic) KBSlider *slider;
+#endif
 @property (nonatomic) UILabel *valueLabel;
 
 @property (nonatomic, weak) id <FLEXColorComponentInputViewDelegate> delegate;
@@ -33,7 +37,11 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+#if !TARGET_OS_TV
         self.slider = [UISlider new];
+#else
+        self.slider = [[KBSlider alloc] initWithFrame:CGRectMake(0, 0, 1000, 53)];
+#endif
         [self.slider addTarget:self action:@selector(sliderChanged:) forControlEvents:UIControlEventValueChanged];
         [self addSubview:self.slider];
         
@@ -58,13 +66,17 @@
     [super layoutSubviews];
     
     const CGFloat kValueLabelWidth = 50.0;
-    
+    UIEdgeInsets sliderInset = UIEdgeInsetsZero;
+#if TARGET_OS_TV
+    sliderInset.left = 40;
+    sliderInset.right = 40;
+#endif
     [self.slider sizeToFit];
-    CGFloat sliderWidth = self.bounds.size.width - kValueLabelWidth;
-    self.slider.frame = CGRectMake(0, 0, sliderWidth, self.slider.frame.size.height);
+    CGFloat sliderWidth = self.bounds.size.width - kValueLabelWidth - sliderInset.left - sliderInset.right;
+    self.slider.frame = CGRectMake(sliderInset.left, 0, sliderWidth, self.slider.frame.size.height);
     
     [self.valueLabel sizeToFit];
-    CGFloat valueLabelOriginX = CGRectGetMaxX(self.slider.frame);
+    CGFloat valueLabelOriginX = CGRectGetMaxX(self.slider.frame) + sliderInset.right/2.0;
     CGFloat valueLabelOriginY = FLEXFloor((self.slider.frame.size.height - self.valueLabel.frame.size.height) / 2.0);
     self.valueLabel.frame = CGRectMake(valueLabelOriginX, valueLabelOriginY, kValueLabelWidth, self.valueLabel.frame.size.height);
 }

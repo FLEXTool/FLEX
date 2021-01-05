@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>label</key>
+		<string>FLEXInjected</string>
+		<key>icon</key>
+		<string>flex.png</string>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+	</dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>FLEX</string>
+		</dict>
+		<dict>
+			<key>ALSectionDescriptors</key>
+			<array>
+				<dict>
+					<key>cell-class-name</key>
+					<string>ALSwitchCell</string>
+					<key>icon-size</key>
+					<integer>29</integer>
+					<key>suppress-hidden-apps</key>
+					<false/>
+					<key>title</key>
+					<string>Applications</string>
+				</dict>
+			</array>
+			<key>ALAllowsSelection</key>
+			<string>1</string>
+			<key>ALChangeNotification</key>
+			<string>com.nito.flexinjected.settingschanged</string>
+			<key>ALSettingsDefaultValue</key>
+			<integer>0</integer>
+			<key>ALSettingsKeyPrefix</key>
+			<string></string>
+			<key>ALSettingsPath</key>
+			<string>/var/mobile/Library/Preferences/com.nito.flexinjected.plist</string>
+			<key>ALSingleEnabledMode</key>
+			<false/>
+			<key>bundle</key>
+			<string>AppList</string>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>isController</key>
+			<string>1</string>
+			<key>icon</key>
+			<string>flex.png</string>
+			<key>label</key>
+			<string>FLEX Injected Applications</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>FLEXInjected</string>
+	<key>icon</key>
+	<string>flex.png</string>
+</dict>
+</plist>

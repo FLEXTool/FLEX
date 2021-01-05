@@ -8,5 +8,9 @@
 
 #import "FLEXArgumentInputTextView.h"
 
+#if TARGET_OS_TV
+@interface FLEXArgumentInputFontsPickerView : FLEXArgumentInputTextView 
+#else
 @interface FLEXArgumentInputFontsPickerView : FLEXArgumentInputTextView <UIPickerViewDataSource, UIPickerViewDelegate>
+#endif
 @end

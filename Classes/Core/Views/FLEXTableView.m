@@ -32,7 +32,11 @@ FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell = @"kFLEXCodeFontCell";
 + (instancetype)flexDefaultTableView {
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
+#if !TARGET_OS_TV
         return [[self alloc] initWithFrame:CGRectZero style:UITableViewStyleInsetGrouped];
+#else
+        return [[self alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+#endif
     } else {
         return [[self alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     }
@@ -46,7 +50,11 @@ FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell = @"kFLEXCodeFontCell";
 + (id)groupedTableView {
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
+#if !TARGET_OS_TV
         return [[self alloc] initWithFrame:CGRectZero style:UITableViewStyleInsetGrouped];
+#else
+        return [[self alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+#endif
     } else {
         return [[self alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     }

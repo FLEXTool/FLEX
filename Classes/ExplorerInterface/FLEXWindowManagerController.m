@@ -10,6 +10,7 @@
 #import "FLEXManager+Private.h"
 #import "FLEXUtility.h"
 #import "FLEXObjectExplorerFactory.h"
+#import <TargetConditionals.h>
 
 @interface FLEXWindowManagerController ()
 @property (nonatomic) UIWindow *keyWindow;
@@ -161,7 +162,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
+    #if !TARGET_OS_TV
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    #endif
     cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     
     UIWindow *window = nil;

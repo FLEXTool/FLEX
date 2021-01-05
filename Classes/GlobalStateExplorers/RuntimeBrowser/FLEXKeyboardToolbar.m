@@ -108,8 +108,9 @@
         case UIKeyboardAppearanceDefault:
             #if FLEX_AT_LEAST_IOS13_SDK
             if (@available(iOS 13, *)) {
+                #if !TARGET_OS_TV
                 borderColor = UIColor.systemBackgroundColor;
-                
+                #endif
                 if (self.usingDarkMode) {
                     // style = UIBlurEffectStyleSystemThickMaterial;
                     backgroundColor = darkColor;

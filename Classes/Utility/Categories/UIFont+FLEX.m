@@ -7,9 +7,11 @@
 //
 
 #import "UIFont+FLEX.h"
-
+#if TARGET_OS_TV
+#define kFLEXDefaultCellFontSize 24.0
+#else
 #define kFLEXDefaultCellFontSize 12.0
-
+#endif
 @implementation UIFont (FLEX)
 
 + (UIFont *)flex_defaultTableCellFont {

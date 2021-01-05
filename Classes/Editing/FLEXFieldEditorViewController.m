@@ -14,6 +14,8 @@
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "UIBarButtonItem+FLEX.h"
+#import <TargetConditionals.h>
+#import "FLEXArgumentInputDateView.h"
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
@@ -55,7 +57,7 @@
     [super viewDidLoad];
 
     self.view.backgroundColor = FLEXColor.groupedBackgroundColor;
-
+    #if !TARGET_OS_TV
     // Create getter button
     _getterButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Get"
@@ -63,9 +65,23 @@
         target:self
         action:@selector(getterButtonPressed:)
     ];
+
     self.toolbarItems = @[
         UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.actionButton
     ];
+    
+    #else
+    _getterButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [_getterButton setTitle:@"Get" forState:UIControlStateNormal];
+    [_getterButton addTarget:self action:@selector(getterButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
+    _getterButton.frame = CGRectMake(100, 600, 200, 70);
+    [self.view addSubview:_getterButton];
+    UIFocusGuide *focusGuide = [[UIFocusGuide alloc] init];
+    [self.view addLayoutGuide:focusGuide];
+    [focusGuide.topAnchor constraintEqualToAnchor:self.actionButton.topAnchor].active = true;
+    [focusGuide.bottomAnchor constraintEqualToAnchor:self.getterButton.bottomAnchor].active = true;
+    focusGuide.preferredFocusEnvironments = self.preferredFocusEnvironments;
+    #endif
 
     // Configure input view
     self.fieldEditorView.fieldDescription = self.fieldDescription;
@@ -73,16 +89,30 @@
     inputView.inputValue = self.currentValue;
     inputView.delegate = self;
     self.fieldEditorView.argumentInputViews = @[inputView];
-
     // Don't show a "set" button for switches; we mutate when the switch is flipped
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         self.actionButton.enabled = NO;
+        #if !TARGET_OS_TV
         self.actionButton.title = @"Flip the switch to call the setter";
-        // Put getter button before setter button 
+        // Put getter button before setter button
         self.toolbarItems = @[
             UIBarButtonItem.flex_flexibleSpace, self.actionButton, self.getterButton
         ];
+        #endif
     }
+}
+
+- (NSArray *)preferredFocusEnvironments {
+    if ([self actionButton] && _getterButton){
+        return @[[self actionButton],_getterButton];
+    } else {
+        if ([self actionButton]){
+            return @[[self actionButton]];
+        } else if (_getterButton){
+            return @[_getterButton];
+        }
+    }
+    return nil;
 }
 
 - (void)actionButtonPressed:(id)sender {
@@ -123,6 +153,27 @@
     if ([argumentInputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         [self actionButtonPressed:nil];
     }
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+#if TARGET_OS_TV
+    
+    FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:self.typeEncoding];
+    if ([inputView isKindOfClass:[FLEXArgumentInputDateView class]]){
+        [self actionButton].frame = CGRectMake(100, 350, 200, 60);
+        [self getterButton].frame = CGRectMake(100, 550, 200, 60);
+        return;
+    }
+    
+    CGRect getterFrame = _getterButton.frame;
+    CGFloat actionOffset = [[self actionButton] frame].origin.y;
+    //CGRect fieldEditorFrame = self.fieldEditorView.frame;
+    //CGFloat buttonOffset = (fieldEditorFrame.origin.y + fieldEditorFrame.size.height) + (130 + 67);
+    getterFrame.origin.y = actionOffset;
+    _getterButton.frame = getterFrame;
+    
+#endif
 }
 
 #pragma mark - Private

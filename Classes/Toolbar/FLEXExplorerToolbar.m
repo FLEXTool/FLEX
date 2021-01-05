@@ -46,7 +46,11 @@
         // Drag handle
         self.dragHandle = [UIView new];
         self.dragHandle.backgroundColor = UIColor.clearColor;
+#if !TARGET_OS_TV
         self.dragHandleImageView = [[UIImageView alloc] initWithImage:FLEXResources.dragHandle];
+#else
+        self.dragHandleImageView = [[UIImageView alloc] initWithImage:nil];
+#endif
         self.dragHandleImageView.tintColor = [FLEXColor.iconColor colorWithAlphaComponent:0.666];
         [self.dragHandle addSubview:self.dragHandleImageView];
         [self addSubview:self.dragHandle];
@@ -99,15 +103,21 @@
     dragHandleImageFrame.origin.y = FLEXFloor((self.dragHandle.frame.size.height - dragHandleImageFrame.size.height) / 2.0);
     self.dragHandleImageView.frame = dragHandleImageFrame;
     
+    CGFloat itemPadding = 0;
+
+#if TARGET_OS_TV
+    itemPadding = 40;
+#endif
     
     // Toolbar Items
     CGFloat originX = CGRectGetMaxX(self.dragHandle.frame);
     CGFloat originY = CGRectGetMinY(safeArea);
     CGFloat height = kToolbarItemHeight;
     CGFloat width = FLEXFloor((CGRectGetWidth(safeArea) - CGRectGetWidth(self.dragHandle.frame)) / self.toolbarItems.count);
+    width = width - itemPadding;
     for (FLEXExplorerToolbarItem *toolbarItem in self.toolbarItems) {
         toolbarItem.currentItem.frame = CGRectMake(originX, originY, width, height);
-        originX = CGRectGetMaxX(toolbarItem.currentItem.frame);
+        originX = CGRectGetMaxX(toolbarItem.currentItem.frame) + itemPadding;
     }
     
     // Make sure the last toolbar item goes to the edge to account for any accumulated rounding effects.
@@ -145,8 +155,9 @@
     selectedViewColorFrame.origin.x = kHorizontalPadding;
     selectedViewColorFrame.origin.y = FLEXFloor((kDescriptionContainerHeight - kSelectedViewColorDiameter) / 2.0);
     self.selectedViewColorIndicator.frame = selectedViewColorFrame;
+#if !TARGET_OS_TV
     self.selectedViewColorIndicator.layer.cornerRadius = ceil(selectedViewColorFrame.size.height / 2.0);
-    
+#endif
     // Selected View Description
     CGRect descriptionLabelFrame = CGRectZero;
     CGFloat descriptionOriginX = CGRectGetMaxX(selectedViewColorFrame) + kHorizontalPadding;
@@ -210,6 +221,9 @@
 }
 
 + (CGFloat)toolbarItemHeight {
+#if TARGET_OS_TV
+    return 68.0;
+#endif
     return 44.0;
 }
 

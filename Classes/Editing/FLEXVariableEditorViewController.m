@@ -16,6 +16,7 @@
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "UIBarButtonItem+FLEX.h"
+#import "FLEXArgumentInputDateView.h"
 
 @interface FLEXVariableEditorViewController () <UIScrollViewDelegate>
 @property (nonatomic) UIScrollView *scrollView;
@@ -35,7 +36,8 @@
         _target = target;
         _data = data;
         _commitHandler = onCommit;
-        [NSNotificationCenter.defaultCenter
+#if !TARGET_OS_TV
+       [NSNotificationCenter.defaultCenter
             addObserver:self selector:@selector(keyboardDidShow:)
             name:UIKeyboardDidShowNotification object:nil
         ];
@@ -43,6 +45,7 @@
             addObserver:self selector:@selector(keyboardWillHide:)
             name:UIKeyboardWillHideNotification object:nil
         ];
+#endif
     }
     
     return self;
@@ -55,6 +58,7 @@
 #pragma mark - UIViewController methods
 
 - (void)keyboardDidShow:(NSNotification *)notification {
+#if !TARGET_OS_TV 
     CGRect keyboardRectInWindow = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
     CGSize keyboardSize = [self.view convertRect:keyboardRectInWindow fromView:nil].size;
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
@@ -70,9 +74,11 @@
             break;
         }
     }
+#endif
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
+
     UIEdgeInsets scrollInsets = self.scrollView.contentInset;
     scrollInsets.bottom = 0.0;
     self.scrollView.contentInset = scrollInsets;
@@ -93,7 +99,7 @@
     _fieldEditorView = [FLEXFieldEditorView new];
     self.fieldEditorView.targetDescription = [NSString stringWithFormat:@"%@ %p", [self.target class], self.target];
     [self.scrollView addSubview:self.fieldEditorView];
-    
+#if !TARGET_OS_TV
     _actionButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Set"
         style:UIBarButtonItemStyleDone
@@ -103,12 +109,30 @@
     
     self.navigationController.toolbarHidden = NO;
     self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, self.actionButton];
+#else
+    _actionButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [_actionButton setTitle:@"Set" forState:UIControlStateNormal];
+    [_actionButton addTarget:self action:@selector(actionButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
+    _actionButton.frame = CGRectMake(500, 600, 200, 70);
+    [self.view addSubview:_actionButton];
+#endif
 }
 
 - (void)viewWillLayoutSubviews {
     CGSize constrainSize = CGSizeMake(self.scrollView.bounds.size.width, CGFLOAT_MAX);
     CGSize fieldEditorSize = [self.fieldEditorView sizeThatFits:constrainSize];
     self.fieldEditorView.frame = CGRectMake(0, 0, fieldEditorSize.width, fieldEditorSize.height);
+#if TARGET_OS_TV
+    
+    CGRect actionFrame = _actionButton.frame;
+    CGRect fieldEditorFrame = self.fieldEditorView.frame;
+    CGFloat buttonOffset = (fieldEditorFrame.origin.y + fieldEditorFrame.size.height) + (130 + 67);
+    actionFrame.origin.y = buttonOffset;
+    _actionButton.frame = actionFrame;
+    
+    
+    
+#endif
     self.scrollView.contentSize = fieldEditorSize;
 }
 

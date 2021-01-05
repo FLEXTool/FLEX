@@ -64,9 +64,12 @@
         registerClass:[FLEXNetworkTransactionCell class]
         forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier
     ];
+#if !TARGET_OS_TV
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+#else
+    [self addlongPressGestureRecognizer];
+#endif
     self.tableView.rowHeight = FLEXNetworkTransactionCell.preferredCellHeight;
-
     [self registerForNotifications];
     [self updateTransactions];
 }
@@ -386,12 +389,49 @@
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
+        #if !TARGET_OS_TV
         UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
+        #endif
     }
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
+- (void)addlongPressGestureRecognizer {
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    longPress.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self.tableView addGestureRecognizer:longPress];
+    UITapGestureRecognizer *rightTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    rightTap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeRightArrow]];
+    [self.tableView addGestureRecognizer:rightTap];
+}
 
+- (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateEnded) {
+        
+        UITableViewCell *cell = [gesture.view valueForKey:@"_focusedCell"];
+        [self showActionForCell:cell];
+    }
+}
+
+
+- (void)showActionForCell:(UITableViewCell *)cell {
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"");
+        make.button([NSString stringWithFormat:@"Blacklist '%@'", request.URL.host]).destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            NSMutableArray *blacklist =  FLEXNetworkRecorder.defaultRecorder.hostBlacklist;
+            [blacklist addObject:request.URL.host];
+            [FLEXNetworkRecorder.defaultRecorder clearBlacklistedTransactions];
+            [FLEXNetworkRecorder.defaultRecorder synchronizeBlacklist];
+            [self tryUpdateTransactions];
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
+}
+
+
+#if FLEX_AT_LEAST_IOS13_SDK
+#if !TARGET_OS_TV
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
     return [UIContextMenuConfiguration
@@ -426,7 +466,7 @@
         }
     ];
 }
-
+#endif
 #endif
 
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath {
