@@ -43,9 +43,13 @@
         
         self.textLabel.font = UIFont.flex_defaultTableCellFont;
         self.detailTextLabel.font = UIFont.flex_defaultTableCellFont;
+        #if !TARGET_OS_TV
         self.accessoryType = UITableViewCellAccessoryDetailButton;
-        
+        #else
+        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        #endif
         // Use a pattern-based color to simplify application of the checker pattern
+        
         static UIColor *checkerPatternColor = nil;
         static dispatch_once_t once;
         dispatch_once(&once, ^{

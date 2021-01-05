@@ -9,6 +9,8 @@
 #import "FLEXNavigationController.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXTabList.h"
+#import "FLEXColor.h"
+#import "NSObject+FLEX_Reflection.h"
 
 @interface UINavigationController (Private) <UIGestureRecognizerDelegate>
 - (void)_gestureRecognizedInteractiveHide:(UIGestureRecognizer *)sender;
@@ -48,8 +50,10 @@
     if (@available(iOS 13, *)) {
         switch (self.modalPresentationStyle) {
             case UIModalPresentationAutomatic:
+                #if !TARGET_OS_TV
             case UIModalPresentationPageSheet:
             case UIModalPresentationFormSheet:
+                #endif
                 break;
                 
             default:
@@ -71,6 +75,14 @@
         
         self.didSetupPendingDismissButtons = YES;
     }
+    #if TARGET_OS_TV
+        if ([self darkMode]){
+            self.view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
+        } else {
+            self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+        }
+    #endif
+        
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -85,6 +97,8 @@
             self.waitingToAddTab = NO;
         }
     }
+    //the timing is janky here but its better than nothing for now.
+
 }
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -132,6 +146,7 @@
 }
 
 - (void)addNavigationBarSwipeGesture {
+#if !TARGET_OS_TV
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleNavigationBarSwipe:)
     ];
@@ -139,6 +154,7 @@
     swipe.delegate = self;
     self.navigationBarSwipeGesture = swipe;
     [self.navigationBar addGestureRecognizer:swipe];
+#endif
 }
 
 - (void)handleNavigationBarSwipe:(UISwipeGestureRecognizer *)sender {
@@ -149,12 +165,14 @@
      
 - (void)handleNavigationBarTap:(UIGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateRecognized) {
+            #if !TARGET_OS_TV
         if (self.toolbarHidden) {
             [self setToolbarHidden:NO animated:YES];
         }
+        #endif
     }
 }
-
+#if !TARGET_OS_TV
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
     if (g1 == self.navigationBarSwipeGesture && g2 == self.barHideOnSwipeGestureRecognizer) {
         return YES;
@@ -162,8 +180,9 @@
     
     return NO;
 }
-
+#endif
 - (void)_gestureRecognizedInteractiveHide:(UIPanGestureRecognizer *)sender {
+    #if !TARGET_OS_TV
     if (sender.state == UIGestureRecognizerStateRecognized) {
         BOOL show = self.topViewController.toolbarItems.count;
         CGFloat yTranslation = [sender translationInView:self.view].y;
@@ -176,6 +195,7 @@
             [self setToolbarHidden:YES animated:YES];
         }
     }
+    #endif
 }
 
 @end

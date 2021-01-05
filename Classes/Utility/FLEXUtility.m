@@ -255,9 +255,14 @@ BOOL FLEXConstructorsShouldRun() {
     
     return [mutableString copy];
 }
-
+#if !TARGET_OS_TV
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask {
+#else
++ (NSUInteger)infoPlistSupportedInterfaceOrientationsMask {
+return 0;
+#endif
     NSArray<NSString *> *supportedOrientations = NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"];
+    #if !TARGET_OS_TV
     UIInterfaceOrientationMask supportedOrientationsMask = 0;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"]) {
         supportedOrientationsMask |= UIInterfaceOrientationMaskPortrait;
@@ -272,6 +277,7 @@ BOOL FLEXConstructorsShouldRun() {
         supportedOrientationsMask |= UIInterfaceOrientationMaskLandscapeLeft;
     }
     return supportedOrientationsMask;
+#endif
 }
 
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data {
@@ -529,4 +535,17 @@ BOOL FLEXConstructorsShouldRun() {
     }
 }
 
+#if TARGET_OS_TV
+    + (BOOL)airdropAvailable {
+        return [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"airdropper://"]];
+    }
+    
+    + (void)airDropFile:(NSString *)file {
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"airdropper://%@", file]];
+        UIApplication *application = [UIApplication sharedApplication];
+        [application openURL:url options:@{} completionHandler:nil];
+    }
+    
+#endif
+    
 @end

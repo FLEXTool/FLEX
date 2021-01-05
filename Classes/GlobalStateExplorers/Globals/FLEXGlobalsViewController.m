@@ -129,13 +129,17 @@
                 [self globalsEntryForRow:FLEXGlobalsRowCookies],
             ],
             @(FLEXGlobalsSectionMisc) : @[
+#if !TARGET_OS_TV
                 [self globalsEntryForRow:FLEXGlobalsRowPasteboard],
+#endif
                 [self globalsEntryForRow:FLEXGlobalsRowMainScreen],
                 [self globalsEntryForRow:FLEXGlobalsRowCurrentDevice],
                 [self globalsEntryForRow:FLEXGlobalsRowURLSession],
                 [self globalsEntryForRow:FLEXGlobalsRowURLCache],
                 [self globalsEntryForRow:FLEXGlobalsRowNotificationCenter],
+#if !TARGET_OS_TV
                 [self globalsEntryForRow:FLEXGlobalsRowMenuController],
+#endif
                 [self globalsEntryForRow:FLEXGlobalsRowFileManager],
                 [self globalsEntryForRow:FLEXGlobalsRowTimeZone],
                 [self globalsEntryForRow:FLEXGlobalsRowLocale],
@@ -165,8 +169,9 @@
     self.title = @"💪  FLEX";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
+    #if !TARGET_OS_TV
     self.navigationItem.backBarButtonItem = [UIBarButtonItem flex_backItemWithTitle:@"Back"];
-    
+    #endif
     _manuallyDeselectOnAppear = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 10;
 }
 

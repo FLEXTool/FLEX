@@ -7,6 +7,7 @@
 //
 
 #import "FLEXNavigationController.h"
+#import <TargetConditionals.h>
 
 @protocol FLEXHierarchyDelegate <NSObject>
 - (void)viewHierarchyDidDismiss:(UIView *)selectedView;

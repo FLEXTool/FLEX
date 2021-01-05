@@ -87,9 +87,16 @@
 
 @implementation FHSView (Snapshotting)
 
+
 + (UIImage *)drawView:(UIView *)view {
+#if TARGET_OS_TV
+    UIGraphicsBeginImageContextWithOptions(view.layer.bounds.size, NO, 0.0);
+    CGContextRef imageContext = UIGraphicsGetCurrentContext();
+    [view.layer renderInContext:imageContext];
+#else
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0);
     [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+#endif
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return image;

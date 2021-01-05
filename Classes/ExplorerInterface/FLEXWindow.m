@@ -19,7 +19,9 @@
         // If we make the window level too high, we block out UIAlertViews.
         // There's a balance between staying above the app's windows and staying below alerts.
         // UIWindowLevelStatusBar + 100 seems to hit that balance.
+#if !TARGET_OS_TV
         self.windowLevel = UIWindowLevelStatusBar + 100.0;
+#endif
     }
     return self;
 }

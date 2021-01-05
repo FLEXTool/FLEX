@@ -46,7 +46,13 @@
 + (NSString *)pointerToString:(void *)ptr;
 + (NSString *)addressOfObject:(id)object;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
+#if !TARGET_OS_TV
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
+#else
++ (BOOL)airdropAvailable;
++ (void)airDropFile:(NSString *)file;
++ (NSUInteger)infoPlistSupportedInterfaceOrientationsMask;
+#endif
 + (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;

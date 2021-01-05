@@ -1,0 +1,10 @@
+Package: com.nito.flexinjected
+Name: FLEXInjected
+Depends: mobilesubstrate, preferenceloader (>=1.5-15), applist (>=1.3-11), libflex (>=4.3.0-1)
+Version: 1.4
+Architecture: appletvos-arm64
+Description: Inject FLEX into your favorite Applications utilizing applist
+Maintainer: Kevin Bradley
+Author: Kevin Bradley
+Section: Tweaks
+Depiction: https://nitosoft.com/ATV4/flex/flex.json

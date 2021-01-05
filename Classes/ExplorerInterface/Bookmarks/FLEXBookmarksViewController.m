@@ -32,8 +32,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    #if !TARGET_OS_TV
     self.navigationController.hidesBarsOnSwipe = NO;
+    #endif
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     
     [self reloadData];
@@ -56,6 +57,7 @@
 
 - (void)setupDefaultBarItems {
     self.navigationItem.rightBarButtonItem = FLEXBarButtonItemSystem(Done, self, @selector(dismissAnimated));
+    #if !TARGET_OS_TV
     self.toolbarItems = @[
         UIBarButtonItem.flex_flexibleSpace,
         FLEXBarButtonItemSystem(Edit, self, @selector(toggleEditing)),
@@ -63,18 +65,20 @@
     
     // Disable editing if no bookmarks available
     self.toolbarItems.lastObject.enabled = self.bookmarks.count > 0;
+    #endif
 }
 
 - (void)setupEditingBarItems {
     self.navigationItem.rightBarButtonItem = nil;
+        #if !TARGET_OS_TV
     self.toolbarItems = @[
         [UIBarButtonItem flex_itemWithTitle:@"Close All" target:self action:@selector(closeAllButtonPressed:)],
         UIBarButtonItem.flex_flexibleSpace,
         // We use a non-system done item because we change its title dynamically
         [UIBarButtonItem flex_doneStyleitemWithTitle:@"Done" target:self action:@selector(toggleEditing)]
     ];
-    
     self.toolbarItems.firstObject.tintColor = FLEXColor.destructiveColor;
+    #endif
 }
 
 - (FLEXExplorerViewController *)corePresenter {
@@ -198,8 +202,10 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.editing) {
         // Case: editing with multi-select
+        #if !TARGET_OS_TV
         self.toolbarItems.lastObject.title = @"Remove Selected";
         self.toolbarItems.lastObject.tintColor = FLEXColor.destructiveColor;
+        #endif
     } else {
         // Case: selected a bookmark
         [self dismissAnimated:self.bookmarks[indexPath.row]];
@@ -210,8 +216,10 @@
     NSParameterAssert(self.editing);
     
     if (tableView.indexPathsForSelectedRows.count == 0) {
+        #if !TARGET_OS_TV
         self.toolbarItems.lastObject.title = @"Done";
         self.toolbarItems.lastObject.tintColor = self.view.tintColor;
+        #endif
     }
 }
 

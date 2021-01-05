@@ -17,6 +17,10 @@
 #import "FLEXMethod.h"
 #import "FLEXRuntime+UIKitHelpers.h"
 #import "FLEXObjectExplorer.h"
+#if TARGET_OS_TV
+#import "fakes.h"
+#endif
+
 
 #pragma mark Private
 
@@ -185,8 +189,12 @@
 - (BOOL)canSelectRow:(NSInteger)row {
     UITableViewCellAccessoryType type = [self.shortcuts[row] accessoryTypeWith:self.object];
     BOOL hasDisclosure = NO;
-    hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;	
+    hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;
+    #if !TARGET_OS_TV
     hasDisclosure |= type == UITableViewCellAccessoryDetailDisclosureButton;
+    #else
+    hasDisclosure |= type == TVTableViewCellAccessoryDetailDisclosureButton;
+    #endif
     return hasDisclosure;
 }
 

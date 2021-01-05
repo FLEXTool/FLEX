@@ -12,7 +12,11 @@
 
 @interface FLEXArgumentInputTextView ()
 
+#if TARGET_OS_TV
+@property (nonatomic) KBSelectableTextView *inputTextView;
+#else
 @property (nonatomic) UITextView *inputTextView;
+#endif
 @property (nonatomic) UILabel *placeholderLabel;
 @property (nonatomic, readonly) NSUInteger numberOfInputLines;
 
@@ -23,7 +27,12 @@
 - (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
+        #if TARGET_OS_TV
+        self.inputTextView = [[KBSelectableTextView alloc] initWithFrame:CGRectZero];
+        #else
         self.inputTextView = [UITextView new];
+        self.inputTextView.inputAccessoryView = [self createToolBar];
+        #endif
         self.inputTextView.font = [[self class] inputFont];
         self.inputTextView.backgroundColor = FLEXColor.secondaryGroupedBackgroundColor;
         self.inputTextView.layer.cornerRadius = 10.f;
@@ -31,7 +40,6 @@
         self.inputTextView.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.inputTextView.autocorrectionType = UITextAutocorrectionTypeNo;
         self.inputTextView.delegate = self;
-        self.inputTextView.inputAccessoryView = [self createToolBar];
         if (@available(iOS 11, *)) {
             [self.inputTextView.layer setValue:@YES forKey:@"continuousCorners"];
         } else {
@@ -52,7 +60,7 @@
 }
 
 #pragma mark - Private
-
+#if !TARGET_OS_TV
 - (UIToolbar *)createToolBar {
     UIToolbar *toolBar = [UIToolbar new];
     [toolBar sizeToFit];
@@ -71,7 +79,7 @@
     toolBar.items = @[spaceItem, pasteItem, doneItem];
     return toolBar;
 }
-
+#endif
 - (void)setInputPlaceholderText:(NSString *)placeholder {
     self.placeholderLabel.text = placeholder;
     if (placeholder.length) {
@@ -127,7 +135,11 @@
 }
 
 - (CGFloat)inputTextViewHeight {
-    return ceil([[self class] inputFont].lineHeight * self.numberOfInputLines) + 16.0;
+    CGFloat padding = 16.0;
+#if TARGET_OS_TV
+    padding = 40.0;
+#endif
+    return ceil([[self class] inputFont].lineHeight * self.numberOfInputLines) + padding;
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {

@@ -39,11 +39,15 @@
                     make.title(@"Saving Image…");
                 }];
                 [host presentViewController:alert animated:YES completion:nil];
-            
+            #if !TARGET_OS_TV
                 // Save the image
                 UIImageWriteToSavedPhotosAlbum(
                     image, alert, @selector(flex_image:disSaveWithError::), nil
                 );
+            #else
+            //FIXME: do something else for tvOS
+            NSLog(@"not saving image to photo album, tvOS!");
+            #endif
             }
             accessoryType:^UITableViewCellAccessoryType(id image) {
                 return UITableViewCellAccessoryDisclosureIndicator;

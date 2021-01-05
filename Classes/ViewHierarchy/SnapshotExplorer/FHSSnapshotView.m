@@ -66,7 +66,11 @@
 }
 
 - (void)initSpacingSlider {
+    #if !TARGET_OS_TV
     _spacingSlider = [UISlider new];
+    #else
+    _spacingSlider = [KBSlider new];
+    #endif
     self.spacingSlider.minimumValue = 0;
     self.spacingSlider.maximumValue = 100;
     self.spacingSlider.continuous = YES;
@@ -273,7 +277,7 @@
     }
 }
 
-- (void)spacingSliderDidChange:(UISlider *)slider {
+- (void)spacingSliderDidChange:(KBSlider *)slider { //easier to make a KBSlider since they are API compatible - one less #if macro!
     // TODO: hiding the header when flat logic
 
     for (FHSSnapshotNodes *nodes in self.nodesMap.allValues) {

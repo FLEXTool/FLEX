@@ -101,7 +101,9 @@
                 image:copyIcon
                 identifier:nil
                 handler:^(__kindof UIAction *action) {
+                #if !TARGET_OS_TV
                     UIPasteboard.generalPasteboard.string = value;
+                #endif
                 }
             ];
             if (!value.length) {

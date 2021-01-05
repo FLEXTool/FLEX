@@ -8,10 +8,16 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 @class FLEXMirror, FLEXMethod, FLEXIvar, FLEXProperty, FLEXMethodBase, FLEXPropertyAttributes, FLEXProtocol;
 
 NS_ASSUME_NONNULL_BEGIN
+
+@interface NSObject (tvOS)
+- (UIViewController *)topViewController;
+- (BOOL)darkMode;
+@end
 
 /// Returns the type encoding string given the encoding for the return type and parameters, if any.
 /// @discussion Example usage for a \c void returning method which takes
