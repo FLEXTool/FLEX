@@ -27,6 +27,9 @@
 #import "NSUserDefaults+FLEX.h"
 #import <objc/runtime.h>
 #import <TargetConditionals.h>
+#if TARGET_OS_TV
+#import "fakes.h"
+#endif
 
 #pragma mark - Private properties
 @interface FLEXObjectExplorerViewController () <UIGestureRecognizerDelegate>{
@@ -150,12 +153,15 @@
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     if ( gesture.state == UIGestureRecognizerStateEnded) {
-        NSLog(@"do something different for long press!");
+        FXLog(@"do something different for long press!");
         UITableView *tv = [self tableView];
         //naughty naughty
         NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
-        NSLog(@"[FLEX] focusedIndexPath: %@", focus);
-        [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
+        UITableViewCell *cell  = [tv valueForKey:@"_focusedCell"];
+        FXLog(@"focusedIndexPath: %@ accessoryType: %lu", focus, cell.accessoryType);
+        if (cell.accessoryType != TVTableViewCellAccessoryDisclosureIndicator){
+            [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
+        }
     }
 }
 

@@ -627,4 +627,34 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     return nil; // For plain/gropued style
 }
 
+#if TARGET_OS_TV
+#pragma mark tvOS
+
+/*
+ This tracks our most recently focused cell so when we leave / return to this view we can refocus to the proper index path.
+ */
+
+- (void)tableView:(UITableView *)tableView didUpdateFocusInContext:(UITableViewFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator {
+    [coordinator addCoordinatedAnimations:^{
+        
+        NSIndexPath *nextIndexPath = context.nextFocusedIndexPath;
+        KBTableView *table = (KBTableView *)tableView;
+        if ([table respondsToSelector:@selector(setSelectedIndexPath:)]){
+            if (nextIndexPath != nil){
+                [table setSelectedIndexPath:nextIndexPath];
+            }
+        }
+    } completion:nil];
+}
+
+- (NSArray *)preferredFocusEnvironments {
+    if (self.tableView.selectedIndexPath){
+        return @[[self.tableView cellForRowAtIndexPath:self.tableView.selectedIndexPath]];
+    }
+    return @[self];
+}
+
+
+#endif
+
 @end

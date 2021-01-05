@@ -1,4 +1,4 @@
-target = appletv:12.1
+target = appletv:12.1.1
 
 INSTALL_TARGET_PROCESSES = PineBoard
 
