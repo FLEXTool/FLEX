@@ -2,7 +2,6 @@
 #import "Macros.h"
 #define NUMBER_OF_CELLS 100000
 
- // Enums are all defined like this to make it easier to convert them to / from string versions of themselves.
 #define TABLE_TAG(XX) \
 XX(KBTableViewTagMonths, = 501) \
 XX(KBTableViewTagDays, )\
@@ -20,10 +19,6 @@ XX(KBDatePickerModeDateAndTime, ) \
 XX(KBDatePickerModeCountDownTimer, )
 DECLARE_ENUM(KBDatePickerMode, PICKER_MODE)
 
-@interface NSString (format)
-+ (id _Nonnull )kb_stringWithFormat:(const char*) fmt,...;
-@end
-
 @interface UIView (Helper)
 -(void)removeAllSubviews;
 @end
@@ -35,12 +30,15 @@ DECLARE_ENUM(KBDatePickerMode, PICKER_MODE)
 
 @interface KBTableView: UITableView
 @property NSIndexPath * _Nullable selectedIndexPath;
+@property CGFloat customWidth;
 @property id _Nullable selectedValue;
 - (instancetype _Nonnull )initWithTag:(KBTableViewTag)tag delegate:(id _Nonnull )delegate;
 - (id _Nullable )valueForIndexPath:(NSIndexPath *_Nonnull)indexPath;
 - (NSArray *_Nonnull)visibleValues;
 @end
 
+ // Enums are all defined like this to make it easier to convert them to / from string versions of themselves.
+ 
 @interface KBDatePickerView: UIControl <UITableViewDelegate, UITableViewDataSource>
 @property (nonnull, nonatomic, strong) NSDate *date;
 @property (nullable, nonatomic, strong) NSDate *minimumDate;
@@ -53,4 +51,7 @@ DECLARE_ENUM(KBDatePickerMode, PICKER_MODE)
 + (NSDateFormatter * _Nonnull )sharedDateFormatter;
 @end
 
+#define DLog(format, ...) CFShow((__bridge CFStringRef)[NSString stringWithFormat:format, ## __VA_ARGS__]);
+#define LOG_SELF        NSLog(@"[KBDatePickerView] %@ %@", self, NSStringFromSelector(_cmd))
 #define DPLog(format, ...) NSLog(@"[KBDatePickerView] %@",[NSString stringWithFormat:format, ## __VA_ARGS__]);
+#define DLOG_SELF DLog(@"%@ %@", self, NSStringFromSelector(_cmd))
