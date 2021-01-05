@@ -35,6 +35,11 @@ extern FLEXTableViewCellReuseIdentifier const kFLEXCodeFontCell;
 + (instancetype)plainTableView;
 + (instancetype)style:(UITableViewStyle)style;
 
+#if TARGET_OS_TV
+/// tvOS tries to keep your selected index remembered when pushing and popping between views in a navigation controller, it doesn't do a very good job, this is to keep track of it ourselves.
+@property (nonatomic, strong) NSIndexPath *selectedIndexPath;
+#endif
+
 /// You do not need to register classes for any of the default reuse identifiers above
 /// (annotated as \c FLEXTableViewCellReuseIdentifier types) unless you wish to provide
 /// a custom cell for any of those reuse identifiers. By default, \c FLEXTableViewCell,
