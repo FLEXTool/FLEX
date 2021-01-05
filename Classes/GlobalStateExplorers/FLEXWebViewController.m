@@ -8,9 +8,9 @@
 
 #import "FLEXWebViewController.h"
 #import "FLEXUtility.h"
-#import <WebKit/WebKit.h>
 #import <TargetConditionals.h>
 #if !TARGET_OS_TV
+#import <WebKit/WebKit.h>
 @interface FLEXWebViewController () <WKNavigationDelegate>
 #else
 @interface FLEXWebViewController ()
