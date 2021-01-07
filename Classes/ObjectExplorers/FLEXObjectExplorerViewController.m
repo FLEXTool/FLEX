@@ -152,6 +152,7 @@
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    #if TARGET_OS_TV
     if ( gesture.state == UIGestureRecognizerStateEnded) {
         FXLog(@"do something different for long press!");
         UITableView *tv = [self tableView];
@@ -163,6 +164,7 @@
             [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
         }
     }
+    #endif
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
