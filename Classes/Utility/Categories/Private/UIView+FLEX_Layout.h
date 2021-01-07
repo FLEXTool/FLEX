@@ -19,5 +19,6 @@
 - (void)flex_pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets;
 - (void)flex_pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets aboveView:(UIView *)sibling;
 - (void)flex_pinEdgesToSuperviewWithInsets:(UIEdgeInsets)insets belowView:(UIView *)sibling;
+- (UIView *)flex_findFirstSubviewWithClass:(Class)theClass;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "FLEXTV.h"
 #import "NSObject+FLEX_Reflection.h"
+#import "UIView+FLEX_Layout.h"
 @interface UIImage (private)
 +(UIImage *)symbolImageNamed:(NSString *)symbolName;
 @end
@@ -109,6 +110,40 @@
     return @"OFF";
 }
 
+/*
+ `<UIFLEXSwitch: 0x1009b3010; baseClass = UIButton; frame = (50 50; 200 70); opaque = NO; gestureRecognizers = <NSArray: 0x2814ba4f0>; layer = <CALayer: 0x281a811c0>>
+ | <_UIFloatingContentView: 0x10ec4a820; frame = (0 0; 200 70); opaque = NO; layer = <CALayer: 0x281a92ce0>>
+ |    | <UIView: 0x1008744e0; frame = (0 -0.25; 200 70); transform3D = [0.8, 0, 0, 0; 0, 0.8, 0, 0; 0, 0, 1, -0.001; 0, 0, 0, 1]; alpha = 0; opaque = NO; layer = <CALayer: 0x281a93140>>
+ |    | <_UIFloatingContentTransformView: 0x10ec3ede0; frame = (0 0; 200 70); layer = <CATransformLayer: 0x281a92c20>>
+ |    |    | <_UIFloatingContentCornerRadiusAnimatingView: 0x10ec35500; frame = (0 0; 200 70); opaque = NO; layer = <CALayer: 0x281a93160>>
+ |    |    |    | <UIVisualEffectView: 0x10097e050; frame = (0 0; 200 70); layer = <CALayer: 0x281a82b00>> effect=<UIBlurEffect: 0x2819a91b0> style=UIBlurEffectStyleATVSemiAutomatic invertedAutomaticStyle
+ |    |    |    |    | <_UIVisualEffectBackdropView: 0x10fa0b4b0; frame = (0 0; 200 70); autoresize = W+H; userInteractionEnabled = NO; layer = <UICABackdropLayer: 0x281a82d40>>
+ |    |    |    |    | <_UIVisualEffectSubview: 0x100961a50; frame = (0 0; 200 70); alpha = 0.4; autoresize = W+H; userInteractionEnabled = NO; layer = <CALayer: 0x281a82ee0>>
+ |    |    | <_UIFloatingContentCornerRadiusAnimatingScreenScaleInheritingView: 0x10ec4f910; frame = (0 0; 200 70); clipsToBounds = YES; opaque = NO; layer = <CALayer: 0x281a92be0>>
+ |    |    |    | <_UIFloatingContentCornerRadiusAnimatingView: 0x1008af590; frame = (0 0; 200 70); layer = <CALayer: 0x281a92b60>>
+ |    |    |    | <UIView: 0x10ec547b0; frame = (0 0; 200 70); layer = <CALayer: 0x281a9e900>>
+ |    |    |    |    | <UIButtonLabel: 0x100868630; frame = (65 12; 70 46); text = 'OFF'; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer: 0x2838d3520>>`
+ 
+ 
+ UIButtons have a crazy heirarchy on tvOS - and changing the background color of the ACTUAL button isn't supported (as far as im aware) so this is one way to do it!
+ 
+ */
+
+- (void)_updateBackgroundForMode {
+    if ([self isOn]){
+        [self setBackgroundColor:self.onTintColor];
+    } else {
+        [self setBackgroundColor:[UIColor grayColor]];
+    }
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor {
+    UIView *bgView = [self flex_findFirstSubviewWithClass:objc_getClass("_UIVisualEffectSubview")]; //this class has been around since tvOS 9, so this is definitely safe.
+    if (bgView) {
+        bgView.backgroundColor = backgroundColor;
+    }
+}
+
 - (void)setOn:(BOOL)on animated:(BOOL)animated {
     _isOn = on;
     if (_isOn){
@@ -116,6 +151,7 @@
     } else {
         [self setTitle:[self offTitle] forState:UIControlStateNormal];
     }
+    [self _updateBackgroundForMode];
     //[self sendActionsForControlEvents:[self allControlEvents]];
 }
 
