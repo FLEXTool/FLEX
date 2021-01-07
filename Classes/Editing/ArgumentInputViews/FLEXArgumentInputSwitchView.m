@@ -7,12 +7,12 @@
 //
 
 #import "FLEXArgumentInputSwitchView.h"
-#import "fakes.h"
+#import "FLEXTV.h"
 @interface FLEXArgumentInputSwitchView ()
 #if !TARGET_OS_TV
 @property (nonatomic) UISwitch *inputSwitch;
 #else
-@property (nonatomic) UIFakeSwitch *inputSwitch;
+@property (nonatomic) UIFLEXSwitch *inputSwitch;
 #endif
 @end
 
@@ -27,7 +27,7 @@
         [self.inputSwitch addTarget:self action:@selector(switchValueDidChange:) forControlEvents:UIControlEventValueChanged];
         
 #else
-        self.inputSwitch = [UIFakeSwitch newSwitch];
+        self.inputSwitch = [UIFLEXSwitch newSwitch];
         [self.inputSwitch addTarget:self action:@selector(changeSwitchValue:) forControlEvents:UIControlEventPrimaryActionTriggered];
 #endif
         [self addSubview:self.inputSwitch];
@@ -35,7 +35,7 @@
     return self;
 }
 
-- (void)changeSwitchValue:(UIFakeSwitch *)switchView {
+- (void)changeSwitchValue:(UIFLEXSwitch *)switchView {
     [switchView setOn:!switchView.isOn];
     [self switchValueDidChange:switchView];
 }

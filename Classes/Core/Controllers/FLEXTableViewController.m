@@ -16,8 +16,9 @@
 #import "FLEXResources.h"
 #import "UIBarButtonItem+FLEX.h"
 #import <objc/runtime.h>
-#import "fakes.h"
-
+#if TARGET_OS_TV
+#import "FLEXTV.h"
+#endif
 @interface Block : NSObject
 - (void)invoke;
 @end

@@ -18,7 +18,7 @@
 #import "FLEXRuntime+UIKitHelpers.h"
 #import "FLEXObjectExplorer.h"
 #if TARGET_OS_TV
-#import "fakes.h"
+#import "FLEXTV.h"
 #endif
 
 

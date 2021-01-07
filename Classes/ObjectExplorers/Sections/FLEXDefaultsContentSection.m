@@ -10,7 +10,7 @@
 #import "FLEXDefaultEditorViewController.h"
 #import "FLEXUtility.h"
 #if TARGET_OS_TV
-#import "fakes.h"
+#import "FLEXTV.h"
 #endif
 @interface FLEXDefaultsContentSection ()
 @property (nonatomic) NSUserDefaults *defaults;

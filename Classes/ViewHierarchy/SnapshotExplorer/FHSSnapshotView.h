@@ -8,7 +8,7 @@
 
 #import "FHSViewSnapshot.h"
 #import "FHSRangeSlider.h"
-#import "fakes.h"
+#import "FLEXTV.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol FHSSnapshotViewDelegate <NSObject>

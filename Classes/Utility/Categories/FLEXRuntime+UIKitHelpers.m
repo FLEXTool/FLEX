@@ -18,7 +18,7 @@
 #import "NSArray+FLEX.h"
 #import "NSString+FLEX.h"
 #if TARGET_OS_TV
-#import "fakes.h"
+#import "FLEXTV.h"
 #endif
 
 #define FLEXObjectExplorerDefaultsImpl \

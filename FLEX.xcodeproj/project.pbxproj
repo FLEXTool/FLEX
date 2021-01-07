@@ -135,7 +135,7 @@
 		323F6C39259B9DB70055BDD6 /* FLEXTableViewSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C36B096F23E1EDCD008F5D47 /* FLEXTableViewSection.m */; };
 		323F6C3A259B9DB70055BDD6 /* FLEXNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3531BA423E88A2100A184AD /* FLEXNavigationController.m */; };
 		323F6C3B259B9DB70055BDD6 /* FLEXHierarchyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94631B5B21410088C3F2 /* FLEXHierarchyTableViewController.m */; };
-		323F6C3C259B9DB70055BDD6 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
+		323F6C3C259B9DB70055BDD6 /* FLEXTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* FLEXTV.m */; };
 		323F6C3D259B9DB70055BDD6 /* FLEXSystemLogCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94B11B5B21410088C3F2 /* FLEXSystemLogCell.m */; };
 		323F6C3E259B9DB70055BDD6 /* FHSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A9423323C3F98E006871A3 /* FHSViewController.m */; };
 		323F6C3F259B9DB70055BDD6 /* FLEXObjectRef.m in Sources */ = {isa = PBXBuildFile; fileRef = C3DB9F632107FC9600B46809 /* FLEXObjectRef.m */; };
@@ -316,7 +316,7 @@
 		323F6CF0259B9DB70055BDD6 /* FLEXNetworkTransaction.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94BB1B5B21410088C3F2 /* FLEXNetworkTransaction.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		323F6CF1259B9DB70055BDD6 /* NSTimer+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3C023B6B429007A321B /* NSTimer+FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		323F6CF2259B9DB70055BDD6 /* FLEXWebViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94AB1B5B21410088C3F2 /* FLEXWebViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		323F6CF3259B9DB70055BDD6 /* fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* fakes.h */; };
+		323F6CF3259B9DB70055BDD6 /* FLEXTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* FLEXTV.h */; };
 		323F6CF4259B9DB70055BDD6 /* FHSViewSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A9424B23C78CFF006871A3 /* FHSViewSnapshot.h */; };
 		323F6CF5259B9DB70055BDD6 /* KBSlider.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7B0F259763BD00CC6B10 /* KBSlider.h */; };
 		323F6CF6259B9DB70055BDD6 /* FLEXScopeCarousel.h in Headers */ = {isa = PBXBuildFile; fileRef = C3EE76BD22DFC63600EC0AA0 /* FLEXScopeCarousel.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -378,8 +378,8 @@
 		325D7B12259763BD00CC6B10 /* KBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7B10259763BD00CC6B10 /* KBSlider.m */; };
 		325D7B3E2597BA2800CC6B10 /* KBDatePickerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 325D7B3C2597BA2700CC6B10 /* KBDatePickerView.h */; };
 		325D7B3F2597BA2800CC6B10 /* KBDatePickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 325D7B3D2597BA2800CC6B10 /* KBDatePickerView.m */; };
-		32D4E15B259273E60027F238 /* fakes.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* fakes.h */; };
-		32D4E15D2592749D0027F238 /* fakes.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* fakes.m */; };
+		32D4E15B259273E60027F238 /* FLEXTV.h in Headers */ = {isa = PBXBuildFile; fileRef = 32D4E15A259273E60027F238 /* FLEXTV.h */; };
+		32D4E15D2592749D0027F238 /* FLEXTV.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D4E15C2592749D0027F238 /* FLEXTV.m */; };
 		3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94241B5B20570088C3F2 /* FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A4C94CD1B5B21410088C3F2 /* FLEXGlobalsEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94441B5B21410088C3F2 /* FLEXGlobalsEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3A4C94CE1B5B21410088C3F2 /* FLEXGlobalsEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94451B5B21410088C3F2 /* FLEXGlobalsEntry.m */; };
@@ -750,8 +750,8 @@
 		325D7B10259763BD00CC6B10 /* KBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KBSlider.m; sourceTree = "<group>"; };
 		325D7B3C2597BA2700CC6B10 /* KBDatePickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KBDatePickerView.h; sourceTree = "<group>"; };
 		325D7B3D2597BA2800CC6B10 /* KBDatePickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KBDatePickerView.m; sourceTree = "<group>"; };
-		32D4E15A259273E60027F238 /* fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fakes.h; sourceTree = "<group>"; };
-		32D4E15C2592749D0027F238 /* fakes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fakes.m; sourceTree = "<group>"; };
+		32D4E15A259273E60027F238 /* FLEXTV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXTV.h; sourceTree = "<group>"; };
+		32D4E15C2592749D0027F238 /* FLEXTV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTV.m; sourceTree = "<group>"; };
 		3A4C941F1B5B20570088C3F2 /* FLEX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A4C94231B5B20570088C3F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A4C94241B5B20570088C3F2 /* FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEX.h; sourceTree = "<group>"; };
@@ -947,7 +947,6 @@
 		C36B096423E0D4A1008F5D47 /* UIMenu+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIMenu+FLEX.m"; sourceTree = "<group>"; };
 		C36B096E23E1EDCD008F5D47 /* FLEXTableViewSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXTableViewSection.h; sourceTree = "<group>"; };
 		C36B096F23E1EDCD008F5D47 /* FLEXTableViewSection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTableViewSection.m; sourceTree = "<group>"; };
-		C36E1B24259D64CC00FEFEF6 /* FLEXNewRootClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXNewRootClass.h; sourceTree = "<group>"; };
 		C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXNewRootClass.m; sourceTree = "<group>"; };
 		C36FBFB9230F3B97008D95D5 /* FLEXMirror.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMirror.m; sourceTree = "<group>"; };
 		C36FBFBA230F3B97008D95D5 /* FLEXProtocolBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXProtocolBuilder.h; sourceTree = "<group>"; };
@@ -1136,8 +1135,8 @@
 		325D7AE025953F8D00CC6B10 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				32D4E15A259273E60027F238 /* fakes.h */,
-				32D4E15C2592749D0027F238 /* fakes.m */,
+				32D4E15A259273E60027F238 /* FLEXTV.h */,
+				32D4E15C2592749D0027F238 /* FLEXTV.m */,
 				325D7AE625955C3500CC6B10 /* FLEXFontListTableViewController.h */,
 				325D7AE525955C3500CC6B10 /* FLEXFontListTableViewController.m */,
 				325D7B3C2597BA2700CC6B10 /* KBDatePickerView.h */,
@@ -1152,6 +1151,14 @@
 			path = tvOS;
 			sourceTree = "<group>";
 		};
+		32C7DE3A25A6E57700FDB324 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		3A4C94151B5B20570088C3F2 = {
 			isa = PBXGroup;
 			children = (
@@ -1160,6 +1167,7 @@
 				3A4C95451B5B216C0088C3F2 /* Frameworks */,
 				3A4C94201B5B20570088C3F2 /* Products */,
 				323F6D2E259B9DBD0055BDD6 /* FLEX-tvOS-Info.plist */,
+				32C7DE3A25A6E57700FDB324 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1593,15 +1601,6 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		C36E1B27259D64D300FEFEF6 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				C36E1B24259D64CC00FEFEF6 /* FLEXNewRootClass.h */,
-				C36E1B25259D64CC00FEFEF6 /* FLEXNewRootClass.m */,
-			);
-			path = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		C36FBFB8230F3B52008D95D5 /* Runtime */ = {
 			isa = PBXGroup;
 			children = (
@@ -1980,7 +1979,7 @@
 				323F6CF0259B9DB70055BDD6 /* FLEXNetworkTransaction.h in Headers */,
 				323F6CF1259B9DB70055BDD6 /* NSTimer+FLEX.h in Headers */,
 				323F6CF2259B9DB70055BDD6 /* FLEXWebViewController.h in Headers */,
-				323F6CF3259B9DB70055BDD6 /* fakes.h in Headers */,
+				323F6CF3259B9DB70055BDD6 /* FLEXTV.h in Headers */,
 				323F6CF4259B9DB70055BDD6 /* FHSViewSnapshot.h in Headers */,
 				323F6CF5259B9DB70055BDD6 /* KBSlider.h in Headers */,
 				323F6CF6259B9DB70055BDD6 /* FLEXScopeCarousel.h in Headers */,
@@ -2166,7 +2165,7 @@
 				3A4C953C1B5B21410088C3F2 /* FLEXNetworkTransaction.h in Headers */,
 				C383C3C223B6B429007A321B /* NSTimer+FLEX.h in Headers */,
 				3A4C952E1B5B21410088C3F2 /* FLEXWebViewController.h in Headers */,
-				32D4E15B259273E60027F238 /* fakes.h in Headers */,
+				32D4E15B259273E60027F238 /* FLEXTV.h in Headers */,
 				C3A9424D23C78CFF006871A3 /* FHSViewSnapshot.h in Headers */,
 				325D7B11259763BD00CC6B10 /* KBSlider.h in Headers */,
 				C3EE76BF22DFC63600EC0AA0 /* FLEXScopeCarousel.h in Headers */,
@@ -2501,7 +2500,7 @@
 				323F6C39259B9DB70055BDD6 /* FLEXTableViewSection.m in Sources */,
 				323F6C3A259B9DB70055BDD6 /* FLEXNavigationController.m in Sources */,
 				323F6C3B259B9DB70055BDD6 /* FLEXHierarchyTableViewController.m in Sources */,
-				323F6C3C259B9DB70055BDD6 /* fakes.m in Sources */,
+				323F6C3C259B9DB70055BDD6 /* FLEXTV.m in Sources */,
 				323F6C3D259B9DB70055BDD6 /* FLEXSystemLogCell.m in Sources */,
 				323F6C3E259B9DB70055BDD6 /* FHSViewController.m in Sources */,
 				323F6C3F259B9DB70055BDD6 /* FLEXObjectRef.m in Sources */,
@@ -2676,7 +2675,7 @@
 				C36B097123E1EDCD008F5D47 /* FLEXTableViewSection.m in Sources */,
 				C3531BA623E88A2100A184AD /* FLEXNavigationController.m in Sources */,
 				3A4C94EA1B5B21410088C3F2 /* FLEXHierarchyTableViewController.m in Sources */,
-				32D4E15D2592749D0027F238 /* fakes.m in Sources */,
+				32D4E15D2592749D0027F238 /* FLEXTV.m in Sources */,
 				3A4C95331B5B21410088C3F2 /* FLEXSystemLogCell.m in Sources */,
 				C3A9423523C3F98E006871A3 /* FHSViewController.m in Sources */,
 				C3DB9F652107FC9600B46809 /* FLEXObjectRef.m in Sources */,

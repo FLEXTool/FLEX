@@ -1,12 +1,12 @@
 //
-//  fakes.h
+//  FLEXTV.h
 //  FLEX
 //
 //  Created by Kevin Bradley on 12/22/20.
 //  Copyright © 2020 Flipboard. All rights reserved.
 //
 
-#import "fakes.h"
+#import "FLEXTV.h"
 #import "NSObject+FLEX_Reflection.h"
 @interface UIImage (private)
 +(UIImage *)symbolImageNamed:(NSString *)symbolName;
@@ -56,12 +56,12 @@
 
 @end
 
-@interface UIFakeSwitch() {
+@interface UIFLEXSwitch() {
     BOOL _isOn;
 }
 @end
 
-@implementation UIFakeSwitch
+@implementation UIFLEXSwitch
 
 - (BOOL)isOn {
     return _isOn;
@@ -102,11 +102,11 @@
 }
 
 - (NSString *)onTitle {
-    return @"TRUE";
+    return @"ON";
 }
 
 - (NSString *)offTitle {
-    return @"FALSE";
+    return @"OFF";
 }
 
 - (void)setOn:(BOOL)on animated:(BOOL)animated {
@@ -120,7 +120,7 @@
 }
 
 + (id)newSwitch {
-    UIFakeSwitch *new = [UIFakeSwitch buttonWithType:UIButtonTypeSystem];
+    UIFLEXSwitch *new = [UIFLEXSwitch buttonWithType:UIButtonTypeSystem];
     [new initDefaults];
     return new;
 }

@@ -1,5 +1,5 @@
 //
-//  fakes.h
+//  FLEXTV.h
 //  FLEX
 //
 //  Created by Kevin Bradley on 12/22/20.
@@ -59,9 +59,9 @@ typedef NS_ENUM(NSInteger, TVTableViewCellAccessoryType) {
 - (void)triggerSearchField;
 @end
 
-//UIFakeSwitch is actually just a UIButton that says TRUE/FALSE and responds to UISwitch API calls.
+//UIFLEXSwitch is actually just a UIButton that says TRUE/FALSE and responds to UISwitch API calls.
 
-@interface UIFakeSwitch : UIButton <NSCoding>
+@interface UIFLEXSwitch : UIButton <NSCoding>
 @property(nullable, nonatomic, strong) UIColor *onTintColor;
 @property(nullable, nonatomic, strong) UIColor *thumbTintColor;
 @property(nullable, nonatomic, strong) UIImage *onImage;

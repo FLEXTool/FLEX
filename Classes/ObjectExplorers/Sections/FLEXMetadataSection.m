@@ -16,7 +16,7 @@
 #import "NSArray+FLEX.h"
 #import "FLEXRuntime+UIKitHelpers.h"
 #if TARGET_OS_TV
-#import "fakes.h"
+#import "FLEXTV.h"
 #endif
 
 @interface FLEXMetadataSection ()

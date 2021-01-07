@@ -9,7 +9,9 @@
 #import "FLEXArgumentInputColorView.h"
 #import "FLEXUtility.h"
 #import "FLEXRuntimeUtility.h"
-#import "fakes.h"
+#if TARGET_OS_TV
+#import "FLEXTV.h"
+#endif
 @protocol FLEXColorComponentInputViewDelegate;
 
 @interface FLEXColorComponentInputView : UIView

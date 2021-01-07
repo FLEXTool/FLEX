@@ -28,7 +28,7 @@
 #import <objc/runtime.h>
 #import <TargetConditionals.h>
 #if TARGET_OS_TV
-#import "fakes.h"
+#import "FLEXTV.h"
 #endif
 
 #pragma mark - Private properties

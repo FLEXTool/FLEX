@@ -12,7 +12,7 @@
 #import "FLEXTableView.h"
 #import "FLEXColor.h"
 #import "NSUserDefaults+FLEX.h"
-#import "fakes.h"
+#import "FLEXTV.h"
 
 #if !TARGET_OS_TV
 @interface FLEXNetworkSettingsController () <UIActionSheetDelegate>
@@ -27,9 +27,9 @@
 @property (nonatomic, readonly) UISwitch *jsonViewerSwitch;
 @property (nonatomic, readonly) UISlider *cacheLimitSlider;
 #else
-@property (nonatomic, readonly) UIFakeSwitch *observerSwitch;
-@property (nonatomic, readonly) UIFakeSwitch *cacheMediaSwitch;
-@property (nonatomic, readonly) UIFakeSwitch *jsonViewerSwitch;
+@property (nonatomic, readonly) UIFLEXSwitch *observerSwitch;
+@property (nonatomic, readonly) UIFLEXSwitch *cacheMediaSwitch;
+@property (nonatomic, readonly) UIFLEXSwitch *jsonViewerSwitch;
 @property (nonatomic, readonly) KBSlider *cacheLimitSlider;
 #endif
 @property (nonatomic) UILabel *cacheLimitLabel;
@@ -52,9 +52,9 @@
     _jsonViewerSwitch = [UISwitch new];
     _cacheLimitSlider = [UISlider new];
 #else
-    _observerSwitch = [UIFakeSwitch newSwitch];
-    _cacheMediaSwitch = [UIFakeSwitch newSwitch];
-    _jsonViewerSwitch = [UIFakeSwitch newSwitch];
+    _observerSwitch = [UIFLEXSwitch newSwitch];
+    _cacheMediaSwitch = [UIFLEXSwitch newSwitch];
+    _jsonViewerSwitch = [UIFLEXSwitch newSwitch];
     _cacheLimitSlider = [[KBSlider alloc] initWithFrame:CGRectMake(0, 0, 400, 53)];
 #endif
     
@@ -107,15 +107,15 @@
 
 #pragma mark - Settings Actions
 
-- (void)networkDebuggingToggled:(UIFakeSwitch *)sender {
+- (void)networkDebuggingToggled:(UIFLEXSwitch *)sender {
     FLEXNetworkObserver.enabled = sender.isOn;
 }
 
-- (void)cacheMediaResponsesToggled:(UIFakeSwitch*)sender {
+- (void)cacheMediaResponsesToggled:(UIFLEXSwitch*)sender {
     FLEXNetworkRecorder.defaultRecorder.shouldCacheMediaResponses = sender.isOn;
 }
 
-- (void)jsonViewerSettingToggled:(UIFakeSwitch *)sender {
+- (void)jsonViewerSettingToggled:(UIFLEXSwitch *)sender {
     [NSUserDefaults.standardUserDefaults flex_toggleBoolForKey:kFLEXDefaultsRegisterJSONExplorerKey];
 }
 

@@ -8,9 +8,10 @@
 
 #import "FLEXArgumentInputDateView.h"
 #import "FLEXRuntimeUtility.h"
-#import "fakes.h"
 #import <TargetConditionals.h>
-
+#if TARGET_OS_TV
+#import "FLEXTV.h"
+#endif
 @interface FLEXArgumentInputDateView ()
 
 #if TARGET_OS_TV
