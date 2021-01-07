@@ -80,8 +80,11 @@
         action:@selector(cacheLimitAdjusted:)
         forControlEvents:UIControlEventValueChanged
     ];
-    
+#if !TARGET_OS_TV
+    UISlider *slider = self.cacheLimitSlider;
+#else
     KBSlider *slider = self.cacheLimitSlider;
+#endif
     self.cacheLimitValue = FLEXNetworkRecorder.defaultRecorder.responseCacheByteLimit;
     const NSUInteger fiftyMega = 50 * 1024 * 1024;
     slider.minimumValue = 0;
@@ -189,7 +192,11 @@
                     [cell.contentView addSubview:self.cacheLimitSlider];
                     
                     CGRect container = cell.contentView.frame;
+#if !TARGET_OS_TV
+                    UISlider *slider = self.cacheLimitSlider;
+#else
                     KBSlider *slider = self.cacheLimitSlider;
+#endif
                     [slider sizeToFit];
                     
                     CGFloat sliderWidth = 150.f;

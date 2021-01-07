@@ -80,10 +80,7 @@
 }
 
 - (instancetype)init {
-    self = [super init];
-    if (self){
-        [self initDefaults];
-    }
+    self = [self initWithFrame:CGRectZero];
     return self;
 }
 

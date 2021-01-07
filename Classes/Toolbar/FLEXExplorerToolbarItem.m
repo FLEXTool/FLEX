@@ -79,7 +79,11 @@
 }
 
 + (CGFloat)topMargin {
+#if !TARGET_OS_TV
+    return 2.0;
+#else
     return 20.0;
+#endif
 }
 
 
