@@ -133,7 +133,7 @@
     if ([self isOn]){
         [self setBackgroundColor:self.onTintColor];
     } else {
-        [self setBackgroundColor:[UIColor grayColor]];
+        [self setBackgroundColor:[UIColor colorWithWhite:0.4 alpha:0.5]];
     }
 }
 
@@ -142,6 +142,11 @@
     if (bgView) {
         bgView.backgroundColor = backgroundColor;
     }
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self _updateBackgroundForMode];
 }
 
 - (void)setOn:(BOOL)on animated:(BOOL)animated {
