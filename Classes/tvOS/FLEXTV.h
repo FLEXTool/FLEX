@@ -72,3 +72,8 @@ typedef NS_ENUM(NSInteger, TVTableViewCellAccessoryType) {
 - (void)setOn:(BOOL)on animated:(BOOL)animated; // does not send action
 + (id _Nonnull )newSwitch;
 @end
+
+@interface LSApplicationWorkspace: NSObject
++(id _Nonnull )defaultWorkspace;
+-(BOOL)openURL:(NSURL *_Nonnull)url;
+@end

@@ -14,6 +14,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import <mach-o/loader.h>
+#import "FLEXTV.h"
 
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end
@@ -263,6 +264,13 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
             make.title([NSString stringWithFormat:@"Open %@?", fullPath.lastPathComponent]);
             make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
                 FXLog(@"TODO: implement opening files here!");
+                NSURL *fileURL = [NSURL fileURLWithPath:fullPath];
+                BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:fileURL];
+                FXLog(@"can open file: %d", canOpenURL);
+                if (canOpenURL){
+                    id ws = [NSClassFromString(@"LSApplicationWorkspace") defaultWorkspace];
+                    [ws openURL:fileURL];
+                }
             });
             make.button(@"Cancel").cancelStyle();
         } showFrom:self];

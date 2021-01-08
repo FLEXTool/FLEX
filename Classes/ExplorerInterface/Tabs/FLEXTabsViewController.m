@@ -17,6 +17,7 @@
 #import "FLEXExplorerViewController.h"
 #import "FLEXGlobalsViewController.h"
 #import "FLEXBookmarksViewController.h"
+#import "NSObject+FLEX_Reflection.h"
 
 @interface FLEXTabsViewController ()
 @property (nonatomic, copy) NSArray<UINavigationController *> *openTabs;
@@ -50,6 +51,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self setupDefaultBarItems];
+#if TARGET_OS_TV
+    if ([self darkMode]){
+        self.view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
+    } else {
+        self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+    }
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addTabButtonPressed:)];
+    self.navigationItem.leftBarButtonItem = addButton;
+#endif
 }
 
 - (void)viewDidAppear:(BOOL)animated {

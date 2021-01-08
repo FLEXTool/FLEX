@@ -42,7 +42,7 @@
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         self.webView.navigationDelegate = self;
 #else
-        self.webView = [[objc_getClass("UIWebView") alloc] initWithFrame:CGRectZero];
+        self.webView = [[objc_getClass("UIWebView") alloc] initWithFrame:[UIScreen mainScreen].bounds];
         self.webView.delegate = self;
 #endif
     }
@@ -53,7 +53,11 @@
     self = [self initWithNibName:nil bundle:nil];
     if (self) {
         self.originalText = text;
+#if TARGET_OS_TV
+        NSString *htmlString = [NSString stringWithFormat:@"<head><meta name='viewport' content='initial-scale=1.0'></head><body>%@</body>", [FLEXUtility stringByEscapingHTMLEntitiesInString:text]];
+#else
         NSString *htmlString = [NSString stringWithFormat:@"<head><meta name='viewport' content='initial-scale=1.0'></head><body><pre>%@</pre></body>", [FLEXUtility stringByEscapingHTMLEntitiesInString:text]];
+#endif
         [self.webView loadHTMLString:htmlString baseURL:nil];
     }
     return self;
@@ -75,7 +79,7 @@
         _webView.navigationDelegate = nil;
     }
 #else
-    if (_webView.delegate = self){
+    if (_webView.delegate == self){
         _webView.delegate = nil;
     }
 #endif
@@ -85,9 +89,10 @@
     [super viewDidLoad];
     
     [self.view addSubview:self.webView];
+#if !TARGET_OS_TV
     self.webView.frame = self.view.bounds;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    
+#endif
     if (self.originalText.length > 0) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonTapped:)];
     }

@@ -27,6 +27,7 @@
 #import "NSUserDefaults+FLEX.h"
 #import <objc/runtime.h>
 #import <TargetConditionals.h>
+#import "FLEXBookmarksViewController.h"
 #if TARGET_OS_TV
 #import "FLEXTV.h"
 #endif
@@ -139,6 +140,7 @@
     }
 #if TARGET_OS_TV
     [self addlongPressGestureRecognizer];
+    [self addTVOSActionButton];
 #endif
 }
 
@@ -253,21 +255,36 @@
     [super reloadData];
 }
 
+- (void)addTVOSActionButton {
+    UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(shareButtonPressed:)];
+    self.navigationItem.rightBarButtonItem = actionButton;
+}
+
 - (void)shareButtonPressed:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.button(@"Add to Bookmarks").handler(^(NSArray<NSString *> *strings) {
             [FLEXBookmarkManager.bookmarks addObject:self.object];
         });
+#if !TARGET_OS_TV
         make.button(@"Copy Description").handler(^(NSArray<NSString *> *strings) {
-            #if !TARGET_OS_TV
             UIPasteboard.generalPasteboard.string = self.explorer.objectDescription;
-            #endif
         });
         make.button(@"Copy Address").handler(^(NSArray<NSString *> *strings) {
-            #if !TARGET_OS_TV
             UIPasteboard.generalPasteboard.string = [FLEXUtility addressOfObject:self.object];
-            #endif
         });
+#else
+        make.button(@"Show Bookmarks").handler(^(NSArray<NSString *> *strings) {
+            FLEXBookmarksViewController *bookmarks = [FLEXBookmarksViewController new];
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:bookmarks];
+            [self presentViewController:navController animated:true completion:nil];
+        });
+        make.button(@"Show Tabs").handler(^(NSArray<NSString *> *strings) {
+            FLEXTabsViewController *tabs = [FLEXTabsViewController new];
+            UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:tabs];
+            [self presentViewController:navController animated:true completion:nil];
+        });
+        
+#endif
         make.button(@"Cancel").cancelStyle();
     } showFrom:self source:sender];
 }
