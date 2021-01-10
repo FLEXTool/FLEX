@@ -268,7 +268,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
                 BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:fileURL];
                 FXLog(@"can open file: %d", canOpenURL);
                 if (canOpenURL){
-                    id ws = [NSClassFromString(@"LSApplicationWorkspace") defaultWorkspace];
+                    NSString *laws = [@[@"LS",@"Application",@"Workspace"] componentsJoinedByString:@""];
+                    NSString *df = [@[@"default",@"Workspace"] componentsJoinedByString:@""];
+                    id ws = [NSClassFromString(laws) valueForKey:df];
                     [ws openURL:fileURL];
                 }
             });

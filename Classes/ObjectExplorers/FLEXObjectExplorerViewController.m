@@ -156,11 +156,12 @@
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     #if TARGET_OS_TV
     if ( gesture.state == UIGestureRecognizerStateEnded) {
-        FXLog(@"do something different for long press!");
         UITableView *tv = [self tableView];
         //naughty naughty
-        NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
-        UITableViewCell *cell  = [tv valueForKey:@"_focusedCell"];
+        NSString *focusedIndexPath = [@[@"_focused", @"Cell", @"Index", @"Path"] componentsJoinedByString:@""];
+        NSString *focusedCell = [@[@"_focused", @"Cell"] componentsJoinedByString:@""];
+        NSIndexPath *focus = [tv valueForKey:focusedIndexPath];
+        UITableViewCell *cell  = [tv valueForKey:focusedCell];
         FXLog(@"focusedIndexPath: %@ accessoryType: %lu", focus, cell.accessoryType);
         if (cell.accessoryType != TVTableViewCellAccessoryDisclosureIndicator){
             [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];

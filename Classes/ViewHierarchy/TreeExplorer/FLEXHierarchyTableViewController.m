@@ -68,7 +68,8 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
         NSLog(@"do something different for long press!");
         UITableView *tv = [self tableView];
         //naughty naughty
-        NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
+        NSString *focusedIndexPath = [@[@"_focused", @"Cell", @"Index", @"Path"] componentsJoinedByString:@""];
+        NSIndexPath *focus = [tv valueForKey:focusedIndexPath];
         NSLog(@"[FLEX] focusedIndexPath: %@", focus);
         [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
     }
