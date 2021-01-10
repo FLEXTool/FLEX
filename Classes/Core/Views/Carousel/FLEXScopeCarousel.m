@@ -201,4 +201,10 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
+#if TARGET_OS_TV
+- (BOOL)isEnabled {
+    return FALSE;
+}
+#endif
+
 @end

@@ -123,6 +123,12 @@
     rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
     leftSwipe.delegate = self;
     rightSwipe.delegate = self;
+#if TARGET_OS_TV
+    [leftSwipe removeTarget:self action:@selector(handleSwipeGesture:)];
+    [rightSwipe removeTarget:self action:@selector(handleSwipeGesture:)];
+    [leftSwipe addTarget:self action:@selector(handleSwipeGestureTV:)];
+    [rightSwipe addTarget:self action:@selector(handleSwipeGestureTV:)];
+#endif
     [self.tableView addGestureRecognizer:leftSwipe];
     [self.tableView addGestureRecognizer:rightSwipe];
     
@@ -298,6 +304,28 @@
     [self.explorer reloadMetadata];
     [self reloadSections];
     [self reloadData];
+}
+
+- (void)handleSwipeGestureTV:(UISwipeGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        switch (gesture.direction) {
+            case UISwipeGestureRecognizerDirectionLeft:
+                if (self.selectedScope > 0) {
+                    self.selectedScope -= 1;
+                    [self.tableView reloadData];
+                }
+                break;
+            case UISwipeGestureRecognizerDirectionRight:
+                if (self.selectedScope != self.explorer.classHierarchy.count - 1) {
+                    self.selectedScope += 1;
+                    [self.tableView reloadData];
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 
 - (void)handleSwipeGesture:(UISwipeGestureRecognizer *)gesture {

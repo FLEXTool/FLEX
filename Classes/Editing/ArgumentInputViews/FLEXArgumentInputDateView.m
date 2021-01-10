@@ -35,6 +35,7 @@
         self.datePicker.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
 #else
         self.datePicker = [[KBDatePickerView alloc] init];
+        self.datePicker.showDateLabel = true;
 #endif
         
         [self addSubview:self.datePicker];
