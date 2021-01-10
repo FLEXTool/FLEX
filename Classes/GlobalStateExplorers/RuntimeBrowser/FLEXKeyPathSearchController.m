@@ -94,6 +94,14 @@
     return classes;
 }
 
+#if TARGET_OS_TV
+- (void)basicSearchWithText:(NSString *)text {
+    self.keyPath = [FLEXRuntimeKeyPathTokenizer tokenizeString:text];
+    [self searchBar:self.delegate.searchController.searchBar textDidChange:text];
+    //[self updateTable];
+}
+#endif
+
 #pragma mark Key path stuff
 
 - (void)didSelectKeyPathOption:(NSString *)text {
@@ -231,6 +239,7 @@
 }
 
 - (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    LOG_SELF;
     // Check if character is even legal
     if (![FLEXRuntimeKeyPathTokenizer allowedInKeyPath:text]) {
         return NO;
@@ -257,6 +266,7 @@
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    LOG_SELF;
     [_timer invalidate];
 
     // Schedule update timer

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FLEXRuntimeBrowserToolbar.h"
 #import "FLEXMethod.h"
-
+#import <TargetConditionals.h>
 @protocol FLEXKeyPathSearchControllerDelegate <UITableViewDataSource>
 
 @property (nonatomic, readonly) UITableView *tableView;
@@ -34,5 +34,7 @@
 
 - (void)didSelectKeyPathOption:(NSString *)text;
 - (void)didPressButton:(NSString *)text insertInto:(UISearchBar *)searchBar;
-
+#if TARGET_OS_TV
+- (void)basicSearchWithText:(NSString *)text;
+#endif
 @end

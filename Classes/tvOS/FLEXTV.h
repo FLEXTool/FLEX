@@ -21,6 +21,7 @@
 #import "FLEXMacros.h"
 #import "KBSlider.h"
 #import "KBDatePickerView.h"
+#import "FLEXKeyPathSearchController.h"
 
 /**
  
@@ -56,6 +57,7 @@ typedef NS_ENUM(NSInteger, TVTableViewCellAccessoryType) {
 
 @interface KBSearchButton: UIButton <UITextFieldDelegate>
 @property UISearchBar * _Nullable searchBar; //keep a reference to the search bar to add our text value to the search bar field immediately.
+@property (weak) FLEXKeyPathSearchController *keyPathController; //optional
 - (void)triggerSearchField;
 @end
 

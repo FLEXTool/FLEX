@@ -14,6 +14,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXAlert.h"
 #import "FLEXRuntimeClient.h"
+#import "FLEXTV.h"
 
 @interface FLEXObjcRuntimeViewController () <FLEXKeyPathSearchControllerDelegate>
 
@@ -59,12 +60,19 @@
     FLEXKeyPathSearchController *keyPathController = [FLEXKeyPathSearchController delegate:self];
     _keyPathController = keyPathController;
     _keyPathController.toolbar = [FLEXRuntimeBrowserToolbar toolbarWithHandler:^(NSString *text, BOOL suggestion) {
+        LOG_SELF;
         if (suggestion) {
             [keyPathController didSelectKeyPathOption:text];
         } else {
             [keyPathController didPressButton:text insertInto:searchBar];
         }
     } suggestions:keyPathController.suggestions];
+#if TARGET_OS_TV
+    KBSearchButton * searchButton = (KBSearchButton*)[self.navigationItem leftBarButtonItem].customView;
+    if ([searchButton respondsToSelector:@selector(keyPathController)]){
+        [searchButton setKeyPathController:keyPathController];
+    }
+#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated {

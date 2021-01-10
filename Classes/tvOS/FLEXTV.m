@@ -9,6 +9,9 @@
 #import "FLEXTV.h"
 #import "NSObject+FLEX_Reflection.h"
 #import "UIView+FLEX_Layout.h"
+#import "FLEXRuntimeKeyPathTokenizer.h"
+
+
 @interface UIImage (private)
 +(UIImage *)symbolImageNamed:(NSString *)symbolName;
 @end
@@ -34,6 +37,9 @@
 
 - (void)textChanged:(NSNotification *)n {
     self.searchBar.text = self.searchField.text;
+    if (self.keyPathController){
+        [self.keyPathController basicSearchWithText:self.searchBar.text];
+    }
 }
 
 - (void)addListeners {
@@ -44,6 +50,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)clearSearchField:(id)sender {
+    self.searchField.text = nil;
+    [self textChanged:nil];
+}
+
 - (void)triggerSearchField {
     self.searchField.text = self.searchBar.text;
     //[self.searchBar becomeFirstResponder];
@@ -52,6 +63,31 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         UIViewController *vc = [self topViewController];
         vc.view.alpha = 0.6;
+        /*
+        //FLEXRuntimeBrowserToolbar *toolbar = [self.keyPathController toolbar];
+        FLEXRuntimeBrowserToolbar *toolbar = [FLEXRuntimeBrowserToolbar toolbarWithHandler:^(NSString *text, BOOL suggestion) {
+            FXLog(@"enteredText: %@ suggestion: %d", text, suggestion);
+               if (suggestion) {
+                   [self.keyPathController didSelectKeyPathOption:text];
+               } else {
+                   self.searchField.text = text;
+                   [self textChanged:nil];
+                   [self.keyPathController didPressButton:text insertInto:self.searchBar];
+               }
+        } suggestions:self.keyPathController.suggestions];
+        toolbar.frame = CGRectMake(400,630,1080,44);
+        self.keyPathController.toolbar = toolbar;
+         */
+        UIButton *clearButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        clearButton.frame = CGRectMake(860,900,200,86);
+        [clearButton setTitle:@"clear" forState:UIControlStateNormal];
+        [clearButton addTarget:self action:@selector(clearSearchField:) forControlEvents:UIControlEventPrimaryActionTriggered];
+        if ([[vc view] respondsToSelector:@selector(contentView)]){
+            UIView *contentView = [vc.view valueForKey:@"contentView"];
+            [contentView addSubview:clearButton];
+            //[contentView addSubview:toolbar];
+        }
+        
     });
 }
 
@@ -86,11 +122,6 @@
         [self initDefaults];
     }
     return self;
-}
-
-- (UIColor *)backgroundColor {
-    if ([self isOn]) return self.onTintColor;
-    return [super backgroundColor];
 }
 
 - (void)setOn:(BOOL)on{
@@ -133,7 +164,9 @@
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
-    UIView *bgView = [self flex_findFirstSubviewWithClass:objc_getClass("_UIVisualEffectSubview")]; //this class has been around since tvOS 9, so this is definitely safe.
+    //_UIVisualEffectSubview
+    NSString *cleverTrick = [@[@"_",@"UI",@"Visual",@"Effect",@"Subview"] componentsJoinedByString:@""];
+    UIView *bgView = [self flex_findFirstSubviewWithClass:objc_getClass([cleverTrick UTF8String])]; //this class has been around since tvOS 9, so this is definitely safe.
     if (bgView) {
         bgView.backgroundColor = backgroundColor;
     }

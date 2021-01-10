@@ -41,7 +41,11 @@
 }
 
 - (id)initWithTitle:(NSString *)title {
+#if TARGET_OS_TV
+    self = [FLEXKBToolbarButton buttonWithType:UIButtonTypeSystem];
+#else
     self = [super init];
+#endif
     if (self) {
         _title = title;
         self.layer.shadowOffset = CGSizeMake(0, 1);

@@ -297,6 +297,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             [self toggleViewsTool];
             [[FLEXManager sharedManager] showExplorer];
         });
+        make.button(@"Show View Controllers").handler(^(NSArray<NSString *> *strings) {
+            UIViewController *list = [FLEXViewControllersViewController
+                controllersForViews:self.viewsAtTapPoint
+            ];
+            [self presentViewController:
+                [FLEXNavigationController withRootViewController:list
+            ] animated:YES completion:nil];
+        });
         make.button(@"Show Usage Hints").handler(^(NSArray<NSString *> *strings) {
             [[FLEXManager sharedManager] showHintsAlert];
         });
@@ -657,15 +665,22 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [toolbar.selectedViewDescriptionContainer addGestureRecognizer:leftSwipe];
 //    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:rightSwipe];
     
-    // Long press gesture to present tabs manager
-    [toolbar.globalsItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
-        initWithTarget:self action:@selector(handleToolbarShowTabsGesture:)
-    ]];
+    UILongPressGestureRecognizer *globalLongPressGesture = [[UILongPressGestureRecognizer alloc]
+            initWithTarget:self action:@selector(handleToolbarShowTabsGesture:)];
+#if TARGET_OS_TV
+        globalLongPressGesture.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
+#endif
     
+    // Long press gesture to present tabs manager
+    [toolbar.globalsItem addGestureRecognizer:globalLongPressGesture];
+    
+    UILongPressGestureRecognizer *selectLongPressGesture = [[UILongPressGestureRecognizer alloc]
+        initWithTarget:self action:@selector(handleToolbarWindowManagerGesture:)];
+#if TARGET_OS_TV
+    selectLongPressGesture.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypePlayPause],[NSNumber numberWithInteger:UIPressTypeSelect]];
+#endif
     // Long press gesture to present window manager
-    [toolbar.selectItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
-        initWithTarget:self action:@selector(handleToolbarWindowManagerGesture:)
-    ]];
+    [toolbar.selectItem addGestureRecognizer:selectLongPressGesture];
     
     // Long press gesture to present view controllers at tap
     [toolbar.hierarchyItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
