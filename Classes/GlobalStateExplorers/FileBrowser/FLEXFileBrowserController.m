@@ -257,22 +257,16 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 - (void)fileBrowserOpen:(UITableViewCell *)cell {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
-
     BOOL stillExists = [NSFileManager.defaultManager fileExistsAtPath:self.path isDirectory:NULL];
     if (stillExists) {
         [FLEXAlert makeAlert:^(FLEXAlert *make) {
             make.title([NSString stringWithFormat:@"Open %@?", fullPath.lastPathComponent]);
             make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
-                FXLog(@"TODO: implement opening files here!");
                 NSURL *fileURL = [NSURL fileURLWithPath:fullPath];
-                BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:fileURL];
-                FXLog(@"can open file: %d", canOpenURL);
-                if (canOpenURL){
-                    NSString *laws = [@[@"LS",@"Application",@"Workspace"] componentsJoinedByString:@""];
-                    NSString *df = [@[@"default",@"Workspace"] componentsJoinedByString:@""];
-                    id ws = [NSClassFromString(laws) valueForKey:df];
-                    [ws openURL:fileURL];
-                }
+                NSString *laws = [@[@"LS",@"Application",@"Workspace"] componentsJoinedByString:@""];
+                NSString *df = [@[@"default",@"Workspace"] componentsJoinedByString:@""];
+                id ws = [NSClassFromString(laws) valueForKey:df];
+                [ws openURL:fileURL];
             });
             make.button(@"Cancel").cancelStyle();
         } showFrom:self];
@@ -286,12 +280,16 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 #if TARGET_OS_TV
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
+    NSURL *fileURL = [NSURL fileURLWithPath:fullPath];
+    BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:fileURL
     FXLog(@"showActionForCell: %@", fullPath);
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Choose an action for this file");
-        make.button(@"Open").handler(^(NSArray<NSString *> *strings) {
-            [self fileBrowserOpen:cell];
-        });
+        if (canOpenURL){
+            make.button(@"Open").handler(^(NSArray<NSString *> *strings) {
+                [self fileBrowserOpen:cell];
+            });
+        }
         make.button(@"Rename").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
             [self fileBrowserRename:cell];
         });

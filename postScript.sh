@@ -44,6 +44,7 @@ EXE_PATH=$FINAL_FW_PATH/$EXECUTABLE_NAME
 if [ "$SHOULD_SCP" == "1"  ]; then 
 ldid -S $EXE_PATH
 rm -rf $FINAL_FW_PATH/_CodeSignature
+rm $FW_FOLDER/*.zip
     /usr/local/bin/fakeroot dpkg-deb -b layout
     scp layout.deb root@$ATV_DEVICE_IP:~
     ssh root@$ATV_DEVICE_IP "dpkg -i layout.deb ; killall -9 nitoTV ; lsdtrip launch com.nito.nitoTV4"
