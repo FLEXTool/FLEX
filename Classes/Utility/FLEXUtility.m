@@ -259,7 +259,6 @@ BOOL FLEXConstructorsShouldRun() {
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask {
 #else
 + (NSUInteger)infoPlistSupportedInterfaceOrientationsMask {
-return 0;
 #endif
     NSArray<NSString *> *supportedOrientations = NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"];
 #if !TARGET_OS_TV
@@ -277,6 +276,9 @@ return 0;
         supportedOrientationsMask |= UIInterfaceOrientationMaskLandscapeLeft;
     }
     return supportedOrientationsMask;
+#else
+    FXLog(@"supportedOrientations: %@", supportedOrientations);
+    return 0;
 #endif
 }
 

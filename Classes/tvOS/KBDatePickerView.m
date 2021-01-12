@@ -192,7 +192,7 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
 }
 
 + (NSString *)longDateFormat {
-    return @"E, MMM d, yyyy h:mm a";
+    return @"E, MMM d, yyyy h:mm a (z)";
 }
 
 + (NSDateFormatter *)sharedDateFormatter {
@@ -243,30 +243,40 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
 
 - (void)setCalendar:(NSCalendar *)calendar {
     _calendar = calendar;
+    [_calendar setTimeZone:self.timeZone];
     [self adaptModeChange];
 }
 
 - (NSCalendar *)calendar {
     if (_calendar) return _calendar;
-    return [NSCalendar currentCalendar];
+    _calendar = [NSCalendar currentCalendar];
+    return _calendar;
 }
 
 - (void)setTimeZone:(NSTimeZone *)timeZone {
     _timeZone = timeZone;
+    [_calendar setTimeZone:timeZone];
     [[KBDatePickerView sharedDateFormatter] setTimeZone:timeZone];
     [[KBDatePickerView sharedMinimumDateFormatter] setTimeZone:timeZone];
     [self adaptModeChange];
 }
 
+- (void)_updateFormatters {
+    [[KBDatePickerView sharedMinimumDateFormatter] setCalendar:_calendar];
+    [[KBDatePickerView sharedDateFormatter] setCalendar:_calendar];
+    [[KBDatePickerView sharedMinimumDateFormatter] setDateFormat:[NSDateFormatter dateFormatFromTemplate:[KBDatePickerView shortDateFormat] options:0 locale:_locale]];
+    [[KBDatePickerView sharedDateFormatter] setDateFormat:[NSDateFormatter dateFormatFromTemplate:[KBDatePickerView longDateFormat] options:0 locale:_locale]];
+}
+
 - (NSTimeZone *)timeZone {
     if (_timeZone) return _timeZone;
-    return [NSTimeZone localTimeZone];
+    _timeZone = [NSTimeZone localTimeZone];
+    return _timeZone;
 }
 
 - (void)setLocale:(NSLocale *)locale {
     _locale = locale;
-    [[KBDatePickerView sharedMinimumDateFormatter] setDateFormat:[NSDateFormatter dateFormatFromTemplate:[KBDatePickerView shortDateFormat] options:0 locale:locale]];
-    [[KBDatePickerView sharedDateFormatter] setDateFormat:[NSDateFormatter dateFormatFromTemplate:[KBDatePickerView longDateFormat] options:0 locale:locale]];
+    [self _updateFormatters];
     [self adaptModeChange];
 }
 
@@ -343,8 +353,17 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     self.datePickerLabel.hidden = !showDateLabel;
 }
 
-- (id)init {
+- (instancetype)initWithHybridLayout:(BOOL)hybrid {
     self = [super init];
+    if (self){
+        _hybridLayout = hybrid;
+        [self _initializeDefaults];
+        [self layoutViews];
+    }
+    return self;
+}
+
+- (void)_initializeDefaults {
     _pmSelected = false;
     _showDateLabel = false;
     _topOffset = 20;
@@ -355,13 +374,16 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     if (![self date]){
         [self setDate:[NSDate date]];
     }
+    _selectedRowData = [NSMutableDictionary new];
+    _datePickerMode = KBDatePickerModeDate;
     UITapGestureRecognizer *menuTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(menuGestureRecognized:)];
     menuTap.numberOfTapsRequired = 1;
     menuTap.allowedPressTypes = @[@(UIPressTypeMenu)];
     [self addGestureRecognizer:menuTap];
-    _selectedRowData = [NSMutableDictionary new];
-    _datePickerMode = KBDatePickerModeDate;
-    [self layoutViews];
+}
+
+- (id)init {
+    self = [self initWithHybridLayout:false];
     return self;
 }
 
@@ -391,8 +413,9 @@ DEFINE_ENUM(KBDatePickerMode, PICKER_MODE)
     [self.heightAnchor constraintEqualToConstant:STACK_VIEW_HEIGHT+81+60+40].active = true;
     [self.datePickerStackView.heightAnchor constraintEqualToConstant:STACK_VIEW_HEIGHT].active = true;
     [self addSubview:self.datePickerStackView];
-    //[self.widthAnchor constraintEqualToAnchor:self.datePickerStackView.widthAnchor].active = true;
-    
+    if (!self.hybridLayout){
+        [self.widthAnchor constraintEqualToAnchor:self.datePickerStackView.widthAnchor].active = true;
+    }
     [self.datePickerStackView.centerXAnchor constraintEqualToAnchor:self.centerXAnchor].active = true;
     
     self.datePickerLabel = [[UILabel alloc] init];

@@ -79,7 +79,7 @@
         self.keyPathController.toolbar = toolbar;
          */
         UIButton *clearButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        clearButton.frame = CGRectMake(860,900,200,86);
+        clearButton.frame = CGRectMake(878,900,165,86);
         [clearButton setTitle:@"clear" forState:UIControlStateNormal];
         [clearButton addTarget:self action:@selector(clearSearchField:) forControlEvents:UIControlEventPrimaryActionTriggered];
         if ([[vc view] respondsToSelector:@selector(contentView)]){

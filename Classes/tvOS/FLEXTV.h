@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, TVTableViewCellAccessoryType) {
 
 @interface KBSearchButton: UIButton <UITextFieldDelegate>
 @property UISearchBar * _Nullable searchBar; //keep a reference to the search bar to add our text value to the search bar field immediately.
-@property (weak) FLEXKeyPathSearchController *keyPathController; //optional
+@property (weak) FLEXKeyPathSearchController * _Nullable keyPathController; //optional
 - (void)triggerSearchField;
 @end
 

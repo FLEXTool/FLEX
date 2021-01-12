@@ -34,7 +34,10 @@
         self.datePicker.calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         self.datePicker.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
 #else
-        self.datePicker = [[KBDatePickerView alloc] init];
+        self.datePicker = [[KBDatePickerView alloc] initWithHybridLayout:true];
+        self.datePicker.datePickerMode = KBDatePickerModeDateAndTime;
+        self.datePicker.calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
+        self.datePicker.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
         self.datePicker.showDateLabel = true;
 #endif
         

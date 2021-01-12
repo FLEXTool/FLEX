@@ -56,7 +56,9 @@ DECLARE_ENUM(KBDatePickerMode, PICKER_MODE)
 @property BOOL showDateLabel; //defaults to false - whether or not to show a label below the picker for a pretty printed version of the date
 @property KBDatePickerMode datePickerMode;
 @property NSInteger topOffset;
+@property BOOL hybridLayout; //if set to hybrid, we allow manual layout for the width of our view
 +(id _Nonnull )todayInYear:(NSInteger)year;
-+ (NSDateFormatter * _Nonnull )sharedDateFormatter;
++(NSDateFormatter * _Nonnull )sharedDateFormatter;
+-(instancetype _Nonnull )initWithHybridLayout:(BOOL)hybrid;
 @end
 #define DPLog(format, ...) NSLog(@"[KBDatePickerView] %@",[NSString stringWithFormat:format, ## __VA_ARGS__]);
