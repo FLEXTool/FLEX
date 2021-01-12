@@ -57,7 +57,7 @@
     [super viewDidLoad];
 
     self.view.backgroundColor = FLEXColor.groupedBackgroundColor;
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     // Create getter button
     _getterButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Get"
@@ -70,7 +70,7 @@
         UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.actionButton
     ];
     
-    #else
+#else
     _getterButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_getterButton setTitle:@"Get" forState:UIControlStateNormal];
     [_getterButton addTarget:self action:@selector(getterButtonPressed:) forControlEvents:UIControlEventPrimaryActionTriggered];
@@ -81,7 +81,7 @@
     [focusGuide.topAnchor constraintEqualToAnchor:self.actionButton.topAnchor].active = true;
     [focusGuide.bottomAnchor constraintEqualToAnchor:self.getterButton.bottomAnchor].active = true;
     focusGuide.preferredFocusEnvironments = self.preferredFocusEnvironments;
-    #endif
+#endif
 
     // Configure input view
     self.fieldEditorView.fieldDescription = self.fieldDescription;
@@ -92,13 +92,13 @@
     // Don't show a "set" button for switches; we mutate when the switch is flipped
     if ([inputView isKindOfClass:[FLEXArgumentInputSwitchView class]]) {
         self.actionButton.enabled = NO;
-        #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         self.actionButton.title = @"Flip the switch to call the setter";
         // Put getter button before setter button
         self.toolbarItems = @[
             UIBarButtonItem.flex_flexibleSpace, self.actionButton, self.getterButton
         ];
-        #endif
+#endif
     }
 }
 

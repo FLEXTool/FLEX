@@ -262,7 +262,7 @@ BOOL FLEXConstructorsShouldRun() {
 return 0;
 #endif
     NSArray<NSString *> *supportedOrientations = NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"];
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     UIInterfaceOrientationMask supportedOrientationsMask = 0;
     if ([supportedOrientations containsObject:@"UIInterfaceOrientationPortrait"]) {
         supportedOrientationsMask |= UIInterfaceOrientationMaskPortrait;

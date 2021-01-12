@@ -17,33 +17,6 @@
 - (void)postNotificationName:(id)arg1 object:(id)arg2 userInfo:(id)arg3;
 @end
 
-@interface UIWindow (Additions)
-- (UIViewController *)visibleViewController;
-@end
-
-@interface NSObject (Additions)
-- (UIViewController *)topViewController;
-@end
-
-@implementation UIWindow (Additions)
-- (UIViewController *)visibleViewController {
-    UIViewController *rootViewController = self.rootViewController;
-    return [UIWindow getVisibleViewControllerFrom:rootViewController];
-}
-+ (UIViewController *) getVisibleViewControllerFrom:(UIViewController *) vc {
-    if ([vc isKindOfClass:[UINavigationController class]]) {
-        return [UIWindow getVisibleViewControllerFrom:[((UINavigationController *) vc) visibleViewController]];
-    } else if ([vc isKindOfClass:[UITabBarController class]]) {
-        return [UIWindow getVisibleViewControllerFrom:[((UITabBarController *) vc) selectedViewController]];
-    } else {
-        if (vc.presentedViewController) {
-            return [UIWindow getVisibleViewControllerFrom:vc.presentedViewController];
-        } else {
-            return vc;
-        }
-    }
-}
-@end
 
 @interface LSApplicationProxy: NSObject
 +(id)applicationProxyForIdentifier:(id)sender;
@@ -118,12 +91,8 @@ __attribute__ ((constructor)) static void FLEXInjected_main() {
             NSBundle *bundle = [NSBundle bundleWithPath:p];
             [bundle load];
             id flexManager = [%c(FLEXManager) sharedManager];
-            UIViewController *tvc = [[UIApplication sharedApplication] topViewController];
-            if([tvc respondsToSelector: @selector(tabBarController)]){
-                UITabBarController *tabBar = [tvc tabBarController];
-                if (tabBar) tvc = tabBar;
-            }
-            NSLog(@"[FLEXInjected] top view controller: %@ violated...", tvc);
+            UIViewController *tvc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+            NSLog(@"[FLEXInjected] root view controller: %@ violated...", tvc);
             [flexManager _addTVOSGestureRecognizer:tvc];
             [flexManager showExplorer];
             if ([flexManager respondsToSelector:@selector(showHintsIfNecessary)]){

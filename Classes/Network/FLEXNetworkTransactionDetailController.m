@@ -61,7 +61,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
             name:kFLEXNetworkRecorderTransactionUpdatedNotification
             object:nil
         ];
-        #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         self.toolbarItems = @[
             UIBarButtonItem.flex_flexibleSpace,
             [UIBarButtonItem
@@ -70,7 +70,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
                 action:@selector(copyButtonPressed:)
             ]
         ];
-        #endif
+#endif
     }
     return self;
 }
@@ -131,9 +131,9 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 }
 
 - (void)copyButtonPressed:(id)sender {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     [UIPasteboard.generalPasteboard setString:[FLEXNetworkCurlLogger curlCommandString:_transaction.request]];
-    #endif
+#endif
 }
 
 #pragma mark - Table view data source
@@ -211,9 +211,9 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         FLEXNetworkDetailRow *row = [self rowModelAtIndexPath:indexPath];
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         UIPasteboard.generalPasteboard.string = row.detailText;
-    #endif
+#endif
     }
 }
 

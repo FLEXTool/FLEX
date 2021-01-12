@@ -162,9 +162,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
-    #endif
+#endif
     cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     
     UIWindow *window = nil;

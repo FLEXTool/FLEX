@@ -26,10 +26,10 @@ NSString *const kFLEXSystemLogCellIdentifier = @"FLEXSystemLogCellIdentifier";
     
     self.logMessageLabel = [UILabel new];
     self.logMessageLabel.numberOfLines = 0;
-     #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     self.separatorInset = UIEdgeInsetsZero;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    #endif
+#endif
     [self.contentView addSubview:self.logMessageLabel];
 }
 

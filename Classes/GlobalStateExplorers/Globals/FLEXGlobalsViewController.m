@@ -169,9 +169,9 @@
     self.title = @"💪  FLEX";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     self.navigationItem.backBarButtonItem = [UIBarButtonItem flex_backItemWithTitle:@"Back"];
-    #endif
+#endif
     _manuallyDeselectOnAppear = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 10;
 }
 

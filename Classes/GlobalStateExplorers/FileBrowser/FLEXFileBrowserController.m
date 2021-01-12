@@ -281,7 +281,7 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
     NSString *fullPath = [self filePathAtIndexPath:indexPath];
     NSURL *fileURL = [NSURL fileURLWithPath:fullPath];
-    BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:fileURL
+    BOOL canOpenURL = [[UIApplication sharedApplication] canOpenURL:fileURL];
     FXLog(@"showActionForCell: %@", fullPath);
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Choose an action for this file");
@@ -410,7 +410,7 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     UIMenuItem *rename = [[UIMenuItem alloc] initWithTitle:@"Rename" action:@selector(fileBrowserRename:)];
     UIMenuItem *delete = [[UIMenuItem alloc] initWithTitle:@"Delete" action:@selector(fileBrowserDelete:)];
     UIMenuItem *copyPath = [[UIMenuItem alloc] initWithTitle:@"Copy Path" action:@selector(fileBrowserCopyPath:)];
@@ -419,9 +419,9 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     UIMenuController.sharedMenuController.menuItems = @[rename, delete, copyPath, share];
 
     return YES;
-    #else
+#else
     return NO;
-    #endif
+#endif
 }
 
 - (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {

@@ -320,11 +320,11 @@
     ];
     
     if (self.bundlesOrClasses.count) {
-        #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         cell.accessoryType        = UITableViewCellAccessoryDetailButton;
-        #else
+#else
         cell.accessoryType        = UITableViewCellAccessoryDisclosureIndicator;
-        #endif
+#endif
         cell.textLabel.text       = self.bundlesOrClasses[indexPath.row];
         cell.detailTextLabel.text = nil;
         if (self.keyPath.classKey) {

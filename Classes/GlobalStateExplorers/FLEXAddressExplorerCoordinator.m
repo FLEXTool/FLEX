@@ -37,17 +37,17 @@
         [FLEXAlert makeAlert:^(FLEXAlert *make) {
             make.title(title).message(message);
             make.configuredTextField(^(UITextField *textField) {
-                #if !TARGET_OS_TV
+#if !TARGET_OS_TV
                 NSString *copied = UIPasteboard.generalPasteboard.string;
-                #endif
+#endif
                 textField.placeholder = @"0x00000070deadbeef";
                 // Go ahead and paste our clipboard if we have an address copied
-                #if !TARGET_OS_TV
+#if !TARGET_OS_TV
                 if ([copied hasPrefix:@"0x"]) {
                     textField.text = copied;
                     [textField selectAll:nil];
                 }
-                #endif
+#endif
             });
             make.button(@"Explore").handler(^(NSArray<NSString *> *strings) {
                 [host tryExploreAddress:strings.firstObject safely:YES];

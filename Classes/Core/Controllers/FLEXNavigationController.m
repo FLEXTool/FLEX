@@ -50,10 +50,10 @@
     if (@available(iOS 13, *)) {
         switch (self.modalPresentationStyle) {
             case UIModalPresentationAutomatic:
-                #if !TARGET_OS_TV
+#if !TARGET_OS_TV
             case UIModalPresentationPageSheet:
             case UIModalPresentationFormSheet:
-                #endif
+#endif
                 break;
                 
             default:
@@ -75,13 +75,13 @@
         
         self.didSetupPendingDismissButtons = YES;
     }
-    #if TARGET_OS_TV
+#if TARGET_OS_TV
         if ([self darkMode]){
             self.view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
         } else {
             self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
         }
-    #endif
+#endif
         
 }
 
@@ -165,11 +165,11 @@
      
 - (void)handleNavigationBarTap:(UIGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateRecognized) {
-            #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         if (self.toolbarHidden) {
             [self setToolbarHidden:NO animated:YES];
         }
-        #endif
+#endif
     }
 }
 #if !TARGET_OS_TV
@@ -182,7 +182,7 @@
 }
 #endif
 - (void)_gestureRecognizedInteractiveHide:(UIPanGestureRecognizer *)sender {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     if (sender.state == UIGestureRecognizerStateRecognized) {
         BOOL show = self.topViewController.toolbarItems.count;
         CGFloat yTranslation = [sender translationInView:self.view].y;
@@ -195,7 +195,7 @@
             [self setToolbarHidden:YES animated:YES];
         }
     }
-    #endif
+#endif
 }
 
 @end

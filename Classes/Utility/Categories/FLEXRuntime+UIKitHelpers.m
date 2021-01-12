@@ -113,11 +113,11 @@ FLEXObjectExplorerDefaultsImpl
     if ([self getPotentiallyUnboxedValue:targetForValueCheck]) {
         if (self.defaults.isEditable) {
             // Editable non-nil value, both
-            #if !TARGET_OS_TV
+#if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailDisclosureButton;
-            #else
+#else
             return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailDisclosureButton;
-            #endif
+#endif
         } else {
             // Uneditable non-nil value, chevron only
             return UITableViewCellAccessoryDisclosureIndicator;
@@ -125,11 +125,11 @@ FLEXObjectExplorerDefaultsImpl
     } else {
         if (self.defaults.isEditable) {
             // Editable nil value, just (i)
-            #if !TARGET_OS_TV
+#if !TARGET_OS_TV
             return UITableViewCellAccessoryDetailButton;
-            #else
+#else
             return (UITableViewCellAccessoryType)TVTableViewCellAccessoryDetailButton;
-            #endif
+#endif
         } else {
             // Non-editable nil value, neither
             return UITableViewCellAccessoryNone;

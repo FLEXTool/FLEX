@@ -68,59 +68,32 @@
 }
 
 - (void)showHintsAlert {
-    
-    UIAlertController *alertController = [UIAlertController
-                                          alertControllerWithTitle:@"Usage Guide"
-                                          message:@"Triple tap 'Play/Pause' to toggle explorer view visibility.\nIn selection mode 'Menu' will re-enable the toolbar, and a long press on 'Select', 'Play/Pause' or a 'Right siri tap' triggers a contextual menu for view info & movement.\nBrowsing object details long press on 'Select' or a 'Right siri tap' triggers a detail editor.\nInjecting into HeadBoard BREAKS SIRI REMOTE. Suggest AirMagic to navigate."
-                                          preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *hideForeverAction = [UIAlertAction
-                                        actionWithTitle:@"Don't Show This Again"
-                                        style:UIAlertActionStyleDestructive
-                                        handler:^(UIAlertAction *action)
-                                        {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"DontShowHintsOnLaunch"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        [self showExplorer];
-    }];
-    UIAlertAction *showForeverAction = [UIAlertAction
-                                        actionWithTitle:@"Always Show On Launch"
-                                        style:UIAlertActionStyleDestructive
-                                        handler:^(UIAlertAction *action)
-                                        {
-        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"DontShowHintsOnLaunch"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        [self showExplorer];
-    }];
-    UIAlertAction *cancelAction = [UIAlertAction
-                                   actionWithTitle:@"Dismiss"
-                                   style:UIAlertActionStyleCancel
-                                   handler:^(UIAlertAction *action)
-                                   {
-        [self showExplorer];
-    }];
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"DontShowHintsOnLaunch"]) {
-        [alertController addAction:showForeverAction];
-    }
-    else {
-        [alertController addAction:hideForeverAction];
-    }
-    [alertController addAction:cancelAction];
-    
-    #if TARGET_OS_TV
-    [[self topViewController] presentViewController:alertController animated:YES completion:nil];
-    #endif
+#if TARGET_OS_TV
+    NSUserDefaults *def = [NSUserDefaults standardUserDefaults];
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Usage Guide");
+        make.message(@"Triple tap 'Play/Pause' to toggle explorer view visibility.\nIn selection mode 'Menu' will re-enable the toolbar, and a long press on 'Select', 'Play/Pause' or a 'Right siri tap' triggers a contextual menu for view info & movement.\nBrowsing object details long press on 'Select' or a 'Right siri tap' triggers a detail editor.\nInjecting into HeadBoard BREAKS SIRI REMOTE. Suggest AirMagic to navigate.");
+        if ([def boolForKey:@"DontShowHintsOnLaunch"]) {
+            make.button(@"Don't Show This Again").handler(^(NSArray<NSString *> *strings) {
+                [def setBool:YES forKey:@"DontShowHintsOnLaunch"];
+                [self showExplorer];
+            });
+        } else {
+            make.button(@"Always Show On Launch").handler(^(NSArray<NSString *> *strings) {
+                [def setBool:NO forKey:@"DontShowHintsOnLaunch"];
+                [self showExplorer];
+            });
+        }
+        make.button(@"Cancel").cancelStyle().handler(^(NSArray<NSString *> *strings) {
+            [self showExplorer];
+        });
+    } showFrom:[self topViewController]];
+#endif
 }
 
 - (void)tripleTap:(UITapGestureRecognizer *)tapRecognizer {
-    FXLog(@"triple tap!");
-    if ([self isHidden]){
-        [self showExplorer];
-    } else {
-        [self hideExplorer];
-    }
+    [self toggleExplorer];
 }
-
 
 - (void)_addTVOSGestureRecognizer:(UIViewController *)explorer {
     UITapGestureRecognizer *tripleTaps = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tripleTap:)];
@@ -133,9 +106,6 @@
     if (!_explorerViewController) {
         _explorerViewController = [FLEXExplorerViewController new];
         _explorerViewController.delegate = self;
-        #if TARGET_OS_TV
-                [self _addTVOSGestureRecognizer:_explorerViewController];
-        #endif
     }
 
     return _explorerViewController;
@@ -144,10 +114,10 @@
 - (void)showExplorer {
     UIWindow *flex = self.explorerWindow;
     flex.hidden = NO;
-    #if TARGET_OS_TV
+#if TARGET_OS_TV
     FLEXWindow *exp = [self explorerWindow];
     [exp makeKeyWindow];
-    #endif
+#endif
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
         // Only look for a new scene if we don't have one

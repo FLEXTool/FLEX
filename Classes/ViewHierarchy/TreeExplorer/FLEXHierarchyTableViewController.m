@@ -93,12 +93,12 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     
     // A little more breathing room
     self.tableView.rowHeight = 50.0;
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    #else
+#else
     [self addlongPressGestureRecognizer];
     self.tableView.rowHeight = 70.0;
-    #endif
+#endif
     // Separator inset clashes with persistent cell selection
     [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     

@@ -190,11 +190,11 @@
     UITableViewCellAccessoryType type = [self.shortcuts[row] accessoryTypeWith:self.object];
     BOOL hasDisclosure = NO;
     hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     hasDisclosure |= type == UITableViewCellAccessoryDetailDisclosureButton;
-    #else
+#else
     hasDisclosure |= type == TVTableViewCellAccessoryDetailDisclosureButton;
-    #endif
+#endif
     return hasDisclosure;
 }
 

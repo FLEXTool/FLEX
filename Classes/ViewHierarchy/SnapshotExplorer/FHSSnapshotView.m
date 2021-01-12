@@ -66,11 +66,11 @@
 }
 
 - (void)initSpacingSlider {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     _spacingSlider = [UISlider new];
-    #else
+#else
     _spacingSlider = [KBSlider new];
-    #endif
+#endif
     self.spacingSlider.minimumValue = 0;
     self.spacingSlider.maximumValue = 100;
     self.spacingSlider.continuous = YES;

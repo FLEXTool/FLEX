@@ -118,9 +118,9 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
     [super viewDidLoad];
 
     // Initialize back bar button item for 3D view to look like a button
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     self.navigationItem.hidesBackButton = YES;
-    #endif
+#endif
     self.navigationItem.leftBarButtonItem = [UIBarButtonItem
         flex_itemWithImage:FLEXResources.toggle2DIcon
         target:self.navigationController
@@ -234,7 +234,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 
 
 - (void)resizeToolbarItems:(CGSize)viewSize {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     CGFloat sliderHeights = self.snapshotView.spacingSlider.bounds.size.height;
     CGFloat sliderWidths = viewSize.width / 3.f;
     CGRect frame = CGRectMake(0, 0, sliderWidths, sliderHeights);
@@ -242,7 +242,7 @@ BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
     self.snapshotView.depthSlider.frame = frame;
 
     [self.navigationController.toolbar setNeedsLayout];
-    #endif
+#endif
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size

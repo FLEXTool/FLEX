@@ -115,11 +115,11 @@
         make.title([@"Row " stringByAppendingString:@(row).stringValue]);
         NSString *message = [fields componentsJoinedByString:@"\n\n"];
         make.message(message);
+#if !TARGET_OS_TV
         make.button(@"Copy").handler(^(NSArray<NSString *> *strings) {
-            #if !TARGET_OS_TV
             UIPasteboard.generalPasteboard.string = message;
-            #endif
         });
+#endif
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];
 }

@@ -117,9 +117,9 @@ static const CGFloat kColumnMargin = 1;
     UITableView *tableView   = [UITableView new];
     tableView.delegate       = self;
     tableView.dataSource     = self;
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    #endif
+#endif
     [tableView registerClass:[FLEXDBQueryRowCell class]
         forCellReuseIdentifier:kFLEXDBQueryRowCellReuse
     ];
@@ -135,9 +135,9 @@ static const CGFloat kColumnMargin = 1;
     UITableView *leftTableView   = [UITableView new];
     leftTableView.delegate       = self;
     leftTableView.dataSource     = self;
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     leftTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    #endif
+#endif
     self.leftTableView           = leftTableView;
     [self addSubview:leftTableView];
     

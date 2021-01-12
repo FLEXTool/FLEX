@@ -10,6 +10,7 @@
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
 #import "FLEXColor.h"
+#import "FLEXTV.h"
 
 @interface FLEXHierarchyTableViewCell ()
 
@@ -43,11 +44,11 @@
         
         self.textLabel.font = UIFont.flex_defaultTableCellFont;
         self.detailTextLabel.font = UIFont.flex_defaultTableCellFont;
-        #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         self.accessoryType = UITableViewCellAccessoryDetailButton;
-        #else
-        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        #endif
+#else
+        self.accessoryType = TVTableViewCellAccessoryDetailButton;
+#endif
         // Use a pattern-based color to simplify application of the checker pattern
         
         static UIColor *checkerPatternColor = nil;

@@ -388,10 +388,10 @@
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
+#if !TARGET_OS_TV
         NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
-        #if !TARGET_OS_TV
         UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
-        #endif
+#endif
     }
 }
 

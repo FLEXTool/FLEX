@@ -27,12 +27,12 @@
 - (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
-        #if TARGET_OS_TV
+#if TARGET_OS_TV
         self.inputTextView = [[KBSelectableTextView alloc] initWithFrame:CGRectZero];
-        #else
+#else
         self.inputTextView = [UITextView new];
         self.inputTextView.inputAccessoryView = [self createToolBar];
-        #endif
+#endif
         self.inputTextView.font = [[self class] inputFont];
         self.inputTextView.backgroundColor = FLEXColor.secondaryGroupedBackgroundColor;
         self.inputTextView.layer.cornerRadius = 10.f;

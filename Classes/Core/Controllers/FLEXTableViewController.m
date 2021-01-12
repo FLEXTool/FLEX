@@ -55,11 +55,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 - (id)init {
 #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {
-        #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         self = [self initWithStyle:UITableViewStyleInsetGrouped];
-        #else
+#else
         self = [self initWithStyle:UITableViewStyleGrouped];
-        #endif
+#endif
     } else {
         self = [self initWithStyle:UITableViewStyleGrouped];
     }
@@ -226,11 +226,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 }
 
 - (void)disableToolbar {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     self.navigationController.toolbarHidden = YES;
     self.navigationController.hidesBarsOnSwipe = NO;
     self.toolbarItems = nil;
-    #endif
+#endif
 }
 
 
@@ -260,10 +260,10 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
     // Toolbar
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     self.navigationController.toolbarHidden = NO;
     self.navigationController.hidesBarsOnSwipe = YES;
-    #endif
+#endif
     // On iOS 13, the root view controller shows it's search bar no matter what.
     // Turning this off avoids some weird flash the navigation bar does when we
     // toggle navigationItem.hidesSearchBarWhenScrolling on and off. The flash
@@ -282,16 +282,16 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     // When going back, make the search bar reappear instead of hiding
     if (@available(iOS 11.0, *)) {
         if ((self.pinSearchBar || self.showSearchBarInitially) && !self.didInitiallyRevealSearchBar) {
-            #if !TARGET_OS_TV
+#if !TARGET_OS_TV
             self.navigationItem.hidesSearchBarWhenScrolling = NO;
-            #endif
+#endif
         }
     }
-    #if TARGET_OS_TV
+#if TARGET_OS_TV
     UIEdgeInsets insets = self.tableView.contentInset;
     insets.top+=20;
     self.tableView.contentInset = insets;
-    #endif
+#endif
     [self setupToolbarItems];
 }
 
@@ -306,9 +306,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
             // the search bar appear initially results in a bugged search bar that
             // becomes transparent and floats over the screen as you scroll
             [UIView animateWithDuration:0.2 animations:^{
-                #if !TARGET_OS_TV
+#if !TARGET_OS_TV
                 self.navigationItem.hidesSearchBarWhenScrolling = YES;
-                #endif
+#endif
                 [self.navigationController.view setNeedsLayout];
                 [self.navigationController.view layoutIfNeeded];
             }];
@@ -341,7 +341,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     if (!self.isViewLoaded) {
         return;
     }
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     self.toolbarItems = @[
         self.leftmostToolbarItem,
         UIBarButtonItem.flex_flexibleSpace,
@@ -359,7 +359,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         // This does not work for anything but fixed spaces for some reason
         // item.width = 60;
     }
-    #endif
+#endif
     // Disable tabs entirely when not presented by FLEXExplorerViewController
     UIViewController *presenter = self.navigationController.presentingViewController;
     if (![presenter isKindOfClass:[FLEXExplorerViewController class]]) {
@@ -618,11 +618,11 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 /// Not having a title in the first section looks weird with a rounded-corner table view style
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (@available(iOS 13, *)) {
-        #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         if (self.style == UITableViewStyleInsetGrouped) {
             return @" ";
         }
-        #endif
+#endif
     }
 
     return nil; // For plain/gropued style

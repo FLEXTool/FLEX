@@ -266,9 +266,9 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
         // We usually only want to copy the log message itself, not any metadata associated with it.
-        #if !TARGET_OS_TV
+#if !TARGET_OS_TV
         UIPasteboard.generalPasteboard.string = self.logMessages.filteredList[indexPath.row].messageText;
-        #endif
+#endif
     }
 }
 

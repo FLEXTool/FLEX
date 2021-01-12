@@ -160,7 +160,7 @@
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
-    #if TARGET_OS_TV
+#if TARGET_OS_TV
     if ( gesture.state == UIGestureRecognizerStateEnded) {
         UITableView *tv = [self tableView];
         //naughty naughty
@@ -173,13 +173,13 @@
             [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
         }
     }
-    #endif
+#endif
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     [self.navigationController setToolbarHidden:NO animated:YES];
-    #endif
+#endif
     return YES;
 }
 
@@ -352,7 +352,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
     // Prioritize important pan gestures over our swipe gesture
-    #if !TARGET_OS_TV
+#if !TARGET_OS_TV
     if ([g2 isKindOfClass:[UIPanGestureRecognizer class]]) {
         if (g2 == self.navigationController.interactivePopGestureRecognizer ||
             g2 == self.navigationController.barHideOnSwipeGestureRecognizer ||
@@ -360,13 +360,13 @@
             return NO;
         }
     }
-    #else
+#else
     if ([g2 isKindOfClass:[UIPanGestureRecognizer class]]) {
            if (g2 == self.tableView.panGestureRecognizer) {
                return NO;
            }
        }
-    #endif
+#endif
     
     return YES;
 }
