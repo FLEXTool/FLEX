@@ -11,7 +11,7 @@
 #import "UIView+FLEX_Layout.h"
 
 @interface FLEXCarouselCell ()
-@property (nonatomic, readonly) UILabel *titleLabel;
+
 @property (nonatomic, readonly) UIView *selectionIndicatorStripe;
 @property (nonatomic) BOOL constraintsInstalled;
 @end

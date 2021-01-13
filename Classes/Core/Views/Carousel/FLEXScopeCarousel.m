@@ -202,9 +202,62 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 }
 
 #if TARGET_OS_TV
-- (BOOL)isEnabled {
-    return FALSE;
+
+- (void)applyFocusedAppearance {
+    
+    self.backgroundColor = [FLEXColor primaryTextColor];
+    NSInteger cellCount = [self.collectionView numberOfItemsInSection:0];
+    for (NSInteger i = 0; i < cellCount; i++){
+        NSIndexPath *ip = [NSIndexPath indexPathForItem:i inSection:0];
+        FLEXCarouselCell *cell = [self.collectionView cellForItemAtIndexPath:ip];
+        cell.titleLabel.textColor = [cell.titleLabel.textColor inverseColor];
+    }
 }
+
+- (void)applyUnfocusedAppearance{
+    
+    self.backgroundColor = nil;
+    NSInteger cellCount = [self.collectionView numberOfItemsInSection:0];
+    for (NSInteger i = 0; i < cellCount; i++){
+        NSIndexPath *ip = [NSIndexPath indexPathForItem:i inSection:0];
+        FLEXCarouselCell *cell = [self.collectionView cellForItemAtIndexPath:ip];
+        [cell updateAppearance];
+     }
+}
+
+- (void)updateFocusIfNeeded {
+    [super updateFocusIfNeeded];
+    UIFocusSystem *fs = [UIFocusSystem focusSystemForEnvironment:self];
+    UIView *focusedItem = [fs focusedItem];
+    if ([focusedItem isKindOfClass:[FLEXCarouselCell class]]){
+        [self applyFocusedAppearance];
+    } else {
+        [self applyUnfocusedAppearance];
+    }
+}
+
+- (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator {
+    [super didUpdateFocusInContext:context withAnimationCoordinator:coordinator];
+    UIView *nextFocus = [context nextFocusedItem];
+        [coordinator addCoordinatedAnimations:^{
+            
+            if ([nextFocus respondsToSelector:@selector(title)]){
+                [self applyFocusedAppearance];
+            } else {
+                [self applyUnfocusedAppearance];
+            }
+            
+        } completion:nil];
+}
+
+- (NSArray *)preferredFocusEnvironments {
+    return @[self.collectionView];
+}
+
+- (BOOL)canBecomeFocused {
+    return TRUE;
+}
+
 #endif
 
 @end

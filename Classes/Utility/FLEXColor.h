@@ -13,6 +13,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface UIColor (FLEX)
+- (UIColor *)inverseColor;
+@end
+
 @interface FLEXColor : NSObject
 
 @property (readonly, class) UIColor *primaryBackgroundColor;

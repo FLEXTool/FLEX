@@ -11,5 +11,6 @@
 @interface FLEXCarouselCell : UICollectionViewCell
 
 @property (nonatomic, copy) NSString *title;
-
+@property (nonatomic, readonly) UILabel *titleLabel;
+- (void)updateAppearance;
 @end

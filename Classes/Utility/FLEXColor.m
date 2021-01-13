@@ -32,6 +32,31 @@
 #define FLEXDynamicColor(dynamic, static) [UIColor static]
 #endif
 
+@implementation UIColor (FLEX)
+
+- (UIColor *)inverseColor {
+    CGFloat alpha;
+
+    CGFloat red, green, blue;
+    if ([self getRed:&red green:&green blue:&blue alpha:&alpha]) {
+        return [UIColor colorWithRed:1.0 - red green:1.0 - green blue:1.0 - blue alpha:alpha];
+    }
+
+    CGFloat hue, saturation, brightness;
+    if ([self getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
+        return [UIColor colorWithHue:1.0 - hue saturation:1.0 - saturation brightness:1.0 - brightness alpha:alpha];
+    }
+
+    CGFloat white;
+    if ([self getWhite:&white alpha:&alpha]) {
+        return [UIColor colorWithWhite:1.0 - white alpha:alpha];
+    }
+
+    return nil;
+}
+
+@end
+
 @implementation FLEXColor
 
 #pragma mark - Background Colors

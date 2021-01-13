@@ -36,10 +36,12 @@
 }
 
 - (void)textChanged:(NSNotification *)n {
+#if TARGET_OS_TV
     self.searchBar.text = self.searchField.text;
     if (self.keyPathController){
         [self.keyPathController basicSearchWithText:self.searchBar.text];
     }
+#endif
 }
 
 - (void)addListeners {

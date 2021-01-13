@@ -637,7 +637,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 - (void)tableView:(UITableView *)tableView didUpdateFocusInContext:(UITableViewFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator {
     [coordinator addCoordinatedAnimations:^{
-        
+        if ([[context previouslyFocusedItem] isKindOfClass:[objc_getClass("FLEXCarouselCell") class]]){
+            [self.carousel updateFocusIfNeeded];
+        }
         NSIndexPath *nextIndexPath = context.nextFocusedIndexPath;
         KBTableView *table = (KBTableView *)tableView;
         if ([table respondsToSelector:@selector(setSelectedIndexPath:)]){

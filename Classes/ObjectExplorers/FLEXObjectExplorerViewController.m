@@ -372,12 +372,13 @@
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UISwipeGestureRecognizer *)gesture {
+#if !TARGET_OS_TV
     // Don't allow swiping from the carousel
     CGPoint location = [gesture locationInView:self.tableView];
     if ([self.carousel hitTest:location withEvent:nil]) {
         return NO;
     }
-    
+#endif
     return YES;
 }
     

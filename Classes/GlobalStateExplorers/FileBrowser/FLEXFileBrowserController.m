@@ -546,6 +546,7 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 - (void)fileBrowserShare:(UITableViewCell *)sender {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:sender];
     NSString *pathString = [self filePathAtIndexPath:indexPath];
+    NSURL *filePath = [NSURL fileURLWithPath:pathString];
 #if TARGET_OS_TV
     //This only helps on jailbroken AppleTV - it will allow you to share the files over AirDrop, no share option exists otherwise.
     if ([FLEXUtility airdropAvailable]){
