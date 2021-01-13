@@ -24,9 +24,6 @@
 - (UIViewController *)topViewController {
     return [[[UIApplication sharedApplication] keyWindow] visibleViewController];
 }
-- (BOOL)darkMode {
-    return [[[self topViewController] view] darkMode];
-}
 @end
 
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...) {

@@ -67,9 +67,8 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     if ( gesture.state == UIGestureRecognizerStateEnded) {
         NSLog(@"do something different for long press!");
         UITableView *tv = [self tableView];
-        //naughty naughty
-        NSString *focusedIndexPath = [@[@"_focused", @"Cell", @"Index", @"Path"] componentsJoinedByString:@""];
-        NSIndexPath *focus = [tv valueForKey:focusedIndexPath];
+        //Private API's
+        NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
         NSLog(@"[FLEX] focusedIndexPath: %@", focus);
         [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];
     }

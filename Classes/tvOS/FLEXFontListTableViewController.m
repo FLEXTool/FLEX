@@ -1,6 +1,8 @@
 
 #import "FLEXFontListTableViewController.h"
 #import "NSObject+FLEX_Reflection.h"
+#import "FLEXColor.h"
+
 @interface FLEXFontListTableViewController ()
 @property (nonatomic) NSArray *fonts;
 @end
@@ -22,11 +24,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    if ([self darkMode]){
-           self.view.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.8];
-       } else {
-           self.view.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
-       }
+    
+    [super viewWillAppear:animated];
+    self.view.backgroundColor = [FLEXColor primaryBackgroundColorWithAlpha:0.8];
 }
 
 - (void)didReceiveMemoryWarning {

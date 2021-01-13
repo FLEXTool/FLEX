@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSObject (tvOS)
 - (UIViewController *)topViewController;
-- (BOOL)darkMode;
 @end
 
 /// Returns the type encoding string given the encoding for the return type and parameters, if any.

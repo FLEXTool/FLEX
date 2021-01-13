@@ -163,11 +163,9 @@
 #if TARGET_OS_TV
     if ( gesture.state == UIGestureRecognizerStateEnded) {
         UITableView *tv = [self tableView];
-        //naughty naughty
-        NSString *focusedIndexPath = [@[@"_focused", @"Cell", @"Index", @"Path"] componentsJoinedByString:@""];
-        NSString *focusedCell = [@[@"_focused", @"Cell"] componentsJoinedByString:@""];
-        NSIndexPath *focus = [tv valueForKey:focusedIndexPath];
-        UITableViewCell *cell  = [tv valueForKey:focusedCell];
+        //private API's
+        NSIndexPath *focus = [tv valueForKey:@"_focusedCellIndexPath"];
+        UITableViewCell *cell  = [tv valueForKey:@"_focusedCell"];
         FXLog(@"focusedIndexPath: %@ accessoryType: %lu", focus, cell.accessoryType);
         if (cell.accessoryType != TVTableViewCellAccessoryDisclosureIndicator){
             [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:focus];

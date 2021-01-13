@@ -166,9 +166,7 @@
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor {
-    //_UIVisualEffectSubview
-    NSString *cleverTrick = [@[@"_",@"UI",@"Visual",@"Effect",@"Subview"] componentsJoinedByString:@""];
-    UIView *bgView = [self flex_findFirstSubviewWithClass:objc_getClass([cleverTrick UTF8String])]; //this class has been around since tvOS 9, so this is definitely safe.
+    UIView *bgView = [self flex_findFirstSubviewWithClass:objc_getClass("_UIVisualEffectSubview")]; //this class has been around since tvOS 9, so this is definitely safe.
     if (bgView) {
         bgView.backgroundColor = backgroundColor;
     }
