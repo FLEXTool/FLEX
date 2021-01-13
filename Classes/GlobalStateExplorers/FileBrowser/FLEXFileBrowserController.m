@@ -263,9 +263,8 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
             make.title([NSString stringWithFormat:@"Open %@?", fullPath.lastPathComponent]);
             make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
                 NSURL *fileURL = [NSURL fileURLWithPath:fullPath];
-                NSString *laws = [@[@"LS",@"Application",@"Workspace"] componentsJoinedByString:@""];
-                NSString *df = [@[@"default",@"Workspace"] componentsJoinedByString:@""];
-                id ws = [NSClassFromString(laws) valueForKey:df];
+                //Private API call
+                id ws = [NSClassFromString(@"LSApplicationWorkspace") valueForKey:@"defaultWorkspace"];
                 [ws openURL:fileURL];
             });
             make.button(@"Cancel").cancelStyle();
