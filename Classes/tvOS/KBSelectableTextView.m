@@ -30,16 +30,16 @@
 
 - (void)_sharedInitialize {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap)];
-     tap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
-     [self addGestureRecognizer:tap];
-     self.selectable = YES;
-     self.userInteractionEnabled = YES;
-     self.scrollEnabled = NO;
-     self.layoutManager.allowsNonContiguousLayout = NO;
-     self.panGestureRecognizer.allowedTouchTypes = @[@(UITouchTypeIndirect)];
-     self.focusColorChange = YES;
-     __backingTextField = [[UITextField alloc] initWithFrame:CGRectZero];
-     [self addSubview:__backingTextField];
+    tap.allowedPressTypes = @[[NSNumber numberWithInteger:UIPressTypeSelect]];
+    [self addGestureRecognizer:tap];
+    self.selectable = YES;
+    self.userInteractionEnabled = YES;
+    self.scrollEnabled = NO;
+    self.layoutManager.allowsNonContiguousLayout = NO;
+    self.panGestureRecognizer.allowedTouchTypes = @[@(UITouchTypeIndirect)];
+    self.focusColorChange = YES;
+    __backingTextField = [[UITextField alloc] initWithFrame:CGRectZero];
+    [self addSubview:__backingTextField];
     __backingTextField.delegate = self;
     __backingTextField.text = self.text;
     __backingTextField.placeholder = self.text;
@@ -51,35 +51,28 @@
     return self;
 }
 
-- (id)initForAutoLayout
-{
+- (id)initForAutoLayout {
     self = [super init];
     self.translatesAutoresizingMaskIntoConstraints = NO;
     [self _sharedInitialize];
     return self;
 }
 
-- (void)awakeFromNib
-{
+- (void)awakeFromNib {
     [super awakeFromNib];
-    
-    
 }
 
-- (BOOL)isSelectable
-{
+- (BOOL)isSelectable {
     return YES;
 }
 
-- (BOOL)canBecomeFocused
-{
+- (BOOL)canBecomeFocused {
     return YES;
 }
 
 - (BOOL)canBecomeFirstResponder {
     return YES;
 }
-
 
 - (void)didUpdateFocusInContext:(UIFocusUpdateContext *)context withAnimationCoordinator:(UIFocusAnimationCoordinator *)coordinator
 {
@@ -113,11 +106,8 @@
 }
 
 - (void)tap {
-    
-    NSLog(@"[FLEXLog] tapped");
     if(self.inputViewController == nil){
         if (self.inputView){
-            NSLog(@"[FLEXLog] unhandled input view type: %@", self.inputView);
         }
         [self becomeFirstResponder];
     } else {

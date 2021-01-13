@@ -6,6 +6,12 @@
 //  Copyright © 2020 nito. All rights reserved.
 //
 
+/**
+ 
+ UISlider doesn't exist on tvOS, this is a  port: https://github.com/lechium/KBSlider of one written in swift https://github.com/zattoo/TvOSSlider
+
+ */
+
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
