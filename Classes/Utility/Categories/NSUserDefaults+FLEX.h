@@ -13,7 +13,8 @@ extern NSString * const kFLEXDefaultsToolbarTopMarginKey;
 extern NSString * const kFLEXDefaultsiOSPersistentOSLogKey;
 extern NSString * const kFLEXDefaultsHidePropertyIvarsKey;
 extern NSString * const kFLEXDefaultsHidePropertyMethodsKey;
-extern NSString * const kFLEXDefaultsHideMethodOverridesKey;
+extern NSString * const kFLEXDefaultsHidePrivateMethodsKey;
+extern NSString * const kFLEXDefaultsShowMethodOverridesKey;
 extern NSString * const kFLEXDefaultsHideVariablePreviewsKey;
 extern NSString * const kFLEXDefaultsNetworkHostBlacklistKey;
 extern NSString * const kFLEXDefaultsDisableOSLogForceASLKey;
@@ -38,6 +39,7 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 
 @property (nonatomic) BOOL flex_explorerHidesPropertyIvars;
 @property (nonatomic) BOOL flex_explorerHidesPropertyMethods;
+@property (nonatomic) BOOL flex_explorerHidesPrivateMethods;
 @property (nonatomic) BOOL flex_explorerShowsMethodOverrides;
 @property (nonatomic) BOOL flex_explorerHidesVariablePreviews;
 

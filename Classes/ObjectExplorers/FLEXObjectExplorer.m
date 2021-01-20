@@ -136,7 +136,10 @@
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
     BOOL hideBackingIvars = defaults.flex_explorerHidesPropertyIvars;
     BOOL hidePropertyMethods = defaults.flex_explorerHidesPropertyMethods;
+    BOOL hidePrivateMethods = defaults.flex_explorerHidesPrivateMethods;
     BOOL showMethodOverrides = defaults.flex_explorerShowsMethodOverrides;
+    
+    NSMutableArray<NSArray<FLEXMethod *> *> *allMethods = [NSMutableArray new];
 
     // Loop over each class and each superclass, collect
     // the fresh and unique metadata in each category
@@ -165,7 +168,7 @@
             kind:FLEXMetadataKindIvars
             skip:NO
         ]];
-        [_allMethods addObject:[self
+        [allMethods addObject:[self
             metadataUniquedByName:[cls flex_allInstanceMethods]
             superclass:superclass
             kind:FLEXMetadataKindMethods
@@ -221,8 +224,7 @@
     
     // Potentially filter property-backing methods
     if (hidePropertyMethods) {
-        NSArray<NSArray<FLEXMethod *> *> *methods = _allMethods.copy;
-        _allMethods = [methods flex_mapped:^id(NSArray<FLEXMethod *> *list, NSUInteger idx) {
+        allMethods = [allMethods flex_mapped:^id(NSArray<FLEXMethod *> *list, NSUInteger idx) {
             // Get a set of all property method names for the current class in the hierarchy
             NSSet *methodNames = [NSSet setWithArray:({
                 [properties[idx] flex_flatmapped:^NSArray *(FLEXProperty *p, NSUInteger idx) {
@@ -240,12 +242,23 @@
                 }];
             })];
             
-            // Remove ivars whose name is in the ivar names list
+            // Remove methods whose name is in the property method names list
             return [list flex_filtered:^BOOL(FLEXMethod *method, NSUInteger idx) {
                 return ![methodNames containsObject:method.selectorString];
             }];
         }];
     }
+    
+    if (hidePrivateMethods) {
+        allMethods = [allMethods flex_mapped:^id(NSArray<FLEXMethod *> *list, NSUInteger idx) {
+            // Remove methods which contain an underscore
+            return [list flex_filtered:^BOOL(FLEXMethod *method, NSUInteger idx) {
+                return ![method.selectorString containsString:@"_"];
+            }];
+        }];
+    }
+    
+    _allMethods = allMethods;
 
     // Set up UIKit helper data
     // Really, we only need to call this on properties and ivars
@@ -283,8 +296,8 @@
 - (NSArray *)metadataUniquedByName:(NSArray *)list
                         superclass:(Class)superclass
                               kind:(FLEXMetadataKind)kind
-                              skip:(BOOL)skip {
-    if (skip) {
+                              skip:(BOOL)skipUniquing {
+    if (skipUniquing) {
         return list;
     }
     

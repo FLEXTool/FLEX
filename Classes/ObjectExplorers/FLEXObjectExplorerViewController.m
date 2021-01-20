@@ -72,7 +72,8 @@
     return @[
         kFLEXDefaultsHidePropertyIvarsKey,
         kFLEXDefaultsHidePropertyMethodsKey,
-        kFLEXDefaultsHideMethodOverridesKey,
+        kFLEXDefaultsHidePrivateMethodsKey,
+        kFLEXDefaultsShowMethodOverridesKey,
         kFLEXDefaultsHideVariablePreviewsKey,
     ];
 }
@@ -289,7 +290,8 @@
     NSDictionary<NSString *, NSString *> *explorerToggles = @{
         kFLEXDefaultsHidePropertyIvarsKey:    @"Property-Backing Ivars",
         kFLEXDefaultsHidePropertyMethodsKey:  @"Property-Backing Methods",
-        kFLEXDefaultsHideMethodOverridesKey:  @"Method Overrides",
+        kFLEXDefaultsHidePrivateMethodsKey:   @"Likely Private Methods",
+        kFLEXDefaultsShowMethodOverridesKey:  @"Method Overrides",
         kFLEXDefaultsHideVariablePreviewsKey: @"Variable Previews"
     };
     
@@ -300,7 +302,8 @@
     NSDictionary<NSString *, NSDictionary *> *nextStateDescriptions = @{
         kFLEXDefaultsHidePropertyIvarsKey:    @{ @NO: @"Hide ", @YES: @"Show " },
         kFLEXDefaultsHidePropertyMethodsKey:  @{ @NO: @"Hide ", @YES: @"Show " },
-        kFLEXDefaultsHideMethodOverridesKey:  @{ @NO: @"Show ", @YES: @"Hide " },
+        kFLEXDefaultsHidePrivateMethodsKey:   @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsShowMethodOverridesKey:  @{ @NO: @"Show ", @YES: @"Hide " },
         kFLEXDefaultsHideVariablePreviewsKey: @{ @NO: @"Hide ", @YES: @"Show " },
     };
     
