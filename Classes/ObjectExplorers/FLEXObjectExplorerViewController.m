@@ -265,9 +265,7 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
     // Prioritize important pan gestures over our swipe gesture
     if ([g2 isKindOfClass:[UIPanGestureRecognizer class]]) {
-        if (g2 == self.navigationController.interactivePopGestureRecognizer ||
-            g2 == self.navigationController.barHideOnSwipeGestureRecognizer ||
-            g2 == self.tableView.panGestureRecognizer) {
+        if (g2 == self.navigationController.interactivePopGestureRecognizer) {
             return NO;
         }
     }
