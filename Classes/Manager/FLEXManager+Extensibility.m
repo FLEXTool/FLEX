@@ -9,7 +9,6 @@
 #import "FLEXManager+Extensibility.h"
 #import "FLEXManager+Private.h"
 #import "FLEXNavigationController.h"
-#import "FLEXGlobalsEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXKeyboardShortcutManager.h"
 #import "FLEXExplorerViewController.h"
@@ -58,9 +57,21 @@
     [self.userGlobalEntries addObject:entry];
 }
 
-- (void)clearGlobalEntries
-{
-  [self.userGlobalEntries removeAllObjects];
+- (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction {
+    NSParameterAssert(entryName);
+    NSParameterAssert(rowSelectedAction);
+    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
+    
+    entryName = entryName.copy;
+    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString * _Nonnull{
+        return entryName;
+    } action:rowSelectedAction];
+    
+    [self.userGlobalEntries addObject:entry];
+}
+
+- (void)clearGlobalEntries {
+    [self.userGlobalEntries removeAllObjects];
 }
 
 
