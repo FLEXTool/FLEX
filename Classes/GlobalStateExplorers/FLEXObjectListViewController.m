@@ -29,20 +29,12 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
     FLEXObjectReferenceSectionCount
 };
 
-NSArray<NSString *> * FLEXObjectReferenceSectionTitles() {
-    return @[
-        @"", @"AutoLayout", @"Key-Value Observing", @"FLEX"
-    ];
-}
-
-NSString const * FLEXTitleForObjectReferenceSection(FLEXObjectReferenceSection section) {
-    switch (section) {
-        case FLEXObjectReferenceSectionCount: @throw NSInternalInconsistencyException;
-        default: return FLEXObjectReferenceSectionTitles()[section];
-    }
-}
-
 @interface FLEXObjectListViewController ()
+
+@property (nonatomic, readonly, class) NSArray<NSPredicate *> *defaultPredicates;
+@property (nonatomic, readonly, class) NSArray<NSString *> *defaultSectionTitles;
+
+
 @property (nonatomic, copy) NSArray<FLEXMutableListSection *> *sections;
 @property (nonatomic, copy) NSArray<FLEXMutableListSection *> *allSections;
 
@@ -119,6 +111,12 @@ NSString const * FLEXTitleForObjectReferenceSection(FLEXObjectReferenceSection s
     return [NSArray flex_forEachUpTo:FLEXObjectReferenceSectionCount map:^id(NSUInteger i) {
         return [self defaultPredicateForSection:i];
     }];
+}
+
++ (NSArray<NSString *> *)defaultSectionTitles {
+    return @[
+        @"", @"AutoLayout", @"Key-Value Observing", @"FLEX"
+    ];
 }
 
 
@@ -220,12 +218,10 @@ NSString const * FLEXTitleForObjectReferenceSection(FLEXObjectReferenceSection s
         }
     }];
 
-    NSArray<NSPredicate *> *predicates = [self defaultPredicates];
-    NSArray<NSString *> *sectionTitles = FLEXObjectReferenceSectionTitles();
     FLEXObjectListViewController *viewController = [[self alloc]
         initWithReferences:instances
-        predicates:predicates
-        sectionTitles:sectionTitles
+        predicates:self.defaultPredicates
+        sectionTitles:self.defaultSectionTitles
     ];
     viewController.title = [NSString stringWithFormat:@"Referencing %@ %p",
         [FLEXRuntimeUtility safeClassNameForObject:object], object
