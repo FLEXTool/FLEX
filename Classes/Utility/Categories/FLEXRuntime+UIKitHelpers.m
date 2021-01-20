@@ -13,6 +13,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXFieldEditorViewController.h"
 #import "FLEXMethodCallingViewController.h"
+#import "FLEXObjectListViewController.h"
 #import "FLEXTableView.h"
 #import "FLEXUtility.h"
 #import "NSArray+FLEX.h"
@@ -131,15 +132,37 @@ FLEXObjectExplorerDefaultsImpl
 #if FLEX_AT_LEAST_IOS13_SDK
 
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
-    Class propertyClass = self.attributes.typeEncoding.flex_typeClass;
+    BOOL returnsObject = self.attributes.typeEncoding.flex_typeIsObjectOrClass;
+    BOOL targetNotNil = [self appropriateTargetForPropertyType:object] != nil;
     
     // "Explore PropertyClass" for properties with a concrete class name
-    if (propertyClass) {
-        NSString *title = [NSString stringWithFormat:@"Explore %@", NSStringFromClass(propertyClass)];
-        return @[[UIAction actionWithTitle:title image:nil identifier:nil handler:^(UIAction *action) {
-            UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:propertyClass];
-            [sender.navigationController pushViewController:explorer animated:YES];
-        }]];
+    if (returnsObject) {
+        NSMutableArray<UIAction *> *actions = [NSMutableArray new];
+        
+        // Action for exploring class of this property
+        Class propertyClass = self.attributes.typeEncoding.flex_typeClass;
+        if (propertyClass) {
+            NSString *title = [NSString stringWithFormat:@"Explore %@", NSStringFromClass(propertyClass)];
+            [actions addObject:[UIAction actionWithTitle:title image:nil identifier:nil handler:^(UIAction *action) {
+                UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:propertyClass];
+                [sender.navigationController pushViewController:explorer animated:YES];
+            }]];
+        }
+        
+        // Action for exploring references to this object
+        if (targetNotNil) {
+            // Since the property holder is not nil, check if the property value is nil
+            id value = [self currentValueBeforeUnboxingWithTarget:object];
+            if (value) {
+                NSString *title = @"List all references";
+                [actions addObject:[UIAction actionWithTitle:title image:nil identifier:nil handler:^(UIAction *action) {
+                    UIViewController *list = [FLEXObjectListViewController objectsWithReferencesToObject:value];
+                    [sender.navigationController pushViewController:list animated:YES];
+                }]];
+            }
+        }
+        
+        return actions;
     }
     
     return nil;
