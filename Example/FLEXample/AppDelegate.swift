@@ -35,6 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // To show off the network logger, send several misc network requests
         MiscNetworkRequests.sendExampleRequests()
         
+        // For testing unarchiving of objects
+        self.archiveBob()
+        
         // For < iOS 13, set up the window here
         if ProcessInfo.processInfo.operatingSystemVersion.majorVersion < 13 {
             let window = UIWindow(frame: UIScreen.main.bounds)
@@ -58,6 +61,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UISceneConfiguration(name: nil, sessionRole: session.role)
     }
     
+    func archiveBob() {
+        let documents = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true
+        ).first! as NSString
+        let whereToSaveBob = documents.appendingPathComponent("Bob.plist")
+        try! NSKeyedArchiver.archivedData(
+            withRootObject: Person.bob(), requiringSecureCoding: false
+        ).write(to: URL(fileURLWithPath: whereToSaveBob), options: [])
+    }
     
     let exampleLogLimit = 10
     var exampleLogSent = 0
