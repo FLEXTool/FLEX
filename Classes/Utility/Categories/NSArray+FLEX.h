@@ -30,3 +30,9 @@
 - (instancetype)flex_sortedUsingSelector:(SEL)selector;
 
 @end
+
+@interface NSMutableArray<T> (Functional)
+
+- (void)flex_filter:(BOOL(^)(T obj, NSUInteger idx))filterFunc;
+
+@end
