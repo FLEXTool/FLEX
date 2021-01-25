@@ -13,6 +13,14 @@
 #define ctor flex_keywordify __attribute__((constructor)) void __flex_ctor_##__LINE__()
 #define dtor flex_keywordify __attribute__((destructor)) void __flex_dtor_##__LINE__()
 
+#define weakify(var) __weak __typeof(var) __weak__##var = var;
+
+#define strongify(var) \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+__strong typeof(var) var = __weak__##var; \
+_Pragma("clang diagnostic pop")
+
 // A macro to check if we are running in a test environment
 #define FLEX_IS_TESTING() (NSClassFromString(@"XCTest") != nil)
 
