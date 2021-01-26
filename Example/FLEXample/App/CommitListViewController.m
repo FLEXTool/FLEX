@@ -8,6 +8,7 @@
 
 #import "CommitListViewController.h"
 #import "FLEXample-Swift.h"
+#import "Person.h"
 #import <FLEX.h>
 
 @interface CommitListViewController ()
@@ -46,6 +47,18 @@
             ];
         }
     }];
+    
+    FLEXManager *flex = FLEXManager.sharedManager;
+    
+    // Register 't' for testing: quickly present an object explorer for debugging
+    [flex registerSimulatorShortcutWithKey:@"t" modifiers:0 action:^{
+        [flex showExplorer];
+        [flex presentTool:^UINavigationController *{
+            return [FLEXNavigationController withRootViewController:[FLEXObjectExplorerFactory
+                explorerViewControllerForObject:Person.bob
+            ]];
+        } completion:nil];
+    } description:@"Present an object explorer for debugging"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

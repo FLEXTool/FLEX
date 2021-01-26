@@ -136,17 +136,6 @@
         [self toggleTopViewControllerOfClass:[FLEXNetworkMITMViewController class]];
     } description:@"Toggle network history view"];
 
-    // 't' is for testing: quickly present an object explorer for debugging
-    [self registerDefaultSimulatorShortcutWithKey:@"t" modifiers:0 action:^{
-        [self showExplorerIfNeeded];
-
-        [self.explorerViewController toggleToolWithViewControllerProvider:^UINavigationController *{
-            return [FLEXNavigationController withRootViewController:[FLEXObjectExplorerFactory
-                explorerViewControllerForObject:NSBundle.mainBundle
-            ]];
-        } completion:nil];
-    } description:@"Present an object explorer for debugging"];
-
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputDownArrow modifiers:0 action:^{
         if (self.isHidden || ![self.explorerViewController handleDownArrowKeyPressed]) {
             [self tryScrollDown];
