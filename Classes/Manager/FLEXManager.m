@@ -91,6 +91,18 @@
     }
 }
 
+- (void)dismissAnyPresentedTools:(void (^)(void))completion {
+    if (self.explorerViewController.presentedViewController) {
+        [self.explorerViewController dismissViewControllerAnimated:YES completion:completion];
+    } else if (completion) {
+        completion();
+    }
+}
+
+- (void)presentTool:(UINavigationController * _Nonnull (^)(void))future completion:(void (^)(void))completion {
+    [self.explorerViewController toggleToolWithViewControllerProvider:future completion:completion];
+}
+
 - (void)showExplorerFromScene:(UIWindowScene *)scene {
     #if FLEX_AT_LEAST_IOS13_SDK
     if (@available(iOS 13.0, *)) {

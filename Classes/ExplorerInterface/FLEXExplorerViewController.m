@@ -918,13 +918,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [super dismissViewControllerAnimated:animated completion:completion];
 }
 
-- (BOOL)wantsWindowToBecomeKey
-{
+- (BOOL)wantsWindowToBecomeKey {
     return self.window.previousKeyWindow != nil;
 }
 
 - (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future
-                                  completion:(void(^)(void))completion {
+                                  completion:(void (^)(void))completion {
     if (self.presentedViewController) {
         [self dismissViewControllerAnimated:YES completion:completion];
     } else if (future) {
@@ -970,11 +969,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         } else {
             return [FLEXHierarchyViewController delegate:self];
         }
-    } completion:^{
-        if (completion) {
-            completion();
-        }
-    }];
+    } completion:completion];
 }
 
 - (void)toggleMenuTool {

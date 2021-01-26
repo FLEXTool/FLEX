@@ -25,6 +25,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)hideExplorer;
 - (void)toggleExplorer;
 
+/// Programmatically dismiss anything presented by FLEX, leaving only the toolbar visible.
+- (void)dismissAnyPresentedTools:(void (^_Nullable)(void))completion;
+/// Programmatically present something on top of the FLEX toolbar.
+/// This method will automatically dismiss any currently presented tool,
+/// so you do not need to call \c dismissAnyPresentedTools: yourself.
+- (void)presentTool:(UINavigationController *(^)(void))viewControllerFuture
+         completion:(void (^_Nullable)(void))completion;
+
 /// Use this to present the explorer in a specific scene when the one
 /// it chooses by default is not the one you wish to display it in.
 - (void)showExplorerFromScene:(UIWindowScene *)scene API_AVAILABLE(ios(13.0));
