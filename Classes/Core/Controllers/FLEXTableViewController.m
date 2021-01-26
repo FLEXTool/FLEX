@@ -124,18 +124,15 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     _showsCarousel = showsCarousel;
     
     if (showsCarousel) {
-        _carousel = ({
-            __weak __typeof(self) weakSelf = self;
-
+        _carousel = ({ weakify(self)
+            
             FLEXScopeCarousel *carousel = [FLEXScopeCarousel new];
-            carousel.selectedIndexChangedAction = ^(NSInteger idx) {
-                __typeof(self) self = weakSelf;
+            carousel.selectedIndexChangedAction = ^(NSInteger idx) { strongify(self);
                 [self.searchDelegate updateSearchResults:self.searchText];
             };
 
             // UITableView won't update the header size unless you reset the header view
-            [carousel registerBlockForDynamicTypeChanges:^(FLEXScopeCarousel *carousel) {
-                __typeof(self) self = weakSelf;
+            [carousel registerBlockForDynamicTypeChanges:^(FLEXScopeCarousel *_) { strongify(self);
                 [self layoutTableHeaderIfNeeded];
             }];
 

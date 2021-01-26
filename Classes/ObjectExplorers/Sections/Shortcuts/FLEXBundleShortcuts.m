@@ -17,8 +17,7 @@
 @implementation FLEXBundleShortcuts
 #pragma mark Overrides
 
-+ (instancetype)forObject:(NSBundle *)bundle {
-    __weak __typeof(self) weakSelf = self;
++ (instancetype)forObject:(NSBundle *)bundle { weakify(self)
     return [self forObject:bundle additionalRows:@[
         [FLEXActionShortcut
             title:@"Browse Bundle Directory" subtitle:nil
@@ -30,11 +29,8 @@
             }
         ],
         [FLEXActionShortcut title:@"Browse Bundle as Database…" subtitle:nil
-            selectionHandler:^(UIViewController *host, NSBundle *bundle) {
-                __strong __typeof(self) strongSelf = weakSelf;
-                if (strongSelf) {
-                    [strongSelf promptToExportBundleAsDatabase:bundle host:host];
-                }
+            selectionHandler:^(UIViewController *host, NSBundle *bundle) { strongify(self)
+                [self promptToExportBundleAsDatabase:bundle host:host];
             }
             accessoryType:^UITableViewCellAccessoryType(NSBundle *bundle) {
                 return UITableViewCellAccessoryDisclosureIndicator;

@@ -78,12 +78,10 @@ configurationBlock:(FLEXMutableListCellForElement)cellConfig
 }
 
 - (void (^)(__kindof UIViewController *))didSelectRowAction:(NSInteger)row {
-    if (self.selectionHandler) {
-        __weak __typeof(self) weakSelf = self;
-        return ^(UIViewController *host) {
-            __strong __typeof(self) strongSelf = weakSelf;
-            if (strongSelf) {
-                strongSelf.selectionHandler(host, strongSelf.filteredList[row]);
+    if (self.selectionHandler) { weakify(self)
+        return ^(UIViewController *host) { strongify(self)
+            if (self) {
+                self.selectionHandler(host, self.filteredList[row]);
             }
         };
     }

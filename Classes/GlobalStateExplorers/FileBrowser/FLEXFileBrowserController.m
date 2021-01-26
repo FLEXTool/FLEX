@@ -54,9 +54,8 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
         self.title = [path lastPathComponent];
         self.operationQueue = [NSOperationQueue new];
         
-        
-        //computing path size
-        FLEXFileBrowserController *__weak weakSelf = self;
+        // Compute path size
+        weakify(self)
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSFileManager *fileManager = NSFileManager.defaultManager;
             NSDictionary<NSString *, id> *attributes = [fileManager attributesOfItemAtPath:path error:NULL];
@@ -66,16 +65,15 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
                 attributes = [fileManager attributesOfItemAtPath:[path stringByAppendingPathComponent:fileName] error:NULL];
                 totalSize += [attributes fileSize];
 
-                // Bail if the interested view controller has gone away.
-                if (!weakSelf) {
+                // Bail if the interested view controller has gone away
+                if (!self) {
                     return;
                 }
             }
 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                FLEXFileBrowserController *__strong strongSelf = weakSelf;
-                strongSelf.recursiveSize = @(totalSize);
-                [strongSelf.tableView reloadData];
+            dispatch_async(dispatch_get_main_queue(), ^{ strongify(self)
+                self.recursiveSize = @(totalSize);
+                [self.tableView reloadData];
             });
         });
 
@@ -363,37 +361,38 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
 contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                                     point:(CGPoint)point __IOS_AVAILABLE(13.0) {
-    __weak __typeof__(self) weakSelf = self;
-    return [UIContextMenuConfiguration configurationWithIdentifier:nil
-                                                   previewProvider:nil
-                                                    actionProvider:^UIMenu * _Nullable(NSArray<UIMenuElement *> * _Nonnull suggestedActions) {
-        UITableViewCell * const cell = [tableView cellForRowAtIndexPath:indexPath];
-        UIAction *rename = [UIAction actionWithTitle:@"Rename"
-                                               image:nil
-                                          identifier:@"Rename"
-                                             handler:^(__kindof UIAction * _Nonnull action) {
-            [weakSelf fileBrowserRename:cell];
-        }];
-        UIAction *delete = [UIAction actionWithTitle:@"Delete"
-                                               image:nil
-                                          identifier:@"Delete"
-                                             handler:^(__kindof UIAction * _Nonnull action) {
-            [weakSelf fileBrowserDelete:cell];
-        }];
-        UIAction *copyPath = [UIAction actionWithTitle:@"Copy Path"
-                                                 image:nil
-                                            identifier:@"Copy Path"
-                                               handler:^(__kindof UIAction * _Nonnull action) {
-            [weakSelf fileBrowserCopyPath:cell];
-        }];
-        UIAction *share = [UIAction actionWithTitle:@"Share"
-                                              image:nil
-                                         identifier:@"Share"
-                                            handler:^(__kindof UIAction * _Nonnull action) {
-            [weakSelf fileBrowserShare:cell];
-        }];
-        return [UIMenu menuWithTitle:@"Manage File" image:nil identifier:@"Manage File" options:UIMenuOptionsDisplayInline children:@[rename, delete, copyPath, share]];
-    }];
+    weakify(self)
+    return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil
+        actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
+            UITableViewCell * const cell = [tableView cellForRowAtIndexPath:indexPath];
+            UIAction *rename = [UIAction actionWithTitle:@"Rename" image:nil identifier:@"Rename"
+                handler:^(UIAction *action) { strongify(self)
+                    [self fileBrowserRename:cell];
+                }
+            ];
+            UIAction *delete = [UIAction actionWithTitle:@"Delete" image:nil identifier:@"Delete"
+                handler:^(UIAction *action) { strongify(self)
+                    [self fileBrowserDelete:cell];
+                }
+            ];
+            UIAction *copyPath = [UIAction actionWithTitle:@"Copy Path" image:nil identifier:@"Copy Path"
+                handler:^(UIAction *action) { strongify(self)
+                    [self fileBrowserCopyPath:cell];
+                }
+            ];
+            UIAction *share = [UIAction actionWithTitle:@"Share" image:nil identifier:@"Share"
+                handler:^(UIAction *action) { strongify(self)
+                    [self fileBrowserShare:cell];
+                }
+            ];
+            
+            return [UIMenu menuWithTitle:@"Manage File" image:nil
+                identifier:@"Manage File"
+                options:UIMenuOptionsDisplayInline
+                children:@[rename, delete, copyPath, share]
+            ];
+        }
+    ];
 }
 
 #endif
