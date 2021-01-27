@@ -214,6 +214,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
                 }
             }
 
+            free(ivars);
             tryClass = class_getSuperclass(tryClass);
         }
     }];
