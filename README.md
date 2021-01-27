@@ -66,6 +66,10 @@ More complete version:
 }
 ```
 
+#### Aside: tvOS
+
+FLEX itself does not support tvOS out of the box. However, others have taken it upon themselves to port FLEX to tvOS. If you need tvOS support, seek out one of these forks. [Here is one such fork.](https://github.com/lechium/FLEX/tree/tvos)
+
 
 ## Feature Examples
 ### Modify Views
