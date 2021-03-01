@@ -10,6 +10,7 @@
 #import "FLEXShortcut.h"
 #import "FLEXRuntimeUtility.h"
 #import "NSObject+FLEX_Reflection.h"
+#import "Cocoa+FLEXShortcuts.h"
 
 #pragma mark - UIApplication
 
@@ -141,7 +142,26 @@
             @"viewIfLoaded", @"title", @"navigationItem", @"toolbarItems", @"tabBarItem",
             @"childViewControllers", @"navigationController", @"tabBarController", @"splitViewController",
             @"parentViewController", @"presentedViewController", @"presentingViewController",
-        ]).methods(@[@"view"]).forClass(UIViewController.class);
+        ])
+        .methods(@[@"view"])
+        .forClass(UIViewController.class);
+    
+    // UIAlertController
+    NSMutableArray *alertControllerProps = @[
+        @"title", @"message", @"actions", @"textFields",
+        @"preferredAction", @"presentingViewController", @"viewIfLoaded",
+    ].mutableCopy;
+    if (@available(iOS 14.0, *)) {
+        [alertControllerProps insertObject:@"image" atIndex:4];
+    }
+    self.append
+        .properties(alertControllerProps)
+        .methods(@[@"addAction:"])
+        .forClass(UIAlertController.class);
+    self.append.properties(@[
+        @"title", @"style", @"enabled", @"flex_styleName",
+        @"image", @"keyCommandInput", @"_isPreferred", @"_alertController",
+    ]).forClass(UIAlertAction.class);
 }
 
 @end
