@@ -21,21 +21,21 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return The type encoding string, or \c nil if \e returnType is \c NULL.
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...);
 
-NSArray<Class> *FLEXGetAllSubclasses(_Nullable Class cls, BOOL includeSelf);
-NSArray<Class> *FLEXGetClassHierarchy(_Nullable Class cls, BOOL includeSelf);
-NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(_Nullable Class cls);
+NSArray<Class> * _Nullable FLEXGetAllSubclasses(_Nullable Class cls, BOOL includeSelf);
+NSArray<Class> * _Nullable FLEXGetClassHierarchy(_Nullable Class cls, BOOL includeSelf);
+NSArray<FLEXProtocol *> * _Nullable FLEXGetConformedProtocols(_Nullable Class cls);
 
-NSArray<FLEXIvar *> *FLEXGetAllIvars(_Nullable Class cls);
+NSArray<FLEXIvar *> * _Nullable FLEXGetAllIvars(_Nullable Class cls);
 /// @param cls a class object to get instance properties,
 /// or a metaclass object to get class properties
-NSArray<FLEXProperty *> *FLEXGetAllProperties(_Nullable Class cls);
+NSArray<FLEXProperty *> * _Nullable FLEXGetAllProperties(_Nullable Class cls);
 /// @param cls a class object to get instance methods,
 /// or a metaclass object to get class methods
 /// @param instance used to mark methods as instance methods or not.
 /// Not used to determine whether to get instance or class methods. 
-NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance);
+NSArray<FLEXMethod *> * _Nullable FLEXGetAllMethods(_Nullable Class cls, BOOL instance);
 /// @param cls a class object to get all instance and class methods.
-NSArray<FLEXMethod *> *FLEXGetAllInstanceAndClassMethods(_Nullable Class cls);
+NSArray<FLEXMethod *> * _Nullable FLEXGetAllInstanceAndClassMethods(_Nullable Class cls);
 
 
 

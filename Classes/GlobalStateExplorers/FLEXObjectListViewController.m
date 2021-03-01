@@ -38,7 +38,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
 @property (nonatomic, copy) NSArray<FLEXMutableListSection *> *sections;
 @property (nonatomic, copy) NSArray<FLEXMutableListSection *> *allSections;
 
-@property (nonatomic, readonly) NSArray<FLEXObjectRef *> *references;
+@property (nonatomic, readonly, nullable) NSArray<FLEXObjectRef *> *references;
 @property (nonatomic, readonly) NSArray<NSPredicate *> *predicates;
 @property (nonatomic, readonly) NSArray<NSString *> *sectionTitles;
 
@@ -122,7 +122,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
 
 #pragma mark - Initialization
 
-- (id)initWithReferences:(NSArray<FLEXObjectRef *> *)references {
+- (id)initWithReferences:(nullable NSArray<FLEXObjectRef *> *)references {
     return [self initWithReferences:references predicates:nil sectionTitles:nil];
 }
 

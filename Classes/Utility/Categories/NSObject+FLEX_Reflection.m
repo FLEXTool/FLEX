@@ -20,7 +20,7 @@
 
 
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...) {
-    if (returnType == NULL) return nil;
+    if (!returnType) return nil;
     
     NSMutableString *encoding = [NSMutableString new];
     [encoding appendFormat:@"%s%s%s", returnType, @encode(id), @encode(SEL)];
@@ -37,9 +37,7 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
 }
 
 NSArray<Class> *FLEXGetAllSubclasses(Class cls, BOOL includeSelf) {
-    if (!cls) {
-        return nil;
-    }
+    if (!cls) return nil;
     
     Class *buffer = NULL;
     
@@ -71,9 +69,7 @@ NSArray<Class> *FLEXGetAllSubclasses(Class cls, BOOL includeSelf) {
 }
 
 NSArray<Class> *FLEXGetClassHierarchy(Class cls, BOOL includeSelf) {
-    if (!cls) {
-        return nil;
-    }
+    if (!cls) return nil;
     
     NSMutableArray *classes = [NSMutableArray new];
     if (includeSelf) {
@@ -88,9 +84,7 @@ NSArray<Class> *FLEXGetClassHierarchy(Class cls, BOOL includeSelf) {
 }
 
 NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
-    if (!cls) {
-        return nil;
-    }
+    if (!cls) return nil;
     
     unsigned int count = 0;
     Protocol *__unsafe_unretained *list = class_copyProtocolList(cls, &count);
@@ -247,7 +241,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 }
 
 + (NSArray<FLEXMethod *> *)flex_allClassMethods {
-    return FLEXGetAllMethods(self.flex_metaclass, NO);
+    return FLEXGetAllMethods(self.flex_metaclass, NO) ?: @[];
 }
 
 + (FLEXMethod *)flex_methodNamed:(NSString *)name {
@@ -395,7 +389,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 }
 
 + (NSArray<FLEXProperty *> *)flex_allClassProperties {
-    return FLEXGetAllProperties(self.flex_metaclass);
+    return FLEXGetAllProperties(self.flex_metaclass) ?: @[];
 }
 
 + (FLEXProperty *)flex_propertyNamed:(NSString *)name {
