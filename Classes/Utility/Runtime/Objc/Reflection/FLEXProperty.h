@@ -51,6 +51,10 @@
 @property (nonatomic, readonly) NSString *likelyGetterString;
 /// Not valid unless initialized with the owning class.
 @property (nonatomic, readonly) BOOL likelyGetterExists;
+/// Always \c nil for class properties.
+@property (nonatomic, readonly) NSString *likelyIvarName;
+/// Not valid unless initialized with the owning class.
+@property (nonatomic, readonly) BOOL likelyIvarExists;
 
 /// Whether there are certainly multiple definitions of this property,
 /// such as in categories in other binary images or something.
