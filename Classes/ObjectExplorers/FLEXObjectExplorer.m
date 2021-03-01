@@ -211,7 +211,7 @@
             NSSet *ivarNames = [NSSet setWithArray:({
                 [properties[idx] flex_mapped:^id(FLEXProperty *p, NSUInteger idx) {
                     // Nil if no ivar, and array is flatted
-                    return p.attributes.backingIvar;
+                    return p.likelyIvarName;
                 }];
             })];
             
