@@ -11,12 +11,7 @@
 #import "FLEXObjcInternal.h"
 #import "FLEXTypeEncodingParser.h"
 
-static NSString *const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
-typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
-    FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector = 0,
-    FLEXRuntimeUtilityErrorCodeInvocationFailed = 1,
-    FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch = 2
-};
+NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 
 @implementation FLEXRuntimeUtility
 
@@ -294,18 +289,31 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
              onObject:(id)object
         withArguments:(NSArray *)arguments
                 error:(NSError * __autoreleasing *)error {
+    return [self performSelector:selector
+        onObject:object
+        withArguments:arguments
+        allowForwarding:NO
+        error:error
+    ];
+}
+
++ (id)performSelector:(SEL)selector
+             onObject:(id)object
+        withArguments:(NSArray *)arguments
+      allowForwarding:(BOOL)mightForwardMsgSend
+                error:(NSError * __autoreleasing *)error {
     static dispatch_once_t onceToken;
     static SEL stdStringExclusion = nil;
     dispatch_once(&onceToken, ^{
         stdStringExclusion = NSSelectorFromString(@"stdString");
     });
 
-    // Bail if the object won't respond to this selector.
-    if (![self safeObject:object respondsToSelector:selector]) {
+    // Bail if the object won't respond to this selector
+    if (mightForwardMsgSend || ![self safeObject:object respondsToSelector:selector]) {
         if (error) {
             NSString *msg = [NSString
-                stringWithFormat:@"%@ does not respond to the selector %@",
-                object, NSStringFromSelector(selector)
+                stringWithFormat:@"This object does not respond to the selector %@",
+                NSStringFromSelector(selector)
             ];
             NSDictionary<NSString *, id> *userInfo = @{ NSLocalizedDescriptionKey : msg };
             *error = [NSError
