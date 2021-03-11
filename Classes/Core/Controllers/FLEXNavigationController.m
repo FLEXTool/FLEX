@@ -148,6 +148,13 @@
 }
      
 - (void)handleNavigationBarTap:(UIGestureRecognizer *)sender {
+    CGPoint location = [sender locationInView:self.navigationBar];
+    UIView *hitView = [self.navigationBar hitTest:location withEvent:nil];
+
+    if ([hitView isKindOfClass:[UIControl class]]) {
+        return;
+    }
+
     if (sender.state == UIGestureRecognizerStateRecognized) {
         if (self.toolbarHidden) {
             [self setToolbarHidden:NO animated:YES];
