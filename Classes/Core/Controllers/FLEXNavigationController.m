@@ -148,9 +148,9 @@
 }
      
 - (void)handleNavigationBarTap:(UIGestureRecognizer *)sender {
+    // Don't reveal the toolbar if we were just tapping a button
     CGPoint location = [sender locationInView:self.navigationBar];
     UIView *hitView = [self.navigationBar hitTest:location withEvent:nil];
-
     if ([hitView isKindOfClass:[UIControl class]]) {
         return;
     }
