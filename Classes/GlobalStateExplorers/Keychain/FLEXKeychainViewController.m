@@ -46,7 +46,7 @@
             id service = item[kFLEXKeychainWhereKey];
             if ([service isKindOfClass:[NSString class]]) {
                 cell.textLabel.text = service;
-                cell.detailTextLabel.text = item[kFLEXKeychainAccountKey];
+                cell.detailTextLabel.text = [item[kFLEXKeychainAccountKey] description];
             } else {
                 cell.textLabel.text = [NSString stringWithFormat:
                     @"[%@]\n\n%@",
