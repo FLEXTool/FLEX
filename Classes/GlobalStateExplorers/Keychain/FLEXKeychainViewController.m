@@ -99,9 +99,9 @@
     NSDictionary *item = self.section.filteredList[idx];
 
     FLEXKeychainQuery *query = [FLEXKeychainQuery new];
-    query.service = item[kFLEXKeychainWhereKey];
-    query.account = item[kFLEXKeychainAccountKey];
-    query.accessGroup = item[kFLEXKeychainGroupKey];
+    query.service = [item[kFLEXKeychainWhereKey] description];
+    query.account = [item[kFLEXKeychainAccountKey] description];
+    query.accessGroup = [item[kFLEXKeychainGroupKey] description];
     [query fetch:nil];
 
     return query;
