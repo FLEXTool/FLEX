@@ -40,6 +40,6 @@ Pod::Spec.new do |spec|
                                "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h",
                                "Classes/Core/**/*.h", "Classes/Utility/Runtime/Objc/**/*.h",
                                "Classes/ObjectExplorers/**/*.h", "Classes/Editing/**/*.h",
-                               "Classes/Utility/FLEXMacros.h", "Classes/Utility/Categories/*.h",
-                               "Classes/Utility/FLEXAlert.h", "Classes/Utility/FLEXResources.h" ]
+                               "Classes/Utility/Categories/*.h", "Classes/Utility/FLEXAlert.h",
+                               "Classes/Utility/FLEXResources.h" ]
 end

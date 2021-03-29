@@ -7,6 +7,7 @@
 //
 
 #import "FLEXMutableListSection.h"
+#import "FLEXMacros.h"
 
 @interface FLEXMutableListSection ()
 @property (nonatomic, readonly) FLEXMutableListCellForElement configureCell;

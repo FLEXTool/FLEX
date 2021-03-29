@@ -10,6 +10,7 @@
 #import "FLEXImagePreviewViewController.h"
 #import "FLEXShortcut.h"
 #import "FLEXAlert.h"
+#import "FLEXMacros.h"
 
 @interface UIAlertController (FLEXImageShortcuts)
 - (void)flex_image:(UIImage *)image disSaveWithError:(NSError *)error :(void *)context;

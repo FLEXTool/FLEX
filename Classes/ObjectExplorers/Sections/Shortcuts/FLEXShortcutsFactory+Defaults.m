@@ -8,6 +8,7 @@
 
 #import "FLEXShortcutsFactory+Defaults.h"
 #import "FLEXShortcut.h"
+#import "FLEXMacros.h"
 #import "FLEXRuntimeUtility.h"
 #import "NSObject+FLEX_Reflection.h"
 #import "Cocoa+FLEXShortcuts.h"

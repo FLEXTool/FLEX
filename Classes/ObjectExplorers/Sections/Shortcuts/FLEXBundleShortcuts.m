@@ -9,6 +9,7 @@
 #import "FLEXBundleShortcuts.h"
 #import "FLEXShortcut.h"
 #import "FLEXAlert.h"
+#import "FLEXMacros.h"
 #import "FLEXRuntimeExporter.h"
 #import "FLEXTableListViewController.h"
 #import "FLEXFileBrowserController.h"
