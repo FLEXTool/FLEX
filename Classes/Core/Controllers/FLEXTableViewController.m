@@ -238,7 +238,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
     // Toolbar
-    self.navigationController.toolbarHidden = NO;
+    self.navigationController.toolbarHidden = self.toolbarItems.count > 0;
     self.navigationController.hidesBarsOnSwipe = YES;
 
     // On iOS 13, the root view controller shows it's search bar no matter what.
