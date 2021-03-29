@@ -104,7 +104,11 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
 + (NSString *)safeDescriptionForObject:(id)object {
     // Don't assume that we have an NSObject subclass; not all objects respond to -description
     if ([self safeObject:object respondsToSelector:@selector(description)]) {
-        return [object description];
+        @try {
+            return [object description];
+        } @catch (NSException *exception) {
+            return nil;
+        }
     }
 
     return nil;
@@ -115,7 +119,9 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     NSString *description = nil;
 
     if ([self safeObject:object respondsToSelector:@selector(debugDescription)]) {
-        description = [object debugDescription];
+        @try {
+            description = [object debugDescription];
+        } @catch (NSException *exception) { }
     } else {
         description = [self safeDescriptionForObject:object];
     }
