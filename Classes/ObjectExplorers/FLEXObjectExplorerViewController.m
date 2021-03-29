@@ -269,6 +269,10 @@
         if (g2 == self.navigationController.interactivePopGestureRecognizer) {
             return NO;
         }
+        
+        if (g2 == self.tableView.panGestureRecognizer) {
+            return NO;
+        }
     }
     
     return YES;
