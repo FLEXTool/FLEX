@@ -278,12 +278,18 @@
     FLEXRuntimeUtilityTryAddObjectProperty(2, abbreviationDictionary, NSTimeZone.flex_metaclass, NSDictionary);
     
     self.append.classMethods(@[
-        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:", @"", @"", @"", 
+        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:",
     ]).forClass(NSTimeZone.flex_metaclass);
     
     self.append.classProperties(@[
         @"defaultTimeZone", @"systemTimeZone", @"localTimeZone"
     ]).forClass(NSTimeZone.class);
+    
+    // UTF8String is not a real property under the hood
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, UTF8String, NSString.class, const char *, PropertyKey(ReadOnly));
+    
+    self.append.properties(@[@"length"]).methods(@[@"characterAtIndex:"]).forClass(NSString.class);
+    self.append.properties(@[@"length", @"bytes"]).forClass(NSData.class);
 }
 
 @end
