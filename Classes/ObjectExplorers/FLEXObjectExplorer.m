@@ -139,7 +139,10 @@
     BOOL hidePrivateMethods = defaults.flex_explorerHidesPrivateMethods;
     BOOL showMethodOverrides = defaults.flex_explorerShowsMethodOverrides;
     
+    NSMutableArray<NSArray<FLEXProperty *> *> *allProperties = [NSMutableArray new];
+    NSMutableArray<NSArray<FLEXProperty *> *> *allClassProps = [NSMutableArray new];
     NSMutableArray<NSArray<FLEXMethod *> *> *allMethods = [NSMutableArray new];
+    NSMutableArray<NSArray<FLEXMethod *> *> *allClassMethods = [NSMutableArray new];
 
     // Loop over each class and each superclass, collect
     // the fresh and unique metadata in each category
@@ -150,13 +153,13 @@
         Class cls = self.classHierarchyClasses[i];
         superclass = (i < rootIdx) ? self.classHierarchyClasses[i+1] : nil;
 
-        [_allProperties addObject:[self
+        [allProperties addObject:[self
             metadataUniquedByName:[cls flex_allInstanceProperties]
             superclass:superclass
             kind:FLEXMetadataKindProperties
             skip:showMethodOverrides
         ]];
-        [_allClassProperties addObject:[self
+        [allClassProps addObject:[self
             metadataUniquedByName:[cls flex_allClassProperties]
             superclass:superclass
             kind:FLEXMetadataKindClassProperties
@@ -174,7 +177,7 @@
             kind:FLEXMetadataKindMethods
             skip:showMethodOverrides
         ]];
-        [_allClassMethods addObject:[self
+        [allClassMethods addObject:[self
             metadataUniquedByName:[cls flex_allClassMethods]
             superclass:superclass
             kind:FLEXMetadataKindClassMethods
@@ -201,7 +204,7 @@
     
     _classHierarchy = [FLEXStaticMetadata classHierarchy:self.classHierarchyClasses];
     
-    NSArray<NSArray<FLEXProperty *> *> *properties = _allProperties;
+    NSArray<NSArray<FLEXProperty *> *> *properties = allProperties;
     
     // Potentially filter property-backing ivars
     if (hideBackingIvars) {
@@ -250,15 +253,29 @@
     }
     
     if (hidePrivateMethods) {
-        allMethods = [allMethods flex_mapped:^id(NSArray<FLEXMethod *> *list, NSUInteger idx) {
+        id methodMapBlock = ^id(NSArray<FLEXMethod *> *list, NSUInteger idx) {
             // Remove methods which contain an underscore
             return [list flex_filtered:^BOOL(FLEXMethod *method, NSUInteger idx) {
                 return ![method.selectorString containsString:@"_"];
             }];
-        }];
+        };
+        id propertyMapBlock = ^id(NSArray<FLEXProperty *> *list, NSUInteger idx) {
+            // Remove methods which contain an underscore
+            return [list flex_filtered:^BOOL(FLEXProperty *prop, NSUInteger idx) {
+                return ![prop.name containsString:@"_"];
+            }];
+        };
+        
+        allMethods = [allMethods flex_mapped:methodMapBlock];
+        allClassMethods = [allClassMethods flex_mapped:methodMapBlock];
+        allProperties = [allProperties flex_mapped:propertyMapBlock];
+        allClassProps = [allClassProps flex_mapped:propertyMapBlock];
     }
     
+    _allProperties = allProperties;
+    _allClassProperties = allClassProps;
     _allMethods = allMethods;
+    _allClassMethods = allClassMethods;
 
     // Set up UIKit helper data
     // Really, we only need to call this on properties and ivars
