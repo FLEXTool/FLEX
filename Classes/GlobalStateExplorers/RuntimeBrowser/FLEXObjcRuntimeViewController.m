@@ -46,6 +46,7 @@
     // Search bar stuff, must be first because this creates self.searchController
     self.showsSearchBar = YES;
     self.showSearchBarInitially = YES;
+    self.activatesSearchBarAutomatically = YES;
     // Using pinSearchBar on this screen causes a weird visual
     // thing on the next view controller that gets pushed.
     //
@@ -70,15 +71,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // This doesn't work unless it's wrapped in this dispatch_async call
-        [self.searchController.searchBar becomeFirstResponder];
-    });
 }
 
 

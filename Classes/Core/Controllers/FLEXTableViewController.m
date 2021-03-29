@@ -256,11 +256,16 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // When going back, make the search bar reappear instead of hiding
     if (@available(iOS 11.0, *)) {
+        // When going back, make the search bar reappear instead of hiding
         if ((self.pinSearchBar || self.showSearchBarInitially) && !self.didInitiallyRevealSearchBar) {
             self.navigationItem.hidesSearchBarWhenScrolling = NO;
         }
+    }
+    
+    // Make the keyboard seem to appear faster
+    if (self.activatesSearchBarAutomatically) {
+        [self makeKeyboardAppearNow];
     }
 
     [self setupToolbarItems];
@@ -282,6 +287,17 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
                 [self.navigationController.view layoutIfNeeded];
             }];
         }
+    }
+    
+    if (self.activatesSearchBarAutomatically) {
+        // Keyboard has appeared, now we call this as we soon present our search bar
+        [self removeDummyTextField];
+        
+        // Activate the search bar
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // This doesn't work unless it's wrapped in this dispatch_async call
+            [self.searchController.searchBar becomeFirstResponder];
+        });
     }
 
     // We only want to reveal the search bar when the view controller first appears.
@@ -521,6 +537,30 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 
 
 #pragma mark - Search Bar
+
+#pragma mark Faster keyboard
+
+static UITextField *kDummyTextField = nil;
+
+/// Make the keyboard appear instantly. We use this to make the
+/// keyboard appear faster when the search bar is set to appear initially.
+/// You must call \c -removeDummyTextField before your search bar is to appear.
+- (void)makeKeyboardAppearNow {
+    if (!kDummyTextField) {
+        kDummyTextField = [UITextField new];
+        kDummyTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    }
+    
+    kDummyTextField.inputAccessoryView = self.searchController.searchBar.inputAccessoryView;
+    [UIApplication.sharedApplication.keyWindow addSubview:kDummyTextField];
+    [kDummyTextField becomeFirstResponder];
+}
+
+- (void)removeDummyTextField {
+    if (kDummyTextField.superview) {
+        [kDummyTextField removeFromSuperview];
+    }
+}
 
 #pragma mark UISearchResultsUpdating
 

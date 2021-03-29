@@ -35,6 +35,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
     self.showsSearchBar = YES;
     self.showSearchBarInitially = YES;
+    self.activatesSearchBarAutomatically = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.showsCarousel = YES;
     self.carousel.items = @[@"A→Z", @"Count", @"Size"];
@@ -43,15 +44,6 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];
     
     [self reloadTableData];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // This doesn't work unless it's wrapped in this dispatch_async call
-        [self.searchController.searchBar becomeFirstResponder];
-    });
 }
 
 - (NSArray<NSString *> *)allClassNames {
