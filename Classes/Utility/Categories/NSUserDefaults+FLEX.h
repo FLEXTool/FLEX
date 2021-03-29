@@ -16,7 +16,7 @@ extern NSString * const kFLEXDefaultsHidePropertyMethodsKey;
 extern NSString * const kFLEXDefaultsHidePrivateMethodsKey;
 extern NSString * const kFLEXDefaultsShowMethodOverridesKey;
 extern NSString * const kFLEXDefaultsHideVariablePreviewsKey;
-extern NSString * const kFLEXDefaultsNetworkHostBlacklistKey;
+extern NSString * const kFLEXDefaultsNetworkHostDenylistKey;
 extern NSString * const kFLEXDefaultsDisableOSLogForceASLKey;
 extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 
@@ -28,7 +28,7 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 @property (nonatomic) double flex_toolbarTopMargin;
 
 // Not actually stored in defaults, but written to a file
-@property (nonatomic) NSArray<NSString *> *flex_networkHostBlacklist;
+@property (nonatomic) NSArray<NSString *> *flex_networkHostDenylist;
 
 /// Whether or not to register the object explorer as a JSON viewer on launch
 @property (nonatomic) BOOL flex_registerDictionaryJSONViewerOnLaunch;

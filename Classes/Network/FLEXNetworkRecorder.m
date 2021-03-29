@@ -45,7 +45,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         
         self.orderedTransactions = [NSMutableArray new];
         self.requestIDsToTransactions = [NSMutableDictionary new];
-        self.hostBlacklist = NSUserDefaults.standardUserDefaults.flex_networkHostBlacklist.mutableCopy;
+        self.hostDenylist = NSUserDefaults.standardUserDefaults.flex_networkHostDenylist.mutableCopy;
 
         // Serial queue used because we use mutable objects that are not thread safe
         self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_SERIAL);
@@ -100,13 +100,13 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)clearBlacklistedTransactions {
+- (void)clearExcludedTransactions {
     dispatch_sync(self.queue, ^{
         self.orderedTransactions = ({
             [self.orderedTransactions flex_filtered:^BOOL(FLEXNetworkTransaction *ta, NSUInteger idx) {
                 NSString *host = ta.request.URL.host;
-                for (NSString *blacklisted in self.hostBlacklist) {
-                    if ([host hasSuffix:blacklisted]) {
+                for (NSString *excluded in self.hostDenylist) {
+                    if ([host hasSuffix:excluded]) {
                         return NO;
                     }
                 }
@@ -117,8 +117,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-- (void)synchronizeBlacklist {
-    NSUserDefaults.standardUserDefaults.flex_networkHostBlacklist = self.hostBlacklist;
+- (void)synchronizeDenylist {
+    NSUserDefaults.standardUserDefaults.flex_networkHostDenylist = self.hostDenylist;
 }
 
 #pragma mark - Network Events
@@ -126,7 +126,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID
                                      request:(NSURLRequest *)request
                             redirectResponse:(NSURLResponse *)redirectResponse {
-    for (NSString *host in self.hostBlacklist) {
+    for (NSString *host in self.hostDenylist) {
         if ([request.URL.host hasSuffix:host]) {
             return;
         }
