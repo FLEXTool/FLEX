@@ -34,11 +34,11 @@
 #define FLEXRuntimeUtilityTryAddObjectProperty(iOS_atLeast, name, cls, type, ...) \
     FLEXRuntimeUtilityTryAddProperty(iOS_atLeast, name, cls, FLEXEncodeClass(type), PropertyKey(NonAtomic), __VA_ARGS__);
 
-NSString * const FLEXRuntimeUtilityErrorDomain;
+extern NSString * const FLEXRuntimeUtilityErrorDomain;
 
 typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
     // Start at a random value instead of 0 to avoid confusion with an absent code
-    FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector = 0xbeefbabe,
+    FLEXRuntimeUtilityErrorCodeDoesNotRecognizeSelector = 0xbabe,
     FLEXRuntimeUtilityErrorCodeInvocationFailed,
     FLEXRuntimeUtilityErrorCodeArgumentTypeMismatch
 };
