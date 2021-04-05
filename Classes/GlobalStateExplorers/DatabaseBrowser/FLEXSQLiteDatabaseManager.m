@@ -114,7 +114,8 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 }
 
 - (NSArray<NSArray *> *)queryAllDataInTable:(NSString *)tableName {
-    return [self executeStatement:[NSString stringWithFormat:@"SELECT * FROM \"%@\"", tableName]].rows ?: @[];
+    NSString *command = [NSString stringWithFormat:@"SELECT * FROM \"%@\"", tableName];
+    return [self executeStatement:command].rows ?: @[];
 }
 
 - (FLEXSQLResult *)executeStatement:(NSString *)sql {
