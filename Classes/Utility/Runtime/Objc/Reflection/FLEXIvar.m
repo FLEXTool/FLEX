@@ -74,17 +74,15 @@
     _name         = @(ivar_getName(self.objc_ivar) ?: "(nil)");
     _offset       = ivar_getOffset(self.objc_ivar);
     _typeEncoding = @(ivar_getTypeEncoding(self.objc_ivar) ?: "");
+    _size         = ((struct ivar_t*)self.objc_ivar)->size;
 
     NSString *typeForDetails = _typeEncoding;
-    NSString *sizeForDetails = nil;
+    NSString *sizeForDetails = [@(_size).stringValue stringByAppendingString:@" bytes"];
     if (_typeEncoding.length) {
         _type = (FLEXTypeEncoding)[_typeEncoding characterAtIndex:0];
-        FLEXGetSizeAndAlignment(_typeEncoding.UTF8String, &_size, nil);
-        sizeForDetails = [@(_size).stringValue stringByAppendingString:@" bytes"];
     } else {
         _type = FLEXTypeEncodingNull;
         typeForDetails = @"no type info";
-        sizeForDetails = @"unknown size";
     }
 
     Dl_info exeInfo;
@@ -101,9 +99,28 @@
 - (id)getValue:(id)target {
     id value = nil;
     if (!FLEXIvarIsSafe(_objc_ivar) ||
-        _type == FLEXTypeEncodingNull ||
         FLEXPointerIsTaggedPointer(target)) {
         return nil;
+    }
+    if(_type==FLEXTypeEncodingNull) {
+        if(!target)return nil;
+        void *outerPointer=(__bridge void *)target+_offset;
+        if(outerPointer==nil)return nil;
+        if(_size!=sizeof(void*)) {
+            if(_size<=sizeof(int64_t)){
+                return [FLEXRuntimeUtility valueForPrimitivePointer:outerPointer objCType:"i"];
+            }else{
+                return [FLEXRuntimeUtility valueForPrimitivePointer:outerPointer objCType:"^v"];
+            }
+        }
+        void *ptr=*(void**)outerPointer;
+        if(ptr==nil) {
+            return nil;
+        }
+        if(![FLEXRuntimeUtility pointerIsValidObjcObject:ptr]) {
+            return [FLEXRuntimeUtility valueForPrimitivePointer:outerPointer objCType:"^v"];
+        }
+        return (__bridge id)(ptr);
     }
 
 #ifdef __arm64__

@@ -9,6 +9,15 @@
 
 #import "FLEXRuntimeConstants.h"
 
+struct ivar_t {
+   uintptr_t *offset;
+   const char *name;
+   const char *type;
+   uint32_t alignment;
+   uint32_t size;
+};
+// Copied from Swift's source code.
+
 @interface FLEXIvar : NSObject
 
 + (instancetype)ivar:(Ivar)ivar;
