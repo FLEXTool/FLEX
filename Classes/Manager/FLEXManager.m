@@ -73,7 +73,7 @@
     if (@available(iOS 13.0, *)) {
         // Only look for a new scene if we don't have one
         if (!flex.windowScene) {
-            flex.windowScene = FLEXUtility.activeScene;
+            flex.windowScene = FLEXUtility.appKeyWindow.windowScene;
         }
     }
 #endif
@@ -85,7 +85,11 @@
 
 - (void)toggleExplorer {
     if (self.explorerWindow.isHidden) {
-        [self showExplorer];
+        if (@available(iOS 13.0, *)) {
+            [self showExplorerFromScene:FLEXUtility.appKeyWindow.windowScene];
+        } else {
+            [self showExplorer];
+        }
     } else {
         [self hideExplorer];
     }
