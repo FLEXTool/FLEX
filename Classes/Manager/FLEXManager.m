@@ -49,7 +49,7 @@
     NSAssert(NSThread.isMainThread, @"You must use %@ from the main thread only.", NSStringFromClass([self class]));
     
     if (!_explorerWindow) {
-        _explorerWindow = [[FLEXWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+        _explorerWindow = [[FLEXWindow alloc] initWithFrame:FLEXUtility.appKeyWindow.bounds];
         _explorerWindow.eventDelegate = self;
         _explorerWindow.rootViewController = self.explorerViewController;
     }
