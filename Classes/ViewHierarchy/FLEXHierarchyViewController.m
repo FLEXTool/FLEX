@@ -83,6 +83,9 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
 
     // Start of in tree view
     _mode = FLEXHierarchyViewModeTree;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
     [self pushViewController:self.treeViewController animated:NO];
 }
 
