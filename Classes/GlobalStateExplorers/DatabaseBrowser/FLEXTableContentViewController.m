@@ -84,8 +84,8 @@
 }
 
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
-    widthForContentCellInColumn:(NSInteger)column {
-    return 120;
+    minWidthForContentCellInColumn:(NSInteger)column {
+    return 100;
 }
 
 - (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView {

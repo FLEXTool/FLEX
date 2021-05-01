@@ -11,6 +11,9 @@
 #import "UIFont+FLEX.h"
 #import "FLEXUtility.h"
 
+static const CGFloat kMargin = 5;
+static const CGFloat kArrowWidth = 20;
+
 @interface FLEXTableColumnHeader ()
 @property (nonatomic, readonly) UILabel *arrowLabel;
 @property (nonatomic, readonly) UIView *lineView;
@@ -60,9 +63,16 @@
     
     CGSize size = self.frame.size;
     
-    self.titleLabel.frame = CGRectMake(5, 0, size.width - 25, size.height);
-    self.arrowLabel.frame = CGRectMake(size.width - 20, 0, 20, size.height);
+    self.titleLabel.frame = CGRectMake(kMargin, 0, size.width - kArrowWidth - kMargin, size.height);
+    self.arrowLabel.frame = CGRectMake(size.width - kArrowWidth, 0, kArrowWidth, size.height);
     self.lineView.frame = CGRectMake(size.width - 1, 2, FLEXPointsToPixels(1), size.height - 4);
+}
+
+- (CGSize)sizeThatFits:(CGSize)size {
+    CGFloat margins = kArrowWidth - 2 * kMargin;
+    size = CGSizeMake(size.width - margins, size.height);
+    CGFloat width = [_titleLabel sizeThatFits:size].width + margins;
+    return CGSizeMake(width, size.height);
 }
 
 @end
