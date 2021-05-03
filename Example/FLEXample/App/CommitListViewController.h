@@ -6,7 +6,7 @@
 //  Copyright © 2020 Flipboard. All rights reserved.
 //
 
-#import "FLEXFilteringTableViewController.h"
+@import FLEX;
 
 NS_ASSUME_NONNULL_BEGIN
 
