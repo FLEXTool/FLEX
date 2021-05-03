@@ -1,0 +1,1 @@
+../../Classes/Manager/FLEXManager.h
