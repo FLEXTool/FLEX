@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -25,11 +25,10 @@
 		C3A67856241AB8AD005A4681 /* MiscNetworkRequests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A67855241AB8AD005A4681 /* MiscNetworkRequests.m */; };
 		C3A67858241ADDF7005A4681 /* Commit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A67857241ADDF7005A4681 /* Commit.swift */; };
 		C3B3760025B8CDA300AD43AB /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = C3B375FF25B8CDA300AD43AB /* Person.m */; };
+		C3DCDF012641CF5D00D74C57 /* FLEX in Frameworks */ = {isa = PBXBuildFile; productRef = C3DCDF002641CF5D00D74C57 /* FLEX */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		05F97E8666E04B043AC919BA /* Pods-FLEXample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLEXample.release.xcconfig"; path = "Target Support Files/Pods-FLEXample/Pods-FLEXample.release.xcconfig"; sourceTree = "<group>"; };
-		9FD21AEF548AD7B89327EEFB /* Pods-FLEXample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLEXample.debug.xcconfig"; path = "Target Support Files/Pods-FLEXample/Pods-FLEXample.debug.xcconfig"; sourceTree = "<group>"; };
 		A5FFDDD9C2278C79FFA0295B /* libPods-FLEXample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FLEXample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C386D6CC2419975A00699085 /* FLEXample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FLEXample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C386D6CF2419975A00699085 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -65,6 +64,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CB8C28DD5EC2AF347FE6AE4 /* libPods-FLEXample.a in Frameworks */,
+				C3DCDF012641CF5D00D74C57 /* FLEX in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,7 +85,6 @@
 				C386D6CE2419975A00699085 /* FLEXample */,
 				C3A67853241AB88F005A4681 /* Realm */,
 				C386D6CD2419975A00699085 /* Products */,
-				E367791A4E4085CCB945F0F8 /* Pods */,
 				8C3080FE45370D3EC44ADD5D /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -169,15 +168,6 @@
 			path = Realm;
 			sourceTree = "<group>";
 		};
-		E367791A4E4085CCB945F0F8 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				9FD21AEF548AD7B89327EEFB /* Pods-FLEXample.debug.xcconfig */,
-				05F97E8666E04B043AC919BA /* Pods-FLEXample.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -196,6 +186,7 @@
 			);
 			name = FLEXample;
 			packageProductDependencies = (
+				C3DCDF002641CF5D00D74C57 /* FLEX */,
 			);
 			productName = FLEXample;
 			productReference = C386D6CC2419975A00699085 /* FLEXample.app */;
@@ -227,6 +218,7 @@
 			);
 			mainGroup = C386D6C32419975A00699085;
 			packageReferences = (
+				C3DCDEFF2641CF5D00D74C57 /* XCRemoteSwiftPackageReference "FLEX" */,
 			);
 			productRefGroup = C386D6CD2419975A00699085 /* Products */;
 			projectDirPath = "";
@@ -429,7 +421,6 @@
 		};
 		C386D6E12419975B00699085 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9FD21AEF548AD7B89327EEFB /* Pods-FLEXample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -454,7 +445,6 @@
 		};
 		C386D6E22419975B00699085 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 05F97E8666E04B043AC919BA /* Pods-FLEXample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -498,6 +488,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C3DCDEFF2641CF5D00D74C57 /* XCRemoteSwiftPackageReference "FLEX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDOSLabs/FLEX";
+			requirement = {
+				branch = feature/spm;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C3DCDF002641CF5D00D74C57 /* FLEX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3DCDEFF2641CF5D00D74C57 /* XCRemoteSwiftPackageReference "FLEX" */;
+			productName = FLEX;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C386D6C42419975A00699085 /* Project object */;
 }
