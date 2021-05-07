@@ -104,7 +104,8 @@
 }
 
 - (void)presentTool:(UINavigationController * _Nonnull (^)(void))future completion:(void (^)(void))completion {
-    [self.explorerViewController toggleToolWithViewControllerProvider:future completion:completion];
+    [self showExplorer];
+    [self.explorerViewController presentTool:future completion:completion];
 }
 
 - (void)showExplorerFromScene:(UIWindowScene *)scene {

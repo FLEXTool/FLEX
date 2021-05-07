@@ -925,7 +925,21 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future
                                   completion:(void (^)(void))completion {
     if (self.presentedViewController) {
+        // We do NOT want to present the future; this is
+        // a convenience method for toggling the SAME TOOL
         [self dismissViewControllerAnimated:YES completion:completion];
+    } else if (future) {
+        [self presentViewController:future() animated:YES completion:completion];
+    }
+}
+
+- (void)presentTool:(UINavigationController *(^)(void))future
+         completion:(void (^)(void))completion {
+    if (self.presentedViewController) {
+        // If a tool is already presented, dismiss it first
+        [self dismissViewControllerAnimated:YES completion:^{
+            [self presentViewController:future() animated:YES completion:completion];
+        }];
     } else if (future) {
         [self presentViewController:future() animated:YES completion:completion];
     }
