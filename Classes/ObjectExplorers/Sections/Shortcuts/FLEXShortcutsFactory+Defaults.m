@@ -293,3 +293,32 @@
 }
 
 @end
+
+#pragma mark - WebKit / Safari
+
+@implementation FLEXShortcutsFactory (WebKit_Safari)
+
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
+    Class WKWebView = NSClassFromString(@"WKWebView");
+    Class SafariVC = NSClassFromString(@"SFSafariViewController");
+    
+    if (WKWebView) {
+        self.append.properties(@[
+            @"configuration", @"scrollView", @"title", @"URL",
+            @"customUserAgent", @"navigationDelegate"
+        ]).methods(@[@"reload", @"stopLoading"]).forClass(WKWebView);
+    }
+    
+    if (SafariVC) {
+        self.append.properties(@[
+            @"delegate", @"configuration", @"dismissButtonStyle"
+        ]).forClass(SafariVC);
+        if (@available(iOS 10.0, *)) {
+            self.append.properties(@[
+                @"preferredBarTintColor", @"preferredControlTintColor"
+            ]).forClass(SafariVC);
+        }
+    }
+}
+
+@end
