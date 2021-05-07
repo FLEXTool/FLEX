@@ -10,7 +10,9 @@
 #import "FLEXShortcut.h"
 #import "FLEXMacros.h"
 #import "FLEXRuntimeUtility.h"
+#import "NSArray+FLEX.h"
 #import "NSObject+FLEX_Reflection.h"
+#import "FLEXObjcInternal.h"
 #import "Cocoa+FLEXShortcuts.h"
 
 #pragma mark - UIApplication
@@ -290,6 +292,8 @@
     
     self.append.properties(@[@"length"]).methods(@[@"characterAtIndex:"]).forClass(NSString.class);
     self.append.properties(@[@"length", @"bytes"]).forClass(NSData.class);
+    
+    self.append.properties(@[@"flex_observers"]).forClass(NSNotificationCenter.class);
 }
 
 @end
@@ -334,4 +338,39 @@
     ]).forClass(UIPasteboard.class);
 }
 
+@end
+
+@interface NSNotificationCenter (Observers)
+@property (readonly) NSArray<NSString *> *flex_observers;
+@end
+
+@implementation NSNotificationCenter (Observers)
+- (id)flex_observers {
+    NSString *debug = self.debugDescription;
+    NSArray<NSString *> *observers = [debug componentsSeparatedByString:@"\n"];
+    NSArray<NSArray<NSString *> *> *splitObservers = [observers flex_mapped:^id(NSString *entry, NSUInteger idx) {
+        return [entry componentsSeparatedByString:@","];
+    }];
+    
+    NSArray *names = [splitObservers flex_mapped:^id(NSArray<NSString *> *entry, NSUInteger idx) {
+        return entry[0];
+    }];
+    NSArray *objects = [splitObservers flex_mapped:^id(NSArray<NSString *> *entry, NSUInteger idx) {
+        if (entry.count < 2) return NSNull.null;
+        NSScanner *scanner = [NSScanner scannerWithString:entry[1]];
+
+        unsigned long long objectPointerValue;
+        if ([scanner scanHexLongLong:&objectPointerValue]) {
+            void *objectPointer = (void *)objectPointerValue;
+            if (FLEXPointerIsValidObjcObject(objectPointer))
+                return (__bridge id)(void *)objectPointer;
+        }
+        
+        return NSNull.null;
+    }];
+    
+    return [NSArray flex_forEachUpTo:names.count map:^id(NSUInteger i) {
+        return @[names[i], objects[i]];
+    }];
+}
 @end
