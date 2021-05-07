@@ -322,3 +322,16 @@
 }
 
 @end
+
+#pragma mark - Pasteboard
+
+@implementation FLEXShortcutsFactory (Pasteboard)
+
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
+    self.append.properties(@[
+        @"name", @"numberOfItems", @"items",
+        @"string", @"image", @"color", @"URL",
+    ]).forClass(UIPasteboard.class);
+}
+
+@end
