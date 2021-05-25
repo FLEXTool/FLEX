@@ -30,7 +30,7 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 - (instancetype)initWithPath:(NSString *)path {
     self = [super init];
     if (self) {
-        self.path = path;;
+        self.path = path;
     }
     
     return self;
@@ -256,7 +256,7 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 - (FLEXSQLResult *)errorResult:(NSString *)description {
     const char *error = sqlite3_errmsg(_db);
     NSString *message = error ? @(error) : [NSString
-        stringWithFormat:@"(%@: empty error", description
+        stringWithFormat:@"(%@: empty error)", description
     ];
     
     return [FLEXSQLResult error:message];
