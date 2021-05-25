@@ -284,14 +284,76 @@
     ]).forClass(NSTimeZone.flex_metaclass);
     
     self.append.classProperties(@[
-        @"defaultTimeZone", @"systemTimeZone", @"localTimeZone"
+        @"defaultTimeZone", @"systemTimeZone", @"localTimeZone",
     ]).forClass(NSTimeZone.class);
     
     // UTF8String is not a real property under the hood
     FLEXRuntimeUtilityTryAddNonatomicProperty(2, UTF8String, NSString.class, const char *, PropertyKey(ReadOnly));
     
     self.append.properties(@[@"length"]).methods(@[@"characterAtIndex:"]).forClass(NSString.class);
-    self.append.properties(@[@"length", @"bytes"]).forClass(NSData.class);
+    self.append.methods(@[
+        @"writeToFile:atomically:", @"subdataWithRange:", @"isEqualToData:",
+    ]).properties(@[
+        @"length", @"bytes",
+    ]).forClass(NSData.class);
+    
+    self.append.classMethods(@[
+        @"dataWithJSONObject:options:error:",
+        @"JSONObjectWithData:options:error:",
+        @"isValidJSONObject:",
+    ]).forClass(NSJSONSerialization.class);
+    
+    // NSArray
+    self.append.classMethods(@[
+        @"arrayWithObject:", @"arrayWithContentsOfFile:"
+    ]).forClass(NSArray.flex_metaclass);
+    self.append.methods(@[
+        @"valueForKeyPath:", @"subarrayWithRange:",
+        @"arrayByAddingObject:", @"arrayByAddingObjectsFromArray:",
+        @"filteredArrayUsingPredicate:", @"subarrayWithRange:",
+        @"containsObject:", @"objectAtIndex:", @"indexOfObject:",
+        @"makeObjectsPerformSelector:", @"makeObjectsPerformSelector:withObject:",
+        @"sortedArrayUsingSelector:", @"reverseObjectEnumerator",
+        @"isEqualToArray:", @"mutableCopy",
+    ]).forClass(NSArray.class);
+    // NSDictionary
+    self.append.methods(@[
+        @"objectForKey:", @"valueForKeyPath:",
+        @"isEqualToDictionary:", @"mutableCopy",
+    ]).forClass(NSDictionary.class);
+    // NSSet
+    self.append.classMethods(@[
+        @"setWithObject:", @"setWithArray:"
+    ]).forClass(NSSet.flex_metaclass);
+    self.append.methods(@[
+        @"allObjects", @"valueForKeyPath:", @"containsObject:",
+        @"setByAddingObject:", @"setByAddingObjectsFromArray:",
+        @"filteredSetUsingPredicate:", @"isSubsetOfSet:",
+        @"makeObjectsPerformSelector:", @"makeObjectsPerformSelector:withObject:",
+        @"reverseObjectEnumerator", @"isEqualToSet:", @"mutableCopy",
+    ]).forClass(NSSet.class);
+    
+    // NSMutableArray
+    self.prepend.methods(@[
+        @"addObject:", @"insertObject:atIndex:", @"addObjectsFromArray:", 
+        @"removeObject:", @"removeObjectAtIndex:",
+        @"removeObjectsInArray:", @"removeAllObjects", 
+        @"removeLastObject", @"filterUsingPredicate:",
+        @"sortUsingSelector:", @"copy",
+    ]).forClass(NSMutableArray.class);
+    // NSMutableDictionary
+    self.prepend.methods(@[
+        @"setObject:forKey:", @"removeObjectForKey:",
+        @"removeAllObjects", @"removeObjectsForKeys:", @"copy",
+    ]).forClass(NSMutableDictionary.class);
+    // NSMutableSet
+    self.prepend.methods(@[
+        @"addObject:", @"removeObject:", @"filterUsingPredicate:",
+        @"removeAllObjects", @"addObjectsFromArray:",
+        @"unionSet:", @"minusSet:", @"intersectSet:", @"copy"
+    ]).forClass(NSMutableSet.class);
+    
+    self.append.methods(@[@"nextObject", @"allObjects"]).forClass(NSEnumerator.class);
     
     self.append.properties(@[@"flex_observers"]).forClass(NSNotificationCenter.class);
 }
