@@ -29,6 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)exploringObject:(id)objectOrClass;
 /// No custom section unless you provide one.
 + (instancetype)exploringObject:(id)objectOrClass customSection:(nullable FLEXTableViewSection *)customSection;
+/// No custom sections unless you provide some.
++ (instancetype)exploringObject:(id)objectOrClass
+                 customSections:(nullable NSArray<FLEXTableViewSection *> *)customSections;
 
 /// The object being explored, which may be an instance of a class or a class itself.
 @property (nonatomic, readonly) id object;

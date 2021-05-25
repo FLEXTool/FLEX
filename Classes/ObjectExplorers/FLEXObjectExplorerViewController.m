@@ -30,7 +30,7 @@
 #pragma mark - Private properties
 @interface FLEXObjectExplorerViewController () <UIGestureRecognizerDelegate>
 @property (nonatomic, readonly) FLEXSingleRowSection *descriptionSection;
-@property (nonatomic, readonly) FLEXTableViewSection *customSection;
+@property (nonatomic, readonly) NSArray<FLEXTableViewSection *> *customSections;
 @property (nonatomic) NSIndexSet *customSectionVisibleIndexes;
 
 @property (nonatomic, readonly) NSArray<NSString *> *observedNotifications;
@@ -46,23 +46,27 @@
 }
 
 + (instancetype)exploringObject:(id)target customSection:(FLEXTableViewSection *)section {
+    return [self exploringObject:target customSections:@[section]];
+}
+
++ (instancetype)exploringObject:(id)target customSections:(NSArray *)customSections {
     return [[self alloc]
         initWithObject:target
         explorer:[FLEXObjectExplorer forObject:target]
-        customSection:section
+        customSections:customSections
     ];
 }
 
 - (id)initWithObject:(id)target
             explorer:(__kindof FLEXObjectExplorer *)explorer
-       customSection:(FLEXTableViewSection *)customSection {
+       customSections:(NSArray<FLEXTableViewSection *> *)customSections {
     NSParameterAssert(target);
     
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _object = target;
         _explorer = explorer;
-        _customSection = customSection;
+        _customSections = customSections;
     }
 
     return self;
@@ -195,8 +199,10 @@
         referencesSection
     ]];
 
-    if (self.customSection) {
-        [sections insertObject:self.customSection atIndex:0];
+    if (self.customSections) {
+        [sections insertObjects:self.customSections atIndexes:[NSIndexSet
+            indexSetWithIndexesInRange:NSMakeRange(0, self.customSections.count)
+        ]];
     }
     if (self.descriptionSection) {
         [sections insertObject:self.descriptionSection atIndex:0];

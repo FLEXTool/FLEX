@@ -33,6 +33,7 @@
 @end
 
 @implementation FLEXShortcutsSection
+@synthesize isNewSection = _isNewSection;
 
 #pragma mark Initialization
 
@@ -47,13 +48,13 @@
 }
 
 + (instancetype)forObject:(id)objectOrClass rows:(NSArray *)rows {
-    return [[self alloc] initWithObject:objectOrClass rows:rows];
+    return [[self alloc] initWithObject:objectOrClass rows:rows isNewSection:YES];
 }
 
 + (instancetype)forObject:(id)objectOrClass additionalRows:(NSArray *)toPrepend {
     NSArray *rows = [FLEXShortcutsFactory shortcutsForObjectOrClass:objectOrClass];
     NSArray *allRows = [toPrepend arrayByAddingObjectsFromArray:rows] ?: rows;
-    return [self forObject:objectOrClass rows:allRows];
+    return [[self alloc] initWithObject:objectOrClass rows:allRows isNewSection:NO];
 }
 
 + (instancetype)forObject:(id)objectOrClass {
@@ -72,16 +73,18 @@
         _object = object;
         _allTitles = titles.copy;
         _allSubtitles = subtitles.copy;
+        _isNewSection = YES;
         _numberOfLines = 1;
     }
 
     return self;
 }
 
-- (id)initWithObject:object rows:(NSArray *)rows {
+- (id)initWithObject:object rows:(NSArray *)rows isNewSection:(BOOL)newSection {
     self = [super init];
     if (self) {
         _object = object;
+        _isNewSection = newSection;
         
         _allShortcuts = [rows flex_mapped:^id(id obj, NSUInteger idx) {
             return [FLEXShortcut shortcutFor:obj];
@@ -300,6 +303,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
 }
 
 - (NSArray<id<FLEXRuntimeMetadata>> *)shortcutsForObjectOrClass:(id)objectOrClass {
+    NSParameterAssert(objectOrClass);
 
     NSMutableArray<id<FLEXRuntimeMetadata>> *shortcuts = [NSMutableArray new];
     BOOL isClass = object_isClass(objectOrClass);
