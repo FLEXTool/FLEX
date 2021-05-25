@@ -75,12 +75,6 @@ NS_INLINE CGRect FLEXRectSetHeight(CGRect r, CGFloat height) {
     r.size.height = height; return r;
 }
 
-#ifdef __IPHONE_13_0
-#define FLEX_AT_LEAST_IOS13_SDK (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_13_0)
-#else
-#define FLEX_AT_LEAST_IOS13_SDK NO
-#endif
-
 #define FLEXPluralString(count, plural, singular) [NSString \
     stringWithFormat:@"%@ %@", @(count), (count == 1 ? singular : plural) \
 ]

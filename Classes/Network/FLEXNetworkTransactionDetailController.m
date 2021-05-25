@@ -211,8 +211,6 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     }
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     return [UIContextMenuConfiguration
         configurationWithIdentifier:nil
@@ -235,8 +233,6 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         }
     ];
 }
-
-#endif
 
 #pragma mark - View Configuration
 

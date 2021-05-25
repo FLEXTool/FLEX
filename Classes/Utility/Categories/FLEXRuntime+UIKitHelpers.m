@@ -129,8 +129,6 @@ FLEXObjectExplorerDefaultsImpl
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
     BOOL returnsObject = self.attributes.typeEncoding.flex_typeIsObjectOrClass;
     BOOL targetNotNil = [self appropriateTargetForPropertyType:object] != nil;
@@ -206,8 +204,6 @@ FLEXObjectExplorerDefaultsImpl
     
     return nil;
 }
-
-#endif
 
 @end
 
@@ -285,8 +281,6 @@ FLEXObjectExplorerDefaultsImpl
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
     Class ivarClass = self.typeEncoding.flex_typeClass;
     
@@ -337,8 +331,6 @@ FLEXObjectExplorerDefaultsImpl
     return nil;
 }
 
-#endif
-
 @end
 
 
@@ -383,8 +375,6 @@ FLEXObjectExplorerDefaultsImpl
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
     return nil;
 }
@@ -400,8 +390,6 @@ FLEXObjectExplorerDefaultsImpl
 - (NSString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
-
-#endif
 
 @end
 
@@ -480,8 +468,6 @@ FLEXObjectExplorerDefaultsImpl
 
 - (NSString *)reuseIdentifierWithTarget:(id)object { return nil; }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
     return nil;
 }
@@ -498,8 +484,6 @@ FLEXObjectExplorerDefaultsImpl
 - (NSString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
-
-#endif
 
 @end
 
@@ -592,8 +576,6 @@ FLEXObjectExplorerDefaultsImpl
     return UITableViewCellAccessoryNone;
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
     return nil;
 }
@@ -605,8 +587,6 @@ FLEXObjectExplorerDefaultsImpl
 - (NSString *)contextualSubtitleWithTarget:(id)object {
     return nil;
 }
-
-#endif
 
 @end
 

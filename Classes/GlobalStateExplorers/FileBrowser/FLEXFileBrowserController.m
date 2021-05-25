@@ -356,8 +356,6 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
     // Since our actions are outside of that protocol, we need to manually handle the action forwarding from the cells.
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
 contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                                     point:(CGPoint)point __IOS_AVAILABLE(13.0) {
@@ -394,8 +392,6 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
         }
     ];
 }
-
-#endif
 
 - (void)openFileController:(NSString *)fullPath {
     UIDocumentInteractionController *controller = [UIDocumentInteractionController new];

@@ -390,8 +390,6 @@
     }
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
     return [UIContextMenuConfiguration
@@ -426,8 +424,6 @@
         }
     ];
 }
-
-#endif
 
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath {
     return self.searchController.isActive ? self.filteredNetworkTransactions[indexPath.row] : self.networkTransactions[indexPath.row];

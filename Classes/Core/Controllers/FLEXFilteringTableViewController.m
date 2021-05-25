@@ -9,6 +9,7 @@
 #import "FLEXFilteringTableViewController.h"
 #import "FLEXTableViewSection.h"
 #import "NSArray+FLEX.h"
+#import "FLEXMacros.h"
 
 @interface FLEXFilteringTableViewController ()
 
@@ -187,8 +188,6 @@
     [self.filterDelegate.sections[indexPath.section] didPressInfoButtonAction:indexPath.row](self);
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
     FLEXTableViewSection *section = self.filterDelegate.sections[indexPath.section];
     NSString *title = [section menuTitleForRow:indexPath.row];
@@ -206,7 +205,5 @@
     
     return nil;
 }
-
-#endif
 
 @end

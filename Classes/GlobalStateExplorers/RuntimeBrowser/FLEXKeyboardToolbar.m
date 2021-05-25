@@ -106,7 +106,6 @@
     
     switch (_appearance) {
         case UIKeyboardAppearanceDefault:
-            #if FLEX_AT_LEAST_IOS13_SDK
             if (@available(iOS 13, *)) {
                 borderColor = UIColor.systemBackgroundColor;
                 
@@ -119,7 +118,6 @@
                 }
                 break;
             }
-            #endif
         case UIKeyboardAppearanceLight: {
             borderColor = UIColor.clearColor;
             backgroundColor = lightColor;

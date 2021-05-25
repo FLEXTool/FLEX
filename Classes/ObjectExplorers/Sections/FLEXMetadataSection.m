@@ -189,8 +189,6 @@
     cell.accessoryType = [self accessoryTypeForRow:row];
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (NSString *)menuSubtitleForRow:(NSInteger)row {
     return [self.metadata[row] contextualSubtitleWithTarget:self.explorer.object];
 }
@@ -231,7 +229,5 @@
 - (NSArray<NSString *> *)copyMenuItemsForRow:(NSInteger)row {
     return [self.metadata[row] copiableMetadataWithTarget:self.explorer.object];
 }
-
-#endif
 
 @end

@@ -84,7 +84,6 @@
     switch (_appearance) {
         default:
         case UIKeyboardAppearanceDefault:
-            #if FLEX_AT_LEAST_IOS13_SDK
             if (@available(iOS 13, *)) {
                 titleColor = UIColor.labelColor;
                 
@@ -97,7 +96,6 @@
                 }
                 break;
             }
-            #endif
         case UIKeyboardAppearanceLight:
             titleColor = UIColor.blackColor;
             backgroundColor = lightColor;

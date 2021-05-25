@@ -17,10 +17,6 @@
 #import "UIFont+FLEX.h"
 #import "FLEXMacros.h"
 
-#if !FLEX_AT_LEAST_IOS13_SDK
-@class UIWindowScene;
-#endif
-
 @interface FLEXUtility : NSObject
 
 /// The key window of the app, if it is not a \c FLEXWindow.

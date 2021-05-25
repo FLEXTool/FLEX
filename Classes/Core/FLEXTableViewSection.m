@@ -64,8 +64,6 @@
     return kFLEXDefaultCell;
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (NSString *)menuTitleForRow:(NSInteger)row {
     NSString *title = [self titleForRow:row];
     NSString *subtitle = [self menuSubtitleForRow:row];
@@ -126,8 +124,6 @@
     
     return @[];
 }
-
-#endif
 
 - (NSArray<NSString *> *)copyMenuItemsForRow:(NSInteger)row {
     return nil;

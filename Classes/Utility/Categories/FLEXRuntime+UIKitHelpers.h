@@ -50,8 +50,6 @@
 /// Return nil to use the default reuse identifier
 - (NSString *)reuseIdentifierWithTarget:(id)object;
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 /// An array of actions to place in the first section of the context menu.
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender API_AVAILABLE(ios(13.0));
 /// An array where every 2 elements are a key-value pair. The key is a description
@@ -59,8 +57,6 @@
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object;
 /// Properties and ivars return the address of an object, if they hold one.
 - (NSString *)contextualSubtitleWithTarget:(id)object;
-
-#endif
 
 @end
 

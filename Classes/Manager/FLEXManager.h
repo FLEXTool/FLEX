@@ -8,10 +8,6 @@
 
 #import "FLEXExplorerToolbar.h"
 
-#if !FLEX_AT_LEAST_IOS13_SDK
-@class UIWindowScene;
-#endif
-
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXManager : NSObject

@@ -266,8 +266,6 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     }
 }
 
-#if FLEX_AT_LEAST_IOS13_SDK
-
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
 contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                                     point:(CGPoint)point __IOS_AVAILABLE(13.0) {
@@ -285,7 +283,5 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
         }
     ];
 }
-
-#endif
 
 @end
