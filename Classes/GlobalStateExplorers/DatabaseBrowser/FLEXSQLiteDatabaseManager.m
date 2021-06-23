@@ -57,10 +57,10 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 
     if (err != SQLITE_OK) {
         return [self storeErrorForLastTask:@"Open"];
-    } else {
-        NSString *sql = @"VACUUM;"; // To flesh WAL file into sqlite
-        [self executeStatement:sql];
     }
+    
+    NSString *sql = @"VACUUM;"; // To flesh WAL file into sqlite
+    [self executeStatement:sql];
     
     return YES;
 }
