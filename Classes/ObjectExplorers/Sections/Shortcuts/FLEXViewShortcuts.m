@@ -70,16 +70,18 @@
                 return [FLEXObjectExplorerFactory explorerViewControllerForObject:controller];
             }
             accessoryType:^UITableViewCellAccessoryType(id view) {
-                return controller ? UITableViewCellAccessoryDisclosureIndicator : 0;
+                return controller ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
             }
         ],
-        [FLEXActionShortcut title:@"Preview Image" subtitle:nil
-            viewer:^UIViewController *(id view) {
+        [FLEXActionShortcut title:@"Preview Image" subtitle:^NSString *(UIView *view) {
+                return !CGRectIsEmpty(view.bounds) ? @"" : @"Unavailable with empty bounds";
+            }
+            viewer:^UIViewController *(UIView *view) {
                 return [FLEXImagePreviewViewController previewForView:view];
             }
             accessoryType:^UITableViewCellAccessoryType(UIView *view) {
                 // Disable preview if bounds are CGRectZero
-                return CGRectIsEmpty(view.bounds) ? UITableViewCellAccessoryDisclosureIndicator : 0;
+                return !CGRectIsEmpty(view.bounds) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
             }
         ]
     ]];

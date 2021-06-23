@@ -8,23 +8,25 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class FLEXAlert, FLEXAlertAction;
 
 typedef void (^FLEXAlertReveal)(void);
 typedef void (^FLEXAlertBuilder)(FLEXAlert *make);
-typedef FLEXAlert *(^FLEXAlertStringProperty)(NSString *);
-typedef FLEXAlert *(^FLEXAlertStringArg)(NSString *);
-typedef FLEXAlert *(^FLEXAlertTextField)(void(^configurationHandler)(UITextField *textField));
-typedef FLEXAlertAction *(^FLEXAlertAddAction)(NSString *title);
-typedef FLEXAlertAction *(^FLEXAlertActionStringProperty)(NSString *);
-typedef FLEXAlertAction *(^FLEXAlertActionProperty)(void);
-typedef FLEXAlertAction *(^FLEXAlertActionBOOLProperty)(BOOL);
-typedef FLEXAlertAction *(^FLEXAlertActionHandler)(void(^handler)(NSArray<NSString *> *strings));
+typedef FLEXAlert * _Nonnull (^FLEXAlertStringProperty)(NSString * _Nullable);
+typedef FLEXAlert * _Nonnull (^FLEXAlertStringArg)(NSString * _Nullable);
+typedef FLEXAlert * _Nonnull (^FLEXAlertTextField)(void(^configurationHandler)(UITextField *textField));
+typedef FLEXAlertAction * _Nonnull (^FLEXAlertAddAction)(NSString *title);
+typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionStringProperty)(NSString * _Nullable);
+typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionProperty)(void);
+typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionBOOLProperty)(BOOL);
+typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionHandler)(void(^handler)(NSArray<NSString *> *strings));
 
 @interface FLEXAlert : NSObject
 
 /// Shows a simple alert with one button which says "Dismiss"
-+ (void)showAlert:(NSString *)title message:(NSString *)message from:(UIViewController *)viewController;
++ (void)showAlert:(NSString * _Nullable)title message:(NSString * _Nullable)message from:(UIViewController *)viewController;
 
 /// Construct and display an alert
 + (void)makeAlert:(FLEXAlertBuilder)block showFrom:(UIViewController *)viewController;
@@ -79,3 +81,5 @@ typedef FLEXAlertAction *(^FLEXAlertActionHandler)(void(^handler)(NSArray<NSStri
 @property (nonatomic, readonly) UIAlertAction *action;
 
 @end
+
+NS_ASSUME_NONNULL_END

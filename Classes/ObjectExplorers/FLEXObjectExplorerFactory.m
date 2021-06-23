@@ -17,6 +17,8 @@
 #import "FLEXColorPreviewSection.h"
 #import "FLEXDefaultsContentSection.h"
 #import "FLEXBundleShortcuts.h"
+#import "FLEXNSStringShortcuts.h"
+#import "FLEXNSDataShortcuts.h"
 #import "FLEXBlockShortcuts.h"
 #import "FLEXUtility.h"
 
@@ -50,6 +52,8 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
             ClassKey(CALayer)          : [FLEXLayerShortcuts class],
             ClassKey(UIColor)          : [FLEXColorPreviewSection class],
             ClassKey(NSBundle)         : [FLEXBundleShortcuts class],
+            ClassKey(NSString)         : [FLEXNSStringShortcuts class],
+            ClassKey(NSData)           : [FLEXNSDataShortcuts class],
             ClassKeyByName(NSBlock)    : [FLEXBlockShortcuts class],
         }];
         #undef ClassKey

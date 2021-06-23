@@ -13,9 +13,9 @@ typedef void (^GestureBlock)(UIGestureRecognizer *gesture);
 
 @interface UIGestureRecognizer (Blocks)
 
-+ (instancetype)action:(GestureBlock)action;
++ (instancetype)flex_action:(GestureBlock)action;
 
-@property (nonatomic) GestureBlock action;
+@property (nonatomic, setter=flex_setAction:) GestureBlock flex_action;
 
 @end
 

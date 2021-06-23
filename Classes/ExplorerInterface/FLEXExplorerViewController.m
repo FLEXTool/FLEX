@@ -45,6 +45,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// Only valid while a toolbar drag pan gesture is in progress.
 @property (nonatomic) CGRect toolbarFrameBeforeDragging;
 
+/// Only valid while a selected view pan gesture is in progress.
+@property (nonatomic) CGFloat selectedViewLastPanX;
+
 /// Borders of all the visible views in the hierarchy at the selection point.
 /// The keys are NSValues with the corresponding view (nonretained).
 @property (nonatomic) NSDictionary<NSValue *, UIView *> *outlineViewsForVisibleViews;
@@ -57,6 +60,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 /// A colored transparent overlay to indicate that the view is selected.
 @property (nonatomic) UIView *selectedViewOverlay;
+
+/// Used to actuate changes in view selection on iOS 10+
+@property (nonatomic, readonly) UISelectionFeedbackGenerator *selectionFBG API_AVAILABLE(ios(10.0));
 
 /// self.view.window as a \c FLEXWindow
 @property (nonatomic, readonly) FLEXWindow *window;
@@ -118,6 +124,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     self.movePanGR = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleMovePan:)];
     self.movePanGR.enabled = self.currentMode == FLEXExplorerModeMove;
     [self.view addGestureRecognizer:self.movePanGR];
+    
+    // Feedback
+    if (@available(iOS 10.0, *)) {
+        _selectionFBG = [UISelectionFeedbackGenerator new];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -450,16 +461,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     ];
     [toolbar.selectedViewDescriptionContainer addGestureRecognizer:self.detailsTapGR];
     // Swipe gestures for selecting deeper / higher views at a point
-    UISwipeGestureRecognizer *leftSwipe = [[UISwipeGestureRecognizer alloc]
+    UIPanGestureRecognizer *leftSwipe = [[UIPanGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
     ];
-    UISwipeGestureRecognizer *rightSwipe = [[UISwipeGestureRecognizer alloc]
-        initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
-    ];
-    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-    rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+//    UIPanGestureRecognizer *rightSwipe = [[UIPanGestureRecognizer alloc]
+//        initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
+//    ];
+//    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
+//    rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
     [toolbar.selectedViewDescriptionContainer addGestureRecognizer:leftSwipe];
-    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:rightSwipe];
+//    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:rightSwipe];
     
     // Long press gesture to present tabs manager
     [toolbar.globalsItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
@@ -598,19 +609,54 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-- (void)handleChangeViewAtPointGesture:(UISwipeGestureRecognizer *)sender {
+- (void)handleChangeViewAtPointGesture:(UIPanGestureRecognizer *)sender {
     NSInteger max = self.viewsAtTapPoint.count - 1;
     NSInteger currentIdx = [self.viewsAtTapPoint indexOfObject:self.selectedView];
-    switch (sender.direction) {
-        case UISwipeGestureRecognizerDirectionLeft:
-            self.selectedView = self.viewsAtTapPoint[MIN(max, currentIdx + 1)];
+    CGFloat locationX = [sender locationInView:self.view].x;
+    
+    // Track the pan gesture: every N points we move along the X axis,
+    // actuate some haptic feedback and move up or down the hierarchy.
+    // We only store the "last" location when we've met the threshold.
+    // We only change the view and actuate feedback if the view selection
+    // changes; that is, as long as we don't go outside or under the array.
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan: {
+            self.selectedViewLastPanX = locationX;
             break;
-        case UISwipeGestureRecognizerDirectionRight:
-            self.selectedView = self.viewsAtTapPoint[MAX(0, currentIdx - 1)];
-            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            static CGFloat kNextLevelThreshold = 20.f;
+            CGFloat lastX = self.selectedViewLastPanX;
+            NSInteger newSelection = currentIdx;
             
-        default:
+            // Left, go down the hierarchy
+            if (locationX < lastX && (lastX - locationX) >= kNextLevelThreshold) {
+                // Choose a new view index up to the max index
+                newSelection = MIN(max, currentIdx + 1);
+                self.selectedViewLastPanX = locationX;
+            }
+            // Right, go up the hierarchy
+            else if (lastX < locationX && (locationX - lastX) >= kNextLevelThreshold) {
+                // Choose a new view index down to the min index
+                newSelection = MAX(0, currentIdx - 1);
+                self.selectedViewLastPanX = locationX;
+            }
+            
+            if (currentIdx != newSelection) {
+                self.selectedView = self.viewsAtTapPoint[newSelection];
+                [self actuateSelectionChangedFeedback];
+            }
+            
             break;
+        }
+            
+        default: break;
+    }
+}
+
+- (void)actuateSelectionChangedFeedback {
+    if (@available(iOS 10.0, *)) {
+        [self.selectionFBG selectionChanged];
     }
 }
 
@@ -872,13 +918,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [super dismissViewControllerAnimated:animated completion:completion];
 }
 
-- (BOOL)wantsWindowToBecomeKey
-{
+- (BOOL)wantsWindowToBecomeKey {
     return self.window.previousKeyWindow != nil;
 }
 
 - (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future
-                                  completion:(void(^)(void))completion {
+                                  completion:(void (^)(void))completion {
     if (self.presentedViewController) {
         [self dismissViewControllerAnimated:YES completion:completion];
     } else if (future) {
@@ -924,11 +969,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         } else {
             return [FLEXHierarchyViewController delegate:self];
         }
-    } completion:^{
-        if (completion) {
-            completion();
-        }
-    }];
+    } completion:completion];
 }
 
 - (void)toggleMenuTool {

@@ -15,11 +15,11 @@
 + (instancetype)forObject:(CALayer *)layer {
     return [self forObject:layer additionalRows:@[
         [FLEXActionShortcut title:@"Preview Image" subtitle:nil
-            viewer:^UIViewController *(id layer) {
+            viewer:^UIViewController *(CALayer *layer) {
                 return [FLEXImagePreviewViewController previewForLayer:layer];
             }
-            accessoryType:^UITableViewCellAccessoryType(id layer) {
-                return UITableViewCellAccessoryDisclosureIndicator;
+            accessoryType:^UITableViewCellAccessoryType(CALayer *layer) {
+                return CGRectIsEmpty(layer.bounds) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator;
             }
         ]
     ]];

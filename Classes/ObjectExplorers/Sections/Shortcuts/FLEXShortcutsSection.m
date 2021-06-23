@@ -255,31 +255,52 @@
 }
 @end
 
-#define NewAndSet(ivar) ({ FLEXShortcutsFactory *r = [self new]; r->ivar = YES; r; })
+#define NewAndSet(ivar) ({ FLEXShortcutsFactory *r = [self sharedFactory]; r->ivar = YES; r; })
 #define SetIvar(ivar) ({ self->ivar = YES; self; })
 #define SetParamBlock(ivar) ^(NSArray *p) { self->ivar = p; return self; }
 
-@implementation FLEXShortcutsFactory
-
 typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> RegistrationBuckets;
-// Class buckets
-static RegistrationBuckets *cProperties = nil;
-static RegistrationBuckets *cIvars = nil;
-static RegistrationBuckets *cMethods = nil;
-// Metaclass buckets
-static RegistrationBuckets *mProperties = nil;
-static RegistrationBuckets *mMethods = nil;
 
-+ (void)load {
-    cProperties = [NSMutableDictionary new];
-    cIvars = [NSMutableDictionary new];
-    cMethods = [NSMutableDictionary new];
+@implementation FLEXShortcutsFactory {
+    // Class buckets
+    RegistrationBuckets *cProperties;
+    RegistrationBuckets *cIvars;
+    RegistrationBuckets *cMethods;
+    // Metaclass buckets
+    RegistrationBuckets *mProperties;
+    RegistrationBuckets *mMethods;
+}
 
-    mProperties = [NSMutableDictionary new];
-    mMethods = [NSMutableDictionary new];
++ (instancetype)sharedFactory {
+    static FLEXShortcutsFactory *shared = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shared = [self new];
+    });
+    
+    return shared;
+}
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        cProperties = [NSMutableDictionary new];
+        cIvars = [NSMutableDictionary new];
+        cMethods = [NSMutableDictionary new];
+
+        mProperties = [NSMutableDictionary new];
+        mMethods = [NSMutableDictionary new];
+    }
+    
+    return self;
 }
 
 + (NSArray<id<FLEXRuntimeMetadata>> *)shortcutsForObjectOrClass:(id)objectOrClass {
+    return [[self sharedFactory] shortcutsForObjectOrClass:objectOrClass];
+}
+
+- (NSArray<id<FLEXRuntimeMetadata>> *)shortcutsForObjectOrClass:(id)objectOrClass {
+
     NSMutableArray<id<FLEXRuntimeMetadata>> *shortcuts = [NSMutableArray new];
     BOOL isClass = object_isClass(objectOrClass);
     // The -class does not give you a metaclass, and we want a metaclass
@@ -325,28 +346,41 @@ static RegistrationBuckets *mMethods = nil;
 }
 
 - (void)_register:(NSArray<id<FLEXRuntimeMetadata>> *)items to:(RegistrationBuckets *)global class:(Class)key {
-    // Get (or initialize) the bucket for this class
-    NSMutableArray *bucket = ({
-        id bucket = global[key];
-        if (!bucket) {
-            bucket = [NSMutableArray new];
-            global[(id)key] = bucket;
-        }
-        bucket;
-    });
+    @synchronized (self) {
+        // Get (or initialize) the bucket for this class
+        NSMutableArray *bucket = ({
+            id bucket = global[key];
+            if (!bucket) {
+                bucket = [NSMutableArray new];
+                global[(id)key] = bucket;
+            }
+            bucket;
+        });
 
-    if (self->_append)  { [bucket addObjectsFromArray:items]; }
-    if (self->_replace) { [bucket setArray:items]; }
-    if (self->_prepend) {
-        if (bucket.count) {
-            // Set new items as array, add old items behind them
-            id copy = bucket.copy;
-            [bucket setArray:items];
-            [bucket addObjectsFromArray:copy];
-        } else {
-            [bucket addObjectsFromArray:items];
+        if (self->_append)  { [bucket addObjectsFromArray:items]; }
+        if (self->_replace) { [bucket setArray:items]; }
+        if (self->_prepend) {
+            if (bucket.count) {
+                // Set new items as array, add old items behind them
+                id copy = bucket.copy;
+                [bucket setArray:items];
+                [bucket addObjectsFromArray:copy];
+            } else {
+                [bucket addObjectsFromArray:items];
+            }
         }
     }
+}
+
+- (void)reset {
+    _append = NO;
+    _prepend = NO;
+    _replace = NO;
+    _notInstance = NO;
+    
+    _properties = nil;
+    _ivars = nil;
+    _methods = nil;
 }
 
 - (FLEXShortcutsFactory *)class {
@@ -405,9 +439,15 @@ static RegistrationBuckets *mMethods = nil;
         Class metaclass = isMeta ? cls : object_getClass(cls);
         Class clsForMetadata = instanceMetadata ? cls : metaclass;
         
+        // The factory is a singleton so we don't need to worry about "leaking" it
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wimplicit-retain-self"
+        
         RegistrationBuckets *propertyBucket = instanceShortcut ? cProperties : mProperties;
         RegistrationBuckets *methodBucket = instanceShortcut ? cMethods : mMethods;
         RegistrationBuckets *ivarBucket = instanceShortcut ? cIvars : nil;
+        
+        #pragma clang diagnostic pop
 
         if (self->_properties) {
             NSArray *items = [self->_properties flex_mapped:^id(NSString *name, NSUInteger idx) {
@@ -430,6 +470,8 @@ static RegistrationBuckets *mMethods = nil;
             }];
             [self _register:items to:ivarBucket class:cls];
         }
+        
+        [self reset];
     };
 }
 

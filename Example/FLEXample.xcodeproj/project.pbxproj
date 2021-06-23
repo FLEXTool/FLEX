@@ -23,6 +23,7 @@
 		C386D70C241AA67800699085 /* Owner.m in Sources */ = {isa = PBXBuildFile; fileRef = C386D70A241AA67800699085 /* Owner.m */; };
 		C3A67856241AB8AD005A4681 /* MiscNetworkRequests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A67855241AB8AD005A4681 /* MiscNetworkRequests.m */; };
 		C3A67858241ADDF7005A4681 /* Commit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A67857241ADDF7005A4681 /* Commit.swift */; };
+		C3B3760025B8CDA300AD43AB /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = C3B375FF25B8CDA300AD43AB /* Person.m */; };
 		E211705F801A8167D308F94A /* libPods-FLEXample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBD699DDBAC5A16D8CFD39AC /* libPods-FLEXample.a */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,8 @@
 		C3A67854241AB8AD005A4681 /* MiscNetworkRequests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MiscNetworkRequests.h; sourceTree = "<group>"; };
 		C3A67855241AB8AD005A4681 /* MiscNetworkRequests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MiscNetworkRequests.m; sourceTree = "<group>"; };
 		C3A67857241ADDF7005A4681 /* Commit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commit.swift; sourceTree = "<group>"; };
+		C3B375FE25B8CDA300AD43AB /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
+		C3B375FF25B8CDA300AD43AB /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +141,8 @@
 		C3A67852241AB86D005A4681 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				C3B375FE25B8CDA300AD43AB /* Person.h */,
+				C3B375FF25B8CDA300AD43AB /* Person.m */,
 				C3A67857241ADDF7005A4681 /* Commit.swift */,
 				C386D6E42419984700699085 /* CommitListViewController.h */,
 				C386D6E52419984700699085 /* CommitListViewController.m */,
@@ -279,6 +284,7 @@
 			files = (
 				C3A67858241ADDF7005A4681 /* Commit.swift in Sources */,
 				C386D6D02419975A00699085 /* AppDelegate.swift in Sources */,
+				C3B3760025B8CDA300AD43AB /* Person.m in Sources */,
 				C386D6E62419984700699085 /* CommitListViewController.m in Sources */,
 				C386D70B241AA67800699085 /* Dog.m in Sources */,
 				C3A67856241AB8AD005A4681 /* MiscNetworkRequests.m in Sources */,

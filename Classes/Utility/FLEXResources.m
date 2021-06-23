@@ -8838,6 +8838,10 @@ static const u_int8_t FLEXHierarchyIndentPattern3x[] = {
     return FLEXImage(FLEXCheckerPattern);
 }
 
++ (UIColor *)checkerPatternColor {
+    return [UIColor colorWithPatternImage:FLEXResources.checkerPattern];
+}
+
 + (UIImage *)hierarchyIndentPattern {
     return FLEXImageTemplate(FLEXHierarchyIndentPattern);
 }

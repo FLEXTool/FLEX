@@ -406,22 +406,22 @@
                     UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
                 }
             ];
-            UIAction *blacklist = [UIAction
-                actionWithTitle:[NSString stringWithFormat:@"Blacklist '%@'", request.URL.host]
+            UIAction *denylist = [UIAction
+                actionWithTitle:[NSString stringWithFormat:@"Exclude '%@'", request.URL.host]
                 image:nil
                 identifier:nil
                 handler:^(__kindof UIAction *action) {
-                    NSMutableArray *blacklist =  FLEXNetworkRecorder.defaultRecorder.hostBlacklist;
-                    [blacklist addObject:request.URL.host];
-                    [FLEXNetworkRecorder.defaultRecorder clearBlacklistedTransactions];
-                    [FLEXNetworkRecorder.defaultRecorder synchronizeBlacklist];
+                    NSMutableArray *denylist =  FLEXNetworkRecorder.defaultRecorder.hostDenylist;
+                    [denylist addObject:request.URL.host];
+                    [FLEXNetworkRecorder.defaultRecorder clearExcludedTransactions];
+                    [FLEXNetworkRecorder.defaultRecorder synchronizeDenylist];
                     [self tryUpdateTransactions];
                 }
             ];
             return [UIMenu
                 menuWithTitle:@"" image:nil identifier:nil
                 options:UIMenuOptionsDisplayInline
-                children:@[copy, blacklist]
+                children:@[copy, denylist]
             ];
         }
     ];

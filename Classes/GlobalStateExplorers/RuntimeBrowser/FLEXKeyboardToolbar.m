@@ -40,7 +40,7 @@
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         
         if (@available(iOS 13, *)) {
-            self.appearance = UIKeyboardTypeDefault;
+            self.appearance = UIKeyboardAppearanceDefault;
         } else {
             self.appearance = UIKeyboardAppearanceLight;
         }

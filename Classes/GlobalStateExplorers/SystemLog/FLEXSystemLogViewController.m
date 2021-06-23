@@ -100,10 +100,9 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     self.showsSearchBar = YES;
     self.showSearchBarInitially = NO;
 
-    __weak __typeof(self) weakSelf = self;
-    id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) {
-        __strong __typeof(weakSelf) strongSelf = weakSelf;
-        [strongSelf handleUpdateWithNewMessages:newMessages];
+    weakify(self)
+    id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) { strongify(self)
+        [self handleUpdateWithNewMessages:newMessages];
     };
 
     if (FLEXOSLogAvailable() && !FLEXNSLogHookWorks) {
@@ -137,20 +136,18 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     [self.logController startMonitoring];
 }
 
-- (NSArray<FLEXTableViewSection *> *)makeSections {
-    __weak __typeof(self) weakSelf = self;
+- (NSArray<FLEXTableViewSection *> *)makeSections { weakify(self)
     _logMessages = [FLEXMutableListSection list:@[]
         cellConfiguration:^(FLEXSystemLogCell *cell, FLEXSystemLogMessage *message, NSInteger row) {
-            __strong __typeof(self) strongSelf = weakSelf;
-            if (strongSelf) {
-                cell.logMessage = message;
-                cell.highlightedText = strongSelf.filterText;
+            strongify(self)
+        
+            cell.logMessage = message;
+            cell.highlightedText = self.filterText;
 
-                if (row % 2 == 0) {
-                    cell.backgroundColor = FLEXColor.primaryBackgroundColor;
-                } else {
-                    cell.backgroundColor = FLEXColor.secondaryBackgroundColor;
-                }
+            if (row % 2 == 0) {
+                cell.backgroundColor = FLEXColor.primaryBackgroundColor;
+            } else {
+                cell.backgroundColor = FLEXColor.secondaryBackgroundColor;
             }
         } filterMatcher:^BOOL(NSString *filterText, FLEXSystemLogMessage *message) {
             NSString *displayedText = [FLEXSystemLogCell displayedTextForLogMessage:message];
@@ -274,19 +271,19 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView
 contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
                                     point:(CGPoint)point __IOS_AVAILABLE(13.0) {
-    __weak __typeof__(self) weakSelf = self;
-    return [UIContextMenuConfiguration configurationWithIdentifier:nil
-                                                   previewProvider:nil
-                                                    actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
-        UIAction *copy = [UIAction actionWithTitle:@"Copy"
-                                             image:nil
-                                        identifier:@"Copy"
-                                           handler:^(__kindof UIAction *action) {
-            // We usually only want to copy the log message itself, not any metadata associated with it.
-            UIPasteboard.generalPasteboard.string = weakSelf.logMessages.filteredList[indexPath.row].messageText ?: @"";
-        }];
-        return [UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[copy]];
-    }];
+    weakify(self)
+    return [UIContextMenuConfiguration configurationWithIdentifier:nil previewProvider:nil
+        actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
+            UIAction *copy = [UIAction actionWithTitle:@"Copy"
+                                                 image:nil
+                                            identifier:@"Copy"
+                                               handler:^(UIAction *action) { strongify(self)
+                // We usually only want to copy the log message itself, not any metadata associated with it.
+                UIPasteboard.generalPasteboard.string = self.logMessages.filteredList[indexPath.row].messageText ?: @"";
+            }];
+            return [UIMenu menuWithTitle:@"" image:nil identifier:nil options:UIMenuOptionsDisplayInline children:@[copy]];
+        }
+    ];
 }
 
 #endif

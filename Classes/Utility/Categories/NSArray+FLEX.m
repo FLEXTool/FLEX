@@ -85,7 +85,6 @@
     return array;
 }
 
-
 + (instancetype)flex_mapped:(id<NSFastEnumeration>)collection block:(id(^)(id obj, NSUInteger idx))mapFunc {
     NSMutableArray *array = [NSMutableArray new];
     NSInteger idx = 0;
@@ -104,7 +103,7 @@
     return array;
 }
 
-- (instancetype)sortedUsingSelector:(SEL)selector {
+- (instancetype)flex_sortedUsingSelector:(SEL)selector {
     if (FLEXArrayClassIsMutable(self)) {
         NSMutableArray *me = (id)self;
         [me sortUsingSelector:selector];
@@ -112,6 +111,23 @@
     } else {
         return [self sortedArrayUsingSelector:selector];
     }
+}
+
+@end
+
+
+@implementation NSMutableArray (Functional)
+
+- (void)flex_filter:(BOOL (^)(id, NSUInteger))keepObject {
+    NSMutableIndexSet *toRemove = [NSMutableIndexSet new];
+    
+    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (!keepObject(obj, idx)) {
+            [toRemove addIndex:idx];
+        }
+    }];
+    
+    [self removeObjectsAtIndexes:toRemove];
 }
 
 @end

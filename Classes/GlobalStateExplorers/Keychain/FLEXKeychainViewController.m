@@ -30,10 +30,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItems = @[
-        [UIBarButtonItem flex_systemItem:UIBarButtonSystemItemTrash target:self action:@selector(trashPressed:)],
-        [UIBarButtonItem flex_systemItem:UIBarButtonSystemItemAdd target:self action:@selector(addPressed)],
-    ];
+    [self addToolbarItems:@[
+        FLEXBarButtonItemSystem(Add, self, @selector(addPressed)),
+        [FLEXBarButtonItemSystem(Trash, self, @selector(trashPressed:)) flex_withTintColor:UIColor.redColor],
+    ]];
 
     [self reloadData];
 }
@@ -43,14 +43,15 @@
         cellConfiguration:^(__kindof FLEXTableViewCell *cell, NSDictionary *item, NSInteger row) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
-            id account = item[kFLEXKeychainAccountKey];
-            if ([account isKindOfClass:[NSString class]]) {
-                cell.textLabel.text = account;
+            id service = item[kFLEXKeychainWhereKey];
+            if ([service isKindOfClass:[NSString class]]) {
+                cell.textLabel.text = service;
+                cell.detailTextLabel.text = [item[kFLEXKeychainAccountKey] description];
             } else {
                 cell.textLabel.text = [NSString stringWithFormat:
                     @"[%@]\n\n%@",
-                    NSStringFromClass([account class]),
-                    [account description]
+                    NSStringFromClass([service class]),
+                    [service description]
                 ];
             }
         } filterMatcher:^BOOL(NSString *filterText, NSDictionary *item) {
@@ -98,8 +99,9 @@
     NSDictionary *item = self.section.filteredList[idx];
 
     FLEXKeychainQuery *query = [FLEXKeychainQuery new];
-    query.service = item[kFLEXKeychainWhereKey];
-    query.account = item[kFLEXKeychainAccountKey];
+    query.service = [item[kFLEXKeychainWhereKey] description];
+    query.account = [item[kFLEXKeychainAccountKey] description];
+    query.accessGroup = [item[kFLEXKeychainGroupKey] description];
     [query fetch:nil];
 
     return query;
@@ -130,14 +132,30 @@
         make.message(@"This will remove all keychain items for this app.\n");
         make.message(@"This action cannot be undone. Are you sure?");
         make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
+            [self confirmClearKeychain];
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self source:sender];
+}
+
+- (void)confirmClearKeychain {
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"ARE YOU SURE?");
+        make.message(@"This action CANNOT BE UNDONE.\nAre you sure you want to continue?\n");
+        make.message(@"If you're sure, scroll to confirm.");
+        make.button(@"Yes, clear the keychain").destructiveStyle().handler(^(NSArray *strings) {
             for (id account in self.section.list) {
                 [self deleteItem:account];
             }
 
             [self reloadData];
         });
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
+        make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel"); make.button(@"Cancel");
         make.button(@"Cancel").cancelStyle();
-    } showFrom:self source:sender];
+    } showFrom:self];
 }
 
 - (void)addPressed {
@@ -215,6 +233,7 @@
         make.message(@"Service: ").message(query.service);
         make.message(@"\nAccount: ").message(query.account);
         make.message(@"\nPassword: ").message(query.password);
+        make.message(@"\nGroup: ").message(query.accessGroup);
 
         make.button(@"Copy Service").handler(^(NSArray<NSString *> *strings) {
             [UIPasteboard.generalPasteboard flex_copy:query.service];

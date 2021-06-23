@@ -9,6 +9,7 @@
 #import "FLEXScopeCarousel.h"
 #import "FLEXCarouselCell.h"
 #import "FLEXColor.h"
+#import "FLEXMacros.h"
 #import "UIView+FLEX_Layout.h"
 
 const CGFloat kCarouselItemSpacing = 0;
@@ -72,15 +73,14 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
         self.sizingCell.title = @"NSObject";
 
         // Dynamic type
-        __weak __typeof(self) weakSelf = self;
+        weakify(self);
         _dynamicTypeObserver = [NSNotificationCenter.defaultCenter
             addObserverForName:UIContentSizeCategoryDidChangeNotification
-            object:nil queue:nil usingBlock:^(NSNotification *note) {
+            object:nil queue:nil usingBlock:^(NSNotification *note) { strongify(self)
                 [self.collectionView setNeedsLayout];
                 [self setNeedsUpdateConstraints];
 
                 // Notify observers
-                __typeof(self) self = weakSelf;
                 for (void (^block)(FLEXScopeCarousel *) in self.dynamicTypeHandlers) {
                     block(self);
                 }
@@ -118,7 +118,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 - (void)updateConstraints {
     if (!self.constraintsInstalled) {
         self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-        [self.collectionView pinEdgesToSuperview];
+        [self.collectionView flex_pinEdgesToSuperview];
         
         self.constraintsInstalled = YES;
     }

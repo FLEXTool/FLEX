@@ -8,8 +8,10 @@
 
 #import "FLEXShortcutsFactory+Defaults.h"
 #import "FLEXShortcut.h"
+#import "FLEXMacros.h"
 #import "FLEXRuntimeUtility.h"
 #import "NSObject+FLEX_Reflection.h"
+#import "Cocoa+FLEXShortcuts.h"
 
 #pragma mark - UIApplication
 
@@ -59,6 +61,7 @@
     FLEXRuntimeUtilityTryAddObjectProperty(6, constraints, UIView_, NSArray, PropertyKey(ReadOnly));
     FLEXRuntimeUtilityTryAddObjectProperty(2, subviews, UIView_, NSArray, PropertyKey(ReadOnly));
     FLEXRuntimeUtilityTryAddObjectProperty(2, superview, UIView_, UIView, PropertyKey(ReadOnly));
+    FLEXRuntimeUtilityTryAddObjectProperty(7, tintColor, UIView_, UIView);
 
     // UIButton, private
     FLEXRuntimeUtilityTryAddObjectProperty(2, font, UIButton.class, UIFont, PropertyKey(ReadOnly));
@@ -141,7 +144,26 @@
             @"viewIfLoaded", @"title", @"navigationItem", @"toolbarItems", @"tabBarItem",
             @"childViewControllers", @"navigationController", @"tabBarController", @"splitViewController",
             @"parentViewController", @"presentedViewController", @"presentingViewController",
-        ]).methods(@[@"view"]).forClass(UIViewController.class);
+        ])
+        .methods(@[@"view"])
+        .forClass(UIViewController.class);
+    
+    // UIAlertController
+    NSMutableArray *alertControllerProps = @[
+        @"title", @"message", @"actions", @"textFields",
+        @"preferredAction", @"presentingViewController", @"viewIfLoaded",
+    ].mutableCopy;
+    if (@available(iOS 14.0, *)) {
+        [alertControllerProps insertObject:@"image" atIndex:4];
+    }
+    self.append
+        .properties(alertControllerProps)
+        .methods(@[@"addAction:"])
+        .forClass(UIAlertController.class);
+    self.append.properties(@[
+        @"title", @"style", @"enabled", @"flex_styleName",
+        @"image", @"keyCommandInput", @"_isPreferred", @"_alertController",
+    ]).forClass(UIAlertAction.class);
 }
 
 @end
@@ -256,12 +278,18 @@
     FLEXRuntimeUtilityTryAddObjectProperty(2, abbreviationDictionary, NSTimeZone.flex_metaclass, NSDictionary);
     
     self.append.classMethods(@[
-        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:", @"", @"", @"", 
+        @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:",
     ]).forClass(NSTimeZone.flex_metaclass);
     
     self.append.classProperties(@[
         @"defaultTimeZone", @"systemTimeZone", @"localTimeZone"
     ]).forClass(NSTimeZone.class);
+    
+    // UTF8String is not a real property under the hood
+    FLEXRuntimeUtilityTryAddNonatomicProperty(2, UTF8String, NSString.class, const char *, PropertyKey(ReadOnly));
+    
+    self.append.properties(@[@"length"]).methods(@[@"characterAtIndex:"]).forClass(NSString.class);
+    self.append.properties(@[@"length", @"bytes"]).forClass(NSData.class);
 }
 
 @end

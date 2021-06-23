@@ -63,11 +63,12 @@ NSString * const kFLEXDBQueryRowCellReuse = @"kFLEXDBQueryRowCellReuse";
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    CGFloat width  = self.contentView.frame.size.width / self.labels.count;
     CGFloat height = self.contentView.frame.size.height;
     
     [self.labels flex_forEach:^(UILabel *label, NSUInteger i) {
-        label.frame = CGRectMake(width * i + 5, 0, (width - 10), height);
+        CGFloat width = [self.layoutSource dbQueryRowCell:self widthForColumn:i];
+        CGFloat minX = [self.layoutSource dbQueryRowCell:self minXForColumn:i];
+        label.frame = CGRectMake(minX + 5, 0, (width - 10), height);
     }];
 }
 

@@ -9,7 +9,6 @@
 #import "FLEXManager+Extensibility.h"
 #import "FLEXManager+Private.h"
 #import "FLEXNavigationController.h"
-#import "FLEXGlobalsEntry.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXKeyboardShortcutManager.h"
 #import "FLEXExplorerViewController.h"
@@ -58,9 +57,21 @@
     [self.userGlobalEntries addObject:entry];
 }
 
-- (void)clearGlobalEntries
-{
-  [self.userGlobalEntries removeAllObjects];
+- (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction {
+    NSParameterAssert(entryName);
+    NSParameterAssert(rowSelectedAction);
+    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
+    
+    entryName = entryName.copy;
+    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString * _Nonnull{
+        return entryName;
+    } action:rowSelectedAction];
+    
+    [self.userGlobalEntries addObject:entry];
+}
+
+- (void)clearGlobalEntries {
+    [self.userGlobalEntries removeAllObjects];
 }
 
 
@@ -124,17 +135,6 @@
     [self registerDefaultSimulatorShortcutWithKey:@"n" modifiers:0 action:^{
         [self toggleTopViewControllerOfClass:[FLEXNetworkMITMViewController class]];
     } description:@"Toggle network history view"];
-
-    // 't' is for testing: quickly present an object explorer for debugging
-    [self registerDefaultSimulatorShortcutWithKey:@"t" modifiers:0 action:^{
-        [self showExplorerIfNeeded];
-
-        [self.explorerViewController toggleToolWithViewControllerProvider:^UINavigationController *{
-            return [FLEXNavigationController withRootViewController:[FLEXObjectExplorerFactory
-                explorerViewControllerForObject:NSBundle.mainBundle
-            ]];
-        } completion:nil];
-    } description:@"Present an object explorer for debugging"];
 
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputDownArrow modifiers:0 action:^{
         if (self.isHidden || ![self.explorerViewController handleDownArrowKeyPressed]) {

@@ -29,7 +29,7 @@
 - (NSString *)rowTitle:(NSInteger)row;
 - (NSArray<NSString *> *)contentForRow:(NSInteger)row;
 
-- (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView widthForContentCellInColumn:(NSInteger)column;
+- (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView minWidthForContentCellInColumn:(NSInteger)column;
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView heightForContentCellInRow:(NSInteger)row;
 - (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView;
 - (CGFloat)widthForLeftHeaderInTableView:(FLEXMultiColumnTableView *)tableView;

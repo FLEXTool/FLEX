@@ -84,8 +84,8 @@
 }
 
 - (CGFloat)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
-    widthForContentCellInColumn:(NSInteger)column {
-    return 120;
+    minWidthForContentCellInColumn:(NSInteger)column {
+    return 100;
 }
 
 - (CGFloat)heightForTopHeaderInTableView:(FLEXMultiColumnTableView *)tableView {
@@ -127,13 +127,19 @@
                     sortType:(FLEXTableColumnHeaderSortType)sortType {
     
     NSArray<NSArray *> *sortContentData = [self.rows
-        sortedArrayUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
+        sortedArrayWithOptions:NSSortStable
+        usingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
             id a = obj1[column], b = obj2[column];
             if (a == NSNull.null) {
                 return NSOrderedAscending;
             }
             if (b == NSNull.null) {
                 return NSOrderedDescending;
+            }
+        
+            if ([a respondsToSelector:@selector(compare:options:)] &&
+                [b respondsToSelector:@selector(compare:options:)]) {
+                return [a compare:b options:NSNumericSearch];
             }
             
             if ([a respondsToSelector:@selector(compare:)] && [b respondsToSelector:@selector(compare:)]) {

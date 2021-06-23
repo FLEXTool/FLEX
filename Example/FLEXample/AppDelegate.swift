@@ -12,6 +12,15 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var repeatingLogExampleTimer: Timer!
     var window: UIWindow?
+    
+    @available(iOS 13.0, *)
+    func application(_ application: UIApplication,
+                     configurationForConnecting session: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        // Called when a new scene session is being created.
+        // Use this method to select a configuration to create the new scene with.
+        return UISceneConfiguration(name: nil, sessionRole: session.role)
+    }
 
     func application(_ application: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -35,29 +44,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // To show off the network logger, send several misc network requests
         MiscNetworkRequests.sendExampleRequests()
         
+        // For testing unarchiving of objects
+        self.archiveBob()
+        
         // For < iOS 13, set up the window here
-        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion < 13 {
-            let window = UIWindow(frame: UIScreen.main.bounds)
-            window.rootViewController = FLEXNavigationController(
-                rootViewController: CommitListViewController()
-            )
-            self.window = window
-            window.makeKeyAndVisible()
-            FLEXManager.shared.showExplorer()
-        }
+        self.setupWindow()
         
         return true
     }
-
-    @available(iOS 13.0, *)
-    func application(_ application: UIApplication,
-                     configurationForConnecting session: UISceneSession,
-                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: nil, sessionRole: session.role)
+    
+    func setupWindow() {
+        guard ProcessInfo.processInfo.operatingSystemVersion.majorVersion < 13 else {
+            return
+        }
+        
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        window.rootViewController = FLEXNavigationController(
+            rootViewController: CommitListViewController()
+        )
+        self.window = window
+        window.makeKeyAndVisible()
+        FLEXManager.shared.showExplorer()
     }
     
+    func archiveBob() {
+        let documents = NSSearchPathForDirectoriesInDomains(
+            .documentDirectory, .userDomainMask, true
+        ).first! as NSString
+        let whereToSaveBob = documents.appendingPathComponent("Bob.plist")
+        try! NSKeyedArchiver.archivedData(
+            withRootObject: Person.bob(), requiringSecureCoding: false
+        ).write(to: URL(fileURLWithPath: whereToSaveBob), options: [])
+    }
     
     let exampleLogLimit = 10
     var exampleLogSent = 0

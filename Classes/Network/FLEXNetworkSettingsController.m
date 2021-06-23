@@ -23,7 +23,7 @@
 @property (nonatomic, readonly) UISlider *cacheLimitSlider;
 @property (nonatomic) UILabel *cacheLimitLabel;
 
-@property (nonatomic) NSMutableArray<NSString *> *hostBlacklist;
+@property (nonatomic) NSMutableArray<NSString *> *hostDenylist;
 @end
 
 @implementation FLEXNetworkSettingsController
@@ -32,7 +32,7 @@
     [super viewDidLoad];
     
     [self disableToolbar];
-    self.hostBlacklist = FLEXNetworkRecorder.defaultRecorder.hostBlacklist.mutableCopy;
+    self.hostDenylist = FLEXNetworkRecorder.defaultRecorder.hostDenylist.mutableCopy;
     
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
     
@@ -107,13 +107,13 @@
 #pragma mark - Table View Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.hostBlacklist.count ? 2 : 1;
+    return self.hostDenylist.count ? 2 : 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case 0: return 5;
-        case 1: return self.hostBlacklist.count;
+        case 1: return self.hostDenylist.count;
         default: return 0;
     }
 }
@@ -121,7 +121,7 @@
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch (section) {
         case 0: return @"General";
-        case 1: return @"Host Blacklist";
+        case 1: return @"Host Denylist";
         default: return nil;
     }
 }
@@ -162,7 +162,7 @@
                     cell.accessoryView = self.jsonViewerSwitch;
                     break;
                 case 3:
-                    cell.textLabel.text = @"Reset Host Blacklist";
+                    cell.textLabel.text = @"Reset Host Denylist";
                     cell.textLabel.textColor = tableView.tintColor;
                     break;
                 case 4:
@@ -195,9 +195,9 @@
             break;
         }
         
-        // Blacklist entries
+        // Denylist entries
         case 1: {
-            cell.textLabel.text = self.hostBlacklist[indexPath.row];
+            cell.textLabel.text = self.hostDenylist[indexPath.row];
             break;
         }
         
@@ -212,7 +212,7 @@
 #pragma mark - Table View Delegate
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)ip {
-    // Can only select the "Reset Host Blacklist" row
+    // Can only select the "Reset Host Denylist" row
     return ip.section == 0 && ip.row == 2;
 }
 
@@ -220,12 +220,12 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
-        make.title(@"Reset Host Blacklist");
+        make.title(@"Reset Host Denylist");
         make.message(@"You cannot undo this action. Are you sure?");
         make.button(@"Reset").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
-            self.hostBlacklist = nil;
-            [FLEXNetworkRecorder.defaultRecorder.hostBlacklist removeAllObjects];
-            [FLEXNetworkRecorder.defaultRecorder synchronizeBlacklist];
+            self.hostDenylist = nil;
+            [FLEXNetworkRecorder.defaultRecorder.hostDenylist removeAllObjects];
+            [FLEXNetworkRecorder.defaultRecorder synchronizeDenylist];
             [self.tableView deleteSections:
                 [NSIndexSet indexSetWithIndex:1]
             withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -242,10 +242,10 @@
 forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(style == UITableViewCellEditingStyleDelete);
     
-    NSString *host = self.hostBlacklist[indexPath.row];
-    [self.hostBlacklist removeObjectAtIndex:indexPath.row];
-    [FLEXNetworkRecorder.defaultRecorder.hostBlacklist removeObject:host];
-    [FLEXNetworkRecorder.defaultRecorder synchronizeBlacklist];
+    NSString *host = self.hostDenylist[indexPath.row];
+    [self.hostDenylist removeObjectAtIndex:indexPath.row];
+    [FLEXNetworkRecorder.defaultRecorder.hostDenylist removeObject:host];
+    [FLEXNetworkRecorder.defaultRecorder synchronizeDenylist];
     
     [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }

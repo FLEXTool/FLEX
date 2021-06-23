@@ -13,6 +13,7 @@
 #import "FLEXTableView.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXAlert.h"
+#import "FLEXRuntimeClient.h"
 
 @interface FLEXObjcRuntimeViewController () <FLEXKeyPathSearchControllerDelegate>
 
@@ -28,9 +29,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Long press on navigation bar to initialize webkit legacy
+    //
+    // We call initializeWebKitLegacy automatically before you search
+    // all bundles just to be safe (since touching some classes before
+    // WebKit is initialized will initialize it on a thread other than
+    // the main thread), but sometimes you can encounter this crash
+    // without searching through all bundles, of course.
+    [self.navigationController.navigationBar addGestureRecognizer:[
+        [UILongPressGestureRecognizer alloc]
+            initWithTarget:[FLEXRuntimeClient class]
+            action:@selector(initializeWebKitLegacy)
+        ]
+    ];
+    
     // Search bar stuff, must be first because this creates self.searchController
     self.showsSearchBar = YES;
     self.showSearchBarInitially = YES;
+    self.activatesSearchBarAutomatically = YES;
     // Using pinSearchBar on this screen causes a weird visual
     // thing on the next view controller that gets pushed.
     //
@@ -55,15 +71,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // This doesn't work unless it's wrapped in this dispatch_async call
-        [self.searchController.searchBar becomeFirstResponder];
-    });
 }
 
 

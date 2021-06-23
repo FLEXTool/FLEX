@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXMacros.h"
 #import "NSArray+FLEX.h"
 @class FLEXTableView;
 

@@ -72,7 +72,8 @@
     return @[
         kFLEXDefaultsHidePropertyIvarsKey,
         kFLEXDefaultsHidePropertyMethodsKey,
-        kFLEXDefaultsHideMethodOverridesKey,
+        kFLEXDefaultsHidePrivateMethodsKey,
+        kFLEXDefaultsShowMethodOverridesKey,
         kFLEXDefaultsHideVariablePreviewsKey,
     ];
 }
@@ -87,7 +88,7 @@
 
     // Use [object class] here rather than object_getClass
     // to avoid the KVO prefix for observed objects
-    self.title = [[self.object class] description];
+    self.title = [FLEXRuntimeUtility safeClassNameForObject:self.object];
 
     // Search
     self.showsSearchBar = YES;
@@ -265,9 +266,11 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)g1 shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)g2 {
     // Prioritize important pan gestures over our swipe gesture
     if ([g2 isKindOfClass:[UIPanGestureRecognizer class]]) {
-        if (g2 == self.navigationController.interactivePopGestureRecognizer ||
-            g2 == self.navigationController.barHideOnSwipeGestureRecognizer ||
-            g2 == self.tableView.panGestureRecognizer) {
+        if (g2 == self.navigationController.interactivePopGestureRecognizer) {
+            return NO;
+        }
+        
+        if (g2 == self.tableView.panGestureRecognizer) {
             return NO;
         }
     }
@@ -291,7 +294,8 @@
     NSDictionary<NSString *, NSString *> *explorerToggles = @{
         kFLEXDefaultsHidePropertyIvarsKey:    @"Property-Backing Ivars",
         kFLEXDefaultsHidePropertyMethodsKey:  @"Property-Backing Methods",
-        kFLEXDefaultsHideMethodOverridesKey:  @"Method Overrides",
+        kFLEXDefaultsHidePrivateMethodsKey:   @"Likely Private Methods",
+        kFLEXDefaultsShowMethodOverridesKey:  @"Method Overrides",
         kFLEXDefaultsHideVariablePreviewsKey: @"Variable Previews"
     };
     
@@ -302,7 +306,8 @@
     NSDictionary<NSString *, NSDictionary *> *nextStateDescriptions = @{
         kFLEXDefaultsHidePropertyIvarsKey:    @{ @NO: @"Hide ", @YES: @"Show " },
         kFLEXDefaultsHidePropertyMethodsKey:  @{ @NO: @"Hide ", @YES: @"Show " },
-        kFLEXDefaultsHideMethodOverridesKey:  @{ @NO: @"Show ", @YES: @"Hide " },
+        kFLEXDefaultsHidePrivateMethodsKey:   @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsShowMethodOverridesKey:  @{ @NO: @"Show ", @YES: @"Hide " },
         kFLEXDefaultsHideVariablePreviewsKey: @{ @NO: @"Hide ", @YES: @"Show " },
     };
     

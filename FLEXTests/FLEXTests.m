@@ -13,8 +13,10 @@
 #import "FLEXPropertyAttributes.h"
 #import "FLEXProperty.h"
 #import "FLEXUtility.h"
+#import "FLEXRuntimeUtility.h"
 #import "FLEXMethod.h"
 #import "FLEXIvar.h"
+#import "FLEXNewRootClass.h"
 
 @interface Subclass : NSObject {
     @public
@@ -39,6 +41,7 @@
 - (void)testAssumptionsAboutClasses {
     Class cls = [self class];
     Class meta = objc_getMetaClass(NSStringFromClass(cls).UTF8String);
+    Class rootMeta = object_getClass(meta);
 
     // Subsequent `class` calls yield self
     XCTAssertEqual(cls, [cls class]);
@@ -50,7 +53,7 @@
 
     // Subsequent object_getClass calls yield metaclass
     XCTAssertEqual(object_getClass(cls), meta);
-    XCTAssertEqual(object_getClass(meta), meta);
+    XCTAssertEqual(object_getClass(object_getClass(meta)), rootMeta);
 
     // Superclass of a root class is nil
     XCTAssertNil(NSObject.superclass);
@@ -119,6 +122,22 @@
     XCTAssert(pointerValue != nil);
     XCTAssertEqual(pointerValue, (NSUInteger *)&array);
     XCTAssertEqual(pointerValue[0], 0xaa);
+}
+
+- (void)testSafeRespondsToSelector {
+    XCTAssertFalse([FLEXRuntimeUtility
+        safeObject:[NSObject class] respondsToSelector:@selector(testSafeRespondsToSelector)
+    ]);
+    
+    Class root = NSClassFromString(@"FLEXNewRootClass");
+    XCTAssertTrue([FLEXRuntimeUtility safeObject:root respondsToSelector:@selector(theOnlyMethod)]);
+    XCTAssertFalse([FLEXRuntimeUtility safeObject:root respondsToSelector:@selector(class)]);
+}
+
+- (void)testSafeGetClassName {
+    id instance = [NSClassFromString(@"FLEXNewRootClass") alloc];
+    NSString *className = [FLEXRuntimeUtility safeClassNameForObject:instance];
+    XCTAssertEqualObjects(@"FLEXNewRootClass", className);
 }
 
 @end

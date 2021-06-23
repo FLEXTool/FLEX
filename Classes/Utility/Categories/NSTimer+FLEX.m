@@ -14,7 +14,7 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 @implementation NSTimer (Blocks)
 
-+ (instancetype)fireSecondsFromNow:(NSTimeInterval)delay block:(VoidBlock)block {
++ (instancetype)flex_fireSecondsFromNow:(NSTimeInterval)delay block:(VoidBlock)block {
     if (@available(iOS 10, *)) {
         return [self scheduledTimerWithTimeInterval:delay repeats:NO block:(id)block];
     } else {
