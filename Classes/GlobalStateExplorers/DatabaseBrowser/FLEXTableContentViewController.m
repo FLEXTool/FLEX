@@ -16,8 +16,9 @@
     FLEXMultiColumnTableViewDataSource, FLEXMultiColumnTableViewDelegate
 >
 @property (nonatomic, readonly) NSArray<NSString *> *columns;
-@property (nonatomic, copy) NSArray<NSArray *> *rows;
-@property (nonatomic, copy) NSString *tableName;
+@property (nonatomic) NSMutableArray<NSArray *> *rows;
+@property (nonatomic, readonly) NSString *tableName;
+@property (nonatomic, nullable) NSMutableArray<NSString *> *rowIDs;
 @property (nonatomic, readonly, nullable) id<FLEXDatabaseManager> databaseManager;
 
 @property (nonatomic) FLEXMultiColumnTableView *multiColumnView;
@@ -27,12 +28,14 @@
 
 + (instancetype)columns:(NSArray<NSString *> *)columnNames
                    rows:(NSArray<NSArray<NSString *> *> *)rowData
+                 rowIDs:(nullable NSArray<NSString *> *)rowIDs
               tableName:(NSString *)tableName
-               database:(_Nullable id<FLEXDatabaseManager>)databaseManager {
+               database:(nullable id<FLEXDatabaseManager>)databaseManager {
     FLEXTableContentViewController *controller = [self new];
-    controller->_columns = columnNames;
-    controller->_rows = rowData;
-    controller->_tableName = tableName;
+    controller->_columns = columnNames.copy;
+    controller->_rows = rowData.mutableCopy;
+    controller->_rowIDs = rowIDs.mutableCopy;
+    controller->_tableName = tableName.copy;
     controller->_databaseManager = databaseManager;
     return controller;
 }
@@ -126,6 +129,27 @@
         make.button(@"Copy").handler(^(NSArray<NSString *> *strings) {
             UIPasteboard.generalPasteboard.string = message;
         });
+        
+        // Option to delete row
+        BOOL hasRowID = self.rows.count && row < self.rows.count;
+        if (hasRowID) {
+            make.button(@"Delete").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+                NSString *deleteRow = [NSString stringWithFormat:
+                    @"DELETE FROM %@ WHERE rowid = %@",
+                    self.tableName, self.rowIDs[row]
+                ];
+                
+                [self executeStatementAndShowResult:deleteRow completion:^(BOOL success) {
+                    // Remove deleted row and reload view
+                    if (success) {
+                        [self.rowIDs removeObjectAtIndex:row];
+                        [self.rows removeObjectAtIndex:row];
+                        [self.multiColumnView reloadData];
+                    }
+                }];
+            });
+        }
+        
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];
 }
@@ -162,7 +186,7 @@
         sortContentData = sortContentData.reverseObjectEnumerator.allObjects.copy;
     }
     
-    self.rows = sortContentData;
+    self.rows = sortContentData.mutableCopy;
     [self.multiColumnView reloadData];
 }
 
@@ -205,26 +229,36 @@
         make.message(@"All rows in this table will be permanently deleted.\nDo you want to proceed?");
         
         make.button(@"Yes, I'm sure").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
-            NSString *statement = [NSString stringWithFormat:@"DELETE FROM %@", self.tableName];
-            FLEXSQLResult *result = [self.databaseManager executeStatement:statement];
-            
-            if (result.message) {
-                [FLEXAlert makeAlert:^(FLEXAlert *make) {
-                    if (result.isError) {
-                        make.title(@"Error");
-                    }
-                    make.message(result.message);
-                    make.button(@"Dismiss").cancelStyle().handler(^(NSArray<NSString *> *_) {
-                        // Only dismiss on success
-                        if (!result.isError) {
-                            [self.navigationController popViewControllerAnimated:YES];
-                        }
-                    });
-                } showFrom:self];
-            }
+            NSString *deleteAll = [NSString stringWithFormat:@"DELETE FROM %@", self.tableName];
+            [self executeStatementAndShowResult:deleteAll completion:^(BOOL success) {
+                // Only dismiss on success
+                if (success) {
+                    [self.navigationController popViewControllerAnimated:YES];
+                }
+            }];
         });
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
 }
+
+#pragma mark - Helpers
+
+- (void)executeStatementAndShowResult:(NSString *)statement completion:(void (^_Nullable)(BOOL success))completion {
+    FLEXSQLResult *result = [self.databaseManager executeStatement:statement];
+    
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        if (result.isError) {
+            make.title(@"Error");
+        }
+        
+        make.message(result.message ?: @"<no output>");
+        make.button(@"Dismiss").cancelStyle().handler(^(NSArray<NSString *> *_) {
+            if (completion) {
+                completion(!result.isError);
+            }
+        });
+    } showFrom:self];
+}
+
 
 @end
