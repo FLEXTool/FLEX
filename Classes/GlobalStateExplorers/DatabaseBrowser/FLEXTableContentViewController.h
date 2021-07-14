@@ -17,8 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param databaseManager an optional manager to allow modifying the table.
 + (instancetype)columns:(NSArray<NSString *> *)columnNames
                    rows:(NSArray<NSArray<NSString *> *> *)rowData
+                 rowIDs:(nullable NSArray<NSString *> *)rowIds
               tableName:(NSString *)tableName
-               database:(_Nullable id<FLEXDatabaseManager>)databaseManager;
+               database:(nullable id<FLEXDatabaseManager>)databaseManager;
 
 @end
 

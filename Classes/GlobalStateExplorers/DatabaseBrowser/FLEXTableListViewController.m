@@ -71,8 +71,9 @@
     self.tables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
         NSArray *rows = [host.dbm queryAllDataInTable:tableName];
         NSArray *columns = [host.dbm queryAllColumnsOfTable:tableName];
+        NSArray *rowIDs = [host.dbm queryRowIDsInTable:tableName];
         UIViewController *resultsScreen = [FLEXTableContentViewController
-            columns:columns rows:rows tableName:tableName database:host.dbm
+            columns:columns rows:rows rowIDs:rowIDs tableName:tableName database:host.dbm
         ];
         [host.navigationController pushViewController:resultsScreen animated:YES];
     };
@@ -101,7 +102,7 @@
                 [FLEXAlert showAlert:@"Message" message:result.message from:self];
             } else {
                 UIViewController *resultsScreen = [FLEXTableContentViewController
-                    columns:result.columns rows:result.rows tableName:@"" database:nil
+                    columns:result.columns rows:result.rows rowIDs:nil tableName:@"" database:nil
                 ];
                 
                 [self.navigationController pushViewController:resultsScreen animated:YES];

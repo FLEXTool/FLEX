@@ -118,6 +118,15 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
     return [self executeStatement:command].rows ?: @[];
 }
 
+- (NSArray<NSString *> *)queryRowIDsInTable:(NSString *)tableName {
+    NSString *command = [NSString stringWithFormat:@"SELECT rowid FROM \"%@\"", tableName];
+    NSArray<NSArray<NSString *> *> *data = [self executeStatement:command].rows ?: @[];
+    
+    return [data flex_mapped:^id(NSArray<NSString *> *obj, NSUInteger idx) {
+        return obj.firstObject;
+    }];
+}
+
 - (FLEXSQLResult *)executeStatement:(NSString *)sql {
     return [self executeStatement:sql arguments:nil];
 }
