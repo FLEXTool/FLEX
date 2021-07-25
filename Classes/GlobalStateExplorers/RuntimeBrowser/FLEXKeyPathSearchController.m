@@ -61,6 +61,7 @@
     searchBar.keyboardType = UIKeyboardTypeWebSearch;
     searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
     if (@available(iOS 11, *)) {
+        searchBar.smartQuotesType = UITextSmartQuotesTypeNo;
         searchBar.smartInsertDeleteType = UITextSmartInsertDeleteTypeNo;
     }
 

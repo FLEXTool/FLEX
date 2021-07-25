@@ -33,6 +33,7 @@
         self.inputTextView.delegate = self;
         self.inputTextView.inputAccessoryView = [self createToolBar];
         if (@available(iOS 11, *)) {
+            self.inputTextView.smartQuotesType = UITextSmartQuotesTypeNo;
             [self.inputTextView.layer setValue:@YES forKey:@"continuousCorners"];
         } else {
             self.inputTextView.layer.borderWidth = 1.f;
