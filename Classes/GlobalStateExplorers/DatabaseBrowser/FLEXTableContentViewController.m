@@ -10,12 +10,15 @@
 #import "FLEXMultiColumnTableView.h"
 #import "FLEXWebViewController.h"
 #import "FLEXUtility.h"
+#import "UIBarButtonItem+FLEX.h"
 
 @interface FLEXTableContentViewController () <
     FLEXMultiColumnTableViewDataSource, FLEXMultiColumnTableViewDelegate
 >
 @property (nonatomic, readonly) NSArray<NSString *> *columns;
 @property (nonatomic, copy) NSArray<NSArray *> *rows;
+@property (nonatomic, copy) NSString *tableName;
+@property (nonatomic, readonly, nullable) id<FLEXDatabaseManager> databaseManager;
 
 @property (nonatomic) FLEXMultiColumnTableView *multiColumnView;
 @end
@@ -23,10 +26,14 @@
 @implementation FLEXTableContentViewController
 
 + (instancetype)columns:(NSArray<NSString *> *)columnNames
-                   rows:(NSArray<NSArray<NSString *> *> *)rowData {
+                   rows:(NSArray<NSArray<NSString *> *> *)rowData
+              tableName:(NSString *)tableName
+               database:(_Nullable id<FLEXDatabaseManager>)databaseManager {
     FLEXTableContentViewController *controller = [self new];
     controller->_columns = columnNames;
     controller->_rows = rowData;
+    controller->_tableName = tableName;
+    controller->_databaseManager = databaseManager;
     return controller;
 }
 
@@ -38,9 +45,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.title = self.tableName;
     self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.multiColumnView reloadData];
+    [self setupToolbarItems];
 }
 
 - (FLEXMultiColumnTableView *)multiColumnView {
@@ -158,8 +166,7 @@
     [self.multiColumnView reloadData];
 }
 
-#pragma mark -
-#pragma mark About Transition
+#pragma mark - About Transition
 
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
               withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
@@ -175,6 +182,49 @@
         
         [self.view setNeedsLayout];
     } completion:nil];
+}
+
+#pragma mark - Toolbar
+
+- (void)setupToolbarItems {
+    // We do not support modifying realm databases
+    if (![self.databaseManager respondsToSelector:@selector(executeStatement:)]) {
+        return;
+    }
+    
+    UIBarButtonItem *trashButton = [FLEXBarButtonItemSystem(Trash, self, @selector(trashPressed))
+        flex_withTintColor:UIColor.redColor
+    ];
+    trashButton.enabled = self.databaseManager && self.rows.count;
+    self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, trashButton];
+}
+
+- (void)trashPressed {
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Delete All Rows");
+        make.message(@"All rows in this table will be permanently deleted.\nDo you want to proceed?");
+        
+        make.button(@"Yes, I'm sure").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            NSString *statement = [NSString stringWithFormat:@"DELETE FROM %@", self.tableName];
+            FLEXSQLResult *result = [self.databaseManager executeStatement:statement];
+            
+            if (result.message) {
+                [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                    if (result.isError) {
+                        make.title(@"Error");
+                    }
+                    make.message(result.message);
+                    make.button(@"Dismiss").cancelStyle().handler(^(NSArray<NSString *> *_) {
+                        // Only dismiss on success
+                        if (!result.isError) {
+                            [self.navigationController popViewControllerAnimated:YES];
+                        }
+                    });
+                } showFrom:self];
+            }
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
 }
 
 @end

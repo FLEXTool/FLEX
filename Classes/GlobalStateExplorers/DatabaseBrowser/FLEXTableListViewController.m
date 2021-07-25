@@ -14,6 +14,7 @@
 #import "FLEXMutableListSection.h"
 #import "NSArray+FLEX.h"
 #import "FLEXAlert.h"
+#import "FLEXMacros.h"
 
 @interface FLEXTableListViewController ()
 @property (nonatomic, readonly) id<FLEXDatabaseManager> dbm;
@@ -70,9 +71,9 @@
     self.tables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
         NSArray *rows = [host.dbm queryAllDataInTable:tableName];
         NSArray *columns = [host.dbm queryAllColumnsOfTable:tableName];
-        
-        UIViewController *resultsScreen = [FLEXTableContentViewController columns:columns rows:rows];
-        resultsScreen.title = tableName;
+        UIViewController *resultsScreen = [FLEXTableContentViewController
+            columns:columns rows:rows tableName:tableName database:host.dbm
+        ];
         [host.navigationController pushViewController:resultsScreen animated:YES];
     };
     
@@ -100,7 +101,7 @@
                 [FLEXAlert showAlert:@"Message" message:result.message from:self];
             } else {
                 UIViewController *resultsScreen = [FLEXTableContentViewController
-                    columns:result.columns rows:result.rows
+                    columns:result.columns rows:result.rows tableName:@"" database:nil
                 ];
                 
                 [self.navigationController pushViewController:resultsScreen animated:YES];
