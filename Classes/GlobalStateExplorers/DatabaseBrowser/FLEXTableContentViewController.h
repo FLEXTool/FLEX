@@ -7,10 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FLEXDatabaseManager.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXTableContentViewController : UIViewController
 
+/// Display a table with the given columns, rows, and name.
+/// @param databaseManager an optional manager to allow modifying the table.
 + (instancetype)columns:(NSArray<NSString *> *)columnNames
-                   rows:(NSArray<NSArray<NSString *> *> *)rowData;
+                   rows:(NSArray<NSArray<NSString *> *> *)rowData
+              tableName:(NSString *)tableName
+               database:(_Nullable id<FLEXDatabaseManager>)databaseManager;
 
 @end
+
+NS_ASSUME_NONNULL_END
