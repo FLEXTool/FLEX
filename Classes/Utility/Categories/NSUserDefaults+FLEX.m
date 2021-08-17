@@ -18,6 +18,7 @@ NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.flipboard.FLEX.hid
 NSString * const kFLEXDefaultsNetworkHostDenylistKey = @"com.flipboard.FLEX.network_host_denylist";
 NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
 NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
+NSString * const kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey = @"com.flipboard.FLEX.show_foce_unwrapped_ivar_descriptions";
 
 #define FLEXDefaultsPathForFile(name) ({ \
     NSArray *paths = NSSearchPathForDirectoriesInDomains( \
@@ -163,6 +164,18 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
     [self setBool:hide forKey:kFLEXDefaultsHideVariablePreviewsKey];
     [NSNotificationCenter.defaultCenter
         postNotificationName:kFLEXDefaultsHideVariablePreviewsKey
+        object:nil
+    ];
+}
+
+- (BOOL)flex_explorerShowsForceUnwrappedIvarDescriptions {
+    return [self boolForKey:kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey];
+}
+
+- (void)setFlex_explorerShowsForceUnwrappedIvarDescriptions:(BOOL)show {
+    [self setBool:show forKey:kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey];
+    [NSNotificationCenter.defaultCenter
+        postNotificationName:kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey
         object:nil
     ];
 }

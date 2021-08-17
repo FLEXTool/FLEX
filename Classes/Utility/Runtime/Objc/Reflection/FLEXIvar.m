@@ -103,22 +103,18 @@
         return nil;
     }
     if(_type==FLEXTypeEncodingNull) {
+        if(_size!=sizeof(void *)) {
+            return nil;
+        }
         if(!target)return nil;
         void *outerPointer=(__bridge void *)target+_offset;
         if(outerPointer==nil)return nil;
-        if(_size!=sizeof(void*)) {
-            if(_size<=sizeof(int64_t)){
-                return [FLEXRuntimeUtility valueForPrimitivePointer:outerPointer objCType:"i"];
-            }else{
-                return [FLEXRuntimeUtility valueForPrimitivePointer:outerPointer objCType:"^v"];
-            }
-        }
         void *ptr=*(void**)outerPointer;
         if(ptr==nil) {
             return nil;
         }
         if(![FLEXRuntimeUtility pointerIsValidObjcObject:ptr]) {
-            return [FLEXRuntimeUtility valueForPrimitivePointer:outerPointer objCType:"^v"];
+            return nil;
         }
         return (__bridge id)(ptr);
     }
@@ -170,6 +166,9 @@
 
 - (id)getPotentiallyUnboxedValue:(id)target {
     NSString *type = self.typeEncoding;
+    if (type.length == 0) {
+        return [self getValue:target];
+    }
     if (type.flex_typeIsNonObjcPointer && type.flex_pointeeType != FLEXTypeEncodingVoid) {
         return [self getValue:target];
     }

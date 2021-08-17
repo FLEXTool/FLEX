@@ -15,6 +15,7 @@
 #import "FLEXIvar.h"
 #import "NSArray+FLEX.h"
 #import "FLEXRuntime+UIKitHelpers.h"
+#import "NSUserDefaults+FLEX.h"
 
 @interface FLEXMetadataSection ()
 @property (nonatomic, readonly) FLEXObjectExplorer *explorer;
@@ -75,6 +76,9 @@
 }
 
 - (NSString *)subtitleForRow:(NSInteger)row {
+    if (self.metadataKind == FLEXMetadataKindIvars && [self.metadata[row] isTypeEncodingEmpty] && !NSUserDefaults.standardUserDefaults.flex_explorerShowsForceUnwrappedIvarDescriptions) {
+        return @"Click to force unwrap";
+    }
     return [self.metadata[row] previewWithTarget:self.explorer.object];
 }
 
@@ -170,6 +174,9 @@
 }
 
 - (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
+    if (![self.metadata[row] currentValueWithTarget:self.explorer.object]) {
+        return nil;
+    }
     return [self.metadata[row] viewerWithTarget:self.explorer.object];
 }
 

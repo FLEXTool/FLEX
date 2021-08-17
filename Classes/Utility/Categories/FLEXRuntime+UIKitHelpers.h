@@ -49,6 +49,7 @@
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object;
 /// Return nil to use the default reuse identifier
 - (NSString *)reuseIdentifierWithTarget:(id)object;
+- (BOOL)isTypeEncodingEmpty;
 
 #if FLEX_AT_LEAST_IOS13_SDK
 

@@ -47,6 +47,10 @@
         return ^(UIViewController *host) {
             [host.navigationController pushViewController:toPush animated:YES];
         };
+    }else{
+        return ^(UIViewController *host) {
+            [FLEXAlert showAlert:@":(" message:@"Failed to unwrap this object." from:host];
+        };
     }
 
     return nil;

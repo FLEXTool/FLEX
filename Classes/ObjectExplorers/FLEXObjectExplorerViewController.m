@@ -75,6 +75,7 @@
         kFLEXDefaultsHidePrivateMethodsKey,
         kFLEXDefaultsShowMethodOverridesKey,
         kFLEXDefaultsHideVariablePreviewsKey,
+        kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey,
     ];
 }
 
@@ -292,11 +293,12 @@
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
     // Maps preference keys to a description of what they affect
     NSDictionary<NSString *, NSString *> *explorerToggles = @{
-        kFLEXDefaultsHidePropertyIvarsKey:    @"Property-Backing Ivars",
-        kFLEXDefaultsHidePropertyMethodsKey:  @"Property-Backing Methods",
-        kFLEXDefaultsHidePrivateMethodsKey:   @"Likely Private Methods",
-        kFLEXDefaultsShowMethodOverridesKey:  @"Method Overrides",
-        kFLEXDefaultsHideVariablePreviewsKey: @"Variable Previews"
+        kFLEXDefaultsHidePropertyIvarsKey:                  @"Property-Backing Ivars",
+        kFLEXDefaultsHidePropertyMethodsKey:                @"Property-Backing Methods",
+        kFLEXDefaultsHidePrivateMethodsKey:                 @"Likely Private Methods",
+        kFLEXDefaultsShowMethodOverridesKey:                @"Method Overrides",
+        kFLEXDefaultsHideVariablePreviewsKey:               @"Variable Previews",
+        kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey: @"Force Unwrapped Ivar Descriptions"
     };
     
     // Maps the key of the action itself to a map of a description
@@ -304,11 +306,12 @@
     //
     // So keys that are hidden by default have NO mapped to "Show"
     NSDictionary<NSString *, NSDictionary *> *nextStateDescriptions = @{
-        kFLEXDefaultsHidePropertyIvarsKey:    @{ @NO: @"Hide ", @YES: @"Show " },
-        kFLEXDefaultsHidePropertyMethodsKey:  @{ @NO: @"Hide ", @YES: @"Show " },
-        kFLEXDefaultsHidePrivateMethodsKey:   @{ @NO: @"Hide ", @YES: @"Show " },
-        kFLEXDefaultsShowMethodOverridesKey:  @{ @NO: @"Show ", @YES: @"Hide " },
-        kFLEXDefaultsHideVariablePreviewsKey: @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsHidePropertyIvarsKey:                  @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsHidePropertyMethodsKey:                @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsHidePrivateMethodsKey:                 @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsShowMethodOverridesKey:                @{ @NO: @"Show ", @YES: @"Hide " },
+        kFLEXDefaultsHideVariablePreviewsKey:               @{ @NO: @"Hide ", @YES: @"Show " },
+        kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey: @{ @NO: @"Show ", @YES: @"Hide " },
     };
     
     [FLEXAlert makeSheet:^(FLEXAlert *make) {

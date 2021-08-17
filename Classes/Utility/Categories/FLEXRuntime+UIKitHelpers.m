@@ -75,6 +75,10 @@ FLEXObjectExplorerDefaultsImpl
     ];
 }
 
+- (BOOL)isTypeEncodingEmpty {
+    return self.attributes.typeEncoding.length==0;
+}
+
 - (NSString *)previewWithTarget:(id)object {
     if (object_isClass(object) && !self.isClassProperty) {
         return self.attributes.fullDeclaration;
@@ -258,11 +262,18 @@ FLEXObjectExplorerDefaultsImpl
     }];
 }
 
+- (BOOL)isTypeEncodingEmpty {
+    return self.typeEncoding.length==0;
+}
+
 - (UITableViewCellAccessoryType)suggestedAccessoryTypeWithTarget:(id)object {
     if (object_isClass(object)) {
         return UITableViewCellAccessoryNone;
     }
 
+    if (self.typeEncoding.length==0) {
+        return UITableViewCellAccessoryDisclosureIndicator;
+    }
     // Could use .isEditable here, but we use .tag for speed since it is cached
     if ([self getPotentiallyUnboxedValue:object]) {
         if (self.defaults.isEditable) {

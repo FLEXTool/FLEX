@@ -19,6 +19,7 @@ extern NSString * const kFLEXDefaultsHideVariablePreviewsKey;
 extern NSString * const kFLEXDefaultsNetworkHostDenylistKey;
 extern NSString * const kFLEXDefaultsDisableOSLogForceASLKey;
 extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
+extern NSString * const kFLEXDefaultsShowForceUnwrappedIvarDescriptionsKey;
 
 /// All BOOL preferences are NO by default
 @interface NSUserDefaults (FLEX)
@@ -42,5 +43,6 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 @property (nonatomic) BOOL flex_explorerHidesPrivateMethods;
 @property (nonatomic) BOOL flex_explorerShowsMethodOverrides;
 @property (nonatomic) BOOL flex_explorerHidesVariablePreviews;
+@property (nonatomic) BOOL flex_explorerShowsForceUnwrappedIvarDescriptions;
 
 @end
