@@ -174,7 +174,7 @@
 }
 
 - (UIViewController *)viewControllerToPushForRow:(NSInteger)row {
-    if (![self.metadata[row] currentValueWithTarget:self.explorer.object]) {
+    if (self.metadataKind==FLEXMetadataKindIvars&&![self.metadata[row] currentValueWithTarget:self.explorer.object]) {
         return nil;
     }
     return [self.metadata[row] viewerWithTarget:self.explorer.object];
