@@ -1,6 +1,8 @@
 # Xcode
 #
-build/
+build/archives
+build/FLEX.dSYMs
+.swiftpm
 *.pbxuser
 !default.pbxuser
 *.mode1v3

@@ -13,6 +13,6 @@ let package = Package(
         )
     ],
     targets: [
-        .binaryTarget(name: "FLEX", path: "Framework/FLEX.xcframework")
+        .binaryTarget(name: "FLEX", path: "build/FLEX.xcframework")
     ]
 )
