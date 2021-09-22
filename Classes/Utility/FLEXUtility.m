@@ -196,7 +196,8 @@ BOOL FLEXConstructorsShouldRun() {
                         ? [UIColor colorWithPatternImage:indentationPatternImage]
                         : [UIColor colorWithPatternImage:darkModePatternImage]);
             }];
-        }    });
+        }
+    });
 
     return patternColor;
 }
