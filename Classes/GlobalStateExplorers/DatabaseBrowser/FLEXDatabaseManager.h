@@ -30,6 +30,7 @@
 @optional
 
 - (NSArray<NSString *> *)queryRowIDsInTable:(NSString *)tableName;
+- (FLEXSQLResult *)queryTable:(NSString *)tableName;
 - (FLEXSQLResult *)executeStatement:(NSString *)SQLStatement;
 
 @end
