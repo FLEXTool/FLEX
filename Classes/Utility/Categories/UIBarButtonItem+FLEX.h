@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#define FLEXBarButtonItem(title, tgt, sel) \
+    [UIBarButtonItem flex_itemWithTitle:title target:tgt action:sel]
 #define FLEXBarButtonItemSystem(item, tgt, sel) \
     [UIBarButtonItem flex_systemItem:UIBarButtonSystemItem##item target:tgt action:sel]
 
