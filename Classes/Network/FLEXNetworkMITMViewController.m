@@ -8,28 +8,33 @@
 
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
+#import "FLEXMITMDataSource.h"
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXNetworkTransaction.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkTransactionCell.h"
-#import "FLEXNetworkTransactionDetailController.h"
+#import "FLEXHTTPTransactionDetailController.h"
 #import "FLEXNetworkSettingsController.h"
+#import "FLEXObjectExplorerFactory.h"
 #import "FLEXGlobalsViewController.h"
+#import "FLEXWebViewController.h"
 #import "UIBarButtonItem+FLEX.h"
 #import "FLEXResources.h"
 
+typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
+    FLEXNetworkObserverModeREST = 0,
+    FLEXNetworkObserverModeWebsockets,
+};
+
 @interface FLEXNetworkMITMViewController ()
 
-/// Backing model
-@property (nonatomic, copy) NSArray<FLEXNetworkTransaction *> *networkTransactions;
-@property (nonatomic) long long bytesReceived;
-@property (nonatomic, copy) NSArray<FLEXNetworkTransaction *> *filteredNetworkTransactions;
-@property (nonatomic) long long filteredBytesReceived;
-
-@property (nonatomic) BOOL rowInsertInProgress;
-@property (nonatomic) BOOL isPresentingSearch;
+@property (nonatomic) BOOL updateInProgress;
 @property (nonatomic) BOOL pendingReload;
+
+@property (nonatomic, readonly) FLEXMITMDataSource<FLEXNetworkTransaction *> *dataSource;
+@property (nonatomic, readonly) FLEXMITMDataSource<FLEXHTTPTransaction *> *HTTPDataSource;
+@property (nonatomic, readonly) FLEXMITMDataSource<FLEXWebsocketTransaction *> *websocketDataSource;
 
 @end
 
@@ -47,6 +52,18 @@
     self.showsSearchBar = YES;
     self.showSearchBarInitially = NO;
     
+    _HTTPDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
+        return FLEXNetworkRecorder.defaultRecorder.HTTPTransactions;
+    }];
+    
+    if (@available(iOS 13.0, *)) {
+        self.searchController.searchBar.showsScopeBar = YES;
+        self.searchController.searchBar.scopeButtonTitles = @[@"REST", @"Websockets"];
+        _websocketDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
+            return FLEXNetworkRecorder.defaultRecorder.websocketTransactions;
+        }];
+    }
+    
     [self addToolbarItems:@[
         [UIBarButtonItem
             flex_itemWithImage:FLEXResources.gearIcon
@@ -61,14 +78,14 @@
     ]];
 
     [self.tableView
-        registerClass:[FLEXNetworkTransactionCell class]
-        forCellReuseIdentifier:kFLEXNetworkTransactionCellIdentifier
+        registerClass:FLEXNetworkTransactionCell.class
+        forCellReuseIdentifier:FLEXNetworkTransactionCell.reuseID
     ];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = FLEXNetworkTransactionCell.preferredCellHeight;
 
     [self registerForNotifications];
-    [self updateTransactions];
+    [self updateTransactions:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -137,44 +154,32 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+
 #pragma mark Transactions
 
-- (void)updateTransactions {
-    self.networkTransactions = [FLEXNetworkRecorder.defaultRecorder networkTransactions];
-}
-
-- (void)setNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)networkTransactions {
-    if (![_networkTransactions isEqual:networkTransactions]) {
-        _networkTransactions = networkTransactions;
-        [self updateBytesReceived];
-        [self updateFilteredBytesReceived];
+- (FLEXMITMDataSource<FLEXNetworkTransaction *> *)dataSource {
+    switch (self.searchController.searchBar.selectedScopeButtonIndex) {
+        case FLEXNetworkObserverModeREST:
+            return self.HTTPDataSource;
+        case FLEXNetworkObserverModeWebsockets:
+            return self.websocketDataSource;
+            
+        default:
+            @throw NSInternalInconsistencyException;
     }
 }
 
-- (void)updateBytesReceived {
-    long long bytesReceived = 0;
-    for (FLEXNetworkTransaction *transaction in self.networkTransactions) {
-        bytesReceived += transaction.receivedDataLength;
-    }
-    self.bytesReceived = bytesReceived;
-    [self updateFirstSectionHeader];
+- (void)updateTransactions:(void(^)())callback {
+    id completion = ^(FLEXMITMDataSource *dataSource) {
+        // Update byte count
+        [self updateFirstSectionHeader];
+        if (callback && dataSource == self.dataSource) callback();
+    };
+    
+    [self.HTTPDataSource reloadData:completion];
+    [self.websocketDataSource reloadData:completion];
 }
 
-- (void)setFilteredNetworkTransactions:(NSArray<FLEXNetworkTransaction *> *)networkTransactions {
-    if (![_filteredNetworkTransactions isEqual:networkTransactions]) {
-        _filteredNetworkTransactions = networkTransactions;
-        [self updateFilteredBytesReceived];
-    }
-}
-
-- (void)updateFilteredBytesReceived {
-    long long filteredBytesReceived = 0;
-    for (FLEXNetworkTransaction *transaction in self.filteredNetworkTransactions) {
-        filteredBytesReceived += transaction.receivedDataLength;
-    }
-    self.filteredBytesReceived = filteredBytesReceived;
-    [self updateFirstSectionHeader];
-}
 
 #pragma mark Header
 
@@ -191,11 +196,11 @@
     long long bytesReceived = 0;
     NSInteger totalRequests = 0;
     if (self.searchController.isActive) {
-        bytesReceived = self.filteredBytesReceived;
-        totalRequests = self.filteredNetworkTransactions.count;
+        bytesReceived = self.dataSource.filteredBytesReceived;
+        totalRequests = self.dataSource.transactions.count;
     } else {
-        bytesReceived = self.bytesReceived;
-        totalRequests = self.networkTransactions.count;
+        bytesReceived = self.dataSource.bytesReceived;
+        totalRequests = self.dataSource.transactions.count;
     }
     
     NSString *byteCountText = [NSByteCountFormatter
@@ -253,7 +258,7 @@
 - (void)tryUpdateTransactions {
     // Don't do any view updating if we aren't in the view hierarchy
     if (!self.viewIfLoaded.window) {
-        [self updateTransactions];
+        [self updateTransactions:nil];
         self.pendingReload = YES;
         return;
     }
@@ -261,57 +266,71 @@
     // Let the previous row insert animation finish before starting a new one to avoid stomping.
     // We'll try calling the method again when the insertion completes,
     // and we properly no-op if there haven't been changes.
-    if (self.rowInsertInProgress) {
+    if (self.updateInProgress) {
         return;
     }
     
-    if (self.searchController.isActive) {
-        [self updateTransactions];
-        [self updateSearchResults:self.searchText];
-        return;
-    }
+    self.updateInProgress = YES;
 
-    NSInteger existingRowCount = self.networkTransactions.count;
-    [self updateTransactions];
-    NSInteger newRowCount = self.networkTransactions.count;
-    NSInteger addedRowCount = newRowCount - existingRowCount;
-
-    if (addedRowCount != 0 && !self.isPresentingSearch) {
-        // Insert animation if we're at the top.
-        if (self.tableView.contentOffset.y <= 0.0 && addedRowCount > 0) {
-            [CATransaction begin];
-            
-            self.rowInsertInProgress = YES;
-            [CATransaction setCompletionBlock:^{
-                self.rowInsertInProgress = NO;
-                [self tryUpdateTransactions];
-            }];
-
-            NSMutableArray<NSIndexPath *> *indexPathsToReload = [NSMutableArray new];
-            for (NSInteger row = 0; row < addedRowCount; row++) {
-                [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
-            }
-            [self.tableView insertRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
-
-            [CATransaction commit];
-        } else {
-            // Maintain the user's position if they've scrolled down.
-            CGSize existingContentSize = self.tableView.contentSize;
-            [self.tableView reloadData];
-            CGFloat contentHeightChange = self.tableView.contentSize.height - existingContentSize.height;
-            self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + contentHeightChange);
+    // Get state before update
+    NSString *currentFilter = self.searchText;
+    FLEXNetworkObserverMode currentMode = self.searchController.searchBar.selectedScopeButtonIndex;
+    NSInteger existingRowCount = self.dataSource.transactions.count;
+    
+    [self updateTransactions:^{
+        // Compare to state after update
+        NSString *newFilter = self.searchText;
+        FLEXNetworkObserverMode newMode = self.searchController.searchBar.selectedScopeButtonIndex;
+        NSInteger newRowCount = self.dataSource.transactions.count;
+        NSInteger rowCountDiff = newRowCount - existingRowCount;
+        
+        // Abort if the observation mode changed, or if the search field text changed
+        if (newMode != currentMode || ![currentFilter isEqualToString:newFilter]) {
+            self.updateInProgress = NO;
+            return;
         }
-    }
+        
+        if (rowCountDiff) {
+            // Insert animation if we're at the top.
+            if (self.tableView.contentOffset.y <= 0.0 && rowCountDiff > 0) {
+                [CATransaction begin];
+                
+                [CATransaction setCompletionBlock:^{
+                    self.updateInProgress = NO;
+                    // This isn't an infinite loop, it won't run a third time
+                    // if there were no new transactions the second time
+                    [self tryUpdateTransactions];
+                }];
+                
+                NSMutableArray<NSIndexPath *> *indexPathsToReload = [NSMutableArray new];
+                for (NSInteger row = 0; row < rowCountDiff; row++) {
+                    [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
+                }
+
+                [self.tableView insertRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+                [CATransaction commit];
+            } else {
+                // Maintain the user's position if they've scrolled down.
+                CGSize existingContentSize = self.tableView.contentSize;
+                [self.tableView reloadData];
+                CGFloat contentHeightChange = self.tableView.contentSize.height - existingContentSize.height;
+                self.tableView.contentOffset = CGPointMake(self.tableView.contentOffset.x, self.tableView.contentOffset.y + contentHeightChange);
+                self.updateInProgress = NO;
+            }
+        } else {
+            self.updateInProgress = NO;
+        }
+    }];
 }
 
 - (void)handleTransactionUpdatedNotification:(NSNotification *)notification {
-    [self updateBytesReceived];
-    [self updateFilteredBytesReceived];
+    [self.HTTPDataSource reloadByteCounts];
+    [self.websocketDataSource reloadByteCounts];
 
     FLEXNetworkTransaction *transaction = notification.userInfo[kFLEXNetworkRecorderUserInfoTransactionKey];
 
     // Update both the main table view and search table view if needed.
-    for (FLEXNetworkTransactionCell *cell in [self.tableView visibleCells]) {
+    for (FLEXNetworkTransactionCell *cell in self.tableView.visibleCells) {
         if ([cell.transaction isEqual:transaction]) {
             // Using -[UITableView reloadRowsAtIndexPaths:withRowAnimation:] is overkill here and kicks off a lot of
             // work that can make the table view somewhat unresponsive when lots of updates are streaming in.
@@ -320,12 +339,14 @@
             break;
         }
     }
+    
     [self updateFirstSectionHeader];
 }
 
 - (void)handleTransactionsClearedNotification:(NSNotification *)notification {
-    [self updateTransactions];
-    [self.tableView reloadData];
+    [self updateTransactions:^{
+        [self.tableView reloadData];
+    }];
 }
 
 - (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification {
@@ -337,7 +358,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.searchController.isActive ? self.filteredNetworkTransactions.count : self.networkTransactions.count;
+    return self.dataSource.transactions.count;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -352,7 +373,11 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXNetworkTransactionCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXNetworkTransactionCellIdentifier forIndexPath:indexPath];
+    FLEXNetworkTransactionCell *cell = [tableView
+        dequeueReusableCellWithIdentifier:FLEXNetworkTransactionCell.reuseID
+        forIndexPath:indexPath
+    ];
+    
     cell.transaction = [self transactionAtIndexPath:indexPath];
 
     // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
@@ -367,9 +392,33 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    FLEXNetworkTransactionDetailController *detailViewController = [FLEXNetworkTransactionDetailController new];
-    detailViewController.transaction = [self transactionAtIndexPath:indexPath];
-    [self.navigationController pushViewController:detailViewController animated:YES];
+    switch (self.searchController.searchBar.selectedScopeButtonIndex) {
+        case FLEXNetworkObserverModeREST: {
+            FLEXHTTPTransaction *transaction = [self HTTPTransactionAtIndexPath:indexPath];
+            UIViewController *details = [FLEXHTTPTransactionDetailController withTransaction:transaction];
+            [self.navigationController pushViewController:details animated:YES];
+            break;
+        }
+            
+        case FLEXNetworkObserverModeWebsockets: {
+            if (@available(iOS 13.0, *)) { // This check will never fail
+                FLEXWebsocketTransaction *transaction = [self websocketTransactionAtIndexPath:indexPath];
+                
+                UIViewController *details = nil;
+                if (transaction.message.type == NSURLSessionWebSocketMessageTypeData) {
+                    details = [FLEXObjectExplorerFactory explorerViewControllerForObject:transaction.message.data];
+                } else {
+                    details = [[FLEXWebViewController alloc] initWithText:transaction.message.string];
+                }
+                
+                [self.navigationController pushViewController:details animated:YES];
+            }
+            break;
+        }
+            
+        default:
+            @throw NSInternalInconsistencyException;
+    }
 }
 
 
@@ -397,7 +446,7 @@
         previewProvider:nil
         actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
             UIAction *copy = [UIAction
-                actionWithTitle:@"Copy"
+                actionWithTitle:@"Copy URL"
                 image:nil
                 identifier:nil
                 handler:^(__kindof UIAction *action) {
@@ -426,39 +475,34 @@
 }
 
 - (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath {
-    return self.searchController.isActive ? self.filteredNetworkTransactions[indexPath.row] : self.networkTransactions[indexPath.row];
+    return self.dataSource.transactions[indexPath.row];
+}
+
+- (FLEXHTTPTransaction *)HTTPTransactionAtIndexPath:(NSIndexPath *)indexPath {
+    return self.HTTPDataSource.transactions[indexPath.row];
+}
+
+- (FLEXWebsocketTransaction *)websocketTransactionAtIndexPath:(NSIndexPath *)indexPath {
+    return self.websocketDataSource.transactions[indexPath.row];
 }
 
 
 #pragma mark - Search Bar
 
 - (void)updateSearchResults:(NSString *)searchString {
-    if (!searchString.length) {
-        self.filteredNetworkTransactions = self.networkTransactions;
-        [self.tableView reloadData];
-    } else {
-        [self onBackgroundQueue:^NSArray *{
-            return [self.networkTransactions flex_filtered:^BOOL(FLEXNetworkTransaction *entry, NSUInteger idx) {
-                return [entry.request.URL.absoluteString localizedCaseInsensitiveContainsString:searchString];
-            }];
-        } thenOnMainQueue:^(NSArray *filteredNetworkTransactions) {
-            if ([self.searchText isEqual:searchString]) {
-                self.filteredNetworkTransactions = filteredNetworkTransactions;
-                [self.tableView reloadData];
-            }
-        }];
-    }
+    id callback = ^(FLEXMITMDataSource *dataSource) {
+        if (self.dataSource == dataSource) {
+            [self.tableView reloadData];
+        }
+    };
+    
+    [self.HTTPDataSource filter:searchString completion:callback];
+    [self.websocketDataSource filter:searchString completion:callback];
 }
 
-
-#pragma mark UISearchControllerDelegate
-
-- (void)willPresentSearchController:(UISearchController *)searchController {
-    self.isPresentingSearch = YES;
-}
-
-- (void)didPresentSearchController:(UISearchController *)searchController {
-    self.isPresentingSearch = NO;
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+    [self updateFirstSectionHeader];
+    [self.tableView reloadData];
 }
 
 - (void)willDismissSearchController:(UISearchController *)searchController {

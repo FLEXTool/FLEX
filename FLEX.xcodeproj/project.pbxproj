@@ -200,6 +200,8 @@
 		C3531BAB23E88FAC00A184AD /* FLEXTabList.m in Sources */ = {isa = PBXBuildFile; fileRef = C3531BA923E88FAC00A184AD /* FLEXTabList.m */; };
 		C35DAD822709140700AA95E6 /* FLEXHTTPTransactionDetailController.h in Headers */ = {isa = PBXBuildFile; fileRef = C35DAD7E2709140700AA95E6 /* FLEXHTTPTransactionDetailController.h */; };
 		C35DAD832709140700AA95E6 /* FLEXHTTPTransactionDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = C35DAD7F2709140700AA95E6 /* FLEXHTTPTransactionDetailController.m */; };
+		C35DAD8E2709143000AA95E6 /* FLEXMITMDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = C35DAD8C2709143000AA95E6 /* FLEXMITMDataSource.h */; };
+		C35DAD8F2709143000AA95E6 /* FLEXMITMDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C35DAD8D2709143000AA95E6 /* FLEXMITMDataSource.m */; };
 		C362AE8123C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h in Headers */ = {isa = PBXBuildFile; fileRef = C362AE7F23C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C362AE8223C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m in Sources */ = {isa = PBXBuildFile; fileRef = C362AE8023C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m */; };
 		C3694DBA23EA1096006625D7 /* FLEXTabsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C3694DB823EA1096006625D7 /* FLEXTabsViewController.h */; };
@@ -572,6 +574,8 @@
 		C3531BA923E88FAC00A184AD /* FLEXTabList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTabList.m; sourceTree = "<group>"; };
 		C35DAD7E2709140700AA95E6 /* FLEXHTTPTransactionDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXHTTPTransactionDetailController.h; sourceTree = "<group>"; };
 		C35DAD7F2709140700AA95E6 /* FLEXHTTPTransactionDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXHTTPTransactionDetailController.m; sourceTree = "<group>"; };
+		C35DAD8C2709143000AA95E6 /* FLEXMITMDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXMITMDataSource.h; sourceTree = "<group>"; };
+		C35DAD8D2709143000AA95E6 /* FLEXMITMDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMITMDataSource.m; sourceTree = "<group>"; };
 		C362AE7F23C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMapTable+FLEX_Subscripting.h"; sourceTree = "<group>"; };
 		C362AE8023C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMapTable+FLEX_Subscripting.m"; sourceTree = "<group>"; };
 		C3694DB823EA1096006625D7 /* FLEXTabsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXTabsViewController.h; sourceTree = "<group>"; };
@@ -980,6 +984,8 @@
 				3A4C94BC1B5B21410088C3F2 /* FLEXNetworkTransaction.m */,
 				C35DAD7E2709140700AA95E6 /* FLEXHTTPTransactionDetailController.h */,
 				C35DAD7F2709140700AA95E6 /* FLEXHTTPTransactionDetailController.m */,
+				C35DAD8C2709143000AA95E6 /* FLEXMITMDataSource.h */,
+				C35DAD8D2709143000AA95E6 /* FLEXMITMDataSource.m */,
 				3A4C94BF1B5B21410088C3F2 /* FLEXNetworkTransactionCell.h */,
 				3A4C94C01B5B21410088C3F2 /* FLEXNetworkTransactionCell.m */,
 				2EF6B04C1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h */,
@@ -1612,6 +1618,7 @@
 				C33C825E2316DC8600DD2451 /* FLEXObjectExplorer.h in Headers */,
 				C34D4EB423A2AF2A00C1F903 /* FLEXColorPreviewSection.h in Headers */,
 				C383C3BE23B6B398007A321B /* UITextField+Range.h in Headers */,
+				C35DAD8E2709143000AA95E6 /* FLEXMITMDataSource.h in Headers */,
 				224D49A81C673AB5000EAB86 /* FLEXRealmDatabaseManager.h in Headers */,
 				C313853F23F5C1A10046E63C /* FLEXViewControllersViewController.h in Headers */,
 				C386D6ED24199EC600699085 /* FLEX-Runtime.h in Headers */,
@@ -1896,6 +1903,7 @@
 				3A4C94FA1B5B21410088C3F2 /* FLEXArgumentInputNumberView.m in Sources */,
 				C3474C4123DA496400466532 /* FLEXKeyValueTableViewCell.m in Sources */,
 				779B1ED71C0C4D7C001F5E49 /* FLEXTableContentViewController.m in Sources */,
+				C35DAD8F2709143000AA95E6 /* FLEXMITMDataSource.m in Sources */,
 				C36FBFCB230F3B98008D95D5 /* FLEXMirror.m in Sources */,
 				C36FBFD5230F3B98008D95D5 /* FLEXMethodBase.m in Sources */,
 				3A4C95001B5B21410088C3F2 /* FLEXArgumentInputSwitchView.m in Sources */,

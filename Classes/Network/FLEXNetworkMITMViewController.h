@@ -9,6 +9,7 @@
 #import "FLEXTableViewController.h"
 #import "FLEXGlobalsEntry.h"
 
+/// The main screen for the network observer, which displays a list of network transactions.
 @interface FLEXNetworkMITMViewController : FLEXTableViewController <FLEXGlobalsEntry>
 
 @end
