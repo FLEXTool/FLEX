@@ -602,7 +602,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (self.currentMode == FLEXExplorerModeSelect && tapGR.state == UIGestureRecognizerStateRecognized) {
         // Note that [tapGR locationInView:nil] is broken in iOS 8,
         // so we have to do a two step conversion to window coordinates.
-        // Thanks to @lascorbe for finding this: https://github.com/Flipboard/FLEX/pull/31
+        // Thanks to @lascorbe for finding this: https://github.com/FLEXTool/FLEX/pull/31
         CGPoint tapPointInView = [tapGR locationInView:self.view];
         CGPoint tapPointInWindow = [self.view convertPoint:tapPointInView toView:nil];
         [self updateOutlineViewsForSelectionPoint:tapPointInWindow];

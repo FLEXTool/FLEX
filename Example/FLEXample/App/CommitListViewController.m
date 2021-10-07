@@ -3,7 +3,7 @@
 //  FLEXample
 //
 //  Created by Tanner on 3/11/20.
-//  Copyright © 2020 Flipboard. All rights reserved.
+//  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
 #import "CommitListViewController.h"
@@ -35,7 +35,7 @@
     ];
     
     // Load and process commits
-    NSString *commitsURL = @"https://api.github.com/repos/Flipboard/FLEX/commits";
+    NSString *commitsURL = @"https://api.github.com/repos/FLEXTool/FLEX/commits";
     [self startDataTask:commitsURL completion:^(NSData *data, NSInteger statusCode, NSError *error) {
         if (statusCode == 200) {
             self.commits.list = [Commit commitsFrom:data];

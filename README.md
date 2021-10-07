@@ -1,6 +1,6 @@
 # FLEX
 [![CocoaPods](https://img.shields.io/cocoapods/v/FLEX.svg)](https://cocoapods.org/?q=FLEX)
- [![CocoaPods](https://img.shields.io/cocoapods/l/FLEX.svg)](https://github.com/Flipboard/FLEX/blob/master/LICENSE)
+ [![CocoaPods](https://img.shields.io/cocoapods/l/FLEX.svg)](https://github.com/FLEXTool/FLEX/blob/master/LICENSE)
  [![CocoaPods](https://img.shields.io/cocoapods/p/FLEX.svg)]()
  [![Twitter: @ryanolsonk](https://img.shields.io/badge/contact-@ryanolsonk-blue.svg?style=flat)](https://twitter.com/ryanolsonk)
  [![Build Status](https://travis-ci.org/Flipboard/FLEX.svg?branch=master)](https://travis-ci.org/Flipboard/FLEX)
@@ -149,7 +149,7 @@ pod 'FLEX', :configurations => ['Debug']
 Add the following to your Cartfile:
 
 ```
-github "flipboard/FLEX"
+github "FLEXTool/FLEX"
 ```
 
 ### Buck
@@ -162,7 +162,7 @@ Manually add the files in `Classes/` to your Xcode project, or just drag in the 
 
 ##### Silencing warnings
 
-Add the following flags to  to **Other Warnings Flags** in **Build Settings:** 
+Add the following flags to  to **Other Warnings Flags** in **Build Settings:**
 
 - `-Wno-deprecated-declarations`
 - `-Wno-strict-prototypes`
@@ -185,7 +185,7 @@ pod 'FLEX', :configurations => ['Debug']
 ### Carthage
 
 1. Do NOT add `FLEX.framework` to the embedded binaries of your target, as it would otherwise be included in all builds (therefore also in release ones).
-1. Instead, add `$(PROJECT_DIR)/Carthage/Build/iOS` to your target _Framework Search Paths_ (this setting might already be present if you already included other frameworks with Carthage). This makes it possible to import the FLEX framework from your source files. It does not harm if this setting is added for all configurations, but it should at least be added for the debug one. 
+1. Instead, add `$(PROJECT_DIR)/Carthage/Build/iOS` to your target _Framework Search Paths_ (this setting might already be present if you already included other frameworks with Carthage). This makes it possible to import the FLEX framework from your source files. It does not harm if this setting is added for all configurations, but it should at least be added for the debug one.
 1. Add a _Run Script Phase_ to your target (inserting it after the existing `Link Binary with Libraries` phase, for example), and which will embed `FLEX.framework` in debug builds only:
 
 	```shell
@@ -193,9 +193,9 @@ pod 'FLEX', :configurations => ['Debug']
 	  /usr/local/bin/carthage copy-frameworks
 	fi
 	```
-	
+
 	Finally, add `$(SRCROOT)/Carthage/Build/iOS/FLEX.framework` as input file of this script phase.
-	
+
 <img width=75% height=75% src=https://user-images.githubusercontent.com/8371943/70274062-0d4b3f80-1771-11ea-94ea-ca7e7b5ca244.jpg>
 
 ### FLEX files added manually to a project
@@ -231,7 +231,7 @@ FLEX builds on ideas and inspiration from open source tools that came before it.
 
 
 ## Contributing
-Please see our [Contributing Guide](https://github.com/Flipboard/FLEX/blob/master/CONTRIBUTING.md).
+Please see our [Contributing Guide](https://github.com/FLEXTool/FLEX/blob/master/CONTRIBUTING.md).
 
 
 ## TODO

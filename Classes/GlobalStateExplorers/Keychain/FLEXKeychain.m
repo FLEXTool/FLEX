@@ -10,7 +10,7 @@
 #import "FLEXKeychain.h"
 #import "FLEXKeychainQuery.h"
 
-NSString * const kFLEXKeychainErrorDomain = @"com.flipboard.flex";
+NSString * const kFLEXKeychainErrorDomain = @"com.FLEX";
 NSString * const kFLEXKeychainAccountKey = @"acct";
 NSString * const kFLEXKeychainCreatedAtKey = @"cdat";
 NSString * const kFLEXKeychainClassKey = @"labl";

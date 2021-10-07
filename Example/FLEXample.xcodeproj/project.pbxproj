@@ -439,7 +439,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.flex.FLEXample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FLEX.FLEXample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "FLEXample/Supporting Files/FLEXample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -464,7 +464,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.flex.FLEXample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.FLEX.FLEXample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "FLEXample/Supporting Files/FLEXample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

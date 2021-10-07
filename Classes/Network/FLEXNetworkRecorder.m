@@ -19,7 +19,7 @@ NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification = @"kFLEXNetw
 NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
 NSString *const kFLEXNetworkRecorderTransactionsClearedNotification = @"kFLEXNetworkRecorderTransactionsClearedNotification";
 
-NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.responseCacheLimit";
+NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.FLEX.responseCacheLimit";
 
 @interface FLEXNetworkRecorder ()
 
@@ -51,7 +51,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         self.hostDenylist = NSUserDefaults.standardUserDefaults.flex_networkHostDenylist.mutableCopy;
 
         // Serial queue used because we use mutable objects that are not thread safe
-        self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_SERIAL);
+        self.queue = dispatch_queue_create("com.FLEX.FLEXNetworkRecorder", DISPATCH_QUEUE_SERIAL);
     }
     
     return self;
