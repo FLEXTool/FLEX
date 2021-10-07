@@ -1,0 +1,1 @@
+../Classes/Manager/Private/FLEXManager+Private.h
