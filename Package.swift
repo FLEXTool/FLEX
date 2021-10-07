@@ -39,7 +39,7 @@ let package = Package(
         "Classes/GlobalStateExplorers/DatabaseBrowser/LICENSE",
         "Classes/Network/PonyDebugger/LICENSE",
         "Classes/Utility/APPLE_LICENSE",
-        "Classes/GlobalStateExplorers/SystemLog/",
+        "Classes/GlobalStateExplorers/SystemLog/LLVM_LICENSE.TXT",
         "Classes/GlobalStateExplorers/Keychain/SSKeychain_LICENSE"
       ],
       publicHeadersPath: "include",
