@@ -10,14 +10,17 @@
 #import "FLEXResources.h"
 #import "FLEXUtility.h"
 
-@interface FLEXHTTPTransaction ()
-@property (nonatomic, readwrite) NSData *cachedRequestBody;
+@interface FLEXNetworkTransaction () {
+    @protected
+    
+    NSString *_primaryDescription;
+    NSString *_secondaryDescription;
+    NSString *_tertiaryDescription;
+}
+
 @end
 
 @implementation FLEXNetworkTransaction
-@synthesize primaryDescription = _primaryDescription;
-@synthesize secondaryDescription = _secondaryDescription;
-@synthesize tertiaryDescription = _tertiaryDescription;
 
 + (NSString *)readableStringFromTransactionState:(FLEXNetworkTransactionState)state {
     NSString *readableString = nil;
@@ -45,10 +48,36 @@
     return readableString;
 }
 
-+ (instancetype)withRequest:(NSURLRequest *)request startTime:(NSDate *)startTime {
++ (instancetype)withStartTime:(NSDate *)startTime {
     FLEXNetworkTransaction *transaction = [self new];
-    transaction->_request = request;
     transaction->_startTime = startTime;
+    return transaction;
+}
+
+- (BOOL)displayAsError {
+    return _error != nil;
+}
+
+- (NSString *)copyString {
+    return nil;
+}
+
+- (BOOL)matchesQuery:(NSString *)filterString {
+    return NO;
+}
+
+@end
+
+
+@interface FLEXURLTransaction ()
+
+@end
+
+@implementation FLEXURLTransaction
+
++ (instancetype)withRequest:(NSURLRequest *)request startTime:(NSDate *)startTime {
+    FLEXURLTransaction *transaction = [self withStartTime:startTime];
+    transaction->_request = request;
     return transaction;
 }
 
@@ -101,18 +130,18 @@
 - (NSString *)tertiaryDescription {
     if (!_tertiaryDescription) {
         NSMutableArray<NSString *> *detailComponents = [NSMutableArray new];
-
+        
         NSString *timestamp = [self timestampStringFromRequestDate:self.startTime];
         if (timestamp.length > 0) {
             [detailComponents addObject:timestamp];
         }
-
+        
         // Omit method for GET (assumed as default)
         NSString *httpMethod = self.request.HTTPMethod;
         if (httpMethod.length > 0) {
             [detailComponents addObject:httpMethod];
         }
-
+        
         if (self.transactionState == FLEXNetworkTransactionStateFinished || self.transactionState == FLEXNetworkTransactionStateFailed) {
             [detailComponents addObjectsFromArray:self.details];
         } else {
@@ -120,7 +149,7 @@
             NSString *state = [self.class readableStringFromTransactionState:self.transactionState];
             [detailComponents addObject:state];
         }
-
+        
         _tertiaryDescription = [detailComponents componentsJoinedByString:@" ・ "];
     }
     
@@ -128,17 +157,24 @@
 }
 
 - (void)setTransactionState:(FLEXNetworkTransactionState)transactionState {
-    _transactionState = transactionState;
+    super.transactionState = transactionState;
     // Reset bottom description
     _tertiaryDescription = nil;
 }
 
-- (BOOL)displayAsError {
-    return _error != nil;
+- (NSString *)copyString {
+    return self.request.URL.absoluteString;
+}
+
+- (BOOL)matchesQuery:(NSString *)filterString {
+    return [self.request.URL.absoluteString localizedCaseInsensitiveContainsString:filterString];
 }
 
 @end
 
+@interface FLEXHTTPTransaction ()
+@property (nonatomic, readwrite) NSData *cachedRequestBody;
+@end
 
 @implementation FLEXHTTPTransaction
 

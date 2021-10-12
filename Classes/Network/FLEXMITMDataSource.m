@@ -51,7 +51,7 @@
     } else {
         [self onBackgroundQueue:^NSArray *{
             return [self.allTransactions flex_filtered:^BOOL(FLEXNetworkTransaction *entry, NSUInteger idx) {
-                return [entry.request.URL.absoluteString localizedCaseInsensitiveContainsString:searchString];
+                return [entry matchesQuery:searchString];
             }];
         } thenOnMainQueue:^(NSArray *filteredNetworkTransactions) {
             if ([self.filterString isEqual:searchString]) {

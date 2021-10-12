@@ -32,6 +32,8 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 @property (nonatomic) BOOL updateInProgress;
 @property (nonatomic) BOOL pendingReload;
 
+@property (nonatomic, readonly) FLEXNetworkObserverMode mode;
+
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXNetworkTransaction *> *dataSource;
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXHTTPTransaction *> *HTTPDataSource;
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXWebsocketTransaction *> *websocketDataSource;
@@ -157,8 +159,12 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 
 #pragma mark Transactions
 
+- (FLEXNetworkObserverMode)mode {
+    return self.searchController.searchBar.selectedScopeButtonIndex;
+}
+
 - (FLEXMITMDataSource<FLEXNetworkTransaction *> *)dataSource {
-    switch (self.searchController.searchBar.selectedScopeButtonIndex) {
+    switch (self.mode) {
         case FLEXNetworkObserverModeREST:
             return self.HTTPDataSource;
         case FLEXNetworkObserverModeWebsockets:
@@ -274,13 +280,13 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 
     // Get state before update
     NSString *currentFilter = self.searchText;
-    FLEXNetworkObserverMode currentMode = self.searchController.searchBar.selectedScopeButtonIndex;
+    FLEXNetworkObserverMode currentMode = self.mode;
     NSInteger existingRowCount = self.dataSource.transactions.count;
     
     [self updateTransactions:^{
         // Compare to state after update
         NSString *newFilter = self.searchText;
-        FLEXNetworkObserverMode newMode = self.searchController.searchBar.selectedScopeButtonIndex;
+        FLEXNetworkObserverMode newMode = self.mode;
         NSInteger newRowCount = self.dataSource.transactions.count;
         NSInteger rowCountDiff = newRowCount - existingRowCount;
         
@@ -392,7 +398,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch (self.searchController.searchBar.selectedScopeButtonIndex) {
+    switch (self.mode) {
         case FLEXNetworkObserverModeREST: {
             FLEXHTTPTransaction *transaction = [self HTTPTransactionAtIndexPath:indexPath];
             UIViewController *details = [FLEXHTTPTransactionDetailController withTransaction:transaction];
@@ -434,13 +440,14 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 
 - (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
     if (action == @selector(copy:)) {
-        NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
-        UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
+        UIPasteboard.generalPasteboard.string = [self transactionAtIndexPath:indexPath].copyString;
     }
 }
 
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
-    NSURLRequest *request = [self transactionAtIndexPath:indexPath].request;
+    
+    FLEXNetworkTransaction *transaction = [self transactionAtIndexPath:indexPath];
+    
     return [UIContextMenuConfiguration
         configurationWithIdentifier:nil
         previewProvider:nil
@@ -450,25 +457,32 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
                 image:nil
                 identifier:nil
                 handler:^(__kindof UIAction *action) {
-                    UIPasteboard.generalPasteboard.string = request.URL.absoluteString ?: @"";
+                    UIPasteboard.generalPasteboard.string = transaction.copyString;
                 }
             ];
-            UIAction *denylist = [UIAction
-                actionWithTitle:[NSString stringWithFormat:@"Exclude '%@'", request.URL.host]
-                image:nil
-                identifier:nil
-                handler:^(__kindof UIAction *action) {
-                    NSMutableArray *denylist =  FLEXNetworkRecorder.defaultRecorder.hostDenylist;
-                    [denylist addObject:request.URL.host];
-                    [FLEXNetworkRecorder.defaultRecorder clearExcludedTransactions];
-                    [FLEXNetworkRecorder.defaultRecorder synchronizeDenylist];
-                    [self tryUpdateTransactions];
-                }
-            ];
+        
+            NSArray *children = @[copy];
+            if (self.mode == FLEXNetworkObserverModeREST) {
+                NSURLRequest *request = [self HTTPTransactionAtIndexPath:indexPath].request;
+                UIAction *denylist = [UIAction
+                    actionWithTitle:[NSString stringWithFormat:@"Exclude '%@'", request.URL.host]
+                    image:nil
+                    identifier:nil
+                    handler:^(__kindof UIAction *action) {
+                        NSMutableArray *denylist =  FLEXNetworkRecorder.defaultRecorder.hostDenylist;
+                        [denylist addObject:request.URL.host];
+                        [FLEXNetworkRecorder.defaultRecorder clearExcludedTransactions];
+                        [FLEXNetworkRecorder.defaultRecorder synchronizeDenylist];
+                        [self tryUpdateTransactions];
+                    }
+                ];
+                
+                children = [children arrayByAddingObject:denylist];
+            }
             return [UIMenu
                 menuWithTitle:@"" image:nil identifier:nil
                 options:UIMenuOptionsDisplayInline
-                children:@[copy, denylist]
+                children:children
             ];
         }
     ];
