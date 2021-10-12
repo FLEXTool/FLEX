@@ -163,6 +163,12 @@
     [task receiveMessageWithCompletionHandler:^(NSURLSessionWebSocketMessage *message, NSError *error) {
         if (!error) {
             NSLog(@"Received WS message: %@", message.string);
+            id message = [[NSURLSessionWebSocketMessage alloc] initWithString:@"Hello"];
+            [task sendMessage:message completionHandler:^(NSError *error) {
+                if (error) {
+                    NSLog(@"Error sending WS message: %@", error.localizedDescription);
+                }
+            }];
         }
     }];
 }
