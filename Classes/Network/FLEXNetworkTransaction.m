@@ -225,6 +225,7 @@
     // Populate receivedDataLength
     if (direction == FLEXWebsocketIncoming) {
         wst.receivedDataLength = wst.dataLength;
+        wst.transactionState = FLEXNetworkTransactionStateFinished;
     }
     
     // Populate thumbnail image
