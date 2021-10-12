@@ -11,6 +11,9 @@
 //  See the LICENSE file distributed with this work for the terms under
 //  which Square, Inc. licenses this file to you.
 //
+//  Heavily modified and added to by Tanner Bennett and various other contributors.
+//  git blame details these modifications.
+//
 
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkRecorder.h"
@@ -137,9 +140,11 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
 #pragma mark Delegate Injection Convenience Methods
 
 /// All swizzled delegate methods should make use of this guard.
-/// This will prevent duplicated sniffing when the original implementation calls up to a superclass implementation which we've also swizzled.
-/// The superclass implementation (and implementations in classes above that) will be executed without interference if called from the original implementation.
-+ (void)sniffWithoutDuplicationForObject:(NSObject *)object selector:(SEL)selector sniffingBlock:(void (^)(void))sniffingBlock originalImplementationBlock:(void (^)(void))originalImplementationBlock {
+/// This will prevent duplicated sniffing when the original implementation calls up to a superclass
+/// implementation which we've also swizzled. The superclass implementation (and implementations in
+/// classes above that) will be executed without interference if called from the original implementation.
++ (void)sniffWithoutDuplicationForObject:(NSObject *)object selector:(SEL)selector
+                           sniffingBlock:(void (^)(void))sniffingBlock originalImplementationBlock:(void (^)(void))originalImplementationBlock {
     // If we don't have an object to detect nested calls on, just run the original implementation and bail.
     // This case can happen if someone besides the URL loading system calls the delegate methods directly.
     // See https://github.com/Flipboard/FLEX/issues/61 for an example.
