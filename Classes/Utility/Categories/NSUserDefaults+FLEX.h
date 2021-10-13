@@ -16,6 +16,7 @@ extern NSString * const kFLEXDefaultsHidePropertyMethodsKey;
 extern NSString * const kFLEXDefaultsHidePrivateMethodsKey;
 extern NSString * const kFLEXDefaultsShowMethodOverridesKey;
 extern NSString * const kFLEXDefaultsHideVariablePreviewsKey;
+extern NSString * const kFLEXDefaultsNetworkObserverEnabledKey;
 extern NSString * const kFLEXDefaultsNetworkHostDenylistKey;
 extern NSString * const kFLEXDefaultsDisableOSLogForceASLKey;
 extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
@@ -27,6 +28,7 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 
 @property (nonatomic) double flex_toolbarTopMargin;
 
+@property (nonatomic) BOOL flex_networkObserverEnabled;
 // Not actually stored in defaults, but written to a file
 @property (nonatomic) NSArray<NSString *> *flex_networkHostDenylist;
 

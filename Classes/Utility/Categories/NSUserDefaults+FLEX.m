@@ -15,6 +15,7 @@ NSString * const kFLEXDefaultsHidePropertyMethodsKey = @"com.flipboard.FLEX.hide
 NSString * const kFLEXDefaultsHidePrivateMethodsKey = @"com.flipboard.FLEX.hide_private_or_namespaced_methods";
 NSString * const kFLEXDefaultsShowMethodOverridesKey = @"com.flipboard.FLEX.show_method_overrides";
 NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.flipboard.FLEX.hide_variable_previews";
+NSString * const kFLEXDefaultsNetworkObserverEnabledKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
 NSString * const kFLEXDefaultsNetworkHostDenylistKey = @"com.flipboard.FLEX.network_host_denylist";
 NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
 NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
@@ -60,6 +61,14 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
 
 - (void)setFlex_toolbarTopMargin:(double)margin {
     [self setDouble:margin forKey:kFLEXDefaultsToolbarTopMarginKey];
+}
+
+- (BOOL)flex_networkObserverEnabled {
+    return [self boolForKey:kFLEXDefaultsNetworkObserverEnabledKey];
+}
+
+- (void)setFlex_networkObserverEnabled:(BOOL)enabled {
+    [self setBool:enabled forKey:kFLEXDefaultsNetworkObserverEnabledKey];
 }
 
 - (NSArray<NSString *> *)flex_networkHostDenylist {

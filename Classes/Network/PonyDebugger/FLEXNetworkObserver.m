@@ -18,6 +18,7 @@
 #import "FLEXNetworkObserver.h"
 #import "FLEXNetworkRecorder.h"
 #import "FLEXUtility.h"
+#import "NSUserDefaults+FLEX.h"
 #import "NSObject+FLEX_Reflection.h"
 #import "FLEXMethod.h"
 
@@ -27,7 +28,6 @@
 #include <dlfcn.h>
 
 NSString *const kFLEXNetworkObserverEnabledStateChangedNotification = @"kFLEXNetworkObserverEnabledStateChangedNotification";
-static NSString *const kFLEXNetworkObserverEnabledDefaultsKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
 
 typedef void (^NSURLSessionAsyncCompletion)(id fileURLOrData, NSURLResponse *response, NSError *error);
 typedef NSURLSessionTask * (^NSURLSessionNewTaskMethod)(NSURLSession *, id, NSURLSessionAsyncCompletion);
@@ -96,7 +96,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
 + (void)setEnabled:(BOOL)enabled {
     BOOL previouslyEnabled = [self isEnabled];
     
-    [NSUserDefaults.standardUserDefaults setBool:enabled forKey:kFLEXNetworkObserverEnabledDefaultsKey];
+    NSUserDefaults.standardUserDefaults.flex_networkObserverEnabled = enabled;
     
     if (enabled) {
         // Inject if needed. This injection is protected with a dispatch_once, so we're ok calling it multiple times.
@@ -110,7 +110,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
 }
 
 + (BOOL)isEnabled {
-    return [[NSUserDefaults.standardUserDefaults objectForKey:kFLEXNetworkObserverEnabledDefaultsKey] boolValue];
+    return NSUserDefaults.standardUserDefaults.flex_networkObserverEnabled;
 }
 
 + (void)load {
