@@ -460,17 +460,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         initWithTarget:self action:@selector(handleToolbarDetailsTapGesture:)
     ];
     [toolbar.selectedViewDescriptionContainer addGestureRecognizer:self.detailsTapGR];
+    
     // Swipe gestures for selecting deeper / higher views at a point
-    UIPanGestureRecognizer *leftSwipe = [[UIPanGestureRecognizer alloc]
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
     ];
-//    UIPanGestureRecognizer *rightSwipe = [[UIPanGestureRecognizer alloc]
-//        initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
-//    ];
-//    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-//    rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
-    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:leftSwipe];
-//    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:rightSwipe];
+    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:panGesture];
     
     // Long press gesture to present tabs manager
     [toolbar.globalsItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]
