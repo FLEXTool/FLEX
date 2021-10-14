@@ -96,6 +96,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 - (void)clearRecordedActivity {
     dispatch_async(self.queue, ^{
         [self.restCache removeAllObjects];
+        [self.orderedWSTransactions removeAllObjects];
         [self.orderedHTTPTransactions removeAllObjects];
         [self.requestIDsToHTTPTransactions removeAllObjects];
         
