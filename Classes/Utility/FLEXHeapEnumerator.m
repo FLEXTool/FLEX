@@ -8,6 +8,9 @@
 
 #import "FLEXHeapEnumerator.h"
 #import "FLEXObjcInternal.h"
+#import "FLEXObjectRef.h"
+#import "NSObject+FLEX_Reflection.h"
+#import "NSString+FLEX.h"
 #import <malloc/malloc.h>
 #import <mach/mach.h>
 #import <objc/runtime.h>
@@ -114,6 +117,81 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
         CFSetAddValue(registeredClasses, (__bridge const void *)(classes[i]));
     }
     free(classes);
+}
+
++ (NSArray<FLEXObjectRef *> *)instancesOfClassWithName:(NSString *)className retained:(BOOL)retain {
+    const char *classNameCString = className.UTF8String;
+    NSMutableArray *instances = [NSMutableArray new];
+    [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
+        if (strcmp(classNameCString, class_getName(actualClass)) == 0) {
+            // Note: objects of certain classes crash when retain is called.
+            // It is up to the user to avoid tapping into instance lists for these classes.
+            // Ex. OS_dispatch_queue_specific_queue
+            // In the future, we could provide some kind of warning for classes that are known to be problematic.
+            if (malloc_size((__bridge const void *)(object)) > 0) {
+                [instances addObject:object];
+            }
+        }
+    }];
+
+    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingAll:instances retained:retain];
+    return references;
+}
+
++ (NSArray<FLEXObjectRef *> *)subclassesOfClassWithName:(NSString *)className {
+    NSArray<Class> *classes = FLEXGetAllSubclasses(NSClassFromString(className), NO);
+    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingClasses:classes];
+    return references;
+}
+
++ (NSArray<FLEXObjectRef *> *)objectsWithReferencesToObject:(id)object retained:(BOOL)retain {
+    static Class SwiftObjectClass = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        SwiftObjectClass = NSClassFromString(@"SwiftObject");
+        if (!SwiftObjectClass) {
+            SwiftObjectClass = NSClassFromString(@"Swift._SwiftObject");
+        }
+    });
+
+    NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray new];
+    [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
+        // Skip known-invalid objects
+        if (!FLEXPointerIsValidObjcObject((__bridge void *)tryObject)) {
+            return;
+        }
+        
+        // Get all the ivars on the object. Start with the class and and travel up the
+        // inheritance chain. Once we find a match, record it and move on to the next object.
+        // There's no reason to find multiple matches within the same object.
+        Class tryClass = actualClass;
+        while (tryClass) {
+            unsigned int ivarCount = 0;
+            Ivar *ivars = class_copyIvarList(tryClass, &ivarCount);
+
+            for (unsigned int ivarIndex = 0; ivarIndex < ivarCount; ivarIndex++) {
+                Ivar ivar = ivars[ivarIndex];
+                NSString *typeEncoding = @(ivar_getTypeEncoding(ivar) ?: "");
+
+                if (typeEncoding.flex_typeIsObjectOrClass) {
+                    ptrdiff_t offset = ivar_getOffset(ivar);
+                    uintptr_t *fieldPointer = (__bridge void *)tryObject + offset;
+
+                    if (*fieldPointer == (uintptr_t)(__bridge void *)object) {
+                        NSString *ivarName = @(ivar_getName(ivar) ?: "???");
+                        id ref = [FLEXObjectRef referencing:tryObject ivar:ivarName retained:retain];
+                        [instances addObject:ref];
+                        return;
+                    }
+                }
+            }
+
+            free(ivars);
+            tryClass = class_getSuperclass(tryClass);
+        }
+    }];
+
+    return instances;
 }
 
 @end
