@@ -9,6 +9,9 @@
 #import <XCTest/XCTest.h>
 #import <objc/runtime.h>
 #import "NSObject+FLEX_Reflection.h"
+#import "FLEXObjcInternal.h"
+#import "FLEXHeapEnumerator.h"
+#import "FLEXObjectRef.h"
 #import "NSArray+FLEX.h"
 #import "FLEXPropertyAttributes.h"
 #import "FLEXProperty.h"
@@ -24,6 +27,12 @@
 }
 @end
 @implementation Subclass @end
+
+@interface NeverCreated : Subclass {
+    NSInteger a, b, c;
+}
+@end
+@implementation NeverCreated @end
 
 @interface FLEXTests : XCTestCase
 @property (nonatomic, setter=setMyFoo:) id foo;
@@ -138,6 +147,24 @@
     id instance = [NSClassFromString(@"FLEXNewRootClass") alloc];
     NSString *className = [FLEXRuntimeUtility safeClassNameForObject:instance];
     XCTAssertEqualObjects(@"FLEXNewRootClass", className);
+}
+
+- (void)testInvalidObjectFinding {
+    // Create something that looks like an objc object
+    uintptr_t *pointer = (uintptr_t *)calloc(1, sizeof(uintptr_t));
+    object_setClass((__bridge id)(void *)pointer, [NeverCreated class]);
+    
+    // Find that one object and assert that it is the object we just created
+    NSArray<FLEXObjectRef *> *refs = [FLEXHeapEnumerator
+        instancesOfClassWithName:@"NeverCreated" retained:NO
+    ];
+    XCTAssertEqual(refs.count, 1);
+    XCTAssertEqual((__bridge void *)refs.firstObject.object, pointer);
+    
+    // Find that the object isn't really an object
+    XCTAssertFalse(FLEXPointerIsValidObjcObject(pointer));
+    
+    free(pointer);
 }
 
 @end
