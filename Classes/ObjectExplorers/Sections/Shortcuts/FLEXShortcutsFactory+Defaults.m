@@ -441,3 +441,16 @@
     }];
 }
 @end
+
+#pragma mark - Firebase Firestore
+
+@implementation FLEXShortcutsFactory (FirebaseFirestore)
+
++ (void)load { FLEX_EXIT_IF_NO_CTORS()
+    Class FIRDocumentSnap = NSClassFromString(@"FIRDocumentSnapshot");
+    if (FIRDocumentSnap) {
+        FLEXRuntimeUtilityTryAddObjectProperty(2, data, FIRDocumentSnap, NSDictionary, PropertyKey(ReadOnly));        
+    }
+}
+
+@end
