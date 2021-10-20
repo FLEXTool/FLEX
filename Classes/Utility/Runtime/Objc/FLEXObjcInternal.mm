@@ -106,17 +106,18 @@ BOOL FLEXPointerIsReadable(const void *inPtr) {
         return NO;
     }
 
-    // Read the memory
-    vm_offset_t readMem = 0;
-    mach_msg_type_number_t size = 0;
 #if __arm64e__
     address = (vm_address_t)ptrauth_strip(inPtr, ptrauth_key_function_pointer);
 #else
     address = (vm_address_t)inPtr;
 #endif
-    error = vm_read(mach_task_self(), address, sizeof(uintptr_t), &readMem, &size);
+    
+    // Read the memory
+    vm_size_t size = 0;
+    char buf[sizeof(uintptr_t)];
+    error = vm_read_overwrite(mach_task_self(), address, sizeof(uintptr_t), (vm_address_t)buf, &size);
     if (error != KERN_SUCCESS) {
-        // vm_read returned an error
+        // vm_read_overwrite returned an error
         return NO;
     }
 
