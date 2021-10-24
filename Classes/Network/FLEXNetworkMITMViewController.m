@@ -24,6 +24,7 @@
 
 typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     FLEXNetworkObserverModeREST = 0,
+    FLEXNetworkObserverModeFirebase,
     FLEXNetworkObserverModeWebsockets,
 };
 
@@ -37,6 +38,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXNetworkTransaction *> *dataSource;
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXHTTPTransaction *> *HTTPDataSource;
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXWebsocketTransaction *> *websocketDataSource;
+@property (nonatomic, readonly) FLEXMITMDataSource<FLEXFirebaseTransaction *> *firebaseDataSource;
 
 @end
 
@@ -53,18 +55,31 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 
     self.showsSearchBar = YES;
     self.showSearchBarInitially = NO;
+    NSMutableArray *scopeTitles = [NSMutableArray new];
     
     _HTTPDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
         return FLEXNetworkRecorder.defaultRecorder.HTTPTransactions;
     }];
     
+    // Is firebase installed?
+    if (NSClassFromString(@"FIRDocumentReference")) {
+        _firebaseDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
+            return FLEXNetworkRecorder.defaultRecorder.firebaseTransactions;
+        }];
+        [scopeTitles addObjectsFromArray:@[@"REST", @"Firebase"]];
+    }
+    
+    // Are websockets available?
     if (@available(iOS 13.0, *)) {
-        self.searchController.searchBar.showsScopeBar = YES;
-        self.searchController.searchBar.scopeButtonTitles = @[@"REST", @"Websockets"];
+        [scopeTitles addObject:@"Websockets"];
         _websocketDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
             return FLEXNetworkRecorder.defaultRecorder.websocketTransactions;
         }];
     }
+    
+    // Scopes will only be shown if we have either firebase or websockets available
+    self.searchController.searchBar.showsScopeBar = scopeTitles.count > 0;
+    self.searchController.searchBar.scopeButtonTitles = scopeTitles;
     
     [self addToolbarItems:@[
         [UIBarButtonItem
@@ -169,9 +184,8 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
             return self.HTTPDataSource;
         case FLEXNetworkObserverModeWebsockets:
             return self.websocketDataSource;
-            
-        default:
-            @throw NSInternalInconsistencyException;
+        case FLEXNetworkObserverModeFirebase:
+            return self.firebaseDataSource;
     }
 }
 
@@ -184,6 +198,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     
     [self.HTTPDataSource reloadData:completion];
     [self.websocketDataSource reloadData:completion];
+    [self.firebaseDataSource reloadData:completion];
 }
 
 
@@ -213,6 +228,14 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
         stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary
     ];
     NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
+    
+    // Exclude byte count from Firebase
+    if (self.mode == FLEXNetworkObserverModeFirebase) {
+        return [NSString stringWithFormat:@"%@ %@",
+            @(totalRequests), requestsText
+        ];
+    }
+    
     return [NSString stringWithFormat:@"%@ %@ (%@ received)",
         @(totalRequests), requestsText, byteCountText
     ];
@@ -332,6 +355,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 - (void)handleTransactionUpdatedNotification:(NSNotification *)notification {
     [self.HTTPDataSource reloadByteCounts];
     [self.websocketDataSource reloadByteCounts];
+    // Don't need to reload Firebase here
 
     FLEXNetworkTransaction *transaction = notification.userInfo[kFLEXNetworkRecorderUserInfoTransactionKey];
 
@@ -421,9 +445,13 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
             }
             break;
         }
-            
-        default:
-            @throw NSInternalInconsistencyException;
+        
+        case FLEXNetworkObserverModeFirebase: {
+            FLEXFirebaseTransaction *transaction = [self firebaseTransactionAtIndexPath:indexPath];
+            id obj = transaction.documents.count == 1 ? transaction.documents.firstObject : transaction.documents;
+            UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:obj];
+            [self.navigationController pushViewController:explorer animated:YES];
+        }
     }
 }
 
@@ -500,6 +528,9 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     return self.websocketDataSource.transactions[indexPath.row];
 }
 
+- (FLEXFirebaseTransaction *)firebaseTransactionAtIndexPath:(NSIndexPath *)indexPath {
+    return self.firebaseDataSource.transactions[indexPath.row];
+}
 
 #pragma mark - Search Bar
 
@@ -512,6 +543,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     
     [self.HTTPDataSource filter:searchString completion:callback];
     [self.websocketDataSource filter:searchString completion:callback];
+    [self.firebaseDataSource filter:searchString completion:callback];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {

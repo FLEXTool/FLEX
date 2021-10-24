@@ -54,6 +54,23 @@
     return transaction;
 }
 
+- (NSString *)timestampStringFromRequestDate:(NSDate *)date {
+    static NSDateFormatter *dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dateFormatter = [NSDateFormatter new];
+        dateFormatter.dateFormat = @"HH:mm:ss";
+    });
+    
+    return [dateFormatter stringFromDate:date];
+}
+
+- (void)setState:(FLEXNetworkTransactionState)transactionState {
+    _state = transactionState;
+    // Reset bottom description
+    _tertiaryDescription = nil;
+}
+
 - (BOOL)displayAsError {
     return _error != nil;
 }
@@ -79,17 +96,6 @@
     FLEXURLTransaction *transaction = [self withStartTime:startTime];
     transaction->_request = request;
     return transaction;
-}
-
-- (NSString *)timestampStringFromRequestDate:(NSDate *)date {
-    static NSDateFormatter *dateFormatter = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"HH:mm:ss";
-    });
-    
-    return [dateFormatter stringFromDate:date];
 }
 
 - (NSString *)primaryDescription {
@@ -142,11 +148,11 @@
             [detailComponents addObject:httpMethod];
         }
         
-        if (self.transactionState == FLEXNetworkTransactionStateFinished || self.transactionState == FLEXNetworkTransactionStateFailed) {
+        if (self.state == FLEXNetworkTransactionStateFinished || self.state == FLEXNetworkTransactionStateFailed) {
             [detailComponents addObjectsFromArray:self.details];
         } else {
             // Unstarted, Awaiting Response, Receiving Data, etc.
-            NSString *state = [self.class readableStringFromTransactionState:self.transactionState];
+            NSString *state = [self.class readableStringFromTransactionState:self.state];
             [detailComponents addObject:state];
         }
         
@@ -154,12 +160,6 @@
     }
     
     return _tertiaryDescription;
-}
-
-- (void)setTransactionState:(FLEXNetworkTransactionState)transactionState {
-    super.transactionState = transactionState;
-    // Reset bottom description
-    _tertiaryDescription = nil;
 }
 
 - (NSString *)copyString {
@@ -261,7 +261,7 @@
     // Populate receivedDataLength
     if (direction == FLEXWebsocketIncoming) {
         wst.receivedDataLength = wst.dataLength;
-        wst.transactionState = FLEXNetworkTransactionStateFinished;
+        wst.state = FLEXNetworkTransactionStateFinished;
     }
     
     // Populate thumbnail image
@@ -301,5 +301,141 @@
     
     return 0;
 }
+
+@end
+
+
+@implementation FLEXFirebaseTransaction
+//@synthesize responseString = _responseString;
+//@synthesize responseObject = _responseObject;
+
++ (instancetype)initiator:(id)initiator fetchType:(FLEXFIRFetchType)type {
+    FLEXFirebaseTransaction *fire = [FLEXFirebaseTransaction withStartTime:NSDate.date];
+    fire->_direction = FLEXFIRTransactionDirectionPull;
+    fire->_initiator = initiator;
+    fire->_fetchType = type;
+    return fire;
+}
+
++ (instancetype)queryFetch:(FIRQuery *)initiator {
+    return [self initiator:initiator fetchType:FLEXFIRFetchTypeQuery];
+}
+
++ (instancetype)documentFetch:(FIRDocumentReference *)initiator {
+    return [self initiator:initiator fetchType:FLEXFIRFetchTypeDocument];
+}
+
+- (FIRDocumentReference *)initiator_doc {
+    if ([_initiator isKindOfClass:cFIRDocumentReference]) {
+        return _initiator;        
+    }
+    
+    return nil;
+}
+- (FIRQuery *)initiator_query {
+    if ([_initiator isKindOfClass:cFIRQuery]) {
+        return _initiator;        
+    }
+    
+    return nil;
+}
+
+- (FIRCollectionReference *)initiator_collection {
+    if ([_initiator isKindOfClass:cFIRCollectionReference]) {
+        return _initiator;
+    }
+    
+    return nil;
+}
+
+- (NSString *)path {
+    switch (self.direction) {
+        case FLEXFIRTransactionDirectionPush:
+            return nil;
+        case FLEXFIRTransactionDirectionPull: {
+            switch (self.fetchType) {
+                case FLEXFIRFetchTypeDocument:
+                    return self.initiator_doc.path;
+                case FLEXFIRFetchTypeQuery:
+                    return self.initiator_collection.path ?: @"[TBA: FIRQuerySnapshot]";
+                case FLEXFIRFetchTypeNotFetch:
+                    @throw NSInternalInconsistencyException;
+            }
+        }
+    }
+}
+
+- (NSString *)primaryDescription {
+    if (!_primaryDescription) {
+        switch (self.direction) {
+            case FLEXFIRTransactionDirectionPush:
+                _primaryDescription = @"Push; TBA";
+            case FLEXFIRTransactionDirectionPull:
+                _primaryDescription = self.initiator_collection.collectionID ?: self.initiator_doc.documentID;
+        }
+    }
+    
+    return _primaryDescription;
+}
+
+- (NSString *)secondaryDescription {
+    if (!_secondaryDescription) {
+        _secondaryDescription = self.path.stringByDeletingLastPathComponent;
+    }
+    
+    return _secondaryDescription;
+}
+
+- (NSString *)tertiaryDescription {
+    if (!_tertiaryDescription) {
+        NSMutableArray<NSString *> *detailComponents = [NSMutableArray new];
+        
+        NSString *timestamp = [self timestampStringFromRequestDate:self.startTime];
+        if (timestamp.length > 0) {
+            [detailComponents addObject:timestamp];
+        }
+        
+        [detailComponents addObject:self.direction == FLEXFIRTransactionDirectionPush ?
+            @"Push ↑" : @"Pull ↓"
+        ];
+        
+        if (self.state == FLEXNetworkTransactionStateFinished || self.state == FLEXNetworkTransactionStateFailed) {
+            NSString *docCount = [NSString stringWithFormat:@"%@ document(s)", @(self.documents.count)];
+            [detailComponents addObjectsFromArray:@[docCount]];
+        } else {
+            // Unstarted, Awaiting Response, Receiving Data, etc.
+            NSString *state = [self.class readableStringFromTransactionState:self.state];
+            [detailComponents addObject:state];
+        }
+        
+        _tertiaryDescription = [detailComponents componentsJoinedByString:@" ・ "];
+    }
+    
+    return _tertiaryDescription;
+}
+
+- (NSString *)copyString {
+    return self.path;
+}
+
+- (BOOL)matchesQuery:(NSString *)filterString {
+    return [self.path localizedCaseInsensitiveContainsString:filterString];
+}
+
+//- (NSString *)responseString {
+//    if (!_responseString) {
+//        _responseString = [NSString stringWithUTF8String:(char *)self.response.bytes];
+//    }
+//    
+//    return _responseString;
+//}
+//
+//- (NSDictionary *)responseObject {
+//    if (!_responseObject) {
+//        _responseObject = [NSJSONSerialization JSONObjectWithData:self.response options:0 error:nil];
+//    }
+//    
+//    return _responseObject;
+//}
 
 @end

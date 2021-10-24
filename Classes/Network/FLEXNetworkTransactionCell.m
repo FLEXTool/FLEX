@@ -37,6 +37,7 @@ NSString * const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransacti
         self.pathLabel = [UILabel new];
         self.pathLabel.font = UIFont.flex_defaultTableCellFont;
         self.pathLabel.textColor = [UIColor colorWithWhite:0.4 alpha:1.0];
+        self.pathLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
         [self.contentView addSubview:self.pathLabel];
 
         self.thumbnailImageView = [UIImageView new];

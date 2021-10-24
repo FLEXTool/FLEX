@@ -6,12 +6,13 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "UIKit/UIKit.h"
+#import <UIKit/UIKit.h>
+#import "Firestore.h"
 
 typedef NS_ENUM(NSInteger, FLEXNetworkTransactionState) {
-    FLEXNetworkTransactionStateUnstarted,
-    FLEXNetworkTransactionStateAwaitingResponse,
+    FLEXNetworkTransactionStateUnstarted = -1,
+    /// This is the default; it's usually nonsense for a request to be marked as "unstarted"
+    FLEXNetworkTransactionStateAwaitingResponse = 0,
     FLEXNetworkTransactionStateReceivingData,
     FLEXNetworkTransactionStateFinished,
     FLEXNetworkTransactionStateFailed
@@ -35,7 +36,7 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 @property (nonatomic, readonly) BOOL displayAsError;
 @property (nonatomic, readonly) NSDate *startTime;
 
-@property (nonatomic) FLEXNetworkTransactionState transactionState;
+@property (nonatomic) FLEXNetworkTransactionState state;
 @property (nonatomic) int64_t receivedDataLength;
 /// A small thumbnail to preview the type of/the response
 @property (nonatomic) UIImage *thumbnail;
@@ -47,9 +48,6 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 @property (nonatomic, readonly) NSString *secondaryDescription;
 /// Minor details to display at the bottom of the cell, such as a timestamp, HTTP method, or status.
 @property (nonatomic, readonly) NSString *tertiaryDescription;
-
-/// Subclasses should implement for when the transaction is complete
-@property (nonatomic, readonly) NSArray<NSString *> *details;
 
 /// The string to copy when the user selects the "copy" action
 @property (nonatomic, readonly) NSString *copyString;
@@ -66,6 +64,8 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 + (instancetype)withRequest:(NSURLRequest *)request startTime:(NSDate *)startTime;
 
 @property (nonatomic, readonly) NSURLRequest *request;
+/// Subclasses should implement for when the transaction is complete
+@property (nonatomic, readonly) NSArray<NSString *> *details;
 
 @end
 
@@ -103,5 +103,39 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 @property (nonatomic, readonly) FLEXWebsocketMessageDirection direction API_AVAILABLE(ios(13.0));
 
 @property (nonatomic, readonly) int64_t dataLength API_AVAILABLE(ios(13.0));
+
+@end
+
+
+typedef NS_ENUM(NSUInteger, FLEXFIRTransactionDirection) {
+    FLEXFIRTransactionDirectionPush = 1,
+    FLEXFIRTransactionDirectionPull,
+};
+
+typedef NS_ENUM(NSUInteger, FLEXFIRFetchType) {
+    FLEXFIRFetchTypeNotFetch,
+    FLEXFIRFetchTypeQuery,
+    FLEXFIRFetchTypeDocument,
+};
+
+@interface FLEXFirebaseTransaction : FLEXNetworkTransaction
+
++ (instancetype)queryFetch:(FIRQuery *)initiator;
++ (instancetype)documentFetch:(FIRDocumentReference *)initiator;
+
+@property (nonatomic, readonly) FLEXFIRTransactionDirection direction;
+@property (nonatomic, readonly) FLEXFIRFetchType fetchType;
+
+@property (nonatomic, readonly) id initiator;
+@property (nonatomic, readonly) FIRQuery *initiator_query;
+@property (nonatomic, readonly) FIRDocumentReference *initiator_doc;
+@property (nonatomic, readonly) FIRCollectionReference *initiator_collection;
+
+@property (nonatomic, copy) NSArray<FIRDocumentSnapshot *> *documents;
+
+@property (nonatomic, readonly) NSString *path;
+
+//@property (nonatomic, readonly) NSString *responseString;
+//@property (nonatomic, readonly) NSDictionary *responseObject;
 
 @end

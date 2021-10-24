@@ -233,6 +233,7 @@
 		C36FBFDC230F3B98008D95D5 /* FLEXIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = C36FBFCA230F3B98008D95D5 /* FLEXIvar.m */; };
 		C37A0C93218BAC9600848CA7 /* FLEXObjcInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C37A0C94218BAC9600848CA7 /* FLEXObjcInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */; };
+		C381FDC3271CCB0500401081 /* Firestore.h in Headers */ = {isa = PBXBuildFile; fileRef = C381FDC2271CCB0500401081 /* Firestore.h */; };
 		C383C3B923B6A62A007A321B /* FLEXRuntimeSafety.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3B723B6A62A007A321B /* FLEXRuntimeSafety.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C383C3BA23B6A62A007A321B /* FLEXRuntimeSafety.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */; };
 		C383C3BD23B6B398007A321B /* UITextField+Range.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3BB23B6B398007A321B /* UITextField+Range.m */; };
@@ -608,6 +609,7 @@
 		C36FBFCA230F3B98008D95D5 /* FLEXIvar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXIvar.m; sourceTree = "<group>"; };
 		C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXObjcInternal.h; sourceTree = "<group>"; };
 		C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXObjcInternal.mm; sourceTree = "<group>"; };
+		C381FDC2271CCB0500401081 /* Firestore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Firestore.h; sourceTree = "<group>"; };
 		C383C3B723B6A62A007A321B /* FLEXRuntimeSafety.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXRuntimeSafety.h; sourceTree = "<group>"; };
 		C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXRuntimeSafety.m; sourceTree = "<group>"; };
 		C383C3BB23B6B398007A321B /* UITextField+Range.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+Range.m"; sourceTree = "<group>"; };
@@ -974,6 +976,7 @@
 		3A4C94B41B5B21410088C3F2 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				C381FDC2271CCB0500401081 /* Firestore.h */,
 				3A4C94B51B5B21410088C3F2 /* FLEXNetworkMITMViewController.h */,
 				3A4C94B61B5B21410088C3F2 /* FLEXNetworkMITMViewController.m */,
 				3A4C94B71B5B21410088C3F2 /* FLEXNetworkRecorder.h */,
@@ -1489,6 +1492,7 @@
 				C38F3F31230C958F004E3731 /* FLEXAlert.h in Headers */,
 				C398624D23AD6C67007E6793 /* FLEXKeyPathSearchController.h in Headers */,
 				3A4C95381B5B21410088C3F2 /* FLEXNetworkRecorder.h in Headers */,
+				C381FDC3271CCB0500401081 /* Firestore.h in Headers */,
 				3A4C94251B5B20570088C3F2 /* FLEX.h in Headers */,
 				C383C3C523B6BB81007A321B /* FLEXCodeFontCell.h in Headers */,
 				C3F527C12318670F009CBA07 /* FLEXImageShortcuts.h in Headers */,

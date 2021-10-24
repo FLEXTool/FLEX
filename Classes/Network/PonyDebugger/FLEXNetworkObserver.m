@@ -21,6 +21,7 @@
 #import "NSUserDefaults+FLEX.h"
 #import "NSObject+FLEX_Reflection.h"
 #import "FLEXMethod.h"
+#import "Firestore.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -101,7 +102,7 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
     if (enabled) {
         // Inject if needed. This injection is protected with a dispatch_once, so we're ok calling it multiple times.
         // By doing the injection lazily, we keep the impact of the tool lower when this feature isn't enabled.
-        [self injectIntoAllNSURLThings];
+        [self setNetworkMonitorHooks];
     }
     
     if (previouslyEnabled != enabled) {
@@ -114,10 +115,13 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
 }
 
 + (void)load {
-    // We don't want to do the swizzling from +load because not all the classes may be loaded at this point.
+    // We don't want to do the swizzling from +load because not all the
+    // delegate classes we want to hook may be loaded at this point.
+    // However, Firebase classes will definitely be loaded by now,
+    // so we can definitely hook those sooner if need be.
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([self isEnabled]) {
-            [self injectIntoAllNSURLThings];
+            [self setNetworkMonitorHooks];
         }
     });
 }
@@ -166,7 +170,113 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask delegate:(id<NSUR
     objc_setAssociatedObject(object, key, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-#pragma mark - Delegate Injection
+#pragma mark - Hooking
+
+static void (*_logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$)(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST, SEL, FIRDocumentSnapshotBlock);
+static void _logos_method$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST, SEL, FIRDocumentSnapshotBlock);
+static void (*_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$)(
+    _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock);
+static void _logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock); 
+
+static void _logos_register_hook(Class _class, SEL _cmd, IMP _new, IMP *_old) {
+    unsigned int _count, _i;
+    Class _searchedClass = _class;
+    Method *_methods;
+    while (_searchedClass) {
+        _methods = class_copyMethodList(_searchedClass, &_count);
+        for (_i = 0; _i < _count; _i++) {
+            if (method_getName(_methods[_i]) == _cmd) {
+                if (_class == _searchedClass) {
+                    *_old = method_getImplementation(_methods[_i]);
+                    *_old = class_replaceMethod(_class, _cmd, _new, method_getTypeEncoding(_methods[_i]));
+                } else {
+                    class_addMethod(_class, _cmd, _new, method_getTypeEncoding(_methods[_i]));
+                }
+                free(_methods);
+                return;
+            }
+        }
+        free(_methods);
+        _searchedClass = class_getSuperclass(_searchedClass);
+    }
+}
+
+static Class _logos_superclass$_ungrouped$FIRDocumentReference;
+static void (*_logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$)(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST, SEL, FIRDocumentSnapshotBlock);
+static Class _logos_superclass$_ungrouped$FIRQuery;
+static void (*_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$)(
+    _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock);
+
+
+static void _logos_method$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST self, SEL _cmd, FIRDocumentSnapshotBlock completion) {
+    
+    // Generate transaction ID
+    NSString *requestID = [FLEXNetworkObserver nextRequestID];
+    
+    // Record transaction start
+    [FLEXNetworkRecorder.defaultRecorder recordFIRDocumentWillFetch:self withTransactionID:requestID];
+    // Hook callback
+    FIRDocumentSnapshotBlock orig = completion;
+    completion = ^(FIRDocumentSnapshot *document, NSError *error) {
+        [FLEXNetworkRecorder.defaultRecorder recordFIRDocumentDidFetch:document error:error transactionID:requestID];
+        orig(document, error);
+    };
+    
+    // Forward invocation
+    (_logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$ ? _logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$ : (__typeof__(_logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRDocumentReference, @selector(getDocumentWithCompletion:)))(self, _cmd, completion);
+}
+
+static void _logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST self, SEL _cmd, FIRQuerySnapshotBlock completion) {
+    
+    // Generate transaction ID
+    NSString *requestID = [FLEXNetworkObserver nextRequestID];
+    
+    // Record transaction start
+    [FLEXNetworkRecorder.defaultRecorder recordFIRQueryWillFetch:self withTransactionID:requestID];
+    // Hook callback
+    FIRQuerySnapshotBlock orig = completion;
+    completion = ^(FIRQuerySnapshot *query, NSError *error) {
+        [FLEXNetworkRecorder.defaultRecorder recordFIRQueryDidFetch:query error:error transactionID:requestID];
+        orig(query, error);
+    };
+    
+    // Forward invocation
+    (_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$ ? _logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$ : (__typeof__(_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRQuery, @selector(getDocumentsWithCompletion:)))(self, _cmd, completion);
+}
+
++ (void)setNetworkMonitorHooks {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self hookFirebaseThings];
+        [self injectIntoAllNSURLThings];
+    });
+}
+
++ (void)hookFirebaseThings {
+    Class _logos_class$_ungrouped$FIRDocumentReference = objc_getClass("FIRDocumentReference");
+    _logos_superclass$_ungrouped$FIRDocumentReference = class_getSuperclass(_logos_class$_ungrouped$FIRDocumentReference);
+    _logos_register_hook(
+        _logos_class$_ungrouped$FIRDocumentReference,
+        @selector(getDocumentWithCompletion:),
+        (IMP)&_logos_method$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$,
+        (IMP *)&_logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$
+    );
+    
+    Class _logos_class$_ungrouped$FIRQuery = objc_getClass("FIRQuery");
+    _logos_superclass$_ungrouped$FIRQuery = class_getSuperclass(_logos_class$_ungrouped$FIRQuery);
+    _logos_register_hook(
+        _logos_class$_ungrouped$FIRQuery,
+        @selector(getDocumentsWithCompletion:),
+        (IMP)&_logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$,
+        (IMP *)&_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$
+    );
+}
 
 + (void)injectIntoAllNSURLThings {
     // Only allow swizzling once.

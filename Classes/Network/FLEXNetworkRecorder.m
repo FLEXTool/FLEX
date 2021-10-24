@@ -26,7 +26,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 @property (nonatomic) OSCache *restCache;
 @property (nonatomic) NSMutableArray<FLEXHTTPTransaction *> *orderedHTTPTransactions;
 @property (nonatomic) NSMutableArray<FLEXWebsocketTransaction *> *orderedWSTransactions;
-@property (nonatomic) NSMutableDictionary<NSString *, FLEXHTTPTransaction *> *requestIDsToHTTPTransactions;
+@property (nonatomic) NSMutableArray<FLEXFirebaseTransaction *> *orderedFirebaseTransactions;
+@property (nonatomic) NSMutableDictionary<NSString *, __kindof FLEXNetworkTransaction *> *requestIDsToTransactions;
 @property (nonatomic) dispatch_queue_t queue;
 
 @end
@@ -47,7 +48,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         
         self.orderedWSTransactions = [NSMutableArray new];
         self.orderedHTTPTransactions = [NSMutableArray new];
-        self.requestIDsToHTTPTransactions = [NSMutableDictionary new];
+        self.orderedFirebaseTransactions = [NSMutableArray new];
+        self.requestIDsToTransactions = [NSMutableDictionary new];
         self.hostDenylist = NSUserDefaults.standardUserDefaults.flex_networkHostDenylist.mutableCopy;
 
         // Serial queue used because we use mutable objects that are not thread safe
@@ -89,6 +91,10 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     return self.orderedWSTransactions.copy;
 }
 
+- (NSArray<FLEXFirebaseTransaction *> *)firebaseTransactions {
+    return self.orderedFirebaseTransactions.copy;
+}
+
 - (NSData *)cachedResponseBodyForTransaction:(FLEXHTTPTransaction *)transaction {
     return [self.restCache objectForKey:transaction.requestID];
 }
@@ -98,7 +104,8 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         [self.restCache removeAllObjects];
         [self.orderedWSTransactions removeAllObjects];
         [self.orderedHTTPTransactions removeAllObjects];
-        [self.requestIDsToHTTPTransactions removeAllObjects];
+        [self.orderedFirebaseTransactions removeAllObjects];
+        [self.requestIDsToTransactions removeAllObjects];
         
         [self notify:kFLEXNetworkRecorderTransactionsClearedNotification transaction:nil];
     });
@@ -146,8 +153,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
     dispatch_async(self.queue, ^{
         [self.orderedHTTPTransactions insertObject:transaction atIndex:0];
-        [self.requestIDsToHTTPTransactions setObject:transaction forKey:requestID];
-        transaction.transactionState = FLEXNetworkTransactionStateAwaitingResponse;
+        self.requestIDsToTransactions[requestID] = transaction;
 
         [self postNewTransactionNotificationWithTransaction:transaction];
     });
@@ -158,13 +164,13 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     NSDate *responseDate = [NSDate date];
 
     dispatch_async(self.queue, ^{
-        FLEXHTTPTransaction *transaction = self.requestIDsToHTTPTransactions[requestID];
+        FLEXHTTPTransaction *transaction = self.requestIDsToTransactions[requestID];
         if (!transaction) {
             return;
         }
         
         transaction.response = response;
-        transaction.transactionState = FLEXNetworkTransactionStateReceivingData;
+        transaction.state = FLEXNetworkTransactionStateReceivingData;
         transaction.latency = -[transaction.startTime timeIntervalSinceDate:responseDate];
 
         [self postUpdateNotificationForTransaction:transaction];
@@ -173,7 +179,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordDataReceivedWithRequestID:(NSString *)requestID dataLength:(int64_t)dataLength {
     dispatch_async(self.queue, ^{
-        FLEXHTTPTransaction *transaction = self.requestIDsToHTTPTransactions[requestID];
+        FLEXHTTPTransaction *transaction = self.requestIDsToTransactions[requestID];
         if (!transaction) {
             return;
         }
@@ -187,12 +193,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     NSDate *finishedDate = [NSDate date];
 
     dispatch_async(self.queue, ^{
-        FLEXHTTPTransaction *transaction = self.requestIDsToHTTPTransactions[requestID];
+        FLEXHTTPTransaction *transaction = self.requestIDsToTransactions[requestID];
         if (!transaction) {
             return;
         }
         
-        transaction.transactionState = FLEXNetworkTransactionStateFinished;
+        transaction.state = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceDate:finishedDate];
 
         BOOL shouldCache = responseBody.length > 0;
@@ -246,12 +252,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordLoadingFailedWithRequestID:(NSString *)requestID error:(NSError *)error {
     dispatch_async(self.queue, ^{
-        FLEXHTTPTransaction *transaction = self.requestIDsToHTTPTransactions[requestID];
+        FLEXHTTPTransaction *transaction = self.requestIDsToTransactions[requestID];
         if (!transaction) {
             return;
         }
         
-        transaction.transactionState = FLEXNetworkTransactionStateFailed;
+        transaction.state = FLEXNetworkTransactionStateFailed;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
 
@@ -261,7 +267,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 
 - (void)recordMechanism:(NSString *)mechanism forRequestID:(NSString *)requestID {
     dispatch_async(self.queue, ^{
-        FLEXHTTPTransaction *transaction = self.requestIDsToHTTPTransactions[requestID];
+        FLEXHTTPTransaction *transaction = self.requestIDsToTransactions[requestID];
         if (!transaction) {
             return;
         }
@@ -279,7 +285,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
             withMessage:message task:task direction:FLEXWebsocketOutgoing
         ];
         
-        [self.orderedWSTransactions addObject:send];
+        [self.orderedWSTransactions insertObject:send atIndex:0];
         [self postNewTransactionNotificationWithTransaction:send];
     });
 }
@@ -290,7 +296,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
             return t.message == message;
         }];
         send.error = error;
-        send.transactionState = error ? FLEXNetworkTransactionStateFailed : FLEXNetworkTransactionStateFinished;
+        send.state = error ? FLEXNetworkTransactionStateFailed : FLEXNetworkTransactionStateFinished;
         
         [self postUpdateNotificationForTransaction:send];
     });
@@ -302,8 +308,58 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
             withMessage:message task:task direction:FLEXWebsocketIncoming
         ];
         
-        [self.orderedWSTransactions addObject:receive];
+        [self.orderedWSTransactions insertObject:receive atIndex:0];
         [self postNewTransactionNotificationWithTransaction:receive];
+    });
+}
+
+#pragma mark - Firebase Firestore Events
+
+- (void)recordFIRQueryWillFetch:(FIRQuery *)query withTransactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = [FLEXFirebaseTransaction queryFetch:query];
+        self.requestIDsToTransactions[transactionID] = transaction;
+        [self postNewTransactionNotificationWithTransaction:transaction];
+    });
+}
+
+- (void)recordFIRDocumentWillFetch:(FIRDocumentReference *)document withTransactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = [FLEXFirebaseTransaction documentFetch:document];
+        self.requestIDsToTransactions[transactionID] = transaction;
+        [self postNewTransactionNotificationWithTransaction:transaction];
+    });
+}
+
+- (void)recordFIRQueryDidFetch:(FIRQuerySnapshot *)response error:(NSError *)error transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
+        if (!transaction) {
+            return;
+        }
+        
+        transaction.error = error;
+        transaction.documents = response.documents;
+        transaction.state = FLEXNetworkTransactionStateFinished;
+        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
+        
+        [self postUpdateNotificationForTransaction:transaction];
+    });
+}
+
+- (void)recordFIRDocumentDidFetch:(FIRDocumentSnapshot *)response error:(NSError *)error transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
+        if (!transaction) {
+            return;
+        }
+        
+        transaction.error = error;
+        transaction.documents = @[response];
+        transaction.state = FLEXNetworkTransactionStateFinished;
+        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
+        
+        [self postUpdateNotificationForTransaction:transaction];
     });
 }
 
