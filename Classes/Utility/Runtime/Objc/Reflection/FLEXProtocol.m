@@ -15,14 +15,6 @@
 
 @implementation FLEXProtocol
 
-- (id)init {
-    [NSException
-        raise:NSInternalInconsistencyException
-        format:@"Class instance should not be created with -init"
-    ];
-    return nil;
-}
-
 #pragma mark Initializers
 
 + (NSArray *)allProtocols {
