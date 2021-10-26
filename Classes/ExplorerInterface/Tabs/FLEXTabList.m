@@ -80,10 +80,10 @@
 
 - (void)closeTab:(UINavigationController *)tab {
     NSParameterAssert(tab);
-    NSParameterAssert([self.openTabs containsObject:tab]);
     NSInteger idx = [self.openTabs indexOfObject:tab];
-    
-    [self closeTabAtIndex:idx];
+    if (idx != NSNotFound) {
+        [self closeTabAtIndex:idx];
+    }
 }
 
 - (void)closeTabAtIndex:(NSInteger)idx {
