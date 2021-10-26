@@ -96,7 +96,10 @@
 - (void)dismissAnimated {
     // Tabs are only closed if the done button is pressed; this
     // allows you to leave a tab open by dragging down to dismiss
-    [FLEXTabList.sharedList closeTab:self];
+    if ([self.presentingViewController isKindOfClass:[FLEXExplorerViewController class]]) {
+        [FLEXTabList.sharedList closeTab:self];        
+    }
+    
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
