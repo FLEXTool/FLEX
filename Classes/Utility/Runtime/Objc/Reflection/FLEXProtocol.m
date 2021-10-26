@@ -160,6 +160,9 @@
             return [FLEXProperty property:objcproperties[i]];
         }];
         
+        _requiredProperties = @[];
+        _optionalProperties = @[];
+        
         free(objcproperties);
     }
 }
