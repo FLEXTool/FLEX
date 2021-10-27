@@ -38,6 +38,7 @@ let package = Package(
                 .headerSearchPath("ObjectExplorers/Sections/Shortcuts"),
                 .headerSearchPath("Network"),
                 .headerSearchPath("Network/PonyDebugger"),
+                .headerSearchPath("Network/OSCache"),
                 .headerSearchPath("Toolbar"),
                 .headerSearchPath("Manager"),
                 .headerSearchPath("Manager/Private"),
