@@ -22,11 +22,11 @@ let package = Package(
             ],
             publicHeadersPath: "Headers",
             cSettings: [
-                .unsafeFlags([
-                    "-Wno-deprecated-declarations",
-                    "-Wno-strict-prototypes",
-                    "-Wno-unsupported-availability-guard",
-                ]),
+                // .unsafeFlags([
+                //     "-Wno-deprecated-declarations",
+                //     "-Wno-strict-prototypes",
+                //     "-Wno-unsupported-availability-guard",
+                // ]),
                 .headerSearchPath("Classes"),
                 .headerSearchPath("Core"),
                 .headerSearchPath("Core/Controllers"),
