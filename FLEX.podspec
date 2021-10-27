@@ -32,6 +32,7 @@ Pod::Spec.new do |spec|
   spec.platform         = :ios, "9.0"
   spec.source           = { :git => "https://github.com/FLEXTool/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,c,m,mm}"
+  spec.exclude_files    = "Classes/Headers/*.{h,c,m,mm}"
   spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security", "SceneKit" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
