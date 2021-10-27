@@ -15,6 +15,7 @@ let package = Package(
             exclude: [
                 "Info.plist",
                 "Utility/APPLE_LICENSE",
+                "Network/OSCache/LICENSE.md",
                 "Network/PonyDebugger/LICENSE",
                 "GlobalStateExplorers/DatabaseBrowser/LICENSE",
                 "GlobalStateExplorers/Keychain/SSKeychain_LICENSE",
