@@ -1,0 +1,1 @@
+../../Classes/ObjectExplorers/Sections/Shortcuts/FLEXImageShortcuts.h
