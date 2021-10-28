@@ -70,5 +70,7 @@ let package = Package(
                 .headerSearchPath("Utility/Keyboard")
             ]
         )
-    ]
+    ],
+    // Required to compile FLEXSwiftInternal.mm
+    cxxLanguageStandard: .gnucxx11
 )
