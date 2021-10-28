@@ -1,5 +1,6 @@
 platform :ios, '13.0'
 
 target 'FLEXample' do
+  project 'FLEXample-Cocoapods'
   pod 'FLEX', :path => '../'
 end

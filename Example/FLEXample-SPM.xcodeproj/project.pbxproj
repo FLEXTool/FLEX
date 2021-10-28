@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -24,12 +24,10 @@
 		C3A67856241AB8AD005A4681 /* MiscNetworkRequests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A67855241AB8AD005A4681 /* MiscNetworkRequests.m */; };
 		C3A67858241ADDF7005A4681 /* Commit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A67857241ADDF7005A4681 /* Commit.swift */; };
 		C3B3760025B8CDA300AD43AB /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = C3B375FF25B8CDA300AD43AB /* Person.m */; };
-		E211705F801A8167D308F94A /* libPods-FLEXample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBD699DDBAC5A16D8CFD39AC /* libPods-FLEXample.a */; };
+		C3F86C322740DB9400E094BF /* FLEX in Frameworks */ = {isa = PBXBuildFile; productRef = C3F86C312740DB9400E094BF /* FLEX */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		33A4EDAC37AA215CF95EEA24 /* Pods-FLEXample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLEXample.release.xcconfig"; path = "Target Support Files/Pods-FLEXample/Pods-FLEXample.release.xcconfig"; sourceTree = "<group>"; };
-		57041F764D8B1C098B9B4073 /* Pods-FLEXample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLEXample.debug.xcconfig"; path = "Target Support Files/Pods-FLEXample/Pods-FLEXample.debug.xcconfig"; sourceTree = "<group>"; };
 		BBD699DDBAC5A16D8CFD39AC /* libPods-FLEXample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FLEXample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C386D6CC2419975A00699085 /* FLEXample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FLEXample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C386D6CF2419975A00699085 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -64,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E211705F801A8167D308F94A /* libPods-FLEXample.a in Frameworks */,
+				C3F86C322740DB9400E094BF /* FLEX in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,7 +75,6 @@
 				C386D6CE2419975A00699085 /* FLEXample */,
 				C3A67853241AB88F005A4681 /* Realm */,
 				C386D6CD2419975A00699085 /* Products */,
-				E367791A4E4085CCB945F0F8 /* Pods */,
 				DCEB5037DA3D5C01CB9CEE93 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -169,15 +166,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		E367791A4E4085CCB945F0F8 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				57041F764D8B1C098B9B4073 /* Pods-FLEXample.debug.xcconfig */,
-				33A4EDAC37AA215CF95EEA24 /* Pods-FLEXample.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -185,7 +173,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C386D6E02419975B00699085 /* Build configuration list for PBXNativeTarget "FLEXample" */;
 			buildPhases = (
-				E25E87A42AA269B0CF1830D1 /* [CP] Check Pods Manifest.lock */,
 				C386D6C82419975A00699085 /* Sources */,
 				C386D6C92419975A00699085 /* Frameworks */,
 				C386D6CA2419975A00699085 /* Resources */,
@@ -195,6 +182,9 @@
 			dependencies = (
 			);
 			name = FLEXample;
+			packageProductDependencies = (
+				C3F86C312740DB9400E094BF /* FLEX */,
+			);
 			productName = FLEXample;
 			productReference = C386D6CC2419975A00699085 /* FLEXample.app */;
 			productType = "com.apple.product-type.application";
@@ -215,7 +205,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C386D6C72419975A00699085 /* Build configuration list for PBXProject "FLEXample" */;
+			buildConfigurationList = C386D6C72419975A00699085 /* Build configuration list for PBXProject "FLEXample-SPM" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -224,6 +214,9 @@
 				Base,
 			);
 			mainGroup = C386D6C32419975A00699085;
+			packageReferences = (
+				C3F86C302740DB9400E094BF /* XCRemoteSwiftPackageReference "FLEX" */,
+			);
 			productRefGroup = C386D6CD2419975A00699085 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -251,31 +244,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		E25E87A42AA269B0CF1830D1 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-FLEXample-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C386D6C82419975A00699085 /* Sources */ = {
@@ -425,7 +393,6 @@
 		};
 		C386D6E12419975B00699085 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 57041F764D8B1C098B9B4073 /* Pods-FLEXample.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -450,7 +417,6 @@
 		};
 		C386D6E22419975B00699085 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 33A4EDAC37AA215CF95EEA24 /* Pods-FLEXample.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -475,7 +441,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C386D6C72419975A00699085 /* Build configuration list for PBXProject "FLEXample" */ = {
+		C386D6C72419975A00699085 /* Build configuration list for PBXProject "FLEXample-SPM" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C386D6DE2419975B00699085 /* Debug */,
@@ -494,6 +460,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C3F86C302740DB9400E094BF /* XCRemoteSwiftPackageReference "FLEX" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/FLEXTool/FLEX";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C3F86C312740DB9400E094BF /* FLEX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3F86C302740DB9400E094BF /* XCRemoteSwiftPackageReference "FLEX" */;
+			productName = FLEX;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C386D6C42419975A00699085 /* Project object */;
 }
