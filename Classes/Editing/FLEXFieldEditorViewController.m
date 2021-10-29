@@ -31,11 +31,6 @@
 #pragma mark - Initialization
 
 + (instancetype)target:(id)target property:(nonnull FLEXProperty *)property commitHandler:(void(^_Nullable)(void))onCommit {
-    id value = [property getValue:target];
-    if (![self canEditProperty:property onObject:target currentValue:value]) {
-        return nil;
-    }
-
     FLEXFieldEditorViewController *editor = [self target:target data:property commitHandler:onCommit];
     editor.title = [@"Property: " stringByAppendingString:property.name];
     editor.property = property;
@@ -149,16 +144,6 @@
     } else {
         return self.ivar.description;
     }
-}
-
-+ (BOOL)canEditProperty:(FLEXProperty *)property onObject:(id)object currentValue:(id)value {
-    const FLEXTypeEncoding *typeEncoding = property.attributes.typeEncoding.UTF8String;
-    BOOL canEditType = [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:typeEncoding currentValue:value];
-    return canEditType && [object respondsToSelector:property.likelySetter];
-}
-
-+ (BOOL)canEditIvar:(Ivar)ivar currentValue:(id)value {
-    return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:ivar_getTypeEncoding(ivar) currentValue:value];
 }
 
 @end
