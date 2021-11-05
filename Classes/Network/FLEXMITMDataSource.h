@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXMITMDataSource<__covariant TransactionType> : NSObject
 
-+ (instancetype)dataSourceWithProvider:(NSArray<TransactionType> *(^)())future;
++ (instancetype)dataSourceWithProvider:(NSArray<TransactionType> *(^)(void))future;
 
 @property (nonatomic, readonly) NSArray<TransactionType> *transactions;
 @property (nonatomic, readonly) NSArray<TransactionType> *allTransactions;

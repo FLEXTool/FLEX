@@ -10,13 +10,13 @@
 #import "FLEXUtility.h"
 
 @interface FLEXMITMDataSource ()
-@property (nonatomic, readonly) NSArray *(^dataProvider)();
+@property (nonatomic, readonly) NSArray *(^dataProvider)(void);
 @property (nonatomic) NSString *filterString;
 @end
 
 @implementation FLEXMITMDataSource
 
-+ (instancetype)dataSourceWithProvider:(NSArray<id> *(^)())future {
++ (instancetype)dataSourceWithProvider:(NSArray<id> *(^)(void))future {
     FLEXMITMDataSource *ds = [self new];
     ds->_dataProvider = future;
     [ds reloadData:nil];

@@ -96,7 +96,7 @@
 
     // Return the given selector if the class responds to it
     Class cls = _cls;
-    SEL (^selectorIfValid)() = ^SEL(SEL sel) {
+    SEL (^selectorIfValid)(SEL) = ^SEL(SEL sel) {
         if (!sel || !cls) return nil;
         return [cls instancesRespondToSelector:sel] ? sel : nil;
     };

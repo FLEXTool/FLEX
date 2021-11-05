@@ -175,7 +175,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     }
 }
 
-- (void)updateTransactions:(void(^)())callback {
+- (void)updateTransactions:(void(^)(void))callback {
     id completion = ^(FLEXMITMDataSource *dataSource) {
         // Update byte count
         [self updateFirstSectionHeader];
