@@ -247,7 +247,7 @@
 		C386D6EB24199E9600699085 /* FLEX-ObjectExploring.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6EA24199E9600699085 /* FLEX-ObjectExploring.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C386D6ED24199EC600699085 /* FLEX-Runtime.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6EC24199EC600699085 /* FLEX-Runtime.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C386D6F02419A33F00699085 /* FLEXRuntimeConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = C386D6EF2419A33F00699085 /* FLEXRuntimeConstants.m */; };
-		C386D6F2241A96AD00699085 /* FLEXMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6F1241A96AD00699085 /* FLEXMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C386D6F2241A96AD00699085 /* FLEXMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6F1241A96AD00699085 /* FLEXMacros.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C386D6F3241A976100699085 /* FLEXRuntimeConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6EE2419A2F400699085 /* FLEXRuntimeConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C386D6F6241A9D6900699085 /* FLEX-Categories.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6F5241A9D6900699085 /* FLEX-Categories.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3878DBA23A749960038FDBE /* FLEXVariableEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C3878DB823A749960038FDBE /* FLEXVariableEditorViewController.m */; };
