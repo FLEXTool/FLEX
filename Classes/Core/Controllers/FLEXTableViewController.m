@@ -559,7 +559,7 @@ static UITextField *kDummyTextField = nil;
     [self.debounceTimer invalidate];
     NSString *text = searchController.searchBar.text;
     
-    void (^updateSearchResults)() = ^{
+    void (^updateSearchResults)(void) = ^{
         if (self.searchResultsUpdater) {
             [self.searchResultsUpdater updateSearchResults:text];
         } else {

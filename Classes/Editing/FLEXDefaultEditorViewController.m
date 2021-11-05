@@ -21,7 +21,7 @@
 
 @implementation FLEXDefaultEditorViewController
 
-+ (instancetype)target:(NSUserDefaults *)defaults key:(NSString *)key commitHandler:(void(^_Nullable)())onCommit {
++ (instancetype)target:(NSUserDefaults *)defaults key:(NSString *)key commitHandler:(void(^_Nullable)(void))onCommit {
     FLEXDefaultEditorViewController *editor = [self target:defaults data:key commitHandler:onCommit];
     editor.title = @"Edit Default";
     return editor;

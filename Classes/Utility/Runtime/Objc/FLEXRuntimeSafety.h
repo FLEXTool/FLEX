@@ -18,7 +18,7 @@ extern CFSetRef FLEXKnownUnsafeClasses;
 static Class cNSObject = nil, cNSProxy = nil;
 
 __attribute__((constructor))
-static void FLEXInitKnownRootClasses() {
+static void FLEXInitKnownRootClasses(void) {
     cNSObject = [NSObject class];
     cNSProxy = [NSProxy class];
 }

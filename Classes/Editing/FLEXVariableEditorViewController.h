@@ -21,17 +21,17 @@ NS_ASSUME_NONNULL_BEGIN
     @protected
     id _target;
     _Nullable id _data;
-    void (^_Nullable _commitHandler)();
+    void (^_Nullable _commitHandler)(void);
 }
 
 /// @param target The target of the operation
 /// @param data The data associated with the operation
 /// @param onCommit An action to perform when the data changes 
-+ (instancetype)target:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)())onCommit;
++ (instancetype)target:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)(void))onCommit;
 /// @param target The target of the operation
 /// @param data The data associated with the operation
 /// @param onCommit An action to perform when the data changes 
-- (id)initWithTarget:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)())onCommit;
+- (id)initWithTarget:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)(void))onCommit;
 
 @property (nonatomic, readonly) id target;
 

@@ -35,7 +35,7 @@ Pod::Spec.new do |spec|
   spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security", "SceneKit" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
-  spec.compiler_flags   = "-Wno-unsupported-availability-guard -Wno-strict-prototypes"
+  spec.compiler_flags   = "-Wno-unsupported-availability-guard"
   spec.public_header_files = [ "Classes/*.h", "Classes/Manager/*.h", "Classes/Toolbar/*.h",
                                "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h",
                                "Classes/Core/**/*.h", "Classes/Utility/Runtime/Objc/**/*.h",

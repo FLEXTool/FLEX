@@ -30,7 +30,7 @@
 
 #pragma mark - Initialization
 
-+ (instancetype)target:(id)target property:(nonnull FLEXProperty *)property commitHandler:(void(^_Nullable)())onCommit {
++ (instancetype)target:(id)target property:(nonnull FLEXProperty *)property commitHandler:(void(^_Nullable)(void))onCommit {
     id value = [property getValue:target];
     if (![self canEditProperty:property onObject:target currentValue:value]) {
         return nil;
@@ -42,7 +42,7 @@
     return editor;
 }
 
-+ (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar commitHandler:(void(^_Nullable)())onCommit {
++ (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar commitHandler:(void(^_Nullable)(void))onCommit {
     FLEXFieldEditorViewController *editor = [self target:target data:ivar commitHandler:onCommit];
     editor.title = [@"Ivar: " stringByAppendingString:ivar.name];
     editor.ivar = ivar;

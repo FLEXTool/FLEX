@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXDefaultEditorViewController : FLEXVariableEditorViewController
 
-+ (instancetype)target:(NSUserDefaults *)defaults key:(NSString *)key commitHandler:(void(^_Nullable)())onCommit;
++ (instancetype)target:(NSUserDefaults *)defaults key:(NSString *)key commitHandler:(void(^_Nullable)(void))onCommit;
 
 + (BOOL)canEditDefaultWithValue:(nullable id)currentValue;
 
