@@ -170,7 +170,7 @@ static uint8_t (*OSLogGetType)(void *);
             // Get log message text
             const char *messageText = OSLogCopyFormattedMessage(log_message);
             // https://github.com/limneos/oslog/issues/1
-            if (entry->log_message.format && !(strcmp(entry->log_message.format, messageText))) {
+            if (!messageText || (entry->log_message.format && !(strcmp(entry->log_message.format, messageText)))) {
                 messageText = (char *)entry->log_message.format;
             }
             // move messageText from stack to heap
