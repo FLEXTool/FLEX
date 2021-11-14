@@ -242,6 +242,8 @@
 		C383C3C523B6BB81007A321B /* FLEXCodeFontCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3C323B6BB81007A321B /* FLEXCodeFontCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C383C3C623B6BB81007A321B /* FLEXCodeFontCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3C423B6BB81007A321B /* FLEXCodeFontCell.m */; };
 		C3854DF023F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3854DEF23F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m */; };
+		C38568FA272B3BFC00B1E37F /* FLEXSwiftInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C38568F8272B3BFC00B1E37F /* FLEXSwiftInternal.h */; };
+		C38568FB272B3BFC00B1E37F /* FLEXSwiftInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = C38568F9272B3BFC00B1E37F /* FLEXSwiftInternal.mm */; };
 		C386D6A9241995A800699085 /* FLEXTypeEncodingParser.h in Headers */ = {isa = PBXBuildFile; fileRef = C3854DF223F36C9E00FCD1E2 /* FLEXTypeEncodingParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C386D6E924199C1B00699085 /* FLEX-Core.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6E824199C1B00699085 /* FLEX-Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C386D6EB24199E9600699085 /* FLEX-ObjectExploring.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6EA24199E9600699085 /* FLEX-ObjectExploring.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -619,6 +621,8 @@
 		C3854DEF23F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTypeEncodingParserTests.m; sourceTree = "<group>"; };
 		C3854DF123F36C9E00FCD1E2 /* FLEXTypeEncodingParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXTypeEncodingParser.m; sourceTree = "<group>"; };
 		C3854DF223F36C9E00FCD1E2 /* FLEXTypeEncodingParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXTypeEncodingParser.h; sourceTree = "<group>"; };
+		C38568F8272B3BFC00B1E37F /* FLEXSwiftInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXSwiftInternal.h; sourceTree = "<group>"; };
+		C38568F9272B3BFC00B1E37F /* FLEXSwiftInternal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXSwiftInternal.mm; sourceTree = "<group>"; };
 		C386D6E824199C1B00699085 /* FLEX-Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEX-Core.h"; sourceTree = "<group>"; };
 		C386D6EA24199E9600699085 /* FLEX-ObjectExploring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEX-ObjectExploring.h"; sourceTree = "<group>"; };
 		C386D6EC24199EC600699085 /* FLEX-Runtime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEX-Runtime.h"; sourceTree = "<group>"; };
@@ -1106,6 +1110,8 @@
 				C383C3B823B6A62A007A321B /* FLEXRuntimeSafety.m */,
 				C37A0C91218BAC9600848CA7 /* FLEXObjcInternal.h */,
 				C37A0C92218BAC9600848CA7 /* FLEXObjcInternal.mm */,
+				C38568F8272B3BFC00B1E37F /* FLEXSwiftInternal.h */,
+				C38568F9272B3BFC00B1E37F /* FLEXSwiftInternal.mm */,
 				C386D6EE2419A2F400699085 /* FLEXRuntimeConstants.h */,
 				C386D6EF2419A33F00699085 /* FLEXRuntimeConstants.m */,
 				C3854DF223F36C9E00FCD1E2 /* FLEXTypeEncodingParser.h */,
@@ -1561,6 +1567,7 @@
 				3A4C95221B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h in Headers */,
 				C33E46AF223B02CD004BD0E6 /* FLEXASLLogController.h in Headers */,
 				C34EE30821CB23CC00BD3A7C /* FLEXOSLogController.h in Headers */,
+				C38568FA272B3BFC00B1E37F /* FLEXSwiftInternal.h in Headers */,
 				3A4C94FF1B5B21410088C3F2 /* FLEXArgumentInputSwitchView.h in Headers */,
 				C398625423AD6C67007E6793 /* FLEXRuntimeBrowserToolbar.h in Headers */,
 				3A4C94E71B5B21410088C3F2 /* FLEXHierarchyTableViewCell.h in Headers */,
@@ -1794,6 +1801,7 @@
 				3A4C95101B5B21410088C3F2 /* FLEXMethodCallingViewController.m in Sources */,
 				C362AE8223C7E9D1005A86AE /* NSMapTable+FLEX_Subscripting.m in Sources */,
 				C3F646C2239EAA8F00D4A011 /* UIPasteboard+FLEX.m in Sources */,
+				C38568FB272B3BFC00B1E37F /* FLEXSwiftInternal.mm in Sources */,
 				C3EB6F8D242E9C83006EA386 /* FLEXRuntimeExporter.m in Sources */,
 				3A4C94F61B5B21410088C3F2 /* FLEXArgumentInputObjectView.m in Sources */,
 				3A4C94EC1B5B21410088C3F2 /* FLEXImagePreviewViewController.m in Sources */,

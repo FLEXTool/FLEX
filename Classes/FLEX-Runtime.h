@@ -7,6 +7,7 @@
 //
 
 #import <FLEXObjcInternal.h>
+#import <FLEXSwiftInternal.h>
 #import <FLEXRuntimeSafety.h>
 #import <FLEXBlockDescription.h>
 #import <FLEXTypeEncodingParser.h>
