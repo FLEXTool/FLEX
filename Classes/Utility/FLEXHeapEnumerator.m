@@ -145,15 +145,6 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
 }
 
 + (NSArray<FLEXObjectRef *> *)objectsWithReferencesToObject:(id)object retained:(BOOL)retain {
-    static Class SwiftObjectClass = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        SwiftObjectClass = NSClassFromString(@"SwiftObject");
-        if (!SwiftObjectClass) {
-            SwiftObjectClass = NSClassFromString(@"Swift._SwiftObject");
-        }
-    });
-
     NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray new];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
         // Skip known-invalid objects

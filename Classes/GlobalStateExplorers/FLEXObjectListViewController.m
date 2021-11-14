@@ -168,15 +168,6 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
 }
 
 + (instancetype)objectsWithReferencesToObject:(id)object retained:(BOOL)retain {
-    static Class SwiftObjectClass = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        SwiftObjectClass = NSClassFromString(@"SwiftObject");
-        if (!SwiftObjectClass) {
-            SwiftObjectClass = NSClassFromString(@"Swift._SwiftObject");
-        }
-    });
-
     NSArray<FLEXObjectRef *> *instances = [FLEXHeapEnumerator
         objectsWithReferencesToObject:object retained:retain
     ];
