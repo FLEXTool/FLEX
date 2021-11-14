@@ -29,15 +29,15 @@
 
 #pragma mark Initialization
 + (instancetype)reflect:(id)objectOrClass {
-    return [[self alloc] initWithValue:objectOrClass];
+    return [[self alloc] initWithSubject:objectOrClass];
 }
 
-- (id)initWithValue:(id)value {
-    NSParameterAssert(value);
+- (id)initWithSubject:(id)objectOrClass {
+    NSParameterAssert(objectOrClass);
     
     self = [super init];
     if (self) {
-        _value = value;
+        _value = objectOrClass;
         [self examine];
     }
     
