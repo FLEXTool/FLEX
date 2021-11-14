@@ -46,6 +46,12 @@
 
 @implementation FLEXObjectExplorer
 
++ (void)initialize {
+    if (self == FLEXObjectExplorer.class) {
+        FLEXObjectExplorer.reflexAvailable = NSClassFromString(@"FLEXSwiftMirror") != nil;
+    }
+}
+
 #pragma mark - Initialization
 
 + (id)forObject:(id)objectOrClass {
