@@ -49,7 +49,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = self.tableName;
-    self.edgesForExtendedLayout = UIRectEdgeNone;
     [self.multiColumnView reloadData];
     [self setupToolbarItems];
 }
