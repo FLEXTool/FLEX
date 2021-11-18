@@ -34,6 +34,7 @@ generate_headers() {
 #    "Classes/Utility/FLEXMacros.h", "Classes/Utility/Categories/*.h",
 #    "Classes/Utility/FLEXAlert.h", "Classes/Utility/FLEXResources.h"
 
+rm -rf Classes/Headers
 mkdir -p Classes/Headers
 
 # Include all headers in these folders
