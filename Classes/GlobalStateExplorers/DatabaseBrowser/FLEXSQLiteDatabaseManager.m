@@ -169,12 +169,12 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
         }
         
         if (status == SQLITE_DONE) {
-            int rowsAffected = sqlite3_changes(_db);
-            if (rows.count || !rowsAffected) {
+            if (rows.count || columnCount > 0) {
                 // We selected some rows
                 result = _lastResult = [FLEXSQLResult columns:columns rows:rows];
             } else {
                 // We executed a query like INSERT, UDPATE, or DELETE
+                int rowsAffected = sqlite3_changes(_db);
                 NSString *message = [NSString stringWithFormat:@"%d row(s) affected", rowsAffected];
                 result = _lastResult = [FLEXSQLResult message:message];
             }
