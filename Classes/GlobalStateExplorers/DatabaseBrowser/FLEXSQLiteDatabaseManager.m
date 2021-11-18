@@ -107,10 +107,15 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 - (NSArray<NSString *> *)queryAllColumnsOfTable:(NSString *)tableName {
     NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info('%@')",tableName];
     FLEXSQLResult *results = [self executeStatement:sql];
-
-    return [results.keyedRows flex_mapped:^id(NSDictionary *column, NSUInteger idx) {
-        return column[@"name"];
-    }] ?: @[];
+    // https://github.com/FLEXTool/FLEX/issues/554
+    if (results.keyedRows.count == 0) {
+        NSString *command = [NSString stringWithFormat:@"SELECT * FROM \"%@\" where 0=1", tableName];
+        return [self executeStatement:command].columns ?: @[];
+    } else {
+        return [results.keyedRows flex_mapped:^id(NSDictionary *column, NSUInteger idx) {
+            return column[@"name"];
+        }] ?: @[];
+    }
 }
 
 - (NSArray<NSArray *> *)queryAllDataInTable:(NSString *)tableName {
@@ -164,12 +169,12 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
         }
         
         if (status == SQLITE_DONE) {
-            if (rows.count) {
+            int rowsAffected = sqlite3_changes(_db);
+            if (rows.count || !rowsAffected) {
                 // We selected some rows
                 result = _lastResult = [FLEXSQLResult columns:columns rows:rows];
             } else {
                 // We executed a query like INSERT, UDPATE, or DELETE
-                int rowsAffected = sqlite3_changes(_db);
                 NSString *message = [NSString stringWithFormat:@"%d row(s) affected", rowsAffected];
                 result = _lastResult = [FLEXSQLResult message:message];
             }
