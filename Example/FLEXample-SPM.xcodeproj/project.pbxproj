@@ -24,7 +24,7 @@
 		C3A67856241AB8AD005A4681 /* MiscNetworkRequests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A67855241AB8AD005A4681 /* MiscNetworkRequests.m */; };
 		C3A67858241ADDF7005A4681 /* Commit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A67857241ADDF7005A4681 /* Commit.swift */; };
 		C3B3760025B8CDA300AD43AB /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = C3B375FF25B8CDA300AD43AB /* Person.m */; };
-		C3F86C322740DB9400E094BF /* FLEX in Frameworks */ = {isa = PBXBuildFile; productRef = C3F86C312740DB9400E094BF /* FLEX */; };
+		C3F86CD72740ED2600E094BF /* Reflex in Frameworks */ = {isa = PBXBuildFile; productRef = C3F86CD62740ED2600E094BF /* Reflex */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3F86C322740DB9400E094BF /* FLEX in Frameworks */,
+				C3F86CD72740ED2600E094BF /* Reflex in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +183,7 @@
 			);
 			name = FLEXample;
 			packageProductDependencies = (
-				C3F86C312740DB9400E094BF /* FLEX */,
+				C3F86CD62740ED2600E094BF /* Reflex */,
 			);
 			productName = FLEXample;
 			productReference = C386D6CC2419975A00699085 /* FLEXample.app */;
@@ -215,7 +215,7 @@
 			);
 			mainGroup = C386D6C32419975A00699085;
 			packageReferences = (
-				C3F86C302740DB9400E094BF /* XCRemoteSwiftPackageReference "FLEX" */,
+				C3F86CD52740ED2600E094BF /* XCRemoteSwiftPackageReference "Reflex" */,
 			);
 			productRefGroup = C386D6CD2419975A00699085 /* Products */;
 			projectDirPath = "";
@@ -462,9 +462,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C3F86C302740DB9400E094BF /* XCRemoteSwiftPackageReference "FLEX" */ = {
+		C3F86CD52740ED2600E094BF /* XCRemoteSwiftPackageReference "Reflex" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/FLEXTool/FLEX";
+			repositoryURL = "file:///Users/tanner/Repos/Reflex";
 			requirement = {
 				branch = master;
 				kind = branch;
@@ -473,10 +473,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C3F86C312740DB9400E094BF /* FLEX */ = {
+		C3F86CD62740ED2600E094BF /* Reflex */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C3F86C302740DB9400E094BF /* XCRemoteSwiftPackageReference "FLEX" */;
-			productName = FLEX;
+			package = C3F86CD52740ED2600E094BF /* XCRemoteSwiftPackageReference "Reflex" */;
+			productName = Reflex;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
