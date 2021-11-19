@@ -47,6 +47,9 @@ extension Array where Element == CSetting {
         return []
     }
     
+    /// These are the header search paths needed for FLEX to compile, not
+    /// the headers used by projects linking against FLEX.
+    ///
     /// Do not modify the contents of this property by hand;
     /// Instead, run `bash generate-spm-headers.sh | grep headerSearchPath | pbcopy`
     /// and paste (and indent) the result below. Do this any time new folders are added.

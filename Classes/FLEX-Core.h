@@ -20,4 +20,3 @@
 #import <FLEXMultilineTableViewCell.h>
 #import <FLEXKeyValueTableViewCell.h>
 
-#import <FLEXScopeCarousel.h>

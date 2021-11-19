@@ -42,16 +42,21 @@ generate_headers "" # Top-level headers
 generate_headers "Manager"
 generate_headers "Toolbar"
 generate_headers "Utility/Categories"
-generate_headers_recursive "Core"
+generate_headers "Core"
+generate_headers "Core/Controllers"
+generate_headers "Core/Views"
+generate_headers "Core/Views/Cells"
+generate_headers "ObjectExplorers"
+generate_headers "ObjectExplorers/Sections"
 generate_headers_recursive "Utility/Runtime/Objc"
-generate_headers_recursive "ObjectExplorers"
-generate_headers_recursive "Editing"
 
 # Include only headers in these specific folders,
 # such as those with subfolders that should not be linked
 makeheader "Classes/Utility/FLEXMacros.h"
 makeheader "Classes/Utility/FLEXAlert.h"
 makeheader "Classes/Utility/FLEXResources.h"
+makeheader "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcut.h"
+makeheader "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcutsSection.h"
 makeheader "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
 
 # Print all folders in Classes for use in Package.swift

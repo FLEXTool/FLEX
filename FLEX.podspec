@@ -38,10 +38,18 @@ Pod::Spec.new do |spec|
   spec.requires_arc     = true
   spec.compiler_flags   = "-Wno-unsupported-availability-guard"
   spec.public_header_files = [ "Classes/*.h", "Classes/Manager/*.h", "Classes/Toolbar/*.h",
-                               "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h",
-                               "Classes/Core/**/*.h", "Classes/Utility/Runtime/Objc/**/*.h",
-                               "Classes/ObjectExplorers/**/*.h", "Classes/Editing/**/*.h",
-                               "Classes/Utility/Categories/*.h", "Classes/Utility/FLEXAlert.h",
+                               "Classes/Core/Controllers/*.h", "Classes/Core/Views/*.h",
+                               "Classes/Core/Views/Cells/*.h", "Classes/Core/*.h", 
+                               "Classes/Utility/Categories/*.h",
+                               "Classes/Utility/Runtime/Objc/**/*.h",
+                               "Classes/ObjectExplorers/*.h",
+                               "Classes/ObjectExplorers/Sections/*.h",
+                               
                                "Classes/Utility/FLEXMacros.h",
-                               "Classes/Utility/FLEXResources.h" ]
+                               "Classes/Utility/FLEXAlert.h",
+                               "Classes/Utility/FLEXResources.h",
+                               "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcut.h",
+                               "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcutsSection.h",
+                               "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
+                              ]
 end

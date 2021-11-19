@@ -12,15 +12,7 @@
 #import <FLEXObjectExplorer.h>
 
 #import <FLEXShortcut.h>
-#import <FLEXShortcutsFactory+Defaults.h>
 #import <FLEXShortcutsSection.h>
-#import <FLEXBlockShortcuts.h>
-#import <FLEXBundleShortcuts.h>
-#import <FLEXClassShortcuts.h>
-#import <FLEXImageShortcuts.h>
-#import <FLEXLayerShortcuts.h>
-#import <FLEXViewControllerShortcuts.h>
-#import <FLEXViewShortcuts.h>
 
 #import <FLEXCollectionContentSection.h>
 #import <FLEXColorPreviewSection.h>
