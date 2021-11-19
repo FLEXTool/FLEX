@@ -20,5 +20,6 @@
 #import <FLEX-Categories.h>
 #import <FLEX-ObjectExploring.h>
 
+#import <FLEXMacros.h>
 #import <FLEXAlert.h>
 #import <FLEXResources.h>
