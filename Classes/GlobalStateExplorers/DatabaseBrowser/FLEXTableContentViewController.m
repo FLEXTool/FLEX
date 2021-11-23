@@ -131,7 +131,7 @@
         
         // Option to delete row
         BOOL hasRowID = self.rows.count && row < self.rows.count;
-        if (hasRowID) {
+        if (hasRowID && self.databaseManager) {
             make.button(@"Delete").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
                 NSString *deleteRow = [NSString stringWithFormat:
                     @"DELETE FROM %@ WHERE rowid = %@",
@@ -141,9 +141,7 @@
                 [self executeStatementAndShowResult:deleteRow completion:^(BOOL success) {
                     // Remove deleted row and reload view
                     if (success) {
-                        [self.rowIDs removeObjectAtIndex:row];
-                        [self.rows removeObjectAtIndex:row];
-                        [self.multiColumnView reloadData];
+                        [self reloadTableDataFromDB];
                     }
                 }];
             });
@@ -219,7 +217,11 @@
         flex_withTintColor:UIColor.redColor
     ];
     trashButton.enabled = self.databaseManager && self.rows.count;
-    self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, trashButton];
+    
+    UIBarButtonItem *addButton = FLEXBarButtonItemSystem(Add, self, @selector(addPressed));
+    addButton.enabled = self.databaseManager != nil;
+    
+    self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, addButton, trashButton];
 }
 
 - (void)trashPressed {
@@ -233,6 +235,23 @@
                 // Only dismiss on success
                 if (success) {
                     [self.navigationController popViewControllerAnimated:YES];
+                }
+            }];
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
+}
+
+- (void)addPressed {
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Insert a new row");
+        make.message(@"Type comma separated values to execute the INSERT statement.");
+        make.textField(@"Example: 5, 'John Smith', 14,...");
+        make.button(@"Run").handler(^(NSArray<NSString *> *strings) {
+            NSString *statement = [NSString stringWithFormat:@"INSERT INTO %@ VALUES (%@)", self.tableName, strings[0]];
+            [self executeStatementAndShowResult:statement completion:^(BOOL success) {
+                if (success) {
+                    [self reloadTableDataFromDB];
                 }
             }];
         });
@@ -259,5 +278,18 @@
     } showFrom:self];
 }
 
+- (void)reloadTableDataFromDB {
+    if (self.databaseManager == nil) {
+        return;
+    }
+    NSArray<NSArray *> *rows = [self.databaseManager queryAllDataInTable:self.tableName];
+    NSArray<NSString *> *rowIDs = nil;
+    if ([self.databaseManager respondsToSelector:@selector(queryRowIDsInTable:)]) {
+        rowIDs = [self.databaseManager queryRowIDsInTable:self.tableName];
+    }
+    self.rows = [NSMutableArray arrayWithArray:rows];
+    self.rowIDs = rowIDs ? [NSMutableArray arrayWithArray:rowIDs] : nil;
+    [self.multiColumnView reloadData];
+}
 
 @end
