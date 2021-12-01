@@ -21,6 +21,7 @@
 @property (nonatomic, readonly) NSString *path;
 
 @property (nonatomic, readonly) FLEXMutableListSection<NSString *> *tables;
+@property (nonatomic, readonly) FLEXMutableListSection<NSString *> *pinnedTables;
 
 + (NSArray<NSString *> *)supportedSQLiteExtensions;
 + (NSArray<NSString *> *)supportedRealmExtensions;
@@ -57,6 +58,9 @@
     ];
     
     [self addToolbarItems:@[composeQuery]];
+    
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    [self.tableView addGestureRecognizer:longPressGesture];
 }
 
 - (NSArray<FLEXTableViewSection *> *)makeSections {
@@ -67,6 +71,15 @@
             return [tableName localizedCaseInsensitiveContainsString:filterText];
         }
     ];
+    
+    _pinnedTables = [FLEXMutableListSection list:[self.dbm queryAllTables]
+        cellConfiguration:^(__kindof UITableViewCell *cell, NSString *tableName, NSInteger row) {
+            cell.textLabel.text = tableName;
+        } filterMatcher:^BOOL(NSString *filterText, NSString *tableName) {
+            return [tableName localizedCaseInsensitiveContainsString:filterText];
+        }
+    ];
+    [_pinnedTables setCustomTitle:@"Pinned Tables (Long press on a table to pin/unpin)"];
     
     self.tables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
         NSArray *rows = [host.dbm queryAllDataInTable:tableName];
@@ -81,7 +94,20 @@
         [host.navigationController pushViewController:resultsScreen animated:YES];
     };
     
-    return @[self.tables];
+    self.pinnedTables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
+        NSArray *rows = [host.dbm queryAllDataInTable:tableName];
+        NSArray *columns = [host.dbm queryAllColumnsOfTable:tableName];
+        NSArray *rowIDs = nil;
+        if ([host.dbm respondsToSelector:@selector(queryRowIDsInTable:)]) {
+            rowIDs = [host.dbm queryRowIDsInTable:tableName];
+        }
+        UIViewController *resultsScreen = [FLEXTableContentViewController
+            columns:columns rows:rows rowIDs:rowIDs tableName:tableName database:host.dbm
+        ];
+        [host.navigationController pushViewController:resultsScreen animated:YES];
+    };
+    
+    return @[self.pinnedTables, self.tables];
 }
 
 - (void)reloadData {
@@ -160,6 +186,31 @@
     }
     
     return @[@"realm"];
+}
+
+#pragma MARK - User Actions -
+
+- (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        CGPoint touchPoint = [sender locationInView:self.tableView];
+        NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:touchPoint];
+        if (indexPath) {
+            FLEXMutableListSection *section = (FLEXMutableListSection *) self.sections[indexPath.section];
+            NSString *longPressedTable = section.list[indexPath.row];
+            BOOL isPinnedTable = section == self.pinnedTables;
+            [self showPinTableActionSheet:longPressedTable toPin:!isPinnedTable source: [self.tableView cellForRowAtIndexPath:indexPath]];
+        }
+    }
+}
+
+- (void)showPinTableActionSheet:(NSString *)tableName toPin:(BOOL)toPin source:(id)source {
+    [FLEXAlert makeSheet:^(FLEXAlert * _Nonnull make) {
+        make.title(tableName);
+        make.button(toPin ? @"Pin ": @"Unpin").handler(^(NSArray<NSString *> * _Nonnull strings) {
+            NSLog(@"handle me");
+        });
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self source:source];
 }
 
 @end
