@@ -81,7 +81,7 @@
             return [tableName localizedCaseInsensitiveContainsString:filterText];
         }
     ];
-    
+
     _pinnedTables = [FLEXMutableListSection list:pinnedTables
         cellConfiguration:^(__kindof UITableViewCell *cell, NSString *tableName, NSInteger row) {
             cell.textLabel.text = tableName;
@@ -89,7 +89,6 @@
             return [tableName localizedCaseInsensitiveContainsString:filterText];
         }
     ];
-    [_pinnedTables setCustomTitle:@"Pinned Tables - Long press on a table to pin/unpin"];
     
     self.tables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
         NSArray *rows = [host.dbm queryAllDataInTable:tableName];
@@ -122,7 +121,10 @@
 
 - (void)reloadData {
     self.tables.customTitle = [NSString
-        stringWithFormat:@"Tables (%@)", @(self.tables.filteredList.count)
+        stringWithFormat:@"Tables (%@) - Long press to pin/unpin", @(self.tables.filteredList.count)
+    ];
+    self.pinnedTables.customTitle = [NSString
+        stringWithFormat:@"Pinned Tables (%@) - Long press to pin/unpin", @(self.pinnedTables.filteredList.count)
     ];
     
     [super reloadData];
