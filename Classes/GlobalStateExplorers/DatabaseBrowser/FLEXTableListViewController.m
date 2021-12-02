@@ -12,6 +12,8 @@
 #import "FLEXRealmDatabaseManager.h"
 #import "FLEXTableContentViewController.h"
 #import "FLEXMutableListSection.h"
+#import "FLEXDBPinnedTablesRepository.h"
+#import "NSUserDefaults+FLEXDBPinnedTablesRepository.h"
 #import "NSArray+FLEX.h"
 #import "FLEXAlert.h"
 #import "FLEXMacros.h"
@@ -22,6 +24,7 @@
 
 @property (nonatomic, readonly) FLEXMutableListSection<NSString *> *tables;
 @property (nonatomic, readonly) FLEXMutableListSection<NSString *> *pinnedTables;
+@property (nonatomic, readonly) id<FLEXDBPinnedTablesRepository> pinnedTablesRepo;
 
 + (NSArray<NSString *> *)supportedSQLiteExtensions;
 + (NSArray<NSString *> *)supportedRealmExtensions;
@@ -35,6 +38,7 @@
     if (self) {
         _path = path.copy;
         _dbm = [self databaseManagerForFileAtPath:path];
+        _pinnedTablesRepo = [NSUserDefaults standardUserDefaults];
     }
     
     return self;
@@ -64,7 +68,13 @@
 }
 
 - (NSArray<FLEXTableViewSection *> *)makeSections {
-    _tables = [FLEXMutableListSection list:[self.dbm queryAllTables]
+    NSArray<NSString *> *allTables = [self.dbm queryAllTables];
+    NSArray<NSString *> *pinnedTables = [self.pinnedTablesRepo pinnedTables];
+    NSArray<NSString *> *unpinnedTables = [allTables flex_filtered:^BOOL(NSString *tableName, NSUInteger idx) {
+        return ![pinnedTables containsObject:tableName];
+    }];
+    
+    _tables = [FLEXMutableListSection list:unpinnedTables
         cellConfiguration:^(__kindof UITableViewCell *cell, NSString *tableName, NSInteger row) {
             cell.textLabel.text = tableName;
         } filterMatcher:^BOOL(NSString *filterText, NSString *tableName) {
@@ -72,14 +82,14 @@
         }
     ];
     
-    _pinnedTables = [FLEXMutableListSection list:[self.dbm queryAllTables]
+    _pinnedTables = [FLEXMutableListSection list:pinnedTables
         cellConfiguration:^(__kindof UITableViewCell *cell, NSString *tableName, NSInteger row) {
             cell.textLabel.text = tableName;
         } filterMatcher:^BOOL(NSString *filterText, NSString *tableName) {
             return [tableName localizedCaseInsensitiveContainsString:filterText];
         }
     ];
-    [_pinnedTables setCustomTitle:@"Pinned Tables (Long press on a table to pin/unpin)"];
+    [_pinnedTables setCustomTitle:@"Pinned Tables - Long press on a table to pin/unpin"];
     
     self.tables.selectionHandler = ^(FLEXTableListViewController *host, NSString *tableName) {
         NSArray *rows = [host.dbm queryAllDataInTable:tableName];
@@ -207,7 +217,9 @@
     [FLEXAlert makeSheet:^(FLEXAlert * _Nonnull make) {
         make.title(tableName);
         make.button(toPin ? @"Pin ": @"Unpin").handler(^(NSArray<NSString *> * _Nonnull strings) {
-            NSLog(@"handle me");
+            toPin ? [self.pinnedTablesRepo pinTable:tableName] : [self.pinnedTablesRepo unpinTable:tableName];
+            self.filterDelegate.allSections = [self makeSections];
+            [self reloadData];
         });
         make.button(@"Cancel").cancelStyle();
     } showFrom:self source:source];
