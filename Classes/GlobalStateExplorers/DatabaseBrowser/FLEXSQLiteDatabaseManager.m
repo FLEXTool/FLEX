@@ -107,15 +107,22 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 - (NSArray<NSString *> *)queryAllColumnsOfTable:(NSString *)tableName {
     NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info('%@')",tableName];
     FLEXSQLResult *results = [self executeStatement:sql];
+    
     // https://github.com/FLEXTool/FLEX/issues/554
-    if (results.keyedRows.count == 0) {
-        NSString *command = [NSString stringWithFormat:@"SELECT * FROM \"%@\" where 0=1", tableName];
-        return [self executeStatement:command].columns ?: @[];
-    } else {
-        return [results.keyedRows flex_mapped:^id(NSDictionary *column, NSUInteger idx) {
-            return column[@"name"];
-        }] ?: @[];
+    if (!results.keyedRows.count) {
+        sql = [NSString stringWithFormat:@"SELECT * FROM pragma_table_info('%@')", tableName];
+        results = [self executeStatement:sql];
+        
+        // Fallback to empty query
+        if (!results.keyedRows.count) {
+            sql = [NSString stringWithFormat:@"SELECT * FROM \"%@\" where 0=1", tableName];
+            return [self executeStatement:sql].columns ?: @[];
+        }
     }
+    
+    return [results.keyedRows flex_mapped:^id(NSDictionary *column, NSUInteger idx) {
+        return column[@"name"];
+    }] ?: @[];
 }
 
 - (NSArray<NSArray *> *)queryAllDataInTable:(NSString *)tableName {
