@@ -282,11 +282,15 @@
 
 - (void)addPressed {
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
-        make.title(@"Insert a new row");
-        make.message(@"Type comma separated values to execute the INSERT statement.");
-        make.textField(@"Example: 5, 'John Smith', 14,...");
-        make.button(@"Run").handler(^(NSArray<NSString *> *strings) {
-            NSString *statement = [NSString stringWithFormat:@"INSERT INTO %@ VALUES (%@)", self.tableName, strings[0]];
+        make.title(@"Add a New Row");
+        make.message(@"Comma separate values to use in an INSERT statement.\n\n");
+        make.message(@"INSERT INTO [table] VALUES (your_input)");
+        make.textField(@"5, 'John Smith', 14,...");
+        make.button(@"Insert").handler(^(NSArray<NSString *> *strings) {
+            NSString *statement = [NSString stringWithFormat:
+                @"INSERT INTO %@ VALUES (%@)", self.tableName, strings[0]
+            ];
+
             [self executeStatementAndShowResult:statement completion:^(BOOL success) {
                 if (success) {
                     [self reloadTableDataFromDB];
