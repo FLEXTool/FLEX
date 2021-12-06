@@ -263,6 +263,8 @@
 }
 
 - (void)trashPressed {
+    NSParameterAssert(self.tableName);
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Delete All Rows");
         make.message(@"All rows in this table will be permanently deleted.\nDo you want to proceed?");
@@ -281,6 +283,8 @@
 }
 
 - (void)addPressed {
+    NSParameterAssert(self.tableName);
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Add a New Row");
         make.message(@"Comma separate values to use in an INSERT statement.\n\n");
@@ -303,7 +307,10 @@
 
 #pragma mark - Helpers
 
-- (void)executeStatementAndShowResult:(NSString *)statement completion:(void (^_Nullable)(BOOL success))completion {
+- (void)executeStatementAndShowResult:(NSString *)statement
+                           completion:(void (^_Nullable)(BOOL success))completion {
+    NSParameterAssert(self.databaseManager);
+
     FLEXSQLResult *result = [self.databaseManager executeStatement:statement];
     
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
@@ -321,16 +328,18 @@
 }
 
 - (void)reloadTableDataFromDB {
-    if (self.databaseManager == nil) {
+    if (!self.canRefresh) {
         return;
     }
+
     NSArray<NSArray *> *rows = [self.databaseManager queryAllDataInTable:self.tableName];
     NSArray<NSString *> *rowIDs = nil;
     if ([self.databaseManager respondsToSelector:@selector(queryRowIDsInTable:)]) {
         rowIDs = [self.databaseManager queryRowIDsInTable:self.tableName];
     }
-    self.rows = [NSMutableArray arrayWithArray:rows];
-    self.rowIDs = rowIDs ? [NSMutableArray arrayWithArray:rowIDs] : nil;
+
+    self.rows = rows.mutableCopy;
+    self.rowIDs = rowIDs.mutableCopy;
     [self.multiColumnView reloadData];
 }
 
