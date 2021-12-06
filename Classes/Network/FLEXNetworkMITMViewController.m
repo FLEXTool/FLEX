@@ -22,9 +22,12 @@
 #import "UIBarButtonItem+FLEX.h"
 #import "FLEXResources.h"
 
+#define kFirebaseAvailable NSClassFromString(@"FIRDocumentReference")
+#define kWebsocketsAvailable @available(iOS 13.0, *)
+
 typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
-    FLEXNetworkObserverModeREST = 0,
-    FLEXNetworkObserverModeFirebase,
+    FLEXNetworkObserverModeFirebase = 0,
+    FLEXNetworkObserverModeREST,
     FLEXNetworkObserverModeWebsockets,
 };
 
@@ -55,30 +58,28 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 
     self.showsSearchBar = YES;
     self.showSearchBarInitially = NO;
-    NSMutableArray *scopeTitles = [NSMutableArray new];
+    NSMutableArray *scopeTitles = [NSMutableArray arrayWithObject:@"REST"];
     
     _HTTPDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
         return FLEXNetworkRecorder.defaultRecorder.HTTPTransactions;
     }];
-    
-    // Is firebase installed?
-    if (NSClassFromString(@"FIRDocumentReference")) {
+
+    if (kFirebaseAvailable) {
         _firebaseDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
             return FLEXNetworkRecorder.defaultRecorder.firebaseTransactions;
         }];
-        [scopeTitles addObjectsFromArray:@[@"REST", @"Firebase"]];
+        [scopeTitles insertObject:@"Firebase" atIndex:0]; // First space
     }
-    
-    // Are websockets available?
-    if (@available(iOS 13.0, *)) {
-        [scopeTitles addObject:@"Websockets"];
+
+    if (kWebsocketsAvailable) {
+        [scopeTitles addObject:@"Websockets"]; // Last space
         _websocketDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
             return FLEXNetworkRecorder.defaultRecorder.websocketTransactions;
         }];
     }
     
     // Scopes will only be shown if we have either firebase or websockets available
-    self.searchController.searchBar.showsScopeBar = scopeTitles.count > 0;
+    self.searchController.searchBar.showsScopeBar = scopeTitles.count > 1;
     self.searchController.searchBar.scopeButtonTitles = scopeTitles;
     
     [self addToolbarItems:@[
@@ -175,7 +176,23 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 #pragma mark Transactions
 
 - (FLEXNetworkObserverMode)mode {
-    return self.searchController.searchBar.selectedScopeButtonIndex;
+    FLEXNetworkObserverMode mode = self.searchController.searchBar.selectedScopeButtonIndex;
+    switch (mode) {
+        case 0:
+            if (kFirebaseAvailable) {
+                return FLEXNetworkObserverModeFirebase;
+            }
+
+            return FLEXNetworkObserverModeREST;
+        case 1:
+            if (kFirebaseAvailable) {
+                return FLEXNetworkObserverModeREST;
+            }
+
+            return FLEXNetworkObserverModeWebsockets;
+        case 2:
+            return FLEXNetworkObserverModeWebsockets;
+    }
 }
 
 - (FLEXMITMDataSource<FLEXNetworkTransaction *> *)dataSource {
