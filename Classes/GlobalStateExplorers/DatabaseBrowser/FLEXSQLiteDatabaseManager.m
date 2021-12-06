@@ -12,7 +12,10 @@
 #import "FLEXRuntimeConstants.h"
 #import <sqlite3.h>
 
-static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
+#define kQuery(name, str) static NSString * const QUERY_##name = str
+
+kQuery(TABLENAMES, @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
 
 @interface FLEXSQLiteDatabaseManager ()
 @property (nonatomic) sqlite3 *db;
@@ -119,7 +122,7 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 }
 
 - (NSArray<NSString *> *)queryRowIDsInTable:(NSString *)tableName {
-    NSString *command = [NSString stringWithFormat:@"SELECT rowid FROM \"%@\"", tableName];
+    NSString *command = [NSString stringWithFormat:QUERY_ROWIDS, tableName];
     NSArray<NSArray<NSString *> *> *data = [self executeStatement:command].rows ?: @[];
     
     return [data flex_mapped:^id(NSArray<NSString *> *obj, NSUInteger idx) {
