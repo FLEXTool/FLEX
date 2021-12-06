@@ -165,7 +165,7 @@
         
         // Option to delete row
         BOOL hasRowID = self.rows.count && row < self.rows.count;
-        if (hasRowID && self.databaseManager) {
+        if (hasRowID && self.canRefresh) {
             make.button(@"Delete").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
                 NSString *deleteRow = [NSString stringWithFormat:
                     @"DELETE FROM %@ WHERE rowid = %@",
