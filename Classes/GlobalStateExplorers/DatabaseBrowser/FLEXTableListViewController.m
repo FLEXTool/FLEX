@@ -105,7 +105,7 @@
                 [FLEXAlert showAlert:@"Message" message:result.message from:self];
             } else {
                 UIViewController *resultsScreen = [FLEXTableContentViewController
-                    columns:result.columns rows:result.rows rowIDs:nil tableName:@"" database:nil
+                    columns:result.columns rows:result.rows
                 ];
                 
                 [self.navigationController pushViewController:resultsScreen animated:YES];

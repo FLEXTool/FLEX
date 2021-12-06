@@ -28,16 +28,43 @@
 
 + (instancetype)columns:(NSArray<NSString *> *)columnNames
                    rows:(NSArray<NSArray<NSString *> *> *)rowData
-                 rowIDs:(nullable NSArray<NSString *> *)rowIDs
+                 rowIDs:(NSArray<NSString *> *)rowIDs
               tableName:(NSString *)tableName
-               database:(nullable id<FLEXDatabaseManager>)databaseManager {
-    FLEXTableContentViewController *controller = [self new];
-    controller->_columns = columnNames.copy;
-    controller->_rows = rowData.mutableCopy;
-    controller->_rowIDs = rowIDs.mutableCopy;
-    controller->_tableName = tableName.copy;
-    controller->_databaseManager = databaseManager;
-    return controller;
+               database:(id<FLEXDatabaseManager>)databaseManager {
+    return [[self alloc]
+        initWithColumns:columnNames
+        rows:rowData
+        rowIDs:rowIDs
+        tableName:tableName
+        database:databaseManager
+    ];
+}
+
++ (instancetype)columns:(NSArray<NSString *> *)cols
+                   rows:(NSArray<NSArray<NSString *> *> *)rowData {
+    return [[self alloc] initWithColumns:cols rows:rowData rowIDs:nil tableName:nil database:nil];
+}
+
+- (instancetype)initWithColumns:(NSArray<NSString *> *)columnNames
+                           rows:(NSArray<NSArray<NSString *> *> *)rowData
+                         rowIDs:(nullable NSArray<NSString *> *)rowIDs
+                      tableName:(nullable NSString *)tableName
+                       database:(nullable id<FLEXDatabaseManager>)databaseManager {
+    // Must supply all optional parameters as one, or none
+    BOOL all = rowIDs.count && tableName && databaseManager;
+    BOOL none = !rowIDs.count && !tableName && !databaseManager;
+    NSParameterAssert(all || none);
+
+    self = [super init];
+    if (self) {
+        self->_columns = columnNames.copy;
+        self->_rows = rowData.mutableCopy;
+        self->_rowIDs = rowIDs.mutableCopy;
+        self->_tableName = tableName.copy;
+        self->_databaseManager = databaseManager;
+    }
+
+    return self;
 }
 
 - (void)loadView {
