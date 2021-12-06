@@ -21,6 +21,8 @@
 @property (nonatomic, nullable) NSMutableArray<NSString *> *rowIDs;
 @property (nonatomic, readonly, nullable) id<FLEXDatabaseManager> databaseManager;
 
+@property (nonatomic, readonly) BOOL canRefresh;
+
 @property (nonatomic) FLEXMultiColumnTableView *multiColumnView;
 @end
 
@@ -91,6 +93,10 @@
     }
     
     return _multiColumnView;
+}
+
+- (BOOL)canRefresh {
+    return self.databaseManager && self.tableName;
 }
 
 #pragma mark MultiColumnTableView DataSource
@@ -240,15 +246,19 @@
         return;
     }
     
-    UIBarButtonItem *trashButton = [FLEXBarButtonItemSystem(Trash, self, @selector(trashPressed))
-        flex_withTintColor:UIColor.redColor
-    ];
-    trashButton.enabled = self.databaseManager && self.rows.count;
-    
+    UIBarButtonItem *trashButton = FLEXBarButtonItemSystem(Trash, self, @selector(trashPressed));
     UIBarButtonItem *addButton = FLEXBarButtonItemSystem(Add, self, @selector(addPressed));
-    addButton.enabled = self.databaseManager != nil;
+
+    // Only allow adding rows or deleting rows if we have a table name
+    trashButton.enabled = self.canRefresh;
+    addButton.enabled = self.canRefresh;
     
-    self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, addButton, trashButton];
+    self.toolbarItems = @[
+        UIBarButtonItem.flex_flexibleSpace,
+        addButton,
+        UIBarButtonItem.flex_flexibleSpace,
+        [trashButton flex_withTintColor:UIColor.redColor],
+    ];
 }
 
 - (void)trashPressed {
