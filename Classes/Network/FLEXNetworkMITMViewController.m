@@ -476,8 +476,8 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
         
         case FLEXNetworkObserverModeFirebase: {
             FLEXFirebaseTransaction *transaction = [self firebaseTransactionAtIndexPath:indexPath];
-            id obj = transaction.documents.count == 1 ? transaction.documents.firstObject : transaction.documents;
-            UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:obj];
+//            id obj = transaction.documents.count == 1 ? transaction.documents.firstObject : transaction.documents;
+            UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:transaction];
             [self.navigationController pushViewController:explorer animated:YES];
         }
     }
