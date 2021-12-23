@@ -15,7 +15,7 @@ extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
 extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 
 @class FLEXNetworkTransaction, FLEXHTTPTransaction, FLEXWebsocketTransaction, FLEXFirebaseTransaction;
-@class FIRQuery, FIRDocumentReference, FIRDocumentSnapshot, FIRQuerySnapshot;
+@class FIRQuery, FIRDocumentReference, FIRCollectionReference, FIRDocumentSnapshot, FIRQuerySnapshot;
 
 typedef NS_ENUM(NSUInteger, FLEXNetworkTransactionKind) {
     FLEXNetworkTransactionKindFirebase = 0,
@@ -110,9 +110,13 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkTransactionKind) {
 - (void)recordFIRWillUpdateData:(FIRDocumentReference *)doc fields:(NSDictionary *)fields
                   transactionID:(NSString *)transactionID;
 - (void)recordFIRWillDeleteDocument:(FIRDocumentReference *)doc transactionID:(NSString *)transactionID;
+- (void)recordFIRWillAddDocument:(FIRCollectionReference *)initiator
+                            document:(FIRDocumentReference *)doc
+                   transactionID:(NSString *)transactionID;
 
 - (void)recordFIRDidSetData:(NSError *)error transactionID:(NSString *)transactionID;
 - (void)recordFIRDidUpdateData:(NSError *)error transactionID:(NSString *)transactionID;
 - (void)recordFIRDidDeleteDocument:(NSError *)error transactionID:(NSString *)transactionID;
+- (void)recordFIRDidAddDocument:(NSError *)error transactionID:(NSString *)transactionID;
 
 @end

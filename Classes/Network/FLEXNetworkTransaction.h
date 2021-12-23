@@ -119,6 +119,7 @@ typedef NS_ENUM(NSUInteger, FLEXFIRRequestType) {
     FLEXFIRRequestTypeFetchDocument,
     FLEXFIRRequestTypeSetData,
     FLEXFIRRequestTypeUpdateData,
+    FLEXFIRRequestTypeAddDocument,
     FLEXFIRRequestTypeDeleteDocument,
 };
 
@@ -142,6 +143,7 @@ NSString * FLEXStringFromFIRRequestType(FLEXFIRRequestType type);
                   merge:(NSNumber *)merge
             mergeFields:(NSArray *)mergeFields;
 + (instancetype)updateData:(FIRDocumentReference *)initiator data:(NSDictionary *)data;
++ (instancetype)addDocument:(FIRCollectionReference *)initiator document:(FIRDocumentReference *)doc;
 + (instancetype)deleteDocument:(FIRDocumentReference *)initiator;
 
 @property (nonatomic, readonly) FLEXFIRTransactionDirection direction;
@@ -158,6 +160,8 @@ NSString * FLEXStringFromFIRRequestType(FLEXFIRRequestType type);
 @property (nonatomic, readonly) FLEXFirebaseSetDataInfo *setDataInfo;
 /// Only used for the "update data" type
 @property (nonatomic, readonly) NSDictionary *updateData;
+/// Only used for the "add document" type
+@property (nonatomic, readonly) FIRDocumentReference *addedDocument;
 
 @property (nonatomic, readonly) NSString *path;
 

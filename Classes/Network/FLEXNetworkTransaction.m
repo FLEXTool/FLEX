@@ -332,6 +332,8 @@ NSString * FLEXStringFromFIRRequestType(FLEXFIRRequestType type) {
             return @"set data";
         case FLEXFIRRequestTypeUpdateData:
             return @"update data";
+        case FLEXFIRRequestTypeAddDocument:
+            return @"create";
         case FLEXFIRRequestTypeDeleteDocument:
             return @"delete";
     }
@@ -346,6 +348,7 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
             return FLEXFIRTransactionDirectionPull;
         case FLEXFIRRequestTypeSetData:
         case FLEXFIRRequestTypeUpdateData:
+        case FLEXFIRRequestTypeAddDocument:
         case FLEXFIRRequestTypeDeleteDocument:
             return FLEXFIRTransactionDirectionPush;
     }
@@ -385,6 +388,10 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 
 + (instancetype)updateData:(FIRDocumentReference *)initiator data:(NSDictionary *)data {
     return [self initiator:initiator requestType:FLEXFIRRequestTypeUpdateData extraData:data];
+}
+
++ (instancetype)addDocument:(FIRCollectionReference *)initiator document:(FIRDocumentReference *)doc {
+    return [self initiator:initiator requestType:FLEXFIRRequestTypeAddDocument extraData:doc];
 }
 
 + (instancetype)deleteDocument:(FIRDocumentReference *)initiator {
@@ -430,6 +437,14 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
     return nil;
 }
 
+- (NSDictionary *)documentData {
+    if (self.requestType == FLEXFIRRequestTypeAddDocument) {
+        return self.extraData;
+    }
+
+    return nil;
+}
+
 - (NSString *)path {
     switch (self.direction) {
         case FLEXFIRTransactionDirectionNone:
@@ -441,6 +456,7 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
                     @throw NSInternalInconsistencyException;
 
                 case FLEXFIRRequestTypeFetchQuery:
+                case FLEXFIRRequestTypeAddDocument:
                     return self.initiator_collection.path ?: @"[TBA: FIRQuerySnapshot]";
                 case FLEXFIRRequestTypeFetchDocument:
                 case FLEXFIRRequestTypeSetData:

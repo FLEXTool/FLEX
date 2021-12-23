@@ -219,6 +219,9 @@ static void (*_logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithComplet
 static Class _logos_superclass$_ungrouped$FIRQuery;
 static void (*_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$)(
     _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock);
+static Class _logos_superclass$_ungrouped$FIRCollectionReference;
+static FIRDocumentReference * (*_logos_orig$_ungrouped$FIRCollectionReference$addDocumentWithData$completion$)(
+    _LOGOS_SELF_TYPE_NORMAL FIRCollectionReference * _LOGOS_SELF_CONST, SEL, NSDictionary *, void (^)(NSError *error));
 
 #pragma mark Firebase, Reading Data
 
@@ -357,6 +360,30 @@ static void _logos_method$_ungrouped$FIRDocumentReference$deleteDocumentWithComp
     (_logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$ ? _logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$ : (__typeof__(_logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRDocumentReference, @selector(deleteDocumentWithCompletion:)))(self, _cmd, completion);
 }
 
+static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$addDocumentWithData$completion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRCollectionReference * _LOGOS_SELF_CONST __unused self,
+    SEL __unused _cmd, NSDictionary<NSString *, id> * data, void (^completion)(NSError *error)) {
+
+    // Generate transaction ID
+    NSString *requestID = [FLEXNetworkObserver nextRequestID];
+
+    // Hook callback
+    void (^orig)(NSError *) = completion;
+    completion = ^(NSError *error) {
+        [FLEXNetworkRecorder.defaultRecorder recordFIRDidAddDocument:error transactionID:requestID];
+        orig(error);
+    };
+
+    // Forward invocation
+    FIRDocumentReference *ret = (_logos_orig$_ungrouped$FIRCollectionReference$addDocumentWithData$completion$ ? _logos_orig$_ungrouped$FIRCollectionReference$addDocumentWithData$completion$ : (__typeof__(_logos_orig$_ungrouped$FIRCollectionReference$addDocumentWithData$completion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRCollectionReference, @selector(addDocumentWithData:completion:)))(self, _cmd, data, completion);
+
+    // Record transaction start
+    [FLEXNetworkRecorder.defaultRecorder recordFIRWillAddDocument:self document:ret transactionID:requestID];
+
+    // Return
+    return ret;
+}
+
 + (void)setNetworkMonitorHooks {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -370,6 +397,8 @@ static void _logos_method$_ungrouped$FIRDocumentReference$deleteDocumentWithComp
     _logos_superclass$_ungrouped$FIRDocumentReference = class_getSuperclass(_logos_class$_ungrouped$FIRDocumentReference);
     Class _logos_class$_ungrouped$FIRQuery = objc_getClass("FIRQuery");
     _logos_superclass$_ungrouped$FIRQuery = class_getSuperclass(_logos_class$_ungrouped$FIRQuery);
+    Class _logos_class$_ungrouped$FIRCollectionReference = objc_getClass("FIRCollectionReference");
+    _logos_superclass$_ungrouped$FIRCollectionReference = class_getSuperclass(_logos_class$_ungrouped$FIRCollectionReference);
 
     // Reading //
 
@@ -412,6 +441,12 @@ static void _logos_method$_ungrouped$FIRDocumentReference$deleteDocumentWithComp
         @selector(deleteDocumentWithCompletion:),
         (IMP)&_logos_method$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$,
         (IMP *)&_logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$
+    );
+    _logos_register_hook(
+        _logos_class$_ungrouped$FIRCollectionReference,
+        @selector(addDocumentWithData:completion:),
+        (IMP)&_logos_method$_ungrouped$FIRCollectionReference$addDocumentWithData$completion$,
+        (IMP *)&_logos_orig$_ungrouped$FIRCollectionReference$addDocumentWithData$completion$
     );
 }
 
