@@ -514,7 +514,22 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 }
 
 - (BOOL)matchesQuery:(NSString *)filterString {
-    return [self.path localizedCaseInsensitiveContainsString:filterString];
+    if ([self.path localizedCaseInsensitiveContainsString:filterString]) {
+        return YES;
+    }
+
+    BOOL isPull = self.direction == FLEXFIRTransactionDirectionPull;
+    BOOL isPush = self.direction == FLEXFIRTransactionDirectionPush;
+
+    // Allow filtering for push or pull directly
+    if (isPull && [filterString localizedCaseInsensitiveCompare:@"pull"] == NSOrderedSame) {
+        return YES;
+    }
+    if (isPush && [filterString localizedCaseInsensitiveCompare:@"push"] == NSOrderedSame) {
+        return YES;
+    }
+
+    return NO;
 }
 
 //- (NSString *)responseString {
