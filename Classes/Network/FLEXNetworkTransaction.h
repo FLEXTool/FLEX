@@ -108,30 +108,54 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 
 
 typedef NS_ENUM(NSUInteger, FLEXFIRTransactionDirection) {
-    FLEXFIRTransactionDirectionPush = 1,
+    FLEXFIRTransactionDirectionNone,
+    FLEXFIRTransactionDirectionPush,
     FLEXFIRTransactionDirectionPull,
 };
 
-typedef NS_ENUM(NSUInteger, FLEXFIRFetchType) {
-    FLEXFIRFetchTypeNotFetch,
-    FLEXFIRFetchTypeQuery,
-    FLEXFIRFetchTypeDocument,
+typedef NS_ENUM(NSUInteger, FLEXFIRRequestType) {
+    FLEXFIRRequestTypeNotFirebase,
+    FLEXFIRRequestTypeFetchQuery,
+    FLEXFIRRequestTypeFetchDocument,
+    FLEXFIRRequestTypeSetData,
+    FLEXFIRRequestTypeUpdateData,
+    FLEXFIRRequestTypeDeleteDocument,
 };
+
+@interface FLEXFirebaseSetDataInfo : NSObject
+/// The data that was set
+@property (nonatomic, readonly) NSDictionary *documentData;
+/// \c nil if \c mergeFields is populated
+@property (nonatomic, readonly) NSNumber *merge;
+/// \c nil if \c merge is populated
+@property (nonatomic, readonly) NSArray *mergeFields;
+@end
 
 @interface FLEXFirebaseTransaction : FLEXNetworkTransaction
 
 + (instancetype)queryFetch:(FIRQuery *)initiator;
 + (instancetype)documentFetch:(FIRDocumentReference *)initiator;
++ (instancetype)setData:(FIRDocumentReference *)initiator
+                   data:(NSDictionary *)data
+                  merge:(NSNumber *)merge
+            mergeFields:(NSArray *)mergeFields;
++ (instancetype)updateData:(FIRDocumentReference *)initiator data:(NSDictionary *)data;
++ (instancetype)deleteDocument:(FIRDocumentReference *)initiator;
 
 @property (nonatomic, readonly) FLEXFIRTransactionDirection direction;
-@property (nonatomic, readonly) FLEXFIRFetchType fetchType;
+@property (nonatomic, readonly) FLEXFIRRequestType requestType;
 
 @property (nonatomic, readonly) id initiator;
 @property (nonatomic, readonly) FIRQuery *initiator_query;
 @property (nonatomic, readonly) FIRDocumentReference *initiator_doc;
 @property (nonatomic, readonly) FIRCollectionReference *initiator_collection;
 
+/// Only used for fetch types
 @property (nonatomic, copy) NSArray<FIRDocumentSnapshot *> *documents;
+/// Only used for the "set data" type
+@property (nonatomic, readonly) FLEXFirebaseSetDataInfo *setDataInfo;
+/// Only used for the "update data" type
+@property (nonatomic, readonly) NSDictionary *updateData;
 
 @property (nonatomic, readonly) NSString *path;
 

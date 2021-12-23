@@ -304,25 +304,74 @@
 
 @end
 
+@implementation FLEXFirebaseSetDataInfo
+
++ (instancetype)data:(NSDictionary *)data merge:(NSNumber *)merge mergeFields:(NSArray *)mergeFields {
+    NSParameterAssert(data);
+    NSParameterAssert(merge || mergeFields);
+
+    FLEXFirebaseSetDataInfo *info = [self new];
+    info->_documentData = data;
+    info->_merge = merge;
+    info->_mergeFields = mergeFields;
+
+    return info;
+}
+
+@end
+
+FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type) {
+    switch (type) {
+        case FLEXFIRRequestTypeNotFirebase:
+            return FLEXFIRTransactionDirectionNone;
+        case FLEXFIRRequestTypeFetchQuery:
+        case FLEXFIRRequestTypeFetchDocument:
+            return FLEXFIRTransactionDirectionPull;
+        case FLEXFIRRequestTypeSetData:
+        case FLEXFIRRequestTypeUpdateData:
+        case FLEXFIRRequestTypeDeleteDocument:
+            return FLEXFIRTransactionDirectionPush;
+    }
+}
+
+@interface FLEXFirebaseTransaction ()
+@property (nonatomic) id extraData;
+@end
 
 @implementation FLEXFirebaseTransaction
 //@synthesize responseString = _responseString;
 //@synthesize responseObject = _responseObject;
 
-+ (instancetype)initiator:(id)initiator fetchType:(FLEXFIRFetchType)type {
++ (instancetype)initiator:(id)initiator requestType:(FLEXFIRRequestType)type extraData:(id)data {
     FLEXFirebaseTransaction *fire = [FLEXFirebaseTransaction withStartTime:NSDate.date];
-    fire->_direction = FLEXFIRTransactionDirectionPull;
+    fire->_direction = FIRDirectionFromRequestType(type);
     fire->_initiator = initiator;
-    fire->_fetchType = type;
+    fire->_requestType = type;
+    fire->_extraData = data;
     return fire;
 }
 
 + (instancetype)queryFetch:(FIRQuery *)initiator {
-    return [self initiator:initiator fetchType:FLEXFIRFetchTypeQuery];
+    return [self initiator:initiator requestType:FLEXFIRRequestTypeFetchQuery extraData:nil];
 }
 
 + (instancetype)documentFetch:(FIRDocumentReference *)initiator {
-    return [self initiator:initiator fetchType:FLEXFIRFetchTypeDocument];
+    return [self initiator:initiator requestType:FLEXFIRRequestTypeFetchDocument extraData:nil];
+}
+
++ (instancetype)setData:(FIRDocumentReference *)initiator data:(NSDictionary *)data
+                  merge:(NSNumber *)merge mergeFields:(NSArray *)mergeFields {
+
+    FLEXFirebaseSetDataInfo *info = [FLEXFirebaseSetDataInfo data:data merge:merge mergeFields:mergeFields];
+    return [self initiator:initiator requestType:FLEXFIRRequestTypeSetData extraData:info];
+}
+
++ (instancetype)updateData:(FIRDocumentReference *)initiator data:(NSDictionary *)data {
+    return [self initiator:initiator requestType:FLEXFIRRequestTypeUpdateData extraData:data];
+}
+
++ (instancetype)deleteDocument:(FIRDocumentReference *)initiator {
+    return [self initiator:initiator requestType:FLEXFIRRequestTypeDeleteDocument extraData:nil];
 }
 
 - (FIRDocumentReference *)initiator_doc {
@@ -348,18 +397,40 @@
     return nil;
 }
 
+- (FLEXFirebaseSetDataInfo *)setDataInfo {
+    if (self.requestType == FLEXFIRRequestTypeSetData) {
+        return self.extraData;
+    }
+
+    return nil;
+}
+
+- (NSDictionary *)updateData {
+    if (self.requestType == FLEXFIRRequestTypeUpdateData) {
+        return self.extraData;
+    }
+
+    return nil;
+}
+
 - (NSString *)path {
     switch (self.direction) {
+        case FLEXFIRTransactionDirectionNone:
         case FLEXFIRTransactionDirectionPush:
             return nil;
+
         case FLEXFIRTransactionDirectionPull: {
-            switch (self.fetchType) {
-                case FLEXFIRFetchTypeDocument:
-                    return self.initiator_doc.path;
-                case FLEXFIRFetchTypeQuery:
-                    return self.initiator_collection.path ?: @"[TBA: FIRQuerySnapshot]";
-                case FLEXFIRFetchTypeNotFetch:
+            switch (self.requestType) {
+                case FLEXFIRRequestTypeNotFirebase:
                     @throw NSInternalInconsistencyException;
+
+                case FLEXFIRRequestTypeFetchQuery:
+                    return self.initiator_collection.path ?: @"[TBA: FIRQuerySnapshot]";
+                case FLEXFIRRequestTypeFetchDocument:
+                case FLEXFIRRequestTypeSetData:
+                case FLEXFIRRequestTypeUpdateData:
+                case FLEXFIRRequestTypeDeleteDocument:
+                    return self.initiator_doc.path;
             }
         }
     }
@@ -368,6 +439,8 @@
 - (NSString *)primaryDescription {
     if (!_primaryDescription) {
         switch (self.direction) {
+            case FLEXFIRTransactionDirectionNone:
+                _primaryDescription = @"";
             case FLEXFIRTransactionDirectionPush:
                 _primaryDescription = @"Push; TBA";
             case FLEXFIRTransactionDirectionPull:
