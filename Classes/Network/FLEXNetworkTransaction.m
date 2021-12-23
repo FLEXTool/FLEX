@@ -320,6 +320,23 @@
 
 @end
 
+NSString * FLEXStringFromFIRRequestType(FLEXFIRRequestType type) {
+    switch (type) {
+        case FLEXFIRRequestTypeNotFirebase:
+            return @"not firebase";
+        case FLEXFIRRequestTypeFetchQuery:
+            return @"query fetch";
+        case FLEXFIRRequestTypeFetchDocument:
+            return @"document fetch";
+        case FLEXFIRRequestTypeSetData:
+            return @"set data";
+        case FLEXFIRRequestTypeUpdateData:
+            return @"update data";
+        case FLEXFIRRequestTypeDeleteDocument:
+            return @"delete";
+    }
+}
+
 FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type) {
     switch (type) {
         case FLEXFIRRequestTypeNotFirebase:
@@ -416,9 +433,8 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 - (NSString *)path {
     switch (self.direction) {
         case FLEXFIRTransactionDirectionNone:
-        case FLEXFIRTransactionDirectionPush:
             return nil;
-
+        case FLEXFIRTransactionDirectionPush:
         case FLEXFIRTransactionDirectionPull: {
             switch (self.requestType) {
                 case FLEXFIRRequestTypeNotFirebase:
@@ -471,10 +487,16 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
         [detailComponents addObject:self.direction == FLEXFIRTransactionDirectionPush ?
             @"Push ↑" : @"Pull ↓"
         ];
+
+        if (self.direction == FLEXFIRTransactionDirectionPush) {
+            [detailComponents addObjectsFromArray:@[FLEXStringFromFIRRequestType(self.requestType)]];
+        }
         
         if (self.state == FLEXNetworkTransactionStateFinished || self.state == FLEXNetworkTransactionStateFailed) {
-            NSString *docCount = [NSString stringWithFormat:@"%@ document(s)", @(self.documents.count)];
-            [detailComponents addObjectsFromArray:@[docCount]];
+            if (self.direction == FLEXFIRTransactionDirectionPull) {
+                NSString *docCount = [NSString stringWithFormat:@"%@ document(s)", @(self.documents.count)];
+                [detailComponents addObjectsFromArray:@[docCount]];
+            }
         } else {
             // Unstarted, Awaiting Response, Receiving Data, etc.
             NSString *state = [self.class readableStringFromTransactionState:self.state];
