@@ -158,12 +158,23 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 
 - (void)trashButtonTapped:(UIBarButtonItem *)sender {
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
-        make.title(@"Clear All Recorded Requests?");
-        make.message(@"This cannot be undone.");
+        BOOL clearAll = !self.dataSource.isFiltered;
+        if (!clearAll) {
+            make.title(@"Clear Filtered Requests?");
+            make.message(@"This will only remove the requests matching your search string on this screen.");
+        } else {
+            make.title(@"Clear All Recorded Requests?");
+            make.message(@"This cannot be undone.");
+        }
         
         make.button(@"Cancel").cancelStyle();
-        make.button(@"Clear All").destructiveStyle().handler(^(NSArray *strings) {
-            [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
+        make.button(@"Clear").destructiveStyle().handler(^(NSArray *strings) {
+            if (clearAll) {
+                [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
+            } else {
+                FLEXNetworkTransactionKind kind = (FLEXNetworkTransactionKind)self.mode;
+                [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity:kind matching:self.searchText];
+            }
         });
     } showFrom:self source:sender];
 }

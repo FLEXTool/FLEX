@@ -111,6 +111,41 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
+- (void)clearRecordedActivity:(FLEXNetworkTransactionKind)kind matching:(NSString *)query {
+    switch (kind) {
+        case FLEXNetworkTransactionKindFirebase: {
+            [self.orderedFirebaseTransactions flex_filter:^BOOL(FLEXFirebaseTransaction *obj, NSUInteger idx) {
+                return ![obj matchesQuery:query];
+            }];
+            break;
+        }
+        case FLEXNetworkTransactionKindREST: {
+            NSArray<FLEXHTTPTransaction *> *toRemove;
+            toRemove = [self.orderedHTTPTransactions flex_filtered:^BOOL(FLEXHTTPTransaction *obj, NSUInteger idx) {
+                return [obj matchesQuery:query];
+            }];
+
+            // Remove from cache
+            for (FLEXHTTPTransaction *t in toRemove) {
+                [self.restCache removeObjectForKey:t.requestID];
+            }
+
+            // Remove from list
+            [self.orderedHTTPTransactions removeObjectsInArray:toRemove];
+
+            break;
+        }
+        case FLEXNetworkTransactionKindWebsockets: {
+            [self.orderedWSTransactions flex_filter:^BOOL(FLEXWebsocketTransaction *obj, NSUInteger idx) {
+                return ![obj matchesQuery:query];
+            }];
+            break;
+        }
+    }
+
+    [self notify:kFLEXNetworkRecorderTransactionsClearedNotification transaction:nil];
+}
+
 - (void)clearExcludedTransactions {
     dispatch_sync(self.queue, ^{
         self.orderedHTTPTransactions = ({

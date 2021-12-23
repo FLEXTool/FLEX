@@ -24,6 +24,10 @@
     return ds;
 }
 
+- (BOOL)isFiltered {
+    return self.filterString.length > 0;
+}
+
 - (NSArray *)transactions {
     return _filteredTransactions;
 }

@@ -17,6 +17,12 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 @class FLEXNetworkTransaction, FLEXHTTPTransaction, FLEXWebsocketTransaction, FLEXFirebaseTransaction;
 @class FIRQuery, FIRDocumentReference, FIRDocumentSnapshot, FIRQuerySnapshot;
 
+typedef NS_ENUM(NSUInteger, FLEXNetworkTransactionKind) {
+    FLEXNetworkTransactionKindFirebase = 0,
+    FLEXNetworkTransactionKindREST,
+    FLEXNetworkTransactionKindWebsockets,
+};
+
 @interface FLEXNetworkRecorder : NSObject
 
 /// In general, it only makes sense to have one recorder for the entire application.
@@ -52,6 +58,9 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 
 /// Dumps all network transactions and cached response bodies.
 - (void)clearRecordedActivity;
+
+/// Clear only transactions matching the given query.
+- (void)clearRecordedActivity:(FLEXNetworkTransactionKind)kind matching:(NSString *)query;
 
 
 #pragma mark Recording network activity
