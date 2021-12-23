@@ -313,7 +313,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-#pragma mark - Firebase Firestore Events
+#pragma mark - Firebase, Reading
 
 - (void)recordFIRQueryWillFetch:(FIRQuery *)query withTransactionID:(NSString *)transactionID {
     dispatch_async(self.queue, ^{
@@ -363,7 +363,85 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     });
 }
 
-#pragma mark Notification Posting
+#pragma mark Firebase, Writing
+
+- (void)recordFIRWillSetData:(FIRDocumentReference *)doc
+                        data:(NSDictionary *)documentData
+                       merge:(NSNumber *)yesorno
+                 mergeFields:(NSArray *)fields
+               transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = [FLEXFirebaseTransaction
+            setData:doc data:documentData merge:yesorno mergeFields:fields
+        ];
+        self.requestIDsToTransactions[transactionID] = transaction;
+        [self postNewTransactionNotificationWithTransaction:transaction];
+    });
+}
+
+- (void)recordFIRWillUpdateData:(FIRDocumentReference *)doc fields:(NSDictionary *)fields
+                  transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = [FLEXFirebaseTransaction updateData:doc data:fields];
+        self.requestIDsToTransactions[transactionID] = transaction;
+        [self postNewTransactionNotificationWithTransaction:transaction];
+    });
+}
+
+- (void)recordFIRWillDeleteDocument:(FIRDocumentReference *)doc transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = [FLEXFirebaseTransaction deleteDocument:doc];
+        self.requestIDsToTransactions[transactionID] = transaction;
+        [self postNewTransactionNotificationWithTransaction:transaction];
+    });
+}
+
+- (void)recordFIRDidSetData:(NSError *)error transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
+        if (!transaction) {
+            return;
+        }
+        
+        transaction.error = error;
+        transaction.state = FLEXNetworkTransactionStateFinished;
+        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
+        
+        [self postUpdateNotificationForTransaction:transaction];
+    });
+}
+
+- (void)recordFIRDidUpdateData:(NSError *)error transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
+        if (!transaction) {
+            return;
+        }
+        
+        transaction.error = error;
+        transaction.state = FLEXNetworkTransactionStateFinished;
+        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
+        
+        [self postUpdateNotificationForTransaction:transaction];
+    });
+}
+
+- (void)recordFIRDidDeleteDocument:(NSError *)error transactionID:(NSString *)transactionID {
+    dispatch_async(self.queue, ^{
+        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
+        if (!transaction) {
+            return;
+        }
+        
+        transaction.error = error;
+        transaction.state = FLEXNetworkTransactionStateFinished;
+        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
+        
+        [self postUpdateNotificationForTransaction:transaction];
+    });
+}
+
+#pragma mark - Notification Posting
 
 - (void)postNewTransactionNotificationWithTransaction:(FLEXNetworkTransaction *)transaction {
     [self notify:kFLEXNetworkRecorderNewTransactionNotification transaction:transaction];

@@ -93,4 +93,17 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 - (void)recordFIRDocumentDidFetch:(FIRDocumentSnapshot *)response error:(NSError *)error
                     transactionID:(NSString *)transactionID;
 
+- (void)recordFIRWillSetData:(FIRDocumentReference *)doc
+                        data:(NSDictionary *)documentData
+                       merge:(NSNumber *)yesorno
+                 mergeFields:(NSArray *)fields
+               transactionID:(NSString *)transactionID;
+- (void)recordFIRWillUpdateData:(FIRDocumentReference *)doc fields:(NSDictionary *)fields
+                  transactionID:(NSString *)transactionID;
+- (void)recordFIRWillDeleteDocument:(FIRDocumentReference *)doc transactionID:(NSString *)transactionID;
+
+- (void)recordFIRDidSetData:(NSError *)error transactionID:(NSString *)transactionID;
+- (void)recordFIRDidUpdateData:(NSError *)error transactionID:(NSString *)transactionID;
+- (void)recordFIRDidDeleteDocument:(NSError *)error transactionID:(NSString *)transactionID;
+
 @end

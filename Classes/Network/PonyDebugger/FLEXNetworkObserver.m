@@ -179,7 +179,16 @@ static void _logos_method$_ungrouped$FIRDocumentReference$getDocumentWithComplet
 static void (*_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$)(
     _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock);
 static void _logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$(
-    _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock); 
+    _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock);
+
+static void (*_logos_orig$_ungrouped$FIRDocumentReference$setData$merge$completion$)(
+ _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST, SEL, NSDictionary *, BOOL, void (^)(NSError *));
+static void (*_logos_orig$_ungrouped$FIRDocumentReference$setData$mergeFields$completion$)(
+ _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST, SEL, NSDictionary *, NSArray *, void (^)(NSError *));
+static void (*_logos_orig$_ungrouped$FIRDocumentReference$updateData$completion$)(
+ _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST, SEL, NSDictionary *, void (^)(NSError *));
+static void (*_logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$)(
+ _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST, SEL, void (^)(NSError *));
 
 static void _logos_register_hook(Class _class, SEL _cmd, IMP _new, IMP *_old) {
     unsigned int _count, _i;
@@ -211,6 +220,7 @@ static Class _logos_superclass$_ungrouped$FIRQuery;
 static void (*_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$)(
     _LOGOS_SELF_TYPE_NORMAL FIRQuery * _LOGOS_SELF_CONST, SEL, FIRQuerySnapshotBlock);
 
+#pragma mark Firebase, Reading Data
 
 static void _logos_method$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$(
     _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST self, SEL _cmd, FIRDocumentSnapshotBlock completion) {
@@ -250,6 +260,103 @@ static void _logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$(
     (_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$ ? _logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$ : (__typeof__(_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRQuery, @selector(getDocumentsWithCompletion:)))(self, _cmd, completion);
 }
 
+#pragma mark Firebase, Writing Data
+
+static void _logos_method$_ungrouped$FIRDocumentReference$setData$merge$completion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST __unused self,
+    SEL __unused _cmd, NSDictionary<NSString *, id> * documentData, BOOL merge, void (^completion)(NSError *)) {
+
+    // Generate transaction ID
+    NSString *requestID = [FLEXNetworkObserver nextRequestID];
+    
+    // Record transaction start
+    [FLEXNetworkRecorder.defaultRecorder
+        recordFIRWillSetData:self
+        data:documentData
+        merge:@(merge)
+        mergeFields:nil
+        transactionID:requestID
+    ];
+    
+    // Hook callback
+    void (^orig)(NSError *) = completion;
+    completion = ^(NSError *error) {
+        [FLEXNetworkRecorder.defaultRecorder recordFIRDidSetData:error transactionID:requestID];
+        orig(error);
+    };
+    
+    // Forward invocation
+    (_logos_orig$_ungrouped$FIRDocumentReference$setData$merge$completion$ ? _logos_orig$_ungrouped$FIRDocumentReference$setData$merge$completion$ : (__typeof__(_logos_orig$_ungrouped$FIRDocumentReference$setData$merge$completion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRDocumentReference, @selector(setData:merge:completion:)))(self, _cmd, documentData, merge, completion);
+}
+
+static void _logos_method$_ungrouped$FIRDocumentReference$setData$mergeFields$completion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST __unused self,
+    SEL __unused _cmd, NSDictionary<NSString *, id> * documentData,
+    NSArray * mergeFields, void (^completion)(NSError *)) {
+
+    // Generate transaction ID
+    NSString *requestID = [FLEXNetworkObserver nextRequestID];
+    
+    // Record transaction start
+    [FLEXNetworkRecorder.defaultRecorder
+        recordFIRWillSetData:self
+        data:documentData
+        merge:nil
+        mergeFields:mergeFields
+        transactionID:requestID
+    ];
+
+    // Hook callback
+    void (^orig)(NSError *) = completion;
+    completion = ^(NSError *error) {
+        [FLEXNetworkRecorder.defaultRecorder recordFIRDidSetData:error transactionID:requestID];
+        orig(error);
+    };
+    
+    // Forward invocation
+    (_logos_orig$_ungrouped$FIRDocumentReference$setData$mergeFields$completion$ ? _logos_orig$_ungrouped$FIRDocumentReference$setData$mergeFields$completion$ : (__typeof__(_logos_orig$_ungrouped$FIRDocumentReference$setData$mergeFields$completion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRDocumentReference, @selector(setData:mergeFields:completion:)))(self, _cmd, documentData, mergeFields, completion);
+}
+
+static void _logos_method$_ungrouped$FIRDocumentReference$updateData$completion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST __unused self,
+    SEL __unused _cmd, NSDictionary<id, id> * fields, void (^completion)(NSError *)) {
+
+    // Generate transaction ID
+    NSString *requestID = [FLEXNetworkObserver nextRequestID];
+    
+    // Record transaction start
+    [FLEXNetworkRecorder.defaultRecorder recordFIRWillUpdateData:self fields:fields transactionID:requestID];
+    // Hook callback
+    void (^orig)(NSError *) = completion;
+    completion = ^(NSError *error) {
+        [FLEXNetworkRecorder.defaultRecorder recordFIRDidUpdateData:error transactionID:requestID];
+        orig(error);
+    };
+    
+    // Forward invocation
+    (_logos_orig$_ungrouped$FIRDocumentReference$updateData$completion$ ? _logos_orig$_ungrouped$FIRDocumentReference$updateData$completion$ : (__typeof__(_logos_orig$_ungrouped$FIRDocumentReference$updateData$completion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRDocumentReference, @selector(updateData:completion:)))(self, _cmd, fields, completion);
+}
+
+static void _logos_method$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$(
+    _LOGOS_SELF_TYPE_NORMAL FIRDocumentReference * _LOGOS_SELF_CONST __unused self,
+    SEL __unused _cmd, void (^completion)(NSError *)) {
+
+    // Generate transaction ID
+    NSString *requestID = [FLEXNetworkObserver nextRequestID];
+    
+    // Record transaction start
+    [FLEXNetworkRecorder.defaultRecorder recordFIRWillDeleteDocument:self transactionID:requestID];
+    // Hook callback
+    void (^orig)(NSError *) = completion;
+    completion = ^(NSError *error) {
+        [FLEXNetworkRecorder.defaultRecorder recordFIRDidDeleteDocument:error transactionID:requestID];
+        orig(error);
+    };
+    
+    // Forward invocation
+    (_logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$ ? _logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$ : (__typeof__(_logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$))class_getMethodImplementation(_logos_superclass$_ungrouped$FIRDocumentReference, @selector(deleteDocumentWithCompletion:)))(self, _cmd, completion);
+}
+
 + (void)setNetworkMonitorHooks {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -261,20 +368,50 @@ static void _logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$(
 + (void)hookFirebaseThings {
     Class _logos_class$_ungrouped$FIRDocumentReference = objc_getClass("FIRDocumentReference");
     _logos_superclass$_ungrouped$FIRDocumentReference = class_getSuperclass(_logos_class$_ungrouped$FIRDocumentReference);
+    Class _logos_class$_ungrouped$FIRQuery = objc_getClass("FIRQuery");
+    _logos_superclass$_ungrouped$FIRQuery = class_getSuperclass(_logos_class$_ungrouped$FIRQuery);
+
+    // Reading //
+
     _logos_register_hook(
         _logos_class$_ungrouped$FIRDocumentReference,
         @selector(getDocumentWithCompletion:),
         (IMP)&_logos_method$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$,
         (IMP *)&_logos_orig$_ungrouped$FIRDocumentReference$getDocumentWithCompletion$
     );
-    
-    Class _logos_class$_ungrouped$FIRQuery = objc_getClass("FIRQuery");
-    _logos_superclass$_ungrouped$FIRQuery = class_getSuperclass(_logos_class$_ungrouped$FIRQuery);
+
     _logos_register_hook(
         _logos_class$_ungrouped$FIRQuery,
         @selector(getDocumentsWithCompletion:),
         (IMP)&_logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$,
         (IMP *)&_logos_orig$_ungrouped$FIRQuery$getDocumentsWithCompletion$
+    );
+
+    // Writing //
+
+    _logos_register_hook(
+        _logos_class$_ungrouped$FIRDocumentReference,
+        @selector(setData:merge:completion:),
+        (IMP)&_logos_method$_ungrouped$FIRDocumentReference$setData$merge$completion$,
+        (IMP *)&_logos_orig$_ungrouped$FIRDocumentReference$setData$merge$completion$
+    );
+    _logos_register_hook(
+        _logos_class$_ungrouped$FIRDocumentReference,
+        @selector(setData:mergeFields:completion:),
+        (IMP)&_logos_method$_ungrouped$FIRDocumentReference$setData$mergeFields$completion$,
+        (IMP *)&_logos_orig$_ungrouped$FIRDocumentReference$setData$mergeFields$completion$
+    );
+    _logos_register_hook(
+        _logos_class$_ungrouped$FIRDocumentReference,
+        @selector(updateData:completion:),
+        (IMP)&_logos_method$_ungrouped$FIRDocumentReference$updateData$completion$,
+        (IMP *)&_logos_orig$_ungrouped$FIRDocumentReference$updateData$completion$
+    );
+    _logos_register_hook(
+        _logos_class$_ungrouped$FIRDocumentReference,
+        @selector(deleteDocumentWithCompletion:),
+        (IMP)&_logos_method$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$,
+        (IMP *)&_logos_orig$_ungrouped$FIRDocumentReference$deleteDocumentWithCompletion$
     );
 }
 
