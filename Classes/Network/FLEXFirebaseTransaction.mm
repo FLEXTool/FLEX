@@ -7,6 +7,10 @@
 
 #import "FLEXNetworkTransaction.h"
 #import "FLEXUtility.h"
+#import <dlfcn.h>
+#include <string>
+
+typedef std::string (*ReturnsString)(void *);
 
 @implementation FLEXFirebaseSetDataInfo
 
@@ -64,11 +68,11 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 
 @interface FLEXFirebaseTransaction ()
 @property (nonatomic) id extraData;
+@property (nonatomic, readonly) NSString *queryDescription;
 @end
 
 @implementation FLEXFirebaseTransaction
-//@synthesize responseString = _responseString;
-//@synthesize responseObject = _responseObject;
+@synthesize queryDescription = _queryDescription;
 
 + (instancetype)initiator:(id)initiator requestType:(FLEXFIRRequestType)type extraData:(id)data {
     FLEXFirebaseTransaction *fire = [FLEXFirebaseTransaction withStartTime:NSDate.date];
@@ -104,6 +108,43 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 
 + (instancetype)deleteDocument:(FIRDocumentReference *)initiator {
     return [self initiator:initiator requestType:FLEXFIRRequestTypeDeleteDocument extraData:nil];
+}
+
+- (NSString *)queryDescription {
+    if (_queryDescription) {
+        return _queryDescription;
+    }
+
+    // Grab C++ symbol to describe FIRQuery.query
+    static ReturnsString firebase_firestore_core_query_tostring = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        // Is Firebase available?
+        if (NSClassFromString(@"FIRDocumentReference")) {
+            firebase_firestore_core_query_tostring = (ReturnsString)dlsym(
+                RTLD_DEFAULT, "_ZNK8firebase9firestore4core5Query8ToStringEv"
+            );
+        }
+    });
+
+    if (!firebase_firestore_core_query_tostring) {
+        return @"nil";
+    }
+
+    FIRQuery *query = self.initiator_query;
+    if (!query) return nil;
+
+    void *core_query = query.query;
+    std::string description = firebase_firestore_core_query_tostring(core_query);
+
+    // Query strings are like 'Query(canonical_id=...)' so I remove the leading part, and the ()
+    NSString *prefix = @"Query(canonical_id=";
+    NSString *desc = @(description.c_str());
+    desc = [desc stringByReplacingOccurrencesOfString:prefix withString:@""];
+    desc = [desc stringByReplacingCharactersInRange:NSMakeRange(desc.length-1, 1) withString:@""];
+
+    _queryDescription = desc;
+    return _queryDescription;
 }
 
 - (FIRDocumentReference *)initiator_doc {
@@ -145,14 +186,6 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
     return nil;
 }
 
-- (NSDictionary *)documentData {
-    if (self.requestType == FLEXFIRRequestTypeAddDocument) {
-        return self.extraData;
-    }
-
-    return nil;
-}
-
 - (NSString *)path {
     switch (self.direction) {
         case FLEXFIRTransactionDirectionNone:
@@ -165,7 +198,7 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 
                 case FLEXFIRRequestTypeFetchQuery:
                 case FLEXFIRRequestTypeAddDocument:
-                    return self.initiator_collection.path ?: @"[TBA: FIRQuerySnapshot]";
+                    return self.initiator_collection.path ?: self.queryDescription;
                 case FLEXFIRRequestTypeFetchDocument:
                 case FLEXFIRRequestTypeSetData:
                 case FLEXFIRRequestTypeUpdateData:
@@ -180,14 +213,7 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 
 - (NSString *)primaryDescription {
     if (!_primaryDescription) {
-        switch (self.direction) {
-            case FLEXFIRTransactionDirectionNone:
-                _primaryDescription = @"";
-            case FLEXFIRTransactionDirectionPush:
-                _primaryDescription = @"Push; TBA";
-            case FLEXFIRTransactionDirectionPull:
-                _primaryDescription = self.initiator_collection.collectionID ?: self.initiator_doc.documentID;
-        }
+        _primaryDescription = self.path.lastPathComponent;
     }
 
     return _primaryDescription;

@@ -41,7 +41,7 @@ typedef NS_ENUM(NSUInteger, FIRFirestoreSource) {
 - (id)init __attribute__((unavailable()));
 
 @property(nonatomic, readonly) FIRFirestore *firestore;
-@property(nonatomic, readonly) const void *query;
+@property(nonatomic, readonly) void *query;
 
 - (void)getDocumentsWithCompletion:(FIRQuerySnapshotBlock)completion
     NS_SWIFT_NAME(getDocuments(completion:));
