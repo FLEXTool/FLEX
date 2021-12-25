@@ -57,6 +57,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
+    self.pinSearchBar = YES;
     self.showSearchBarInitially = NO;
     NSMutableArray *scopeTitles = [NSMutableArray arrayWithObject:@"REST"];
     
