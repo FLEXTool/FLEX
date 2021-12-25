@@ -16,6 +16,7 @@ NSString * const kFLEXDefaultsHidePrivateMethodsKey = @"com.flipboard.FLEX.hide_
 NSString * const kFLEXDefaultsShowMethodOverridesKey = @"com.flipboard.FLEX.show_method_overrides";
 NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.flipboard.FLEX.hide_variable_previews";
 NSString * const kFLEXDefaultsNetworkObserverEnabledKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
+NSString * const kFLEXDefaultsNetworkObserverLastModeKey = @"com.flex.FLEXNetworkObserver.lastMode";
 NSString * const kFLEXDefaultsNetworkHostDenylistKey = @"com.flipboard.FLEX.network_host_denylist";
 NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
 NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
@@ -90,6 +91,14 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
 
 - (void)setFlex_registerDictionaryJSONViewerOnLaunch:(BOOL)enable {
     [self setBool:enable forKey:kFLEXDefaultsRegisterJSONExplorerKey];
+}
+
+- (NSInteger)flex_lastNetworkObserverMode {
+    return [self integerForKey:kFLEXDefaultsNetworkObserverLastModeKey];
+}
+
+- (void)setFlex_lastNetworkObserverMode:(NSInteger)mode {
+    [self setInteger:mode forKey:kFLEXDefaultsNetworkObserverLastModeKey];
 }
 
 #pragma mark System Log

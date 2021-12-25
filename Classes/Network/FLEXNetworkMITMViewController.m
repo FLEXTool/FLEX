@@ -21,11 +21,12 @@
 #import "FLEXWebViewController.h"
 #import "UIBarButtonItem+FLEX.h"
 #import "FLEXResources.h"
+#import "NSUserDefaults+FLEX.h"
 
 #define kFirebaseAvailable NSClassFromString(@"FIRDocumentReference")
 #define kWebsocketsAvailable @available(iOS 13.0, *)
 
-typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
+typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     FLEXNetworkObserverModeFirebase = 0,
     FLEXNetworkObserverModeREST,
     FLEXNetworkObserverModeWebsockets,
@@ -36,7 +37,7 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 @property (nonatomic) BOOL updateInProgress;
 @property (nonatomic) BOOL pendingReload;
 
-@property (nonatomic, readonly) FLEXNetworkObserverMode mode;
+@property (nonatomic) FLEXNetworkObserverMode mode;
 
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXNetworkTransaction *> *dataSource;
 @property (nonatomic, readonly) FLEXMITMDataSource<FLEXHTTPTransaction *> *HTTPDataSource;
@@ -82,7 +83,8 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     // Scopes will only be shown if we have either firebase or websockets available
     self.searchController.searchBar.showsScopeBar = scopeTitles.count > 1;
     self.searchController.searchBar.scopeButtonTitles = scopeTitles;
-    
+    self.mode = NSUserDefaults.standardUserDefaults.flex_lastNetworkObserverMode;
+
     [self addToolbarItems:@[
         [UIBarButtonItem
             flex_itemWithImage:FLEXResources.gearIcon
@@ -190,21 +192,70 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
 - (FLEXNetworkObserverMode)mode {
     FLEXNetworkObserverMode mode = self.searchController.searchBar.selectedScopeButtonIndex;
     switch (mode) {
-        case 0:
+        case FLEXNetworkObserverModeFirebase:
             if (kFirebaseAvailable) {
                 return FLEXNetworkObserverModeFirebase;
             }
 
             return FLEXNetworkObserverModeREST;
-        case 1:
+        case FLEXNetworkObserverModeREST:
             if (kFirebaseAvailable) {
                 return FLEXNetworkObserverModeREST;
             }
 
             return FLEXNetworkObserverModeWebsockets;
-        case 2:
+        case FLEXNetworkObserverModeWebsockets:
             return FLEXNetworkObserverModeWebsockets;
     }
+}
+
+- (void)setMode:(FLEXNetworkObserverMode)mode {
+// The segmentd control will have different appearances based on which APIs
+// are available. For example, when only Websockets is available:
+//
+//               0                           1
+// ┌───────────────────────────┬────────────────────────────┐
+// │            REST           │         Websockets         │
+// └───────────────────────────┴────────────────────────────┘
+//
+// And when both Firebase and Websockets are available:
+//
+//          0                  1                  2
+// ┌──────────────────┬──────────────────┬──────────────────┐
+// │     Firebase     │       REST       │    Websockets    │
+// └──────────────────┴──────────────────┴──────────────────┘
+//
+// As a result, we need to adjust the input mode variable accordingly
+// before we actually set it. When we try to set it to Firebase but
+// Firebase is not available, we don't do anything, because when Firebase
+// is unavailable, FLEXNetworkObserverModeFirebase represents the same index
+// as REST would without Firebase. For each of the others, we subtract 1
+// from them for every relevant API that is unavailable. So for Websockets,
+// if it is unavailable, we subtract 1 and it becomes FLEXNetworkObserverModeREST.
+// And if Firebase is also unavailable, we subtract 1 again.
+
+    switch (mode) {
+        case FLEXNetworkObserverModeFirebase:
+            // Will default to REST if Firebase is unavailable
+            break;
+        case FLEXNetworkObserverModeREST:
+            // Firebase will become REST when Firebase is unavailable
+            if (!kFirebaseAvailable) {
+                mode--;
+            }
+            break;
+        case FLEXNetworkObserverModeWebsockets:
+            // Default to REST if Websockets are unavailable
+            if (!kWebsocketsAvailable) {
+                mode--;
+            }
+            // Firebase will become REST when Firebase is unavailable
+            if (!kFirebaseAvailable) {
+                mode--;
+            }
+    }
+
+    self.searchController.searchBar.selectedScopeButtonIndex = mode;
 }
 
 - (FLEXMITMDataSource<FLEXNetworkTransaction *> *)dataSource {
@@ -575,9 +626,11 @@ typedef NS_ENUM(NSUInteger, FLEXNetworkObserverMode) {
     [self.firebaseDataSource filter:searchString completion:callback];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)newScope {
     [self updateFirstSectionHeader];
     [self.tableView reloadData];
+
+    NSUserDefaults.standardUserDefaults.flex_lastNetworkObserverMode = self.mode;
 }
 
 - (void)willDismissSearchController:(UISearchController *)searchController {

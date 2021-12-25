@@ -35,6 +35,9 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 /// Whether or not to register the object explorer as a JSON viewer on launch
 @property (nonatomic) BOOL flex_registerDictionaryJSONViewerOnLaunch;
 
+/// The last selected screen in the network observer
+@property (nonatomic) NSInteger flex_lastNetworkObserverMode;
+
 /// Disable os_log and re-enable ASL. May break Console.app output.
 @property (nonatomic) BOOL flex_disableOSLog;
 @property (nonatomic) BOOL flex_cacheOSLogMessages;
