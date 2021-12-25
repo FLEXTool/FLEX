@@ -36,6 +36,10 @@ Pod::Spec.new do |spec|
   spec.frameworks       = [ "Foundation", "UIKit", "CoreGraphics", "ImageIO", "QuartzCore", "WebKit", "Security", "SceneKit" ]
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
+  spec.library = 'stdc++'
+  spec.xcconfig = {
+       'CLANG_CXX_LANGUAGE_STANDARD' => 'compiler-default',
+  }
   spec.compiler_flags   = "-Wno-unsupported-availability-guard", "-Wno-deprecated-declarations"
   spec.public_header_files = [ "Classes/*.h", "Classes/Manager/*.h", "Classes/Toolbar/*.h",
                                "Classes/Core/Controllers/*.h", "Classes/Core/Views/*.h",

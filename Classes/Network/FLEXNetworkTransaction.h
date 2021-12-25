@@ -25,7 +25,13 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 
 /// The shared base class for all types of network transactions.
 /// Subclasses should implement the descriptions and details properties, and assign a thumbnail.
-@interface FLEXNetworkTransaction : NSObject
+@interface FLEXNetworkTransaction : NSObject {
+    @protected
+
+    NSString *_primaryDescription;
+    NSString *_secondaryDescription;
+    NSString *_tertiaryDescription;
+}
 
 + (instancetype)withStartTime:(NSDate *)startTime;
 
@@ -54,6 +60,9 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 
 /// Whether or not this request should show up when the user searches for a given string
 - (BOOL)matchesQuery:(NSString *)filterString;
+
+/// For internal use
+- (NSString *)timestampStringFromRequestDate:(NSDate *)date;
 
 @end
 
