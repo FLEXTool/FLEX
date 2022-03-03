@@ -132,8 +132,6 @@ typedef NS_ENUM(NSUInteger, FLEXFIRRequestType) {
     FLEXFIRRequestTypeDeleteDocument,
 };
 
-NSString * FLEXStringFromFIRRequestType(FLEXFIRRequestType type);
-
 @interface FLEXFirebaseSetDataInfo : NSObject
 /// The data that was set
 @property (nonatomic, readonly) NSDictionary *documentData;
