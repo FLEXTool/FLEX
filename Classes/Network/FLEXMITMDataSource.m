@@ -29,11 +29,11 @@
 }
 
 - (NSArray *)transactions {
-    return _filteredTransactions;
+    return self.isFiltered ? _filteredTransactions : _allTransactions;
 }
 
 - (NSInteger)bytesReceived {
-    return _filteredBytesReceived;
+    return self.isFiltered ? _filteredBytesReceived : _bytesReceived;
 }
 
 - (void)reloadByteCounts {
