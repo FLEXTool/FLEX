@@ -28,7 +28,7 @@ typedef std::string (*ReturnsString)(void *);
 
 @end
 
-NSString * FLEXStringFromFIRRequestType(FLEXFIRRequestType type) {
+static NSString *FLEXStringFromFIRRequestType(FLEXFIRRequestType type) {
     switch (type) {
         case FLEXFIRRequestTypeNotFirebase:
             return @"not firebase";
@@ -49,7 +49,7 @@ NSString * FLEXStringFromFIRRequestType(FLEXFIRRequestType type) {
     return nil;
 }
 
-FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type) {
+static FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type) {
     switch (type) {
         case FLEXFIRRequestTypeNotFirebase:
             return FLEXFIRTransactionDirectionNone;
@@ -301,4 +301,3 @@ FLEXFIRTransactionDirection FIRDirectionFromRequestType(FLEXFIRRequestType type)
 //}
 
 @end
-
