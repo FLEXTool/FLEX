@@ -75,7 +75,7 @@
             }
         }
     }
-    
+
     for (NSString *suggestion in suggestions) {
         [buttons addObject:[FLEXKBToolbarSuggestedButton buttonWithTitle:suggestion action:handler]];
     }

@@ -38,18 +38,18 @@
 + (instancetype)allocateProtocol:(NSString *)name {
     NSParameterAssert(name);
     return [[self alloc] initWithProtocol:objc_allocateProtocol(name.UTF8String)];
-    
+
 }
 
 - (id)initWithProtocol:(Protocol *)protocol {
     NSParameterAssert(protocol);
-    
+
     self = [super init];
     if (self) {
         _workingProtocol = protocol;
         _name = NSStringFromProtocol(self.workingProtocol);
     }
-    
+
     return self;
 }
 
@@ -84,7 +84,7 @@
 
 - (FLEXProtocol *)registerProtocol {
     MutationAssertion(@"Protocol is already registered");
-    
+
     _isRegistered = YES;
     objc_registerProtocol(self.workingProtocol);
     return [FLEXProtocol protocol:self.workingProtocol];

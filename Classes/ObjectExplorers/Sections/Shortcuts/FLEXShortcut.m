@@ -39,7 +39,7 @@
     if ([item conformsToProtocol:@protocol(FLEXShortcut)]) {
         return item;
     }
-    
+
     FLEXShortcut *shortcut = [self new];
     shortcut->_item = item;
 
@@ -129,7 +129,7 @@
 
 - (void)setDefaults:(FLEXObjectExplorerDefaults *)defaults {
     _defaults = defaults;
-    
+
     if (_metadataKind) {
         self.metadata.defaults = defaults;
     }
@@ -139,7 +139,7 @@
     if (_metadataKind) {
         return self.metadata.isEditable;
     }
-    
+
     return NO;
 }
 
@@ -147,7 +147,7 @@
     if (_metadataKind) {
         return self.metadata.isCallable;
     }
-    
+
     return NO;
 }
 
@@ -198,7 +198,7 @@
     self = [super init];
     if (self) {
         id nilBlock = ^id (id obj) { return nil; };
-        
+
         _title = title;
         _subtitleFuture = subtitleFuture ?: nilBlock;
         _viewerFuture = viewerFuture ?: nilBlock;
@@ -217,7 +217,7 @@
     if (self.defaults.wantsDynamicPreviews) {
         return self.subtitleFuture(object);
     }
-    
+
     return nil;
 }
 
@@ -227,7 +227,7 @@
             self.selectionHandler(host, object);
         };
     }
-    
+
     return nil;
 }
 

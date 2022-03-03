@@ -111,7 +111,7 @@ BOOL FLEXPointerIsReadable(const void *inPtr) {
 #else
     address = (vm_address_t)inPtr;
 #endif
-    
+
     // Read the memory
     vm_size_t size = 0;
     char buf[sizeof(uintptr_t)];
@@ -166,7 +166,7 @@ BOOL FLEXPointerIsValidObjcObject(const void *ptr) {
     if (!cls || !FLEXPointerIsReadable((__bridge void *)cls)) {
         return NO;
     }
-    
+
     // Just because this pointer is readable doesn't mean whatever is at
     // it's ISA offset is readable. We need to do the same checks on it's ISA.
     // Even this isn't perfect, because once we call object_isClass, we're
@@ -177,12 +177,12 @@ BOOL FLEXPointerIsValidObjcObject(const void *ptr) {
     if (!metaclass || !FLEXPointerIsReadable((__bridge void *)metaclass)) {
         return NO;
     }
-    
+
     // Does the class pointer we got appear as a class to the runtime?
     if (!object_isClass(cls)) {
         return NO;
     }
-    
+
     // Is the allocation size at least as large as the expected instance size?
     ssize_t instanceSize = class_getInstanceSize(cls);
     if (malloc_size(ptr) < instanceSize) {

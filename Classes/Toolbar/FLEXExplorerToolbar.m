@@ -50,7 +50,7 @@
         self.dragHandleImageView.tintColor = [FLEXColor.iconColor colorWithAlphaComponent:0.666];
         [self.dragHandle addSubview:self.dragHandleImageView];
         [self addSubview:self.dragHandle];
-        
+
         // Buttons
         self.globalsItem   = [FLEXExplorerToolbarItem itemWithTitle:@"menu" image:FLEXResources.globalsIcon];
         self.hierarchyItem = [FLEXExplorerToolbarItem itemWithTitle:@"views" image:FLEXResources.hierarchyIcon];
@@ -60,7 +60,7 @@
         self.closeItem     = [FLEXExplorerToolbarItem itemWithTitle:@"close" image:FLEXResources.closeIcon];
 
         // Selected view box //
-        
+
         self.selectedViewDescriptionContainer = [UIView new];
         self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor tertiaryBackgroundColorWithAlpha:0.95];
         self.selectedViewDescriptionContainer.hidden = YES;
@@ -69,16 +69,16 @@
         self.selectedViewDescriptionSafeAreaContainer = [UIView new];
         self.selectedViewDescriptionSafeAreaContainer.backgroundColor = UIColor.clearColor;
         [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionSafeAreaContainer];
-        
+
         self.selectedViewColorIndicator = [UIView new];
         self.selectedViewColorIndicator.backgroundColor = UIColor.redColor;
         [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewColorIndicator];
-        
+
         self.selectedViewDescriptionLabel = [UILabel new];
         self.selectedViewDescriptionLabel.backgroundColor = UIColor.clearColor;
         self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
         [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewDescriptionLabel];
-        
+
         // toolbarItems
         self.toolbarItems = @[_globalsItem, _hierarchyItem, _selectItem, _moveItem, _closeItem];
     }
@@ -98,8 +98,8 @@
     dragHandleImageFrame.origin.x = FLEXFloor((self.dragHandle.frame.size.width - dragHandleImageFrame.size.width) / 2.0);
     dragHandleImageFrame.origin.y = FLEXFloor((self.dragHandle.frame.size.height - dragHandleImageFrame.size.height) / 2.0);
     self.dragHandleImageView.frame = dragHandleImageFrame;
-    
-    
+
+
     // Toolbar Items
     CGFloat originX = CGRectGetMaxX(self.dragHandle.frame);
     CGFloat originY = CGRectGetMinY(safeArea);
@@ -109,7 +109,7 @@
         toolbarItem.currentItem.frame = CGRectMake(originX, originY, width, height);
         originX = CGRectGetMaxX(toolbarItem.currentItem.frame);
     }
-    
+
     // Make sure the last toolbar item goes to the edge to account for any accumulated rounding effects.
     UIView *lastToolbarItem = self.toolbarItems.lastObject.currentItem;
     CGRect lastToolbarItemFrame = lastToolbarItem.frame;
@@ -117,13 +117,13 @@
     lastToolbarItem.frame = lastToolbarItemFrame;
 
     self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), kToolbarItemHeight);
-    
+
     const CGFloat kSelectedViewColorDiameter = [[self class] selectedViewColorIndicatorDiameter];
     const CGFloat kDescriptionLabelHeight = [[self class] descriptionLabelHeight];
     const CGFloat kHorizontalPadding = [[self class] horizontalPadding];
     const CGFloat kDescriptionVerticalPadding = [[self class] descriptionVerticalPadding];
     const CGFloat kDescriptionContainerHeight = [[self class] descriptionContainerHeight];
-    
+
     CGRect descriptionContainerFrame = CGRectZero;
     descriptionContainerFrame.size.width = CGRectGetWidth(self.bounds);
     descriptionContainerFrame.size.height = kDescriptionContainerHeight;
@@ -146,7 +146,7 @@
     selectedViewColorFrame.origin.y = FLEXFloor((kDescriptionContainerHeight - kSelectedViewColorDiameter) / 2.0);
     self.selectedViewColorIndicator.frame = selectedViewColorFrame;
     self.selectedViewColorIndicator.layer.cornerRadius = ceil(selectedViewColorFrame.size.height / 2.0);
-    
+
     // Selected View Description
     CGRect descriptionLabelFrame = CGRectZero;
     CGFloat descriptionOriginX = CGRectGetMaxX(selectedViewColorFrame) + kHorizontalPadding;
@@ -164,12 +164,12 @@
     if (_toolbarItems == toolbarItems) {
         return;
     }
-    
+
     // Remove old toolbar items, if any
     for (FLEXExplorerToolbarItem *item in _toolbarItems) {
         [item.currentItem removeFromSuperview];
     }
-    
+
     // Trim to 5 items if necessary
     if (toolbarItems.count > 5) {
         toolbarItems = [toolbarItems subarrayWithRange:NSMakeRange(0, 5)];

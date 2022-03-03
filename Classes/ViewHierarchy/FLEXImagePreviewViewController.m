@@ -39,14 +39,14 @@
 
 - (id)initWithImage:(UIImage *)image {
     NSParameterAssert(image);
-    
+
     self = [super init];
     if (self) {
         self.title = @"Preview";
         self.image = image;
         _backgroundColors = @[FLEXResources.checkerPatternColor, UIColor.whiteColor, UIColor.blackColor];
     }
-    
+
     return self;
 }
 
@@ -55,7 +55,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.imageView = [[UIImageView alloc] initWithImage:self.image];
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     self.scrollView.delegate = self;
@@ -66,10 +66,10 @@
     self.scrollView.minimumZoomScale = 1.0;
     self.scrollView.maximumZoomScale = 2.0;
     [self.view addSubview:self.scrollView];
-    
+
     self.bgColorTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changeBackground)];
     [self.scrollView addGestureRecognizer:self.bgColorTapGesture];
-    
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
         initWithBarButtonSystemItem:UIBarButtonSystemItemAction
         target:self
@@ -121,15 +121,15 @@
             canSaveToCameraRoll = YES;
             return;
         }
-        
+
         NSBundle *mainBundle = NSBundle.mainBundle;
         if ([mainBundle.infoDictionary.allKeys containsObject:@"NSPhotoLibraryUsageDescription"]) {
             canSaveToCameraRoll = YES;
         }
     });
-    
+
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.image] applicationActivities:@[]];
-    
+
     if (!canSaveToCameraRoll && !didShowWarning) {
         didShowWarning = YES;
         NSString *msg = @"Add 'NSPhotoLibraryUsageDescription' to this app's Info.plist to save images.";

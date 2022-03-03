@@ -37,7 +37,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.fieldEditorView.fieldDescription = self.key;
 
     id currentValue = [self.defaults objectForKey:self.key];
@@ -58,10 +58,10 @@
         [self.defaults removeObjectForKey:self.key];
     }
     [self.defaults synchronize];
-    
+
     // Dismiss keyboard and handle committed changes
     [super actionButtonPressed:sender];
-    
+
     // Go back after setting, but not for switches.
     if (sender) {
         [self.navigationController popViewControllerAnimated:YES];

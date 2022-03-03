@@ -25,26 +25,26 @@ static const CGFloat kArrowWidth = 20;
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = FLEXColor.secondaryBackgroundColor;
-        
+
         _titleLabel = [UILabel new];
         _titleLabel.font = UIFont.flex_defaultTableCellFont;
         [self addSubview:_titleLabel];
-        
+
         _arrowLabel = [UILabel new];
         _arrowLabel.font = UIFont.flex_defaultTableCellFont;
         [self addSubview:_arrowLabel];
-        
+
         _lineView = [UIView new];
         _lineView.backgroundColor = FLEXColor.hairlineColor;
         [self addSubview:_lineView];
-        
+
     }
     return self;
 }
 
 - (void)setSortType:(FLEXTableColumnHeaderSortType)type {
     _sortType = type;
-    
+
     switch (type) {
         case FLEXTableColumnHeaderSortTypeNone:
             _arrowLabel.text = @"";
@@ -60,9 +60,9 @@ static const CGFloat kArrowWidth = 20;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     CGSize size = self.frame.size;
-    
+
     self.titleLabel.frame = CGRectMake(kMargin, 0, size.width - kArrowWidth - kMargin, size.height);
     self.arrowLabel.frame = CGRectMake(size.width - kArrowWidth, 0, kArrowWidth, size.height);
     self.lineView.frame = CGRectMake(size.width - 1, 2, FLEXPointsToPixels(1), size.height - 4);

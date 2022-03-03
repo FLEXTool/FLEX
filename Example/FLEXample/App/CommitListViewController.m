@@ -25,15 +25,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     _avatars = [NSMutableDictionary new];
-    
+
     self.title = @"FLEX Commit History";
     self.showsSearchBar = YES;
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem
         flex_itemWithTitle:@"FLEX" target:FLEXManager.sharedManager action:@selector(toggleExplorer)
     ];
-    
+
     // Load and process commits
     NSString *commitsURL = @"https://api.github.com/repos/Flipboard/FLEX/commits";
     [self startDataTask:commitsURL completion:^(NSData *data, NSInteger statusCode, NSError *error) {
@@ -47,9 +47,9 @@
             ];
         }
     }];
-    
+
     FLEXManager *flex = FLEXManager.sharedManager;
-    
+
     // Register 't' for testing: quickly present an object explorer for debugging
     [flex registerSimulatorShortcutWithKey:@"t" modifiers:0 action:^{
         [flex showExplorer];
@@ -63,7 +63,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     [self disableToolbar];
 }
 
@@ -76,7 +76,7 @@
             cell.detailTextLabel.lineBreakMode = NSLineBreakByTruncatingTail;
 //            cell.textLabel.numberOfLines = 2;
 //            cell.detailTextLabel.numberOfLines = 3;
-        
+
             UIImage *avi = self.avatars[commit.committer.login];
             if (avi) {
                 cell.imageView.image = avi;
@@ -97,13 +97,13 @@
             return [commit matchesWithQuery:filterText];
         }
     ];
-    
+
     self.commits.selectionHandler = ^(__kindof UIViewController *host, Commit *commit) {
         [host.navigationController pushViewController:[
             FLEXObjectExplorerFactory explorerViewControllerForObject:commit
         ] animated:YES];
     };
-    
+
     return @[self.commits];
 }
 
@@ -131,7 +131,7 @@
     [[NSURLSession.sharedSession dataTaskWithURL:url completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             NSInteger code = [(NSHTTPURLResponse *)response statusCode];
-            
+
             completionHandler(data, code, error);
         });
     }] resume];

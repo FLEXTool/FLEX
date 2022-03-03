@@ -57,7 +57,7 @@
         [NSExpression class],
         [NSBundle class]
     ];
-    
+
     for (Class cls in classesToTest) {
         [self testMethodListForClass:cls];
     }
@@ -71,10 +71,10 @@
         Method method = methods[i];
         NSArray *prevWay = [self prettyArgumentComponentsForMethod:method];
         NSArray *newWay = [FLEXRuntimeUtility prettyArgumentComponentsForMethod:method];
-        
+
         XCTAssertEqualObjects(prevWay, newWay);
     }
-    
+
     free(methods);
 }
 
@@ -82,11 +82,11 @@
 
 - (NSArray *)prettyArgumentComponentsForMethod:(Method)method {
     NSMutableArray *components = [NSMutableArray new];
-    
+
     NSString *selectorName = NSStringFromSelector(method_getName(method));
     NSArray *selectorComponents = [selectorName componentsSeparatedByString:@":"];
     unsigned int numberOfArguments = method_getNumberOfArguments(method);
-    
+
     for (unsigned int argIndex = kFLEXNumberOfImplicitArgs; argIndex < numberOfArguments; argIndex++) {
         char *argType = method_copyArgumentType(method, argIndex);
         NSString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
@@ -94,7 +94,7 @@
         NSString *prettyComponent = [NSString stringWithFormat:@"%@:(%@) ", [selectorComponents objectAtIndex:argIndex - kFLEXNumberOfImplicitArgs], readableArgType];
         [components addObject:prettyComponent];
     }
-    
+
     return components;
 }
 

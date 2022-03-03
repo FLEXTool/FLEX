@@ -44,7 +44,7 @@
             name:UIKeyboardWillHideNotification object:nil
         ];
     }
-    
+
     return self;
 }
 
@@ -61,7 +61,7 @@
     scrollInsets.bottom = keyboardSize.height;
     self.scrollView.contentInset = scrollInsets;
     self.scrollView.scrollIndicatorInsets = scrollInsets;
-    
+
     // Find the active input view and scroll to make sure it's visible.
     for (FLEXArgumentInputView *argumentInputView in self.fieldEditorView.argumentInputViews) {
         if (argumentInputView.inputViewIsFirstResponder) {
@@ -81,26 +81,26 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.view.backgroundColor = FLEXColor.scrollViewBackgroundColor;
-    
+
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     self.scrollView.backgroundColor = self.view.backgroundColor;
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.scrollView.delegate = self;
     [self.view addSubview:self.scrollView];
-    
+
     _fieldEditorView = [FLEXFieldEditorView new];
     self.fieldEditorView.targetDescription = [NSString stringWithFormat:@"%@ %p", [self.target class], self.target];
     [self.scrollView addSubview:self.fieldEditorView];
-    
+
     _actionButton = [[UIBarButtonItem alloc]
         initWithTitle:@"Set"
         style:UIBarButtonItemStyleDone
         target:self
         action:@selector(actionButtonPressed:)
     ];
-    
+
     self.navigationController.toolbarHidden = NO;
     self.toolbarItems = @[UIBarButtonItem.flex_flexibleSpace, self.actionButton];
 }

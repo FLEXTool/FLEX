@@ -68,7 +68,7 @@
     if (self) {
         _object = object;
         _wantsSummary = showSummary;
-        
+
         if (retain) {
             _retainer = object;
         }
@@ -91,7 +91,7 @@
         if (!_summary) {
             _summary = [FLEXRuntimeUtility summaryForObject:self.object];
         }
-        
+
         return _summary;
     }
     else {

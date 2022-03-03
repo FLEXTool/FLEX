@@ -31,12 +31,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.title = @"Windows";
     if (@available(iOS 13, *)) {
         self.title = @"Windows and Scenes";
     }
-    
+
     [self disableToolbar];
     [self reloadData];
 }
@@ -53,18 +53,18 @@
             @(window.windowLevel), window.rootViewController
         ];
     }];
-    
+
     if (@available(iOS 13, *)) {
         self.scenes = UIApplication.sharedApplication.connectedScenes.allObjects;
         self.sceneSubtitles = [self.scenes flex_mapped:^id(UIScene *scene, NSUInteger idx) {
             return [self sceneDescription:scene];
         }];
-        
+
         self.sections = @[@[self.keyWindow], self.windows, self.scenes];
     } else {
         self.sections = @[@[self.keyWindow], self.windows];
     }
-    
+
     [self.tableView reloadData];
 }
 
@@ -76,7 +76,7 @@
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     [self reloadData];
     [self.tableView reloadData];
-    
+
     UIWindow *highestWindow = UIApplication.sharedApplication.keyWindow;
     UIWindowLevel maxLevel = 0;
     for (UIWindow *window in UIApplication.sharedApplication.windows) {
@@ -85,11 +85,11 @@
             highestWindow = window;
         }
     }
-    
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Keep Changes?");
         make.message(@"If you do not wish to keep these settings, choose 'Revert Changes' below.");
-        
+
         make.button(@"Keep Changes").destructiveStyle();
         make.button(@"Keep Changes and Dismiss").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
             [self dismissAnimated];
@@ -106,12 +106,12 @@
     NSString *state = [self stringFromSceneState:scene.activationState];
     NSString *title = scene.title.length ? scene.title : nil;
     NSString *suffix = nil;
-    
+
     if ([scene isKindOfClass:[UIWindowScene class]]) {
         UIWindowScene *windowScene = (id)scene;
         suffix = FLEXPluralString(windowScene.windows.count, @"windows", @"window");
     }
-    
+
     NSMutableString *description = state.mutableCopy;
     if (title) {
         [description appendFormat:@" — %@", title];
@@ -119,7 +119,7 @@
     if (suffix) {
         [description appendFormat:@" — %@", suffix];
     }
-    
+
     return description.copy;
 }
 
@@ -134,7 +134,7 @@
         case UISceneActivationStateBackground:
             return @"Backgrounded";
     }
-    
+
     return [NSString stringWithFormat:@"Unknown state: %@", @(state)];
 }
 
@@ -155,7 +155,7 @@
         case 1: return @"Windows";
         case 2: return @"Connected Scenes";
     }
-    
+
     return nil;
 }
 
@@ -163,10 +163,10 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
     cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    
+
     UIWindow *window = nil;
     NSString *subtitle = nil;
-    
+
     switch (indexPath.section) {
         case 0:
             window = self.keyWindow;
@@ -184,13 +184,13 @@
                 return cell;
             }
     }
-    
+
     cell.textLabel.text = window.description;
     cell.detailTextLabel.text = [NSString
         stringWithFormat:@"Level: %@ — Root: %@",
         @((NSInteger)window.windowLevel), window.rootViewController.class
     ];
-    
+
     return cell;
 }
 
@@ -201,11 +201,11 @@
     UIWindow *window = nil;
     NSString *subtitle = nil;
     FLEXWindow *flex = FLEXManager.sharedManager.explorerWindow;
-    
+
     id cancelHandler = ^{
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     };
-    
+
     switch (indexPath.section) {
         case 0:
             window = self.keyWindow;
@@ -221,15 +221,15 @@
                 UIWindowScene *oldScene = flex.windowScene;
                 BOOL isWindowScene = [scene isKindOfClass:[UIWindowScene class]];
                 BOOL isFLEXScene = isWindowScene ? flex.windowScene == scene : NO;
-                
+
                 [FLEXAlert makeAlert:^(FLEXAlert *make) {
                     make.title(NSStringFromClass(scene.class));
-                    
+
                     if (isWindowScene) {
                         if (isFLEXScene) {
                             make.message(@"Already the FLEX window scene");
                         }
-                        
+
                         make.button(@"Set as FLEX Window Scene")
                         .handler(^(NSArray<NSString *> *strings) {
                             flex.windowScene = (id)scene;
@@ -249,46 +249,46 @@
     __block UIWindow *targetWindow = nil, *oldKeyWindow = nil;
     __block UIWindowLevel oldLevel;
     __block BOOL wasVisible;
-    
+
     subtitle = [subtitle stringByAppendingString:
         @"\n\n1) Adjust the FLEX window level relative to this window,\n"
         "2) adjust this window's level relative to the FLEX window,\n"
         "3) set this window's level to a specific value, or\n"
         "4) make this window the key window if it isn't already."
     ];
-    
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(NSStringFromClass(window.class)).message(subtitle);
         make.button(@"Adjust FLEX Window Level").handler(^(NSArray<NSString *> *strings) {
             targetWindow = flex; oldLevel = flex.windowLevel;
             flex.windowLevel = window.windowLevel + strings.firstObject.integerValue;
-            
+
             [self showRevertOrDismissAlert:^{ targetWindow.windowLevel = oldLevel; }];
         });
         make.button(@"Adjust This Window's Level").handler(^(NSArray<NSString *> *strings) {
             targetWindow = window; oldLevel = window.windowLevel;
             window.windowLevel = flex.windowLevel + strings.firstObject.integerValue;
-            
+
             [self showRevertOrDismissAlert:^{ targetWindow.windowLevel = oldLevel; }];
         });
         make.button(@"Set This Window's Level").handler(^(NSArray<NSString *> *strings) {
             targetWindow = window; oldLevel = window.windowLevel;
             window.windowLevel = strings.firstObject.integerValue;
-            
+
             [self showRevertOrDismissAlert:^{ targetWindow.windowLevel = oldLevel; }];
         });
         make.button(@"Make Key And Visible").handler(^(NSArray<NSString *> *strings) {
             oldKeyWindow = UIApplication.sharedApplication.keyWindow;
             wasVisible = window.hidden;
             [window makeKeyAndVisible];
-            
+
             [self showRevertOrDismissAlert:^{
                 window.hidden = wasVisible;
                 [oldKeyWindow makeKeyWindow];
             }];
         }).enabled(!window.isKeyWindow && !window.hidden);
         make.button(@"Cancel").cancelStyle().handler(cancelHandler);
-        
+
         make.textField(@"+/- window level, i.e. 5 or -10");
     } showFrom:self];
 }

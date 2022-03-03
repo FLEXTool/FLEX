@@ -61,7 +61,7 @@
             explorer:(__kindof FLEXObjectExplorer *)explorer
        customSections:(NSArray<FLEXTableViewSection *> *)customSections {
     NSParameterAssert(target);
-    
+
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         _object = target;
@@ -104,7 +104,7 @@
     self.carousel.items = [self.explorer.classHierarchyClasses flex_mapped:^id(Class cls, NSUInteger idx) {
         return NSStringFromClass(cls);
     }];
-    
+
     // ... button for extra options
     [self addToolbarItems:@[[UIBarButtonItem
         flex_itemWithImage:FLEXResources.moreIcon target:self action:@selector(moreButtonPressed:)
@@ -123,7 +123,7 @@
     rightSwipe.delegate = self;
     [self.tableView addGestureRecognizer:leftSwipe];
     [self.tableView addGestureRecognizer:rightSwipe];
-    
+
     // Observe preferences which may change on other screens
     //
     // "If your app targets iOS 9.0 and later or macOS 10.11 and later,
@@ -151,7 +151,7 @@
     if (self.shouldShowDescription) {
         return super.nonemptySections;
     }
-    
+
     return [super.nonemptySections flex_filtered:^BOOL(FLEXTableViewSection *section, NSUInteger idx) {
         return section != self.descriptionSection;
     }];
@@ -159,7 +159,7 @@
 
 - (NSArray<FLEXTableViewSection *> *)makeSections {
     FLEXObjectExplorer *explorer = self.explorer;
-    
+
     // Description section is only for instances
     if (self.explorer.objectIsInstance) {
         _descriptionSection = [FLEXSingleRowSection
@@ -221,7 +221,7 @@
         self.explorer.classScope = self.selectedScope;
         [self reloadSections];
     }
-    
+
     [super reloadData];
 }
 
@@ -276,12 +276,12 @@
         if (g2 == self.navigationController.interactivePopGestureRecognizer) {
             return NO;
         }
-        
+
         if (g2 == self.tableView.panGestureRecognizer) {
             return NO;
         }
     }
-    
+
     return YES;
 }
 
@@ -291,10 +291,10 @@
     if ([self.carousel hitTest:location withEvent:nil]) {
         return NO;
     }
-    
+
     return YES;
 }
-    
+
 - (void)moreButtonPressed:(UIBarButtonItem *)sender {
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
     // Maps preference keys to a description of what they affect
@@ -305,7 +305,7 @@
         kFLEXDefaultsShowMethodOverridesKey:  @"Method Overrides",
         kFLEXDefaultsHideVariablePreviewsKey: @"Variable Previews"
     };
-    
+
     // Maps the key of the action itself to a map of a description
     // of the action ("hide X") mapped to the current state.
     //
@@ -317,10 +317,10 @@
         kFLEXDefaultsShowMethodOverridesKey:  @{ @NO: @"Show ", @YES: @"Hide " },
         kFLEXDefaultsHideVariablePreviewsKey: @{ @NO: @"Hide ", @YES: @"Show " },
     };
-    
+
     [FLEXAlert makeSheet:^(FLEXAlert *make) {
         make.title(@"Options");
-        
+
         for (NSString *option in explorerToggles.allKeys) {
             BOOL current = [defaults boolForKey:option];
             NSString *title = [nextStateDescriptions[option][@(current)]
@@ -331,7 +331,7 @@
                 [self fullyReloadData];
             });
         }
-        
+
         make.button(@"Cancel").cancelStyle();
     } showFrom:self source:sender];
 }
@@ -353,13 +353,13 @@
     // For the description section, we want that nice slim/snug looking row.
     // Other rows use the automatic size.
     FLEXTableViewSection *section = self.filterDelegate.sections[indexPath.section];
-    
+
     if (section == self.descriptionSection) {
         NSAttributedString *attributedText = [[NSAttributedString alloc]
             initWithString:self.explorer.objectDescription
             attributes:@{ NSFontAttributeName : UIFont.flex_defaultTableCellFont }
         ];
-        
+
         return [FLEXMultilineTableViewCell
             preferredHeightWithAttributedText:attributedText
             maxWidth:tableView.frame.size.width - tableView.separatorInset.right

@@ -29,7 +29,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self addToolbarItems:@[
         FLEXBarButtonItemSystem(Add, self, @selector(addPressed)),
         [FLEXBarButtonItemSystem(Trash, self, @selector(trashPressed:)) flex_withTintColor:UIColor.redColor],
@@ -42,7 +42,7 @@
     _section = [FLEXMutableListSection list:FLEXKeychain.allAccounts.mutableCopy
         cellConfiguration:^(__kindof FLEXTableViewCell *cell, NSDictionary *item, NSInteger row) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        
+
             id service = item[kFLEXKeychainWhereKey];
             if ([service isKindOfClass:[NSString class]]) {
                 cell.textLabel.text = service;
@@ -63,11 +63,11 @@
                     }
                 }
             }
-            
+
             return NO;
         }
     ];
-    
+
     return @[self.section];
 }
 
@@ -202,10 +202,10 @@
         [self.section mutate:^(NSMutableArray *list) {
             [list removeObject:toRemove];
         }];
-    
+
         // Delete the row
         [tv deleteRowsAtIndexPaths:@[ip] withRowAnimation:UITableViewRowAnimationAutomatic];
-        
+
         // Update the title by refreshing the section without disturbing the delete animation
         //
         // This is an ugly hack, but literally nothing else works, save for manually getting
@@ -227,7 +227,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     FLEXKeychainQuery *query = [self queryForItemAtIndex:indexPath.row];
-    
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(query.service);
         make.message(@"Service: ").message(query.service);
@@ -245,7 +245,7 @@
             [UIPasteboard.generalPasteboard flex_copy:query.password];
         });
         make.button(@"Dismiss").cancelStyle();
-        
+
     } showFrom:self];
 
     [tableView deselectRowAtIndexPath:indexPath animated:YES];

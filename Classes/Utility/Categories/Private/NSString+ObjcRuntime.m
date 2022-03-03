@@ -22,9 +22,9 @@
 /// https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
 - (NSDictionary *)propertyAttributes {
     if (!self.length) return nil;
-    
+
     NSMutableDictionary *attributes = [NSMutableDictionary new];
-    
+
     NSArray *components = [self componentsSeparatedByString:@","];
     for (NSString *attribute in components) {
         FLEXPropertyAttribute c = (FLEXPropertyAttribute)[attribute characterAtIndex:0];

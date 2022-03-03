@@ -49,7 +49,7 @@
 
 - (id)initWithAttributesDictionary:(NSDictionary *)attributes {
     NSParameterAssert(attributes);
-    
+
     self = [super init];
     if (self) {
         _dictionary           = attributes;
@@ -71,7 +71,7 @@
 
         _fullDeclaration = [self buildFullDeclaration];
     }
-    
+
     return self;
 }
 
@@ -97,7 +97,7 @@
     if (attributesCount) {
         *attributesCount = (unsigned int)attrs.count;
     }
-    
+
     NSUInteger i = 0;
     for (NSString *key in attrs.allKeys) {
         FLEXPropertyAttribute c = (FLEXPropertyAttribute)[key characterAtIndex:0];
@@ -180,7 +180,7 @@
         }
         i++;
     }
-    
+
     return propertyAttributes;
 }
 

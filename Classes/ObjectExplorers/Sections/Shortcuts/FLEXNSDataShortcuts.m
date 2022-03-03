@@ -13,7 +13,7 @@
 
 + (instancetype)forObject:(NSData *)data {
     NSString *string = [self stringForData:data];
-    
+
     return [self forObject:data additionalRows:@[
         [FLEXActionShortcut title:@"UTF-8 String" subtitle:^(NSData *object) {
             return string.length ? string : (string ?
@@ -25,7 +25,7 @@
             if (string.length) {
                 return UITableViewCellAccessoryDisclosureIndicator;
             }
-            
+
             return UITableViewCellAccessoryNone;
         }]
     ]];

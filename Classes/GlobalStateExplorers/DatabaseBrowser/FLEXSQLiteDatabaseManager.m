@@ -35,7 +35,7 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
     if (self) {
         self.path = path;
     }
-    
+
     return self;
 }
 
@@ -47,7 +47,7 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
     if (self.db) {
         return YES;
     }
-    
+
     int err = sqlite3_open(self.path.UTF8String, &_db);
 
 #if SQLITE_HAS_CODEC
@@ -61,18 +61,18 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
     if (err != SQLITE_OK) {
         return [self storeErrorForLastTask:@"Open"];
     }
-    
+
     return YES;
 }
-    
+
 - (BOOL)close {
     if (!self.db) {
         return YES;
     }
-    
+
     int  rc;
     BOOL retry, triedFinalizingOpenStatements = NO;
-    
+
     do {
         retry = NO;
         rc    = sqlite3_close(_db);
@@ -92,7 +92,7 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
             return NO;
         }
     } while (retry);
-    
+
     self.db = nil;
     return YES;
 }
@@ -124,7 +124,7 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
 - (NSArray<NSString *> *)queryRowIDsInTable:(NSString *)tableName {
     NSString *command = [NSString stringWithFormat:QUERY_ROWIDS, tableName];
     NSArray<NSArray<NSString *> *> *data = [self executeStatement:command].rows ?: @[];
-    
+
     return [data flex_mapped:^id(NSArray<NSString *> *obj, NSUInteger idx) {
         return obj.firstObject;
     }];
@@ -136,25 +136,25 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
 
 - (FLEXSQLResult *)executeStatement:(NSString *)sql arguments:(NSDictionary *)args {
     [self open];
-    
+
     FLEXSQLResult *result = nil;
-    
+
     sqlite3_stmt *pstmt;
     int status;
     if ((status = sqlite3_prepare_v2(_db, sql.UTF8String, -1, &pstmt, 0)) == SQLITE_OK) {
         NSMutableArray<NSArray *> *rows = [NSMutableArray new];
-        
+
         // Bind parameters, if any
         if (![self bindParameters:args toStatement:pstmt]) {
             return self.lastResult;
         }
-        
+
         // Grab columns
         int columnCount = sqlite3_column_count(pstmt);
         NSArray<NSString *> *columns = [NSArray flex_forEachUpTo:columnCount map:^id(NSUInteger i) {
             return @(sqlite3_column_name(pstmt, (int)i));
         }];
-        
+
         // Execute statement
         while ((status = sqlite3_step(pstmt)) == SQLITE_ROW) {
             // Grab rows if this is a selection query
@@ -165,7 +165,7 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
                 }]];
             }
         }
-        
+
         if (status == SQLITE_DONE) {
             if (rows.count) {
                 // We selected some rows
@@ -184,7 +184,7 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
         // An error occurred creating the prepared statement
         result = _lastResult = [self errorResult:@"Prepared statement"];
     }
-    
+
     sqlite3_finalize(pstmt);
     return result;
 }
@@ -197,12 +197,12 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
     for (NSString *param in args.allKeys) {
         int status = SQLITE_OK, idx = sqlite3_bind_parameter_index(pstmt, param.UTF8String);
         id value = args[param];
-        
+
         if (idx == 0) {
             // No parameter matching that arg
             @throw NSInternalInconsistencyException;
         }
-        
+
         // Null
         if ([value isKindOfClass:[NSNull class]]) {
             status = sqlite3_bind_null(pstmt, idx);
@@ -234,12 +234,12 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
                 case FLEXTypeEncodingUnsignedLongLong:
                     status = sqlite3_bind_int64(pstmt, idx, (sqlite3_int64)[value longValue]);
                     break;
-                
+
                 case FLEXTypeEncodingFloat:
                 case FLEXTypeEncodingDouble:
                     status = sqlite3_bind_double(pstmt, idx, [value doubleValue]);
                     break;
-                    
+
                 default:
                     @throw NSInternalInconsistencyException;
                     break;
@@ -249,14 +249,14 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
         else {
             @throw NSInternalInconsistencyException;
         }
-        
+
         if (status != SQLITE_OK) {
             return [self storeErrorForLastTask:
                 [NSString stringWithFormat:@"Binding param named '%@'", param]
             ];
         }
     }
-    
+
     return YES;
 }
 
@@ -270,13 +270,13 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
     NSString *message = error ? @(error) : [NSString
         stringWithFormat:@"(%@: empty error)", description
     ];
-    
+
     return [FLEXSQLResult error:message];
 }
 
 - (id)objectForColumnIndex:(int)columnIdx stmt:(sqlite3_stmt*)stmt {
     int columnType = sqlite3_column_type(stmt, columnIdx);
-    
+
     switch (columnType) {
         case SQLITE_INTEGER:
             return @(sqlite3_column_int64(stmt, columnIdx)).stringValue;
@@ -286,18 +286,18 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
             return [NSString stringWithFormat:@"Data (%@ bytes)",
                 @([self dataForColumnIndex:columnIdx stmt:stmt].length)
             ];
-            
+
         default:
             // Default to a string for everything else
             return [self stringForColumnIndex:columnIdx stmt:stmt] ?: NSNull.null;
     }
 }
-                
+
 - (NSString *)stringForColumnIndex:(int)columnIdx stmt:(sqlite3_stmt *)stmt {
     if (sqlite3_column_type(stmt, columnIdx) == SQLITE_NULL || columnIdx < 0) {
         return nil;
     }
-    
+
     const char *text = (const char *)sqlite3_column_text(stmt, columnIdx);
     return text ? @(text) : nil;
 }
@@ -306,10 +306,10 @@ kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
     if (sqlite3_column_type(stmt, columnIdx) == SQLITE_NULL || (columnIdx < 0)) {
         return nil;
     }
-    
+
     const void *blob = sqlite3_column_blob(stmt, columnIdx);
     NSInteger size = (NSInteger)sqlite3_column_bytes(stmt, columnIdx);
-    
+
     return blob ? [NSData dataWithBytes:blob length:size] : nil;
 }
 

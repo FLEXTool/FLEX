@@ -47,7 +47,7 @@ static CFTypeRef FLEXKeychainAccessibilityType = NULL;
     query.service = serviceName;
     query.account = account;
     [query fetch:error];
-    
+
     return query.passwordData;
 }
 

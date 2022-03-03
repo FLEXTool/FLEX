@@ -30,7 +30,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     // Long press on navigation bar to initialize webkit legacy
     //
     // We call initializeWebKitLegacy automatically before you search
@@ -44,9 +44,9 @@
             action:@selector(initializeWebKitLegacy)
         ]
     ];
-    
+
     [self addToolbarItems:@[FLEXBarButtonItem(@"dlopen()", self, @selector(dlopenPressed:))]];
-    
+
     // Search bar stuff, must be first because this creates self.searchController
     self.showsSearchBar = YES;
     self.showSearchBarInitially = YES;
@@ -85,7 +85,7 @@
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Dynamically Open Library");
         make.message(@"Invoke dlopen() with the given path. Choose an option below.");
-        
+
         make.button(@"System Framework").handler(^(NSArray<NSString *> *_) {
             [self dlopenWithFormat:@"/System/Library/Frameworks/%@.framework/%@"];
         });
@@ -95,7 +95,7 @@
         make.button(@"Arbitrary Binary").handler(^(NSArray<NSString *> *_) {
             [self dlopenWithFormat:nil];
         });
-        
+
         make.button(@"Cancel").cancelStyle();
     } showFrom:self];
 }
@@ -109,19 +109,19 @@
         } else {
             make.message(@"Pass in an absolute path to a binary.");
         }
-        
+
         make.textField(format ? @"ARKit" : @"/System/Library/Frameworks/ARKit.framework/ARKit");
-        
+
         make.button(@"Cancel").cancelStyle();
         make.button(@"Open").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
             NSString *path = strings[0];
-            
+
             if (path.length < 2) {
                 [self dlopenInvalidPath];
             } else if (format) {
                 path = [NSString stringWithFormat:format, path, path];
             }
-            
+
             dlopen(path.UTF8String, RTLD_NOW);
         });
     } showFrom:self];

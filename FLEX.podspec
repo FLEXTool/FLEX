@@ -48,7 +48,7 @@ Pod::Spec.new do |spec|
                                "Classes/Utility/Runtime/Objc/**/*.h",
                                "Classes/ObjectExplorers/*.h",
                                "Classes/ObjectExplorers/Sections/*.h",
-                               
+
                                "Classes/Utility/FLEXMacros.h",
                                "Classes/Utility/FLEXAlert.h",
                                "Classes/Utility/FLEXResources.h",

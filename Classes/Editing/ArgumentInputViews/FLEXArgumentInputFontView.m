@@ -27,7 +27,7 @@
         self.fontNameInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.fontNameInput.title = @"Font Name:";
         [self addSubview:self.fontNameInput];
-        
+
         self.pointSizeInput = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:@encode(CGFloat)];
         self.pointSizeInput.targetSize = FLEXArgumentInputViewSizeSmall;
         self.pointSizeInput.title = @"Point Size:";
@@ -70,13 +70,13 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     CGFloat runningOriginY = self.topInputFieldVerticalLayoutGuide;
-    
+
     CGSize fontNameFitSize = [self.fontNameInput sizeThatFits:self.bounds.size];
     self.fontNameInput.frame = CGRectMake(0, runningOriginY, fontNameFitSize.width, fontNameFitSize.height);
     runningOriginY = CGRectGetMaxY(self.fontNameInput.frame) + [[self class] verticalPaddingBetweenFields];
-    
+
     CGSize pointSizeFitSize = [self.pointSizeInput sizeThatFits:self.bounds.size];
     self.pointSizeInput.frame = CGRectMake(0, runningOriginY, pointSizeFitSize.width, pointSizeFitSize.height);
 }
@@ -87,14 +87,14 @@
 
 - (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
-    
+
     CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
-    
+
     CGFloat height = fitSize.height;
     height += [self.fontNameInput sizeThatFits:constrainSize].height;
     height += [[self class] verticalPaddingBetweenFields];
     height += [self.pointSizeInput sizeThatFits:constrainSize].height;
-    
+
     return CGSizeMake(fitSize.width, height);
 }
 

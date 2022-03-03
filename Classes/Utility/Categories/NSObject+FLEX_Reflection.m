@@ -21,10 +21,10 @@
 
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...) {
     if (!returnType) return nil;
-    
+
     NSMutableString *encoding = [NSMutableString new];
     [encoding appendFormat:@"%s%s%s", returnType, @encode(id), @encode(SEL)];
-    
+
     va_list args;
     va_start(args, count);
     char *type = va_arg(args, char *);
@@ -32,27 +32,27 @@ NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...)
         [encoding appendFormat:@"%s", type];
     }
     va_end(args);
-    
+
     return encoding.copy;
 }
 
 NSArray<Class> *FLEXGetAllSubclasses(Class cls, BOOL includeSelf) {
     if (!cls) return nil;
-    
+
     Class *buffer = NULL;
-    
+
     int count, size;
     do {
         count  = objc_getClassList(NULL, 0);
         buffer = (Class *)realloc(buffer, count * sizeof(*buffer));
         size   = objc_getClassList(buffer, count);
     } while (size != count);
-    
+
     NSMutableArray *classes = [NSMutableArray new];
     if (includeSelf) {
         [classes addObject:cls];
     }
-    
+
     for (int i = 0; i < count; i++) {
         Class candidate = buffer[i];
         Class superclass = candidate;
@@ -63,19 +63,19 @@ NSArray<Class> *FLEXGetAllSubclasses(Class cls, BOOL includeSelf) {
             }
         }
     }
-    
+
     free(buffer);
     return classes.copy;
 }
 
 NSArray<Class> *FLEXGetClassHierarchy(Class cls, BOOL includeSelf) {
     if (!cls) return nil;
-    
+
     NSMutableArray *classes = [NSMutableArray new];
     if (includeSelf) {
         [classes addObject:cls];
     }
-    
+
     while ((cls = [cls superclass])) {
         [classes addObject:cls];
     };
@@ -85,12 +85,12 @@ NSArray<Class> *FLEXGetClassHierarchy(Class cls, BOOL includeSelf) {
 
 NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
     if (!cls) return nil;
-    
+
     unsigned int count = 0;
     Protocol *__unsafe_unretained *list = class_copyProtocolList(cls, &count);
     NSArray<Protocol *> *protocols = [NSArray arrayWithObjects:list count:count];
     free(list);
-    
+
     return [protocols flex_mapped:^id(Protocol *pro, NSUInteger idx) {
         return [FLEXProtocol protocol:pro];
     }];
@@ -98,7 +98,7 @@ NSArray<FLEXProtocol *> *FLEXGetConformedProtocols(Class cls) {
 
 NSArray<FLEXIvar *> *FLEXGetAllIvars(_Nullable Class cls) {
     if (!cls) return nil;
-    
+
     unsigned int ivcount;
     Ivar *objcivars = class_copyIvarList(cls, &ivcount);
     NSArray *ivars = [NSArray flex_forEachUpTo:ivcount map:^id(NSUInteger i) {
@@ -111,7 +111,7 @@ NSArray<FLEXIvar *> *FLEXGetAllIvars(_Nullable Class cls) {
 
 NSArray<FLEXProperty *> *FLEXGetAllProperties(_Nullable Class cls) {
     if (!cls) return nil;
-    
+
     unsigned int pcount;
     objc_property_t *objcproperties = class_copyPropertyList(cls, &pcount);
     NSArray *properties = [NSArray flex_forEachUpTo:pcount map:^id(NSUInteger i) {
@@ -130,7 +130,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
     NSArray *methods = [NSArray flex_forEachUpTo:mcount map:^id(NSUInteger i) {
         return [FLEXMethod method:objcmethods[i] isInstanceMethod:instance];
     }];
-    
+
     free(objcmethods);
     return methods;
 }
@@ -150,26 +150,26 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
     Class SwiftObjectClass = (
         NSClassFromString(@"SwiftObject") ?: NSClassFromString(@"Swift._SwiftObject")
     );
-    
+
     // Copy all of the "flex_" methods from NSObject
     id filterFunc = ^BOOL(FLEXMethod *method, NSUInteger idx) {
         return [method.name hasPrefix:@"flex_"];
     };
     NSArray *instanceMethods = [NSObject.flex_allInstanceMethods flex_filtered:filterFunc];
     NSArray *classMethods = [NSObject.flex_allClassMethods flex_filtered:filterFunc];
-    
+
     FLEXClassBuilder *proxy     = [FLEXClassBuilder builderForClass:NSProxyClass];
     FLEXClassBuilder *proxyMeta = [FLEXClassBuilder builderForClass:NSProxy_meta];
     [proxy addMethods:instanceMethods];
     [proxyMeta addMethods:classMethods];
-    
+
     if (SwiftObjectClass) {
         Class SwiftObject_meta = object_getClass(SwiftObjectClass);
         FLEXClassBuilder *swiftObject = [FLEXClassBuilder builderForClass:SwiftObjectClass];
         FLEXClassBuilder *swiftObjectMeta = [FLEXClassBuilder builderForClass:SwiftObject_meta];
         [swiftObject addMethods:instanceMethods];
         [swiftObjectMeta addMethods:classMethods];
-        
+
         // So we can put Swift objects into dictionaries...
         [swiftObjectMeta addMethods:@[
             [NSObject flex_classMethodNamed:@"copyWithZone:"]]
@@ -331,7 +331,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 - (void *)flex_getIvarAddressByName:(NSString *)name {
     Ivar ivar = class_getInstanceVariable(self.class, name.UTF8String);
     if (!ivar) return 0;
-    
+
     return (uint8_t *)(__bridge void *)self + ivar_getOffset(ivar);
 }
 
@@ -343,7 +343,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 - (BOOL)flex_setIvarByName:(NSString *)name object:(id)value {
     Ivar ivar = class_getInstanceVariable(self.class, name.UTF8String);
     if (!ivar) return NO;
-    
+
     object_setIvar(self, ivar, value);
     return YES;
 }
@@ -361,7 +361,7 @@ NSArray<FLEXMethod *> *FLEXGetAllMethods(_Nullable Class cls, BOOL instance) {
 - (BOOL)flex_setIvarByName:(NSString *)name value:(void *)value size:(size_t)size {
     Ivar ivar = class_getInstanceVariable(self.class, name.UTF8String);
     if (!ivar) return NO;
-    
+
     [self flex_setObjcIvar:ivar value:value size:size];
     return YES;
 }

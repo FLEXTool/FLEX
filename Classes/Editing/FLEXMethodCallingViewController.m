@@ -86,7 +86,7 @@
         withArguments:arguments
         error:&error
     ];
-    
+
     // Dismiss keyboard and handle committed changes
     [super actionButtonPressed:sender];
 

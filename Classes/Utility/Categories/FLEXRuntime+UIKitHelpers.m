@@ -54,7 +54,7 @@ FLEXObjectExplorerDefaultsImpl
     if (self.attributes.isReadOnly) {
         return self.likelySetterExists;
     }
-    
+
     const FLEXTypeEncoding *typeEncoding = self.attributes.typeEncoding.UTF8String;
     return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:typeEncoding currentValue:nil];
 }
@@ -83,7 +83,7 @@ FLEXObjectExplorerDefaultsImpl
             summaryForObject:[self currentValueWithTarget:object]
         ];
     }
-    
+
     return nil;
 }
 
@@ -132,11 +132,11 @@ FLEXObjectExplorerDefaultsImpl
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
     BOOL returnsObject = self.attributes.typeEncoding.flex_typeIsObjectOrClass;
     BOOL targetNotNil = [self appropriateTargetForPropertyType:object] != nil;
-    
+
     // "Explore PropertyClass" for properties with a concrete class name
     if (returnsObject) {
         NSMutableArray<UIAction *> *actions = [NSMutableArray new];
-        
+
         // Action for exploring class of this property
         Class propertyClass = self.attributes.typeEncoding.flex_typeClass;
         if (propertyClass) {
@@ -146,7 +146,7 @@ FLEXObjectExplorerDefaultsImpl
                 [sender.navigationController pushViewController:explorer animated:YES];
             }]];
         }
-        
+
         // Action for exploring references to this object
         if (targetNotNil) {
             // Since the property holder is not nil, check if the property value is nil
@@ -162,23 +162,23 @@ FLEXObjectExplorerDefaultsImpl
                 }]];
             }
         }
-        
+
         return actions;
     }
-    
+
     return nil;
 }
 
 - (NSArray<NSString *> *)copiableMetadataWithTarget:(id)object {
     BOOL returnsObject = self.attributes.typeEncoding.flex_typeIsObjectOrClass;
     BOOL targetNotNil = [self appropriateTargetForPropertyType:object] != nil;
-    
+
     NSMutableArray *items = [NSMutableArray arrayWithArray:@[
         @"Name",                      self.name ?: @"",
         @"Type",                      self.attributes.typeEncoding ?: @"",
         @"Declaration",               self.fullDescription ?: @"",
     ]];
-    
+
     if (targetNotNil) {
         id value = [self currentValueBeforeUnboxingWithTarget:object];
         [items addObjectsFromArray:@[
@@ -186,7 +186,7 @@ FLEXObjectExplorerDefaultsImpl
             @"Value Address",         returnsObject ? [FLEXUtility addressOfObject:value] : @"",
         ]];
     }
-    
+
     [items addObjectsFromArray:@[
         @"Getter",                    NSStringFromSelector(self.likelyGetter) ?: @"",
         @"Setter",                    self.likelySetterExists ? NSStringFromSelector(self.likelySetter) : @"",
@@ -195,7 +195,7 @@ FLEXObjectExplorerDefaultsImpl
         @"objc_property",             [FLEXUtility pointerToString:self.objc_property],
         @"objc_property_attribute_t", [FLEXUtility pointerToString:self.attributes.list],
     ]];
-    
+
     return items;
 }
 
@@ -204,7 +204,7 @@ FLEXObjectExplorerDefaultsImpl
     if (target && self.attributes.typeEncoding.flex_typeIsObjectOrClass) {
         return [FLEXUtility addressOfObject:[self currentValueBeforeUnboxingWithTarget:target]];
     }
-    
+
     return nil;
 }
 
@@ -240,7 +240,7 @@ FLEXObjectExplorerDefaultsImpl
             summaryForObject:[self currentValueWithTarget:object]
         ];
     }
-    
+
     return nil;
 }
 
@@ -286,7 +286,7 @@ FLEXObjectExplorerDefaultsImpl
 
 - (NSArray<UIAction *> *)additionalActionsWithTarget:(id)object sender:(UIViewController *)sender __IOS_AVAILABLE(13.0) {
     Class ivarClass = self.typeEncoding.flex_typeClass;
-    
+
     // "Explore PropertyClass" for properties with a concrete class name
     if (ivarClass) {
         NSString *title = [NSString stringWithFormat:@"Explore %@", NSStringFromClass(ivarClass)];
@@ -295,7 +295,7 @@ FLEXObjectExplorerDefaultsImpl
             [sender.navigationController pushViewController:explorer animated:YES];
         }]];
     }
-    
+
     return nil;
 }
 
@@ -303,26 +303,26 @@ FLEXObjectExplorerDefaultsImpl
     BOOL isInstance = !object_isClass(object);
     BOOL returnsObject = self.typeEncoding.flex_typeIsObjectOrClass;
     id value = isInstance ? [self getValue:object] : nil;
-    
+
     NSMutableArray *items = [NSMutableArray arrayWithArray:@[
         @"Name",          self.name ?: @"",
         @"Type",          self.typeEncoding ?: @"",
         @"Declaration",   self.description ?: @"",
     ]];
-    
+
     if (isInstance) {
         [items addObjectsFromArray:@[
             @"Value Preview", isInstance ? [self previewWithTarget:object] : @"",
             @"Value Address", returnsObject ? [FLEXUtility addressOfObject:value] : @"",
         ]];
     }
-    
+
     [items addObjectsFromArray:@[
         @"Size",          @(self.size).stringValue,
         @"Offset",        @(self.offset).stringValue,
         @"objc_ivar",     [FLEXUtility pointerToString:self.objc_ivar],
     ]];
-    
+
     return items;
 }
 
@@ -330,7 +330,7 @@ FLEXObjectExplorerDefaultsImpl
     if (!object_isClass(object) && self.typeEncoding.flex_typeIsObjectOrClass) {
         return [FLEXUtility addressOfObject:[self getValue:object]];
     }
-    
+
     return nil;
 }
 
@@ -599,7 +599,7 @@ FLEXObjectExplorerDefaultsImpl
 
 + (instancetype)withClass:(Class)cls {
     NSParameterAssert(cls);
-    
+
     FLEXStaticMetadata_Class *metadata = [self new];
     metadata.metadata = cls;
     metadata->_name = NSStringFromClass(cls);

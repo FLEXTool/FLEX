@@ -78,7 +78,7 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
     // TODO: rename it to FLEXNSObjectShortcuts or something?
     FLEXShortcutsSection *shortcutsSection = [FLEXShortcutsSection forObject:object];
     NSArray *sections = @[shortcutsSection];
-    
+
     Class customSectionClass = nil;
     Class cls = object_getClass(object);
     do {
@@ -88,7 +88,7 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
     if (customSectionClass) {
         id customSection = [customSectionClass forObject:object];
         BOOL isFLEXShortcutSection = [customSection respondsToSelector:@selector(isNewSection)];
-        
+
         // If the section "replaces" the default shortcuts section,
         // only return that section. Otherwise, return both this
         // section and the default shortcuts section.

@@ -46,31 +46,31 @@
     // this isn't documented so we just want to be safe here.
     Method m = instance ? class_getInstanceMethod(cls, selector) : class_getClassMethod(cls, selector);
     if (m == NULL) return nil;
-    
+
     return [self method:m isInstanceMethod:instance];
 }
 
 + (instancetype)selector:(SEL)selector implementedInClass:(Class)cls {
     if (![cls superclass]) { return [self selector:selector class:cls]; }
-    
+
     BOOL unique = [cls methodForSelector:selector] != [[cls superclass] methodForSelector:selector];
-    
+
     if (unique) {
         return [self selector:selector class:cls];
     }
-    
+
     return nil;
 }
 
 - (id)initWithMethod:(Method)method isInstanceMethod:(BOOL)isInstanceMethod {
     NSParameterAssert(method);
-    
+
     self = [super init];
     if (self) {
         _objc_method = method;
         _isInstanceMethod = isInstanceMethod;
         _signatureString = @(method_getTypeEncoding(method) ?: "?@:");
-        
+
         NSString *cleanSig = nil;
         if ([FLEXTypeEncodingParser methodTypeEncodingSupported:_signatureString cleaned:&cleanSig]) {
             _signature = [NSMethodSignature signatureWithObjCTypes:cleanSig.UTF8String];
@@ -78,7 +78,7 @@
 
         [self examine];
     }
-    
+
     return self;
 }
 
@@ -89,7 +89,7 @@
     if (!_flex_description) {
         _flex_description = [self prettyName];
     }
-    
+
     return _flex_description;
 }
 
@@ -105,7 +105,7 @@
 - (NSString *)prettyName {
     NSString *methodTypeString = self.isInstanceMethod ? @"-" : @"+";
     NSString *readableReturnType = [FLEXRuntimeUtility readableTypeForEncoding:@(self.signature.methodReturnType ?: "")];
-    
+
     NSString *prettyName = [NSString stringWithFormat:@"%@ (%@)", methodTypeString, readableReturnType];
     NSArray *components = [self prettyArgumentComponents];
 
@@ -122,15 +122,15 @@
     if (self.signature.numberOfArguments < self.numberOfArguments) {
         return nil;
     }
-    
+
     NSMutableArray *components = [NSMutableArray new];
 
     NSArray *selectorComponents = [self.selectorString componentsSeparatedByString:@":"];
     NSUInteger numberOfArguments = self.numberOfArguments;
-    
+
     for (NSUInteger argIndex = 2; argIndex < numberOfArguments; argIndex++) {
         assert(argIndex < self.signature.numberOfArguments);
-        
+
         const char *argType = [self.signature getArgumentTypeAtIndex:argIndex] ?: "?";
         NSString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
         NSString *prettyComponent = [NSString
@@ -141,7 +141,7 @@
 
         [components addObject:prettyComponent];
     }
-    
+
     return components;
 }
 
@@ -176,7 +176,7 @@
             range:NSMakeRange(0, _signatureString.length)
         ];
     }
-    
+
     return _typeEncoding;
 }
 
@@ -187,7 +187,7 @@
             _imagePath = exeInfo.dli_fname ? @(exeInfo.dli_fname) : @"";
         }
     }
-    
+
     return _imagePath;
 }
 
@@ -204,7 +204,7 @@
     id ret = nil;
     va_list args;
     va_start(args, target);
-    
+
     switch (self.returnType[0]) {
         case FLEXTypeEncodingUnknown: {
             [self getReturnValue:NULL forMessageSend:target arguments:args];
@@ -356,7 +356,7 @@
                         format:@"Unsupported type encoding: %s", (char *)self.returnType];
         }
     }
-    
+
     va_end(args);
     return ret;
 }
@@ -374,12 +374,12 @@
     if (!_signature) {
         return;
     }
-    
+
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:_signature];
     NSUInteger argumentCount = _signature.numberOfArguments;
-    
+
     invocation.target = target;
-    
+
     for (NSUInteger i = 2; i < argumentCount; i++) {
         int cookie = va_arg(args, int);
         if (cookie != FLEXMagicNumber) {
@@ -391,11 +391,11 @@
         }
         const char *typeString = va_arg(args, char *);
         void *argPointer       = va_arg(args, void *);
-        
+
         NSUInteger inSize, sigSize;
         NSGetSizeAndAlignment(typeString, &inSize, NULL);
         NSGetSizeAndAlignment([_signature getArgumentTypeAtIndex:i], &sigSize, NULL);
-        
+
         if (inSize != sigSize) {
             [NSException
                 raise:NSInternalInconsistencyException
@@ -404,15 +404,15 @@
                 __func__, typeString, (long)inSize, [_signature getArgumentTypeAtIndex:i], (long)sigSize
             ];
         }
-        
+
         [invocation setArgument:argPointer atIndex:i];
     }
-    
+
     // Hack to make NSInvocation invoke the desired implementation
     IMP imp = [invocation methodForSelector:NSSelectorFromString(@"invokeUsingIMP:")];
     void (*invokeWithIMP)(id, SEL, IMP) = (void *)imp;
     invokeWithIMP(invocation, 0, _implementation);
-    
+
     if (_signature.methodReturnLength && retPtr) {
         [invocation getReturnValue:retPtr];
     }

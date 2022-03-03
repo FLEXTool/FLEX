@@ -40,7 +40,7 @@
                     make.title(@"Saving Image…");
                 }];
                 [host presentViewController:alert animated:YES completion:nil];
-            
+
                 // Save the image
                 UIImageWriteToSavedPhotosAlbum(
                     image, alert, @selector(flex_image:disSaveWithError::), nil

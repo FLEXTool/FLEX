@@ -19,7 +19,7 @@ BOOL FLEXConstructorsShouldRun() {
         return NO;
     #else
         static BOOL _FLEXConstructorsShouldRun_storage = YES;
-        
+
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             NSString *key = @"FLEX_SKIP_INIT";
@@ -27,7 +27,7 @@ BOOL FLEXConstructorsShouldRun() {
                 _FLEXConstructorsShouldRun_storage = NO;
             }
         });
-        
+
         return _FLEXConstructorsShouldRun_storage;
     #endif
 }
@@ -41,10 +41,10 @@ BOOL FLEXConstructorsShouldRun() {
         if ([window isKindOfClass:[FLEXWindow class]]) {
             return window.previousKeyWindow;
         }
-        
+
         return window;
     }
-    
+
     // As of iOS 13, UIApplication.keyWindow does not return nil,
     // so this is more of a safeguard against it returning nil in the future.
     //
@@ -55,11 +55,11 @@ BOOL FLEXConstructorsShouldRun() {
             if ([window isKindOfClass:[FLEXWindow class]]) {
                 return window.previousKeyWindow;
             }
-            
+
             return window;
         }
     }
-    
+
     return nil;
 }
 
@@ -71,7 +71,7 @@ BOOL FLEXConstructorsShouldRun() {
             return (UIWindowScene *)scene;
         }
     }
-    
+
     return nil;
 }
 
@@ -90,20 +90,20 @@ BOOL FLEXConstructorsShouldRun() {
 
 + (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame {
     NSString *description = [[view class] description];
-    
+
     NSString *viewControllerDescription = [[[self viewControllerForView:view] class] description];
     if (viewControllerDescription.length > 0) {
         description = [description stringByAppendingFormat:@" (%@)", viewControllerDescription];
     }
-    
+
     if (includeFrame) {
         description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:view.frame]];
     }
-    
+
     if (view.accessibilityLabel.length > 0) {
         description = [description stringByAppendingFormat:@" · %@", view.accessibilityLabel];
     }
-    
+
     return description;
 }
 
@@ -135,7 +135,7 @@ BOOL FLEXConstructorsShouldRun() {
     if (CGRectIsEmpty(view.bounds)) {
         return [UIImage new];
     }
-    
+
     CGSize viewSize = view.bounds.size;
     UIGraphicsBeginImageContextWithOptions(viewSize, NO, 0.0);
     [view drawViewHierarchyInRect:CGRectMake(0, 0, viewSize.width, viewSize.height) afterScreenUpdates:YES];
@@ -148,7 +148,7 @@ BOOL FLEXConstructorsShouldRun() {
     if (CGRectIsEmpty(layer.bounds)) {
         return nil;
     }
-    
+
     UIGraphicsBeginImageContextWithOptions(layer.bounds.size, NO, 0.0);
     CGContextRef imageContext = UIGraphicsGetCurrentContext();
     [layer renderInContext:imageContext];
@@ -234,9 +234,9 @@ BOOL FLEXConstructorsShouldRun() {
                                 };
         regex = [NSRegularExpression regularExpressionWithPattern:@"(&|>|<|'|\"|«|»)" options:0 error:NULL];
     });
-    
+
     NSMutableString *mutableString = originalString.mutableCopy;
-    
+
     NSArray<NSTextCheckingResult *> *matches = [regex
         matchesInString:mutableString options:0 range:NSMakeRange(0, mutableString.length)
     ];
@@ -247,7 +247,7 @@ BOOL FLEXConstructorsShouldRun() {
             [mutableString replaceCharactersInRange:result.range withString:replacementString];
         }
     }
-    
+
     return [mutableString copy];
 }
 
@@ -326,7 +326,7 @@ BOOL FLEXConstructorsShouldRun() {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         return httpResponse.statusCode >= 400;
     }
-    
+
     return NO;
 }
 
@@ -351,7 +351,7 @@ BOOL FLEXConstructorsShouldRun() {
 
 + (NSString *)prettyJSONStringFromData:(NSData *)data {
     NSString *prettyString = nil;
-    
+
     id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
     if ([NSJSONSerialization isValidJSONObject:jsonObject]) {
         // Thanks RaziPour1993
@@ -367,7 +367,7 @@ BOOL FLEXConstructorsShouldRun() {
     } else {
         prettyString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     }
-    
+
     return prettyString;
 }
 
@@ -454,7 +454,7 @@ BOOL FLEXConstructorsShouldRun() {
     if ([cls instancesRespondToSelector:selector]) {
         unsigned int numMethods = 0;
         Method *methods = class_copyMethodList(cls, &numMethods);
-        
+
         BOOL implementsSelector = NO;
         for (int index = 0; index < numMethods; index++) {
             SEL methodSelector = method_getName(methods[index]);
@@ -463,14 +463,14 @@ BOOL FLEXConstructorsShouldRun() {
                 break;
             }
         }
-        
+
         free(methods);
-        
+
         if (!implementsSelector) {
             return YES;
         }
     }
-    
+
     return NO;
 }
 
@@ -484,7 +484,7 @@ BOOL FLEXConstructorsShouldRun() {
     if (!originalMethod) {
         return;
     }
-    
+
     IMP implementation = imp_implementationWithBlock(block);
     class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalMethod));
     Method newMethod = class_getInstanceMethod(class, swizzledSelector);
@@ -499,11 +499,11 @@ BOOL FLEXConstructorsShouldRun() {
     if ([self instanceRespondsButDoesNotImplementSelector:selector class:cls]) {
         return;
     }
-    
+
     IMP implementation = imp_implementationWithBlock((id)(
         [cls instancesRespondToSelector:selector] ? implementationBlock : undefinedBlock)
     );
-    
+
     Method oldMethod = class_getInstanceMethod(cls, selector);
     const char *types = methodDescription.types;
     if (oldMethod) {

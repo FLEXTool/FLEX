@@ -80,7 +80,7 @@ static FLEXRuntimeController *controller = nil;
     if (!imageName) {
         return @"(unspecified)";
     }
-    
+
     return [FLEXRuntimeClient.runtime shortNameForImageName:@(imageName)];
 }
 
@@ -135,7 +135,7 @@ static FLEXRuntimeController *controller = nil;
 - (NSMutableArray<NSString *> *)classesForKeyPath:(FLEXRuntimeKeyPath *)keyPath {
     FLEXSearchToken *classToken = keyPath.classKey;
     FLEXSearchToken *bundleToken = keyPath.bundleKey;
-    
+
     // Only cache if no wildcard
     BOOL shouldCache = bundleToken.options == 0 && classToken.options == 0;
     NSString *key = nil;

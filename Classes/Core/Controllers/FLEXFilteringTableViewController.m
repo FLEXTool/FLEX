@@ -22,7 +22,7 @@
 
 - (void)loadView {
     [super loadView];
-    
+
     if (!self.filterDelegate) {
         self.filterDelegate = self;
     } else {
@@ -44,7 +44,7 @@
 - (void)setFilterDelegate:(id<FLEXTableViewFiltering>)filterDelegate {
     _filterDelegate = filterDelegate;
     filterDelegate.allSections = [filterDelegate makeSections];
-    
+
     if (self.isViewLoaded) {
         [self _registerCellsForReuse];
     }
@@ -81,10 +81,10 @@
         for (FLEXTableViewSection *section in self.filterDelegate.allSections) {
             section.filterText = newText;
         }
-        
+
         return nil;
     };
-    
+
     if (self.filterInBackground) {
         [self onBackgroundQueue:filter thenOnMainQueue:^(NSArray *unused) {
             if ([self.searchText isEqualToString:newText]) {
@@ -156,7 +156,7 @@
             return @"⦁";
         }];
     }
-    
+
     return nil;
 }
 
@@ -192,7 +192,7 @@
     FLEXTableViewSection *section = self.filterDelegate.sections[indexPath.section];
     NSString *title = [section menuTitleForRow:indexPath.row];
     NSArray<UIMenuElement *> *menuItems = [section menuItemsForRow:indexPath.row sender:self];
-    
+
     if (menuItems.count) {
         return [UIContextMenuConfiguration
             configurationWithIdentifier:nil
@@ -202,7 +202,7 @@
             }
         ];
     }
-    
+
     return nil;
 }
 

@@ -18,11 +18,11 @@
 
 + (instancetype)forObject:(id)block {
     NSParameterAssert([block isKindOfClass:NSClassFromString(@"NSBlock")]);
-    
+
     FLEXBlockDescription *blockInfo = [FLEXBlockDescription describing:block];
     NSMethodSignature *signature = blockInfo.signature;
     NSArray *blockShortcutRows = @[blockInfo.summary];
-    
+
     if (signature) {
         blockShortcutRows = @[
             blockInfo.summary,
@@ -44,7 +44,7 @@
             ]
         ];
     }
-    
+
     return [self forObject:block additionalRows:blockShortcutRows];
 }
 

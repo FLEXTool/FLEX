@@ -41,11 +41,11 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         NSUInteger responseCacheLimit = [[NSUserDefaults.standardUserDefaults
             objectForKey:kFLEXNetworkRecorderResponseCacheLimitDefaultsKey] unsignedIntegerValue
         ];
-        
+
         // Default to 25 MB max. The cache will purge earlier if there is memory pressure.
         self.restCache.totalCostLimit = responseCacheLimit ?: 25 * 1024 * 1024;
         [self.restCache setTotalCostLimit:responseCacheLimit];
-        
+
         self.orderedWSTransactions = [NSMutableArray new];
         self.orderedHTTPTransactions = [NSMutableArray new];
         self.orderedFirebaseTransactions = [NSMutableArray new];
@@ -55,7 +55,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         // Serial queue used because we use mutable objects that are not thread safe
         self.queue = dispatch_queue_create("com.flex.FLEXNetworkRecorder", DISPATCH_QUEUE_SERIAL);
     }
-    
+
     return self;
 }
 
@@ -65,7 +65,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     dispatch_once(&onceToken, ^{
         defaultRecorder = [self new];
     });
-    
+
     return defaultRecorder;
 }
 
@@ -106,7 +106,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         [self.orderedHTTPTransactions removeAllObjects];
         [self.orderedFirebaseTransactions removeAllObjects];
         [self.requestIDsToTransactions removeAllObjects];
-        
+
         [self notify:kFLEXNetworkRecorderTransactionsClearedNotification transaction:nil];
     });
 }
@@ -156,7 +156,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
                         return NO;
                     }
                 }
-                
+
                 return YES;
             }];
         });
@@ -177,7 +177,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
             return;
         }
     }
-    
+
     FLEXHTTPTransaction *transaction = [FLEXHTTPTransaction request:request identifier:requestID];
 
     // Before async block to keep times accurate
@@ -203,7 +203,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.response = response;
         transaction.state = FLEXNetworkTransactionStateReceivingData;
         transaction.latency = -[transaction.startTime timeIntervalSinceDate:responseDate];
@@ -218,7 +218,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.receivedDataLength += dataLength;
         [self postUpdateNotificationForTransaction:transaction];
     });
@@ -232,7 +232,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.state = FLEXNetworkTransactionStateFinished;
         transaction.duration = -[transaction.startTime timeIntervalSinceDate:finishedDate];
 
@@ -243,7 +243,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
                 shouldCache = shouldCache && ![transaction.response.MIMEType hasPrefix:ignoredPrefix];
             }
         }
-        
+
         if (shouldCache) {
             [self.restCache setObject:responseBody forKey:requestID cost:responseBody.length];
         }
@@ -280,7 +280,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         } else if ([mimeType hasPrefix:@"text"]) {
             transaction.thumbnail = FLEXResources.textIcon;
         }
-        
+
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -291,7 +291,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.state = FLEXNetworkTransactionStateFailed;
         transaction.duration = -[transaction.startTime timeIntervalSinceNow];
         transaction.error = error;
@@ -306,7 +306,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.requestMechanism = mechanism;
         [self postUpdateNotificationForTransaction:transaction];
     });
@@ -319,7 +319,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         FLEXWebsocketTransaction *send = [FLEXWebsocketTransaction
             withMessage:message task:task direction:FLEXWebsocketOutgoing
         ];
-        
+
         [self.orderedWSTransactions insertObject:send atIndex:0];
         [self postNewTransactionNotificationWithTransaction:send];
     });
@@ -332,7 +332,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         }];
         send.error = error;
         send.state = error ? FLEXNetworkTransactionStateFailed : FLEXNetworkTransactionStateFinished;
-        
+
         [self postUpdateNotificationForTransaction:send];
     });
 }
@@ -342,7 +342,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         FLEXWebsocketTransaction *receive = [FLEXWebsocketTransaction
             withMessage:message task:task direction:FLEXWebsocketIncoming
         ];
-        
+
         [self.orderedWSTransactions insertObject:receive atIndex:0];
         [self postNewTransactionNotificationWithTransaction:receive];
     });
@@ -372,12 +372,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.error = error;
         transaction.documents = response.documents;
         transaction.state = FLEXNetworkTransactionStateFinished;
         [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
+
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -388,12 +388,12 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.error = error;
         transaction.documents = @[response];
         transaction.state = FLEXNetworkTransactionStateFinished;
         [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
+
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -448,11 +448,11 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.error = error;
         transaction.state = FLEXNetworkTransactionStateFinished;
         [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
+
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -463,11 +463,11 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.error = error;
         transaction.state = FLEXNetworkTransactionStateFinished;
         [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
+
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -478,11 +478,11 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if (!transaction) {
             return;
         }
-        
+
         transaction.error = error;
         transaction.state = FLEXNetworkTransactionStateFinished;
         [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
+
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
@@ -517,7 +517,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     if (transaction) {
         userInfo = @{ kFLEXNetworkRecorderUserInfoTransactionKey : transaction };
     }
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [NSNotificationCenter.defaultCenter postNotificationName:name object:self userInfo:userInfo];
     });

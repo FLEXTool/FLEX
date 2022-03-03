@@ -37,11 +37,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.title = @"Open Tabs";
     self.navigationController.hidesBarsOnSwipe = NO;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
-    
+
     [self reloadData:NO];
 }
 
@@ -52,7 +52,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+
     // Instead of updating the active snapshot before we present,
     // we update it after we present to avoid pre-presenation latency
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -71,7 +71,7 @@
 - (BOOL)reloadData:(BOOL)trackActiveTabDelta {
     BOOL activeTabDidChange = NO;
     FLEXTabList *list = FLEXTabList.sharedList;
-    
+
     // Flag to enable check to determine whether
     if (trackActiveTabDelta) {
         NSInteger oldActiveIndex = self.activeIndex;
@@ -84,13 +84,13 @@
             self.presentNewActiveTabOnDismiss = NO;
         }
     }
-    
+
     // We assume the tabs aren't going to change out from under us, since
     // presenting any other tool via keyboard shortcuts should dismiss us first
     self.openTabs = list.openTabs;
     self.tabSnapshots = list.openTabSnapshots;
     self.activeIndex = list.activeTabIndex;
-    
+
     return activeTabDidChange;
 }
 
@@ -113,7 +113,7 @@
         UIBarButtonItem.flex_flexibleSpace,
         FLEXBarButtonItemSystem(Edit, self, @selector(toggleEditing)),
     ];
-    
+
     // Disable editing if no tabs available
     self.toolbarItems.lastObject.enabled = self.openTabs.count > 0;
 }
@@ -128,7 +128,7 @@
         // We use a non-system done item because we change its title dynamically
         [UIBarButtonItem flex_doneStyleitemWithTitle:@"Done" target:self action:@selector(toggleEditing)]
     ];
-    
+
     self.toolbarItems.firstObject.tintColor = FLEXColor.destructiveColor;
 }
 
@@ -167,26 +167,26 @@
 - (void)toggleEditing {
     NSArray<NSIndexPath *> *selected = self.tableView.indexPathsForSelectedRows;
     self.editing = !self.editing;
-    
+
     if (self.isEditing) {
         [self setupEditingBarItems];
     } else {
         [self setupDefaultBarItems];
-        
+
         // Get index set of tabs to close
         NSMutableIndexSet *indexes = [NSMutableIndexSet new];
         for (NSIndexPath *ip in selected) {
             [indexes addIndex:ip.row];
         }
-        
+
         if (selected.count) {
             // Close tabs and update data source
             [FLEXTabList.sharedList closeTabsAtIndexes:indexes];
             BOOL activeTabChanged = [self reloadData:YES];
-            
+
             // Remove deleted rows
             [self.tableView deleteRowsAtIndexPaths:selected withRowAnimation:UITableViewRowAnimationAutomatic];
-            
+
             // Refresh the newly active tab row if needed
             [self reloadActiveTabRowIfChanged:activeTabChanged];
         }
@@ -238,11 +238,11 @@
 
 - (void)closeAll {
     NSInteger rowCount = self.openTabs.count;
-    
+
     // Close tabs and update data source
     [FLEXTabList.sharedList closeAllTabs];
     [self reloadData:YES];
-    
+
     // Delete rows from table view
     NSArray<NSIndexPath *> *allRows = [NSArray flex_forEachUpTo:rowCount map:^id(NSUInteger row) {
         return [NSIndexPath indexPathForRow:row inSection:0];
@@ -259,25 +259,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
-    
+
     UINavigationController *tab = self.openTabs[indexPath.row];
     cell.imageView.image = self.tabSnapshots[indexPath.row];
     cell.textLabel.text = tab.topViewController.title;
     cell.detailTextLabel.text = FLEXPluralString(tab.viewControllers.count, @"pages", @"page");
-    
+
     if (!cell.tag) {
         cell.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         cell.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
         cell.detailTextLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
         cell.tag = 1;
     }
-    
+
     if (indexPath.row == self.activeIndex) {
         cell.backgroundColor = FLEXColor.secondaryBackgroundColor;
     } else {
         cell.backgroundColor = FLEXColor.primaryBackgroundColor;
     }
-    
+
     return cell;
 }
 
@@ -305,7 +305,7 @@
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(self.editing);
-    
+
     if (tableView.indexPathsForSelectedRows.count == 0) {
         self.toolbarItems.lastObject.title = @"Done";
         self.toolbarItems.lastObject.tintColor = self.view.tintColor;
@@ -320,14 +320,14 @@
 commitEditingStyle:(UITableViewCellEditingStyle)edit
 forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(edit == UITableViewCellEditingStyleDelete);
-    
+
     // Close tab and update data source
     [FLEXTabList.sharedList closeTab:self.openTabs[indexPath.row]];
     BOOL activeTabChanged = [self reloadData:YES];
-    
+
     // Delete row from table view
     [table deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-    
+
     // Refresh the newly active tab row if needed
     [self reloadActiveTabRowIfChanged:activeTabChanged];
 }

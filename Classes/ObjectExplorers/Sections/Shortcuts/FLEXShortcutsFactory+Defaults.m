@@ -25,7 +25,7 @@
     FLEXRuntimeUtilityTryAddObjectProperty(
         2, sharedApplication, UIApplication.flex_metaclass, UIApplication, PropertyKey(ReadOnly)
     );
-    
+
     self.append.classProperties(@[@"sharedApplication"]).forClass(UIApplication.flex_metaclass);
     self.append.properties(@[
         @"delegate", @"keyWindow", @"windows"
@@ -67,7 +67,7 @@
 
     // UIButton, private
     FLEXRuntimeUtilityTryAddObjectProperty(2, font, UIButton.class, UIFont, PropertyKey(ReadOnly));
-    
+
     // Only available since iOS 3.2, but we never supported iOS 3, so who cares
     NSArray *ivars = @[@"_gestureRecognizers"];
     NSArray *methods = @[@"sizeToFit", @"setNeedsLayout", @"removeFromSuperview"];
@@ -103,7 +103,7 @@
     }
 
     ivars = @[@"_targetActions", @"_gestureRecognizers"];
-    
+
     // Property was added in iOS 10 but we want it on iOS 9 too
     FLEXRuntimeUtilityTryAddObjectProperty(9, allTargets, UIControl.class, NSArray, PropertyKey(ReadOnly));
 
@@ -120,7 +120,7 @@
         @"currentTitle", @"currentImage", @"enabled", @"frame",
         @"superview", @"subviews"
     ]).forClass(UIButton.class);
-    
+
     // UIImageView
     self.append.properties(@[
         @"image", @"animationImages", @"frame", @"bounds", @"center",
@@ -139,7 +139,7 @@
 + (void)load { FLEX_EXIT_IF_NO_CTORS()
     // toolbarItems is not really a property, make it one 
     FLEXRuntimeUtilityTryAddObjectProperty(3, toolbarItems, UIViewController.class, NSArray);
-    
+
     // UIViewController
     self.append
         .properties(@[
@@ -149,7 +149,7 @@
         ])
         .methods(@[@"view"])
         .forClass(UIViewController.class);
-    
+
     // UIAlertController
     NSMutableArray *alertControllerProps = @[
         @"title", @"message", @"actions", @"textFields",
@@ -224,7 +224,7 @@
 + (void)load { FLEX_EXIT_IF_NO_CTORS()
     // Property was added in iOS 10 but we want it on iOS 9 too
     FLEXRuntimeUtilityTryAddNonatomicProperty(9, item, UIActivityItemProvider.class, id, PropertyKey(ReadOnly));
-    
+
     self.append.properties(@[
         @"item", @"placeholderItem", @"activityType"
     ]).forClass(UIActivityItemProvider.class);
@@ -257,52 +257,52 @@
     ]).methods(@[
         @"dataTaskWithURL:", @"finishTasksAndInvalidate", @"invalidateAndCancel",
     ]).forClass(NSURLSession.class);
-    
+
     self.append.methods(@[
         @"cachedResponseForRequest:", @"storeCachedResponse:forRequest:",
         @"storeCachedResponse:forDataTask:", @"removeCachedResponseForRequest:",
         @"removeCachedResponseForDataTask:", @"removeCachedResponsesSinceDate:",
         @"removeAllCachedResponses",
     ]).forClass(NSURLCache.class);
-    
-    
+
+
     self.append.methods(@[
         @"postNotification:", @"postNotificationName:object:userInfo:",
         @"addObserver:selector:name:object:", @"removeObserver:",
         @"removeObserver:name:object:",
     ]).forClass(NSNotificationCenter.class);
-    
+
     // NSTimeZone class properties aren't real properties
     FLEXRuntimeUtilityTryAddObjectProperty(2, localTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
     FLEXRuntimeUtilityTryAddObjectProperty(2, systemTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
     FLEXRuntimeUtilityTryAddObjectProperty(2, defaultTimeZone, NSTimeZone.flex_metaclass, NSTimeZone);
     FLEXRuntimeUtilityTryAddObjectProperty(2, knownTimeZoneNames, NSTimeZone.flex_metaclass, NSArray);
     FLEXRuntimeUtilityTryAddObjectProperty(2, abbreviationDictionary, NSTimeZone.flex_metaclass, NSDictionary);
-    
+
     self.append.classMethods(@[
         @"timeZoneWithName:", @"timeZoneWithAbbreviation:", @"timeZoneForSecondsFromGMT:",
     ]).forClass(NSTimeZone.flex_metaclass);
-    
+
     self.append.classProperties(@[
         @"defaultTimeZone", @"systemTimeZone", @"localTimeZone",
     ]).forClass(NSTimeZone.class);
-    
+
     // UTF8String is not a real property under the hood
     FLEXRuntimeUtilityTryAddNonatomicProperty(2, UTF8String, NSString.class, const char *, PropertyKey(ReadOnly));
-    
+
     self.append.properties(@[@"length"]).methods(@[@"characterAtIndex:"]).forClass(NSString.class);
     self.append.methods(@[
         @"writeToFile:atomically:", @"subdataWithRange:", @"isEqualToData:",
     ]).properties(@[
         @"length", @"bytes",
     ]).forClass(NSData.class);
-    
+
     self.append.classMethods(@[
         @"dataWithJSONObject:options:error:",
         @"JSONObjectWithData:options:error:",
         @"isValidJSONObject:",
     ]).forClass(NSJSONSerialization.class);
-    
+
     // NSArray
     self.append.classMethods(@[
         @"arrayWithObject:", @"arrayWithContentsOfFile:"
@@ -332,7 +332,7 @@
         @"makeObjectsPerformSelector:", @"makeObjectsPerformSelector:withObject:",
         @"reverseObjectEnumerator", @"isEqualToSet:", @"mutableCopy",
     ]).forClass(NSSet.class);
-    
+
     // NSMutableArray
     self.prepend.methods(@[
         @"addObject:", @"insertObject:atIndex:", @"addObjectsFromArray:", 
@@ -352,9 +352,9 @@
         @"removeAllObjects", @"addObjectsFromArray:",
         @"unionSet:", @"minusSet:", @"intersectSet:", @"copy"
     ]).forClass(NSMutableSet.class);
-    
+
     self.append.methods(@[@"nextObject", @"allObjects"]).forClass(NSEnumerator.class);
-    
+
     self.append.properties(@[@"flex_observers"]).forClass(NSNotificationCenter.class);
 }
 
@@ -367,14 +367,14 @@
 + (void)load { FLEX_EXIT_IF_NO_CTORS()
     Class WKWebView = NSClassFromString(@"WKWebView");
     Class SafariVC = NSClassFromString(@"SFSafariViewController");
-    
+
     if (WKWebView) {
         self.append.properties(@[
             @"configuration", @"scrollView", @"title", @"URL",
             @"customUserAgent", @"navigationDelegate"
         ]).methods(@[@"reload", @"stopLoading"]).forClass(WKWebView);
     }
-    
+
     if (SafariVC) {
         self.append.properties(@[
             @"delegate"
@@ -418,7 +418,7 @@
     NSArray<NSArray<NSString *> *> *splitObservers = [observers flex_mapped:^id(NSString *entry, NSUInteger idx) {
         return [entry componentsSeparatedByString:@","];
     }];
-    
+
     NSArray *names = [splitObservers flex_mapped:^id(NSArray<NSString *> *entry, NSUInteger idx) {
         return entry[0];
     }];
@@ -432,10 +432,10 @@
             if (FLEXPointerIsValidObjcObject(objectPointer))
                 return (__bridge id)(void *)objectPointer;
         }
-        
+
         return NSNull.null;
     }];
-    
+
     return [NSArray flex_forEachUpTo:names.count map:^id(NSUInteger i) {
         return @[names[i], objects[i]];
     }];

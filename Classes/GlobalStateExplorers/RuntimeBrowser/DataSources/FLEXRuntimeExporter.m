@@ -274,7 +274,7 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
             completion(error);
         });
     };
-    
+
     // This must be called on the main thread first
     if (NSThread.isMainThread) {
         [FLEXRuntimeClient initializeWebKitLegacy];
@@ -283,11 +283,11 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
             [FLEXRuntimeClient initializeWebKitLegacy];
         });
     }
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         NSError *error = nil;
         NSString *errorMessage = nil;
-        
+
         // Get unused temp filename, remove existing database if any
         NSString *tempPath = [self tempFilename];
         if ([NSFileManager.defaultManager fileExistsAtPath:tempPath]) {
@@ -297,7 +297,7 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
                 return;
             }
         }
-        
+
         // Attempt to create and populate the database, abort if we fail
         FLEXRuntimeExporter *exporter = [self new];
         exporter.loadedBundlePaths = images;
@@ -308,11 +308,11 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
             if ([NSFileManager.defaultManager fileExistsAtPath:tempPath]) {
                 [NSFileManager.defaultManager removeItemAtPath:tempPath error:nil];
             }
-            
+
             callback(errorMessage);
             return;
         }
-        
+
         // Remove old database at given path
         if ([NSFileManager.defaultManager fileExistsAtPath:path]) {
             [NSFileManager.defaultManager removeItemAtPath:path error:&error];
@@ -321,18 +321,18 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
                 return;
             }
         }
-        
+
         // Move new database to desired path
         [NSFileManager.defaultManager moveItemAtPath:tempPath toPath:path error:&error];
         if (error) {
             callback(error.localizedDescription);
         }
-        
+
         // Remove temp database if it was not moved
         if ([NSFileManager.defaultManager fileExistsAtPath:tempPath]) {
             [NSFileManager.defaultManager removeItemAtPath:tempPath error:nil];
         }
-        
+
         callback(nil);
     });
 }
@@ -346,10 +346,10 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
         _typeEncodingsToIDs = [NSMutableDictionary new];
         _methodSignaturesToIDs = [NSMutableDictionary new];
         _selectorsToIDs = [NSMutableDictionary new];
-        
+
         _bundlePathsToIDs[NSNull.null] = (id)NSNull.null;
     }
-    
+
     return self;
 }
 
@@ -357,9 +357,9 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
                         progressHandler:(void(^)(NSString *status))step
                                   error:(NSString **)error {
     _db = [FLEXSQLiteDatabaseManager managerForDatabase:path];
-    
+
     [self loadMetadata:step];
-    
+
     if ([self createTables] && [self addImages:step] && [self addProtocols:step] &&
         [self addClasses:step] && [self setSuperclasses:step] && 
         [self addProtocolConformances:step] && [self addClassConformances:step] &&
@@ -367,23 +367,23 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
         _db = nil; // Close the database
         return YES;
     }
-    
+
     *error = self.db.lastResult.message;
     return NO;
 }
 
 - (void)loadMetadata:(void(^)(NSString *status))progress {
     progress(@"Loading metadata…");
-    
+
     FLEXRuntimeClient *runtime = FLEXRuntimeClient.runtime;
-    
+
     // Only load metadata for the existing paths if any
     if (self.loadedBundlePaths) {
         // Images
         self.loadedShortBundleNames = [self.loadedBundlePaths flex_mapped:^id(NSString *path, NSUInteger idx) {
             return [runtime shortNameForImageName:path];
         }];
-        
+
         // Classes
         self.classes = [[runtime classesForToken:FLEXSearchToken.any
             inBundles:self.loadedBundlePaths.mutableCopy
@@ -396,11 +396,11 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
         self.loadedBundlePaths = [self.loadedShortBundleNames flex_mapped:^id(NSString *name, NSUInteger idx) {
             return [runtime imageNameForShortName:name];
         }];
-        
+
         // Classes
         self.classes = [runtime copySafeClassList];
     }
-    
+
     // ...except protocols, because there's not a lot of them
     // and there's no way load the protocols for a given image
     self.protocols = [[runtime copyProtocolList] flex_mapped:^id(Protocol *proto, NSUInteger idx) {
@@ -425,44 +425,44 @@ NSString * const kFREInsertClassConformance = @"INSERT INTO ClassConformance "
         kFRECreateTableProtocolConformanceCommand,
         kFRECreateTableClassConformanceCommand
     ];
-    
+
     for (NSString *command in commands) {
         if (![self.db executeStatement:command]) {
             return NO;
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)addImages:(void(^)(NSString *status))progress {
     progress(@"Adding loaded images…");
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSArray *shortNames = self.loadedShortBundleNames;
     NSArray *fullPaths = self.loadedBundlePaths;
     NSParameterAssert(shortNames.count == fullPaths.count);
-    
+
     NSInteger count = shortNames.count;
     for (NSInteger i = 0; i < count; i++) {
         // Grab bundle ID
         NSString *bundleID = [NSBundle
             bundleWithPath:fullPaths[i]
         ].bundleIdentifier; 
-        
+
         [database executeStatement:kFREInsertImage arguments:@{
             @"$shortName": shortNames[i],
             @"$imagePath": fullPaths[i],
             @"$bundleID":  bundleID ?: NSNull.null
         }];
-        
+
         if (database.lastResult.isError) {
             return NO;
         } else {
             self.bundlePathsToIDs[fullPaths[i]] = @(database.lastRowID);
         }
     }
-    
+
     return YES;
 }
 
@@ -481,29 +481,29 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
 
 - (BOOL)addProtocols:(void(^)(NSString *status))progress {
     progress([NSString stringWithFormat:@"Adding %@ protocols…", @(self.protocols.count)]);
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSDictionary *imageIDs = self.bundlePathsToIDs;
-    
+
     for (FLEXProtocol *proto in self.protocols) {
         id imagePath = proto.imagePath ?: NSNull.null;
         NSNumber *image = imageIDs[imagePath] ?: NSNull.null;
         NSNumber *pid = nil;
-        
+
         // Insert protocol
         BOOL failed = [database executeStatement:kFREInsertProtocol arguments:@{
             @"$name": proto.name, @"$image": image
         }].isError;
-        
+
         // Cache rowid
         if (failed) {
             return NO;
         } else {
             self.protocolsToIDs[proto.name] = pid = @(database.lastRowID);
         }
-        
+
         // Insert its members //
-        
+
         // Required methods
         for (FLEXMethodDescription *method in proto.requiredMethods) {
             NSString *selector = NSStringFromSelector(method.selector);
@@ -518,14 +518,14 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                 return NO;
             }
         }
-        
+
         if (@available(iOS 10, *)) {
             // Required properties
             for (FLEXProperty *property in proto.requiredProperties) {
                 BOOL success = FREInsertProtocolMember(
                    database, pid, @YES, @(property.isClassProperty), property.name, NSNull.null, image
                 );
-                
+
                 if (!success) return NO;
             }
             // Optional properties
@@ -533,7 +533,7 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                 BOOL success = FREInsertProtocolMember(
                     database, pid, @NO, @(property.isClassProperty), property.name, NSNull.null, image
                 );
-                
+
                 if (!success) return NO;
             }
         } else {
@@ -542,142 +542,142 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                 BOOL success = FREInsertProtocolMember(
                     database, pid, nil, @(property.isClassProperty), property.name, NSNull.null, image
                 );
-                
+
                 if (!success) return NO;
             }
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)addProtocolConformances:(void(^)(NSString *status))progress {
     progress(@"Adding protocol-to-protocol conformances…");
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSDictionary *protocolIDs = self.protocolsToIDs;
-    
+
     for (FLEXProtocol *proto in self.protocols) {
         id protoID = protocolIDs[proto.name];
-        
+
         for (FLEXProtocol *conform in proto.protocols) {
             BOOL failed = [database executeStatement:kFREInsertProtocolConformance arguments:@{
                 @"$protocol": protoID,
                 @"$conformance": protocolIDs[conform.name]
             }].isError;
-            
+
             if (failed) {
                 return NO;
             }
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)addClasses:(void(^)(NSString *status))progress {
     progress([NSString stringWithFormat:@"Adding %@ classes…", @(self.classes.count)]);
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSDictionary *imageIDs = self.bundlePathsToIDs;
-    
+
     for (Class cls in self.classes) {
         const char *imageName = class_getImageName(cls);
         id image = imageName ? imageIDs[@(imageName)] : NSNull.null;
         image = image ?: NSNull.null;
-        
+
         BOOL failed = [database executeStatement:kFREInsertClass arguments:@{
             @"$className":    NSStringFromClass(cls),
             @"$instanceSize": @(class_getInstanceSize(cls)),
             @"$version":      @(class_getVersion(cls)),
             @"$image":        image
         }].isError;
-        
+
         if (failed) {
             return NO;
         } else {
             self.classesToIDs[(id)cls] = @(database.lastRowID);
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)setSuperclasses:(void(^)(NSString *status))progress {
     progress(@"Setting superclasses…");
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
-    
+
     for (Class cls in self.classes) {
         // Grab superclass ID
         Class superclass = class_getSuperclass(cls);
         NSNumber *superclassID = _classesToIDs[class_getSuperclass(cls)];
-        
+
         // ... or add the superclass and cache its ID if the
         // superclass does not reside in the target image(s)
         if (!superclassID) {
             NSDictionary *args = @{ @"$className": NSStringFromClass(superclass) };
             BOOL failed = [database executeStatement:kFREInsertClass arguments:args].isError;
             if (failed) { return NO; }
-            
+
             _classesToIDs[(id)superclass] = superclassID = @(database.lastRowID);
         }
-        
+
         if (superclass) {
             BOOL failed = [database executeStatement:kFREUpdateClassSetSuper arguments:@{
                 @"$super": superclassID, @"$id": _classesToIDs[cls]
             }].isError;
-            
+
             if (failed) {
                 return NO;
             }
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)addClassConformances:(void(^)(NSString *status))progress {
     progress(@"Adding class-to-protocol conformances…");
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSDictionary *protocolIDs = self.protocolsToIDs;
     NSDictionary *classIDs = self.classesToIDs;
-    
+
     for (Class cls in self.classes) {
         id classID = classIDs[(id)cls];
-        
+
         for (FLEXProtocol *conform in FLEXGetConformedProtocols(cls)) {
             BOOL failed = [database executeStatement:kFREInsertClassConformance arguments:@{
                 @"$class": classID,
                 @"$conformance": protocolIDs[conform.name]
             }].isError;
-            
+
             if (failed) {
                 return NO;
             }
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)addIvars:(void(^)(NSString *status))progress {
     progress(@"Adding ivars…");
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSDictionary *imageIDs = self.bundlePathsToIDs;
-    
+
     for (Class cls in self.classes) {
         for (FLEXIvar *ivar in FLEXGetAllIvars(cls)) {
             // Insert type first
             if (![self addTypeEncoding:ivar.typeEncoding size:ivar.size]) {
                 return NO;
             }
-            
+
             id imagePath = ivar.imagePath ?: NSNull.null;
             NSNumber *image = imageIDs[imagePath] ?: NSNull.null;
-            
+
             BOOL failed = [database executeStatement:kFREInsertIvar arguments:@{
                 @"$name":   ivar.name,
                 @"$offset": @(ivar.offset),
@@ -685,29 +685,29 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                 @"$class":  _classesToIDs[cls],
                 @"$image":  image
             }].isError;
-            
+
             if (failed) {
                 return NO;
             }
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)addMethods:(void(^)(NSString *status))progress {
     progress(@"Adding methods…");
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSDictionary *imageIDs = self.bundlePathsToIDs;
-    
+
     // Loop over all classes
     for (Class cls in self.classes) {
         NSNumber *classID = _classesToIDs[(id)cls];
         const char *imageName = class_getImageName(cls);
         id image = imageName ? imageIDs[@(imageName)] : NSNull.null;
         image = image ?: NSNull.null;
-        
+
         // Block used to process each message
         BOOL (^insert)(FLEXMethod *, NSNumber *) = ^BOOL(FLEXMethod *method, NSNumber *instance) {
             // Insert selector and signature first
@@ -717,7 +717,7 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
             if (![self addMethodSignature:method]) {
                 return NO;
             }
-            
+
             return ![database executeStatement:kFREInsertMethod arguments:@{
                 @"$sel":       self->_selectorsToIDs[method.selectorString],
                 @"$class":     classID,
@@ -726,9 +726,9 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                 @"$image":     image
             }].isError;
         };
-        
+
         // Loop over all instance and class methods of that class //
-        
+
         for (FLEXMethod *method in FLEXGetAllMethods(cls, YES)) {
             if (!insert(method, @YES)) {
                 return NO;
@@ -740,26 +740,26 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
             }
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)addProperties:(void(^)(NSString *status))progress {
     progress(@"Adding properties…");
-    
+
     FLEXSQLiteDatabaseManager *database = self.db;
     NSDictionary *imageIDs = self.bundlePathsToIDs;
-    
+
     // Loop over all classes
     for (Class cls in self.classes) {
         NSNumber *classID = _classesToIDs[(id)cls];
-        
+
         // Block used to process each message
         BOOL (^insert)(FLEXProperty *, NSNumber *) = ^BOOL(FLEXProperty *property, NSNumber *instance) {
             FLEXPropertyAttributes *attrs = property.attributes;
             NSString *customGetter = attrs.customGetterString;
             NSString *customSetter = attrs.customSetterString;
-            
+
             // Insert selectors first
             if (customGetter) {
                 if (![self addSelector:customGetter]) {
@@ -771,7 +771,7 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                     return NO;
                 }
             }
-            
+
             // Insert type encoding first
             NSInteger size = [FLEXTypeEncodingParser
                 sizeForTypeEncoding:attrs.typeEncoding alignment:nil
@@ -779,7 +779,7 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
             if (![self addTypeEncoding:attrs.typeEncoding size:size]) {
                 return NO;
             }
-            
+
             id imagePath = property.imagePath ?: NSNull.null;
             id image = imageIDs[imagePath] ?: NSNull.null;
             return ![database executeStatement:kFREInsertProperty arguments:@{
@@ -788,10 +788,10 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                 @"$instance":   instance,
                 @"$image":      image,
                 @"$attributes": attrs.string,
-                
+
                 @"$customGetter": self->_selectorsToIDs[customGetter] ?: NSNull.null,
                 @"$customSetter": self->_selectorsToIDs[customSetter] ?: NSNull.null,
-                
+
                 @"$type":      self->_typeEncodingsToIDs[attrs.typeEncoding] ?: NSNull.null,
                 @"$ivar":      attrs.backingIvar ?: NSNull.null,
                 @"$readonly":  @(attrs.isReadOnly),
@@ -803,9 +803,9 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
                 @"$canGC":     @(attrs.isGarbageCollectable),
             }].isError;
         };
-        
+
         // Loop over all instance and class methods of that class //
-        
+
         for (FLEXProperty *property in FLEXGetAllProperties(cls)) {
             if (!insert(property, @YES)) {
                 return NO;
@@ -817,7 +817,7 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
             }
         }
     }
-    
+
     return YES;
 }
 
@@ -836,12 +836,12 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
 - (BOOL)addMethodSignature:(FLEXMethod *)method {
     NSString *signature = method.signatureString;
     NSString *returnType = @((char *)method.returnType);
-    
+
     // Insert return type first
     if (![self addTypeEncoding:returnType size:method.returnSize]) {
         return NO;
     }
-    
+
     return [self executeInsert:kFREInsertMethodSignature args:@{
         @"$typeEncoding": signature,
         @"$returnType":   _typeEncodingsToIDs[returnType],
@@ -858,15 +858,15 @@ NS_INLINE BOOL FREInsertProtocolMember(FLEXSQLiteDatabaseManager *db,
     if (rowids[cacheKey]) {
         return YES;
     }
-    
+
     // Insert
     FLEXSQLiteDatabaseManager *database = _db;
     [database executeStatement:statement arguments:args];
-    
+
     if (database.lastResult.isError) {
         return NO;
     }
-    
+
     // Cache rowid
     rowids[cacheKey] = @(database.lastRowID);
     return YES;

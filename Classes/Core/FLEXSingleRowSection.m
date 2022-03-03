@@ -46,7 +46,7 @@
     if (self.filterMatcher && self.filterText.length) {
         return self.filterMatcher(self.filterText) ? 1 : 0;
     }
-    
+
     return 1;
 }
 
@@ -70,7 +70,7 @@
     cell.textLabel.text = nil;
     cell.detailTextLabel.text = nil;
     cell.accessoryType = UITableViewCellAccessoryNone;
-    
+
     self.cellConfiguration(cell);
     self.lastTitle = cell.textLabel.text;
     self.lastSubitle = cell.detailTextLabel.text;

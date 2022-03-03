@@ -96,7 +96,7 @@
         // this currently could and would assign NSArray to NSMutableArray
         [self.ivar setValue:self.firstInputView.inputValue onObject:self.target];
     }
-    
+
     // Dismiss keyboard and handle committed changes
     [super actionButtonPressed:sender];
 

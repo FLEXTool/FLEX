@@ -27,7 +27,7 @@
 
         return controller.navigationController != nil;
     };
-    
+
     return [self forObject:viewController additionalRows:@[
         [FLEXActionShortcut title:@"Push View Controller"
             subtitle:^NSString *(UIViewController *controller) {

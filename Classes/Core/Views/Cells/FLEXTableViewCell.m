@@ -38,10 +38,10 @@
     self.titleLabel.font = cellFont;
     self.subtitleLabel.font = cellFont;
     self.subtitleLabel.textColor = FLEXColor.deemphasizedTextColor;
-    
+
     self.titleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
     self.subtitleLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
-    
+
     self.titleLabel.numberOfLines = 1;
     self.subtitleLabel.numberOfLines = 1;
 }

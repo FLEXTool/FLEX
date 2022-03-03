@@ -61,10 +61,10 @@
         if (FLEXArrayClassIsMutable(self)) {
             return self.mutableCopy;
         }
-        
+
         return self;
     }
-    
+
     return [self subarrayWithRange:NSMakeRange(0, maxLength)];
 }
 
@@ -119,7 +119,7 @@
             return e;
         }
     }
-    
+
     return nil;
 }
 
@@ -130,13 +130,13 @@
 
 - (void)flex_filter:(BOOL (^)(id, NSUInteger))keepObject {
     NSMutableIndexSet *toRemove = [NSMutableIndexSet new];
-    
+
     [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if (!keepObject(obj, idx)) {
             [toRemove addIndex:idx];
         }
     }];
-    
+
     [self removeObjectsAtIndexes:toRemove];
 }
 

@@ -46,7 +46,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
         if ([returnedObjectOrNil isKindOfClass:[NSNumber class]]) {
             return returnedObjectOrNil;
         }
-        
+
         // Can only be NSValue since return type is not an object,
         // so we bail if this doesn't add up
         if (![returnedObjectOrNil isKindOfClass:[NSValue class]]) {
@@ -179,7 +179,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
         isKindOfClass = (BOOL(*)(id, SEL, Class))[NSObject instanceMethodForSelector:@selector(isKindOfClass:)];
         isKindOfClass_meta = (BOOL(*)(id, SEL, Class))[NSObject methodForSelector:@selector(isKindOfClass:)];
     });
-    
+
     BOOL isClass = object_isClass(object);
     return (isClass ? isKindOfClass_meta : isKindOfClass)(object, @selector(isKindOfClass:), cls);
 }
@@ -190,7 +190,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     BOOL isClass = object_isClass(object);
     Class cls = isClass ? object : object_getClass(object);
     // BOOL isMetaclass = class_isMetaClass(cls);
-    
+
     if (isClass) {
         // In theory, this should also work for metaclasses...
         return class_getClassMethod(cls, sel) != nil;
@@ -225,7 +225,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
             return NO;
         }
     }
-    
+
     return YES;
 }
 
@@ -341,7 +341,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
         // Unsupported type encoding
         return nil;
     }
-    
+
     // Probably an unsupported type encoding, like bitfields.
     // In the future, we could calculate the return length
     // on our own. For now, we abort.
@@ -549,26 +549,26 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     NSNumberFormatter *formatter = [NSNumberFormatter new];
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     NSNumber *number = [formatter numberFromString:inputString];
-    
+
     // Is the type encoding longer than one character?
     if (strlen(typeEncoding) > 1) {
         NSString *type = @(typeEncoding);
-        
+
         // Is it NSDecimalNumber or NSNumber?
         if ([type isEqualToString:@FLEXEncodeClass(NSDecimalNumber)]) {
             return [NSDecimalNumber decimalNumberWithString:inputString];
         } else if ([type isEqualToString:@FLEXEncodeClass(NSNumber)]) {
             return number;
         }
-        
+
         return nil;
     }
-    
+
     // Type encoding is one character, switch on the type
     FLEXTypeEncoding type = typeEncoding[0];
     uint8_t value[32];
     void *bufferStart = &value[0];
-    
+
     // Make sure we box the number with the correct type encoding
     // so it can be properly unboxed later via getValue:
     switch (type) {
@@ -596,13 +596,13 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
             *(float *)bufferStart = number.floatValue; break;
         case FLEXTypeEncodingDouble:
             *(double *)bufferStart = number.doubleValue; break;
-            
+
         case FLEXTypeEncodingLongDouble:
             // NSNumber does not support long double
         default:
             return nil;
     }
-    
+
     return [NSValue value:value withObjCType:typeEncoding];
 }
 
@@ -625,7 +625,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
                 NSUInteger runningFieldIndex = 0;
                 NSUInteger runningFieldOffset = 0;
                 const char *typeStart = equals + 1;
-                
+
                 while (*typeStart != FLEXTypeEncodingStructEnd) {
                     NSUInteger fieldSize = 0;
                     // If the struct type encoding was successfully handled by
@@ -634,7 +634,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
                     NSString *typeEncoding = [@(structEncoding)
                         substringWithRange:NSMakeRange(typeStart - structEncoding, nextTypeStart - typeStart)
                     ];
-                    
+
                     // Padding to keep proper alignment. __attribute((packed)) structs
                     // will break here. The type encoding is no different for packed structs,
                     // so it's not clear there's anything we can do for those.
@@ -642,7 +642,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
                     if (currentSizeSum != 0 && currentSizeSum + fieldSize > fieldAlignment) {
                         runningFieldOffset += fieldAlignment - currentSizeSum;
                     }
-                    
+
                     typeBlock(
                         structName,
                         typeEncoding.UTF8String,
@@ -677,7 +677,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     if (!type.length) {
         type = @"(?)";
     }
-    
+
     NSString *combined = nil;
     if ([type characterAtIndex:type.length - 1] == FLEXTypeEncodingCString) {
         combined = [type stringByAppendingString:name];

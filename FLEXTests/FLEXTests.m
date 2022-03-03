@@ -122,12 +122,12 @@
     NSUInteger array[4] = { 0xaa, 0xbb, 0xcc, 0x00 };
     Subclass *obj = [Subclass new];
     obj->_indexes = array;
-    
+
     FLEXIvar *ivar = [Subclass flex_ivarNamed:@"_indexes"];
-    
+
     NSValue *arrayValue = [ivar getPotentiallyUnboxedValue:obj];
     NSUInteger *pointerValue = arrayValue.pointerValue;
-    
+
     XCTAssert(pointerValue != nil);
     XCTAssertEqual(pointerValue, (NSUInteger *)&array);
     XCTAssertEqual(pointerValue[0], 0xaa);
@@ -137,7 +137,7 @@
     XCTAssertFalse([FLEXRuntimeUtility
         safeObject:[NSObject class] respondsToSelector:@selector(testSafeRespondsToSelector)
     ]);
-    
+
     Class root = NSClassFromString(@"FLEXNewRootClass");
     XCTAssertTrue([FLEXRuntimeUtility safeObject:root respondsToSelector:@selector(theOnlyMethod)]);
     XCTAssertFalse([FLEXRuntimeUtility safeObject:root respondsToSelector:@selector(class)]);
@@ -153,17 +153,17 @@
     // Create something that looks like an objc object
     uintptr_t *pointer = (uintptr_t *)calloc(1, sizeof(uintptr_t));
     object_setClass((__bridge id)(void *)pointer, [NeverCreated class]);
-    
+
     // Find that one object and assert that it is the object we just created
     NSArray<FLEXObjectRef *> *refs = [FLEXHeapEnumerator
         instancesOfClassWithName:@"NeverCreated" retained:NO
     ];
     XCTAssertEqual(refs.count, 1);
     XCTAssertEqual((__bridge void *)refs.firstObject.object, pointer);
-    
+
     // Find that the object isn't really an object
     XCTAssertFalse(FLEXPointerIsValidObjcObject(pointer));
-    
+
     free(pointer);
 }
 

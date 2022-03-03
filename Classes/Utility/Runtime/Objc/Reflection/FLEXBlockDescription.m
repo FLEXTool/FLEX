@@ -51,29 +51,29 @@ struct block_object {
     self = [super init];
     if (self) {
         _block = block;
-        
+
         struct block_object *blockRef = (__bridge struct block_object *)block;
         _flags = blockRef->flags;
         _size = blockRef->descriptor->size;
-        
+
         if (_flags & FLEXBlockOptionHasSignature) {
             void *signatureLocation = blockRef->descriptor;
             signatureLocation += sizeof(unsigned long int);
             signatureLocation += sizeof(unsigned long int);
-            
+
             if (_flags & FLEXBlockOptionHasCopyDispose) {
                 signatureLocation += sizeof(void(*)(void *dst, void *src));
                 signatureLocation += sizeof(void (*)(void *src));
             }
-            
+
             const char *signature = (*(const char **)signatureLocation);
             _signatureString = @(signature);
-            
+
             @try {
                 _signature = [NSMethodSignature signatureWithObjCTypes:signature];
             } @catch (NSException *exception) { }
         }
-        
+
         NSMutableString *summary = [NSMutableString stringWithFormat:
             @"Type signature: %@\nSize: %@\nIs global: %@\nHas constructor: %@\nIs stret: %@",
             self.signatureString ?: @"nil", @(self.size),
@@ -81,15 +81,15 @@ struct block_object {
             @((BOOL)(_flags & FLEXBlockOptionHasCtor)),
             @((BOOL)(_flags & FLEXBlockOptionHasStret))
         ];
-        
+
         if (!self.signature) {
             [summary appendFormat:@"\nNumber of arguments: %@", @(self.signature.numberOfArguments)];
         }
-        
+
         _summary = summary.copy;
         _sourceDeclaration = [self buildLikelyDeclaration];
     }
-    
+
     return self;
 }
 
@@ -97,22 +97,22 @@ struct block_object {
     if (!self.signature) {
         return NO;
     }
-    
+
     if (self.signature.numberOfArguments != methodSignature.numberOfArguments + 1) {
         return NO;
     }
-    
+
     if (strcmp(self.signature.methodReturnType, methodSignature.methodReturnType) != 0) {
         return NO;
     }
-    
+
     for (int i = 0; i < methodSignature.numberOfArguments; i++) {
         if (i == 1) {
             // SEL in method, IMP in block
             if (strcmp([methodSignature getArgumentTypeAtIndex:i], ":") != 0) {
                 return NO;
             }
-            
+
             if (strcmp([self.signature getArgumentTypeAtIndex:i + 1], "^?") != 0) {
                 return NO;
             }
@@ -122,7 +122,7 @@ struct block_object {
             }
         }
     }
-    
+
     return YES;
 }
 
@@ -130,14 +130,14 @@ struct block_object {
     NSMethodSignature *signature = self.signature;
     NSUInteger numberOfArguments = signature.numberOfArguments;
     const char *returnType       = signature.methodReturnType;
-    
+
     // Return type
     NSMutableString *decl = [NSMutableString stringWithString:@"^"];
     if (returnType[0] != FLEXTypeEncodingVoid) {
         [decl appendString:[FLEXRuntimeUtility readableTypeForEncoding:@(returnType)]];
         [decl appendString:@" "];
     }
-    
+
     // Arguments
     if (numberOfArguments) {
         [decl appendString:@"("];
@@ -146,11 +146,11 @@ struct block_object {
             NSString *readableArgType = [FLEXRuntimeUtility readableTypeForEncoding:@(argType)];
             [decl appendFormat:@"%@ arg%@, ", readableArgType, @(i)];
         }
-        
+
         [decl deleteCharactersInRange:NSMakeRange(decl.length-2, 2)];
         [decl appendString:@")"];
     }
-    
+
     return decl.copy;
 }
 

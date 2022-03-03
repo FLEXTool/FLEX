@@ -12,11 +12,11 @@
 
 + (void)sendExampleRequests {
     MiscNetworkRequests *misc = [self new];
-    
+
     NSURLSessionConfiguration *config = NSURLSessionConfiguration.defaultSessionConfiguration;
     config.timeoutIntervalForRequest = 10.0;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:misc delegateQueue:nil];
-    
+
     [misc sendExampleNetworkRequests:session];
     [misc sendExampleWebsocketTraffic:session];
 }
@@ -31,30 +31,30 @@
     NSString *kSnowLeopard = @"https://lorempixel.com/248/250/animals/4/";
     NSString *kRateLimit = @"https://api.github.com/rate_limit";
     NSString *kImgurUpload = @"https://api.imgur.com/3/upload";
-    
+
     //#######################
     //                      #
     //     NSURLSession     #
     //                      #
     //#######################
-    
+
     NSMutableArray *pendingTasks = [NSMutableArray array];
-    
+
     // With delegate //
-    
+
     // NSURLSessionDataTask
     [pendingTasks addObject:[sessionWithDelegate dataTaskWithURL:[NSURL URLWithString:kFlipboardIcon]]];
     // NSURLSessionDownloadTask
     [pendingTasks addObject:[sessionWithDelegate downloadTaskWithURL:[NSURL URLWithString:kRandomAnimal]]];
-    
+
     // Without delegate //
-    
+
     // NSURLSessionDownloadTask
     [pendingTasks addObject:[NSURLSession.sharedSession
         downloadTaskWithURL:[NSURL URLWithString:kSnowLeopard]
         completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
             NSInteger status = [(NSHTTPURLResponse *)response statusCode];
-        
+
             if (status == 200) {
                 NSLog(@"Image downloaded to %@", location.absoluteString);
             } else {
@@ -80,11 +80,11 @@
         fromFile:[NSBundle.mainBundle URLForResource:@"image" withExtension:@"jpg"]
         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             NSInteger status = [(NSHTTPURLResponse *)response statusCode];
-        
+
             if (status == 200) {
                 NSError *jsonError = nil;
                 NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                
+
                 if (json) {
                     NSLog(@"Image uploaded to %@", json[@"data"][@"link"]);
                 } else {
@@ -93,7 +93,7 @@
             } else if (data) {
                 NSError *jsonError = nil;
                 NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-                
+
                 if (json) {
                     NSLog(@"Image failed to upload with error: %@", json[@"data"][@"error"]);
                 } else {
@@ -113,10 +113,10 @@
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [task resume];
         });
-        
+
         delayTime += stagger;
     }
-    
+
     //########################
     //                       #
     //    NSURLConnection    #
@@ -125,7 +125,7 @@
 
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    
+
     // Remaining requests made through NSURLConnection with a delegate
     NSArray *requestURLStrings = @[ @"https://lorempixel.com/400/400/",
                                     @"https://google.com",
@@ -133,22 +133,22 @@
                                     @"https://api.github.com/repos/Flipboard/FLEX/issues",
                                     @"https://cloud.githubusercontent.com/assets/516562/3971767/e4e21f58-27d6-11e4-9b07-4d1fe82b80ca.png",
                                     @"https://lorempixel.com/750/1334/" ];
-    
+
     // Async NSURLConnection
     [NSURLConnection sendAsynchronousRequest:[self request:@"https://api.github.com/repos/Flipboard/FLEX/issues"]
         queue:NSOperationQueue.mainQueue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
     }];
-    
+
     // Begin staggering NSURLConnection requests
     self.connections = [NSMutableArray array];
     for (NSString *urlString in requestURLStrings) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.connections addObject:[NSURLConnection connectionWithRequest:[self request:urlString] delegate:self]];
         });
-        
+
         delayTime += stagger;
     }
-    
+
     #pragma clang diagnostic pop
 }
 

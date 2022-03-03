@@ -44,7 +44,7 @@
         [self initDepthSlider];
         [self initSceneView]; // Must be last; calls setMaxDepth
 //        self.hideHeaders = YES;
-        
+
             // Self
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 

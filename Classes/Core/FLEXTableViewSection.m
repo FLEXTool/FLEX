@@ -67,11 +67,11 @@
 - (NSString *)menuTitleForRow:(NSInteger)row {
     NSString *title = [self titleForRow:row];
     NSString *subtitle = [self menuSubtitleForRow:row];
-    
+
     if (subtitle.length) {
         return [NSString stringWithFormat:@"%@\n\n%@", title, subtitle];
     }
-    
+
     return title;
 }
 
@@ -82,18 +82,18 @@
 - (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13)) {
     NSArray<NSString *> *copyItems = [self copyMenuItemsForRow:row];
     NSAssert(copyItems.count % 2 == 0, @"copyMenuItemsForRow: should return an even list");
-    
+
     if (copyItems.count) {
         NSInteger numberOfActions = copyItems.count / 2;
         BOOL collapseMenu = numberOfActions > 4;
         UIImage *copyIcon = [UIImage systemImageNamed:@"doc.on.doc"];
-        
+
         NSMutableArray *actions = [NSMutableArray new];
-        
+
         for (NSInteger i = 0; i < copyItems.count; i += 2) {
             NSString *key = copyItems[i], *value = copyItems[i+1];
             NSString *title = collapseMenu ? key : [@"Copy " stringByAppendingString:key];
-            
+
             UIAction *copy = [UIAction
                 actionWithTitle:title
                 image:copyIcon
@@ -105,23 +105,23 @@
             if (!value.length) {
                 copy.attributes = UIMenuElementAttributesDisabled;
             }
-            
+
             [actions addObject:copy];
         }
-        
+
         UIMenu *copyMenu = [UIMenu
             flex_inlineMenuWithTitle:@"Copy…" 
             image:copyIcon
             children:actions
         ];
-        
+
         if (collapseMenu) {
             return @[[copyMenu flex_collapsed]];
         } else {
             return @[copyMenu];
         }
     }
-    
+
     return @[];
 }
 

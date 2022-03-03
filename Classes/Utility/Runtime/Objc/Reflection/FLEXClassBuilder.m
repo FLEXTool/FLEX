@@ -55,13 +55,13 @@
 
 - (id)initWithClass:(Class)cls {
     NSParameterAssert(cls);
-    
+
     self = [super init];
     if (self) {
         _workingClass = cls;
         _name = NSStringFromClass(_workingClass);
     }
-    
+
     return self;
 }
 
@@ -73,20 +73,20 @@
 #pragma mark Building
 - (NSArray *)addMethods:(NSArray *)methods {
     NSParameterAssert(methods.count);
-    
+
     NSMutableArray *failed = [NSMutableArray new];
     for (FLEXMethodBase *m in methods) {
         if (!class_addMethod(self.workingClass, m.selector, m.implementation, m.typeEncoding.UTF8String)) {
             [failed addObject:m];
         }
     }
-    
+
     return failed;
 }
 
 - (NSArray *)addProperties:(NSArray *)properties {
     NSParameterAssert(properties.count);
-    
+
     NSMutableArray *failed = [NSMutableArray new];
     for (FLEXProperty *p in properties) {
         unsigned int pcount;
@@ -96,33 +96,33 @@
         }
         free(attributes);
     }
-    
+
     return failed;
 }
 
 - (NSArray *)addProtocols:(NSArray *)protocols {
     NSParameterAssert(protocols.count);
-    
+
     NSMutableArray *failed = [NSMutableArray new];
     for (FLEXProtocol *p in protocols) {
         if (!class_addProtocol(self.workingClass, p.objc_protocol)) {
             [failed addObject:p];
         }
     }
-    
+
     return failed;
 }
 
 - (NSArray *)addIvars:(NSArray *)ivars {
     NSParameterAssert(ivars.count);
-    
+
     NSMutableArray *failed = [NSMutableArray new];
     for (FLEXIvarBuilder *ivar in ivars) {
         if (!class_addIvar(self.workingClass, ivar.name.UTF8String, ivar.size, ivar.alignment, ivar.encoding.UTF8String)) {
             [failed addObject:ivar];
         }
     }
-    
+
     return failed;
 }
 
@@ -130,7 +130,7 @@
     if (self.isRegistered) {
         [NSException raise:NSInternalInconsistencyException format:@"Class is already registered"];
     }
-    
+
     objc_registerClassPair(self.workingClass);
     return self.workingClass;
 }
@@ -153,7 +153,7 @@
 - (id)initWithName:(NSString *)name size:(size_t)size alignment:(uint8_t)alignment typeEncoding:(NSString *)encoding {
     NSParameterAssert(name); NSParameterAssert(encoding);
     NSParameterAssert(size > 0); NSParameterAssert(alignment > 0);
-    
+
     self = [super init];
     if (self) {
         _name      = name;
@@ -161,7 +161,7 @@
         _size      = size;
         _alignment = alignment;
     }
-    
+
     return self;
 }
 

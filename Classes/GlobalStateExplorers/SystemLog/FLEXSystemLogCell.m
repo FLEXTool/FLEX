@@ -23,7 +23,7 @@ NSString *const kFLEXSystemLogCellIdentifier = @"FLEXSystemLogCellIdentifier";
 
 - (void)postInit {
     [super postInit];
-    
+
     self.logMessageLabel = [UILabel new];
     self.logMessageLabel.numberOfLines = 0;
     self.separatorInset = UIEdgeInsetsZero;
@@ -75,7 +75,7 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
         NSMutableAttributedString *mutableAttributedText = attributedText.mutableCopy;
         NSMutableDictionary<NSString *, id> *highlightAttributes = attributes.mutableCopy;
         highlightAttributes[NSBackgroundColorAttributeName] = UIColor.yellowColor;
-        
+
         NSRange remainingSearchRange = NSMakeRange(0, text.length);
         while (remainingSearchRange.location < text.length) {
             remainingSearchRange.length = text.length - remainingSearchRange.location;

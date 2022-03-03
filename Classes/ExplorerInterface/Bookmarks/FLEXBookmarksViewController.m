@@ -32,10 +32,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.navigationController.hidesBarsOnSwipe = NO;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
-    
+
     [self reloadData];
 }
 
@@ -60,7 +60,7 @@
         UIBarButtonItem.flex_flexibleSpace,
         FLEXBarButtonItemSystem(Edit, self, @selector(toggleEditing)),
     ];
-    
+
     // Disable editing if no bookmarks available
     self.toolbarItems.lastObject.enabled = self.bookmarks.count > 0;
 }
@@ -73,7 +73,7 @@
         // We use a non-system done item because we change its title dynamically
         [UIBarButtonItem flex_doneStyleitemWithTitle:@"Done" target:self action:@selector(toggleEditing)]
     ];
-    
+
     self.toolbarItems.firstObject.tintColor = FLEXColor.destructiveColor;
 }
 
@@ -126,23 +126,23 @@
 - (void)toggleEditing {
     NSArray<NSIndexPath *> *selected = self.tableView.indexPathsForSelectedRows;
     self.editing = !self.editing;
-    
+
     if (self.isEditing) {
         [self setupEditingBarItems];
     } else {
         [self setupDefaultBarItems];
-        
+
         // Get index set of bookmarks to close
         NSMutableIndexSet *indexes = [NSMutableIndexSet new];
         for (NSIndexPath *ip in selected) {
             [indexes addIndex:ip.row];
         }
-        
+
         if (selected.count) {
             // Close bookmarks and update data source
             [FLEXBookmarkManager.bookmarks removeObjectsAtIndexes:indexes];
             [self reloadData];
-            
+
             // Remove deleted rows
             [self.tableView deleteRowsAtIndexPaths:selected withRowAnimation:UITableViewRowAnimationAutomatic];
         }
@@ -163,11 +163,11 @@
 
 - (void)closeAll {
     NSInteger rowCount = self.bookmarks.count;
-    
+
     // Close bookmarks and update data source
     [FLEXBookmarkManager.bookmarks removeAllObjects];
     [self reloadData];
-    
+
     // Delete rows from table view
     NSArray<NSIndexPath *> *allRows = [NSArray flex_forEachUpTo:rowCount map:^id(NSUInteger row) {
         return [NSIndexPath indexPathForRow:row inSection:0];
@@ -184,11 +184,11 @@
 
 - (UITableViewCell *)tableView:(FLEXTableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFLEXDetailCell forIndexPath:indexPath];
-    
+
     id object = self.bookmarks[indexPath.row];
     cell.textLabel.text = [FLEXRuntimeUtility safeDescriptionForObject:object];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ — %p", [object class], object];
-    
+
     return cell;
 }
 
@@ -208,7 +208,7 @@
 
 - (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(self.editing);
-    
+
     if (tableView.indexPathsForSelectedRows.count == 0) {
         self.toolbarItems.lastObject.title = @"Done";
         self.toolbarItems.lastObject.tintColor = self.view.tintColor;
@@ -223,11 +223,11 @@
 commitEditingStyle:(UITableViewCellEditingStyle)edit
 forRowAtIndexPath:(NSIndexPath *)indexPath {
     NSParameterAssert(edit == UITableViewCellEditingStyleDelete);
-    
+
     // Remove bookmark and update data source
     [FLEXBookmarkManager.bookmarks removeObjectAtIndex:indexPath.row];
     [self reloadData];
-    
+
     // Delete row from table view
     [table deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }

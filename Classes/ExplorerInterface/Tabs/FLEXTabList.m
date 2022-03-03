@@ -25,7 +25,7 @@
     dispatch_once(&onceToken, ^{
         sharedList = [self new];
     });
-    
+
     return sharedList;
 }
 
@@ -36,7 +36,7 @@
         _openTabSnapshots = [NSMutableArray new];
         _activeTabIndex = NSNotFound;
     }
-    
+
     return self;
 }
 
@@ -57,19 +57,19 @@
 - (void)setActiveTabIndex:(NSInteger)idx {
     NSParameterAssert(idx < self.openTabs.count || idx == NSNotFound);
     if (_activeTabIndex == idx) return;
-    
+
     _activeTabIndex = idx;
     _activeTab = (idx == NSNotFound) ? nil : self.openTabs[idx];
 }
 
 - (void)addTab:(UINavigationController *)newTab {
     NSParameterAssert(newTab);
-    
+
     // Update snapshot of the last active tab
     if (self.activeTab) {
         [self updateSnapshotForActiveTab];
     }
-    
+
     // Add new tab and snapshot,
     // update active tab and index
     [_openTabs addObject:newTab];
@@ -88,11 +88,11 @@
 
 - (void)closeTabAtIndex:(NSInteger)idx {
     NSParameterAssert(idx < self.openTabs.count);
-    
+
     // Remove old tab and snapshot
     [_openTabs removeObjectAtIndex:idx];
     [_openTabSnapshots removeObjectAtIndex:idx];
-    
+
     // Update active tab and index if needed
     if (self.activeTabIndex == idx) {
         [self chooseNewActiveTab];
@@ -103,7 +103,7 @@
     // Remove old tabs and snapshot
     [_openTabs removeObjectsAtIndexes:indexes];
     [_openTabSnapshots removeObjectsAtIndexes:indexes];
-    
+
     // Update active tab and index if needed
     if ([indexes containsIndex:self.activeTabIndex]) {
         [self chooseNewActiveTab];
@@ -118,7 +118,7 @@
     // Remove tabs and snapshots
     [_openTabs removeAllObjects];
     [_openTabSnapshots removeAllObjects];
-    
+
     // Update active tab index
     self.activeTabIndex = NSNotFound;
 }

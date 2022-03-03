@@ -74,7 +74,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
             action:@selector(copyButtonPressed:)
         ]
     ];
-    
+
     [self.tableView registerClass:[FLEXMultilineTableViewCell class] forCellReuseIdentifier:kFLEXMultilineCell];
 }
 
@@ -456,7 +456,7 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 + (NSArray<FLEXNetworkDetailRow *> *)networkDetailRowsFromDictionary:(NSDictionary<NSString *, id> *)dictionary {
     NSMutableArray<FLEXNetworkDetailRow *> *rows = [NSMutableArray new];
     NSArray<NSString *> *sortedKeys = [dictionary.allKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
-    
+
     for (NSString *key in sortedKeys) {
         id value = dictionary[key];
         FLEXNetworkDetailRow *row = [FLEXNetworkDetailRow new];

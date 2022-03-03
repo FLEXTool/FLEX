@@ -71,7 +71,7 @@
 
 - (void)loadView {
     [super loadView];
-    
+
     [self.view addSubview:self.multiColumnView];
 }
 
@@ -87,11 +87,11 @@
         _multiColumnView = [[FLEXMultiColumnTableView alloc]
             initWithFrame:FLEXRectSetSize(CGRectZero, self.view.frame.size)
         ];
-        
+
         _multiColumnView.dataSource = self;
         _multiColumnView.delegate   = self;
     }
-    
+
     return _multiColumnView;
 }
 
@@ -142,7 +142,7 @@
         options:NSStringDrawingUsesLineFragmentOrigin
         attributes:attrs context:nil
     ].size;
-    
+
     return size.width + 20;
 }
 
@@ -153,11 +153,11 @@
     NSArray<NSString *> *fields = [self.rows[row] flex_mapped:^id(NSString *field, NSUInteger idx) {
         return [NSString stringWithFormat:@"%@:\n%@", self.columns[idx], field];
     }];
-    
+
     NSArray<NSString *> *values = [self.rows[row] flex_mapped:^id(NSString *value, NSUInteger idx) {
         return [NSString stringWithFormat:@"'%@'", value];
     }];
-    
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title([@"Row " stringByAppendingString:@(row).stringValue]);
         NSString *message = [fields componentsJoinedByString:@"\n\n"];
@@ -168,7 +168,7 @@
         make.button(@"Copy as CSV").handler(^(NSArray<NSString *> *strings) {
             UIPasteboard.generalPasteboard.string = [values componentsJoinedByString:@", "];
         });
-        
+
         // Option to delete row
         BOOL hasRowID = self.rows.count && row < self.rows.count;
         if (hasRowID && self.canRefresh) {
@@ -177,7 +177,7 @@
                     @"DELETE FROM %@ WHERE rowid = %@",
                     self.tableName, self.rowIDs[row]
                 ];
-                
+
                 [self executeStatementAndShowResult:deleteRow completion:^(BOOL success) {
                     // Remove deleted row and reload view
                     if (success) {
@@ -186,7 +186,7 @@
                 }];
             });
         }
-        
+
         make.button(@"Dismiss").cancelStyle();
     } showFrom:self];
 }
@@ -194,7 +194,7 @@
 - (void)multiColumnTableView:(FLEXMultiColumnTableView *)tableView
     didSelectHeaderForColumn:(NSInteger)column
                     sortType:(FLEXTableColumnHeaderSortType)sortType {
-    
+
     NSArray<NSArray *> *sortContentData = [self.rows
         sortedArrayWithOptions:NSSortStable
         usingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
@@ -205,24 +205,24 @@
             if (b == NSNull.null) {
                 return NSOrderedDescending;
             }
-        
+
             if ([a respondsToSelector:@selector(compare:options:)] &&
                 [b respondsToSelector:@selector(compare:options:)]) {
                 return [a compare:b options:NSNumericSearch];
             }
-            
+
             if ([a respondsToSelector:@selector(compare:)] && [b respondsToSelector:@selector(compare:)]) {
                 return [a compare:b];
             }
-            
+
             return NSOrderedSame;
         }
     ];
-    
+
     if (sortType == FLEXTableColumnHeaderSortTypeDesc) {
         sortContentData = sortContentData.reverseObjectEnumerator.allObjects.copy;
     }
-    
+
     self.rows = sortContentData.mutableCopy;
     [self.multiColumnView reloadData];
 }
@@ -232,7 +232,7 @@
 - (void)willTransitionToTraitCollection:(UITraitCollection *)newCollection
               withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super willTransitionToTraitCollection:newCollection withTransitionCoordinator:coordinator];
-    
+
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context) {
         if (newCollection.verticalSizeClass == UIUserInterfaceSizeClassCompact) {
             self.multiColumnView.frame = CGRectMake(0, 32, self.view.frame.size.width, self.view.frame.size.height - 32);
@@ -240,7 +240,7 @@
         else {
             self.multiColumnView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
         }
-        
+
         [self.view setNeedsLayout];
     } completion:nil];
 }
@@ -252,14 +252,14 @@
     if (![self.databaseManager respondsToSelector:@selector(executeStatement:)]) {
         return;
     }
-    
+
     UIBarButtonItem *trashButton = FLEXBarButtonItemSystem(Trash, self, @selector(trashPressed));
     UIBarButtonItem *addButton = FLEXBarButtonItemSystem(Add, self, @selector(addPressed));
 
     // Only allow adding rows or deleting rows if we have a table name
     trashButton.enabled = self.canRefresh;
     addButton.enabled = self.canRefresh;
-    
+
     self.toolbarItems = @[
         UIBarButtonItem.flex_flexibleSpace,
         addButton,
@@ -274,7 +274,7 @@
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(@"Delete All Rows");
         make.message(@"All rows in this table will be permanently deleted.\nDo you want to proceed?");
-        
+
         make.button(@"Yes, I'm sure").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
             NSString *deleteAll = [NSString stringWithFormat:@"DELETE FROM %@", self.tableName];
             [self executeStatementAndShowResult:deleteAll completion:^(BOOL success) {
@@ -318,12 +318,12 @@
     NSParameterAssert(self.databaseManager);
 
     FLEXSQLResult *result = [self.databaseManager executeStatement:statement];
-    
+
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         if (result.isError) {
             make.title(@"Error");
         }
-        
+
         make.message(result.message ?: @"<no output>");
         make.button(@"Dismiss").cancelStyle().handler(^(NSArray<NSString *> *_) {
             if (completion) {

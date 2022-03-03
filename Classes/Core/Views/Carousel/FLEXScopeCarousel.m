@@ -34,7 +34,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.translatesAutoresizingMaskIntoConstraints = YES;
         _dynamicTypeHandlers = [NSMutableArray new];
-        
+
         CGSize itemSize = CGSizeZero;
         if (@available(iOS 10.0, *)) {
             itemSize = UICollectionViewFlowLayoutAutomaticSize;
@@ -119,10 +119,10 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
     if (!self.constraintsInstalled) {
         self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
         [self.collectionView flex_pinEdgesToSuperview];
-        
+
         self.constraintsInstalled = YES;
     }
-    
+
     [super updateConstraints];
 }
 
@@ -166,7 +166,7 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
 //    if (@available(iOS 10.0, *)) {
 //        return UICollectionViewFlowLayoutAutomaticSize;
 //    }
-    
+
     self.sizingCell.title = self.items[indexPath.item];
     return [self.sizingCell systemLayoutSizeFittingSize:UILayoutFittingCompressedSize];
 }

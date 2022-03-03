@@ -26,7 +26,7 @@ static BOOL respondsToContinuousCorners = NO;
     if (respondsToContinuousCorners) {
         return self.continuousCorners;
     }
-    
+
     return NO;
 }
 

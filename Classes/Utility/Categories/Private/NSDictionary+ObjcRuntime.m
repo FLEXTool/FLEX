@@ -16,10 +16,10 @@
 /// https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
 - (NSString *)propertyAttributesString {
     if (!self[kFLEXPropertyAttributeKeyTypeEncoding]) return nil;
-    
+
     NSMutableString *attributes = [NSMutableString new];
     [attributes appendFormat:@"T%@,", self[kFLEXPropertyAttributeKeyTypeEncoding]];
-    
+
     for (NSString *attribute in self.allKeys) {
         FLEXPropertyAttribute c = (FLEXPropertyAttribute)[attribute characterAtIndex:0];
         switch (c) {
@@ -81,7 +81,7 @@
                 break;
         }
     }
-    
+
     [attributes deleteCharactersInRange:NSMakeRange(attributes.length-1, 1)];
     return attributes.copy;
 }

@@ -21,7 +21,7 @@
         }
         return NO;
     }
-    
+
     NSMutableDictionary *query = nil;
     NSMutableDictionary * searchQuery = [self query];
     status = SecItemCopyMatching((__bridge CFDictionaryRef)searchQuery, nil);
@@ -49,11 +49,11 @@
 #endif
         status = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
     }
-    
+
     if (status != errSecSuccess && error != NULL) {
         *error = [self errorWithCode:status];
     }
-    
+
     return (status == errSecSuccess);
 }
 
@@ -64,10 +64,10 @@
         if (error) {
             *error = [self errorWithCode:status];
         }
-        
+
         return NO;
     }
-    
+
     NSMutableDictionary *query = [self query];
 #if TARGET_OS_IPHONE
     status = SecItemDelete((__bridge CFDictionaryRef)query);
@@ -89,11 +89,11 @@
         CFRelease(result);
     }
 #endif
-    
+
     if (status != errSecSuccess && error != NULL) {
         *error = [self errorWithCode:status];
     }
-    
+
     return (status == errSecSuccess);
 }
 
@@ -108,14 +108,14 @@
         query[(__bridge id)kSecAttrAccessible] = (__bridge id)accessibilityType;
     }
 #endif
-    
+
     CFTypeRef result = NULL;
     OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &result);
     if (status != errSecSuccess && error != NULL) {
         *error = [self errorWithCode:status];
         return nil;
     }
-    
+
     return (__bridge_transfer NSArray *)result ?: @[];
 }
 
@@ -128,20 +128,20 @@
         }
         return NO;
     }
-    
+
     CFTypeRef result = NULL;
     NSMutableDictionary *query = [self query];
     query[(__bridge id)kSecReturnData] = @YES;
     query[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
     status = SecItemCopyMatching((__bridge CFDictionaryRef)query, &result);
-    
+
     if (status != errSecSuccess) {
         if (error) {
             *error = [self errorWithCode:status];
         }
         return NO;
     }
-    
+
     self.passwordData = (__bridge_transfer NSData *)result;
     return YES;
 }
@@ -158,7 +158,7 @@
     if (self.passwordData.length) {
         return [NSKeyedUnarchiver unarchiveObjectWithData:self.passwordData];
     }
-    
+
     return nil;
 }
 
@@ -172,7 +172,7 @@
     if (self.passwordData.length) {
         return [[NSString alloc] initWithData:self.passwordData encoding:NSUTF8StringEncoding];
     }
-    
+
     return nil;
 }
 
@@ -195,15 +195,15 @@
 - (NSMutableDictionary *)query {
     NSMutableDictionary *dictionary = [NSMutableDictionary new];
     dictionary[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
-    
+
     if (self.service) {
         dictionary[(__bridge id)kSecAttrService] = self.service;
     }
-    
+
     if (self.account) {
         dictionary[(__bridge id)kSecAttrAccount] = self.account;
     }
-    
+
 #ifdef FLEXKEYCHAIN_ACCESS_GROUP_AVAILABLE
 #if !TARGET_IPHONE_SIMULATOR
     if (self.accessGroup) {
@@ -211,11 +211,11 @@
     }
 #endif
 #endif
-    
+
 #ifdef FLEXKEYCHAIN_SYNCHRONIZATION_AVAILABLE
     if ([[self class] isSynchronizationAvailable]) {
         id value;
-        
+
         switch (self.synchronizationMode) {
             case FLEXKeychainQuerySynchronizationModeNo: {
                 value = @NO;
@@ -230,11 +230,11 @@
                 break;
             }
         }
-        
+
         dictionary[(__bridge id)(kSecAttrSynchronizable)] = value;
     }
 #endif
-    
+
     return dictionary;
 }
 
@@ -245,12 +245,12 @@
         NSURL *url = [[NSBundle bundleForClass:[self class]] URLForResource:@"FLEXKeychain" withExtension:@"bundle"];
         resourcesBundle = [NSBundle bundleWithURL:url];
     });
-    
+
     NSString *message = nil;
     switch (code) {
         case errSecSuccess: return nil;
         case FLEXKeychainErrorBadArguments: message = NSLocalizedStringFromTableInBundle(@"FLEXKeychainErrorBadArguments", @"FLEXKeychain", resourcesBundle, nil); break;
-            
+
 #if TARGET_OS_IPHONE
         case errSecUnimplemented: {
             message = NSLocalizedStringFromTableInBundle(@"errSecUnimplemented", @"FLEXKeychain", resourcesBundle, nil);
@@ -296,7 +296,7 @@
             message = (__bridge_transfer NSString *)SecCopyErrorMessageString(code, NULL);
 #endif
     }
-    
+
     NSDictionary *userInfo = message ? @{ NSLocalizedDescriptionKey : message } : nil;
     return [NSError errorWithDomain:kFLEXKeychainErrorDomain code:code userInfo:userInfo];
 }

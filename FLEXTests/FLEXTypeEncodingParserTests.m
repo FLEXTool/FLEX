@@ -54,11 +54,11 @@ typedef struct HasUnion {
 @implementation FLEXTypeEncodingParserTests
 
 - (void)setUp {
-    
+
     memset(&_yikes.bar, 0x55, sizeof(id));
     memset(&_yikes.foo, 0xff, sizeof(_yikes.foo));
     memset(&_yikes.abc, 0x88, sizeof(SEL));
-    
+
     _typesToSizes = @{
         TypeSizeAlignPair(__typeof__(_yikes)),
         @"{Anon=\"bar\"@\"NSString<NSCopying><NSCoding>\"\"baz\"i}" : @[@(sizeof(Anon)), @(__alignof__(Anon))],
@@ -89,7 +89,7 @@ typedef struct HasUnion {
         } else {
             XCTAssertThrows(NSGetSizeAndAlignment(typeString.UTF8String, nil, nil));
         }
-        
+
         ssize_t align = 0;
         ssize_t size = [FLEXTypeEncodingParser sizeForTypeEncoding:typeString alignment:&align];
         XCTAssertEqual(size, sa[0].longValue);
@@ -174,7 +174,7 @@ typedef struct HasUnion {
     // Arrays do not affect alignment like nested structs do
     XCTAssertEqual(sizeof(ArrayInMiddle), 4);
     XCTAssertEqual(sizeof(ArrayAtEnd), 4);
-    
+
     XCTAssertEqual(sizeof(HasUnion), 16);
 
     // Test my method of converting calculated sizes to actual sizes
@@ -201,7 +201,7 @@ typedef struct HasUnion {
         @"{?=[4]}16@0:8}",
         @"i48@0:8^{__CVBuffer=}16I24(pj_timestamp={?=II}Q)28i36B40B44",
     ];
-    
+
     for (NSString *signature in unsupported) {
         XCTAssertFalse([FLEXTypeEncodingParser methodTypeEncodingSupported:signature cleaned:nil]);
     }
@@ -219,39 +219,39 @@ typedef struct HasUnion {
         "^{HashTable<CA::Layer *, CA::Layer *>}^{__CFRunLoop}^{__CFRunLoopObserver}"
         "^{LayoutList}^{List<CA::Layer *>}{Atomic={?=i}}b1b1b1b1b1}16I24^I28":
             @"^{Layer=}36@0:8^{Transaction=}16I24^I28",
-        
+
         @"{LSBinding=I^{LSBundleData=}I^{?}@@}16@0:8":
             @"{LSBinding=I^{LSBundleData=}I^{?=}@@}16@0:8",
-        
+
         @"@40@0:8@16r^{?=BQ^{?}}24^@32": @"@40@0:8@16r^{?=BQ^{?=}}24^@32",
-        
+
         @"@36@0:8@16^{mig_subsystem=^?iiIQ[1{routine_descriptor=^?^?II^{?}I}]}24B32":
             @"@36@0:8@16^{mig_subsystem=^?iiIQ[1{routine_descriptor=^?^?II^{?=}I}]}24B32",
-        
+
         @"@28@0:8r^{basic_string<char, std::__1::char_traits<char>, "
         "std::__1::allocator<char> >={__compressed_pair<std::__1::"
         "basic_string<char, std::__1::char_traits<char>, "
         "std::__1::allocator<char> >::__rep, std::__1::allocator<char> "
         ">={__rep=(?={__long=QQ*}{__short=(?=Cc)[23c]}{__raw=[3Q]})}}}16B24":
             @"@28@0:8r^{?=}16B24",
-        
+
         @"^{nui_size_cache=^{pair<CGSize, CGSize>}^{pair<CGSize, CGSize>}"
         "{__compressed_pair<std::__1::pair<CGSize, CGSize> *, "
         "std::__1::allocator<std::__1::pair<CGSize, CGSize> > >="
         "^{pair<CGSize, CGSize>}}}16@0:8" :
             @"^{nui_size_cache=}16@0:8",
-        
+
         @"^?32@0:8r^{_CAPropertyInfo=I[2:]b16b16*^{__CFString}}16"
         "r^{_CAPropertyInfo=I[2:]b16b16*^{__CFString}}24":
             @"^?32@0:8r^{_CAPropertyInfo=}16r^{_CAPropertyInfo=}24",
-        
+
         // NSMethodSignature doesn't support unions for some reason
         @"^{?=(pj_timestamp={?=II}Q)Iii}20@0:8i16": @"^{?=}20@0:8i16",
-        
+
         @"^{KeyValueArray=^^?{Atomic={?=i}}I[1^{Object}]}16@0:8":
             @"^{KeyValueArray=^^?{Atomic={?=i}}I[1^{Object=}]}16@0:8"
     };
-    
+
     [uncleanToClean enumerateKeysAndObjectsUsingBlock:^(NSString *needsCleaning, NSString *expected, BOOL *stop) {
         NSString *cleaned = nil;
         XCTAssertTrue([FLEXTypeEncodingParser methodTypeEncodingSupported:needsCleaning cleaned:&cleaned]);

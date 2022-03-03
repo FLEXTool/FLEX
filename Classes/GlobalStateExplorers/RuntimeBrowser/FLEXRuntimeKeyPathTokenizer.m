@@ -68,7 +68,7 @@ static NSCharacterSet *methodAllowed     = nil;
     if (!text.length) {
         return YES;
     }
-    
+
     return [text rangeOfCharacterFromSet:keyPathDisallowed].location == NSNotFound;
 }
 
@@ -103,7 +103,7 @@ static NSCharacterSet *methodAllowed     = nil;
         if (scanner.isAtEnd) {
             return FLEXSearchToken.any;
         }
-        
+
         options |= TBWildcardOptionsPrefix;
     }
 
@@ -189,7 +189,7 @@ static NSCharacterSet *methodAllowed     = nil;
         // Methods cannot end with '.' except for '\.'
         @throw NSInternalInconsistencyException;
     }
-    
+
     if ([scanner scanString:@"-" intoString:nil]) {
         *instance = @YES;
     } else if ([scanner scanString:@"+" intoString:nil]) {

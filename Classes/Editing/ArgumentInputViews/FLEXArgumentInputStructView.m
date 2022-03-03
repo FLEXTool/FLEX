@@ -29,10 +29,10 @@
                                                                                      NSString *prettyTypeEncoding,
                                                                                      NSUInteger fieldIndex,
                                                                                      NSUInteger fieldOffset) {
-            
+
             FLEXArgumentInputView *inputView = [FLEXArgumentInputViewFactory argumentInputViewForTypeEncoding:fieldTypeEncoding];
             inputView.targetSize = FLEXArgumentInputViewSizeSmall;
-            
+
             if (fieldIndex < customTitles.count) {
                 inputView.title = customTitles[fieldIndex];
             } else {
@@ -64,7 +64,7 @@
         const char *structTypeEncoding = [inputValue objCType];
         if (strcmp(self.typeEncoding.UTF8String, structTypeEncoding) == 0) {
             NSUInteger valueSize = 0;
-            
+
             if (FLEXGetSizeAndAlignment(structTypeEncoding, &valueSize, NULL)) {
                 void *unboxedValue = malloc(valueSize);
                 [inputValue getValue:unboxedValue];
@@ -73,10 +73,10 @@
                                                                                                    NSString *prettyTypeEncoding,
                                                                                                    NSUInteger fieldIndex,
                                                                                                    NSUInteger fieldOffset) {
-                    
+
                     void *fieldPointer = unboxedValue + fieldOffset;
                     FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
-                    
+
                     if (fieldTypeEncoding[0] == FLEXTypeEncodingObjcObject || fieldTypeEncoding[0] == FLEXTypeEncodingObjcClass) {
                         inputView.inputValue = (__bridge id)fieldPointer;
                     } else {
@@ -94,7 +94,7 @@
     NSValue *boxedStruct = nil;
     const char *structTypeEncoding = self.typeEncoding.UTF8String;
     NSUInteger structSize = 0;
-    
+
     if (FLEXGetSizeAndAlignment(structTypeEncoding, &structSize, NULL)) {
         void *unboxedStruct = malloc(structSize);
         [FLEXRuntimeUtility enumerateTypesInStructEncoding:structTypeEncoding usingBlock:^(NSString *structName,
@@ -102,10 +102,10 @@
                                                                                            NSString *prettyTypeEncoding,
                                                                                            NSUInteger fieldIndex,
                                                                                            NSUInteger fieldOffset) {
-            
+
             void *fieldPointer = unboxedStruct + fieldOffset;
             FLEXArgumentInputView *inputView = self.argumentInputViews[fieldIndex];
-            
+
             if (fieldTypeEncoding[0] == FLEXTypeEncodingObjcObject || fieldTypeEncoding[0] == FLEXTypeEncodingObjcClass) {
                 // Object fields
                 memcpy(fieldPointer, (__bridge void *)inputView.inputValue, sizeof(id));
@@ -117,11 +117,11 @@
                 }
             }
         }];
-        
+
         boxedStruct = [NSValue value:unboxedStruct withObjCType:structTypeEncoding];
         free(unboxedStruct);
     }
-    
+
     return boxedStruct;
 }
 
@@ -141,9 +141,9 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     CGFloat runningOriginY = self.topInputFieldVerticalLayoutGuide;
-    
+
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         CGSize inputFitSize = [inputView sizeThatFits:self.bounds.size];
         inputView.frame = CGRectMake(0, runningOriginY, inputFitSize.width, inputFitSize.height);
@@ -157,15 +157,15 @@
 
 - (CGSize)sizeThatFits:(CGSize)size {
     CGSize fitSize = [super sizeThatFits:size];
-    
+
     CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
     CGFloat height = fitSize.height;
-    
+
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         height += [inputView sizeThatFits:constrainSize].height;
         height += [[self class] verticalPaddingBetweenFields];
     }
-    
+
     return CGSizeMake(fitSize.width, height);
 }
 

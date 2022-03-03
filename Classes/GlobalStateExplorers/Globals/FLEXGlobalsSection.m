@@ -46,7 +46,7 @@
 
 - (void)reloadData {
     NSString *filterText = self.filterText;
-    
+
     if (filterText.length) {
         self.rows = [self.allRows flex_filtered:^BOOL(FLEXGlobalsEntry *entry, NSUInteger idx) {
             return [entry.entryNameFuture() localizedCaseInsensitiveContainsString:filterText];

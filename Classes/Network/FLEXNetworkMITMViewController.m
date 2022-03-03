@@ -61,7 +61,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     self.pinSearchBar = YES;
     self.showSearchBarInitially = NO;
     NSMutableArray *scopeTitles = [NSMutableArray arrayWithObject:@"REST"];
-    
+
     _HTTPDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
         return FLEXNetworkRecorder.defaultRecorder.HTTPTransactions;
     }];
@@ -79,7 +79,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             return FLEXNetworkRecorder.defaultRecorder.websocketTransactions;
         }];
     }
-    
+
     // Scopes will only be shown if we have either firebase or websockets available
     self.searchController.searchBar.showsScopeBar = scopeTitles.count > 1;
     self.searchController.searchBar.scopeButtonTitles = scopeTitles;
@@ -111,7 +111,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     // Reload the table if we received updates while not on-screen
     if (self.pendingReload) {
         [self.tableView reloadData];
@@ -134,7 +134,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
         kFLEXNetworkObserverEnabledStateChangedNotification:
             NSStringFromSelector(@selector(handleNetworkObserverEnabledStateChangedNotification:)),
     };
-    
+
     for (NSString *name in notifications.allKeys) {
         [NSNotificationCenter.defaultCenter addObserver:self
             selector:NSSelectorFromString(notifications[name]) name:name object:nil
@@ -153,7 +153,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
         Done, self, @selector(settingsViewControllerDoneTapped:)
     );
     settings.title = @"Network Debugging Settings";
-    
+
     // This is not a FLEXNavigationController because it is not intended as a new tab
     UIViewController *nav = [[UINavigationController alloc] initWithRootViewController:settings];
     [self presentViewController:nav animated:YES completion:nil];
@@ -169,7 +169,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             make.title(@"Clear All Recorded Requests?");
             make.message(@"This cannot be undone.");
         }
-        
+
         make.button(@"Cancel").cancelStyle();
         make.button(@"Clear").destructiveStyle().handler(^(NSArray *strings) {
             if (clearAll) {
@@ -275,7 +275,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
         [self updateFirstSectionHeader];
         if (callback && dataSource == self.dataSource) callback();
     };
-    
+
     [self.HTTPDataSource reloadData:completion];
     [self.websocketDataSource reloadData:completion];
     [self.firebaseDataSource reloadData:completion];
@@ -303,19 +303,19 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
         bytesReceived = self.dataSource.bytesReceived;
         totalRequests = self.dataSource.transactions.count;
     }
-    
+
     NSString *byteCountText = [NSByteCountFormatter
         stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary
     ];
     NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
-    
+
     // Exclude byte count from Firebase
     if (self.mode == FLEXNetworkObserverModeFirebase) {
         return [NSString stringWithFormat:@"%@ %@",
             @(totalRequests), requestsText
         ];
     }
-    
+
     return [NSString stringWithFormat:@"%@ %@ (%@ received)",
         @(totalRequests), requestsText, byteCountText
     ];
@@ -338,7 +338,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             [FLEXAlert makeAlert:^(FLEXAlert *make) {
                 make.title(@"Network Monitor Disabled");
                 make.message(@"You must enable network monitoring to proceed.");
-                
+
                 make.button(@"Turn On").handler(^(NSArray<NSString *> *strings) {
                     FLEXNetworkObserver.enabled = YES;
                     [host.navigationController pushViewController:[
@@ -371,46 +371,46 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
         self.pendingReload = YES;
         return;
     }
-    
+
     // Let the previous row insert animation finish before starting a new one to avoid stomping.
     // We'll try calling the method again when the insertion completes,
     // and we properly no-op if there haven't been changes.
     if (self.updateInProgress) {
         return;
     }
-    
+
     self.updateInProgress = YES;
 
     // Get state before update
     NSString *currentFilter = self.searchText;
     FLEXNetworkObserverMode currentMode = self.mode;
     NSInteger existingRowCount = self.dataSource.transactions.count;
-    
+
     [self updateTransactions:^{
         // Compare to state after update
         NSString *newFilter = self.searchText;
         FLEXNetworkObserverMode newMode = self.mode;
         NSInteger newRowCount = self.dataSource.transactions.count;
         NSInteger rowCountDiff = newRowCount - existingRowCount;
-        
+
         // Abort if the observation mode changed, or if the search field text changed
         if (newMode != currentMode || ![currentFilter isEqualToString:newFilter]) {
             self.updateInProgress = NO;
             return;
         }
-        
+
         if (rowCountDiff) {
             // Insert animation if we're at the top.
             if (self.tableView.contentOffset.y <= 0.0 && rowCountDiff > 0) {
                 [CATransaction begin];
-                
+
                 [CATransaction setCompletionBlock:^{
                     self.updateInProgress = NO;
                     // This isn't an infinite loop, it won't run a third time
                     // if there were no new transactions the second time
                     [self tryUpdateTransactions];
                 }];
-                
+
                 NSMutableArray<NSIndexPath *> *indexPathsToReload = [NSMutableArray new];
                 for (NSInteger row = 0; row < rowCountDiff; row++) {
                     [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
@@ -449,7 +449,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             break;
         }
     }
-    
+
     [self updateFirstSectionHeader];
 }
 
@@ -487,7 +487,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
         dequeueReusableCellWithIdentifier:FLEXNetworkTransactionCell.reuseID
         forIndexPath:indexPath
     ];
-    
+
     cell.transaction = [self transactionAtIndexPath:indexPath];
 
     // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
@@ -509,23 +509,23 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             [self.navigationController pushViewController:details animated:YES];
             break;
         }
-            
+
         case FLEXNetworkObserverModeWebsockets: {
             if (@available(iOS 13.0, *)) { // This check will never fail
                 FLEXWebsocketTransaction *transaction = [self websocketTransactionAtIndexPath:indexPath];
-                
+
                 UIViewController *details = nil;
                 if (transaction.message.type == NSURLSessionWebSocketMessageTypeData) {
                     details = [FLEXObjectExplorerFactory explorerViewControllerForObject:transaction.message.data];
                 } else {
                     details = [[FLEXWebViewController alloc] initWithText:transaction.message.string];
                 }
-                
+
                 [self.navigationController pushViewController:details animated:YES];
             }
             break;
         }
-        
+
         case FLEXNetworkObserverModeFirebase: {
             FLEXFirebaseTransaction *transaction = [self firebaseTransactionAtIndexPath:indexPath];
 //            id obj = transaction.documents.count == 1 ? transaction.documents.firstObject : transaction.documents;
@@ -553,9 +553,9 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 }
 
 - (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
-    
+
     FLEXNetworkTransaction *transaction = [self transactionAtIndexPath:indexPath];
-    
+
     return [UIContextMenuConfiguration
         configurationWithIdentifier:nil
         previewProvider:nil
@@ -568,7 +568,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
                     UIPasteboard.generalPasteboard.string = transaction.copyString;
                 }
             ];
-        
+
             NSArray *children = @[copy];
             if (self.mode == FLEXNetworkObserverModeREST) {
                 NSURLRequest *request = [self HTTPTransactionAtIndexPath:indexPath].request;
@@ -584,7 +584,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
                         [self tryUpdateTransactions];
                     }
                 ];
-                
+
                 children = [children arrayByAddingObject:denylist];
             }
             return [UIMenu
@@ -620,7 +620,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             [self.tableView reloadData];
         }
     };
-    
+
     [self.HTTPDataSource filter:searchString completion:callback];
     [self.websocketDataSource filter:searchString completion:callback];
     [self.firebaseDataSource filter:searchString completion:callback];

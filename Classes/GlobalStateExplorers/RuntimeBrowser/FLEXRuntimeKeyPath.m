@@ -47,7 +47,7 @@
         keyPathString = [keyPathString substringToIndex:keyPathString.length];
     }
     keyPath->flex_description = keyPathString;
-    
+
     if (bundle.isAny && cls.isAny && method.isAny) {
         [FLEXRuntimeClient initializeWebKitLegacy];
     }

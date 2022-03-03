@@ -27,20 +27,20 @@
 
 - (id)initWithViews:(NSArray<UIView *> *)views {
     NSParameterAssert(views.count);
-    
+
     self = [self initWithStyle:UITableViewStylePlain];
     if (self) {
         _controllers = [views flex_mapped:^id(UIView *view, NSUInteger idx) {
             return [FLEXUtility viewControllerForView:view];
         }];
     }
-    
+
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.title = @"View Controllers at Tap";
     self.showsSearchBar = YES;
     [self disableToolbar];
@@ -58,13 +58,13 @@
     } filterMatcher:^BOOL(NSString *filterText, UIViewController *controller) {
         return [NSStringFromClass(controller.class) localizedCaseInsensitiveContainsString:filterText];
     }];
-    
+
     self.section.selectionHandler = ^(UIViewController *host, UIViewController *controller) {
         [host.navigationController pushViewController:
             [FLEXObjectExplorerFactory explorerViewControllerForObject:controller]
         animated:YES];
     };
-    
+
     self.section.customTitle = @"View Controllers";
     return @[self.section];
 }

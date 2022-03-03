@@ -64,7 +64,7 @@ const Class * FLEXKnownUnsafeClassList() {
             // setVectors: has an invalid type encoding and crashes NSMethodSignature
             FLEXClassPointerOrCFNull(@"_UIPointVector"),
         };
-        
+
         assert((sizeof(ignored) / sizeof(Class)) == kFLEXKnownUnsafeClassCount);
 
         _UnsafeClasses = (Class *)malloc(sizeof(ignored));

@@ -56,16 +56,16 @@ typedef NS_ENUM(uint32_t, os_activity_stream_type_t) {
     OS_ACTIVITY_STREAM_TYPE_ACTIVITY_CREATE = 0x0201,
     OS_ACTIVITY_STREAM_TYPE_ACTIVITY_TRANSITION = 0x0202,
     OS_ACTIVITY_STREAM_TYPE_ACTIVITY_USERACTION = 0x0203,
-    
+
     OS_ACTIVITY_STREAM_TYPE_TRACE_MESSAGE = 0x0300,
-    
+
     OS_ACTIVITY_STREAM_TYPE_LOG_MESSAGE = 0x0400,
     OS_ACTIVITY_STREAM_TYPE_LEGACY_LOG_MESSAGE = 0x0480,
-    
+
     OS_ACTIVITY_STREAM_TYPE_SIGNPOST_BEGIN = 0x0601,
     OS_ACTIVITY_STREAM_TYPE_SIGNPOST_END = 0x0602,
     OS_ACTIVITY_STREAM_TYPE_SIGNPOST_EVENT = 0x0603,
-    
+
     OS_ACTIVITY_STREAM_TYPE_STATEDUMP_EVENT = 0x0A00,
 };
 
@@ -160,17 +160,17 @@ typedef struct os_activity_statedump_s {
 
 struct os_activity_stream_entry_s {
     os_activity_stream_type_t type;
-    
+
     // information about the process streaming the data
     pid_t pid;
     uint64_t proc_id;
     const uint8_t *proc_imageuuid;
     const char *proc_imagepath;
-    
+
     // the activity associated with this streamed event
     os_activity_id_t activity_id;
     os_activity_id_t parent_id;
-    
+
     union {
         struct os_activity_stream_common_s common;
         struct os_activity_create_s activity_create;

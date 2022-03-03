@@ -20,7 +20,7 @@
 
 - (void)postInit {
     [super postInit];
-    
+
     self.titleLabel.numberOfLines = 0;
     self.subtitleLabel.numberOfLines = 0;
 }

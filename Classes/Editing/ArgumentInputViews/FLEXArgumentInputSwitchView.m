@@ -59,7 +59,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     self.inputSwitch.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.inputSwitch.frame.size.width, self.inputSwitch.frame.size.height);
 }
 

@@ -29,7 +29,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     if (self.showsTitle) {
         CGSize constrainSize = CGSizeMake(self.bounds.size.width, CGFLOAT_MAX);
         CGSize labelSize = [self.titleLabel sizeThatFits:constrainSize];
@@ -101,13 +101,13 @@
 
 - (CGSize)sizeThatFits:(CGSize)size {
     CGFloat height = 0;
-    
+
     if (self.title.length > 0) {
         CGSize constrainSize = CGSizeMake(size.width, CGFLOAT_MAX);
         height += ceil([self.titleLabel sizeThatFits:constrainSize].height);
         height += [[self class] titleBottomPadding];
     }
-    
+
     return CGSizeMake(size.width, height);
 }
 

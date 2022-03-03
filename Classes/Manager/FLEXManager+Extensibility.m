@@ -61,12 +61,12 @@
     NSParameterAssert(entryName);
     NSParameterAssert(rowSelectedAction);
     NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
-    
+
     entryName = entryName.copy;
     FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString * _Nonnull{
         return entryName;
     } action:rowSelectedAction];
-    
+
     [self.userGlobalEntries addObject:entry];
 }
 

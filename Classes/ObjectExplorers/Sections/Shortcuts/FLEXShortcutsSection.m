@@ -85,12 +85,12 @@
     if (self) {
         _object = object;
         _isNewSection = newSection;
-        
+
         _allShortcuts = [rows flex_mapped:^id(id obj, NSUInteger idx) {
             return [FLEXShortcut shortcutFor:obj];
         }];
         _numberOfLines = 1;
-        
+
         // Populate titles and subtitles
         [self reloadData];
     }
@@ -120,7 +120,7 @@
     if (_allShortcuts) {
         return [self.shortcuts[row] accessoryTypeWith:self.object];
     }
-    
+
     return UITableViewCellAccessoryNone;
 }
 
@@ -162,7 +162,7 @@
 
 - (void)reloadData {
     [FLEXObjectExplorer configureDefaultsForItems:self.allShortcuts];
-    
+
     // Generate all (sub)titles from shortcuts
     if (self.allShortcuts) {
         self.allTitles = [self.allShortcuts flex_mapped:^id(id<FLEXShortcut> s, NSUInteger idx) {
@@ -220,7 +220,7 @@
     if (@available(iOS 11, *)) {
         defaultReuse = kFLEXMultilineDetailCell;
     }
-    
+
     return [self.shortcuts[row] customReuseIdentifierWith:self.object] ?: defaultReuse;
 }
 
@@ -280,7 +280,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
     dispatch_once(&onceToken, ^{
         shared = [self new];
     });
-    
+
     return shared;
 }
 
@@ -294,7 +294,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
         mProperties = [NSMutableDictionary new];
         mMethods = [NSMutableDictionary new];
     }
-    
+
     return self;
 }
 
@@ -310,7 +310,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
     // The -class does not give you a metaclass, and we want a metaclass
     // if a class is passed in, or a class if an object is passed in
     Class classKey = object_getClass(objectOrClass);
-    
+
     RegistrationBuckets *propertyBucket = isClass ? mProperties : cProperties;
     RegistrationBuckets *methodBucket = isClass ? mMethods : cMethods;
     RegistrationBuckets *ivarBucket = isClass ? nil : cIvars;
@@ -332,7 +332,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
             classKey = class_getSuperclass(classKey);
         }
     }
-    
+
     [FLEXObjectExplorer configureDefaultsForItems:shortcuts];
     return shortcuts;
 }
@@ -381,7 +381,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
     _prepend = NO;
     _replace = NO;
     _notInstance = NO;
-    
+
     _properties = nil;
     _ivars = nil;
     _methods = nil;
@@ -424,7 +424,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
             @"You can only do one of [append, prepend, replace]"
         );
 
-        
+
         /// Whether the metadata we're about to add is instance or
         /// class metadata, i.e. class properties vs instance properties
         BOOL instanceMetadata = !self->_notInstance;
@@ -433,24 +433,24 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
         BOOL isMeta = class_isMetaClass(cls);
         /// Whether the shortcuts we're about to add should appear for classes or instances
         BOOL instanceShortcut = !isMeta;
-        
+
         if (instanceMetadata) {
             NSAssert(!isMeta,
                 @"Instance metadata can only be added as an instance shortcut"
             );
         }
-        
+
         Class metaclass = isMeta ? cls : object_getClass(cls);
         Class clsForMetadata = instanceMetadata ? cls : metaclass;
-        
+
         // The factory is a singleton so we don't need to worry about "leaking" it
         #pragma clang diagnostic push
         #pragma clang diagnostic ignored "-Wimplicit-retain-self"
-        
+
         RegistrationBuckets *propertyBucket = instanceShortcut ? cProperties : mProperties;
         RegistrationBuckets *methodBucket = instanceShortcut ? cMethods : mMethods;
         RegistrationBuckets *ivarBucket = instanceShortcut ? cIvars : nil;
-        
+
         #pragma clang diagnostic pop
 
         if (self->_properties) {
@@ -474,7 +474,7 @@ typedef NSMutableDictionary<Class, NSMutableArray<id<FLEXRuntimeMetadata>> *> Re
             }];
             [self _register:items to:ivarBucket class:cls];
         }
-        
+
         [self reset];
     };
 }

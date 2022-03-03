@@ -25,7 +25,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
     FLEXObjectReferenceSectionAutoLayout,
     FLEXObjectReferenceSectionKVO,
     FLEXObjectReferenceSectionFLEX,
-    
+
     FLEXObjectReferenceSectionCount
 };
 
@@ -79,7 +79,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
                ([row hasPrefix:@"_NSAutoresizingMask"] && [row hasSuffix:@" _referenceItem"]) ||
                [ignored containsObject:row];
     };
-    
+
     /// These are FLEX classes and usually you aren't looking for FLEX references inside FLEX itself
     BOOL(^isFLEXClass)(FLEXObjectRef *, NSDictionary *) = ^BOOL(FLEXObjectRef *ref, NSDictionary *bindings) {
         return [ref.reference hasPrefix:@"FLEX"];
@@ -145,7 +145,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
     NSArray<FLEXObjectRef *> *references = [FLEXHeapEnumerator
         instancesOfClassWithName:className retained:retain
     ];
-    
+
     if (references.count == 1) {
         return [FLEXObjectExplorerFactory
             explorerViewControllerForObject:references.firstObject.object

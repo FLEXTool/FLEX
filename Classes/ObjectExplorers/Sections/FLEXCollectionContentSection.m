@@ -164,10 +164,10 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
         if (self.customTitle) {
             return self.customTitle;
         }
-        
+
         return FLEXPluralString(self.cachedCollection.count, @"Entries", @"Entry");
     }
-    
+
     return nil;
 }
 
@@ -177,16 +177,16 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
 
 - (void)setFilterText:(NSString *)filterText {
     super.filterText = filterText;
-    
+
     if (filterText.length) {
         BOOL (^matcher)(id, id) = self.customFilter ?: ^BOOL(NSString *query, id obj) {
             return [[self describe:obj] localizedCaseInsensitiveContainsString:query];
         };
-        
+
         NSPredicate *filter = [NSPredicate predicateWithBlock:^BOOL(id obj, NSDictionary *bindings) {
             return matcher(filterText, obj);
         }];
-        
+
         id<FLEXMutableCollection> tmp = self.cachedCollection.mutableCopy;
         [tmp filterUsingPredicate:filter];
         self.cachedCollection = tmp;
@@ -233,13 +233,13 @@ typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
         if ([predicate evaluateWithObject:key]) {
             return NO;
         }
-        
+
         return ![predicate evaluateWithObject:self[key]];
     };
-    
+
     NSArray *keys = self.allKeys;
     NSIndexSet *remove = [keys indexesOfObjectsPassingTest:test];
-    
+
     [self removeObjectsForKeys:[keys objectsAtIndexes:remove]];
 }
 

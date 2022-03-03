@@ -35,7 +35,7 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
 /// @param filename the name of a plist file without any extension
 - (NSString *)flex_defaultsPathForFile:(NSString *)filename {
     filename = [filename stringByAppendingPathExtension:@"plist"];
-    
+
     NSArray<NSString *> *paths = NSSearchPathForDirectoriesInDomains(
         NSLibraryDirectory, NSUserDomainMask, YES
     );
@@ -56,7 +56,7 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
     if ([self objectForKey:kFLEXDefaultsToolbarTopMarginKey]) {
         return [self doubleForKey:kFLEXDefaultsToolbarTopMarginKey];
     }
-    
+
     return 100;
 }
 

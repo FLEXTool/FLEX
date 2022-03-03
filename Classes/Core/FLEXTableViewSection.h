@@ -23,7 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
     @protected
     /// Unused by default, use if you want
     NSString *_title;
-    
+
     @private
     __weak UITableView *_tableView;
     NSInteger _sectionIndex;

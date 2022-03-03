@@ -14,7 +14,7 @@
 + (instancetype)forObject:(NSString *)string {
     NSUInteger length = [string lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
     NSData *data = [NSData dataWithBytesNoCopy:(void *)string.UTF8String length:length freeWhenDone:NO];
-    
+
     return [self forObject:string additionalRows:@[
         [FLEXActionShortcut title:@"UTF-8 Data" subtitle:^NSString *(id _) {
             return data.description;

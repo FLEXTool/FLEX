@@ -20,7 +20,7 @@
 
 - (id)initWithSelector:(SEL)selector types:(NSString *)types imp:(IMP)imp {
     NSParameterAssert(selector); NSParameterAssert(types); NSParameterAssert(imp);
-    
+
     self = [super init];
     if (self) {
         _selector = selector;
@@ -28,7 +28,7 @@
         _implementation = imp;
         _name = NSStringFromSelector(self.selector);
     }
-    
+
     return self;
 }
 

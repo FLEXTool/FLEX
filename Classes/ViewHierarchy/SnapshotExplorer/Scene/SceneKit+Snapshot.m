@@ -47,7 +47,7 @@ CGFloat const kHeaderVerticalInset = 8.0;
     )];
     SCNShape *shape = [SCNShape shapeWithPath:path materialDiffuse:contents];
     SCNNode *node = [SCNNode nodeWithGeometry:shape];
-    
+
     if (offsetZ) {
         node.position = SCNVector3Make(0, 0, kFHSSmallZOffset);
     }
@@ -67,7 +67,7 @@ CGFloat const kHeaderVerticalInset = 8.0;
     SCNVector3 vertices[2] = { v1, v2 };
     int32_t _indices[2] = { 0, 1 };
     NSData *indices = [NSData dataWithBytes:_indices length:sizeof(_indices)];
-    
+
     SCNGeometrySource *source = [SCNGeometrySource geometrySourceWithVertices:vertices count:2];
     SCNGeometryElement *element = [SCNGeometryElement
         geometryElementWithData:indices

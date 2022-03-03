@@ -29,7 +29,7 @@
                          "with the string below. 'Open if Universal' will only open "
                          "the URL if it is a registered Universal Link."
                     );
-                    
+
                     make.textField(@"twitter://user?id=12345");
                     make.button(@"Open").handler(^(NSArray<NSString *> *strings) {
                         [self openURL:strings[0] inApp:app onlyIfUniveral:NO host:host];
@@ -52,7 +52,7 @@
  onlyIfUniveral:(BOOL)universalOnly
            host:(UIViewController *)host {
     NSURL *url = [NSURL URLWithString:urlString];
-    
+
     if (url) {
         if (@available(iOS 10, *)) {
             [app openURL:url options:@{

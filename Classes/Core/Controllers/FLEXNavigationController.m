@@ -33,18 +33,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.waitingToAddTab = YES;
-    
+
     // Add gesture to reveal toolbar if hidden
     UITapGestureRecognizer *navbarTapGesture = [[UITapGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleNavigationBarTap:)
     ];
-    
+
     // Don't cancel touches to work around bug on versions of iOS prior to 13
     navbarTapGesture.cancelsTouchesInView = NO;
     [self.navigationBar addGestureRecognizer:navbarTapGesture];
-    
+
     // Add gesture to dismiss if not presented with a sheet style
     if (@available(iOS 13, *)) {
         switch (self.modalPresentationStyle) {
@@ -52,7 +52,7 @@
             case UIModalPresentationPageSheet:
             case UIModalPresentationFormSheet:
                 break;
-                
+
             default:
                 [self addNavigationBarSwipeGesture];
                 break;
@@ -64,19 +64,19 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     if (self.beingPresented && !self.didSetupPendingDismissButtons) {
         for (UIViewController *vc in self.viewControllers) {
             [self addNavigationBarItemsToViewController:vc.navigationItem];
         }
-        
+
         self.didSetupPendingDismissButtons = YES;
     }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+
     if (self.waitingToAddTab) {
         // Only add new tab if we're presented properly
         if ([self.presentingViewController isKindOfClass:[FLEXExplorerViewController class]]) {
@@ -99,7 +99,7 @@
     if ([self.presentingViewController isKindOfClass:[FLEXExplorerViewController class]]) {
         [FLEXTabList.sharedList closeTab:self];        
     }
-    
+
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -111,21 +111,21 @@
     if (!self.presentingViewController) {
         return;
     }
-    
+
     // Check if a done item already exists
     for (UIBarButtonItem *item in navigationItem.rightBarButtonItems) {
         if (item.style == UIBarButtonItemStyleDone) {
             return;
         }
     }
-    
+
     // Give root view controllers a Done button if it does not already have one
     UIBarButtonItem *done = [[UIBarButtonItem alloc]
         initWithBarButtonSystemItem:UIBarButtonSystemItemDone
         target:self
         action:@selector(dismissAnimated)
     ];
-    
+
     // Prepend the button if other buttons exist already
     NSArray *existingItems = navigationItem.rightBarButtonItems;
     if (existingItems.count) {
@@ -133,7 +133,7 @@
     } else {
         navigationItem.rightBarButtonItem = done;
     }
-    
+
     // Keeps us from calling this method again on
     // the same view controllers in -viewWillAppear:
     self.didSetupPendingDismissButtons = YES;
@@ -154,7 +154,7 @@
         [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
-     
+
 - (void)handleNavigationBarTap:(UIGestureRecognizer *)sender {
     // Don't reveal the toolbar if we were just tapping a button
     CGPoint location = [sender locationInView:self.navigationBar];
@@ -174,7 +174,7 @@
     if (g1 == self.navigationBarSwipeGesture && g2 == self.barHideOnSwipeGestureRecognizer) {
         return YES;
     }
-    
+
     return NO;
 }
 

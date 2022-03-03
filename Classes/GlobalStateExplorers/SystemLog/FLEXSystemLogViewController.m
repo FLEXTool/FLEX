@@ -140,7 +140,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     _logMessages = [FLEXMutableListSection list:@[]
         cellConfiguration:^(FLEXSystemLogCell *cell, FLEXSystemLogMessage *message, NSInteger row) {
             strongify(self)
-        
+
             cell.logMessage = message;
             cell.highlightedText = self.filterText;
 

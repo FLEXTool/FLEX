@@ -49,19 +49,19 @@
         self.layer.flex_continuousCorners = YES;
         [self setTitle:self.title forState:UIControlStateNormal];
         [self sizeToFit];
-        
+
         if (@available(iOS 13, *)) {
             self.appearance = UIKeyboardAppearanceDefault;
         } else {
             self.appearance = UIKeyboardAppearanceLight;
         }
-        
+
         CGRect frame = self.frame;
         frame.size.width  += title.length < 3 ? 30 : 15;
         frame.size.height += 10;
         self.frame = frame;
     }
-    
+
     return self;
 }
 
@@ -76,17 +76,17 @@
 
 - (void)setAppearance:(UIKeyboardAppearance)appearance {
     _appearance = appearance;
-    
+
     UIColor *titleColor = nil, *backgroundColor = nil;
     UIColor *lightColor = [UIColor colorWithRed:253.0/255.0 green:253.0/255.0 blue:254.0/255.0 alpha:1];
     UIColor *darkColor = [UIColor colorWithRed:101.0/255.0 green:102.0/255.0 blue:104.0/255.0 alpha:1];
-    
+
     switch (_appearance) {
         default:
         case UIKeyboardAppearanceDefault:
             if (@available(iOS 13, *)) {
                 titleColor = UIColor.labelColor;
-                
+
                 if (self.usingDarkMode) {
                     // style = UIBlurEffectStyleSystemUltraThinMaterialLight;
                     backgroundColor = darkColor;
@@ -107,7 +107,7 @@
             // style = UIBlurEffectStyleDark;
             break;
     }
-    
+
     self.backgroundColor = backgroundColor;
     [self setTitleColor:titleColor forState:UIControlStateNormal];
 }
@@ -132,7 +132,7 @@
     if (@available(iOS 12, *)) {
         return self.useSystemAppearance && self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
     }
-    
+
     return self.appearance == UIKeyboardAppearanceDark;
 }
 

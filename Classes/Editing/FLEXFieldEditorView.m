@@ -28,15 +28,15 @@
         self.targetDescriptionLabel.numberOfLines = 0;
         self.targetDescriptionLabel.font = [[self class] labelFont];
         [self addSubview:self.targetDescriptionLabel];
-        
+
         self.targetDescriptionDivider = [[self class] dividerView];
         [self addSubview:self.targetDescriptionDivider];
-        
+
         self.fieldDescriptionLabel = [UILabel new];
         self.fieldDescriptionLabel.numberOfLines = 0;
         self.fieldDescriptionLabel.font = [[self class] labelFont];
         [self addSubview:self.fieldDescriptionLabel];
-        
+
         self.fieldDescriptionDivider = [[self class] dividerView];
         [self addSubview:self.fieldDescriptionDivider];
     }
@@ -45,27 +45,27 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     CGFloat horizontalPadding = [[self class] horizontalPadding];
     CGFloat verticalPadding = [[self class] verticalPadding];
     CGFloat dividerLineHeight = [[self class] dividerLineHeight];
-    
+
     CGFloat originY = verticalPadding;
     CGFloat originX = horizontalPadding;
     CGFloat contentWidth = self.bounds.size.width - 2.0 * horizontalPadding;
     CGSize constrainSize = CGSizeMake(contentWidth, CGFLOAT_MAX);
-    
+
     CGSize instanceDescriptionSize = [self.targetDescriptionLabel sizeThatFits:constrainSize];
     self.targetDescriptionLabel.frame = CGRectMake(originX, originY, instanceDescriptionSize.width, instanceDescriptionSize.height);
     originY = CGRectGetMaxY(self.targetDescriptionLabel.frame) + verticalPadding;
-    
+
     self.targetDescriptionDivider.frame = CGRectMake(originX, originY, contentWidth, dividerLineHeight);
     originY = CGRectGetMaxY(self.targetDescriptionDivider.frame) + verticalPadding;
-    
+
     CGSize fieldDescriptionSize = [self.fieldDescriptionLabel sizeThatFits:constrainSize];
     self.fieldDescriptionLabel.frame = CGRectMake(originX, originY, fieldDescriptionSize.width, fieldDescriptionSize.height);
     originY = CGRectGetMaxY(self.fieldDescriptionLabel.frame) + verticalPadding;
-    
+
     self.fieldDescriptionDivider.frame = CGRectMake(originX, originY, contentWidth, dividerLineHeight);
     originY = CGRectGetMaxY(self.fieldDescriptionDivider.frame) + verticalPadding;
 
@@ -100,17 +100,17 @@
 
 - (void)setArgumentInputViews:(NSArray<FLEXArgumentInputView *> *)argumentInputViews {
     if (![_argumentInputViews isEqual:argumentInputViews]) {
-        
+
         for (FLEXArgumentInputView *inputView in _argumentInputViews) {
             [inputView removeFromSuperview];
         }
-        
+
         _argumentInputViews = argumentInputViews;
-        
+
         for (FLEXArgumentInputView *newInputView in argumentInputViews) {
             [self addSubview:newInputView];
         }
-        
+
         [self setNeedsLayout];
     }
 }
@@ -145,11 +145,11 @@
     CGFloat horizontalPadding = [[self class] horizontalPadding];
     CGFloat verticalPadding = [[self class] verticalPadding];
     CGFloat dividerLineHeight = [[self class] dividerLineHeight];
-    
+
     CGFloat height = 0;
     CGFloat availableWidth = size.width - 2.0 * horizontalPadding;
     CGSize constrainSize = CGSizeMake(availableWidth, CGFLOAT_MAX);
-    
+
     height += verticalPadding;
     height += ceil([self.targetDescriptionLabel sizeThatFits:constrainSize].height);
     height += verticalPadding;
@@ -159,12 +159,12 @@
     height += verticalPadding;
     height += dividerLineHeight;
     height += verticalPadding;
-    
+
     for (FLEXArgumentInputView *inputView in self.argumentInputViews) {
         height += [inputView sizeThatFits:constrainSize].height;
         height += verticalPadding;
     }
-    
+
     return CGSizeMake(size.width, height);
 }
 

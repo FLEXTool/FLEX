@@ -17,7 +17,7 @@
         self.inputTextView.keyboardType = UIKeyboardTypeNumbersAndPunctuation;
         self.targetSize = FLEXArgumentInputViewSizeSmall;
     }
-    
+
     return self;
 }
 
@@ -33,7 +33,7 @@
 
 + (BOOL)supportsObjCType:(const char *)type withCurrentValue:(id)value {
     NSParameterAssert(type);
-    
+
     static NSArray<NSString *> *supportedTypes = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -55,7 +55,7 @@
             @(@encode(long double))
         ];
     });
-    
+
     return type && [supportedTypes containsObject:@(type)];
 }
 

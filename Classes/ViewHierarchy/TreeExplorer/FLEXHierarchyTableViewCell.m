@@ -36,22 +36,22 @@
         self.depthIndicatorView = [UIView new];
         self.depthIndicatorView.backgroundColor = FLEXUtility.hierarchyIndentPatternColor;
         [self.contentView addSubview:self.depthIndicatorView];
-        
+
         UIImage *defaultCircleImage = [FLEXUtility circularImageWithColor:UIColor.blackColor radius:5];
         self.colorCircleImageView = [[UIImageView alloc] initWithImage:defaultCircleImage];
         [self.contentView addSubview:self.colorCircleImageView];
-        
+
         self.textLabel.font = UIFont.flex_defaultTableCellFont;
         self.detailTextLabel.font = UIFont.flex_defaultTableCellFont;
         self.accessoryType = UITableViewCellAccessoryDetailButton;
-        
+
         // Use a pattern-based color to simplify application of the checker pattern
         static UIColor *checkerPatternColor = nil;
         static dispatch_once_t once;
         dispatch_once(&once, ^{
             checkerPatternColor = [UIColor colorWithPatternImage:FLEXResources.checkerPattern];
         });
-        
+
         self.backgroundColorCheckerPatternView = [UIView new];
         self.backgroundColorCheckerPatternView.clipsToBounds = YES;
         self.backgroundColorCheckerPatternView.layer.borderColor = FLEXColor.tertiaryBackgroundColor.CGColor;
@@ -67,49 +67,49 @@
 - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
     UIColor *originalColour = self.viewBackgroundColorView.backgroundColor;
     [super setHighlighted:highlighted animated:animated];
-    
+
     // UITableViewCell changes all subviews in the contentView to backgroundColor = clearColor.
     // We want to preserve the hierarchy background color when highlighted.
     self.depthIndicatorView.backgroundColor = FLEXUtility.hierarchyIndentPatternColor;
-    
+
     self.viewBackgroundColorView.backgroundColor = originalColour;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     UIColor *originalColour = self.viewBackgroundColorView.backgroundColor;
     [super setSelected:selected animated:animated];
-    
+
     // See setHighlighted above.
     self.depthIndicatorView.backgroundColor = FLEXUtility.hierarchyIndentPatternColor;
-    
+
     self.viewBackgroundColorView.backgroundColor = originalColour;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     const CGFloat kContentPadding = 6;
     const CGFloat kDepthIndicatorWidthMultiplier = 4;
     const CGFloat kViewColorIndicatorSize = 22;
-    
+
     const CGRect bounds = self.contentView.bounds;
     const CGFloat centerY = CGRectGetMidY(bounds);
     const CGFloat textLabelCenterY = CGRectGetMidY(self.textLabel.frame);
-    
+
     BOOL hideCheckerView = self.backgroundColorCheckerPatternView.hidden;
     CGFloat maxWidth = CGRectGetMaxX(bounds);
     maxWidth -= (hideCheckerView ? kContentPadding : (kViewColorIndicatorSize + kContentPadding * 2));
-    
+
     CGRect depthIndicatorFrame = self.depthIndicatorView.frame = CGRectMake(
         kContentPadding, 0, self.viewDepth * kDepthIndicatorWidthMultiplier, CGRectGetHeight(bounds)
     );
-    
+
     // Circle goes after depth, and its center Y = textLabel's center Y
     CGRect circleFrame = self.colorCircleImageView.frame;
     circleFrame.origin.x = CGRectGetMaxX(depthIndicatorFrame) + kContentPadding;
     circleFrame.origin.y = FLEXFloor(textLabelCenterY - CGRectGetHeight(circleFrame) / 2.f);
     self.colorCircleImageView.frame = circleFrame;
-    
+
     // Text label goes after random color circle, width extends to the edge
     // of the contentView or to the padding before the color indicator view
     CGRect textLabelFrame = self.textLabel.frame;
@@ -117,7 +117,7 @@
     textLabelFrame.origin.x = textOriginX;
     textLabelFrame.size.width = maxWidth - textOriginX;
     self.textLabel.frame = textLabelFrame;
-    
+
     // detailTextLabel leading edge lines up with the circle, and the
     // width extends to the same max X as the same max X as the textLabel
     CGRect detailTextLabelFrame = self.detailTextLabel.frame;
@@ -125,7 +125,7 @@
     detailTextLabelFrame.origin.x = detailOriginX;
     detailTextLabelFrame.size.width = maxWidth - detailOriginX;
     self.detailTextLabel.frame = detailTextLabelFrame;
-    
+
     // Checker pattern view starts after the padding after the max X of textLabel,
     // and is centered vertically within the entire contentView
     self.backgroundColorCheckerPatternView.frame = CGRectMake(
@@ -134,7 +134,7 @@
         kViewColorIndicatorSize,
         kViewColorIndicatorSize
     );
-    
+
     // Background color view fills it's superview
     self.viewBackgroundColorView.frame = self.backgroundColorCheckerPatternView.bounds;
     self.backgroundColorCheckerPatternView.layer.cornerRadius = kViewColorIndicatorSize / 2.f;
@@ -160,7 +160,7 @@
 
 - (void)setIndicatedViewColor:(UIColor *)color {
     self.viewBackgroundColorView.backgroundColor = color;
-    
+
     // Hide the checker pattern view if there is no background color
     self.backgroundColorCheckerPatternView.hidden = color == nil;
     [self setNeedsLayout];

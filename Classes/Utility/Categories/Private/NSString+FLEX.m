@@ -61,7 +61,7 @@
         [temp addCharactersInString:@"_"];
         classNameAllowedCharactersSet = temp.copy;
     });
-    
+
     return classNameAllowedCharactersSet;
 }
 
@@ -77,11 +77,11 @@
 
 - (FLEXTypeEncoding)flex_pointeeType {
     if (!self.length) return FLEXTypeEncodingNull;
-    
+
     if (self.flex_firstNonConstType == FLEXTypeEncodingPointer) {
         return [self characterAtIndex:(self.flex_typeIsConst ? 2 : 1)];
     }
-    
+
     return FLEXTypeEncodingNull;
 }
 
@@ -94,7 +94,7 @@
     if (!self.flex_typeIsObjectOrClass) {
         return nil;
     }
-    
+
     NSScanner *scan = [NSScanner scannerWithString:self];
     // Skip const
     [scan scanString:@"r" intoString:nil];
@@ -102,7 +102,7 @@
     if (![scan scanString:@"@\"" intoString:nil]) {
         return nil;
     }
-    
+
     // Scan class name
     NSString *name = nil;
     if (![scan scanCharactersFromSet:self.flex_classNameAllowedCharactersSet intoString:&name]) {
@@ -112,7 +112,7 @@
     if (![scan scanString:@"\"" intoString:nil]) {
         return nil;
     }
-    
+
     // Return found class
     return NSClassFromString(name);
 }

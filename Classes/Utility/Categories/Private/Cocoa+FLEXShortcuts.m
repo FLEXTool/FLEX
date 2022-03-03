@@ -17,7 +17,7 @@
             return @"Cancel style";
         case UIAlertActionStyleDestructive:
             return @"Destructive style";
-            
+
         default:
             return [NSString stringWithFormat:@"Unknown (%@)", @(self.style)];
     }

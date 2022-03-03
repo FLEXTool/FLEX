@@ -195,19 +195,19 @@
 
 - (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender {
     NSArray<UIMenuElement *> *existingItems = [super menuItemsForRow:row sender:sender];
-    
+
     // These two metadata kinds don't any of the additional options below
     switch (self.metadataKind) {
         case FLEXMetadataKindClassHierarchy:
         case FLEXMetadataKindOther:
             return existingItems;
-            
+
         default: break;
     }
-    
+
     id<FLEXRuntimeMetadata> metadata = self.metadata[row];
     NSMutableArray<UIMenuElement *> *menuItems = [NSMutableArray new];
-    
+
     [menuItems addObject:[UIAction
         actionWithTitle:@"Explore Metadata"
         image:nil
@@ -222,7 +222,7 @@
         additionalActionsWithTarget:self.explorer.object sender:sender
     ]];
     [menuItems addObjectsFromArray:existingItems];
-    
+
     return menuItems.copy;
 }
 

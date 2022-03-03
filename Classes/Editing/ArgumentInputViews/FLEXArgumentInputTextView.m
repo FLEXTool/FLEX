@@ -104,7 +104,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     self.inputTextView.frame = CGRectMake(0, self.topInputFieldVerticalLayoutGuide, self.bounds.size.width, [self inputTextViewHeight]);
     // Placeholder label is positioned by insetting then origin
     // by the content inset then the text container inset

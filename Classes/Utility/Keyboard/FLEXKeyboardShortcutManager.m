@@ -61,14 +61,14 @@
         UIKeyInputEscape : @"␛",
         @" " : @"␠"
     };
-    
+
     NSString *prettyKey = nil;
     if (self.key && keyMappings[self.key]) {
         prettyKey = keyMappings[self.key];
     } else {
         prettyKey = [self.key uppercaseString];
     }
-    
+
     NSString *prettyFlags = @"";
     if (self.flags & UIKeyModifierControl) {
         prettyFlags = [prettyFlags stringByAppendingString:@"⌃"];
@@ -82,12 +82,12 @@
     if (self.flags & UIKeyModifierCommand) {
         prettyFlags = [prettyFlags stringByAppendingString:@"⌘"];
     }
-    
+
     // Fudging to get easy columns with tabs
     if (prettyFlags.length < 2) {
         prettyKey = [prettyKey stringByAppendingString:@"\t"];
     }
-    
+
     return [NSString stringWithFormat:@"%@%@\t%@", prettyFlags, prettyKey, self.helpDescription];
 }
 
@@ -133,24 +133,24 @@
 + (void)load {
     SEL originalKeyEventSelector = NSSelectorFromString(@"handleKeyUIEvent:");
     SEL swizzledKeyEventSelector = [FLEXUtility swizzledSelectorForSelector:originalKeyEventSelector];
-    
+
     void (^handleKeyUIEventSwizzleBlock)(UIApplication *, UIEvent *) = ^(UIApplication *slf, UIEvent *event) {
-        
+
         [[[self class] sharedManager] handleKeyboardEvent:event];
-        
+
         ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledKeyEventSelector, event);
     };
-    
+
     [FLEXUtility replaceImplementationOfKnownSelector:originalKeyEventSelector
         onClass:[UIApplication class]
         withBlock:handleKeyUIEventSwizzleBlock
         swizzledSelector:swizzledKeyEventSelector
     ];
-    
+
     if ([[UITouch class] instancesRespondToSelector:@selector(maximumPossibleForce)]) {
         SEL originalSendEventSelector = NSSelectorFromString(@"sendEvent:");
         SEL swizzledSendEventSelector = [FLEXUtility swizzledSelectorForSelector:originalSendEventSelector];
-        
+
         void (^sendEventSwizzleBlock)(UIApplication *, UIEvent *) = ^(UIApplication *slf, UIEvent *event) {
             if (event.type == UIEventTypeTouches) {
                 FLEXKeyboardShortcutManager *keyboardManager = FLEXKeyboardShortcutManager.sharedManager;
@@ -173,23 +173,23 @@
                     }
                 }
             }
-            
+
             ((void(*)(id, SEL, id))objc_msgSend)(slf, swizzledSendEventSelector, event);
         };
-        
+
         [FLEXUtility replaceImplementationOfKnownSelector:originalSendEventSelector
             onClass:[UIApplication class]
             withBlock:sendEventSwizzleBlock
             swizzledSelector:swizzledSendEventSelector
         ];
-        
+
         SEL originalSupportsTouchPressureSelector = NSSelectorFromString(@"_supportsForceTouch");
         SEL swizzledSupportsTouchPressureSelector = [FLEXUtility swizzledSelectorForSelector:originalSupportsTouchPressureSelector];
-        
+
         BOOL (^supportsTouchPressureSwizzleBlock)(UIDevice *) = ^BOOL(UIDevice *slf) {
             return YES;
         };
-        
+
         [FLEXUtility replaceImplementationOfKnownSelector:originalSupportsTouchPressureSelector
             onClass:[UIDevice class]
             withBlock:supportsTouchPressureSwizzleBlock
@@ -200,12 +200,12 @@
 
 - (instancetype)init {
     self = [super init];
-    
+
     if (self) {
         _actionsForKeyInputs = [NSMutableDictionary new];
         _enabled = YES;
     }
-    
+
     return self;
 }
 
@@ -230,28 +230,28 @@ static const long kFLEXCommandKeyCode = 0xe3;
     if (!self.enabled) {
         return;
     }
-    
+
     NSString *modifiedInput = nil;
     NSString *unmodifiedInput = nil;
     UIKeyModifierFlags flags = 0;
     BOOL isKeyDown = NO;
-    
+
     if ([event respondsToSelector:@selector(_modifiedInput)]) {
         modifiedInput = [event _modifiedInput];
     }
-    
+
     if ([event respondsToSelector:@selector(_unmodifiedInput)]) {
         unmodifiedInput = [event _unmodifiedInput];
     }
-    
+
     if ([event respondsToSelector:@selector(_modifierFlags)]) {
         flags = [event _modifierFlags];
     }
-    
+
     if ([event respondsToSelector:@selector(_isKeyDown)]) {
         isKeyDown = [event _isKeyDown];
     }
-    
+
     BOOL interactionEnabled = !UIApplication.sharedApplication.isIgnoringInteractionEvents;
     BOOL hasFirstResponder = NO;
     if (isKeyDown && modifiedInput.length > 0 && interactionEnabled) {
@@ -263,7 +263,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
                 break;
             }
         }
-        
+
         // Ignore key commands (except escape) when there's an active responder
         if (firstResponder) {
             if ([unmodifiedInput isEqual:UIKeyInputEscape]) {
@@ -271,29 +271,29 @@ static const long kFLEXCommandKeyCode = 0xe3;
             }
         } else {
             FLEXKeyInput *exactMatch = [FLEXKeyInput keyInputForKey:unmodifiedInput flags:flags];
-            
+
             dispatch_block_t actionBlock = self.actionsForKeyInputs[exactMatch];
-            
+
             if (!actionBlock) {
                 FLEXKeyInput *shiftMatch = [FLEXKeyInput
                     keyInputForKey:modifiedInput flags:flags&(~UIKeyModifierShift)
                 ];
                 actionBlock = self.actionsForKeyInputs[shiftMatch];
             }
-            
+
             if (!actionBlock) {
                 FLEXKeyInput *capitalMatch = [FLEXKeyInput
                     keyInputForKey:[unmodifiedInput uppercaseString] flags:flags
                 ];
                 actionBlock = self.actionsForKeyInputs[capitalMatch];
             }
-            
+
             if (actionBlock) {
                 actionBlock();
             }
         }
     }
-    
+
     // Calling _keyCode on events from the simulator keyboard will crash.
     // It is only safe to call _keyCode when there's not an active responder.
     if (!hasFirstResponder && [event respondsToSelector:@selector(_keyCode)]) {

@@ -94,14 +94,14 @@
         _entryPool = [[NSMutableArray alloc] init];
         _lock = [[NSLock alloc] init];
         _totalCost = 0;
-        
+
 #if TARGET_OS_IPHONE
-        
+
         //clean up in the event of a memory warning
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cleanUpAllObjects) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
-        
+
 #endif
-        
+
     }
     return self;
 }
@@ -205,7 +205,7 @@
                 return (NSComparisonResult)MIN(1, MAX(-1, entry1.sequenceNumber - entry2.sequenceNumber));
             }];
         }
-            
+
         //remove all items individually
         for (id key in keys)
         {
@@ -238,7 +238,7 @@
     NSArray *entries = [[_cache allValues] sortedArrayUsingComparator:^NSComparisonResult(OSCacheEntry *entry1, OSCacheEntry *entry2) {
         return (NSComparisonResult)MIN(1, MAX(-1, entry1.sequenceNumber - entry2.sequenceNumber));
     }];
-    
+
     //renumber items
     NSInteger index = 0;
     for (OSCacheEntry *entry in entries)

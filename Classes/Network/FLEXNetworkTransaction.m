@@ -18,19 +18,19 @@
         case FLEXNetworkTransactionStateUnstarted:
             readableString = @"Unstarted";
             break;
-            
+
         case FLEXNetworkTransactionStateAwaitingResponse:
             readableString = @"Awaiting Response";
             break;
-            
+
         case FLEXNetworkTransactionStateReceivingData:
             readableString = @"Receiving Data";
             break;
-            
+
         case FLEXNetworkTransactionStateFinished:
             readableString = @"Finished";
             break;
-            
+
         case FLEXNetworkTransactionStateFailed:
             readableString = @"Failed";
             break;
@@ -51,7 +51,7 @@
         dateFormatter = [NSDateFormatter new];
         dateFormatter.dateFormat = @"HH:mm:ss";
     });
-    
+
     return [dateFormatter stringFromDate:date];
 }
 
@@ -94,14 +94,14 @@
         if (!name.length) {
             name = @"/";
         }
-        
+
         if (_request.URL.query) {
             name = [name stringByAppendingFormat:@"?%@", self.request.URL.query];
         }
-        
+
         _primaryDescription = name;
     }
-    
+
     return _primaryDescription;
 }
 
@@ -111,33 +111,33 @@
         if (mutablePathComponents.count > 0) {
             [mutablePathComponents removeLastObject];
         }
-        
+
         NSString *path = self.request.URL.host;
         for (NSString *pathComponent in mutablePathComponents) {
             path = [path stringByAppendingPathComponent:pathComponent];
         }
-        
+
         _secondaryDescription = path;
     }
-    
+
     return _secondaryDescription;
 }
 
 - (NSString *)tertiaryDescription {
     if (!_tertiaryDescription) {
         NSMutableArray<NSString *> *detailComponents = [NSMutableArray new];
-        
+
         NSString *timestamp = [self timestampStringFromRequestDate:self.startTime];
         if (timestamp.length > 0) {
             [detailComponents addObject:timestamp];
         }
-        
+
         // Omit method for GET (assumed as default)
         NSString *httpMethod = self.request.HTTPMethod;
         if (httpMethod.length > 0) {
             [detailComponents addObject:httpMethod];
         }
-        
+
         if (self.state == FLEXNetworkTransactionStateFinished || self.state == FLEXNetworkTransactionStateFailed) {
             [detailComponents addObjectsFromArray:self.details];
         } else {
@@ -145,10 +145,10 @@
             NSString *state = [self.class readableStringFromTransactionState:self.state];
             [detailComponents addObject:state];
         }
-        
+
         _tertiaryDescription = [detailComponents componentsJoinedByString:@" ・ "];
     }
-    
+
     return _tertiaryDescription;
 }
 
@@ -176,12 +176,12 @@
 
 - (NSString *)description {
     NSString *description = [super description];
-    
+
     description = [description stringByAppendingFormat:@" id = %@;", self.requestID];
     description = [description stringByAppendingFormat:@" url = %@;", self.request.URL];
     description = [description stringByAppendingFormat:@" duration = %f;", self.duration];
     description = [description stringByAppendingFormat:@" receivedDataLength = %lld", self.receivedDataLength];
-    
+
     return description;
 }
 
@@ -209,7 +209,7 @@
 
 - (NSArray *)detailString {
     NSMutableArray<NSString *> *detailComponents = [NSMutableArray new];
-    
+
     NSString *statusCodeString = [FLEXUtility statusCodeStringFromURLResponse:self.response];
     if (statusCodeString.length > 0) {
         [detailComponents addObject:statusCodeString];
@@ -227,7 +227,7 @@
     NSString *latency = [FLEXUtility stringFromRequestDuration:self.latency];
     NSString *duration = [NSString stringWithFormat:@"%@ (%@)", totalDuration, latency];
     [detailComponents addObject:duration];
-    
+
     return detailComponents;
 }
 
@@ -247,20 +247,20 @@
     FLEXWebsocketTransaction *wst = [self withRequest:task.originalRequest startTime:started];
     wst->_message = message;
     wst->_direction = direction;
-    
+
     // Populate receivedDataLength
     if (direction == FLEXWebsocketIncoming) {
         wst.receivedDataLength = wst.dataLength;
         wst.state = FLEXNetworkTransactionStateFinished;
     }
-    
+
     // Populate thumbnail image
     if (message.type == NSURLSessionWebSocketMessageTypeData) {
         wst.thumbnail = FLEXResources.binaryIcon;
     } else {
         wst.thumbnail = FLEXResources.textIcon;
     }
-    
+
     return wst;
 }
 
@@ -285,10 +285,10 @@
         if (self.message.type == NSURLSessionWebSocketMessageTypeString) {
             return self.message.string.length;
         }
-        
+
         return self.message.data.length;
     }
-    
+
     return 0;
 }
 

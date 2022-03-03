@@ -39,16 +39,16 @@ static Class RLMRealmClass = nil;
     if (!RLMRealmClass) {
         return nil;
     }
-    
+
     self = [super init];
     if (self) {
         _path = path;
-        
+
         if (![self open]) {
             return nil;
         }
     }
-    
+
     return self;
 }
 
@@ -57,12 +57,12 @@ static Class RLMRealmClass = nil;
     if (!RLMRealmClass || !configurationClass) {
         return NO;
     }
-    
+
     NSError *error = nil;
     id configuration = [configurationClass new];
     [(RLMRealmConfiguration *)configuration setFileURL:[NSURL fileURLWithPath:self.path]];
     self.realm = [RLMRealmClass realmWithConfiguration:configuration error:&error];
-    
+
     return (error == nil);
 }
 
@@ -89,7 +89,7 @@ static Class RLMRealmClass = nil;
     if (results.count == 0 || !objectSchema) {
         return nil;
     }
-    
+
     // Map results to an array of rows
     return [NSArray flex_mapped:results block:^id(RLMObject *result, NSUInteger idx) {
         // Map each row to an array of the values of its properties 

@@ -19,7 +19,7 @@
     NSString *_name;
     NSString *_typeEncoding;
     IMP      _implementation;
-    
+
     NSString *_flex_description;
 }
 

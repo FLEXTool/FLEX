@@ -214,9 +214,9 @@ pod 'FLEX', :configurations => ['Debug']
 	  /usr/local/bin/carthage copy-frameworks
 	fi
 	```
-	
+
 	Finally, add `$(SRCROOT)/Carthage/Build/iOS/FLEX.framework` as input file of this script phase.
-	
+
 <img width=75% height=75% src=https://user-images.githubusercontent.com/8371943/70274062-0d4b3f80-1771-11ea-94ea-ca7e7b5ca244.jpg>
 
 ### Swift Package Manager

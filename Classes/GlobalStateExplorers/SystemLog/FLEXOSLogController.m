@@ -53,7 +53,7 @@ static uint8_t (*OSLogGetType)(void *);
     dispatch_once(&onceToken, ^{
         shared = [self new];
     });
-    
+
     return shared;
 }
 
@@ -72,7 +72,7 @@ static uint8_t (*OSLogGetType)(void *);
         _levelInfo = NO;
         _subsystemInfo = NO;
     }
-    
+
     return self;
 }
 
@@ -83,7 +83,7 @@ static uint8_t (*OSLogGetType)(void *);
 
 - (void)setPersistent:(BOOL)persistent {
     if (_persistent == persistent) return;
-    
+
     _persistent = persistent;
     self.messages = persistent ? [NSMutableArray new] : nil;
 }
@@ -93,7 +93,7 @@ static uint8_t (*OSLogGetType)(void *);
         // >= iOS 10 is required
         return NO;
     }
-    
+
     // Are we already monitoring?
     if (self.stream) {
         // Should we send out the "persisted" messages?
@@ -102,7 +102,7 @@ static uint8_t (*OSLogGetType)(void *);
                 self.updateHandler(self.messages);
             });
         }
-        
+
         return YES;
     }
 
@@ -150,7 +150,7 @@ static uint8_t (*OSLogGetType)(void *);
                 (OSLogGetType != NULL) &&
                 (proc_name != NULL);
     });
-    
+
     return hasSPI;
 }
 
@@ -163,10 +163,10 @@ static uint8_t (*OSLogGetType)(void *);
         if (entry->type == OS_ACTIVITY_STREAM_TYPE_LOG_MESSAGE ||
             entry->type == OS_ACTIVITY_STREAM_TYPE_LEGACY_LOG_MESSAGE) {
             os_log_message_t log_message = &entry->log_message;
-            
+
             // Get date
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:log_message->tv_gmt.tv_sec];
-            
+
             // Get log message text
             // https://github.com/limneos/oslog/issues/1
             // https://github.com/FLEXTool/FLEX/issues/564
@@ -186,7 +186,7 @@ static uint8_t (*OSLogGetType)(void *);
             });
         }
     }
-    
+
     return YES;
 }
 

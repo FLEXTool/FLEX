@@ -333,7 +333,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
                     if (!instance) {
                         cls = object_getClass(cls);
                     }
-                    
+
                     // Method is absolute
                     return [FLEXMethod selector:sel class:cls];
                 }]];
@@ -409,7 +409,7 @@ static inline NSString * TBWildcardMap(NSString *token, NSString *candidate, TBW
             }
         }
     }
-    
+
     return [NSMutableArray new];
 }
 
