@@ -104,7 +104,7 @@
 }
 
 - (BOOL)canShowToolbar {
-    return self.topViewController.toolbarItems.count;
+    return self.topViewController.toolbarItems.count > 0;
 }
 
 - (void)addNavigationBarItemsToViewController:(UINavigationItem *)navigationItem {
