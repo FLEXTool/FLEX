@@ -77,7 +77,8 @@
         @"frame", @"bounds", @"center", @"transform",
         @"backgroundColor", @"alpha", @"opaque", @"hidden",
         @"clipsToBounds", @"userInteractionEnabled", @"layer",
-        @"superview", @"subviews"
+        @"superview", @"subviews",
+        @"accessibilityIdentifier", @"accessibilityLabel"
     ]).forClass(UIView.class);
 
     // UILabel
@@ -86,7 +87,8 @@
         @"textColor", @"textAlignment", @"numberOfLines",
         @"lineBreakMode", @"enabled", @"backgroundColor",
         @"alpha", @"hidden", @"preferredMaxLayoutWidth",
-        @"superview", @"subviews"
+        @"superview", @"subviews",
+        @"accessibilityIdentifier", @"accessibilityLabel"
     ]).forClass(UILabel.class);
 
     // UIWindow
@@ -111,14 +113,16 @@
     self.append.ivars(ivars).methods(methods).properties(@[
         @"enabled", @"allTargets", @"frame",
         @"backgroundColor", @"hidden", @"clipsToBounds",
-        @"userInteractionEnabled", @"superview", @"subviews"
+        @"userInteractionEnabled", @"superview", @"subviews",
+        @"accessibilityIdentifier", @"accessibilityLabel"
     ]).forClass(UIControl.class);
 
     // UIButton
     self.append.ivars(ivars).properties(@[
         @"titleLabel", @"font", @"imageView", @"tintColor",
         @"currentTitle", @"currentImage", @"enabled", @"frame",
-        @"superview", @"subviews"
+        @"superview", @"subviews",
+        @"accessibilityIdentifier", @"accessibilityLabel"
     ]).forClass(UIButton.class);
     
     // UIImageView
@@ -126,6 +130,7 @@
         @"image", @"animationImages", @"frame", @"bounds", @"center",
         @"transform", @"alpha", @"hidden", @"clipsToBounds",
         @"userInteractionEnabled", @"layer", @"superview", @"subviews",
+        @"accessibilityIdentifier", @"accessibilityLabel"
     ]).forClass(UIImageView.class);
 }
 
