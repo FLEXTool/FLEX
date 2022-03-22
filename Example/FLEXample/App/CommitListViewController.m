@@ -33,6 +33,7 @@
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem
         flex_itemWithTitle:@"FLEX" target:FLEXManager.sharedManager action:@selector(toggleExplorer)
     ];
+    self.navigationItem.rightBarButtonItem.accessibilityIdentifier = @"toggle-explorer";
     
     // Load and process commits
     NSString *commitsURL = @"https://api.github.com/repos/Flipboard/FLEX/commits";
