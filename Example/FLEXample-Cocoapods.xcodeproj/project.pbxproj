@@ -175,7 +175,6 @@
 				92E1E1EECA3F2533E1B8BF35 /* Pods-FLEXample.debug.xcconfig */,
 				BE1780244AEC542DDB894B08 /* Pods-FLEXample.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -432,7 +431,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"FLEXample/Supporting Files/Preview Content\"";
-				DEVELOPMENT_TEAM = S6N2F22V2Z;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "FLEXample/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -457,7 +456,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"FLEXample/Supporting Files/Preview Content\"";
-				DEVELOPMENT_TEAM = S6N2F22V2Z;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = "FLEXample/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
