@@ -38,9 +38,26 @@
     self = [self initWithNibName:nil bundle:nil];
     if (self) {
         self.originalText = text;
-        NSString *htmlString = [NSString stringWithFormat:@"<head><style>:root{ color-scheme: light dark; }</style><meta name='viewport' content='initial-scale=1.0'></head><body><pre>%@</pre></body>", [FLEXUtility stringByEscapingHTMLEntitiesInString:text]];
-        [self.webView loadHTMLString:htmlString baseURL:nil];
+
+        NSString *html = @"<head><style>:root{ color-scheme: light dark; }</style>"
+            "<meta name='viewport' content='initial-scale=1.0'></head><body><pre>%@</pre></body>";
+
+        // Loading message for when input text takes a long time to escape
+        NSString *loadingMessage = [NSString stringWithFormat:html, @"Loading..."];
+        [self.webView loadHTMLString:loadingMessage baseURL:nil];
+
+        // Escape HTML on a background thread
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *escapedText = [FLEXUtility stringByEscapingHTMLEntitiesInString:text];
+            NSString *htmlString = [NSString stringWithFormat:html, escapedText];
+
+            // Update webview on the main thread
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.webView loadHTMLString:htmlString baseURL:nil];
+            });
+        });
     }
+
     return self;
 }
 
