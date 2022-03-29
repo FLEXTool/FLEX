@@ -20,3 +20,4 @@ DerivedData
 /Example/Pods
 Podfile.lock
 IDEWorkspaceChecks.plist
+*.xcworkspace
