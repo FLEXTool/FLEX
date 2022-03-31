@@ -145,7 +145,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         }
 
         [self notify:kFLEXNetworkRecorderTransactionsClearedNotification transaction:nil];
-    }
+    });
 }
 
 - (void)clearExcludedTransactions {
