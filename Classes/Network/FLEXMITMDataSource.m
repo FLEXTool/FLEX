@@ -53,8 +53,9 @@
         self.filteredTransactions = self.allTransactions;
         if (completion) completion(self);
     } else {
+        NSArray<FLEXNetworkTransaction *> *allTransactions = self.allTransactions.copy;
         [self onBackgroundQueue:^NSArray *{
-            return [self.allTransactions flex_filtered:^BOOL(FLEXNetworkTransaction *entry, NSUInteger idx) {
+            return [allTransactions flex_filtered:^BOOL(FLEXNetworkTransaction *entry, NSUInteger idx) {
                 return [entry matchesQuery:searchString];
             }];
         } thenOnMainQueue:^(NSArray *filteredNetworkTransactions) {
