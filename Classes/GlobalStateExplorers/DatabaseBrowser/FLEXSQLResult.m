@@ -13,7 +13,7 @@
 @synthesize keyedRows = _keyedRows;
 
 + (instancetype)message:(NSString *)message {
-    return [[self alloc] initWithmessage:message columns:nil rows:nil];
+    return [[self alloc] initWithMessage:message columns:nil rows:nil];
 }
 
 + (instancetype)error:(NSString *)message {
@@ -23,12 +23,12 @@
 }
 
 + (instancetype)columns:(NSArray<NSString *> *)columnNames rows:(NSArray<NSArray<NSString *> *> *)rowData {
-    return [[self alloc] initWithmessage:nil columns:columnNames rows:rowData];
+    return [[self alloc] initWithMessage:nil columns:columnNames rows:rowData];
 }
 
-- (id)initWithmessage:(NSString *)message columns:(NSArray *)columns rows:(NSArray<NSArray *> *)rows {
+- (instancetype)initWithMessage:(NSString *)message columns:(NSArray<NSString *> *)columns rows:(NSArray<NSArray<NSString *> *> *)rows {
     NSParameterAssert(message || (columns && rows));
-    NSParameterAssert(columns.count == rows.firstObject.count);
+    NSParameterAssert(rows.count == 0 || columns.count == rows.firstObject.count);
     
     self = [super init];
     if (self) {
