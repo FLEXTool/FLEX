@@ -177,8 +177,6 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
             return;
         }
     }
-    
-    FLEXHTTPTransaction *transaction = [FLEXHTTPTransaction request:request identifier:requestID];
 
     // Before async block to keep times accurate
     if (redirectResponse) {
@@ -187,6 +185,11 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
     }
 
     dispatch_async(self.queue, ^{
+        FLEXHTTPTransaction *transaction = [FLEXHTTPTransaction request:request identifier:requestID];
+        if (!transaction) {
+            return;
+        }
+
         [self.orderedHTTPTransactions insertObject:transaction atIndex:0];
         self.requestIDsToTransactions[requestID] = transaction;
 
