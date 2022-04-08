@@ -175,6 +175,11 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     [self.logMessages mutate:^(NSMutableArray *list) {
         [list addObjectsFromArray:newMessages];
     }];
+    
+    // Re-filter messages to filter against new messages
+    if (self.filterText.length) {
+        [self updateSearchResults:self.filterText];
+    }
 
     // "Follow" the log as new messages stream in if we were previously near the bottom.
     BOOL wasNearBottom = self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.frame.size.height - 100.0;
