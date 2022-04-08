@@ -98,7 +98,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
-    self.showSearchBarInitially = NO;
+    self.pinSearchBar = YES;
 
     weakify(self)
     id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) { strongify(self)
