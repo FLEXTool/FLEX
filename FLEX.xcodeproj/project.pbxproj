@@ -139,6 +139,7 @@
 		94AAF0381BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */; };
 		94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 942DCD821BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		A42069CF2809377F00EBCAEA /* FLEXFirebaseTransaction.mm in Sources */ = {isa = PBXBuildFile; fileRef = A42069CE2809377F00EBCAEA /* FLEXFirebaseTransaction.mm */; };
 		C301994A2409B38A00759E8E /* CALayer+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C30199482409B38A00759E8E /* CALayer+FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C301994B2409B38A00759E8E /* CALayer+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C30199492409B38A00759E8E /* CALayer+FLEX.m */; };
 		C309B82F223ED64400B228EC /* FLEXLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = C309B82D223ED64400B228EC /* FLEXLogController.h */; };
@@ -512,6 +513,7 @@
 		94A515241C4CA2080063292F /* FLEXExplorerToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXExplorerToolbarItem.m; path = Classes/Toolbar/FLEXExplorerToolbarItem.m; sourceTree = SOURCE_ROOT; };
 		94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXKeyboardHelpViewController.h; sourceTree = "<group>"; };
 		94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyboardHelpViewController.m; sourceTree = "<group>"; };
+		A42069CE2809377F00EBCAEA /* FLEXFirebaseTransaction.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXFirebaseTransaction.mm; sourceTree = "<group>"; };
 		C30199482409B38A00759E8E /* CALayer+FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CALayer+FLEX.h"; sourceTree = "<group>"; };
 		C30199492409B38A00759E8E /* CALayer+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CALayer+FLEX.m"; sourceTree = "<group>"; };
 		C309B82D223ED64400B228EC /* FLEXLogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXLogController.h; sourceTree = "<group>"; };
@@ -985,6 +987,7 @@
 				3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsController.m */,
 				3A4C94BB1B5B21410088C3F2 /* FLEXNetworkTransaction.h */,
 				3A4C94BC1B5B21410088C3F2 /* FLEXNetworkTransaction.m */,
+				A42069CE2809377F00EBCAEA /* FLEXFirebaseTransaction.mm */,
 				C35DAD7E2709140700AA95E6 /* FLEXHTTPTransactionDetailController.h */,
 				C35DAD7F2709140700AA95E6 /* FLEXHTTPTransactionDetailController.m */,
 				C35DAD8C2709143000AA95E6 /* FLEXMITMDataSource.h */,
@@ -1855,6 +1858,7 @@
 				3A4C95411B5B21410088C3F2 /* FLEXNetworkTransactionCell.m in Sources */,
 				C3DFCD952416BC6500BB7084 /* FLEXFilteringTableViewController.m in Sources */,
 				C3F527BE2318603F009CBA07 /* FLEXShortcutsSection.m in Sources */,
+				A42069CF2809377F00EBCAEA /* FLEXFirebaseTransaction.mm in Sources */,
 				3A4C94D61B5B21410088C3F2 /* FLEXObjectExplorerViewController.m in Sources */,
 				C383C3BD23B6B398007A321B /* UITextField+Range.m in Sources */,
 				3A4C94DE1B5B21410088C3F2 /* FLEXHeapEnumerator.m in Sources */,
