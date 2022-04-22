@@ -139,6 +139,7 @@
 		94AAF0381BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */; };
 		94AAF03A1BAF2F0300DE8760 /* FLEXKeyboardShortcutManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 942DCD821BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		A42069CF2809377F00EBCAEA /* FLEXFirebaseTransaction.mm in Sources */ = {isa = PBXBuildFile; fileRef = A42069CE2809377F00EBCAEA /* FLEXFirebaseTransaction.mm */; };
 		C301994A2409B38A00759E8E /* CALayer+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C30199482409B38A00759E8E /* CALayer+FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C301994B2409B38A00759E8E /* CALayer+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C30199492409B38A00759E8E /* CALayer+FLEX.m */; };
 		C309B82F223ED64400B228EC /* FLEXLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = C309B82D223ED64400B228EC /* FLEXLogController.h */; };
@@ -160,7 +161,7 @@
 		C313854923F5F7D50046E63C /* flex_fishhook.h in Headers */ = {isa = PBXBuildFile; fileRef = C313854723F5F7D50046E63C /* flex_fishhook.h */; };
 		C31C4A6923342A2200C35F12 /* FLEXMetadataSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C31C4A6723342A2200C35F12 /* FLEXMetadataSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C31C4A6A23342A2200C35F12 /* FLEXMetadataSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C31C4A6823342A2200C35F12 /* FLEXMetadataSection.m */; };
-		C31D93E423E38CBE005517BF /* FLEXBlockShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C31D93E223E38CBE005517BF /* FLEXBlockShortcuts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C31D93E423E38CBE005517BF /* FLEXBlockShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C31D93E223E38CBE005517BF /* FLEXBlockShortcuts.h */; };
 		C31D93E523E38CBE005517BF /* FLEXBlockShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C31D93E323E38CBE005517BF /* FLEXBlockShortcuts.m */; };
 		C31D93E823E38E97005517BF /* FLEXBlockDescription.h in Headers */ = {isa = PBXBuildFile; fileRef = C31D93E623E38E97005517BF /* FLEXBlockDescription.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C31D93E923E38E97005517BF /* FLEXBlockDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = C31D93E723E38E97005517BF /* FLEXBlockDescription.m */; };
@@ -181,11 +182,11 @@
 		C3490E20233BDD73002AE200 /* FLEXSingleRowSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C3490E1E233BDD73002AE200 /* FLEXSingleRowSection.m */; };
 		C34C9BDD23A7F2740031CA3E /* FLEXRuntime+UIKitHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = C34C9BDB23A7F2740031CA3E /* FLEXRuntime+UIKitHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C34C9BDE23A7F2740031CA3E /* FLEXRuntime+UIKitHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = C34C9BDC23A7F2740031CA3E /* FLEXRuntime+UIKitHelpers.m */; };
-		C34D4EB023A2ABD900C1F903 /* FLEXLayerShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C34D4EAE23A2ABD900C1F903 /* FLEXLayerShortcuts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C34D4EB023A2ABD900C1F903 /* FLEXLayerShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C34D4EAE23A2ABD900C1F903 /* FLEXLayerShortcuts.h */; };
 		C34D4EB123A2ABD900C1F903 /* FLEXLayerShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C34D4EAF23A2ABD900C1F903 /* FLEXLayerShortcuts.m */; };
 		C34D4EB423A2AF2A00C1F903 /* FLEXColorPreviewSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C34D4EB223A2AF2A00C1F903 /* FLEXColorPreviewSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C34D4EB523A2AF2A00C1F903 /* FLEXColorPreviewSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C34D4EB323A2AF2A00C1F903 /* FLEXColorPreviewSection.m */; };
-		C34D4EB823A2B17900C1F903 /* FLEXBundleShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C34D4EB623A2B17900C1F903 /* FLEXBundleShortcuts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C34D4EB823A2B17900C1F903 /* FLEXBundleShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C34D4EB623A2B17900C1F903 /* FLEXBundleShortcuts.h */; };
 		C34D4EB923A2B17900C1F903 /* FLEXBundleShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C34D4EB723A2B17900C1F903 /* FLEXBundleShortcuts.m */; };
 		C34EE30821CB23CC00BD3A7C /* FLEXOSLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = C34EE30621CB23CC00BD3A7C /* FLEXOSLogController.h */; };
 		C3511B9122D7C99E0057BAB7 /* FLEXGlobalsSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C3511B8F22D7C99E0057BAB7 /* FLEXGlobalsSection.h */; };
@@ -262,7 +263,7 @@
 		C38DF0EA22CFE4370077B4AD /* FLEXTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C38DF0E822CFE4370077B4AD /* FLEXTableViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C38DF0EB22CFE4370077B4AD /* FLEXTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C38DF0E922CFE4370077B4AD /* FLEXTableViewController.m */; };
 		C38EF26223A2FCD20047A7EC /* FLEXViewControllerShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C38EF26023A2FCD20047A7EC /* FLEXViewControllerShortcuts.m */; };
-		C38EF26323A2FCD20047A7EC /* FLEXViewControllerShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C38EF26123A2FCD20047A7EC /* FLEXViewControllerShortcuts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C38EF26323A2FCD20047A7EC /* FLEXViewControllerShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C38EF26123A2FCD20047A7EC /* FLEXViewControllerShortcuts.h */; };
 		C38F3F31230C958F004E3731 /* FLEXAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = C38F3F2F230C958F004E3731 /* FLEXAlert.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C38F3F32230C958F004E3731 /* FLEXAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = C38F3F30230C958F004E3731 /* FLEXAlert.m */; };
 		C397E318240EC98F0091E4EC /* FLEXSQLResult.h in Headers */ = {isa = PBXBuildFile; fileRef = C397E316240EC98F0091E4EC /* FLEXSQLResult.h */; };
@@ -294,9 +295,9 @@
 		C398627623AD79B7007E6793 /* NSString+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C398627423AD79B6007E6793 /* NSString+FLEX.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C398627723AD79B7007E6793 /* NSString+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C398627523AD79B7007E6793 /* NSString+FLEX.m */; };
 		C398682523AC359600E9E391 /* FLEXShortcutsFactory+Defaults.m in Sources */ = {isa = PBXBuildFile; fileRef = C398682323AC359600E9E391 /* FLEXShortcutsFactory+Defaults.m */; };
-		C398682623AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h in Headers */ = {isa = PBXBuildFile; fileRef = C398682423AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C398682623AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h in Headers */ = {isa = PBXBuildFile; fileRef = C398682423AC359600E9E391 /* FLEXShortcutsFactory+Defaults.h */; };
 		C398682823AC36EC00E9E391 /* FLEXViewShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F527C4231891F6009CBA07 /* FLEXViewShortcuts.m */; };
-		C398682923AC370100E9E391 /* FLEXViewShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F527C3231891F6009CBA07 /* FLEXViewShortcuts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C398682923AC370100E9E391 /* FLEXViewShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F527C3231891F6009CBA07 /* FLEXViewShortcuts.h */; };
 		C39EADC923F37B89005618BE /* FLEXTypeEncodingParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C3854DF123F36C9E00FCD1E2 /* FLEXTypeEncodingParser.m */; };
 		C39ED92822D63F3200B5773A /* FLEXAddressExplorerCoordinator.h in Headers */ = {isa = PBXBuildFile; fileRef = C39ED92622D63F3200B5773A /* FLEXAddressExplorerCoordinator.h */; };
 		C39ED92922D63F3200B5773A /* FLEXAddressExplorerCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = C39ED92722D63F3200B5773A /* FLEXAddressExplorerCoordinator.m */; };
@@ -334,7 +335,7 @@
 		C3E5DA02231700EE00E655DB /* FLEXObjectInfoSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C3E5DA00231700EE00E655DB /* FLEXObjectInfoSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3EB6F8D242E9C83006EA386 /* FLEXRuntimeExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = C3EB6F8B242E9C83006EA386 /* FLEXRuntimeExporter.m */; };
 		C3EB6F8E242E9C83006EA386 /* FLEXRuntimeExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = C3EB6F8C242E9C83006EA386 /* FLEXRuntimeExporter.h */; };
-		C3EE76BF22DFC63600EC0AA0 /* FLEXScopeCarousel.h in Headers */ = {isa = PBXBuildFile; fileRef = C3EE76BD22DFC63600EC0AA0 /* FLEXScopeCarousel.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C3EE76BF22DFC63600EC0AA0 /* FLEXScopeCarousel.h in Headers */ = {isa = PBXBuildFile; fileRef = C3EE76BD22DFC63600EC0AA0 /* FLEXScopeCarousel.h */; };
 		C3EE76C022DFC63600EC0AA0 /* FLEXScopeCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = C3EE76BE22DFC63600EC0AA0 /* FLEXScopeCarousel.m */; };
 		C3F31D3D2267D883003C991A /* FLEXSubtitleTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F31D342267D883003C991A /* FLEXSubtitleTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3F31D3E2267D883003C991A /* FLEXTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F31D352267D883003C991A /* FLEXTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -346,11 +347,11 @@
 		C3F31D442267D883003C991A /* FLEXTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F31D3C2267D883003C991A /* FLEXTableView.m */; };
 		C3F527BD2318603F009CBA07 /* FLEXShortcutsSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F527BB2318603F009CBA07 /* FLEXShortcutsSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3F527BE2318603F009CBA07 /* FLEXShortcutsSection.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F527BC2318603F009CBA07 /* FLEXShortcutsSection.m */; };
-		C3F527C12318670F009CBA07 /* FLEXImageShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F527BF2318670F009CBA07 /* FLEXImageShortcuts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C3F527C12318670F009CBA07 /* FLEXImageShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F527BF2318670F009CBA07 /* FLEXImageShortcuts.h */; };
 		C3F527C22318670F009CBA07 /* FLEXImageShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F527C02318670F009CBA07 /* FLEXImageShortcuts.m */; };
 		C3F646C1239EAA8F00D4A011 /* UIPasteboard+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F646BF239EAA8F00D4A011 /* UIPasteboard+FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3F646C2239EAA8F00D4A011 /* UIPasteboard+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F646C0239EAA8F00D4A011 /* UIPasteboard+FLEX.m */; };
-		C3F646F223A045DB00D4A011 /* FLEXClassShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F646F023A045DB00D4A011 /* FLEXClassShortcuts.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C3F646F223A045DB00D4A011 /* FLEXClassShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F646F023A045DB00D4A011 /* FLEXClassShortcuts.h */; };
 		C3F646F323A045DB00D4A011 /* FLEXClassShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F646F123A045DB00D4A011 /* FLEXClassShortcuts.m */; };
 		C3F646F623A04A7500D4A011 /* FLEXShortcut.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F646F423A04A7500D4A011 /* FLEXShortcut.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3F646F723A04A7500D4A011 /* FLEXShortcut.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F646F523A04A7500D4A011 /* FLEXShortcut.m */; };
@@ -512,6 +513,7 @@
 		94A515241C4CA2080063292F /* FLEXExplorerToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FLEXExplorerToolbarItem.m; path = Classes/Toolbar/FLEXExplorerToolbarItem.m; sourceTree = SOURCE_ROOT; };
 		94AAF0361BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXKeyboardHelpViewController.h; sourceTree = "<group>"; };
 		94AAF0371BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyboardHelpViewController.m; sourceTree = "<group>"; };
+		A42069CE2809377F00EBCAEA /* FLEXFirebaseTransaction.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXFirebaseTransaction.mm; sourceTree = "<group>"; };
 		C30199482409B38A00759E8E /* CALayer+FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CALayer+FLEX.h"; sourceTree = "<group>"; };
 		C30199492409B38A00759E8E /* CALayer+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CALayer+FLEX.m"; sourceTree = "<group>"; };
 		C309B82D223ED64400B228EC /* FLEXLogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXLogController.h; sourceTree = "<group>"; };
@@ -985,6 +987,7 @@
 				3A4C94BA1B5B21410088C3F2 /* FLEXNetworkSettingsController.m */,
 				3A4C94BB1B5B21410088C3F2 /* FLEXNetworkTransaction.h */,
 				3A4C94BC1B5B21410088C3F2 /* FLEXNetworkTransaction.m */,
+				A42069CE2809377F00EBCAEA /* FLEXFirebaseTransaction.mm */,
 				C35DAD7E2709140700AA95E6 /* FLEXHTTPTransactionDetailController.h */,
 				C35DAD7F2709140700AA95E6 /* FLEXHTTPTransactionDetailController.m */,
 				C35DAD8C2709143000AA95E6 /* FLEXMITMDataSource.h */,
@@ -1855,6 +1858,7 @@
 				3A4C95411B5B21410088C3F2 /* FLEXNetworkTransactionCell.m in Sources */,
 				C3DFCD952416BC6500BB7084 /* FLEXFilteringTableViewController.m in Sources */,
 				C3F527BE2318603F009CBA07 /* FLEXShortcutsSection.m in Sources */,
+				A42069CF2809377F00EBCAEA /* FLEXFirebaseTransaction.mm in Sources */,
 				3A4C94D61B5B21410088C3F2 /* FLEXObjectExplorerViewController.m in Sources */,
 				C383C3BD23B6B398007A321B /* UITextField+Range.m in Sources */,
 				3A4C94DE1B5B21410088C3F2 /* FLEXHeapEnumerator.m in Sources */,
@@ -2126,7 +2130,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Classes/Info.plist;
-				INSTALL_PATH = "@rpath";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flipboard.$(PRODUCT_NAME:rfc1034identifier)";
@@ -2162,7 +2166,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = Classes/Info.plist;
-				INSTALL_PATH = "@rpath";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.flipboard.$(PRODUCT_NAME:rfc1034identifier)";
