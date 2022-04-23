@@ -294,15 +294,8 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 }
 
 - (NSString *)headerText {
-    long long bytesReceived = 0;
-    NSInteger totalRequests = 0;
-    if (self.searchController.isActive) {
-        bytesReceived = self.dataSource.filteredBytesReceived;
-        totalRequests = self.dataSource.transactions.count;
-    } else {
-        bytesReceived = self.dataSource.bytesReceived;
-        totalRequests = self.dataSource.transactions.count;
-    }
+    long long bytesReceived = self.dataSource.bytesReceived;
+    NSInteger totalRequests = self.dataSource.transactions.count;
     
     NSString *byteCountText = [NSByteCountFormatter
         stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary
