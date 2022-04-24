@@ -222,7 +222,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
     }];
 }
 
-- (FLEXMutableListSection *)makeSection:(NSArray *)rows title:(NSString *)title { weakify(self)
+- (FLEXMutableListSection *)makeSection:(NSArray *)rows title:(NSString *)title {
     FLEXMutableListSection *section = [FLEXMutableListSection list:rows
         cellConfiguration:^(FLEXTableViewCell *cell, FLEXObjectRef *ref, NSInteger row) {
             cell.textLabel.text = ref.reference;
@@ -237,8 +237,8 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
         }
     ];
 
-    section.selectionHandler = ^(UIViewController *host, FLEXObjectRef *ref) { strongify(self)
-        [self.navigationController pushViewController:[
+    section.selectionHandler = ^(UIViewController *host, FLEXObjectRef *ref) {
+        [host.navigationController pushViewController:[
             FLEXObjectExplorerFactory explorerViewControllerForObject:ref.object
         ] animated:YES];
     };
