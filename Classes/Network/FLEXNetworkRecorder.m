@@ -390,7 +390,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         }
         
         transaction.error = error;
-        transaction.documents = @[response];
+        transaction.documents = response ? @[response] : @[];
         transaction.state = FLEXNetworkTransactionStateFinished;
         [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
         
