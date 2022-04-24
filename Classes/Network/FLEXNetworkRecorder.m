@@ -112,38 +112,40 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 }
 
 - (void)clearRecordedActivity:(FLEXNetworkTransactionKind)kind matching:(NSString *)query {
-    switch (kind) {
-        case FLEXNetworkTransactionKindFirebase: {
-            [self.orderedFirebaseTransactions flex_filter:^BOOL(FLEXFirebaseTransaction *obj, NSUInteger idx) {
-                return ![obj matchesQuery:query];
-            }];
-            break;
-        }
-        case FLEXNetworkTransactionKindREST: {
-            NSArray<FLEXHTTPTransaction *> *toRemove;
-            toRemove = [self.orderedHTTPTransactions flex_filtered:^BOOL(FLEXHTTPTransaction *obj, NSUInteger idx) {
-                return [obj matchesQuery:query];
-            }];
-
-            // Remove from cache
-            for (FLEXHTTPTransaction *t in toRemove) {
-                [self.restCache removeObjectForKey:t.requestID];
+    dispatch_async(self.queue, ^{
+        switch (kind) {
+            case FLEXNetworkTransactionKindFirebase: {
+                [self.orderedFirebaseTransactions flex_filter:^BOOL(FLEXFirebaseTransaction *obj, NSUInteger idx) {
+                    return ![obj matchesQuery:query];
+                }];
+                break;
             }
-
-            // Remove from list
-            [self.orderedHTTPTransactions removeObjectsInArray:toRemove];
-
-            break;
+            case FLEXNetworkTransactionKindREST: {
+                NSArray<FLEXHTTPTransaction *> *toRemove;
+                toRemove = [self.orderedHTTPTransactions flex_filtered:^BOOL(FLEXHTTPTransaction *obj, NSUInteger idx) {
+                    return [obj matchesQuery:query];
+                }];
+                
+                // Remove from cache
+                for (FLEXHTTPTransaction *t in toRemove) {
+                    [self.restCache removeObjectForKey:t.requestID];
+                }
+                
+                // Remove from list
+                [self.orderedHTTPTransactions removeObjectsInArray:toRemove];
+                
+                break;
+            }
+            case FLEXNetworkTransactionKindWebsockets: {
+                [self.orderedWSTransactions flex_filter:^BOOL(FLEXWebsocketTransaction *obj, NSUInteger idx) {
+                    return ![obj matchesQuery:query];
+                }];
+                break;
+            }
         }
-        case FLEXNetworkTransactionKindWebsockets: {
-            [self.orderedWSTransactions flex_filter:^BOOL(FLEXWebsocketTransaction *obj, NSUInteger idx) {
-                return ![obj matchesQuery:query];
-            }];
-            break;
-        }
-    }
-
-    [self notify:kFLEXNetworkRecorderTransactionsClearedNotification transaction:nil];
+        
+        [self notify:kFLEXNetworkRecorderTransactionsClearedNotification transaction:nil];
+    });
 }
 
 - (void)clearExcludedTransactions {
@@ -186,6 +188,7 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         [self recordLoadingFinishedWithRequestID:requestID responseBody:nil];
     }
 
+    // A redirect is always a new request
     dispatch_async(self.queue, ^{
         [self.orderedHTTPTransactions insertObject:transaction atIndex:0];
         self.requestIDsToTransactions[requestID] = transaction;
