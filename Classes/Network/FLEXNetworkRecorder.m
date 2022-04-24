@@ -443,61 +443,32 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 }
 
 - (void)recordFIRDidSetData:(NSError *)error transactionID:(NSString *)transactionID {
-    dispatch_async(self.queue, ^{
-        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
-        if (!transaction) {
-            return;
-        }
-        
-        transaction.error = error;
-        transaction.state = FLEXNetworkTransactionStateFinished;
-        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
-        [self postUpdateNotificationForTransaction:transaction];
-    });
+    [self firebaseTransaction:transactionID didUpdate:error];
 }
 
 - (void)recordFIRDidUpdateData:(NSError *)error transactionID:(NSString *)transactionID {
-    dispatch_async(self.queue, ^{
-        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
-        if (!transaction) {
-            return;
-        }
-        
-        transaction.error = error;
-        transaction.state = FLEXNetworkTransactionStateFinished;
-        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
-        [self postUpdateNotificationForTransaction:transaction];
-    });
+    [self firebaseTransaction:transactionID didUpdate:error];
 }
 
 - (void)recordFIRDidDeleteDocument:(NSError *)error transactionID:(NSString *)transactionID {
-    dispatch_async(self.queue, ^{
-        FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
-        if (!transaction) {
-            return;
-        }
-        
-        transaction.error = error;
-        transaction.state = FLEXNetworkTransactionStateFinished;
-        [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-        
-        [self postUpdateNotificationForTransaction:transaction];
-    });
+    [self firebaseTransaction:transactionID didUpdate:error];
 }
 
 - (void)recordFIRDidAddDocument:(NSError *)error transactionID:(NSString *)transactionID {
+    [self firebaseTransaction:transactionID didUpdate:error];
+}
+
+- (void)firebaseTransaction:(NSString *)transactionID didUpdate:(NSError *)error {
     dispatch_async(self.queue, ^{
         FLEXFirebaseTransaction *transaction = self.requestIDsToTransactions[transactionID];
         if (!transaction) {
             return;
         }
-
+        
         transaction.error = error;
         transaction.state = FLEXNetworkTransactionStateFinished;
         [self.orderedFirebaseTransactions insertObject:transaction atIndex:0];
-
+        
         [self postUpdateNotificationForTransaction:transaction];
     });
 }
