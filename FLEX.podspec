@@ -38,7 +38,7 @@ Pod::Spec.new do |spec|
   spec.requires_arc     = true
   spec.library = 'stdc++'
   spec.xcconfig = {
-       'CLANG_CXX_LANGUAGE_STANDARD' => 'compiler-default',
+       'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++11',
   }
   spec.compiler_flags   = "-Wno-unsupported-availability-guard", "-Wno-deprecated-declarations"
   spec.public_header_files = [ "Classes/*.h", "Classes/Manager/*.h", "Classes/Toolbar/*.h",
