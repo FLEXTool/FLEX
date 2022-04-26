@@ -7,7 +7,6 @@
 //
 
 #import "UIBarButtonItem+FLEX.h"
-#import "CALayer+FLEX.h"
 #import "UIFont+FLEX.h"
 #import "UIGestureRecognizer+Blocks.h"
 #import "UIPasteboard+FLEX.h"
