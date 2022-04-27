@@ -77,6 +77,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ).write(to: URL(fileURLWithPath: whereToSaveBob), options: [])
     }
     
+    #if targetEnvironment(macCatalyst) || arch(arm64)
+    override var keyCommands: [UIKeyCommand]? {
+        return FLEXManager.shared.getKeyCommands()
+    }
+    #endif
+
     let exampleLogLimit = 10
     var exampleLogSent = 0
 }
