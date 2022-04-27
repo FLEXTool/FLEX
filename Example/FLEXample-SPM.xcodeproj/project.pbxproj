@@ -21,10 +21,10 @@
 		C386D705241AA61600699085 /* music_library_schema.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C386D703241AA61600699085 /* music_library_schema.jpg */; };
 		C386D70B241AA67800699085 /* Dog.m in Sources */ = {isa = PBXBuildFile; fileRef = C386D709241AA67800699085 /* Dog.m */; };
 		C386D70C241AA67800699085 /* Owner.m in Sources */ = {isa = PBXBuildFile; fileRef = C386D70A241AA67800699085 /* Owner.m */; };
+		C38D96EC2818F306008709D0 /* Reflex in Frameworks */ = {isa = PBXBuildFile; productRef = C38D96EB2818F306008709D0 /* Reflex */; };
 		C3A67856241AB8AD005A4681 /* MiscNetworkRequests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A67855241AB8AD005A4681 /* MiscNetworkRequests.m */; };
 		C3A67858241ADDF7005A4681 /* Commit.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A67857241ADDF7005A4681 /* Commit.swift */; };
 		C3B3760025B8CDA300AD43AB /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = C3B375FF25B8CDA300AD43AB /* Person.m */; };
-		C3F86CD72740ED2600E094BF /* Reflex in Frameworks */ = {isa = PBXBuildFile; productRef = C3F86CD62740ED2600E094BF /* Reflex */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3F86CD72740ED2600E094BF /* Reflex in Frameworks */,
+				C38D96EC2818F306008709D0 /* Reflex in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -183,7 +183,7 @@
 			);
 			name = FLEXample;
 			packageProductDependencies = (
-				C3F86CD62740ED2600E094BF /* Reflex */,
+				C38D96EB2818F306008709D0 /* Reflex */,
 			);
 			productName = FLEXample;
 			productReference = C386D6CC2419975A00699085 /* FLEXample.app */;
@@ -215,7 +215,7 @@
 			);
 			mainGroup = C386D6C32419975A00699085;
 			packageReferences = (
-				C3F86CD52740ED2600E094BF /* XCRemoteSwiftPackageReference "Reflex" */,
+				C38D96EA2818F306008709D0 /* XCRemoteSwiftPackageReference "Reflex" */,
 			);
 			productRefGroup = C386D6CD2419975A00699085 /* Products */;
 			projectDirPath = "";
@@ -462,7 +462,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C3F86CD52740ED2600E094BF /* XCRemoteSwiftPackageReference "Reflex" */ = {
+		C38D96EA2818F306008709D0 /* XCRemoteSwiftPackageReference "Reflex" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "file:///Users/tanner/Repos/Reflex";
 			requirement = {
@@ -473,9 +473,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C3F86CD62740ED2600E094BF /* Reflex */ = {
+		C38D96EB2818F306008709D0 /* Reflex */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C3F86CD52740ED2600E094BF /* XCRemoteSwiftPackageReference "Reflex" */;
+			package = C38D96EA2818F306008709D0 /* XCRemoteSwiftPackageReference "Reflex" */;
 			productName = Reflex;
 		};
 /* End XCSwiftPackageProductDependency section */
