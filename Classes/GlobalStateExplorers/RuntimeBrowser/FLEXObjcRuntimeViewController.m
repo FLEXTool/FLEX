@@ -122,7 +122,12 @@
                 path = [NSString stringWithFormat:format, path, path];
             }
             
-            dlopen(path.UTF8String, RTLD_NOW);
+            if (!dlopen(path.UTF8String, RTLD_NOW)) {
+                [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                    make.title(@"Error").message(@(dlerror()));
+                    make.button(@"Dismiss").cancelStyle();
+                }];
+            }
         });
     } showFrom:self];
 }
