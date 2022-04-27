@@ -44,8 +44,8 @@ public class CommitIdentity: NSObject, Codable {
     }
 }
 
-@objcMembers
-public class CommitDetails: NSObject, Codable {
+//@objcMembers
+public struct CommitDetails: Codable {
     public let message: String
     public let url: String
     
