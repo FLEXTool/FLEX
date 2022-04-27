@@ -23,7 +23,7 @@
     self.textView = [[UITextView alloc] initWithFrame:self.view.bounds];
     self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.textView];
-#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
     self.textView.text = FLEXKeyboardShortcutManager.sharedManager.keyboardShortcutsDescription;
 #endif
     self.textView.backgroundColor = UIColor.blackColor;

@@ -11,7 +11,7 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 
 @interface UIEvent (UIPhysicalKeyboardEvent)
 
@@ -23,7 +23,7 @@
 
 @end
 
-#if TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 
 @interface FLEXKeyInput : UIKeyCommand @end
 
@@ -43,7 +43,7 @@
 
 @end
 
-#if TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 
 @implementation FLEXKeyInput @end
 
@@ -109,7 +109,7 @@
 
 - (BOOL)isEqual:(id)object {
     BOOL isEqual = NO;
-#if TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
     if ([object isKindOfClass:[UIKeyCommand class]]) {
         UIKeyCommand *keyCommand = (UIKeyCommand *)object;
         if (!keyCommand.isCreatedByFLEX) {
@@ -179,7 +179,7 @@
     return [self keyInputForKey:key flags:flags helpDescription:nil];
 }
 
-#if TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 
 + (instancetype)keyInputForKey:(NSString *)key
                          flags:(UIKeyModifierFlags)flags
@@ -215,7 +215,7 @@
 
 @interface FLEXKeyboardShortcutManager ()
 
-#if TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 @property (nonatomic, strong) NSMutableDictionary<UIKeyCommand *, dispatch_block_t> *actionsForKeyInputs;
 #else
 @property (nonatomic) NSMutableDictionary<FLEXKeyInput *, dispatch_block_t> *actionsForKeyInputs;
@@ -429,7 +429,7 @@ static const long kFLEXCommandKeyCode = 0xe3;
     return [description copy];
 }
 
-#if TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 
 - (NSArray<UIKeyCommand *> *)getKeyCommands {
     return self.actionsForKeyInputs.allKeys;

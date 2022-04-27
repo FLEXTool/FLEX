@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
                                   action:(dispatch_block_t)action
                              description:(NSString *)description;
 
-#if TARGET_OS_MACCATALYST
+#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 /// Gets the default and custom keyboard shortcuts commands.
 - (NSArray<UIKeyCommand *> *)getKeyCommands;
 #endif
