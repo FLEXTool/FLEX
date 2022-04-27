@@ -67,4 +67,9 @@
     return [self argumentInputViewSubclassForTypeEncoding:typeEncoding currentValue:currentValue] != nil;
 }
 
+/// Enable displaying ivar names for custom struct types
++ (void)registerFieldNames:(NSArray<NSString *> *)names forTypeEncoding:(NSString *)typeEncoding {
+    [FLEXArgumentInputStructView registerFieldNames:names forTypeEncoding:typeEncoding];
+}
+
 @end
