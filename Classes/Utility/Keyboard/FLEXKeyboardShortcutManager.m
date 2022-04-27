@@ -11,7 +11,7 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-#if TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST
 
 @interface UIEvent (UIPhysicalKeyboardEvent)
 
@@ -23,7 +23,19 @@
 
 @end
 
+#if TARGET_OS_MACCATALYST
+
+@interface FLEXKeyInput : UIKeyCommand @end
+
+@interface UIKeyCommand (FLEX)
+
+@property (nonatomic, assign, readonly) BOOL isCreatedByFLEX;
+
+#else
+
 @interface FLEXKeyInput : NSObject <NSCopying>
+
+#endif
 
 @property (nonatomic, copy, readonly) NSString *key;
 @property (nonatomic, readonly) UIKeyModifierFlags flags;
@@ -31,12 +43,84 @@
 
 @end
 
+#if TARGET_OS_MACCATALYST
+
+@implementation FLEXKeyInput @end
+
+@implementation UIKeyCommand (FLEX)
+
+- (NSString *)key {
+
+    return objc_getAssociatedObject(self, @selector(key));
+}
+
+- (void)setKey:(NSString *)key {
+
+    objc_setAssociatedObject(self, @selector(key), key, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (UIKeyModifierFlags)flags {
+
+    UIKeyModifierFlags (^block)() = objc_getAssociatedObject(self, @selector(flags));
+
+    return (block ? block() : kNilOptions);
+}
+
+- (void)setFlags:(UIKeyModifierFlags)flags {
+
+    UIKeyModifierFlags (^block)() = ^{
+        return flags;
+    };
+
+    objc_setAssociatedObject(self, @selector(flags), block, OBJC_ASSOCIATION_COPY);
+}
+
+- (NSString *)helpDescription {
+
+    return objc_getAssociatedObject(self, @selector(helpDescription));
+}
+
+- (void)setHelpDescription:(NSString *)helpDescription {
+
+    objc_setAssociatedObject(self, @selector(helpDescription), helpDescription, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (BOOL)isCreatedByFLEX {
+
+    BOOL (^block)() = objc_getAssociatedObject(self, @selector(isCreatedByFLEX));
+
+    return (block ? block() : NO);
+}
+
+- (void)setIsCreatedByFLEX:(BOOL)isCreatedByFLEX {
+
+    BOOL (^block)() = ^{
+        return isCreatedByFLEX;
+    };
+
+    objc_setAssociatedObject(self, @selector(isCreatedByFLEX), block, OBJC_ASSOCIATION_COPY);
+}
+
+#else
+
 @implementation FLEXKeyInput
+
+#endif
 
 - (BOOL)isEqual:(id)object {
     BOOL isEqual = NO;
+#if TARGET_OS_MACCATALYST
+    if ([object isKindOfClass:[UIKeyCommand class]]) {
+        UIKeyCommand *keyCommand = (UIKeyCommand *)object;
+        if (!keyCommand.isCreatedByFLEX) {
+            // Not FLEX's business anymore.
+
+            return [super isEqual:object];
+        }
+#else
     if ([object isKindOfClass:[FLEXKeyInput class]]) {
         FLEXKeyInput *keyCommand = (FLEXKeyInput *)object;
+#endif
         BOOL equalKeys = self.key == keyCommand.key || [self.key isEqual:keyCommand.key];
         BOOL equalFlags = self.flags == keyCommand.flags;
         isEqual = equalKeys && equalFlags;
@@ -95,6 +179,24 @@
     return [self keyInputForKey:key flags:flags helpDescription:nil];
 }
 
+#if TARGET_OS_MACCATALYST
+
++ (instancetype)keyInputForKey:(NSString *)key
+                         flags:(UIKeyModifierFlags)flags
+               helpDescription:(NSString *)helpDescription {
+    FLEXKeyInput *keyInput = [UIKeyCommand keyCommandWithInput:key modifierFlags:flags action:nil];
+    if (keyInput) {
+        [keyInput setKey:key];
+        [keyInput setFlags:flags];
+        [keyInput setHelpDescription:helpDescription];
+
+        [keyInput setIsCreatedByFLEX:YES];
+    }
+    return keyInput;
+}
+
+#else
+
 + (instancetype)keyInputForKey:(NSString *)key
                          flags:(UIKeyModifierFlags)flags
                helpDescription:(NSString *)helpDescription {
@@ -107,11 +209,17 @@
     return keyInput;
 }
 
+#endif
+
 @end
 
 @interface FLEXKeyboardShortcutManager ()
 
+#if TARGET_OS_MACCATALYST
+@property (nonatomic, strong) NSMutableDictionary<UIKeyCommand *, dispatch_block_t> *actionsForKeyInputs;
+#else
 @property (nonatomic) NSMutableDictionary<FLEXKeyInput *, dispatch_block_t> *actionsForKeyInputs;
+#endif
 
 @property (nonatomic, getter=isPressingShift) BOOL pressingShift;
 @property (nonatomic, getter=isPressingCommand) BOOL pressingCommand;
@@ -320,6 +428,14 @@ static const long kFLEXCommandKeyCode = 0xe3;
     }
     return [description copy];
 }
+
+#if TARGET_OS_MACCATALYST
+
+- (NSArray<UIKeyCommand *> *)getKeyCommands {
+    return self.actionsForKeyInputs.allKeys;
+}
+
+#endif
 
 @end
 
