@@ -264,6 +264,8 @@
 		C387C87B22DFCD6A00750E58 /* FLEXCarouselCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C387C87922DFCD6A00750E58 /* FLEXCarouselCell.m */; };
 		C387C88322E0D24A00750E58 /* UIView+FLEX_Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C387C88422E0D24A00750E58 /* UIView+FLEX_Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */; };
+		C38D970228190C93008709D0 /* FLEXMetadataExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = C38D970028190C93008709D0 /* FLEXMetadataExtras.m */; };
+		C38D970328190C93008709D0 /* FLEXMetadataExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = C38D970128190C93008709D0 /* FLEXMetadataExtras.h */; };
 		C38DF0EA22CFE4370077B4AD /* FLEXTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C38DF0E822CFE4370077B4AD /* FLEXTableViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C38DF0EB22CFE4370077B4AD /* FLEXTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C38DF0E922CFE4370077B4AD /* FLEXTableViewController.m */; };
 		C38EF26223A2FCD20047A7EC /* FLEXViewControllerShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C38EF26023A2FCD20047A7EC /* FLEXViewControllerShortcuts.m */; };
@@ -644,6 +646,8 @@
 		C387C87922DFCD6A00750E58 /* FLEXCarouselCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXCarouselCell.m; sourceTree = "<group>"; };
 		C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIView+FLEX_Layout.h"; sourceTree = "<group>"; };
 		C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIView+FLEX_Layout.m"; sourceTree = "<group>"; };
+		C38D970028190C93008709D0 /* FLEXMetadataExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXMetadataExtras.m; sourceTree = "<group>"; };
+		C38D970128190C93008709D0 /* FLEXMetadataExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXMetadataExtras.h; sourceTree = "<group>"; };
 		C38DF0E822CFE4370077B4AD /* FLEXTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXTableViewController.h; sourceTree = "<group>"; };
 		C38DF0E922CFE4370077B4AD /* FLEXTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTableViewController.m; sourceTree = "<group>"; };
 		C38EF26023A2FCD20047A7EC /* FLEXViewControllerShortcuts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXViewControllerShortcuts.m; sourceTree = "<group>"; };
@@ -1282,6 +1286,8 @@
 				C36FBFC7230F3B98008D95D5 /* FLEXProtocolBuilder.m */,
 				C36FBFC9230F3B98008D95D5 /* FLEXClassBuilder.h */,
 				C36FBFBF230F3B98008D95D5 /* FLEXClassBuilder.m */,
+				C38D970128190C93008709D0 /* FLEXMetadataExtras.h */,
+				C38D970028190C93008709D0 /* FLEXMetadataExtras.m */,
 			);
 			path = Reflection;
 			sourceTree = "<group>";
@@ -1502,6 +1508,7 @@
 				3A4C94ED1B5B21410088C3F2 /* FLEXArgumentInputColorView.h in Headers */,
 				C3A9424523C641C1006871A3 /* SceneKit+Snapshot.h in Headers */,
 				3A4C94EB1B5B21410088C3F2 /* FLEXImagePreviewViewController.h in Headers */,
+				C38D970328190C93008709D0 /* FLEXMetadataExtras.h in Headers */,
 				C34D4EB823A2B17900C1F903 /* FLEXBundleShortcuts.h in Headers */,
 				C3694DC223EA147F006625D7 /* UIBarButtonItem+FLEX.h in Headers */,
 				C38F3F31230C958F004E3731 /* FLEXAlert.h in Headers */,
@@ -1827,6 +1834,7 @@
 				94AAF0391BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.m in Sources */,
 				C398624E23AD6C67007E6793 /* FLEXRuntimeKeyPath.m in Sources */,
 				C3694DC323EA147F006625D7 /* UIBarButtonItem+FLEX.m in Sources */,
+				C38D970228190C93008709D0 /* FLEXMetadataExtras.m in Sources */,
 				C36FBFD4230F3B98008D95D5 /* FLEXProtocol.m in Sources */,
 				C34D4EB123A2ABD900C1F903 /* FLEXLayerShortcuts.m in Sources */,
 				C38F3F32230C958F004E3731 /* FLEXAlert.m in Sources */,

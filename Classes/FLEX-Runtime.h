@@ -21,6 +21,7 @@
 #import "FLEXPropertyAttributes.h"
 #import "FLEXRuntime+Compare.h"
 #import "FLEXRuntime+UIKitHelpers.h"
+#import "FLEXMetadataExtras.h"
 
 #import "FLEXProtocolBuilder.h"
 #import "FLEXClassBuilder.h"

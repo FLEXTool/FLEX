@@ -15,6 +15,7 @@
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXKeyboardHelpViewController.h"
 #import "FLEXFileBrowserController.h"
+#import "FLEXArgumentInputStructView.h"
 #import "FLEXUtility.h"
 
 @interface FLEXManager (ExtensibilityPrivate)
@@ -72,6 +73,13 @@
 
 - (void)clearGlobalEntries {
     [self.userGlobalEntries removeAllObjects];
+}
+
+
+#pragma mark - Editing
+
++ (void)registerFieldNames:(NSArray<NSString *> *)names forTypeEncoding:(NSString *)typeEncoding {
+    [FLEXArgumentInputStructView registerFieldNames:names forTypeEncoding:typeEncoding];
 }
 
 
