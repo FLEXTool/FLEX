@@ -72,23 +72,21 @@
     return self;
 }
 
-- (id<FLEXMirror>)initialMirror {
+- (id<FLEXMirror>)mirrorForClass:(Class)cls {
     static Class FLEXSwiftMirror = nil;
     
-    id obj = _object;
-    
     // Should we use Reflex?
-    if (FLEXIsSwiftObjectOrClass(obj) && FLEXObjectExplorer.reflexAvailable) {
+    if (FLEXIsSwiftObjectOrClass(cls) && FLEXObjectExplorer.reflexAvailable) {
         // Initialize FLEXSwiftMirror class if needed
         if (!FLEXSwiftMirror) {
             FLEXSwiftMirror = NSClassFromString(@"FLEXSwiftMirror");            
         }
         
-        return [(id<FLEXMirror>)[FLEXSwiftMirror alloc] initWithSubject:obj];
+        return [(id<FLEXMirror>)[FLEXSwiftMirror alloc] initWithSubject:cls];
     }
     
     // No; not swift object, or Reflex unavailable
-    return [FLEXMirror reflect:obj];
+    return [FLEXMirror reflect:cls];
 }
 
 
@@ -178,9 +176,9 @@
     Class superclass = nil;
     NSInteger count = self.classHierarchyClasses.count;
     NSInteger rootIdx = count - 1;
-    id<FLEXMirror> mirror = self.initialMirror;
     for (NSInteger i = 0; i < count; i++) {
         Class cls = self.classHierarchyClasses[i];
+        id<FLEXMirror> mirror = [self mirrorForClass:cls];
         superclass = (i < rootIdx) ? self.classHierarchyClasses[i+1] : nil;
 
         [allProperties addObject:[self
