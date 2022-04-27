@@ -1,8 +1,0 @@
-module FLEX {
-  umbrella header "FLEX.h"
-
-  link "flex"
-
-  export *
-  module * { export * }
-}
