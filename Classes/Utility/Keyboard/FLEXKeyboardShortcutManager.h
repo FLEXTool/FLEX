@@ -26,8 +26,4 @@
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 @property (nonatomic, readonly) NSString *keyboardShortcutsDescription;
 
-#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
-- (NSArray<UIKeyCommand *> *)getKeyCommands;
-#endif
-
 @end

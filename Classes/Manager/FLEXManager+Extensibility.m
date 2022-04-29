@@ -105,14 +105,6 @@
 #endif
 }
 
-#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
-
-- (NSArray<UIKeyCommand *> *)getKeyCommands {
-    return [FLEXKeyboardShortcutManager.sharedManager getKeyCommands];
-}
-
-#endif
-
 
 #pragma mark - Shortcuts Defaults
 

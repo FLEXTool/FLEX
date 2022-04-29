@@ -321,16 +321,6 @@ static const long kFLEXCommandKeyCode = 0xe3;
     return [description copy];
 }
 
-#if TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
-
-- (NSArray<UIKeyCommand *> *)getKeyCommands {
-    return [self.actionsForKeyInputs.allKeys flex_mapped:^UIKeyCommand *(FLEXKeyInput *keyInput, NSUInteger index) {
-        return [UIKeyCommand keyCommandWithInput:keyInput.key modifierFlags:keyInput.flags action:nil];
-    }];
-}
-
-#endif
-
 @end
 
 #endif
