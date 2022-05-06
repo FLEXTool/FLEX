@@ -245,10 +245,6 @@
                 } showFrom:self];
             }
     }
-
-    __block UIWindow *targetWindow = nil, *oldKeyWindow = nil;
-    __block UIWindowLevel oldLevel;
-    __block BOOL wasVisible;
     
     subtitle = [subtitle stringByAppendingString:
         @"\n\n1) Adjust the FLEX window level relative to this window,\n"
@@ -260,26 +256,29 @@
     [FLEXAlert makeAlert:^(FLEXAlert *make) {
         make.title(NSStringFromClass(window.class)).message(subtitle);
         make.button(@"Adjust FLEX Window Level").handler(^(NSArray<NSString *> *strings) {
-            targetWindow = flex; oldLevel = flex.windowLevel;
-            flex.windowLevel = window.windowLevel + strings.firstObject.integerValue;
+            UIWindow *const targetWindow = flex;
+            const UIWindowLevel oldLevel = flex.windowLevel;
+            flex.windowLevel = window.windowLevel + (UIWindowLevel)strings.firstObject.integerValue;
             
             [self showRevertOrDismissAlert:^{ targetWindow.windowLevel = oldLevel; }];
         });
         make.button(@"Adjust This Window's Level").handler(^(NSArray<NSString *> *strings) {
-            targetWindow = window; oldLevel = window.windowLevel;
-            window.windowLevel = flex.windowLevel + strings.firstObject.integerValue;
+            UIWindow *const targetWindow = window;
+            const UIWindowLevel oldLevel = window.windowLevel;
+            window.windowLevel = flex.windowLevel + (UIWindowLevel)strings.firstObject.integerValue;
             
             [self showRevertOrDismissAlert:^{ targetWindow.windowLevel = oldLevel; }];
         });
         make.button(@"Set This Window's Level").handler(^(NSArray<NSString *> *strings) {
-            targetWindow = window; oldLevel = window.windowLevel;
-            window.windowLevel = strings.firstObject.integerValue;
+            UIWindow *const targetWindow = window;
+            const UIWindowLevel oldLevel = window.windowLevel;
+            window.windowLevel = (UIWindowLevel)strings.firstObject.integerValue;
             
             [self showRevertOrDismissAlert:^{ targetWindow.windowLevel = oldLevel; }];
         });
         make.button(@"Make Key And Visible").handler(^(NSArray<NSString *> *strings) {
-            oldKeyWindow = UIApplication.sharedApplication.keyWindow;
-            wasVisible = window.hidden;
+            UIWindow *_Nullable const oldKeyWindow = UIApplication.sharedApplication.keyWindow;
+            const BOOL wasVisible = window.hidden;
             [window makeKeyAndVisible];
             
             [self showRevertOrDismissAlert:^{
