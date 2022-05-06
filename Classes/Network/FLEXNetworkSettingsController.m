@@ -65,8 +65,8 @@
     ];
     
     UISlider *slider = self.cacheLimitSlider;
-    self.cacheLimitValue = FLEXNetworkRecorder.defaultRecorder.responseCacheByteLimit;
-    const NSUInteger fiftyMega = 50 * 1024 * 1024;
+    self.cacheLimitValue = (float)FLEXNetworkRecorder.defaultRecorder.responseCacheByteLimit;
+    const float fiftyMega = 50.0 * 1024 * 1024;
     slider.minimumValue = 0;
     slider.maximumValue = fiftyMega;
     slider.value = self.cacheLimitValue;

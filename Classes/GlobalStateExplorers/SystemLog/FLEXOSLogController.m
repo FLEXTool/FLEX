@@ -165,7 +165,7 @@ static uint8_t (*OSLogGetType)(void *);
             os_log_message_t log_message = &entry->log_message;
             
             // Get date
-            NSDate *date = [NSDate dateWithTimeIntervalSince1970:log_message->tv_gmt.tv_sec];
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)log_message->tv_gmt.tv_sec];
             
             // Get log message text
             // https://github.com/limneos/oslog/issues/1

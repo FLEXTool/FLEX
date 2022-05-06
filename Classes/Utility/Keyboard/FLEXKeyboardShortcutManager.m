@@ -167,7 +167,7 @@
                 if (pressureLevel > 0) {
                     if (@available(iOS 9.0, *)) {
                         for (UITouch *touch in [event allTouches]) {
-                            double adjustedPressureLevel = pressureLevel * 20 * touch.maximumPossibleForce;
+                            double adjustedPressureLevel = (double)(pressureLevel * 20 * touch.maximumPossibleForce);
                             [touch setValue:@(adjustedPressureLevel) forKey:@"_pressure"];
                         }
                     }

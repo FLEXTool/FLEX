@@ -178,8 +178,8 @@
     _maxDepth = maxDepth;
 
     self.depthSlider.allowedMinValue = 0;
-    self.depthSlider.allowedMaxValue = maxDepth;
-    self.depthSlider.maxValue = maxDepth;
+    self.depthSlider.allowedMaxValue = (CGFloat)maxDepth;
+    self.depthSlider.maxValue = (CGFloat)maxDepth;
     self.depthSlider.minValue = 0;
 }
 
@@ -296,7 +296,7 @@
 - (void)depthSliderDidChange:(FHSRangeSlider *)slider {
     CGFloat min = slider.minValue, max = slider.maxValue;
     for (FHSSnapshotNodes *nodes in self.nodesMap.allValues) {
-        CGFloat depth = nodes.depth;
+        CGFloat depth = (CGFloat)nodes.depth;
         nodes.snapshot.hidden = depth < min || max < depth;
     }
 }

@@ -9,9 +9,9 @@
 #import "FLEXKeyboardToolbar.h"
 #import "FLEXUtility.h"
 
-#define kToolbarHeight 44
-#define kButtonSpacing 6
-#define kScrollViewHorizontalMargins 3
+const CGFloat kToolbarHeight = 44.0f;
+const CGFloat kButtonSpacing = 6.0f;
+const CGFloat kScrollViewHorizontalMargins = 3.0f;
 
 @interface FLEXKeyboardToolbar ()
 
@@ -158,7 +158,7 @@
 }
 
 - (void)addButtons {
-    NSUInteger originX = 0.f;
+    CGFloat originX = 0.f;
     
     CGRect originFrame;
     CGFloat top    = self.scrollView.contentInset.top;

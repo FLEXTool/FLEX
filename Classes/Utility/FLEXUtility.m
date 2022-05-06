@@ -390,7 +390,7 @@ BOOL FLEXConstructorsShouldRun() {
         stream.total_out = 0;
         stream.avail_out = 0;
 
-        NSMutableData *mutableData = [NSMutableData dataWithLength:compressedDataLength * 1.5];
+        NSMutableData *mutableData = [NSMutableData dataWithLength:(NSUInteger)(compressedDataLength * 1.5)];
         if (inflateInit2(&stream, 15 + 32) == Z_OK) {
             int status = Z_OK;
             while (status == Z_OK) {

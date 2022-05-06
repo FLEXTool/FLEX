@@ -91,7 +91,7 @@ static const CGFloat kColumnMargin = 1;
         self.contentTableView.frame.size.width, self.headerScrollView.frame.size.height
     );
     self.contentTableView.frame = CGRectMake(
-        0, 0, contentWidth + self.numberOfColumns * self.columnMargin , contentHeight
+        0, 0, contentWidth + (CGFloat)self.numberOfColumns * self.columnMargin , contentHeight
     );
     self.contentScrollView.frame = CGRectMake(
         leftHeaderWidth, topheaderHeight + topInsets, width - leftHeaderWidth, contentHeight

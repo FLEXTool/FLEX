@@ -128,7 +128,7 @@
 }
 
 - (CGFloat)inputTextViewHeight {
-    return ceil([[self class] inputFont].lineHeight * self.numberOfInputLines) + 16.0;
+    return ceil([[self class] inputFont].lineHeight * (CGFloat)self.numberOfInputLines) + 16.0;
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {

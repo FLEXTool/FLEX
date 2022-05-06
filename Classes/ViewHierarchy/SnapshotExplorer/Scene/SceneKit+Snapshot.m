@@ -184,7 +184,7 @@ CGFloat const kHeaderVerticalInset = 8.0;
         } else {
             positionRelativeToRoot = positionRelativeToParent;
         }
-        positionRelativeToRoot.z = 50 * depth;
+        positionRelativeToRoot.z = 50.0 * (float)depth;
         positionRelativeToRoot;
     });
 

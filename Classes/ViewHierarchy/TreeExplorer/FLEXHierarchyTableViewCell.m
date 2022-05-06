@@ -101,7 +101,7 @@
     maxWidth -= (hideCheckerView ? kContentPadding : (kViewColorIndicatorSize + kContentPadding * 2));
     
     CGRect depthIndicatorFrame = self.depthIndicatorView.frame = CGRectMake(
-        kContentPadding, 0, self.viewDepth * kDepthIndicatorWidthMultiplier, CGRectGetHeight(bounds)
+        kContentPadding, 0, (CGFloat)self.viewDepth * kDepthIndicatorWidthMultiplier, CGRectGetHeight(bounds)
     );
     
     // Circle goes after depth, and its center Y = textLabel's center Y

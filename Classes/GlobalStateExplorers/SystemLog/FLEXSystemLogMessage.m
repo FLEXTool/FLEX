@@ -17,7 +17,7 @@
 
     const char *timestamp = asl_get(aslMessage, ASL_KEY_TIME);
     if (timestamp) {
-        NSTimeInterval timeInterval = [@(timestamp) integerValue];
+        NSTimeInterval timeInterval = (NSTimeInterval)[@(timestamp) integerValue];
         const char *nanoseconds = asl_get(aslMessage, ASL_KEY_TIME_NSEC);
         if (nanoseconds) {
             timeInterval += [@(nanoseconds) doubleValue] / NSEC_PER_SEC;
