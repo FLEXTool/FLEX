@@ -93,6 +93,13 @@
     [self addNavigationBarItemsToViewController:viewController.navigationItem];
 }
 
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    // Workaround for UIActivityViewController trying to dismiss us for some reason
+    if (![self.viewControllers.lastObject.presentedViewController isKindOfClass:UIActivityViewController.self]) {
+        [super dismissViewControllerAnimated:flag completion:completion];
+    }
+}
+
 - (void)dismissAnimated {
     // Tabs are only closed if the done button is pressed; this
     // allows you to leave a tab open by dragging down to dismiss
