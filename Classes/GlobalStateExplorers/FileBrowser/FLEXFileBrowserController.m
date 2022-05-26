@@ -9,6 +9,7 @@
 #import "FLEXFileBrowserController.h"
 #import "FLEXUtility.h"
 #import "FLEXWebViewController.h"
+#import "FLEXActivityViewController.h"
 #import "FLEXImagePreviewViewController.h"
 #import "FLEXTableListViewController.h"
 #import "FLEXObjectExplorerFactory.h"
@@ -469,10 +470,7 @@ contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
         [self openFileController:pathString];
     } else {
         // Share sheet for files
-        UIActivityViewController *shareSheet = [[UIActivityViewController alloc] initWithActivityItems:@[filePath] applicationActivities:nil];
-        if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-            shareSheet.popoverPresentationController.sourceView = sender;
-        }
+        UIViewController *shareSheet = [FLEXActivityViewController sharing:@[filePath] source:sender];
         [self presentViewController:shareSheet animated:true completion:nil];
     }
 }

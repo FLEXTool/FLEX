@@ -178,6 +178,8 @@
 		C33C825F2316DC8600DD2451 /* FLEXObjectExplorer.m in Sources */ = {isa = PBXBuildFile; fileRef = C33C825D2316DC8600DD2451 /* FLEXObjectExplorer.m */; };
 		C33E46AF223B02CD004BD0E6 /* FLEXASLLogController.h in Headers */ = {isa = PBXBuildFile; fileRef = C33E46AD223B02CD004BD0E6 /* FLEXASLLogController.h */; };
 		C33E46B0223B02CD004BD0E6 /* FLEXASLLogController.m in Sources */ = {isa = PBXBuildFile; fileRef = C33E46AE223B02CD004BD0E6 /* FLEXASLLogController.m */; };
+		C34063B528400A26007B46D3 /* FLEXActivityViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C34063B328400A26007B46D3 /* FLEXActivityViewController.h */; };
+		C34063B628400A26007B46D3 /* FLEXActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C34063B428400A26007B46D3 /* FLEXActivityViewController.m */; };
 		C3474C4023DA496400466532 /* FLEXKeyValueTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C3474C3E23DA496400466532 /* FLEXKeyValueTableViewCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3474C4123DA496400466532 /* FLEXKeyValueTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C3474C3F23DA496400466532 /* FLEXKeyValueTableViewCell.m */; };
 		C3490E1F233BDD73002AE200 /* FLEXSingleRowSection.h in Headers */ = {isa = PBXBuildFile; fileRef = C3490E1D233BDD73002AE200 /* FLEXSingleRowSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -558,6 +560,8 @@
 		C33C825D2316DC8600DD2451 /* FLEXObjectExplorer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = FLEXObjectExplorer.m; path = Classes/ObjectExplorers/FLEXObjectExplorer.m; sourceTree = SOURCE_ROOT; };
 		C33E46AD223B02CD004BD0E6 /* FLEXASLLogController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXASLLogController.h; sourceTree = "<group>"; };
 		C33E46AE223B02CD004BD0E6 /* FLEXASLLogController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXASLLogController.m; sourceTree = "<group>"; };
+		C34063B328400A26007B46D3 /* FLEXActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXActivityViewController.h; sourceTree = "<group>"; };
+		C34063B428400A26007B46D3 /* FLEXActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXActivityViewController.m; sourceTree = "<group>"; };
 		C3474C3E23DA496400466532 /* FLEXKeyValueTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXKeyValueTableViewCell.h; sourceTree = "<group>"; };
 		C3474C3F23DA496400466532 /* FLEXKeyValueTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXKeyValueTableViewCell.m; sourceTree = "<group>"; };
 		C3490E1D233BDD73002AE200 /* FLEXSingleRowSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXSingleRowSection.h; sourceTree = "<group>"; };
@@ -1162,6 +1166,8 @@
 				3A4C94A01B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m */,
 				3A4C94A11B5B21410088C3F2 /* FLEXFileBrowserController.h */,
 				3A4C94A21B5B21410088C3F2 /* FLEXFileBrowserController.m */,
+				C34063B328400A26007B46D3 /* FLEXActivityViewController.h */,
+				C34063B428400A26007B46D3 /* FLEXActivityViewController.m */,
 			);
 			path = FileBrowser;
 			sourceTree = "<group>";
@@ -1606,6 +1612,7 @@
 				C3F31D432267D883003C991A /* FLEXTableView.h in Headers */,
 				3A4C95071B5B21410088C3F2 /* FLEXDefaultEditorViewController.h in Headers */,
 				C309B82F223ED64400B228EC /* FLEXLogController.h in Headers */,
+				C34063B528400A26007B46D3 /* FLEXActivityViewController.h in Headers */,
 				C3694DBA23EA1096006625D7 /* FLEXTabsViewController.h in Headers */,
 				C31C4A6923342A2200C35F12 /* FLEXMetadataSection.h in Headers */,
 				C3F977832311B38F0032776D /* NSString+ObjcRuntime.h in Headers */,
@@ -1873,6 +1880,7 @@
 				3A4C94E41B5B21410088C3F2 /* FLEXRuntimeUtility.m in Sources */,
 				3A4C94D41B5B21410088C3F2 /* FLEXObjectExplorerFactory.m in Sources */,
 				94A515171C4CA1D70063292F /* FLEXManager.m in Sources */,
+				C34063B628400A26007B46D3 /* FLEXActivityViewController.m in Sources */,
 				C398626623AD70F5007E6793 /* FLEXKBToolbarButton.m in Sources */,
 				3A4C952F1B5B21410088C3F2 /* FLEXWebViewController.m in Sources */,
 				3A4C95041B5B21410088C3F2 /* FLEXArgumentInputView.m in Sources */,
