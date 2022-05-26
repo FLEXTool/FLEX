@@ -84,6 +84,11 @@
     if (idx != NSNotFound) {
         [self closeTabAtIndex:idx];
     }
+    
+    // Not sure how this is possible, but it happens sometimes
+    if (self.activeTab == tab) {
+        [self chooseNewActiveTab];
+    }
 }
 
 - (void)closeTabAtIndex:(NSInteger)idx {
