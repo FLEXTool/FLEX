@@ -8,6 +8,7 @@
 
 #import "FLEXNavigationController.h"
 #import "FLEXExplorerViewController.h"
+#import "FLEXObjectExplorerFactory.h"
 #import "FLEXTabList.h"
 
 @interface UINavigationController (Private) <UIGestureRecognizerDelegate>
@@ -197,6 +198,21 @@
         } else if (yTranslation < -20) {
             [self setToolbarHidden:YES animated:YES];
         }
+    }
+}
+
+@end
+
+@implementation UINavigationController (FLEXObjectExploring)
+
+- (void)pushExplorerForObject:(id)object {
+    [self pushExplorerForObject:object animated:YES];
+}
+
+- (void)pushExplorerForObject:(id)object animated:(BOOL)animated {
+    UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:object];
+    if (explorer) {
+        [self pushViewController:explorer animated:animated];
     }
 }
 
