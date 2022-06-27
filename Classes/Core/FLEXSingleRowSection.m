@@ -30,6 +30,8 @@
 - (id)initWithTitle:(NSString *)sectionTitle
               reuse:(NSString *)reuseIdentifier
                cell:(void (^)(__kindof UITableViewCell *))cellConfiguration {
+    NSParameterAssert(cellConfiguration);
+    
     self = [super init];
     if (self) {
         _title = sectionTitle;
