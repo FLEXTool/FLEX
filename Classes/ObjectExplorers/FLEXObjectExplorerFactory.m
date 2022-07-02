@@ -180,7 +180,7 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
-            case FLEXGlobalsRowURLSession:
+        case FLEXGlobalsRowURLSession:
             return [self explorerViewControllerForObject:NSURLSession.sharedSession];
         case FLEXGlobalsRowURLCache:
             return [self explorerViewControllerForObject:NSURLCache.sharedURLCache];
@@ -215,8 +215,22 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
 
             return nil;
         }
-        default: return nil;
+        
+        case FLEXGlobalsRowNetworkHistory:
+        case FLEXGlobalsRowSystemLog:
+        case FLEXGlobalsRowLiveObjects:
+        case FLEXGlobalsRowAddressInspector:
+        case FLEXGlobalsRowCookies:
+        case FLEXGlobalsRowBrowseRuntime:
+        case FLEXGlobalsRowAppKeychainItems:
+        case FLEXGlobalsRowPushNotifications:
+        case FLEXGlobalsRowBrowseBundle:
+        case FLEXGlobalsRowBrowseContainer:
+        case FLEXGlobalsRowCount:
+            return nil;
     }
+    
+    return nil;
 }
 
 + (FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {

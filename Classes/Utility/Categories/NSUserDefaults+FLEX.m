@@ -19,6 +19,7 @@ NSString * const kFLEXDefaultsNetworkObserverEnabledKey = @"com.flex.FLEXNetwork
 NSString * const kFLEXDefaultsNetworkObserverLastModeKey = @"com.flex.FLEXNetworkObserver.lastMode";
 NSString * const kFLEXDefaultsNetworkHostDenylistKey = @"com.flipboard.FLEX.network_host_denylist";
 NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
+NSString * const kFLEXDefaultsAPNSCaptureEnabledKey = @"com.flipboard.FLEX.capture_apns";
 NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
 
 #define FLEXDefaultsPathForFile(name) ({ \
@@ -121,6 +122,16 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
         postNotificationName:kFLEXDefaultsiOSPersistentOSLogKey
         object:nil
     ];
+}
+
+#pragma mark Push Notifications
+
+- (BOOL)flex_enableAPNSCapture {
+    return [self boolForKey:kFLEXDefaultsAPNSCaptureEnabledKey];
+}
+
+- (void)setFlex_enableAPNSCapture:(BOOL)enable {
+    [self setBool:enable forKey:kFLEXDefaultsAPNSCaptureEnabledKey];
 }
 
 #pragma mark Object Explorer

@@ -19,6 +19,7 @@ extern NSString * const kFLEXDefaultsHideVariablePreviewsKey;
 extern NSString * const kFLEXDefaultsNetworkObserverEnabledKey;
 extern NSString * const kFLEXDefaultsNetworkHostDenylistKey;
 extern NSString * const kFLEXDefaultsDisableOSLogForceASLKey;
+extern NSString * const kFLEXDefaultsAPNSCaptureEnabledKey;
 extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 
 /// All BOOL preferences are NO by default
@@ -41,6 +42,8 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 /// Disable os_log and re-enable ASL. May break Console.app output.
 @property (nonatomic) BOOL flex_disableOSLog;
 @property (nonatomic) BOOL flex_cacheOSLogMessages;
+
+@property (nonatomic) BOOL flex_enableAPNSCapture;
 
 @property (nonatomic) BOOL flex_explorerHidesPropertyIvars;
 @property (nonatomic) BOOL flex_explorerHidesPropertyMethods;
