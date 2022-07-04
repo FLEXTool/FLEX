@@ -21,6 +21,7 @@
 #define orig(method, ...) if (orig_##method) { orig_##method(__VA_ARGS__); }
 
 @interface FLEXAPNSViewController ()
+@property (nonatomic, readonly, class) Class appDelegateClass;
 @property (nonatomic, class) NSData *deviceToken;
 @property (nonatomic, class) NSError *registrationError;
 @property (nonatomic, readonly, class) NSMutableArray<NSDictionary *> *notifications;
@@ -33,10 +34,25 @@
 
 #pragma mark Swizzles
 
+struct SwiftString {
+    uint8_t reserved[16];
+};
+
+typedef struct SwiftString SwiftString;
+
 int (*orig_UIApplicationMain)(int argc, char *argv[], NSString *_, NSString *delegateClassName) = nil;
+int (*orig_UIApplicationMain_swift)(int argc, char *argv[], SwiftString _, SwiftString delegateClassName) = nil;
+NSString *(*FoundationBridgeSwiftStringToObjC)(SwiftString str) = nil;
+
 static int flex_apnsHook_UIApplicationMain(int argc, char *argv[], NSString *_, NSString *delegateClassName) {
     [FLEXAPNSViewController hookAppDelegateClass:NSClassFromString(delegateClassName)];
     return orig_UIApplicationMain(argc, argv, _, delegateClassName);
+}
+
+static int flex_apnsHook_UIApplicationMain_swift(int argc, char *argv[], SwiftString _, SwiftString delegate) {
+    NSString *delegateClassName = FoundationBridgeSwiftStringToObjC(delegate);
+    [FLEXAPNSViewController hookAppDelegateClass:NSClassFromString(delegateClassName)];
+    return orig_UIApplicationMain_swift(argc, argv, _, delegate);
 }
 
 + (void)load { FLEX_EXIT_IF_NO_CTORS()
@@ -44,20 +60,42 @@ static int flex_apnsHook_UIApplicationMain(int argc, char *argv[], NSString *_, 
         return;
     }
     
-    void *uikit = dlopen("/System/Library/Frameworks/UIKit.framework/UIKit", RTLD_LAZY);
-    void *uiapplicationmain = dlsym(uikit, "UIApplicationMain");
-    if (!uiapplicationmain) {
-        return;
-    }
+    // void *uikit = dlopen("/System/Library/Frameworks/UIKit.framework/UIKit", RTLD_LAZY);
+    // void *uiapplicationmain = dlsym(uikit, "UIApplicationMain");
 
-    __unused BOOL didHook = flex_rebind_symbols((struct rebinding[1]) {{
+    // Hook UIApplicationMain
+    __unused BOOL didHookRegularMain = flex_rebind_symbols((struct rebinding[1]) {{
         "UIApplicationMain",
         (void *)flex_apnsHook_UIApplicationMain,
         (void **)&orig_UIApplicationMain
     }}, 1) == 0;
+    
+    // For Swift apps, we /may/ need to hook the UIApplicationMain Swift shim
+    void *mainBinary = dlopen(NSBundle.mainBundle.executablePath.UTF8String, RTLD_LAZY);
+    void *swiftmain = dlsym(mainBinary, "$s5UIKit17UIApplicationMainys5Int32VAD_SpySpys4Int8VGGSgSSSgAJtF");
+    void *stringBridge = dlsym(mainBinary, "$sSS10FoundationE19_bridgeToObjectiveCSo8NSStringCyF");
+    
+    // If the shim exists, hook it as well. Only one will be called (I hope)
+    if (swiftmain && stringBridge) {
+        // This function allows us to convert Swift.String (a struct) to an NSString
+        FoundationBridgeSwiftStringToObjC = stringBridge;
+        // Hook UIApplicationMain(Int32, UnsafeMutablePointer<…>?, Swift.String?, Swift.String?) -> Int32
+        __unused BOOL didHookSwiftMain = flex_rebind_symbols((struct rebinding[1]) {{
+            "$s5UIKit17UIApplicationMainys5Int32VAD_SpySpys4Int8VGGSgSSSgAJtF",
+            (void *)flex_apnsHook_UIApplicationMain_swift,
+            (void **)&orig_UIApplicationMain_swift
+        }}, 1) == 0;
+    }
 }
 
 + (void)hookAppDelegateClass:(Class)appDelegate {
+    // Abort if we already hooked something
+    if (_appDelegateClass) {
+        return;
+    }
+    
+    _appDelegateClass = appDelegate;
+    
     auto types_didRegisterForRemoteNotificationsWithDeviceToken = "v@:@@";
     auto types_didFailToRegisterForRemoteNotificationsWithError = "v@:@@";
     auto types_didReceiveRemoteNotification = "v@:@@@?";
@@ -107,6 +145,11 @@ static int flex_apnsHook_UIApplicationMain(int argc, char *argv[], NSString *_, 
 }
 
 #pragma mark Class Properties
+
+static Class _appDelegateClass = nil;
++ (Class)appDelegateClass {
+    return _appDelegateClass;
+}
 
 static NSData *_apnsDeviceToken = nil;
 + (NSData *)deviceToken {
