@@ -403,8 +403,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (UIWindow *)statusWindow {
-    NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
-    return [UIApplication.sharedApplication valueForKey:statusBarString];
+    if (!@available(iOS 16, *)) {
+        NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
+        return [UIApplication.sharedApplication valueForKey:statusBarString];
+    }
+    
+    return  nil;
 }
 
 - (void)recentButtonTapped:(FLEXExplorerToolbarItem *)sender {
