@@ -1591,15 +1591,19 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [FLEXNetworkObserver.sharedObserver
             websocketTask:slf sendMessagage:message
         ];
-        completion = ^(NSError *error) {
+        
+        id completionHook = ^(NSError *error) {
             [FLEXNetworkObserver.sharedObserver
                 websocketTaskMessageSendCompletion:message
                 error:error
             ];
+            if (completion) {
+                completion(error);
+            }
         };
         
         ((void(*)(id, SEL, id, id))objc_msgSend)(
-            slf, swizzledSelector, message, completion
+            slf, swizzledSelector, message, completionHook
         );
     };
 

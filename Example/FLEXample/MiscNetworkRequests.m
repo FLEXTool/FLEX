@@ -153,7 +153,7 @@
 }
 
 - (void)sendExampleWebsocketTraffic:(NSURLSession *)sessionWithDelegate {
-    NSString *APIKey = @"oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm";
+    NSString *APIKey = @"VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV";
     NSString *wsurl = [NSString stringWithFormat:@"wss://demo.piesocket.com/v3/channel_1?api_key=%@&notify_self", APIKey];
     NSURLSessionWebSocketTask *task = [sessionWithDelegate webSocketTaskWithURL:[NSURL URLWithString:wsurl]];
     [task resume];
@@ -167,6 +167,8 @@
             [task sendMessage:message completionHandler:^(NSError *error) {
                 if (error) {
                     NSLog(@"Error sending WS message: %@", error.localizedDescription);
+                } else {
+                    NSLog(@"WS message sent.");
                 }
             }];
         }
