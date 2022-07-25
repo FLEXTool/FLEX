@@ -9,6 +9,7 @@
 #import "FLEXNetworkTransaction.h"
 #import "FLEXResources.h"
 #import "FLEXUtility.h"
+#import "NSDateFormatter+FLEX.h"
 
 @implementation FLEXNetworkTransaction
 
@@ -45,14 +46,7 @@
 }
 
 - (NSString *)timestampStringFromRequestDate:(NSDate *)date {
-    static NSDateFormatter *dateFormatter = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"HH:mm:ss";
-    });
-    
-    return [dateFormatter stringFromDate:date];
+    return [NSDateFormatter flex_stringFrom:date format:FLEXDateFormatPreciseClock];
 }
 
 - (void)setState:(FLEXNetworkTransactionState)transactionState {
