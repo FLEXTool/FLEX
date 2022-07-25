@@ -21,6 +21,9 @@
 #import <UserNotifications/UserNotifications.h>
 
 #define orig(method, ...) if (orig_##method) { orig_##method(__VA_ARGS__); }
+#define method_lookup(__selector, __cls, __return, ...) \
+    ([__cls instancesRespondToSelector:__selector] ? \
+        (__return(*)(__VA_ARGS__))class_getMethodImplementation(__cls, __selector) : nil)
 
 @interface FLEXAPNSViewController ()
 @property (nonatomic, readonly, class) Class appDelegateClass;
@@ -97,19 +100,22 @@
     
     _appDelegateClass = appDelegate;
     
+    // Better documentation for what's happening is in hookUNUserNotificationCenterDelegateClass: below
+    
     auto types_didRegisterForRemoteNotificationsWithDeviceToken = "v@:@@";
     auto types_didFailToRegisterForRemoteNotificationsWithError = "v@:@@";
     auto types_didReceiveRemoteNotification = "v@:@@@?";
     
-    auto orig_didRegisterForRemoteNotificationsWithDeviceToken = (void(*)(id, SEL, id, id))class_getMethodImplementation(
-        appDelegate, @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
-    );
-    auto orig_didFailToRegisterForRemoteNotificationsWithError = (void(*)(id, SEL, id, id))class_getMethodImplementation(
-        appDelegate, @selector(application:didFailToRegisterForRemoteNotificationsWithError:)
-    );
-    auto orig_didReceiveRemoteNotification = (void(*)(id, SEL, id, id, id))class_getMethodImplementation(
-        appDelegate, @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:)
-    );
+    auto sel_didRegisterForRemoteNotifications = @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:);
+    auto sel_didFailToRegisterForRemoteNotifs = @selector(application:didFailToRegisterForRemoteNotificationsWithError:);
+    auto sel_didReceiveRemoteNotification = @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:);
+    
+    auto orig_didRegisterForRemoteNotificationsWithDeviceToken = method_lookup(
+        sel_didRegisterForRemoteNotifications, appDelegate, void, id, SEL, id, id);
+    auto orig_didFailToRegisterForRemoteNotificationsWithError = method_lookup(
+        sel_didFailToRegisterForRemoteNotifs, appDelegate, void, id, SEL, id, id);
+    auto orig_didReceiveRemoteNotification = method_lookup(
+        sel_didReceiveRemoteNotification, appDelegate, void, id, SEL, id, id, id);
     
     IMP didRegisterForRemoteNotificationsWithDeviceToken = imp_implementationWithBlock(^(id _, id app, NSData *token) {
         self.deviceToken = token;
@@ -127,40 +133,44 @@
     
     class_replaceMethod(
         appDelegate,
-        @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:),
+        sel_didRegisterForRemoteNotifications,
         didRegisterForRemoteNotificationsWithDeviceToken,
         types_didRegisterForRemoteNotificationsWithDeviceToken
     );
     class_replaceMethod(
         appDelegate,
-        @selector(application:didFailToRegisterForRemoteNotificationsWithError:),
+        sel_didFailToRegisterForRemoteNotifs,
         didFailToRegisterForRemoteNotificationsWithError,
         types_didFailToRegisterForRemoteNotificationsWithError
     );
     class_replaceMethod(
         appDelegate,
-        @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:),
+        sel_didReceiveRemoteNotification,
         didReceiveRemoteNotification,
         types_didReceiveRemoteNotification
     );
 }
 
 + (void)hookUNUserNotificationCenterDelegateClass:(Class)delegate {
-    auto types_didReceiveNotificationResponse = "v@:@@@?";
-    auto orig_didReceiveNotificationResponse = (void(*)(id, SEL, id, id, id))class_getMethodImplementation(
-        delegate, @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:)
-    );
-    
+    // Selector
+    auto sel_didReceiveNotificationResponse =
+        @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:);
+    // Original implementation (or nil if unimplemented)
+    auto orig_didReceiveNotificationResponse = method_lookup(
+        sel_didReceiveNotificationResponse, delegate, void, id, SEL, id, id, id);
+    // Our hook (ignores self and other unneeded parameters)
     IMP didReceiveNotification = imp_implementationWithBlock(^(id _, id __, UNNotificationResponse *response, id ___) {
         [self.userNotifications addObject:response.notification];
-        orig_didReceiveNotificationResponse(_, nil, __, response, ___);
+        // This macro is a no-op if there is no original implementation
+        orig(didReceiveNotificationResponse, _, nil, __, response, ___);
     });
     
+    // Set the hook
     class_replaceMethod(
         delegate,
-        @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:),
+        sel_didReceiveNotificationResponse,
         didReceiveNotification,
-        types_didReceiveNotificationResponse
+        "v@:@@@?"
     );
 }
 
