@@ -29,6 +29,7 @@
 @property (nonatomic, readonly, class) Class appDelegateClass;
 @property (nonatomic, class) NSData *deviceToken;
 @property (nonatomic, class) NSError *registrationError;
+@property (nonatomic, readonly, class) NSString *deviceTokenString;
 @property (nonatomic, readonly, class) NSMutableArray<NSDictionary *> *remoteNotifications;
 @property (nonatomic, readonly, class) NSMutableArray<UNNotification *> *userNotifications;
 
@@ -190,6 +191,25 @@ static NSData *_apnsDeviceToken = nil;
     _apnsDeviceToken = deviceToken;
 }
 
++ (NSString *)deviceTokenString {
+    static NSString *_deviceTokenString = nil;
+    
+    if (!_deviceTokenString && self.deviceToken) {
+        NSData *token = self.deviceToken;
+        NSUInteger capacity = token.length * 2;
+        NSMutableString *tokenString = [NSMutableString stringWithCapacity:capacity];
+        
+        const UInt8 *tokenData = token.bytes;
+        for (NSUInteger idx = 0; idx < token.length; ++idx) {
+            [tokenString appendFormat:@"%02X", (int)tokenData[idx]];
+        }
+        
+        _deviceTokenString = tokenString;
+    }
+    
+    return _deviceTokenString;
+}
+
 static NSError *_apnsRegistrationError = nil;
 + (NSError *)registrationError {
     return _apnsRegistrationError;
@@ -238,17 +258,21 @@ static NSError *_apnsRegistrationError = nil;
 
 - (NSArray<FLEXTableViewSection *> *)makeSections {
     self.deviceToken = [FLEXSingleRowSection title:@"APNS Device Token" reuse:nil cell:^(UITableViewCell *cell) {
-        NSData *token = FLEXAPNSViewController.deviceToken;
-        cell.textLabel.text = token ? @(*((NSUInteger *)token.bytes)).stringValue : @"Not yet registered";
-        cell.detailTextLabel.text = token.description;
+        NSString *tokenString = FLEXAPNSViewController.deviceTokenString;
+        if (tokenString) {
+            cell.textLabel.text = tokenString;
+            cell.textLabel.numberOfLines = 0;
+        }
+        else if (!NSUserDefaults.standardUserDefaults.flex_enableAPNSCapture) {
+            cell.textLabel.text = @"APNS capture disabled";
+        }
+        else {
+            cell.textLabel.text = @"Not yet registered";
+        }
     }];
     self.deviceToken.selectionAction = ^(UIViewController *host) {
-        NSData *token = FLEXAPNSViewController.deviceToken;
-        if (token) {
-            [host.navigationController pushViewController:[
-                FLEXObjectExplorerFactory explorerViewControllerForObject:token
-            ] animated:YES];
-        }
+        UIPasteboard.generalPasteboard.string = FLEXAPNSViewController.deviceTokenString;
+        [FLEXAlert showQuickAlert:@"Copied to Clipboard" from:host];
     };
     
     // Remote Notifications //
