@@ -15,7 +15,7 @@
 #import "NSDateFormatter+FLEX.h"
 #import "FLEXResources.h"
 #import "FLEXUtility.h"
-#import "FLEX-Runtime.h"
+#import "FLEXRuntimeUtility.h"
 #import "flex_fishhook.h"
 #import <dlfcn.h>
 #import <UserNotifications/UserNotifications.h>
@@ -247,8 +247,7 @@ static NSError *_apnsRegistrationError = nil;
         cellConfiguration:^(UITableViewCell *cell, NSDictionary *notif, NSInteger row) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             // TODO: date received
-//            cell.textLabel.text = [cookie.name stringByAppendingFormat:@" (%@)", cookie.value];
-            cell.detailTextLabel.text = notif.description;
+            cell.detailTextLabel.text = [FLEXRuntimeUtility summaryForObject:notif];
         }
         filterMatcher:^BOOL(NSString *filterText, NSDictionary *notif) {
             return [notif.description localizedCaseInsensitiveContainsString:filterText];
