@@ -12,11 +12,13 @@
 #import "FLEXSingleRowSection.h"
 #import "NSUserDefaults+FLEX.h"
 #import "UIBarButtonItem+FLEX.h"
+#import "NSDateFormatter+FLEX.h"
 #import "FLEXResources.h"
 #import "FLEXUtility.h"
 #import "FLEX-Runtime.h"
 #import "flex_fishhook.h"
 #import <dlfcn.h>
+#import <UserNotifications/UserNotifications.h>
 
 #define orig(method, ...) if (orig_##method) { orig_##method(__VA_ARGS__); }
 
@@ -24,68 +26,67 @@
 @property (nonatomic, readonly, class) Class appDelegateClass;
 @property (nonatomic, class) NSData *deviceToken;
 @property (nonatomic, class) NSError *registrationError;
-@property (nonatomic, readonly, class) NSMutableArray<NSDictionary *> *notifications;
+@property (nonatomic, readonly, class) NSMutableArray<NSDictionary *> *remoteNotifications;
+@property (nonatomic, readonly, class) NSMutableArray<UNNotification *> *userNotifications;
 
 @property (nonatomic) FLEXSingleRowSection *deviceToken;
-@property (nonatomic) FLEXMutableListSection<NSDictionary *> *notifications;
+@property (nonatomic) FLEXMutableListSection<NSDictionary *> *remoteNotifications;
+@property (nonatomic) FLEXMutableListSection<UNNotification *> *userNotifications;
 @end
 
 @implementation FLEXAPNSViewController
 
 #pragma mark Swizzles
 
-struct SwiftString {
-    uint8_t reserved[16];
-};
-
-typedef struct SwiftString SwiftString;
-
-int (*orig_UIApplicationMain)(int argc, char *argv[], NSString *_, NSString *delegateClassName) = nil;
-int (*orig_UIApplicationMain_swift)(int argc, char *argv[], SwiftString _, SwiftString delegateClassName) = nil;
-NSString *(*FoundationBridgeSwiftStringToObjC)(SwiftString str) = nil;
-
-static int flex_apnsHook_UIApplicationMain(int argc, char *argv[], NSString *_, NSString *delegateClassName) {
-    [FLEXAPNSViewController hookAppDelegateClass:NSClassFromString(delegateClassName)];
-    return orig_UIApplicationMain(argc, argv, _, delegateClassName);
-}
-
-static int flex_apnsHook_UIApplicationMain_swift(int argc, char *argv[], SwiftString _, SwiftString delegate) {
-    NSString *delegateClassName = FoundationBridgeSwiftStringToObjC(delegate);
-    [FLEXAPNSViewController hookAppDelegateClass:NSClassFromString(delegateClassName)];
-    return orig_UIApplicationMain_swift(argc, argv, _, delegate);
-}
-
+/// Hook User Notifications related methods on the app delegate
+/// and UNUserNotificationCenter delegate classes
 + (void)load { FLEX_EXIT_IF_NO_CTORS()
     if (!NSUserDefaults.standardUserDefaults.flex_enableAPNSCapture) {
         return;
     }
     
-    // void *uikit = dlopen("/System/Library/Frameworks/UIKit.framework/UIKit", RTLD_LAZY);
-    // void *uiapplicationmain = dlsym(uikit, "UIApplicationMain");
+    //──────────────────────//
+    //     App Delegate     //
+    //──────────────────────//
 
-    // Hook UIApplicationMain
-    __unused BOOL didHookRegularMain = flex_rebind_symbols((struct rebinding[1]) {{
-        "UIApplicationMain",
-        (void *)flex_apnsHook_UIApplicationMain,
-        (void **)&orig_UIApplicationMain
-    }}, 1) == 0;
+    // Hook UIApplication to intercept app delegate
+    Class uiapp = UIApplication.self;
+    auto orig_uiapp_setDelegate = (void(*)(id, SEL, id))class_getMethodImplementation(
+        uiapp, @selector(setDelegate:)
+    );
     
-    // For Swift apps, we /may/ need to hook the UIApplicationMain Swift shim
-    void *mainBinary = dlopen(NSBundle.mainBundle.executablePath.UTF8String, RTLD_LAZY);
-    void *swiftmain = dlsym(mainBinary, "$s5UIKit17UIApplicationMainys5Int32VAD_SpySpys4Int8VGGSgSSSgAJtF");
-    void *stringBridge = dlsym(mainBinary, "$sSS10FoundationE19_bridgeToObjectiveCSo8NSStringCyF");
+    IMP uiapp_setDelegate = imp_implementationWithBlock(^(id _, id delegate) {
+        [self hookAppDelegateClass:[delegate class]];
+        orig_uiapp_setDelegate(_, @selector(setDelegate:), delegate);
+    });
     
-    // If the shim exists, hook it as well. Only one will be called (I hope)
-    if (swiftmain && stringBridge) {
-        // This function allows us to convert Swift.String (a struct) to an NSString
-        FoundationBridgeSwiftStringToObjC = stringBridge;
-        // Hook UIApplicationMain(Int32, UnsafeMutablePointer<…>?, Swift.String?, Swift.String?) -> Int32
-        __unused BOOL didHookSwiftMain = flex_rebind_symbols((struct rebinding[1]) {{
-            "$s5UIKit17UIApplicationMainys5Int32VAD_SpySpys4Int8VGGSgSSSgAJtF",
-            (void *)flex_apnsHook_UIApplicationMain_swift,
-            (void **)&orig_UIApplicationMain_swift
-        }}, 1) == 0;
-    }
+    class_replaceMethod(
+        uiapp,
+        @selector(setDelegate:),
+        uiapp_setDelegate,
+        "v@:@"
+    );
+    
+    //───────────────────────────────────────────//
+    //     UNUserNotificationCenter Delegate     //
+    //───────────────────────────────────────────//
+    
+    Class unusernc = UNUserNotificationCenter.self;
+    auto orig_unusernc_setDelegate = (void(*)(id, SEL, id))class_getMethodImplementation(
+        unusernc, @selector(setDelegate:)
+    );
+    
+    IMP unusernc_setDelegate = imp_implementationWithBlock(^(id _, id delegate) {
+        [self hookUNUserNotificationCenterDelegateClass:[delegate class]];
+        orig_unusernc_setDelegate(_, @selector(setDelegate:), delegate);
+    });
+    
+    class_replaceMethod(
+        unusernc,
+        @selector(setDelegate:),
+        unusernc_setDelegate,
+        "v@:@"
+    );
 }
 
 + (void)hookAppDelegateClass:(Class)appDelegate {
@@ -100,28 +101,28 @@ static int flex_apnsHook_UIApplicationMain_swift(int argc, char *argv[], SwiftSt
     auto types_didFailToRegisterForRemoteNotificationsWithError = "v@:@@";
     auto types_didReceiveRemoteNotification = "v@:@@@?";
     
-    auto orig_didRegisterForRemoteNotificationsWithDeviceToken = (void(*)(id, id, id))class_getMethodImplementation(
+    auto orig_didRegisterForRemoteNotificationsWithDeviceToken = (void(*)(id, SEL, id, id))class_getMethodImplementation(
         appDelegate, @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
     );
-    auto orig_didFailToRegisterForRemoteNotificationsWithError = (void(*)(id, id, id))class_getMethodImplementation(
+    auto orig_didFailToRegisterForRemoteNotificationsWithError = (void(*)(id, SEL, id, id))class_getMethodImplementation(
         appDelegate, @selector(application:didFailToRegisterForRemoteNotificationsWithError:)
     );
-    auto orig_didReceiveRemoteNotification = (void(*)(id, id, id, id))class_getMethodImplementation(
+    auto orig_didReceiveRemoteNotification = (void(*)(id, SEL, id, id, id))class_getMethodImplementation(
         appDelegate, @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:)
     );
     
     IMP didRegisterForRemoteNotificationsWithDeviceToken = imp_implementationWithBlock(^(id _, id app, NSData *token) {
         self.deviceToken = token;
-        orig(didRegisterForRemoteNotificationsWithDeviceToken, _, app, token);
+        orig(didRegisterForRemoteNotificationsWithDeviceToken, _, nil, app, token);
     });
     IMP didFailToRegisterForRemoteNotificationsWithError = imp_implementationWithBlock(^(id _, id app, NSError *error) {
         self.registrationError = error;
-        orig(didFailToRegisterForRemoteNotificationsWithError, _, app, error);
+        orig(didFailToRegisterForRemoteNotificationsWithError, _, nil, app, error);
     });
     IMP didReceiveRemoteNotification = imp_implementationWithBlock(^(id _, id app, NSDictionary *payload, id handler) {
         // TODO: notify when new notifications are added
-        [self.notifications addObject:payload];
-        orig(didReceiveRemoteNotification, _, app, payload, handler);
+        [self.remoteNotifications addObject:payload];
+        orig(didReceiveRemoteNotification, _, nil, app, payload, handler);
     });
     
     class_replaceMethod(
@@ -141,6 +142,25 @@ static int flex_apnsHook_UIApplicationMain_swift(int argc, char *argv[], SwiftSt
         @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:),
         didReceiveRemoteNotification,
         types_didReceiveRemoteNotification
+    );
+}
+
++ (void)hookUNUserNotificationCenterDelegateClass:(Class)delegate {
+    auto types_didReceiveNotificationResponse = "v@:@@@?";
+    auto orig_didReceiveNotificationResponse = (void(*)(id, SEL, id, id, id))class_getMethodImplementation(
+        delegate, @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:)
+    );
+    
+    IMP didReceiveNotification = imp_implementationWithBlock(^(id _, id __, UNNotificationResponse *response, id ___) {
+        [self.userNotifications addObject:response.notification];
+        orig_didReceiveNotificationResponse(_, nil, __, response, ___);
+    });
+    
+    class_replaceMethod(
+        delegate,
+        @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:),
+        didReceiveNotification,
+        types_didReceiveNotificationResponse
     );
 }
 
@@ -169,13 +189,22 @@ static NSError *_apnsRegistrationError = nil;
     _apnsRegistrationError = error;
 }
 
-+ (NSArray<NSDictionary *> *)notifications {
-    static NSMutableArray *_apnsNotifications = nil;
-    if (!_apnsNotifications) {
-        _apnsNotifications = [NSMutableArray new];
++ (NSMutableArray<NSDictionary *> *)userNotifications {
+    static NSMutableArray *_userNotifications = nil;
+    if (!_userNotifications) {
+        _userNotifications = [NSMutableArray new];
     }
     
-    return _apnsNotifications;
+    return _userNotifications;
+}
+
++ (NSMutableArray<NSDictionary *> *)remoteNotifications {
+    static NSMutableArray *_remoteNotifications = nil;
+    if (!_remoteNotifications) {
+        _remoteNotifications = [NSMutableArray new];
+    }
+    
+    return _remoteNotifications;
 }
 
 #pragma mark Instance stuff
@@ -212,32 +241,61 @@ static NSError *_apnsRegistrationError = nil;
         }
     };
     
-    self.notifications = [FLEXMutableListSection list:FLEXAPNSViewController.notifications
+    // Remote Notifications //
+    
+    self.remoteNotifications = [FLEXMutableListSection list:FLEXAPNSViewController.remoteNotifications
         cellConfiguration:^(UITableViewCell *cell, NSDictionary *notif, NSInteger row) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             // TODO: date received
 //            cell.textLabel.text = [cookie.name stringByAppendingFormat:@" (%@)", cookie.value];
             cell.detailTextLabel.text = notif.description;
-        } filterMatcher:^BOOL(NSString *filterText, NSDictionary *notif) {
+        }
+        filterMatcher:^BOOL(NSString *filterText, NSDictionary *notif) {
             return [notif.description localizedCaseInsensitiveContainsString:filterText];
         }
     ];
     
-    self.notifications.customTitle = @"Notifications";
-    self.notifications.selectionHandler = ^(UIViewController *host, NSDictionary *notif) {
+    self.remoteNotifications.customTitle = @"Remote Notifications";
+    self.remoteNotifications.selectionHandler = ^(UIViewController *host, NSDictionary *notif) {
         [host.navigationController pushViewController:[
             FLEXObjectExplorerFactory explorerViewControllerForObject:notif
         ] animated:YES];
     };
     
-    return @[self.deviceToken, self.notifications];
+    // User Notifications //
+    
+    self.userNotifications = [FLEXMutableListSection list:FLEXAPNSViewController.userNotifications
+        cellConfiguration:^(UITableViewCell *cell, UNNotification *notif, NSInteger row) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            
+            // Subtitle is 'subtitle \n date'
+            NSString *dateString = [NSDateFormatter flex_stringFrom:notif.date format:FLEXDateFormatPreciseClock];
+            NSString *subtitle = notif.request.content.subtitle;
+            subtitle = subtitle ? [NSString stringWithFormat:@"%@\n%@", subtitle, dateString] : dateString;
+        
+            cell.textLabel.text = notif.request.content.title;
+            cell.detailTextLabel.text = subtitle;
+        }
+        filterMatcher:^BOOL(NSString *filterText, NSDictionary *notif) {
+            return [notif.description localizedCaseInsensitiveContainsString:filterText];
+        }
+    ];
+    
+    self.userNotifications.customTitle = @"Push Notifications";
+    self.userNotifications.selectionHandler = ^(UIViewController *host, UNNotification *notif) {
+        [host.navigationController pushViewController:[
+            FLEXObjectExplorerFactory explorerViewControllerForObject:notif.request
+        ] animated:YES];
+    };
+    
+    return @[self.deviceToken, self.remoteNotifications, self.userNotifications];
 }
 
 - (void)reloadData {
     [self.refreshControl endRefreshing];
     
-    self.notifications.customTitle = [NSString stringWithFormat:
-        @"%@ notifications", @(self.notifications.filteredList.count)
+    self.remoteNotifications.customTitle = [NSString stringWithFormat:
+        @"%@ notifications", @(self.remoteNotifications.filteredList.count)
     ];
     [super reloadData];
 }
