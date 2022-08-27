@@ -154,22 +154,22 @@
 
 + (void)hookUNUserNotificationCenterDelegateClass:(Class)delegate {
     // Selector
-    auto sel_didReceiveNotificationResponse =
-        @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:);
+    auto sel_didReceiveNotification =
+        @selector(userNotificationCenter:willPresentNotification:withCompletionHandler:);
     // Original implementation (or nil if unimplemented)
-    auto orig_didReceiveNotificationResponse = method_lookup(
-        sel_didReceiveNotificationResponse, delegate, void, id, SEL, id, id, id);
+    auto orig_didReceiveNotification = method_lookup(
+        sel_didReceiveNotification, delegate, void, id, SEL, id, id, id);
     // Our hook (ignores self and other unneeded parameters)
-    IMP didReceiveNotification = imp_implementationWithBlock(^(id _, id __, UNNotificationResponse *response, id ___) {
-        [self.userNotifications addObject:response.notification];
+    IMP didReceiveNotification = imp_implementationWithBlock(^(id _, id __, UNNotification *notification, id ___) {
+        [self.userNotifications addObject:notification];
         // This macro is a no-op if there is no original implementation
-        orig(didReceiveNotificationResponse, _, nil, __, response, ___);
+        orig(didReceiveNotification, _, nil, __, notification, ___);
     });
     
     // Set the hook
     class_replaceMethod(
         delegate,
-        sel_didReceiveNotificationResponse,
+        sel_didReceiveNotification,
         didReceiveNotification,
         "v@:@@@?"
     );
