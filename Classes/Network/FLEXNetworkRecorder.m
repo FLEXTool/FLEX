@@ -16,7 +16,7 @@
 
 #define Synchronized(queue, obj) ({ \
     __block id __synchronized_retval = nil; \
-    dispatch_sync(self.queue, ^{ __synchronized_retval = obj; }); \
+    dispatch_sync(queue, ^{ __synchronized_retval = obj; }); \
     __synchronized_retval; \
 })
     
