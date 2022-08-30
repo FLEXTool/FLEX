@@ -82,6 +82,13 @@
     self.explorerWindow.hidden = YES;
 }
 
+- (void)unloadExplorer {
+    [self.userGlobalEntries removeAllObjects];
+    [self.customContentTypeViewers removeAllObjects];
+    self.explorerViewController = nil;
+    self.explorerWindow = nil;
+}
+
 - (void)toggleExplorer {
     if (self.explorerWindow.isHidden) {
         if (@available(iOS 13.0, *)) {

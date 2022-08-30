@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)showExplorer;
 - (void)hideExplorer;
 - (void)toggleExplorer;
+- (void)unloadExplorer;
 
 /// Programmatically dismiss anything presented by FLEX, leaving only the toolbar visible.
 - (void)dismissAnyPresentedTools:(void (^_Nullable)(void))completion;
