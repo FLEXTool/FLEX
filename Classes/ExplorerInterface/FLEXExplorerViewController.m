@@ -129,6 +129,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
+    
+    // Register keyboard notification
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -375,6 +378,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return [self.view convertRect:frameInWindow fromView:nil];
 }
 
+- (void)keyboardWasShown:(NSNotification*)aNotification{
+    CGPoint kbFrame = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].origin;
+    
+    CGRect newToolbarFrame = self.explorerToolbar.frame;
+    newToolbarFrame.origin.y = kbFrame.y - newToolbarFrame.size.height;
+    
+    [self updateToolbarPositionWithUnconstrainedFrame:newToolbarFrame];
+}
 
 #pragma mark - Toolbar Buttons
 
