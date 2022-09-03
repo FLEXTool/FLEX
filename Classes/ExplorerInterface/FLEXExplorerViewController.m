@@ -382,7 +382,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     CGPoint kbFrame = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].origin;
     
     CGRect newToolbarFrame = self.explorerToolbar.frame;
-    newToolbarFrame.origin.y = kbFrame.y >= newToolbarFrame.size.height;
+    newToolbarFrame.origin.y >= kbFrame.y - newToolbarFrame.size.height;
     
     [self updateToolbarPositionWithUnconstrainedFrame:newToolbarFrame];
 }
