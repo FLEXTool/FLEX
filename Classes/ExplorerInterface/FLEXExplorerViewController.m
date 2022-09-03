@@ -385,7 +385,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     if(newToolbarFrame.origin.y >= kbFrame.y - newToolbarFrame.size.height){
         newToolbarFrame.origin.y = kbFrame.y - newToolbarFrame.size.height;
-        [self updateToolbarPositionWithUnconstrainedFrame:newToolbarFrame];
+        [UIView animateWithDuration:0.1 animations:^{
+            [self updateToolbarPositionWithUnconstrainedFrame:newToolbarFrame];
+        }];
     }
 }
 
