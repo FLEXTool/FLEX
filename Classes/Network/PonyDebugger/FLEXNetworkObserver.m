@@ -1881,6 +1881,12 @@ didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask
         NSString *requestID = [[self class] requestIDForConnectionOrTask:dataTask];
         FLEXInternalRequestState *requestState = [self requestStateForRequestID:requestID];
 
+        // Fix for "Response body not in cache" issue reported by developers
+        // See this github comment for detailed explanation on why this happens
+        // https://github.com/FLEXTool/FLEX/issues/568#issuecomment-1141015572
+        if (requestState.dataAccumulator == nil) {
+            requestState.dataAccumulator = [NSMutableData new];
+        }
         [requestState.dataAccumulator appendData:data];
 
         [FLEXNetworkRecorder.defaultRecorder
