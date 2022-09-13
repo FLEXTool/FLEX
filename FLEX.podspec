@@ -37,7 +37,7 @@ Pod::Spec.new do |spec|
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
   spec.library = 'stdc++'
-  spec.xcconfig = {
+  spec.pod_target_xcconfig = {
        'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++11',
   }
   spec.compiler_flags   = "-Wno-unsupported-availability-guard", "-Wno-deprecated-declarations"
