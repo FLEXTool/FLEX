@@ -130,8 +130,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
     
-    // Register keyboard notification
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWasShown:) name:UIKeyboardDidShowNotification object:nil];
+    // Observe keyboard to move self out of the way
+    [NSNotificationCenter.defaultCenter
+        addObserver:self
+        selector:@selector(keyboardShown:)
+        name:UIKeyboardDidShowNotification
+        object:nil
+    ];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -378,16 +383,19 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return [self.view convertRect:frameInWindow fromView:nil];
 }
 
-- (void)keyboardWasShown:(NSNotification*)aNotification{
-    CGPoint kbFrame = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].origin;
+- (void)keyboardShown:(NSNotification *)notif {
+    CGRect keyboardFrame = [notif.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect toolbarFrame = self.explorerToolbar.frame;
     
-    CGRect newToolbarFrame = self.explorerToolbar.frame;
-    
-    if(newToolbarFrame.origin.y >= kbFrame.y - newToolbarFrame.size.height){
-        newToolbarFrame.origin.y = kbFrame.y - newToolbarFrame.size.height;
-        [UIView animateWithDuration:0.1 animations:^{
-            [self updateToolbarPositionWithUnconstrainedFrame:newToolbarFrame];
-        }];
+    if (CGRectGetMinY(keyboardFrame) < CGRectGetMaxY(toolbarFrame)) {
+        toolbarFrame.origin.y = keyboardFrame.origin.y - toolbarFrame.size.height;
+        // Subtract a little more, to ignore accessory input views
+        toolbarFrame.origin.y -= 50;
+        
+        [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0.5
+                            options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self updateToolbarPositionWithUnconstrainedFrame:toolbarFrame];
+        } completion:nil];
     }
 }
 
