@@ -134,7 +134,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [NSNotificationCenter.defaultCenter
         addObserver:self
         selector:@selector(keyboardShown:)
-        name:UIKeyboardDidShowNotification
+        name:UIKeyboardWillShowNotification
         object:nil
     ];
 }
