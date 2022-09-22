@@ -21,3 +21,4 @@ DerivedData
 Podfile.lock
 IDEWorkspaceChecks.plist
 *.xcworkspace
+.build
