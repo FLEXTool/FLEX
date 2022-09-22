@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A9D70EC640E633FE829EF695 /* libPods-FLEXample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BBD699DDBAC5A16D8CFD39AC /* libPods-FLEXample.a */; };
+		C376F92B28DBE503004E88BA /* dogs.realm in Resources */ = {isa = PBXBuildFile; fileRef = C386D706241AA66100699085 /* dogs.realm */; };
 		C386D6D02419975A00699085 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C386D6CF2419975A00699085 /* AppDelegate.swift */; };
 		C386D6D22419975A00699085 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C386D6D12419975A00699085 /* SceneDelegate.swift */; };
 		C386D6D62419975B00699085 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C386D6D52419975B00699085 /* Assets.xcassets */; };
@@ -238,6 +239,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C376F92B28DBE503004E88BA /* dogs.realm in Resources */,
 				C386D6DC2419975B00699085 /* LaunchScreen.storyboard in Resources */,
 				C386D6FF241AA4B700699085 /* image.png in Resources */,
 				C386D704241AA61600699085 /* music_library.db in Resources */,
