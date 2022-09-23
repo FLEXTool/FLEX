@@ -11,6 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXImagePreviewViewController.h"
+#import "FLEXAlert.h"
 
 @interface FLEXViewShortcuts ()
 @property (nonatomic, readonly) UIView *view;
@@ -61,7 +62,7 @@
     // and go forward again and it will show if the view controller is nil or changed.
     UIViewController *controller = [FLEXViewShortcuts nearestViewControllerForView:view];
 
-    return [self forObject:view additionalRows:@[
+    NSMutableArray *rows = @[
         [FLEXActionShortcut title:@"Nearest View Controller"
             subtitle:^NSString *(id view) {
                 return [FLEXRuntimeUtility safeDescriptionForObject:controller];
@@ -84,7 +85,43 @@
                 return !CGRectIsEmpty(view.bounds) ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
             }
         ]
-    ]];
+    ].mutableCopy;
+    
+    // Add an "Animations Speed" Shortcut for UIWindows. Although the feature could
+    // be available on UIViews, we don't want to spam all UIViews with this Shortcut.
+    //
+    // Since as of now, FLEX doesn't support merging Shortcuts from different classes,
+    // we keep this in FLEXViewShortcuts. If it gets implemented in the future, we'll
+    // move this Shortcut to its own FLEXWindowShortcuts class.
+    if ([view isKindOfClass:[UIWindow class]]) {
+        [rows addObject:
+            [FLEXActionShortcut title:@"Animations Speed" subtitle:^NSString *(UIWindow *window) {
+                return [NSString stringWithFormat:@"Current speed: %.2f", window.layer.speed];
+            } selectionHandler:^(UIViewController *host, UIWindow *window) {
+                [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                    make.title(@"Change Animations Speed");
+                    make.message([NSString stringWithFormat:@"Current speed: %.2f", window.layer.speed]);
+                    make.configuredTextField(^(UITextField * _Nonnull textField) {
+                        textField.placeholder = @"Speed value";
+                        textField.keyboardType = UIKeyboardTypeDecimalPad;
+                    });
+                    
+                    make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
+                        CGFloat speedValue = strings.firstObject.floatValue;
+                        window.layer.speed = speedValue;
+
+                        // Refresh the host view controller to update the shortcut subtitle, reflecting current speed
+                        [(FLEXObjectExplorerViewController *)host reloadData];
+                    });
+                    make.button(@"Cancel").cancelStyle();
+                } showFrom:host];
+            } accessoryType:^UITableViewCellAccessoryType(id  _Nonnull object) {
+                return UITableViewCellAccessoryDisclosureIndicator;
+            }]
+        ];
+    }
+    
+    return [self forObject:view additionalRows:rows];
 }
 
 @end
