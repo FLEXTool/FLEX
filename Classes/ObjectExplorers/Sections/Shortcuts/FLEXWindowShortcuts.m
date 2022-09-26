@@ -16,7 +16,7 @@
 
 + (instancetype)forObject:(UIView *)view {
     return [self forObject:view additionalRows:@[
-        [FLEXActionShortcut title:@"Animations Speed" subtitle:^NSString *(UIWindow *window) {
+        [FLEXActionShortcut title:@"Animation Speed" subtitle:^NSString *(UIWindow *window) {
             return [NSString stringWithFormat:@"Current speed: %.2f", window.layer.speed];
         } selectionHandler:^(UIViewController *host, UIWindow *window) {
             [FLEXAlert makeAlert:^(FLEXAlert *make) {
