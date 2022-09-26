@@ -10,6 +10,7 @@
 #import "FLEXGlobalsViewController.h"
 #import "FLEXClassShortcuts.h"
 #import "FLEXViewShortcuts.h"
+#import "FLEXWindowShortcuts.h"
 #import "FLEXViewControllerShortcuts.h"
 #import "FLEXUIAppShortcuts.h"
 #import "FLEXImageShortcuts.h"
@@ -48,6 +49,7 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
             ClassKey(UIViewController) : [FLEXViewControllerShortcuts class],
             ClassKey(UIApplication)    : [FLEXUIAppShortcuts class],
             ClassKey(UIView)           : [FLEXViewShortcuts class],
+            ClassKey(UIWindow)         : [FLEXWindowShortcuts class],
             ClassKey(UIImage)          : [FLEXImageShortcuts class],
             ClassKey(CALayer)          : [FLEXLayerShortcuts class],
             ClassKey(UIColor)          : [FLEXColorPreviewSection class],
