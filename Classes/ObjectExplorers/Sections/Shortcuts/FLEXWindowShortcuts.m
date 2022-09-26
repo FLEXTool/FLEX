@@ -32,6 +32,7 @@
                     window.layer.speed = speedValue;
 
                     // Refresh the host view controller to update the shortcut subtitle, reflecting current speed
+                    // TODO: this shouldn't be necessary
                     [(FLEXObjectExplorerViewController *)host reloadData];
                 });
                 make.button(@"Cancel").cancelStyle();
