@@ -20,7 +20,7 @@
             return [NSString stringWithFormat:@"Current speed: %.2f", window.layer.speed];
         } selectionHandler:^(UIViewController *host, UIWindow *window) {
             [FLEXAlert makeAlert:^(FLEXAlert *make) {
-                make.title(@"Change Animations Speed");
+                make.title(@"Change Animation Speed");
                 make.message([NSString stringWithFormat:@"Current speed: %.2f", window.layer.speed]);
                 make.configuredTextField(^(UITextField * _Nonnull textField) {
                     textField.placeholder = @"Speed value";
