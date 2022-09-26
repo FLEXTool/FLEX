@@ -23,7 +23,7 @@
                 make.title(@"Change Animation Speed");
                 make.message([NSString stringWithFormat:@"Current speed: %.2f", window.layer.speed]);
                 make.configuredTextField(^(UITextField * _Nonnull textField) {
-                    textField.placeholder = @"Speed value";
+                    textField.placeholder = @"Default: 1.0";
                     textField.keyboardType = UIKeyboardTypeDecimalPad;
                 });
                 
