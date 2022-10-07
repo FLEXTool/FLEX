@@ -221,7 +221,7 @@ pod 'FLEX', :configurations => ['Debug']
 
 ### Swift Package Manager
 
-In Xcode, navigate to `Build Settings > Build Options > Excluded Source File Names`. For your `Release` configuration, set it to `FLEX.o` like this to exclude all files with the `FLEX` prefix:
+In Xcode, navigate to `Build Settings > Build Options > Excluded Source File Names`. For your `Release` configuration, set it to `FLEX*` like this to exclude all files with the `FLEX` prefix:
 
 <img width=75% height=75% src=https://user-images.githubusercontent.com/1234765/98673373-8545c080-2357-11eb-9587-0743998e23ba.png>
 
