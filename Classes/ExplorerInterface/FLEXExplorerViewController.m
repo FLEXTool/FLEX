@@ -170,7 +170,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     UIInterfaceOrientationMask supportedOrientations = FLEXUtility.infoPlistSupportedInterfaceOrientationsMask;
-    if (viewControllerToAsk && ![viewControllerToAsk isKindOfClass:[self class]]) {
+    // We check its class by name because using isKindOfClass will fail for the same class defined
+    // twice in the runtime; and the goal here is to avoid calling -supportedInterfaceOrientations
+    // recursively when I'm inspecting FLEX with itself from a tweak dylib
+    if (viewControllerToAsk && ![NSStringFromClass([viewControllerToAsk class]) hasPrefix:@"FLEX"]) {
         supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
     }
     
