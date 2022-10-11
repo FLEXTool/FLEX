@@ -89,6 +89,11 @@
     if (self.activeTab == tab) {
         [self chooseNewActiveTab];
     }
+    
+    // It is possible for an object explorer to form a retain cycle
+    // with its own navigation controller; clearing the view controllers
+    // manually when closing a tab breaks the cycle
+    tab.viewControllers = @[];
 }
 
 - (void)closeTabAtIndex:(NSInteger)idx {
