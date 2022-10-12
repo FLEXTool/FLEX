@@ -29,7 +29,8 @@
 @implementation FLEXNavigationController
 
 + (instancetype)withRootViewController:(UIViewController *)rootVC {
-    return [[self alloc] initWithRootViewController:rootVC];
+    FLEXNavigationController *nav = [[self alloc] initWithRootViewController:rootVC];
+    return nav;
 }
 
 - (void)viewDidLoad {
@@ -65,6 +66,17 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    if (@available(iOS 15.0, *)) {
+        UISheetPresentationController *presenter = self.sheetPresentationController;
+        presenter.detents = @[
+            UISheetPresentationControllerDetent.mediumDetent,
+            UISheetPresentationControllerDetent.largeDetent,
+        ];
+        presenter.prefersScrollingExpandsWhenScrolledToEdge = NO;
+        presenter.selectedDetentIdentifier = UISheetPresentationControllerDetentIdentifierLarge;
+        presenter.largestUndimmedDetentIdentifier = UISheetPresentationControllerDetentIdentifierLarge;
+    }
     
     if (self.beingPresented && !self.didSetupPendingDismissButtons) {
         for (UIViewController *vc in self.viewControllers) {
