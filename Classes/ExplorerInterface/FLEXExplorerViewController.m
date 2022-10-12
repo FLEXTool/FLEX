@@ -852,31 +852,34 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 #pragma mark - Touch Handling
 
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates {
-    BOOL shouldReceiveTouch = NO;
-    
     CGPoint pointInLocalCoordinates = [self.view convertPoint:pointInWindowCoordinates fromView:nil];
     
-    // Always if it's on the toolbar
-    if (CGRectContainsPoint(self.explorerToolbar.frame, pointInLocalCoordinates)) {
-        shouldReceiveTouch = YES;
+    // If we have a modal presented, is it in the modal?
+    if (self.presentedViewController) {
+        UIView *presentedView = self.presentedViewController.view;
+        CGPoint pipvc = [presentedView convertPoint:pointInLocalCoordinates fromView:self.view];
+        UIView *hit = [presentedView hitTest:pipvc withEvent:nil];
+        if (hit != nil) {
+            return YES;
+        }
     }
     
     // Always if we're in selection mode
-    if (!shouldReceiveTouch && self.currentMode == FLEXExplorerModeSelect) {
-        shouldReceiveTouch = YES;
+    if (self.currentMode == FLEXExplorerModeSelect) {
+        return YES;
     }
     
     // Always in move mode too
-    if (!shouldReceiveTouch && self.currentMode == FLEXExplorerModeMove) {
-        shouldReceiveTouch = YES;
+    if (self.currentMode == FLEXExplorerModeMove) {
+        return YES;
     }
     
-    // Always if we have a modal presented
-    if (!shouldReceiveTouch && self.presentedViewController) {
-        shouldReceiveTouch = YES;
+    // Always if it's on the toolbar
+    if (CGRectContainsPoint(self.explorerToolbar.frame, pointInLocalCoordinates)) {
+        return YES;
     }
     
-    return shouldReceiveTouch;
+    return NO;
 }
 
 
