@@ -909,7 +909,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.view.window makeKeyWindow];
 
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
-    if (!@available(iOS 13, *)) {
+    if (!@available(iOS 13, *) || !@available(iOS 16, *)) {
         [self statusWindow].windowLevel = self.view.window.windowLevel + 1.0;
     }
     
@@ -936,7 +936,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // Restore the status bar window's normal window level.
     // We want it above FLEX while a modal is presented for
     // scroll to top, but below FLEX otherwise for exploration.
-    [self statusWindow].windowLevel = UIWindowLevelStatusBar;
+    if (!@available(iOS 16, *)) {
+        [self statusWindow].windowLevel = UIWindowLevelStatusBar;
+    }
     
     [self updateButtonStates];
     
