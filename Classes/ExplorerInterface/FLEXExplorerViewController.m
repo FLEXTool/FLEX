@@ -434,7 +434,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         return [UIApplication.sharedApplication valueForKey:statusBarString];
     }
     
-    return  nil;
+    return nil;
 }
 
 - (void)recentButtonTapped:(FLEXExplorerToolbarItem *)sender {
