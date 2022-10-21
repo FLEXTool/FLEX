@@ -154,7 +154,10 @@ FLEXObjectExplorerDefaultsImpl
             if (value) {
                 NSString *title = @"List all references";
                 [actions addObject:[UIAction actionWithTitle:title image:nil identifier:nil handler:^(UIAction *action) {
-                    UIViewController *list = [FLEXObjectListViewController objectsWithReferencesToObject:value];
+                    UIViewController *list = [FLEXObjectListViewController
+                        objectsWithReferencesToObject:value
+                        retained:NO
+                    ];
                     [sender.navigationController pushViewController:list animated:YES];
                 }]];
             }

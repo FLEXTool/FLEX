@@ -9,6 +9,7 @@
 #import "FLEXFieldEditorView.h"
 #import "FLEXArgumentInputView.h"
 #import "FLEXUtility.h"
+#import "FLEXColor.h"
 
 @interface FLEXFieldEditorView ()
 
@@ -122,7 +123,7 @@
 }
 
 + (UIColor *)dividerColor {
-    return UIColor.lightGrayColor;
+    return FLEXColor.tertiaryBackgroundColor;
 }
 
 + (CGFloat)horizontalPadding {

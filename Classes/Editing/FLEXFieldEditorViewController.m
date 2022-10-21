@@ -11,12 +11,14 @@
 #import "FLEXArgumentInputViewFactory.h"
 #import "FLEXPropertyAttributes.h"
 #import "FLEXRuntimeUtility.h"
+#import "FLEXMetadataExtras.h"
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "UIBarButtonItem+FLEX.h"
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 
+@property (nonatomic, readonly) id<FLEXMetadataAuxiliaryInfo> auxiliaryInfoProvider;
 @property (nonatomic) FLEXProperty *property;
 @property (nonatomic) FLEXIvar *ivar;
 
@@ -30,19 +32,14 @@
 
 #pragma mark - Initialization
 
-+ (instancetype)target:(id)target property:(nonnull FLEXProperty *)property commitHandler:(void(^_Nullable)())onCommit {
-    id value = [property getValue:target];
-    if (![self canEditProperty:property onObject:target currentValue:value]) {
-        return nil;
-    }
-
++ (instancetype)target:(id)target property:(nonnull FLEXProperty *)property commitHandler:(void(^)(void))onCommit {
     FLEXFieldEditorViewController *editor = [self target:target data:property commitHandler:onCommit];
     editor.title = [@"Property: " stringByAppendingString:property.name];
     editor.property = property;
     return editor;
 }
 
-+ (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar commitHandler:(void(^_Nullable)())onCommit {
++ (instancetype)target:(id)target ivar:(nonnull FLEXIvar *)ivar commitHandler:(void(^)(void))onCommit {
     FLEXFieldEditorViewController *editor = [self target:target data:ivar commitHandler:onCommit];
     editor.title = [@"Ivar: " stringByAppendingString:ivar.name];
     editor.ivar = ivar;
@@ -66,6 +63,8 @@
     self.toolbarItems = @[
         UIBarButtonItem.flex_flexibleSpace, self.getterButton, self.actionButton
     ];
+    
+    [self registerAuxiliaryInfo];
 
     // Configure input view
     self.fieldEditorView.fieldDescription = self.fieldDescription;
@@ -127,12 +126,27 @@
 
 #pragma mark - Private
 
+- (void)registerAuxiliaryInfo {
+    // This is how Reflex will get Swift struct field names into the editor at runtime
+    NSDictionary<NSString *, NSArray *> *labels = [self.auxiliaryInfoProvider
+        auxiliaryInfoForKey:FLEXAuxiliarynfoKeyFieldLabels
+    ];
+    
+    for (NSString *type in labels) {
+        [FLEXArgumentInputViewFactory registerFieldNames:labels[type] forTypeEncoding:type];
+    }
+}
+
 - (id)currentValue {
     if (self.property) {
         return [self.property getValue:self.target];
     } else {
         return [self.ivar getValue:self.target];
     }
+}
+
+- (id<FLEXMetadataAuxiliaryInfo>)auxiliaryInfoProvider {
+    return self.ivar ?: self.property;
 }
 
 - (const FLEXTypeEncoding *)typeEncoding {
@@ -149,16 +163,6 @@
     } else {
         return self.ivar.description;
     }
-}
-
-+ (BOOL)canEditProperty:(FLEXProperty *)property onObject:(id)object currentValue:(id)value {
-    const FLEXTypeEncoding *typeEncoding = property.attributes.typeEncoding.UTF8String;
-    BOOL canEditType = [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:typeEncoding currentValue:value];
-    return canEditType && [object respondsToSelector:property.likelySetter];
-}
-
-+ (BOOL)canEditIvar:(Ivar)ivar currentValue:(id)value {
-    return [FLEXArgumentInputViewFactory canEditFieldWithTypeEncoding:ivar_getTypeEncoding(ivar) currentValue:value];
 }
 
 @end

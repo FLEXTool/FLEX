@@ -52,6 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Removes all registered global entries.
 - (void)clearGlobalEntries;
 
+#pragma mark - Editing
+
+/// Enable displaying ivar names for custom struct types
++ (void)registerFieldNames:(NSArray<NSString *> *)names forTypeEncoding:(NSString *)typeEncoding;
+
 #pragma mark - Simulator Shortcuts
 
 /// Simulator keyboard shortcuts are enabled by default.

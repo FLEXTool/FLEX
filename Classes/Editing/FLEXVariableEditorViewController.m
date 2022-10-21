@@ -25,11 +25,11 @@
 
 #pragma mark - Initialization
 
-+ (instancetype)target:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)())onCommit {
++ (instancetype)target:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)(void))onCommit {
     return [[self alloc] initWithTarget:target data:data commitHandler:onCommit];
 }
 
-- (id)initWithTarget:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)())onCommit {
+- (id)initWithTarget:(id)target data:(nullable id)data commitHandler:(void(^_Nullable)(void))onCommit {
     self = [super init];
     if (self) {
         _target = target;
@@ -37,7 +37,7 @@
         _commitHandler = onCommit;
         [NSNotificationCenter.defaultCenter
             addObserver:self selector:@selector(keyboardDidShow:)
-            name:UIKeyboardDidShowNotification object:nil
+            name:UIKeyboardWillShowNotification object:nil
         ];
         [NSNotificationCenter.defaultCenter
             addObserver:self selector:@selector(keyboardWillHide:)

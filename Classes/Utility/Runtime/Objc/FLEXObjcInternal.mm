@@ -106,17 +106,18 @@ BOOL FLEXPointerIsReadable(const void *inPtr) {
         return NO;
     }
 
-    // Read the memory
-    vm_offset_t readMem = 0;
-    mach_msg_type_number_t size = 0;
 #if __arm64e__
     address = (vm_address_t)ptrauth_strip(inPtr, ptrauth_key_function_pointer);
 #else
     address = (vm_address_t)inPtr;
 #endif
-    error = vm_read(mach_task_self(), address, sizeof(uintptr_t), &readMem, &size);
+    
+    // Read the memory
+    vm_size_t size = 0;
+    char buf[sizeof(uintptr_t)];
+    error = vm_read_overwrite(mach_task_self(), address, sizeof(uintptr_t), (vm_address_t)buf, &size);
     if (error != KERN_SUCCESS) {
-        // vm_read returned an error
+        // vm_read_overwrite returned an error
         return NO;
     }
 
@@ -162,22 +163,33 @@ BOOL FLEXPointerIsValidObjcObject(const void *ptr) {
     // We check if the returned class is readable because object_getClass
     // can return a garbage value when given a non-nil pointer to a non-object
     Class cls = object_getClass((__bridge id)ptr);
-    if (cls && FLEXPointerIsReadable((__bridge void *)cls)) {
-        // Just because this pointer is readable doesn't mean whatever is at
-        // it's ISA offset is readable. We need to do the same checks on it's ISA.
-        // Even this isn't perfect, because once we call object_isClass, we're
-        // going to dereference a member of the metaclass, which may or may not
-        // be readable itself. For the time being there is no way to access it
-        // to check here, and I have yet to hard-code a solution.
-        Class metaclass = object_getClass(cls);
-        if (metaclass && FLEXPointerIsReadable((__bridge void *)metaclass)) {
-            if (object_isClass(cls)) {
-                return YES;
-            }
-        }
+    if (!cls || !FLEXPointerIsReadable((__bridge void *)cls)) {
+        return NO;
+    }
+    
+    // Just because this pointer is readable doesn't mean whatever is at
+    // it's ISA offset is readable. We need to do the same checks on it's ISA.
+    // Even this isn't perfect, because once we call object_isClass, we're
+    // going to dereference a member of the metaclass, which may or may not
+    // be readable itself. For the time being there is no way to access it
+    // to check here, and I have yet to hard-code a solution.
+    Class metaclass = object_getClass(cls);
+    if (!metaclass || !FLEXPointerIsReadable((__bridge void *)metaclass)) {
+        return NO;
+    }
+    
+    // Does the class pointer we got appear as a class to the runtime?
+    if (!object_isClass(cls)) {
+        return NO;
+    }
+    
+    // Is the allocation size at least as large as the expected instance size?
+    ssize_t instanceSize = class_getInstanceSize(cls);
+    if (malloc_size(ptr) < instanceSize) {
+        return NO;
     }
 
-    return NO;
+    return YES;
 }
 
 

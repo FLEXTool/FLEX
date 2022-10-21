@@ -15,6 +15,8 @@
 #import "FLEXPropertyAttributes.h"
 #import "FLEXMetadataSection.h"
 #import "NSUserDefaults+FLEX.h"
+#import "FLEXMirror.h"
+#import "FLEXSwiftInternal.h"
 
 @implementation FLEXObjectExplorerDefaults
 
@@ -38,9 +40,17 @@
     NSMutableArray<FLEXStaticMetadata *> *_allImageNames;
     NSString *_objectDescription;
 }
+
+@property (nonatomic, readonly) id<FLEXMirror> initialMirror;
 @end
 
 @implementation FLEXObjectExplorer
+
++ (void)initialize {
+    if (self == FLEXObjectExplorer.class) {
+        FLEXObjectExplorer.reflexAvailable = NSClassFromString(@"FLEXSwiftMirror") != nil;
+    }
+}
 
 #pragma mark - Initialization
 
@@ -60,6 +70,23 @@
     }
 
     return self;
+}
+
+- (id<FLEXMirror>)mirrorForClass:(Class)cls {
+    static Class FLEXSwiftMirror = nil;
+    
+    // Should we use Reflex?
+    if (FLEXIsSwiftObjectOrClass(cls) && FLEXObjectExplorer.reflexAvailable) {
+        // Initialize FLEXSwiftMirror class if needed
+        if (!FLEXSwiftMirror) {
+            FLEXSwiftMirror = NSClassFromString(@"FLEXSwiftMirror");            
+        }
+        
+        return [(id<FLEXMirror>)[FLEXSwiftMirror alloc] initWithSubject:cls];
+    }
+    
+    // No; not swift object, or Reflex unavailable
+    return [FLEXMirror reflect:cls];
 }
 
 
@@ -151,40 +178,41 @@
     NSInteger rootIdx = count - 1;
     for (NSInteger i = 0; i < count; i++) {
         Class cls = self.classHierarchyClasses[i];
+        id<FLEXMirror> mirror = [self mirrorForClass:cls];
         superclass = (i < rootIdx) ? self.classHierarchyClasses[i+1] : nil;
 
         [allProperties addObject:[self
-            metadataUniquedByName:[cls flex_allInstanceProperties]
+            metadataUniquedByName:mirror.properties
             superclass:superclass
             kind:FLEXMetadataKindProperties
             skip:showMethodOverrides
         ]];
         [allClassProps addObject:[self
-            metadataUniquedByName:[cls flex_allClassProperties]
+            metadataUniquedByName:mirror.classProperties
             superclass:superclass
             kind:FLEXMetadataKindClassProperties
             skip:showMethodOverrides
         ]];
         [_allIvars addObject:[self
-            metadataUniquedByName:[cls flex_allIvars]
+            metadataUniquedByName:mirror.ivars
             superclass:nil
             kind:FLEXMetadataKindIvars
             skip:NO
         ]];
         [allMethods addObject:[self
-            metadataUniquedByName:[cls flex_allInstanceMethods]
+            metadataUniquedByName:mirror.methods
             superclass:superclass
             kind:FLEXMetadataKindMethods
             skip:showMethodOverrides
         ]];
         [allClassMethods addObject:[self
-            metadataUniquedByName:[cls flex_allClassMethods]
+            metadataUniquedByName:mirror.classMethods
             superclass:superclass
             kind:FLEXMetadataKindClassMethods
             skip:showMethodOverrides
         ]];
         [_allConformedProtocols addObject:[self
-            metadataUniquedByName:[cls flex_protocols]
+            metadataUniquedByName:mirror.protocols
             superclass:superclass
             kind:FLEXMetadataKindProtocols
             skip:NO
@@ -374,5 +402,15 @@
     // it is always the same for a given class and instances of it
     _classHierarchyClasses = [[self.object class] flex_classHierarchy];
 }
+
+@end
+
+
+#pragma mark - Reflex
+@implementation FLEXObjectExplorer (Reflex)
+static BOOL _reflexAvailable = NO;
+
++ (BOOL)reflexAvailable { return _reflexAvailable; }
++ (void)setReflexAvailable:(BOOL)enable { _reflexAvailable = enable; }
 
 @end

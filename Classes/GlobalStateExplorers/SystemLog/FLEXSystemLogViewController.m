@@ -98,7 +98,7 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
-    self.showSearchBarInitially = NO;
+    self.pinSearchBar = YES;
 
     weakify(self)
     id logHandler = ^(NSArray<FLEXSystemLogMessage *> *newMessages) { strongify(self)
@@ -175,9 +175,15 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     [self.logMessages mutate:^(NSMutableArray *list) {
         [list addObjectsFromArray:newMessages];
     }];
+    
+    // Re-filter messages to filter against new messages
+    if (self.filterText.length) {
+        [self updateSearchResults:self.filterText];
+    }
 
     // "Follow" the log as new messages stream in if we were previously near the bottom.
-    BOOL wasNearBottom = self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.frame.size.height - 100.0;
+    UITableView *tv = self.tableView;
+    BOOL wasNearBottom = tv.contentOffset.y >= tv.contentSize.height - tv.frame.size.height - 100.0;
     [self reloadData];
     if (wasNearBottom) {
         [self scrollToLastRow];
@@ -187,8 +193,8 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 - (void)scrollToLastRow {
     NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
     if (numberOfRows > 0) {
-        NSIndexPath *lastIndexPath = [NSIndexPath indexPathForRow:numberOfRows - 1 inSection:0];
-        [self.tableView scrollToRowAtIndexPath:lastIndexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        NSIndexPath *last = [NSIndexPath indexPathForRow:numberOfRows - 1 inSection:0];
+        [self.tableView scrollToRowAtIndexPath:last atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
 }
 

@@ -183,6 +183,7 @@
     referencesSection.selectionAction = ^(UIViewController *host) {
         UIViewController *references = [FLEXObjectListViewController
             objectsWithReferencesToObject:explorer.object
+            retained:NO
         ];
         [host.navigationController pushViewController:references animated:YES];
     };

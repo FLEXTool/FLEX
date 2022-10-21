@@ -72,7 +72,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)showRevertOrDismissAlert:(void(^)())revertBlock {
+- (void)showRevertOrDismissAlert:(void(^)(void))revertBlock {
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     [self reloadData];
     [self.tableView reloadData];

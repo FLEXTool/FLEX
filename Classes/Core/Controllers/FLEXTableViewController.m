@@ -66,9 +66,9 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
         _searchBarDebounceInterval = kFLEXDebounceFast;
         _showSearchBarInitially = YES;
         _style = style;
-        _manuallyDeactivateSearchOnDisappear = ({
-            NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 11;
-        });
+        _manuallyDeactivateSearchOnDisappear = (
+            NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 11
+        );
         
         // We will be our own search delegate if we implement this method
         if ([self respondsToSelector:@selector(updateSearchResults:)]) {
@@ -559,7 +559,7 @@ static UITextField *kDummyTextField = nil;
     [self.debounceTimer invalidate];
     NSString *text = searchController.searchBar.text;
     
-    void (^updateSearchResults)() = ^{
+    void (^updateSearchResults)(void) = ^{
         if (self.searchResultsUpdater) {
             [self.searchResultsUpdater updateSearchResults:text];
         } else {

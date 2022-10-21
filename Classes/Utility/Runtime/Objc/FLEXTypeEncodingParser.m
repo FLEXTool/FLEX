@@ -810,7 +810,7 @@ BOOL FLEXGetSizeAndAlignment(const char *type, NSUInteger *sizep, NSUInteger *al
     self.scan.scanLocation = scanLocation;
     
     // The return / cleanup code for when the scanned type is already clean
-    NSString * (^typeIsClean)() = ^NSString * {
+    NSString * (^typeIsClean)(void) = ^NSString * {
         NSString *clean = [self.scan.string
             substringWithRange:NSMakeRange(scanLocation, self.scan.scanLocation - scanLocation)
         ];

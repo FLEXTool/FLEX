@@ -11,14 +11,21 @@
 @implementation MiscNetworkRequests
 
 + (void)sendExampleRequests {
-    [[self new] sendExampleNetworkRequests];
+    MiscNetworkRequests *misc = [self new];
+    
+    NSURLSessionConfiguration *config = NSURLSessionConfiguration.defaultSessionConfiguration;
+    config.timeoutIntervalForRequest = 10.0;
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:misc delegateQueue:nil];
+    
+    [misc sendExampleNetworkRequests:session];
+    [misc sendExampleWebsocketTraffic:session];
 }
 
 - (NSMutableURLRequest *)request:(NSString *)url {
     return [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
 }
 
-- (void)sendExampleNetworkRequests {
+- (void)sendExampleNetworkRequests:(NSURLSession *)sessionWithDelegate {
     NSString *kFlipboardIcon = @"https://cdn.flipboard.com/serviceIcons/v2/social-icon-flipboard-96.png";
     NSString *kRandomAnimal = @"https://lorempixel.com/248/250/animals/";
     NSString *kSnowLeopard = @"https://lorempixel.com/248/250/animals/4/";
@@ -35,13 +42,10 @@
     
     // With delegate //
     
-    NSURLSessionConfiguration *config = NSURLSessionConfiguration.defaultSessionConfiguration;
-    config.timeoutIntervalForRequest = 10.0;
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
     // NSURLSessionDataTask
-    [pendingTasks addObject:[session dataTaskWithURL:[NSURL URLWithString:kFlipboardIcon]]];
+    [pendingTasks addObject:[sessionWithDelegate dataTaskWithURL:[NSURL URLWithString:kFlipboardIcon]]];
     // NSURLSessionDownloadTask
-    [pendingTasks addObject:[session downloadTaskWithURL:[NSURL URLWithString:kRandomAnimal]]];
+    [pendingTasks addObject:[sessionWithDelegate downloadTaskWithURL:[NSURL URLWithString:kRandomAnimal]]];
     
     // Without delegate //
     
@@ -71,7 +75,7 @@
     NSMutableURLRequest *upload = [self request:kImgurUpload];
     upload.HTTPMethod = @"POST";
     [upload setValue:@"Client-ID 0e8a1cb2eb594ef" forHTTPHeaderField:@"Authorization"];
-    [pendingTasks addObject:[session
+    [pendingTasks addObject:[sessionWithDelegate
         uploadTaskWithRequest:upload
         fromFile:[NSBundle.mainBundle URLForResource:@"image" withExtension:@"jpg"]
         completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -146,6 +150,29 @@
     }
     
     #pragma clang diagnostic pop
+}
+
+- (void)sendExampleWebsocketTraffic:(NSURLSession *)sessionWithDelegate {
+    NSString *APIKey = @"VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV";
+    NSString *wsurl = [NSString stringWithFormat:@"wss://demo.piesocket.com/v3/channel_1?api_key=%@&notify_self", APIKey];
+    NSURLSessionWebSocketTask *task = [sessionWithDelegate webSocketTaskWithURL:[NSURL URLWithString:wsurl]];
+    [task resume];
+}
+
+- (void)URLSession:(NSURLSession *)session webSocketTask:(NSURLSessionWebSocketTask *)task didOpenWithProtocol:(NSString *)protocol {
+    [task receiveMessageWithCompletionHandler:^(NSURLSessionWebSocketMessage *message, NSError *error) {
+        if (!error) {
+            NSLog(@"Received WS message: %@", message.string);
+            id message = [[NSURLSessionWebSocketMessage alloc] initWithString:@"Hello"];
+            [task sendMessage:message completionHandler:^(NSError *error) {
+                if (error) {
+                    NSLog(@"Error sending WS message: %@", error.localizedDescription);
+                } else {
+                    NSLog(@"WS message sent.");
+                }
+            }];
+        }
+    }];
 }
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {

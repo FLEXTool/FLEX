@@ -109,7 +109,7 @@
     if (!self.filterText.length) {
         self.metadata = self.allMetadata;
     } else {
-        self.metadata = [self.allMetadata flex_filtered:^BOOL(FLEXProperty *obj, NSUInteger idx) {
+        self.metadata = [self.allMetadata flex_filtered:^BOOL(id<FLEXRuntimeMetadata> obj, NSUInteger idx) {
             return [obj.description localizedCaseInsensitiveContainsString:self.filterText];
         }];
     }

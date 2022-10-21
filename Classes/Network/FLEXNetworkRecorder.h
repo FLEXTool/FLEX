@@ -14,7 +14,14 @@ extern NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification;
 extern NSString *const kFLEXNetworkRecorderUserInfoTransactionKey;
 extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 
-@class FLEXNetworkTransaction;
+@class FLEXNetworkTransaction, FLEXHTTPTransaction, FLEXWebsocketTransaction, FLEXFirebaseTransaction;
+@class FIRQuery, FIRDocumentReference, FIRCollectionReference, FIRDocumentSnapshot, FIRQuerySnapshot;
+
+typedef NS_ENUM(NSUInteger, FLEXNetworkTransactionKind) {
+    FLEXNetworkTransactionKindFirebase = 0,
+    FLEXNetworkTransactionKindREST,
+    FLEXNetworkTransactionKindWebsockets,
+};
 
 @interface FLEXNetworkRecorder : NSObject
 
@@ -37,19 +44,26 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 - (void)synchronizeDenylist;
 
 
-// Accessing recorded network activity
+#pragma mark Accessing recorded network activity
 
-/// Array of FLEXNetworkTransaction objects ordered by start time with the newest first.
-- (NSArray<FLEXNetworkTransaction *> *)networkTransactions;
+/// Array of FLEXHTTPTransaction objects ordered by start time with the newest first.
+@property (nonatomic, readonly) NSArray<FLEXHTTPTransaction *> *HTTPTransactions;
+/// Array of FLEXWebsocketTransaction objects ordered by start time with the newest first.
+@property (nonatomic, readonly) NSArray<FLEXWebsocketTransaction *> *websocketTransactions API_AVAILABLE(ios(13.0));
+/// Array of FLEXFirebaseTransaction objects ordered by start time with the newest first.
+@property (nonatomic, readonly) NSArray<FLEXFirebaseTransaction *> *firebaseTransactions;
 
 /// The full response data IFF it hasn't been purged due to memory pressure.
-- (NSData *)cachedResponseBodyForTransaction:(FLEXNetworkTransaction *)transaction;
+- (NSData *)cachedResponseBodyForTransaction:(FLEXHTTPTransaction *)transaction;
 
 /// Dumps all network transactions and cached response bodies.
 - (void)clearRecordedActivity;
 
+/// Clear only transactions matching the given query.
+- (void)clearRecordedActivity:(FLEXNetworkTransactionKind)kind matching:(NSString *)query;
 
-// Recording network activity
+
+#pragma mark Recording network activity
 
 /// Call when app is about to send HTTP request.
 - (void)recordRequestWillBeSentWithRequestID:(NSString *)requestID
@@ -71,5 +85,38 @@ extern NSString *const kFLEXNetworkRecorderTransactionsClearedNotification;
 /// Call to set the request mechanism anytime after recordRequestWillBeSent... has been called.
 /// This string can be set to anything useful about the API used to make the request.
 - (void)recordMechanism:(NSString *)mechanism forRequestID:(NSString *)requestID;
+
+- (void)recordWebsocketMessageSend:(NSURLSessionWebSocketMessage *)message
+                              task:(NSURLSessionWebSocketTask *)task API_AVAILABLE(ios(13.0));
+- (void)recordWebsocketMessageSendCompletion:(NSURLSessionWebSocketMessage *)message
+                                       error:(NSError *)error API_AVAILABLE(ios(13.0));
+
+- (void)recordWebsocketMessageReceived:(NSURLSessionWebSocketMessage *)message
+                                  task:(NSURLSessionWebSocketTask *)task API_AVAILABLE(ios(13.0));
+
+- (void)recordFIRQueryWillFetch:(FIRQuery *)query withTransactionID:(NSString *)transactionID;
+- (void)recordFIRDocumentWillFetch:(FIRDocumentReference *)document withTransactionID:(NSString *)transactionID;
+
+- (void)recordFIRQueryDidFetch:(FIRQuerySnapshot *)response error:(NSError *)error
+                 transactionID:(NSString *)transactionID;
+- (void)recordFIRDocumentDidFetch:(FIRDocumentSnapshot *)response error:(NSError *)error
+                    transactionID:(NSString *)transactionID;
+
+- (void)recordFIRWillSetData:(FIRDocumentReference *)doc
+                        data:(NSDictionary *)documentData
+                       merge:(NSNumber *)yesorno
+                 mergeFields:(NSArray *)fields
+               transactionID:(NSString *)transactionID;
+- (void)recordFIRWillUpdateData:(FIRDocumentReference *)doc fields:(NSDictionary *)fields
+                  transactionID:(NSString *)transactionID;
+- (void)recordFIRWillDeleteDocument:(FIRDocumentReference *)doc transactionID:(NSString *)transactionID;
+- (void)recordFIRWillAddDocument:(FIRCollectionReference *)initiator
+                            document:(FIRDocumentReference *)doc
+                   transactionID:(NSString *)transactionID;
+
+- (void)recordFIRDidSetData:(NSError *)error transactionID:(NSString *)transactionID;
+- (void)recordFIRDidUpdateData:(NSError *)error transactionID:(NSString *)transactionID;
+- (void)recordFIRDidDeleteDocument:(NSError *)error transactionID:(NSString *)transactionID;
+- (void)recordFIRDidAddDocument:(NSError *)error transactionID:(NSString *)transactionID;
 
 @end

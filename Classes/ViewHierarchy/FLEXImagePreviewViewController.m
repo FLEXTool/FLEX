@@ -7,6 +7,7 @@
 //
 
 #import "FLEXImagePreviewViewController.h"
+#import "FLEXActivityViewController.h"
 #import "FLEXUtility.h"
 #import "FLEXColor.h"
 #import "FLEXResources.h"
@@ -48,6 +49,10 @@
     }
     
     return self;
+}
+
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    [super dismissViewControllerAnimated:flag completion:completion];
 }
 
 
@@ -128,7 +133,7 @@
         }
     });
     
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:@[self.image] applicationActivities:@[]];
+    UIViewController *activityVC = [FLEXActivityViewController sharing:@[self.image] source:sender];
     
     if (!canSaveToCameraRoll && !didShowWarning) {
         didShowWarning = YES;

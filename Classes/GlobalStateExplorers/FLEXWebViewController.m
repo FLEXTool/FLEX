@@ -38,9 +38,26 @@
     self = [self initWithNibName:nil bundle:nil];
     if (self) {
         self.originalText = text;
-        NSString *htmlString = [NSString stringWithFormat:@"<head><meta name='viewport' content='initial-scale=1.0'></head><body><pre>%@</pre></body>", [FLEXUtility stringByEscapingHTMLEntitiesInString:text]];
-        [self.webView loadHTMLString:htmlString baseURL:nil];
+
+        NSString *html = @"<head><style>:root{ color-scheme: light dark; }</style>"
+            "<meta name='viewport' content='initial-scale=1.0'></head><body><pre>%@</pre></body>";
+
+        // Loading message for when input text takes a long time to escape
+        NSString *loadingMessage = [NSString stringWithFormat:html, @"Loading..."];
+        [self.webView loadHTMLString:loadingMessage baseURL:nil];
+
+        // Escape HTML on a background thread
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *escapedText = [FLEXUtility stringByEscapingHTMLEntitiesInString:text];
+            NSString *htmlString = [NSString stringWithFormat:html, escapedText];
+
+            // Update webview on the main thread
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.webView loadHTMLString:htmlString baseURL:nil];
+            });
+        });
     }
+
     return self;
 }
 
@@ -50,14 +67,8 @@
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         [self.webView loadRequest:request];
     }
-    return self;
-}
 
-- (void)dealloc {
-    // WKWebView's delegate is assigned so we need to clear it manually.
-    if (_webView.navigationDelegate == self) {
-        _webView.navigationDelegate = nil;
-    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -68,7 +79,9 @@
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     if (self.originalText.length > 0) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonTapped:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+            initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonTapped:)
+        ];
     }
 }
 
@@ -79,20 +92,23 @@
 
 #pragma mark - WKWebView Delegate
 
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
+                                                     decisionHandler:(void (^)(WKNavigationActionPolicy))handler {
     WKNavigationActionPolicy policy = WKNavigationActionPolicyCancel;
     if (navigationAction.navigationType == WKNavigationTypeOther) {
         // Allow the initial load
         policy = WKNavigationActionPolicyAllow;
     } else {
-        // For clicked links, push another web view controller onto the navigation stack so that hitting the back button works as expected.
+        // For clicked links, push another web view controller onto the navigation stack
+        // so that hitting the back button works as expected.
         // Don't allow the current web view to handle the navigation.
         NSURLRequest *request = navigationAction.request;
-        FLEXWebViewController *webVC = [[[self class] alloc] initWithURL:[request URL]];
-        webVC.title = [[request URL] absoluteString];
+        FLEXWebViewController *webVC = [[[self class] alloc] initWithURL:request.URL];
+        webVC.title = request.URL.absoluteString;
         [self.navigationController pushViewController:webVC animated:YES];
     }
-    decisionHandler(policy);
+
+    handler(policy);
 }
 
 
@@ -101,7 +117,7 @@
 + (BOOL)supportsPathExtension:(NSString *)extension {
     BOOL supported = NO;
     NSSet<NSString *> *supportedExtensions = [self webViewSupportedPathExtensions];
-    if ([supportedExtensions containsObject:[extension lowercaseString]]) {
+    if ([supportedExtensions containsObject:extension.lowercaseString]) {
         supported = YES;
     }
     return supported;
@@ -113,11 +129,14 @@
     dispatch_once(&onceToken, ^{
         // Note that this is not exhaustive, but all these extensions should work well in the web view.
         // See https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingContentforSafarioniPhone/CreatingContentforSafarioniPhone.html#//apple_ref/doc/uid/TP40006482-SW7
-        pathExtensions = [NSSet<NSString *> setWithArray:@[@"jpg", @"jpeg", @"png", @"gif", @"pdf", @"svg", @"tiff", @"3gp", @"3gpp", @"3g2",
-                                                           @"3gp2", @"aiff", @"aif", @"aifc", @"cdda", @"amr", @"mp3", @"swa", @"mp4", @"mpeg",
-                                                           @"mpg", @"mp3", @"wav", @"bwf", @"m4a", @"m4b", @"m4p", @"mov", @"qt", @"mqv", @"m4v"]];
+        pathExtensions = [NSSet<NSString *> setWithArray:@[
+            @"jpg", @"jpeg", @"png", @"gif", @"pdf", @"svg", @"tiff", @"3gp", @"3gpp", @"3g2",
+            @"3gp2", @"aiff", @"aif", @"aifc", @"cdda", @"amr", @"mp3", @"swa", @"mp4", @"mpeg",
+            @"mpg", @"mp3", @"wav", @"bwf", @"m4a", @"m4b", @"m4p", @"mov", @"qt", @"mqv", @"m4v"
+        ]];
         
     });
+
     return pathExtensions;
 }
 

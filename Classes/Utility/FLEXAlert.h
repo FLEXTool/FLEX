@@ -28,6 +28,9 @@ typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionHandler)(void(^handler)(NSAr
 /// Shows a simple alert with one button which says "Dismiss"
 + (void)showAlert:(NSString * _Nullable)title message:(NSString * _Nullable)message from:(UIViewController *)viewController;
 
+/// Shows a simple alert with no buttons and only a title, for half a second
++ (void)showQuickAlert:(NSString *)title from:(UIViewController *)viewController;
+
 /// Construct and display an alert
 + (void)makeAlert:(FLEXAlertBuilder)block showFrom:(UIViewController *)viewController;
 /// Construct and display an action sheet-style alert

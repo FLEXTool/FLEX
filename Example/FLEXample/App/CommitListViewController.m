@@ -16,11 +16,39 @@
 @property (nonatomic, readonly) NSMutableDictionary<NSString *, UIImage *> *avatars;
 @end
 
+@interface UIAlertController (Private)
+@property (nonatomic) UIViewController *contentViewController;
+@end
+
+@interface ContentViewController : UIViewController
++ (instancetype)customView:(UIView *)view;
+@end
+
+@implementation ContentViewController
+
++ (instancetype)customView:(UIView *)view {
+    ContentViewController *vc = [self new];
+    vc.view = view;
+    return vc;
+}
+
+@end
+
 @implementation CommitListViewController
 
 - (id)init {
     // Default style is grouped
     return [self initWithStyle:UITableViewStylePlain];
+}
+
+- (void)showCustomView {
+    UIAlertController *alert = [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Custom View").button(@"Dismiss").cancelStyle();
+    }];
+    
+    // I like to use this to easily display and interact with custom views I'm working on
+    alert.contentViewController = [ContentViewController customView:[UIView new]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)viewDidLoad {
@@ -32,6 +60,11 @@
     self.showsSearchBar = YES;
     self.navigationItem.rightBarButtonItem = [UIBarButtonItem
         flex_itemWithTitle:@"FLEX" target:FLEXManager.sharedManager action:@selector(toggleExplorer)
+    ];
+    self.navigationItem.rightBarButtonItem.accessibilityIdentifier = @"toggle-explorer";
+    
+    self.navigationItem.leftBarButtonItem = [UIBarButtonItem
+        flex_itemWithTitle:@"Test" target:self action:@selector(showCustomView)
     ];
     
     // Load and process commits

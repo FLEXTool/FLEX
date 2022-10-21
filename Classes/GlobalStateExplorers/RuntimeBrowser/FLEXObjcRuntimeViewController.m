@@ -10,10 +10,12 @@
 #import "FLEXKeyPathSearchController.h"
 #import "FLEXRuntimeBrowserToolbar.h"
 #import "UIGestureRecognizer+Blocks.h"
+#import "UIBarButtonItem+FLEX.h"
 #import "FLEXTableView.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXAlert.h"
 #import "FLEXRuntimeClient.h"
+#import <dlfcn.h>
 
 @interface FLEXObjcRuntimeViewController () <FLEXKeyPathSearchControllerDelegate>
 
@@ -43,6 +45,8 @@
         ]
     ];
     
+    [self addToolbarItems:@[FLEXBarButtonItem(@"dlopen()", self, @selector(dlopenPressed:))]];
+    
     // Search bar stuff, must be first because this creates self.searchController
     self.showsSearchBar = YES;
     self.showSearchBarInitially = YES;
@@ -71,6 +75,68 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
+}
+
+
+#pragma mark dlopen
+
+/// Prompt user for dlopen shortcuts to choose from
+- (void)dlopenPressed:(id)sender {
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Dynamically Open Library");
+        make.message(@"Invoke dlopen() with the given path. Choose an option below.");
+        
+        make.button(@"System Framework").handler(^(NSArray<NSString *> *_) {
+            [self dlopenWithFormat:@"/System/Library/Frameworks/%@.framework/%@"];
+        });
+        make.button(@"System Private Framework").handler(^(NSArray<NSString *> *_) {
+            [self dlopenWithFormat:@"/System/Library/PrivateFrameworks/%@.framework/%@"];
+        });
+        make.button(@"Arbitrary Binary").handler(^(NSArray<NSString *> *_) {
+            [self dlopenWithFormat:nil];
+        });
+        
+        make.button(@"Cancel").cancelStyle();
+    } showFrom:self];
+}
+
+/// Prompt user for input and dlopen
+- (void)dlopenWithFormat:(NSString *)format {
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"Dynamically Open Library");
+        if (format) {
+            make.message(@"Pass in a framework name, such as CarKit or FrontBoard.");
+        } else {
+            make.message(@"Pass in an absolute path to a binary.");
+        }
+        
+        make.textField(format ? @"ARKit" : @"/System/Library/Frameworks/ARKit.framework/ARKit");
+        
+        make.button(@"Cancel").cancelStyle();
+        make.button(@"Open").destructiveStyle().handler(^(NSArray<NSString *> *strings) {
+            NSString *path = strings[0];
+            
+            if (path.length < 2) {
+                [self dlopenInvalidPath];
+            } else if (format) {
+                path = [NSString stringWithFormat:format, path, path];
+            }
+            
+            if (!dlopen(path.UTF8String, RTLD_NOW)) {
+                [FLEXAlert makeAlert:^(FLEXAlert *make) {
+                    make.title(@"Error").message(@(dlerror()));
+                    make.button(@"Dismiss").cancelStyle();
+                }];
+            }
+        });
+    } showFrom:self];
+}
+
+- (void)dlopenInvalidPath {
+    [FLEXAlert makeAlert:^(FLEXAlert * _Nonnull make) {
+        make.title(@"Path or Name Too Short");
+        make.button(@"Dismiss").cancelStyle();
+    } showFrom:self];
 }
 
 

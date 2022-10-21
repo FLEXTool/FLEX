@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MiscNetworkRequests : NSObject <NSURLConnectionDataDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate>
+@interface MiscNetworkRequests : NSObject <NSURLConnectionDataDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, NSURLSessionWebSocketDelegate>
 
 + (void)sendExampleRequests;
 

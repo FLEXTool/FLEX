@@ -24,14 +24,6 @@
 
 #pragma mark Initializers
 
-- (id)init {
-    [NSException
-        raise:NSInternalInconsistencyException
-        format:@"Class instance should not be created with -init"
-    ];
-    return nil;
-}
-
 + (instancetype)ivar:(Ivar)ivar {
     return [[self alloc] initWithIvar:ivar];
 }

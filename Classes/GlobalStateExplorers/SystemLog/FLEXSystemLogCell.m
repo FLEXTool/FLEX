@@ -9,6 +9,7 @@
 #import "FLEXSystemLogCell.h"
 #import "FLEXSystemLogMessage.h"
 #import "UIFont+FLEX.h"
+#import "NSDateFormatter+FLEX.h"
 
 NSString *const kFLEXSystemLogCellIdentifier = @"FLEXSystemLogCellIdentifier";
 
@@ -106,14 +107,7 @@ static const UIEdgeInsets kFLEXLogMessageCellInsets = {10.0, 10.0, 10.0, 10.0};
 }
 
 + (NSString *)logTimeStringFromDate:(NSDate *)date {
-    static NSDateFormatter *formatter = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        formatter = [NSDateFormatter new];
-        formatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-    });
-
-    return [formatter stringFromDate:date];
+    return [NSDateFormatter flex_stringFrom:date format:FLEXDateFormatVerbose];
 }
 
 @end

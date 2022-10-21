@@ -141,83 +141,36 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
     return self;
 }
 
-+ (UIViewController *)instancesOfClassWithName:(NSString *)className {
-    const char *classNameCString = className.UTF8String;
-    NSMutableArray *instances = [NSMutableArray new];
-    [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
-        if (strcmp(classNameCString, class_getName(actualClass)) == 0) {
-            // Note: objects of certain classes crash when retain is called.
-            // It is up to the user to avoid tapping into instance lists for these classes.
-            // Ex. OS_dispatch_queue_specific_queue
-            // In the future, we could provide some kind of warning for classes that are known to be problematic.
-            if (malloc_size((__bridge const void *)(object)) > 0) {
-                [instances addObject:object];
-            }
-        }
-    }];
-
-    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingAll:instances];
++ (UIViewController *)instancesOfClassWithName:(NSString *)className retained:(BOOL)retain {
+    NSArray<FLEXObjectRef *> *references = [FLEXHeapEnumerator
+        instancesOfClassWithName:className retained:retain
+    ];
+    
     if (references.count == 1) {
         return [FLEXObjectExplorerFactory
-                explorerViewControllerForObject:references.firstObject.object
+            explorerViewControllerForObject:references.firstObject.object
         ];
     }
 
     FLEXObjectListViewController *controller = [[self alloc] initWithReferences:references];
-    controller.title = [NSString stringWithFormat:@"%@ (%lu)", className, (unsigned long)instances.count];
+    controller.title = [NSString stringWithFormat:@"%@ (%@)", className, @(references.count)];
     return controller;
 }
 
 + (instancetype)subclassesOfClassWithName:(NSString *)className {
-    NSArray<Class> *classes = FLEXGetAllSubclasses(NSClassFromString(className), NO);
-    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingClasses:classes];
+    NSArray<FLEXObjectRef *> *references = [FLEXHeapEnumerator subclassesOfClassWithName:className];
     FLEXObjectListViewController *controller = [[self alloc] initWithReferences:references];
-    controller.title = [NSString stringWithFormat:@"Subclasses of %@ (%lu)",
-        className, (unsigned long)classes.count
+    controller.title = [NSString stringWithFormat:@"Subclasses of %@ (%@)",
+        className, @(references.count)
     ];
 
     return controller;
 }
 
-+ (instancetype)objectsWithReferencesToObject:(id)object {
-    static Class SwiftObjectClass = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        SwiftObjectClass = NSClassFromString(@"SwiftObject");
-        if (!SwiftObjectClass) {
-            SwiftObjectClass = NSClassFromString(@"Swift._SwiftObject");
-        }
-    });
-
-    NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray new];
-    [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
-        // Get all the ivars on the object. Start with the class and and travel up the inheritance chain.
-        // Once we find a match, record it and move on to the next object. There's no reason to find multiple matches within the same object.
-        Class tryClass = actualClass;
-        while (tryClass) {
-            unsigned int ivarCount = 0;
-            Ivar *ivars = class_copyIvarList(tryClass, &ivarCount);
-
-            for (unsigned int ivarIndex = 0; ivarIndex < ivarCount; ivarIndex++) {
-                Ivar ivar = ivars[ivarIndex];
-                NSString *typeEncoding = @(ivar_getTypeEncoding(ivar) ?: "");
-
-                if (typeEncoding.flex_typeIsObjectOrClass) {
-                    ptrdiff_t offset = ivar_getOffset(ivar);
-                    uintptr_t *fieldPointer = (__bridge void *)tryObject + offset;
-
-                    if (*fieldPointer == (uintptr_t)(__bridge void *)object) {
-                        NSString *ivarName = @(ivar_getName(ivar) ?: "???");
-                        [instances addObject:[FLEXObjectRef referencing:tryObject ivar:ivarName]];
-                        return;
-                    }
-                }
-            }
-
-            free(ivars);
-            tryClass = class_getSuperclass(tryClass);
-        }
-    }];
++ (instancetype)objectsWithReferencesToObject:(id)object retained:(BOOL)retain {
+    NSArray<FLEXObjectRef *> *instances = [FLEXHeapEnumerator
+        objectsWithReferencesToObject:object retained:retain
+    ];
 
     FLEXObjectListViewController *viewController = [[self alloc]
         initWithReferences:instances
@@ -260,7 +213,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
     }];
 }
 
-- (FLEXMutableListSection *)makeSection:(NSArray *)rows title:(NSString *)title { weakify(self)
+- (FLEXMutableListSection *)makeSection:(NSArray *)rows title:(NSString *)title {
     FLEXMutableListSection *section = [FLEXMutableListSection list:rows
         cellConfiguration:^(FLEXTableViewCell *cell, FLEXObjectRef *ref, NSInteger row) {
             cell.textLabel.text = ref.reference;
@@ -275,8 +228,8 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
         }
     ];
 
-    section.selectionHandler = ^(UIViewController *host, FLEXObjectRef *ref) { strongify(self)
-        [self.navigationController pushViewController:[
+    section.selectionHandler = ^(UIViewController *host, FLEXObjectRef *ref) {
+        [host.navigationController pushViewController:[
             FLEXObjectExplorerFactory explorerViewControllerForObject:ref.object
         ] animated:YES];
     };

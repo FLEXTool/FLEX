@@ -129,6 +129,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
+    
+    // Observe keyboard to move self out of the way
+    [NSNotificationCenter.defaultCenter
+        addObserver:self
+        selector:@selector(keyboardShown:)
+        name:UIKeyboardWillShowNotification
+        object:nil
+    ];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -162,7 +170,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     UIInterfaceOrientationMask supportedOrientations = FLEXUtility.infoPlistSupportedInterfaceOrientationsMask;
-    if (viewControllerToAsk && ![viewControllerToAsk isKindOfClass:[self class]]) {
+    // We check its class by name because using isKindOfClass will fail for the same class defined
+    // twice in the runtime; and the goal here is to avoid calling -supportedInterfaceOrientations
+    // recursively when I'm inspecting FLEX with itself from a tweak dylib
+    if (viewControllerToAsk && ![NSStringFromClass([viewControllerToAsk class]) hasPrefix:@"FLEX"]) {
         supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
     }
     
@@ -375,6 +386,21 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return [self.view convertRect:frameInWindow fromView:nil];
 }
 
+- (void)keyboardShown:(NSNotification *)notif {
+    CGRect keyboardFrame = [notif.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect toolbarFrame = self.explorerToolbar.frame;
+    
+    if (CGRectGetMinY(keyboardFrame) < CGRectGetMaxY(toolbarFrame)) {
+        toolbarFrame.origin.y = keyboardFrame.origin.y - toolbarFrame.size.height;
+        // Subtract a little more, to ignore accessory input views
+        toolbarFrame.origin.y -= 50;
+        
+        [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0.5
+                            options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self updateToolbarPositionWithUnconstrainedFrame:toolbarFrame];
+        } completion:nil];
+    }
+}
 
 #pragma mark - Toolbar Buttons
 
@@ -403,8 +429,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (UIWindow *)statusWindow {
-    NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
-    return [UIApplication.sharedApplication valueForKey:statusBarString];
+    if (!@available(iOS 16, *)) {
+        NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
+        return [UIApplication.sharedApplication valueForKey:statusBarString];
+    }
+    
+    return nil;
 }
 
 - (void)recentButtonTapped:(FLEXExplorerToolbarItem *)sender {
@@ -460,17 +490,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         initWithTarget:self action:@selector(handleToolbarDetailsTapGesture:)
     ];
     [toolbar.selectedViewDescriptionContainer addGestureRecognizer:self.detailsTapGR];
+    
     // Swipe gestures for selecting deeper / higher views at a point
-    UIPanGestureRecognizer *leftSwipe = [[UIPanGestureRecognizer alloc]
+    UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
     ];
-//    UIPanGestureRecognizer *rightSwipe = [[UIPanGestureRecognizer alloc]
-//        initWithTarget:self action:@selector(handleChangeViewAtPointGesture:)
-//    ];
-//    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-//    rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
-    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:leftSwipe];
-//    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:rightSwipe];
+    [toolbar.selectedViewDescriptionContainer addGestureRecognizer:panGesture];
     
     // Long press gesture to present tabs manager
     [toolbar.globalsItem addGestureRecognizer:[[UILongPressGestureRecognizer alloc]

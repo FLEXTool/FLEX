@@ -168,11 +168,10 @@ static uint8_t (*OSLogGetType)(void *);
             NSDate *date = [NSDate dateWithTimeIntervalSince1970:log_message->tv_gmt.tv_sec];
             
             // Get log message text
-            const char *messageText = OSLogCopyFormattedMessage(log_message);
             // https://github.com/limneos/oslog/issues/1
-            if (entry->log_message.format && !(strcmp(entry->log_message.format, messageText))) {
-                messageText = (char *)entry->log_message.format;
-            }
+            // https://github.com/FLEXTool/FLEX/issues/564
+            const char *messageText = OSLogCopyFormattedMessage(log_message) ?: "";
+
             // move messageText from stack to heap
             NSString *msg = [NSString stringWithUTF8String:messageText];
 

@@ -165,10 +165,10 @@
     
     // Generate all (sub)titles from shortcuts
     if (self.allShortcuts) {
-        self.allTitles = [self.allShortcuts flex_mapped:^id(FLEXShortcut *s, NSUInteger idx) {
+        self.allTitles = [self.allShortcuts flex_mapped:^id(id<FLEXShortcut> s, NSUInteger idx) {
             return [s titleWith:self.object];
         }];
-        self.allSubtitles = [self.allShortcuts flex_mapped:^id(FLEXShortcut *s, NSUInteger idx) {
+        self.allSubtitles = [self.allShortcuts flex_mapped:^id(id<FLEXShortcut> s, NSUInteger idx) {
             return [s subtitleWith:self.object] ?: @"";
         }];
     }
@@ -188,7 +188,7 @@
 - (BOOL)canSelectRow:(NSInteger)row {
     UITableViewCellAccessoryType type = [self.shortcuts[row] accessoryTypeWith:self.object];
     BOOL hasDisclosure = NO;
-    hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;	
+    hasDisclosure |= type == UITableViewCellAccessoryDisclosureIndicator;
     hasDisclosure |= type == UITableViewCellAccessoryDetailDisclosureButton;
     return hasDisclosure;
 }

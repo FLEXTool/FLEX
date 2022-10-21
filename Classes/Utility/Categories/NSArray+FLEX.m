@@ -113,6 +113,16 @@
     }
 }
 
+- (id)flex_firstWhere:(BOOL (^)(id))meetsCriteria {
+    for (id e in self) {
+        if (meetsCriteria(e)) {
+            return e;
+        }
+    }
+    
+    return nil;
+}
+
 @end
 
 

@@ -12,7 +12,7 @@
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
 
-NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactionCellIdentifier";
+NSString * const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactionCellIdentifier";
 
 @interface FLEXNetworkTransactionCell ()
 
@@ -37,6 +37,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
         self.pathLabel = [UILabel new];
         self.pathLabel.font = UIFont.flex_defaultTableCellFont;
         self.pathLabel.textColor = [UIColor colorWithWhite:0.4 alpha:1.0];
+        self.pathLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
         [self.contentView addSubview:self.pathLabel];
 
         self.thumbnailImageView = [UIImageView new];
@@ -69,7 +70,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 
     CGFloat thumbnailOriginY = round((self.contentView.bounds.size.height - kImageDimension) / 2.0);
     self.thumbnailImageView.frame = CGRectMake(kLeftPadding, thumbnailOriginY, kImageDimension, kImageDimension);
-    self.thumbnailImageView.image = self.transaction.responseThumbnail;
+    self.thumbnailImageView.image = self.transaction.thumbnail;
 
     CGFloat textOriginX = CGRectGetMaxX(self.thumbnailImageView.frame) + kLeftPadding;
     CGFloat availableTextWidth = self.contentView.bounds.size.width - textOriginX;
@@ -77,7 +78,7 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
     self.nameLabel.text = [self nameLabelText];
     CGSize nameLabelPreferredSize = [self.nameLabel sizeThatFits:CGSizeMake(availableTextWidth, CGFLOAT_MAX)];
     self.nameLabel.frame = CGRectMake(textOriginX, kVerticalPadding, availableTextWidth, nameLabelPreferredSize.height);
-    self.nameLabel.textColor = (self.transaction.error || [FLEXUtility isErrorStatusCodeFromURLResponse:self.transaction.response]) ? UIColor.redColor : FLEXColor.primaryTextColor;
+    self.nameLabel.textColor = self.transaction.displayAsError ? UIColor.redColor : FLEXColor.primaryTextColor;
 
     self.pathLabel.text = [self pathLabelText];
     CGSize pathLabelPreferredSize = [self.pathLabel sizeThatFits:CGSizeMake(availableTextWidth, CGFLOAT_MAX)];
@@ -93,81 +94,23 @@ NSString *const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactio
 }
 
 - (NSString *)nameLabelText {
-    NSURL *url = self.transaction.request.URL;
-    NSString *name = [url lastPathComponent];
-    if (name.length == 0) {
-        name = @"/";
-    }
-    NSString *query = [url query];
-    if (query) {
-        name = [name stringByAppendingFormat:@"?%@", query];
-    }
-    return name;
+    return self.transaction.primaryDescription;
 }
 
 - (NSString *)pathLabelText {
-    NSURL *url = self.transaction.request.URL;
-    NSMutableArray<NSString *> *mutablePathComponents = url.pathComponents.mutableCopy;
-    if (mutablePathComponents.count > 0) {
-        [mutablePathComponents removeLastObject];
-    }
-    NSString *path = [url host];
-    for (NSString *pathComponent in mutablePathComponents) {
-        path = [path stringByAppendingPathComponent:pathComponent];
-    }
-    return path;
+    return self.transaction.secondaryDescription;
 }
 
 - (NSString *)transactionDetailsLabelText {
-    NSMutableArray<NSString *> *detailComponents = [NSMutableArray new];
-
-    NSString *timestamp = [[self class] timestampStringFromRequestDate:self.transaction.startTime];
-    if (timestamp.length > 0) {
-        [detailComponents addObject:timestamp];
-    }
-
-    // Omit method for GET (assumed as default)
-    NSString *httpMethod = self.transaction.request.HTTPMethod;
-    if (httpMethod.length > 0) {
-        [detailComponents addObject:httpMethod];
-    }
-
-    if (self.transaction.transactionState == FLEXNetworkTransactionStateFinished || self.transaction.transactionState == FLEXNetworkTransactionStateFailed) {
-        NSString *statusCodeString = [FLEXUtility statusCodeStringFromURLResponse:self.transaction.response];
-        if (statusCodeString.length > 0) {
-            [detailComponents addObject:statusCodeString];
-        }
-
-        if (self.transaction.receivedDataLength > 0) {
-            NSString *responseSize = [NSByteCountFormatter stringFromByteCount:self.transaction.receivedDataLength countStyle:NSByteCountFormatterCountStyleBinary];
-            [detailComponents addObject:responseSize];
-        }
-
-        NSString *totalDuration = [FLEXUtility stringFromRequestDuration:self.transaction.duration];
-        NSString *latency = [FLEXUtility stringFromRequestDuration:self.transaction.latency];
-        NSString *duration = [NSString stringWithFormat:@"%@ (%@)", totalDuration, latency];
-        [detailComponents addObject:duration];
-    } else {
-        // Unstarted, Awaiting Response, Receiving Data, etc.
-        NSString *state = [FLEXNetworkTransaction readableStringFromTransactionState:self.transaction.transactionState];
-        [detailComponents addObject:state];
-    }
-
-    return [detailComponents componentsJoinedByString:@" ・ "];
-}
-
-+ (NSString *)timestampStringFromRequestDate:(NSDate *)date {
-    static NSDateFormatter *dateFormatter = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        dateFormatter = [NSDateFormatter new];
-        dateFormatter.dateFormat = @"HH:mm:ss";
-    });
-    return [dateFormatter stringFromDate:date];
+    return self.transaction.tertiaryDescription;
 }
 
 + (CGFloat)preferredCellHeight {
     return 65.0;
+}
+
++ (NSString *)reuseID {
+    return kFLEXNetworkTransactionCellIdentifier;
 }
 
 @end

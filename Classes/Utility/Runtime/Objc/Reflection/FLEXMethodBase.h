@@ -23,7 +23,7 @@
     NSString *_flex_description;
 }
 
-/// Constructs and returns an \c FLEXSimpleMethod instance with the given name, type encoding, and implementation.
+/// Constructs and returns a \c FLEXSimpleMethod instance with the given name, type encoding, and implementation.
 + (instancetype)buildMethodNamed:(NSString *)name withTypes:(NSString *)typeEncoding implementation:(IMP)implementation;
 
 /// The selector of the method.

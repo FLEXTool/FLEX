@@ -15,8 +15,11 @@ NSString * const kFLEXDefaultsHidePropertyMethodsKey = @"com.flipboard.FLEX.hide
 NSString * const kFLEXDefaultsHidePrivateMethodsKey = @"com.flipboard.FLEX.hide_private_or_namespaced_methods";
 NSString * const kFLEXDefaultsShowMethodOverridesKey = @"com.flipboard.FLEX.show_method_overrides";
 NSString * const kFLEXDefaultsHideVariablePreviewsKey = @"com.flipboard.FLEX.hide_variable_previews";
+NSString * const kFLEXDefaultsNetworkObserverEnabledKey = @"com.flex.FLEXNetworkObserver.enableOnLaunch";
+NSString * const kFLEXDefaultsNetworkObserverLastModeKey = @"com.flex.FLEXNetworkObserver.lastMode";
 NSString * const kFLEXDefaultsNetworkHostDenylistKey = @"com.flipboard.FLEX.network_host_denylist";
 NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
+NSString * const kFLEXDefaultsAPNSCaptureEnabledKey = @"com.flipboard.FLEX.capture_apns";
 NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
 
 #define FLEXDefaultsPathForFile(name) ({ \
@@ -62,6 +65,14 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
     [self setDouble:margin forKey:kFLEXDefaultsToolbarTopMarginKey];
 }
 
+- (BOOL)flex_networkObserverEnabled {
+    return [self boolForKey:kFLEXDefaultsNetworkObserverEnabledKey];
+}
+
+- (void)setFlex_networkObserverEnabled:(BOOL)enabled {
+    [self setBool:enabled forKey:kFLEXDefaultsNetworkObserverEnabledKey];
+}
+
 - (NSArray<NSString *> *)flex_networkHostDenylist {
     return [NSArray arrayWithContentsOfFile:[
         self flex_defaultsPathForFile:kFLEXDefaultsNetworkHostDenylistKey
@@ -81,6 +92,14 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
 
 - (void)setFlex_registerDictionaryJSONViewerOnLaunch:(BOOL)enable {
     [self setBool:enable forKey:kFLEXDefaultsRegisterJSONExplorerKey];
+}
+
+- (NSInteger)flex_lastNetworkObserverMode {
+    return [self integerForKey:kFLEXDefaultsNetworkObserverLastModeKey];
+}
+
+- (void)setFlex_lastNetworkObserverMode:(NSInteger)mode {
+    [self setInteger:mode forKey:kFLEXDefaultsNetworkObserverLastModeKey];
 }
 
 #pragma mark System Log
@@ -103,6 +122,16 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
         postNotificationName:kFLEXDefaultsiOSPersistentOSLogKey
         object:nil
     ];
+}
+
+#pragma mark Push Notifications
+
+- (BOOL)flex_enableAPNSCapture {
+    return [self boolForKey:kFLEXDefaultsAPNSCaptureEnabledKey];
+}
+
+- (void)setFlex_enableAPNSCapture:(BOOL)enable {
+    [self setBool:enable forKey:kFLEXDefaultsAPNSCaptureEnabledKey];
 }
 
 #pragma mark Object Explorer

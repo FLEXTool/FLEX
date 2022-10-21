@@ -12,7 +12,10 @@
 #import "FLEXRuntimeConstants.h"
 #import <sqlite3.h>
 
-static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
+#define kQuery(name, str) static NSString * const QUERY_##name = str
+
+kQuery(TABLENAMES, @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
+kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
 
 @interface FLEXSQLiteDatabaseManager ()
 @property (nonatomic) sqlite3 *db;
@@ -107,7 +110,19 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 - (NSArray<NSString *> *)queryAllColumnsOfTable:(NSString *)tableName {
     NSString *sql = [NSString stringWithFormat:@"PRAGMA table_info('%@')",tableName];
     FLEXSQLResult *results = [self executeStatement:sql];
-
+    
+    // https://github.com/FLEXTool/FLEX/issues/554
+    if (!results.keyedRows.count) {
+        sql = [NSString stringWithFormat:@"SELECT * FROM pragma_table_info('%@')", tableName];
+        results = [self executeStatement:sql];
+        
+        // Fallback to empty query
+        if (!results.keyedRows.count) {
+            sql = [NSString stringWithFormat:@"SELECT * FROM \"%@\" where 0=1", tableName];
+            return [self executeStatement:sql].columns ?: @[];
+        }
+    }
+    
     return [results.keyedRows flex_mapped:^id(NSDictionary *column, NSUInteger idx) {
         return column[@"name"];
     }] ?: @[];
@@ -119,7 +134,7 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
 }
 
 - (NSArray<NSString *> *)queryRowIDsInTable:(NSString *)tableName {
-    NSString *command = [NSString stringWithFormat:@"SELECT rowid FROM \"%@\"", tableName];
+    NSString *command = [NSString stringWithFormat:QUERY_ROWIDS, tableName];
     NSArray<NSArray<NSString *> *> *data = [self executeStatement:command].rows ?: @[];
     
     return [data flex_mapped:^id(NSArray<NSString *> *obj, NSUInteger idx) {
@@ -146,7 +161,7 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
             return self.lastResult;
         }
         
-        // Grab columns
+        // Grab columns (columnCount will be 0 for insert/update/delete) 
         int columnCount = sqlite3_column_count(pstmt);
         NSArray<NSString *> *columns = [NSArray flex_forEachUpTo:columnCount map:^id(NSUInteger i) {
             return @(sqlite3_column_name(pstmt, (int)i));
@@ -164,8 +179,9 @@ static NSString * const QUERY_TABLENAMES = @"SELECT name FROM sqlite_master WHER
         }
         
         if (status == SQLITE_DONE) {
-            if (rows.count) {
-                // We selected some rows
+            // columnCount will be 0 for insert/update/delete
+            if (rows.count || columnCount > 0) {
+                // We executed a SELECT query
                 result = _lastResult = [FLEXSQLResult columns:columns rows:rows];
             } else {
                 // We executed a query like INSERT, UDPATE, or DELETE

@@ -27,6 +27,7 @@
             viewer:^UIViewController *(id obj) {
                 return [FLEXObjectListViewController
                     instancesOfClassWithName:NSStringFromClass(obj)
+                    retained:NO
                 ];
             }
             accessoryType:^UITableViewCellAccessoryType(id obj) {

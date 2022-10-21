@@ -42,7 +42,7 @@ typedef NS_ENUM(NSUInteger, FLEXPropertyAttribute) {
     FLEXPropertyAttributeReadOnly           = 'R',
     FLEXPropertyAttributeRetain             = '&',
     FLEXPropertyAttributeWeak               = 'W'
-};
+}; //NS_SWIFT_NAME(FLEX.PropertyAttribute);
 
 typedef NS_ENUM(char, FLEXTypeEncoding) {
     FLEXTypeEncodingNull             = '\0',
@@ -76,4 +76,4 @@ typedef NS_ENUM(char, FLEXTypeEncoding) {
     FLEXTypeEncodingBitField         = 'b',
     FLEXTypeEncodingPointer          = '^',
     FLEXTypeEncodingConst            = 'r'
-};
+}; //NS_SWIFT_NAME(FLEX.TypeEncoding);

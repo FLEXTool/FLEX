@@ -8,14 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-extern NSString * const kFLEXNetworkTransactionCellIdentifier;
-
 @class FLEXNetworkTransaction;
 
 @interface FLEXNetworkTransactionCell : UITableViewCell
 
 @property (nonatomic) FLEXNetworkTransaction *transaction;
 
-+ (CGFloat)preferredCellHeight;
+@property (nonatomic, readonly, class) NSString *reuseID;
+@property (nonatomic, readonly, class) CGFloat preferredCellHeight;
 
 @end

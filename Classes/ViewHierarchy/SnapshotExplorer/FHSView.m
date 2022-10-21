@@ -122,7 +122,7 @@
 
 /// Recursively hides all views that may be obscuring the given view and collects them
 /// in the given array. You should unhide them all when you are done.
-+ (void)hideViewsCoveringView:(UIView *)view doWhileHidden:(void(^)())block {
++ (void)hideViewsCoveringView:(UIView *)view doWhileHidden:(void(^)(void))block {
     NSMutableArray *viewsToUnhide = [NSMutableArray new];
     if ([self _hideViewsCoveringView:view root:view.window hiddenViews:viewsToUnhide]) {
         block();

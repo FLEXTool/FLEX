@@ -10,6 +10,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
 #import "FLEXTypeEncodingParser.h"
+#import "FLEXMethod.h"
 
 NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 
@@ -159,6 +160,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
         // Single line display - replace newlines and tabs with spaces.
         description = [[self safeDescriptionForObject:value] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
         description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
+        description = [description stringByReplacingOccurrencesOfString:@"    " withString:@" "];
     } @catch (NSException *e) {
         description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"];
     }
@@ -332,15 +334,14 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
         return nil;
     }
 
-    NSMethodSignature *methodSignature = [NSMethodSignature signatureWithObjCTypes:({
-        Method method;
-        if (object_isClass(object)) {
-            method = class_getClassMethod(object, selector);
-        } else {
-            method = class_getInstanceMethod(object_getClass(object), selector);
-        }
-        method_getTypeEncoding(method);
-    })];
+    // It is important to use object_getClass and not -class here, as
+    // object_getClass will return a different result for class objects
+    Class cls = object_getClass(object);
+    NSMethodSignature *methodSignature = [FLEXMethod selector:selector class:cls].signature;
+    if (!methodSignature) {
+        // Unsupported type encoding
+        return nil;
+    }
     
     // Probably an unsupported type encoding, like bitfields.
     // In the future, we could calculate the return length
@@ -362,7 +363,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     [invocation retainArguments];
 
     // Always self and _cmd
-    NSUInteger numberOfArguments = [methodSignature numberOfArguments];
+    NSUInteger numberOfArguments = methodSignature.numberOfArguments;
     for (NSUInteger argumentIndex = kFLEXNumberOfImplicitArgs; argumentIndex < numberOfArguments; argumentIndex++) {
         NSUInteger argumentsArrayIndex = argumentIndex - kFLEXNumberOfImplicitArgs;
         id argumentObject = arguments.count > argumentsArrayIndex ? arguments[argumentsArrayIndex] : nil;

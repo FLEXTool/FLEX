@@ -37,7 +37,7 @@
 
 - (void)initSubviews {
     self.userInteractionEnabled = YES;
-    UIImageView * (^newSubviewImageView)() = ^UIImageView *(UIImage *image) {
+    UIImageView * (^newSubviewImageView)(UIImage *) = ^UIImageView *(UIImage *image) {
         UIImageView *iv = [UIImageView new];
         iv.image = image;
 //        iv.userInteractionEnabled = YES;
