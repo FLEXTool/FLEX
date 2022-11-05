@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 @class FLEXObjectRef;
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef void (^flex_object_enumeration_block_t)(__unsafe_unretained id object, __unsafe_unretained Class actualClass);
 
 @interface FLEXHeapEnumerator : NSObject
@@ -23,3 +25,5 @@ typedef void (^flex_object_enumeration_block_t)(__unsafe_unretained id object, _
 + (NSArray<FLEXObjectRef *> *)objectsWithReferencesToObject:(id)object retained:(BOOL)retain;
 
 @end
+
+NS_ASSUME_NONNULL_END
