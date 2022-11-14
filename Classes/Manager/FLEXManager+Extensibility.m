@@ -86,19 +86,19 @@
 #pragma mark - Simulator Shortcuts
 
 - (void)registerSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description {
-#if TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
     [FLEXKeyboardShortcutManager.sharedManager registerSimulatorShortcutWithKey:key modifiers:modifiers action:action description:description allowOverride:YES];
 #endif
 }
 
 - (void)setSimulatorShortcutsEnabled:(BOOL)simulatorShortcutsEnabled {
-#if TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
     [FLEXKeyboardShortcutManager.sharedManager setEnabled:simulatorShortcutsEnabled];
 #endif
 }
 
 - (BOOL)simulatorShortcutsEnabled {
-#if TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
     return FLEXKeyboardShortcutManager.sharedManager.isEnabled;
 #else
     return NO;
@@ -109,7 +109,7 @@
 #pragma mark - Shortcuts Defaults
 
 - (void)registerDefaultSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description {
-#if TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
     // Don't allow override to avoid changing keys registered by the app
     [FLEXKeyboardShortcutManager.sharedManager registerSimulatorShortcutWithKey:key modifiers:modifiers action:action description:description allowOverride:NO];
 #endif

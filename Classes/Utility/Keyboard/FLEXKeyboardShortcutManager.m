@@ -11,7 +11,7 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-#if TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR || TARGET_OS_MACCATALYST || TARGET_CPU_ARM64
 
 @interface UIEvent (UIPhysicalKeyboardEvent)
 

@@ -29,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		544D11A52819CDE500FED6C9 /* FLEXample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FLEXample.entitlements; sourceTree = "<group>"; };
 		92E1E1EECA3F2533E1B8BF35 /* Pods-FLEXample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLEXample.debug.xcconfig"; path = "Target Support Files/Pods-FLEXample/Pods-FLEXample.debug.xcconfig"; sourceTree = "<group>"; };
 		BBD699DDBAC5A16D8CFD39AC /* libPods-FLEXample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FLEXample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE1780244AEC542DDB894B08 /* Pods-FLEXample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLEXample.release.xcconfig"; path = "Target Support Files/Pods-FLEXample/Pods-FLEXample.release.xcconfig"; sourceTree = "<group>"; };
@@ -82,6 +83,7 @@
 				EB0852B7D285AB31D7532049 /* Pods */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 0;
 		};
 		C386D6CD2419975A00699085 /* Products */ = {
 			isa = PBXGroup;
@@ -121,6 +123,7 @@
 				C386D6DA2419975B00699085 /* LaunchScreen.storyboard */,
 				C386D6DD2419975B00699085 /* Info.plist */,
 				C386D6E32419984700699085 /* FLEXample-Bridging-Header.h */,
+				544D11A52819CDE500FED6C9 /* FLEXample.entitlements */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -431,6 +434,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "FLEXample/Supporting Files/FLEXample.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"FLEXample/Supporting Files/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -443,6 +447,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.flex.FLEXample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "FLEXample/Supporting Files/FLEXample-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -456,6 +461,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "FLEXample/Supporting Files/FLEXample.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"FLEXample/Supporting Files/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -468,6 +474,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.flipboard.flex.FLEXample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "FLEXample/Supporting Files/FLEXample-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
