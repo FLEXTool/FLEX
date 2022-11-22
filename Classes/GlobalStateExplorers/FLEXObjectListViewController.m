@@ -158,7 +158,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
 }
 
 + (instancetype)subclassesOfClassWithName:(NSString *)className {
-    NSArray<FLEXObjectRef *> *references = [FLEXHeapEnumerator subclassesOfClassWithName:className];
+    NSArray<FLEXObjectRef *> *references = [FLEXRuntimeUtility subclassesOfClassWithName:className];
     FLEXObjectListViewController *controller = [[self alloc] initWithReferences:references];
     controller.title = [NSString stringWithFormat:@"Subclasses of %@ (%@)",
         className, @(references.count)
