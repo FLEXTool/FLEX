@@ -59,6 +59,7 @@ NS_INLINE BOOL flex_isTaggedPointer(const void *ptr)  {
 
 #define FLEXPointerIsTaggedPointer(obj) flex_isTaggedPointer((__bridge void *)obj)
 
+/// Whether the given pointer is a valid, readable address.
 BOOL FLEXPointerIsReadable(const void * ptr);
 
 /// @brief Assumes memory is valid and readable.
