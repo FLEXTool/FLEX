@@ -248,7 +248,7 @@
 		C383C3C523B6BB81007A321B /* FLEXCodeFontCell.h in Headers */ = {isa = PBXBuildFile; fileRef = C383C3C323B6BB81007A321B /* FLEXCodeFontCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C383C3C623B6BB81007A321B /* FLEXCodeFontCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C383C3C423B6BB81007A321B /* FLEXCodeFontCell.m */; };
 		C3854DF023F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C3854DEF23F36C1700FCD1E2 /* FLEXTypeEncodingParserTests.m */; };
-		C38568FA272B3BFC00B1E37F /* FLEXSwiftInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C38568F8272B3BFC00B1E37F /* FLEXSwiftInternal.h */; };
+		C38568FA272B3BFC00B1E37F /* FLEXSwiftInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C38568F8272B3BFC00B1E37F /* FLEXSwiftInternal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C38568FB272B3BFC00B1E37F /* FLEXSwiftInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = C38568F9272B3BFC00B1E37F /* FLEXSwiftInternal.mm */; };
 		C386D6A9241995A800699085 /* FLEXTypeEncodingParser.h in Headers */ = {isa = PBXBuildFile; fileRef = C3854DF223F36C9E00FCD1E2 /* FLEXTypeEncodingParser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C386D6E924199C1B00699085 /* FLEX-Core.h in Headers */ = {isa = PBXBuildFile; fileRef = C386D6E824199C1B00699085 /* FLEX-Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -267,7 +267,7 @@
 		C387C88322E0D24A00750E58 /* UIView+FLEX_Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = C387C88122E0D24A00750E58 /* UIView+FLEX_Layout.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C387C88422E0D24A00750E58 /* UIView+FLEX_Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = C387C88222E0D24A00750E58 /* UIView+FLEX_Layout.m */; };
 		C38D970228190C93008709D0 /* FLEXMetadataExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = C38D970028190C93008709D0 /* FLEXMetadataExtras.m */; };
-		C38D970328190C93008709D0 /* FLEXMetadataExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = C38D970128190C93008709D0 /* FLEXMetadataExtras.h */; };
+		C38D970328190C93008709D0 /* FLEXMetadataExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = C38D970128190C93008709D0 /* FLEXMetadataExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C38DF0EA22CFE4370077B4AD /* FLEXTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = C38DF0E822CFE4370077B4AD /* FLEXTableViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C38DF0EB22CFE4370077B4AD /* FLEXTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C38DF0E922CFE4370077B4AD /* FLEXTableViewController.m */; };
 		C38EF26223A2FCD20047A7EC /* FLEXViewControllerShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = C38EF26023A2FCD20047A7EC /* FLEXViewControllerShortcuts.m */; };
@@ -309,7 +309,7 @@
 		C39EADC923F37B89005618BE /* FLEXTypeEncodingParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C3854DF123F36C9E00FCD1E2 /* FLEXTypeEncodingParser.m */; };
 		C39ED92822D63F3200B5773A /* FLEXAddressExplorerCoordinator.h in Headers */ = {isa = PBXBuildFile; fileRef = C39ED92622D63F3200B5773A /* FLEXAddressExplorerCoordinator.h */; };
 		C39ED92922D63F3200B5773A /* FLEXAddressExplorerCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = C39ED92722D63F3200B5773A /* FLEXAddressExplorerCoordinator.m */; };
-		C3A04B64288E007100F2C16D /* NSDateFormatter+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A04B62288E007100F2C16D /* NSDateFormatter+FLEX.h */; };
+		C3A04B64288E007100F2C16D /* NSDateFormatter+FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A04B62288E007100F2C16D /* NSDateFormatter+FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3A04B65288E007100F2C16D /* NSDateFormatter+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A04B63288E007100F2C16D /* NSDateFormatter+FLEX.m */; };
 		C3A9422C23C3DA39006871A3 /* FHSView.h in Headers */ = {isa = PBXBuildFile; fileRef = C3A9422823C3DA39006871A3 /* FHSView.h */; };
 		C3A9422D23C3DA39006871A3 /* FHSView.m in Sources */ = {isa = PBXBuildFile; fileRef = C3A9422923C3DA39006871A3 /* FHSView.m */; };
