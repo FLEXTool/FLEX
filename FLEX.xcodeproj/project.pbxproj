@@ -1761,7 +1761,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = FLEX;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = Flipboard;
 				TargetAttributes = {
 					1C27A8B51F0E5A0300F0D02D = {
