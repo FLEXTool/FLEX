@@ -26,7 +26,6 @@ NS_SWIFT_UNAVAILABLE("Use one of the other methods instead.");
 /// Returned references are not validated beyond containing a valid isa.
 /// To validate them yourself, pass each reference's object to \c FLEXPointerIsValidObjcObject
 + (NSArray<FLEXObjectRef *> *)instancesOfClassWithName:(NSString *)className retained:(BOOL)retain;
-+ (NSArray<FLEXObjectRef *> *)subclassesOfClassWithName:(NSString *)className;
 
 /// Returned references have been validated via \c FLEXPointerIsValidObjcObject
 /// @param object the object to find references to

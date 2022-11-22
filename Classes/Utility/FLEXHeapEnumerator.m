@@ -138,12 +138,6 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     return references;
 }
 
-+ (NSArray<FLEXObjectRef *> *)subclassesOfClassWithName:(NSString *)className {
-    NSArray<Class> *classes = FLEXGetAllSubclasses(NSClassFromString(className), NO);
-    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingClasses:classes];
-    return references;
-}
-
 + (NSArray<FLEXObjectRef *> *)objectsWithReferencesToObject:(id)object retained:(BOOL)retain {
     NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray new];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {

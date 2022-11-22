@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
+#import "FLEXObjectRef.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXTypeEncodingParser.h"
 #import "FLEXMethod.h"
 
@@ -90,6 +92,12 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     } while ((cls = [cls superclass]));
 
     return superClasses;
+}
+
++ (NSArray<FLEXObjectRef *> *)subclassesOfClassWithName:(NSString *)className {
+    NSArray<Class> *classes = FLEXGetAllSubclasses(NSClassFromString(className), NO);
+    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingClasses:classes];
+    return references;
 }
 
 + (NSString *)safeClassNameForObject:(id)object {
