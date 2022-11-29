@@ -224,10 +224,11 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
         Class class = classes[i];
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));
         NSString *className = @(class_getName(class));
+        
         if (instanceCount > 0) {
             countsForClassNames[className] = @(instanceCount);
+            sizesForClassNames[className] = @(class_getInstanceSize(class));
         }
-        sizesForClassNames[className] = @(class_getInstanceSize(class));
     }
     free(classes);
     
