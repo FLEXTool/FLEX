@@ -29,7 +29,7 @@
                 
                 make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
                     NSNumberFormatter *formatter = [NSNumberFormatter new];
-                    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                    formatter.numberStyle = NSNumberFormatterDecimalStyle;
                     CGFloat speedValue = [formatter numberFromString:strings.firstObject].floatValue;
                     window.layer.speed = speedValue;
 
