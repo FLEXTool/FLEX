@@ -28,7 +28,9 @@
                 });
                 
                 make.button(@"OK").handler(^(NSArray<NSString *> *strings) {
-                    CGFloat speedValue = strings.firstObject.floatValue;
+                    NSNumberFormatter *formatter = [NSNumberFormatter new];
+                    formatter.numberStyle = NSNumberFormatterDecimalStyle;
+                    CGFloat speedValue = [formatter numberFromString:strings.firstObject].floatValue;
                     window.layer.speed = speedValue;
 
                     // Refresh the host view controller to update the shortcut subtitle, reflecting current speed
