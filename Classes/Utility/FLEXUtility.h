@@ -51,6 +51,7 @@
 + (NSString *)prettyJSONStringFromData:(NSData *)data;
 + (BOOL)isValidJSONData:(NSData *)data;
 + (NSData *)inflatedDataFromCompressedData:(NSData *)compressedData;
++ (BOOL)hasCompressedContentEncoding:(NSURLRequest *)request;
 
 // Swizzling utilities
 
