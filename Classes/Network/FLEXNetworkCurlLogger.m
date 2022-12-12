@@ -6,6 +6,7 @@
 //
 
 #import "FLEXNetworkCurlLogger.h"
+#import "FLEXUtility.h"
 
 @implementation FLEXNetworkCurlLogger
 
@@ -28,7 +29,12 @@
     }
 
     if (request.HTTPBody) {
-        NSString *body = [[NSString alloc] initWithData:request.HTTPBody encoding:NSUTF8StringEncoding];
+        NSData *bodyData = request.HTTPBody;
+        if ([FLEXUtility hasCompressedContentEncoding:request]) {
+            bodyData = [FLEXUtility inflatedDataFromCompressedData:bodyData];
+        }
+        NSString *body = [[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding];
+        
         if (body != nil) {
             [curlCommandString appendFormat:@"-d \'%@\'", body];
         } else {
