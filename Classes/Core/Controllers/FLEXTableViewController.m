@@ -331,7 +331,7 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
     ];
     
     for (UIBarButtonItem *item in self.toolbarItems) {
-        [item _setWidth:60];
+        [item _changeWidth:60];
         // This does not work for anything but fixed spaces for some reason
         // item.width = 60;
     }
