@@ -1,0 +1,51 @@
+FLEX_PUBLIC_HDRS = glob([
+        "Classes/*.h",
+        "Classes/Manager/*.h",
+        "Classes/Toolbar/*.h",
+        "Classes/Core/**/*.h",
+        "Classes/Utility/Runtime/Objc/**/*.h",
+        "Classes/Utility/Runtime/Objc/*.h",
+        "Classes/ObjectExplorers/**/*.h",
+        "Classes/Editing/**/*.h",
+        "Classes/GlobalStateExplorers/**/*.h",
+        "Classes/Utility/Categories/*.h",
+    ], [
+        "**/FLEX.h"
+    ], allow_empty = False
+) + [
+    "Classes/Utility/FLEXMacros.h",
+    "Classes/Utility/FLEXAlert.h",
+    "Classes/Utility/FLEXResources.h",
+    "Classes/Utility/FLEXHeapEnumerator.h"
+]
+
+objc_library(
+    name = "FLEX",
+    module_name = "FLEX",
+    hdrs = FLEX_PUBLIC_HDRS,
+    srcs = glob([
+        "Classes/**/*.m",
+        "Classes/**/*.mm",
+        "Classes/**/*.c",
+        "Classes/**/*.h"
+    ], FLEX_PUBLIC_HDRS, allow_empty = False),
+    sdk_dylibs = [
+        "libz",
+        "libsqlite3"
+    ],
+    sdk_frameworks = [
+        "Foundation",
+        "UIKit",
+        "CoreGraphics",
+        "ImageIO",
+        "QuartzCore",
+        "WebKit",
+        "Security",
+        "SceneKit"
+    ],
+    copts = [
+        "-Wno-deprecated-declarations",
+        "-Wno-unsupported-availability-guard"
+    ],
+    visibility = ["//visibility:public"]
+)

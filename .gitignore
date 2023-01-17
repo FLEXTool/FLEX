@@ -22,3 +22,4 @@ Podfile.lock
 IDEWorkspaceChecks.plist
 *.xcworkspace
 .build
+bazel-*
