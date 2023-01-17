@@ -23,3 +23,4 @@
 #import "Classes/Utility/FLEXMacros.h"
 #import "Classes/Utility/FLEXAlert.h"
 #import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/FLEXHeapEnumerator.h"
