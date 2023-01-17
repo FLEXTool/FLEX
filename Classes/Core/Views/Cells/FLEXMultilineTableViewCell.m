@@ -6,9 +6,9 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXMultilineTableViewCell.h"
-#import "UIView+FLEX_Layout.h"
-#import "FLEXUtility.h"
+#import "Classes/Headers/FLEXMultilineTableViewCell.h"
+#import "Classes/Utility/Categories/Private/UIView+FLEX_Layout.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXMultilineTableViewCell ()
 @property (nonatomic, readonly) UILabel *_titleLabel;

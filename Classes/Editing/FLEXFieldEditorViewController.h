@@ -6,9 +6,9 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXVariableEditorViewController.h"
-#import "FLEXProperty.h"
-#import "FLEXIvar.h"
+#import "Classes/Editing/FLEXVariableEditorViewController.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

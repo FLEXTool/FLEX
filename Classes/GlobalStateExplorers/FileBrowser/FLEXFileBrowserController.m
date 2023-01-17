@@ -6,14 +6,14 @@
 //
 //
 
-#import "FLEXFileBrowserController.h"
-#import "FLEXUtility.h"
-#import "FLEXWebViewController.h"
-#import "FLEXActivityViewController.h"
-#import "FLEXImagePreviewViewController.h"
-#import "FLEXTableListViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXObjectExplorerViewController.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/GlobalStateExplorers/FLEXWebViewController.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXActivityViewController.h"
+#import "Classes/ViewHierarchy/FLEXImagePreviewViewController.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableListViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
 #import <mach-o/loader.h>
 
 @interface FLEXFileBrowserTableViewCell : UITableViewCell

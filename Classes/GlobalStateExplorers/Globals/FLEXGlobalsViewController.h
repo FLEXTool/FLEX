@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXFilteringTableViewController.h"
+#import "Classes/Headers/FLEXFilteringTableViewController.h"
 @protocol FLEXGlobalsTableViewControllerDelegate;
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {

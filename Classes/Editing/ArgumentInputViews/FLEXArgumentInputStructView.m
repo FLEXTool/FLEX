@@ -6,10 +6,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputStructView.h"
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXTypeEncodingParser.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputStructView.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/FLEXTypeEncodingParser.h"
 
 @interface FLEXArgumentInputStructView ()
 

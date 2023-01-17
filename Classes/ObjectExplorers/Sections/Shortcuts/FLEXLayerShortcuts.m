@@ -6,9 +6,9 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXLayerShortcuts.h"
-#import "FLEXShortcut.h"
-#import "FLEXImagePreviewViewController.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXLayerShortcuts.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/ViewHierarchy/FLEXImagePreviewViewController.h"
 
 @implementation FLEXLayerShortcuts
 

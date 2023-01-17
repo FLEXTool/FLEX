@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXAlert.h"
-#import "FLEXMacros.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/Utility/FLEXMacros.h"
 
 @interface FLEXAlert ()
 @property (nonatomic, readonly) UIAlertController *_controller;

@@ -6,11 +6,11 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import "FLEXMultiColumnTableView.h"
-#import "FLEXDBQueryRowCell.h"
-#import "FLEXTableLeftCell.h"
-#import "NSArray+FLEX.h"
-#import "FLEXColor.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXMultiColumnTableView.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXDBQueryRowCell.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableLeftCell.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/FLEXColor.h"
 
 @interface FLEXMultiColumnTableView () <
     UITableViewDataSource, UITableViewDelegate,

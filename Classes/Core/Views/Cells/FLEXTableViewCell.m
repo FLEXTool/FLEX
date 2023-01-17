@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewCell.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
-#import "FLEXTableView.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Headers/FLEXTableView.h"
 
 @interface UITableView (Internal)
 // Exists at least since iOS 5

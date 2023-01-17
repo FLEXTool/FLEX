@@ -5,7 +5,7 @@
 //  Created by Tanner on 6/13/17.
 //
 
-#import "UITextField+Range.h"
+#import "Classes/Utility/Categories/UITextField+Range.h"
 
 @implementation UITextField (Range)
 

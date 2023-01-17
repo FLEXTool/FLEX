@@ -7,12 +7,12 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXIvar.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXRuntimeSafety.h"
-#import "FLEXTypeEncodingParser.h"
-#import "NSString+FLEX.h"
-#include "FLEXObjcInternal.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeSafety.h"
+#import "Classes/Utility/Runtime/Objc/FLEXTypeEncodingParser.h"
+#import "Classes/Utility/Categories/Private/NSString+FLEX.h"
+#include "Classes/Utility/Runtime/Objc/FLEXObjcInternal.h"
 #include <dlfcn.h>
 
 @interface FLEXIvar () {

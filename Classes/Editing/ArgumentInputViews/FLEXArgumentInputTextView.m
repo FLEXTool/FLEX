@@ -6,9 +6,9 @@
 //
 //
 
-#import "FLEXColor.h"
-#import "FLEXArgumentInputTextView.h"
-#import "FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputTextView.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXArgumentInputTextView ()
 

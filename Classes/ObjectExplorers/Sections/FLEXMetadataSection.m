@@ -6,15 +6,15 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXMetadataSection.h"
-#import "FLEXTableView.h"
-#import "FLEXTableViewCell.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXFieldEditorViewController.h"
-#import "FLEXMethodCallingViewController.h"
-#import "FLEXIvar.h"
-#import "NSArray+FLEX.h"
-#import "FLEXRuntime+UIKitHelpers.h"
+#import "Classes/Headers/FLEXMetadataSection.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Editing/FLEXFieldEditorViewController.h"
+#import "Classes/Editing/FLEXMethodCallingViewController.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/FLEXRuntime+UIKitHelpers.h"
 
 @interface FLEXMetadataSection ()
 @property (nonatomic, readonly) FLEXObjectExplorer *explorer;

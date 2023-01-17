@@ -5,10 +5,10 @@
 //  Created by AnthoPak on 26/09/2022.
 //
 
-#import "FLEXWindowShortcuts.h"
-#import "FLEXShortcut.h"
-#import "FLEXAlert.h"
-#import "FLEXObjectExplorerViewController.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXWindowShortcuts.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
 
 @implementation FLEXWindowShortcuts
 

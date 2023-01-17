@@ -7,10 +7,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXMethod.h"
-#import "FLEXMirror.h"
-#import "FLEXTypeEncodingParser.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMirror.h"
+#import "Classes/Utility/Runtime/Objc/FLEXTypeEncodingParser.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 #include <dlfcn.h>
 
 @implementation FLEXMethod

@@ -6,8 +6,8 @@
 //  Copyright (c) 2013-2014 Sam Soffes. All rights reserved.
 //
 
-#import "FLEXKeychainQuery.h"
-#import "FLEXKeychain.h"
+#import "Classes/GlobalStateExplorers/Keychain/FLEXKeychainQuery.h"
+#import "Classes/GlobalStateExplorers/Keychain/FLEXKeychain.h"
 
 @implementation FLEXKeychainQuery
 

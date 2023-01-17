@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "UIGestureRecognizer+Blocks.h"
+#import "Classes/Utility/Categories/UIGestureRecognizer+Blocks.h"
 #import <objc/runtime.h>
 
 

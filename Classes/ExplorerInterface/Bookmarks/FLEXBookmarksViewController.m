@@ -6,16 +6,16 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXBookmarksViewController.h"
-#import "FLEXExplorerViewController.h"
-#import "FLEXNavigationController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXBookmarkManager.h"
-#import "UIBarButtonItem+FLEX.h"
-#import "FLEXColor.h"
-#import "FLEXUtility.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXTableView.h"
+#import "Classes/ExplorerInterface/Bookmarks/FLEXBookmarksViewController.h"
+#import "Classes/ExplorerInterface/FLEXExplorerViewController.h"
+#import "Classes/Headers/FLEXNavigationController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/ExplorerInterface/Bookmarks/FLEXBookmarkManager.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Headers/FLEXTableView.h"
 
 @interface FLEXBookmarksViewController ()
 @property (nonatomic, copy) NSArray *bookmarks;

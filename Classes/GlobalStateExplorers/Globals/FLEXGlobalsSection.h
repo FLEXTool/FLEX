@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewSection.h"
-#import "FLEXGlobalsEntry.h"
+#import "Classes/Headers/FLEXTableViewSection.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

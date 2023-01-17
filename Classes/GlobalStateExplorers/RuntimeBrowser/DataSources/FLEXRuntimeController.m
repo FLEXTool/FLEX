@@ -6,9 +6,9 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXRuntimeController.h"
-#import "FLEXRuntimeClient.h"
-#import "FLEXMethod.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeController.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeClient.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
 
 @interface FLEXRuntimeController ()
 @property (nonatomic, readonly) NSCache *bundlePathsCache;

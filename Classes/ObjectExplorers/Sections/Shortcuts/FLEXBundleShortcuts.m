@@ -6,13 +6,13 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXBundleShortcuts.h"
-#import "FLEXShortcut.h"
-#import "FLEXAlert.h"
-#import "FLEXMacros.h"
-#import "FLEXRuntimeExporter.h"
-#import "FLEXTableListViewController.h"
-#import "FLEXFileBrowserController.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXBundleShortcuts.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/Utility/FLEXMacros.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeExporter.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableListViewController.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h"
 
 #pragma mark -
 @implementation FLEXBundleShortcuts

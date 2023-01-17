@@ -6,16 +6,16 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXVariableEditorViewController.h"
-#import "FLEXFieldEditorView.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXUtility.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXArgumentInputView.h"
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Editing/FLEXVariableEditorViewController.h"
+#import "Classes/Editing/FLEXFieldEditorView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputView.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 
 @interface FLEXVariableEditorViewController () <UIScrollViewDelegate>
 @property (nonatomic) UIScrollView *scrollView;

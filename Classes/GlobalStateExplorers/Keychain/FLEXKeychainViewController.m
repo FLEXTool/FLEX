@@ -6,14 +6,14 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXKeychain.h"
-#import "FLEXKeychainQuery.h"
-#import "FLEXKeychainViewController.h"
-#import "FLEXTableViewCell.h"
-#import "FLEXMutableListSection.h"
-#import "FLEXUtility.h"
-#import "UIPasteboard+FLEX.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/GlobalStateExplorers/Keychain/FLEXKeychain.h"
+#import "Classes/GlobalStateExplorers/Keychain/FLEXKeychainQuery.h"
+#import "Classes/GlobalStateExplorers/Keychain/FLEXKeychainViewController.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/UIPasteboard+FLEX.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 
 @interface FLEXKeychainViewController ()
 @property (nonatomic, readonly) FLEXMutableListSection<NSDictionary *> *section;

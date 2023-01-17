@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewSection.h"
+#import "Classes/Headers/FLEXTableViewSection.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

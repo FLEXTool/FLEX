@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXExplorerToolbar.h"
+#import "Classes/Headers/FLEXExplorerToolbar.h"
 
 @class FLEXWindow;
 @protocol FLEXExplorerViewControllerDelegate;

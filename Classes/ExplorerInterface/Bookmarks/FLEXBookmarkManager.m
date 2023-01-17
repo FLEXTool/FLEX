@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXBookmarkManager.h"
+#import "Classes/ExplorerInterface/Bookmarks/FLEXBookmarkManager.h"
 
 static NSMutableArray *kFLEXBookmarkManagerBookmarks = nil;
 

@@ -6,11 +6,11 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXExplorerToolbar.h"
-#import "FLEXExplorerToolbarItem.h"
-#import "FLEXResources.h"
-#import "FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Headers/FLEXExplorerToolbar.h"
+#import "Classes/Headers/FLEXExplorerToolbarItem.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXExplorerToolbar ()
 

@@ -6,8 +6,8 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXRuntimeBrowserToolbar.h"
-#import "FLEXRuntimeKeyPathTokenizer.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeBrowserToolbar.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeKeyPathTokenizer.h"
 
 @interface FLEXRuntimeBrowserToolbar ()
 @property (nonatomic, copy) FLEXKBToolbarAction tapHandler;

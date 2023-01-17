@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewCell.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
 
 /// A cell with both labels set to be multi-line capable.
 @interface FLEXMultilineTableViewCell : FLEXTableViewCell

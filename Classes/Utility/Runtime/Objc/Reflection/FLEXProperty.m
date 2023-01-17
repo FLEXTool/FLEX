@@ -7,10 +7,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXProperty.h"
-#import "FLEXPropertyAttributes.h"
-#import "FLEXMethodBase.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethodBase.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 #include <dlfcn.h>
 
 

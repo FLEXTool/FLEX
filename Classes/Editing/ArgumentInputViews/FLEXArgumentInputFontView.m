@@ -6,10 +6,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputFontView.h"
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXArgumentInputFontsPickerView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputFontView.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputFontsPickerView.h"
 
 @interface FLEXArgumentInputFontView ()
 

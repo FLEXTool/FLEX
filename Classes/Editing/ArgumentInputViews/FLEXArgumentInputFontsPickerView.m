@@ -6,8 +6,8 @@
 //  Copyright (c) 2014年 f. All rights reserved.
 //
 
-#import "FLEXArgumentInputFontsPickerView.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputFontsPickerView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @interface FLEXArgumentInputFontsPickerView ()
 

@@ -12,7 +12,7 @@
 //  which Flying Meat Inc. licenses this file to you.
 
 #import <Foundation/Foundation.h>
-#import "FLEXSQLResult.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLResult.h"
 
 /// Conformers should automatically open and close the database
 @protocol FLEXDatabaseManager <NSObject>

@@ -6,15 +6,15 @@
 //  Copyright © 2016 Realm. All rights reserved.
 //
 
-#import "FLEXRealmDatabaseManager.h"
-#import "NSArray+FLEX.h"
-#import "FLEXSQLResult.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXRealmDatabaseManager.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLResult.h"
 
 #if __has_include(<Realm/Realm.h>)
 #import <Realm/Realm.h>
 #import <Realm/RLMRealm_Dynamic.h>
 #else
-#import "FLEXRealmDefines.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXRealmDefines.h"
 #endif
 
 @interface FLEXRealmDatabaseManager ()

@@ -6,10 +6,10 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import "FLEXSQLiteDatabaseManager.h"
-#import "FLEXManager.h"
-#import "NSArray+FLEX.h"
-#import "FLEXRuntimeConstants.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLiteDatabaseManager.h"
+#import "Classes/Headers/FLEXManager.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeConstants.h"
 #import <sqlite3.h>
 
 #define kQuery(name, str) static NSString * const QUERY_##name = str

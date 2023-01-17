@@ -6,14 +6,14 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXMethodCallingViewController.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXFieldEditorView.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "FLEXArgumentInputView.h"
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXUtility.h"
+#import "Classes/Editing/FLEXMethodCallingViewController.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Editing/FLEXFieldEditorView.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputView.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXMethodCallingViewController ()
 @property (nonatomic, readonly) FLEXMethod *method;

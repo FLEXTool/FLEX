@@ -6,11 +6,11 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXDefaultEditorViewController.h"
-#import "FLEXFieldEditorView.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXArgumentInputView.h"
-#import "FLEXArgumentInputViewFactory.h"
+#import "Classes/Editing/FLEXDefaultEditorViewController.h"
+#import "Classes/Editing/FLEXFieldEditorView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputView.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
 
 @interface FLEXDefaultEditorViewController ()
 

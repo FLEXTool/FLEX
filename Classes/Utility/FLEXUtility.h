@@ -11,11 +11,11 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
-#import "FLEXTypeEncodingParser.h"
-#import "FLEXAlert.h"
-#import "NSArray+FLEX.h"
-#import "UIFont+FLEX.h"
-#import "FLEXMacros.h"
+#import "Classes/Utility/Runtime/Objc/FLEXTypeEncodingParser.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
+#import "Classes/Utility/FLEXMacros.h"
 
 @interface FLEXUtility : NSObject
 

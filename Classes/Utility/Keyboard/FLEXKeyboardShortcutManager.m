@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXKeyboardShortcutManager.h"
-#import "FLEXUtility.h"
+#import "Classes/Utility/Keyboard/FLEXKeyboardShortcutManager.h"
+#import "Classes/Utility/FLEXUtility.h"
 #import <objc/runtime.h>
 #import <objc/message.h>
 

@@ -6,7 +6,7 @@
 //  
 //
 
-#import "Cocoa+FLEXShortcuts.h"
+#import "Classes/Utility/Categories/Private/Cocoa+FLEXShortcuts.h"
 
 @implementation UIAlertAction (FLEXShortcuts)
 - (NSString *)flex_styleName {

@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXVariableEditorViewController.h"
-#import "FLEXMethod.h"
+#import "Classes/Editing/FLEXVariableEditorViewController.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
 
 @interface FLEXMethodCallingViewController : FLEXVariableEditorViewController
 

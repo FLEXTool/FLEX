@@ -6,12 +6,12 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXManager+Networking.h"
-#import "FLEXManager+Private.h"
-#import "FLEXNetworkObserver.h"
-#import "FLEXNetworkRecorder.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "NSUserDefaults+FLEX.h"
+#import "Classes/Headers/FLEXManager+Networking.h"
+#import "Classes/Manager/Private/FLEXManager+Private.h"
+#import "Classes/Network/PonyDebugger/FLEXNetworkObserver.h"
+#import "Classes/Network/FLEXNetworkRecorder.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
 
 @implementation FLEXManager (Networking)
 

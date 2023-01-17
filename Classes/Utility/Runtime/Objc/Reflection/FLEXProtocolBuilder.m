@@ -7,9 +7,9 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXProtocolBuilder.h"
-#import "FLEXProtocol.h"
-#import "FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProtocolBuilder.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProtocol.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
 #import <objc/runtime.h>
 
 #define MutationAssertion(msg) if (self.isRegistered) { \

@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 #define FLEXDynamicColor(dynamic, static) ({ \
     UIColor *c; \

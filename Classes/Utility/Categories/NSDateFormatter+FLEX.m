@@ -6,7 +6,7 @@
 //  Copyright © 2022 Flipboard. All rights reserved.
 //
 
-#import "NSDateFormatter+FLEX.h"
+#import "Classes/Utility/Categories/NSDateFormatter+FLEX.h"
 
 @implementation NSDateFormatter (FLEX)
 

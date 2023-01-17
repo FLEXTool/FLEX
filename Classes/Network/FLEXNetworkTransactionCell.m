@@ -6,11 +6,11 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXNetworkTransactionCell.h"
-#import "FLEXNetworkTransaction.h"
-#import "FLEXUtility.h"
-#import "FLEXResources.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Network/FLEXNetworkTransactionCell.h"
+#import "Classes/Network/FLEXNetworkTransaction.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXResources.h"
 
 NSString * const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransactionCellIdentifier";
 

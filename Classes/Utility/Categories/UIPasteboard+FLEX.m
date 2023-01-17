@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "UIPasteboard+FLEX.h"
+#import "Classes/Utility/Categories/UIPasteboard+FLEX.h"
 
 @implementation UIPasteboard (FLEX)
 

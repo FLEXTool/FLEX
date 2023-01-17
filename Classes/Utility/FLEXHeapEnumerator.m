@@ -6,11 +6,11 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXHeapEnumerator.h"
-#import "FLEXObjcInternal.h"
-#import "FLEXObjectRef.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "NSString+FLEX.h"
+#import "Classes/Utility/FLEXHeapEnumerator.h"
+#import "Classes/Utility/Runtime/Objc/FLEXObjcInternal.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectRef.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Utility/Categories/Private/NSString+FLEX.h"
 #import <malloc/malloc.h>
 #import <mach/mach.h>
 #import <objc/runtime.h>

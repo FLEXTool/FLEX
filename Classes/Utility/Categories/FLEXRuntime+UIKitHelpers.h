@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXProperty.h"
-#import "FLEXIvar.h"
-#import "FLEXMethod.h"
-#import "FLEXProtocol.h"
-#import "FLEXTableViewSection.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProtocol.h"
+#import "Classes/Headers/FLEXTableViewSection.h"
 
 @class FLEXObjectExplorerDefaults;
 

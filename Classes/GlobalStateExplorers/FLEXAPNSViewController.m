@@ -6,17 +6,17 @@
 //  Copyright © 2022 FLEX Team. All rights reserved.
 //
 
-#import "FLEXAPNSViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXMutableListSection.h"
-#import "FLEXSingleRowSection.h"
-#import "NSUserDefaults+FLEX.h"
-#import "UIBarButtonItem+FLEX.h"
-#import "NSDateFormatter+FLEX.h"
-#import "FLEXResources.h"
-#import "FLEXUtility.h"
-#import "FLEXRuntimeUtility.h"
-#import "flex_fishhook.h"
+#import "Classes/GlobalStateExplorers/FLEXAPNSViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Headers/FLEXSingleRowSection.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
+#import "Classes/Utility/Categories/NSDateFormatter+FLEX.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/flex_fishhook.h"
 #import <dlfcn.h>
 #import <UserNotifications/UserNotifications.h>
 

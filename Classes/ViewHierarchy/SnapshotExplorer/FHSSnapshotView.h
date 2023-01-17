@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FHSViewSnapshot.h"
-#import "FHSRangeSlider.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSViewSnapshot.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSRangeSlider.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

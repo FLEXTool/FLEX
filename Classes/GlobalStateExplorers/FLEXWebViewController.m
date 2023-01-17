@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXWebViewController.h"
-#import "FLEXUtility.h"
+#import "Classes/GlobalStateExplorers/FLEXWebViewController.h"
+#import "Classes/Utility/FLEXUtility.h"
 #import <WebKit/WebKit.h>
 
 @interface FLEXWebViewController () <WKNavigationDelegate>

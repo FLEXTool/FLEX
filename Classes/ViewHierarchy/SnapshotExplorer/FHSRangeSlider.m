@@ -6,9 +6,9 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FHSRangeSlider.h"
-#import "FLEXResources.h"
-#import "FLEXUtility.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSRangeSlider.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FHSRangeSlider ()
 @property (nonatomic, readonly) UIImageView *track;

@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXShortcutsSection.h"
+#import "Classes/Headers/FLEXShortcutsSection.h"
 
 /// Provides handy shortcuts for class objects.
 /// This is the default section used for all class objects.

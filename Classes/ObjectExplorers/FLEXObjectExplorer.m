@@ -6,17 +6,17 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXObjectExplorer.h"
-#import "FLEXUtility.h"
-#import "FLEXRuntimeUtility.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXRuntime+Compare.h"
-#import "FLEXRuntime+UIKitHelpers.h"
-#import "FLEXPropertyAttributes.h"
-#import "FLEXMetadataSection.h"
-#import "NSUserDefaults+FLEX.h"
-#import "FLEXMirror.h"
-#import "FLEXSwiftInternal.h"
+#import "Classes/Headers/FLEXObjectExplorer.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Utility/Categories/FLEXRuntime+Compare.h"
+#import "Classes/Utility/Categories/FLEXRuntime+UIKitHelpers.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Headers/FLEXMetadataSection.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMirror.h"
+#import "Classes/Utility/Runtime/Objc/FLEXSwiftInternal.h"
 
 @implementation FLEXObjectExplorerDefaults
 

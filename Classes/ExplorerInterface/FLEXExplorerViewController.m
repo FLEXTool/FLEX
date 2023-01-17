@@ -6,21 +6,21 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXExplorerViewController.h"
-#import "FLEXExplorerToolbarItem.h"
-#import "FLEXUtility.h"
-#import "FLEXWindow.h"
-#import "FLEXTabList.h"
-#import "FLEXNavigationController.h"
-#import "FLEXHierarchyViewController.h"
-#import "FLEXGlobalsViewController.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXNetworkMITMViewController.h"
-#import "FLEXTabsViewController.h"
-#import "FLEXWindowManagerController.h"
-#import "FLEXViewControllersViewController.h"
-#import "NSUserDefaults+FLEX.h"
+#import "Classes/ExplorerInterface/FLEXExplorerViewController.h"
+#import "Classes/Headers/FLEXExplorerToolbarItem.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/ExplorerInterface/FLEXWindow.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabList.h"
+#import "Classes/Headers/FLEXNavigationController.h"
+#import "Classes/ViewHierarchy/FLEXHierarchyViewController.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Network/FLEXNetworkMITMViewController.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabsViewController.h"
+#import "Classes/ExplorerInterface/FLEXWindowManagerController.h"
+#import "Classes/ExplorerInterface/FLEXViewControllersViewController.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
 
 typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeDefault,

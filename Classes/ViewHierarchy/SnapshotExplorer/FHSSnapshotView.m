@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FHSSnapshotView.h"
-#import "FHSSnapshotNodes.h"
-#import "SceneKit+Snapshot.h"
-#import "FLEXColor.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSSnapshotView.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/Scene/FHSSnapshotNodes.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/Scene/SceneKit+Snapshot.h"
+#import "Classes/Utility/FLEXColor.h"
 
 @interface FHSSnapshotView ()
 @property (nonatomic, readonly) SCNView *sceneView;

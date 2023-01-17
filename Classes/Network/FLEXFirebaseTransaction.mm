@@ -5,8 +5,8 @@
 //  Created by Tanner Bennett on 12/24/21.
 //
 
-#import "FLEXNetworkTransaction.h"
-#import "FLEXUtility.h"
+#import "Classes/Network/FLEXNetworkTransaction.h"
+#import "Classes/Utility/FLEXUtility.h"
 #import <dlfcn.h>
 #include <string>
 

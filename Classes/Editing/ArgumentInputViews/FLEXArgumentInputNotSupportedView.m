@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputNotSupportedView.h"
-#import "FLEXColor.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputNotSupportedView.h"
+#import "Classes/Utility/FLEXColor.h"
 
 @implementation FLEXArgumentInputNotSupportedView
 

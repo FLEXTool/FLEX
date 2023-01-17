@@ -6,15 +6,15 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
-#import "FLEXExplorerViewController.h"
-#import "FLEXBookmarksViewController.h"
-#import "FLEXTabsViewController.h"
-#import "FLEXScopeCarousel.h"
-#import "FLEXTableView.h"
-#import "FLEXUtility.h"
-#import "FLEXResources.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/Headers/FLEXTableViewController.h"
+#import "Classes/ExplorerInterface/FLEXExplorerViewController.h"
+#import "Classes/ExplorerInterface/Bookmarks/FLEXBookmarksViewController.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabsViewController.h"
+#import "Classes/Core/Views/Carousel/FLEXScopeCarousel.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 #import <objc/runtime.h>
 
 @interface Block : NSObject

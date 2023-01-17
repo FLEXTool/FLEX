@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXViewControllersViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXMutableListSection.h"
-#import "FLEXUtility.h"
+#import "Classes/ExplorerInterface/FLEXViewControllersViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXViewControllersViewController ()
 @property (nonatomic, readonly) FLEXMutableListSection *section;

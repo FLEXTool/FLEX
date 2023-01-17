@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FLEXProperty.h"
-#import "FLEXIvar.h"
-#import "FLEXMethodBase.h"
-#import "FLEXProtocol.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethodBase.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProtocol.h"
 
 @interface FLEXProperty (Compare)
 - (NSComparisonResult)compare:(FLEXProperty *)other;

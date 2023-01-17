@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXManager.h"
-#import "FLEXWindow.h"
+#import "Classes/Headers/FLEXManager.h"
+#import "Classes/ExplorerInterface/FLEXWindow.h"
 
 @class FLEXGlobalsEntry, FLEXExplorerViewController;
 

@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXCookiesViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXMutableListSection.h"
-#import "FLEXUtility.h"
+#import "Classes/GlobalStateExplorers/FLEXCookiesViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXCookiesViewController ()
 @property (nonatomic, readonly) FLEXMutableListSection<NSHTTPCookie *> *cookies;

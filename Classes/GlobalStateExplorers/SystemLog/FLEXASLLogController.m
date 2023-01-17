@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXASLLogController.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXASLLogController.h"
 #import <asl.h>
 
 // Querying the ASL is much slower in the simulator. We need a longer polling interval to keep things responsive.

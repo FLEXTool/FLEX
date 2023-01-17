@@ -6,8 +6,8 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXRuntimeKeyPath.h"
-#import "FLEXRuntimeClient.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeKeyPath.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeClient.h"
 
 @interface FLEXRuntimeKeyPath () {
     NSString *flex_description;

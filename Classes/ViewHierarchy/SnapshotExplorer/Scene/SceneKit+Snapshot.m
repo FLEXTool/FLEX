@@ -5,8 +5,8 @@
 //  Created by Tanner Bennett on 1/8/20.
 //
 
-#import "SceneKit+Snapshot.h"
-#import "FHSSnapshotNodes.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/Scene/SceneKit+Snapshot.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/Scene/FHSSnapshotNodes.h"
 
 /// This value is chosen such that this offset can be applied to avoid
 /// z-fighting amongst nodes at the same z-position, but small enough

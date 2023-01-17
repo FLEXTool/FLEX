@@ -6,7 +6,7 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "NSString+FLEX.h"
+#import "Classes/Utility/Categories/Private/NSString+FLEX.h"
 
 @interface NSMutableString (Replacement)
 - (void)replaceOccurencesOfString:(NSString *)string with:(NSString *)replacement;

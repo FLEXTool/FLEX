@@ -6,19 +6,19 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXHTTPTransactionDetailController.h"
-#import "FLEXNetworkCurlLogger.h"
-#import "FLEXNetworkRecorder.h"
-#import "FLEXNetworkTransaction.h"
-#import "FLEXWebViewController.h"
-#import "FLEXImagePreviewViewController.h"
-#import "FLEXMultilineTableViewCell.h"
-#import "FLEXUtility.h"
-#import "FLEXManager+Private.h"
-#import "FLEXTableView.h"
-#import "UIBarButtonItem+FLEX.h"
-#import "NSDateFormatter+FLEX.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Network/FLEXHTTPTransactionDetailController.h"
+#import "Classes/Network/FLEXNetworkCurlLogger.h"
+#import "Classes/Network/FLEXNetworkRecorder.h"
+#import "Classes/Network/FLEXNetworkTransaction.h"
+#import "Classes/GlobalStateExplorers/FLEXWebViewController.h"
+#import "Classes/ViewHierarchy/FLEXImagePreviewViewController.h"
+#import "Classes/Headers/FLEXMultilineTableViewCell.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Manager/Private/FLEXManager+Private.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
+#import "Classes/Utility/Categories/NSDateFormatter+FLEX.h"
 
 typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 

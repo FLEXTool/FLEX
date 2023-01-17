@@ -5,7 +5,7 @@
 //  Created by Tanner on 3/25/17.
 //
 
-#import "FLEXRuntimeSafety.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeSafety.h"
 
 NSUInteger const kFLEXKnownUnsafeClassCount = 19;
 Class * _UnsafeClasses = NULL;

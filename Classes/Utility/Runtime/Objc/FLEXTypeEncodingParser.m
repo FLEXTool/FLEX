@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTypeEncodingParser.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/FLEXTypeEncodingParser.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 #define S(__ch) ({ \
     unichar __c = __ch; \

@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXRuntimeConstants.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeConstants.h"
 
 const unsigned int kFLEXNumberOfImplicitArgs = 2;
 

@@ -5,13 +5,13 @@
 //  Created by Ryan Olson on 2/20/15.
 //
 
-#import "FLEXNetworkSettingsController.h"
-#import "FLEXNetworkObserver.h"
-#import "FLEXNetworkRecorder.h"
-#import "FLEXUtility.h"
-#import "FLEXTableView.h"
-#import "FLEXColor.h"
-#import "NSUserDefaults+FLEX.h"
+#import "Classes/Network/FLEXNetworkSettingsController.h"
+#import "Classes/Network/PonyDebugger/FLEXNetworkObserver.h"
+#import "Classes/Network/FLEXNetworkRecorder.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
 
 @interface FLEXNetworkSettingsController () <UIActionSheetDelegate>
 @property (nonatomic) float cacheLimitValue;

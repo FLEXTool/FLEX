@@ -6,9 +6,9 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputView.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
 
 @interface FLEXArgumentInputView ()
 

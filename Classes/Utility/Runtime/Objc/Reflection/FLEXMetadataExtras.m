@@ -5,7 +5,7 @@
 //  Created by Tanner Bennett on 4/26/22.
 //
 
-#import "FLEXMetadataExtras.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMetadataExtras.h"
 
 NSString * const FLEXAuxiliarynfoKeyFieldLabels = @"FLEXAuxiliarynfoKeyFieldLabels";
 

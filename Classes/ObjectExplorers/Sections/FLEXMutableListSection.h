@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXCollectionContentSection.h"
+#import "Classes/Headers/FLEXCollectionContentSection.h"
 
 typedef void (^FLEXMutableListCellForElement)(__kindof UITableViewCell *cell, id element, NSInteger row);
 

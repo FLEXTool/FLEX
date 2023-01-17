@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputNumberView.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputNumberView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @implementation FLEXArgumentInputNumberView
 

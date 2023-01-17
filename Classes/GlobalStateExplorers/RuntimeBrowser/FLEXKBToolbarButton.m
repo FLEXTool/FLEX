@@ -6,10 +6,10 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXKBToolbarButton.h"
-#import "UIFont+FLEX.h"
-#import "FLEXUtility.h"
-#import "CALayer+FLEX.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXKBToolbarButton.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/CALayer+FLEX.h"
 
 @interface FLEXKBToolbarButton ()
 @property (nonatomic      ) NSString *title;

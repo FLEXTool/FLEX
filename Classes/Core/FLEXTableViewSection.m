@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewSection.h"
-#import "FLEXTableView.h"
-#import "FLEXUtility.h"
-#import "UIMenu+FLEX.h"
+#import "Classes/Headers/FLEXTableViewSection.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/UIMenu+FLEX.h"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincomplete-implementation"

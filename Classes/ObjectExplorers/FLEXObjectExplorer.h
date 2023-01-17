@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXRuntime+UIKitHelpers.h"
+#import "Classes/Utility/Categories/FLEXRuntime+UIKitHelpers.h"
 
 /// Carries state about the current user defaults settings
 @interface FLEXObjectExplorerDefaults : NSObject

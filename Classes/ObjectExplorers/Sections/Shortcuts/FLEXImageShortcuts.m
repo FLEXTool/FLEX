@@ -6,11 +6,11 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXImageShortcuts.h"
-#import "FLEXImagePreviewViewController.h"
-#import "FLEXShortcut.h"
-#import "FLEXAlert.h"
-#import "FLEXMacros.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXImageShortcuts.h"
+#import "Classes/ViewHierarchy/FLEXImagePreviewViewController.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/Utility/FLEXMacros.h"
 
 @interface UIAlertController (FLEXImageShortcuts)
 - (void)flex_image:(UIImage *)image disSaveWithError:(NSError *)error :(void *)context;

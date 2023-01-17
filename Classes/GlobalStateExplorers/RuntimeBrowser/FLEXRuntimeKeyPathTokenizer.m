@@ -6,7 +6,7 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXRuntimeKeyPathTokenizer.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeKeyPathTokenizer.h"
 
 #define TBCountOfStringOccurence(target, str) ([target componentsSeparatedByString:str].count - 1)
 

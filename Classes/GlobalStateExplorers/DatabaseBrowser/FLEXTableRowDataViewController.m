@@ -5,9 +5,9 @@
 //  Created by Chaoshuai Lu on 7/8/20.
 //
 
-#import "FLEXTableRowDataViewController.h"
-#import "FLEXMutableListSection.h"
-#import "FLEXAlert.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableRowDataViewController.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/FLEXAlert.h"
 
 @interface FLEXTableRowDataViewController ()
 @property (nonatomic) NSDictionary<NSString *, NSString *> *rowsByColumn;

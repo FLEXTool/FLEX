@@ -6,17 +6,17 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXObjectListViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "FLEXMutableListSection.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXUtility.h"
-#import "FLEXHeapEnumerator.h"
-#import "FLEXObjectRef.h"
-#import "NSString+FLEX.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXTableViewCell.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectListViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXHeapEnumerator.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectRef.h"
+#import "Classes/Utility/Categories/Private/NSString+FLEX.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
 #import <malloc/malloc.h>
 
 

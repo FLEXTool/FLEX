@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXSystemLogMessage.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXSystemLogMessage.h"
 
 @implementation FLEXSystemLogMessage
 

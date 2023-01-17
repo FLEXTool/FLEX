@@ -6,9 +6,9 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXObjectRef.h"
-#import "FLEXRuntimeUtility.h"
-#import "NSArray+FLEX.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectRef.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
 
 @interface FLEXObjectRef () {
     /// Used to retain the object if desired

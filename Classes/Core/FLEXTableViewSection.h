@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NSArray+FLEX.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
 @class FLEXTableView;
 
 NS_ASSUME_NONNULL_BEGIN

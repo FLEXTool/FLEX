@@ -7,8 +7,8 @@
 //  Copyright (c) 2010-2014 Sam Soffes. All rights reserved.
 //
 
-#import "FLEXKeychain.h"
-#import "FLEXKeychainQuery.h"
+#import "Classes/GlobalStateExplorers/Keychain/FLEXKeychain.h"
+#import "Classes/GlobalStateExplorers/Keychain/FLEXKeychainQuery.h"
 
 NSString * const kFLEXKeychainErrorDomain = @"com.flipboard.flex";
 NSString * const kFLEXKeychainAccountKey = @"acct";

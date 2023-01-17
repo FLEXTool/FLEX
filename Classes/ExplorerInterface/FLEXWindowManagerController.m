@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXWindowManagerController.h"
-#import "FLEXManager+Private.h"
-#import "FLEXUtility.h"
-#import "FLEXObjectExplorerFactory.h"
+#import "Classes/ExplorerInterface/FLEXWindowManagerController.h"
+#import "Classes/Manager/Private/FLEXManager+Private.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
 
 @interface FLEXWindowManagerController ()
 @property (nonatomic) UIWindow *keyWindow;

@@ -6,17 +6,17 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXShortcutsSection.h"
-#import "FLEXTableView.h"
-#import "FLEXTableViewCell.h"
-#import "FLEXUtility.h"
-#import "FLEXShortcut.h"
-#import "FLEXProperty.h"
-#import "FLEXPropertyAttributes.h"
-#import "FLEXIvar.h"
-#import "FLEXMethod.h"
-#import "FLEXRuntime+UIKitHelpers.h"
-#import "FLEXObjectExplorer.h"
+#import "Classes/Headers/FLEXShortcutsSection.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Utility/Categories/FLEXRuntime+UIKitHelpers.h"
+#import "Classes/Headers/FLEXObjectExplorer.h"
 
 #pragma mark Private
 

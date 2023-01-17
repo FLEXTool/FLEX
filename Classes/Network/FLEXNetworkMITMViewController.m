@@ -6,22 +6,22 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXUtility.h"
-#import "FLEXMITMDataSource.h"
-#import "FLEXNetworkMITMViewController.h"
-#import "FLEXNetworkTransaction.h"
-#import "FLEXNetworkRecorder.h"
-#import "FLEXNetworkObserver.h"
-#import "FLEXNetworkTransactionCell.h"
-#import "FLEXHTTPTransactionDetailController.h"
-#import "FLEXNetworkSettingsController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXGlobalsViewController.h"
-#import "FLEXWebViewController.h"
-#import "UIBarButtonItem+FLEX.h"
-#import "FLEXResources.h"
-#import "NSUserDefaults+FLEX.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Network/FLEXMITMDataSource.h"
+#import "Classes/Network/FLEXNetworkMITMViewController.h"
+#import "Classes/Network/FLEXNetworkTransaction.h"
+#import "Classes/Network/FLEXNetworkRecorder.h"
+#import "Classes/Network/PonyDebugger/FLEXNetworkObserver.h"
+#import "Classes/Network/FLEXNetworkTransactionCell.h"
+#import "Classes/Network/FLEXHTTPTransactionDetailController.h"
+#import "Classes/Network/FLEXNetworkSettingsController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsViewController.h"
+#import "Classes/GlobalStateExplorers/FLEXWebViewController.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
 
 #define kFirebaseAvailable NSClassFromString(@"FIRDocumentReference")
 #define kWebsocketsAvailable @available(iOS 13.0, *)

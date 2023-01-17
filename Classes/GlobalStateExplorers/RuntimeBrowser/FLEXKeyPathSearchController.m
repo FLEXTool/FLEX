@@ -6,16 +6,16 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXKeyPathSearchController.h"
-#import "FLEXRuntimeKeyPathTokenizer.h"
-#import "FLEXRuntimeController.h"
-#import "NSString+FLEX.h"
-#import "NSArray+FLEX.h"
-#import "UITextField+Range.h"
-#import "NSTimer+FLEX.h"
-#import "FLEXTableView.h"
-#import "FLEXUtility.h"
-#import "FLEXObjectExplorerFactory.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXKeyPathSearchController.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeKeyPathTokenizer.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeController.h"
+#import "Classes/Utility/Categories/Private/NSString+FLEX.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/UITextField+Range.h"
+#import "Classes/Utility/Categories/NSTimer+FLEX.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
 
 @interface FLEXKeyPathSearchController ()
 @property (nonatomic, readonly, weak) id<FLEXKeyPathSearchControllerDelegate> delegate;

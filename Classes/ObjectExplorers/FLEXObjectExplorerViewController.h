@@ -10,8 +10,8 @@
 #define _FLEXObjectExplorerViewController_h
 #endif
 
-#import "FLEXFilteringTableViewController.h"
-#import "FLEXObjectExplorer.h"
+#import "Classes/Headers/FLEXFilteringTableViewController.h"
+#import "Classes/Headers/FLEXObjectExplorer.h"
 @class FLEXTableViewSection;
 
 NS_ASSUME_NONNULL_BEGIN

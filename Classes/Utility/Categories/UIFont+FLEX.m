@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "UIFont+FLEX.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
 
 #define kFLEXDefaultCellFontSize 12.0
 

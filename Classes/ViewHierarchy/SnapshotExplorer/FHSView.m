@@ -5,9 +5,9 @@
 //  Created by Tanner Bennett on 1/6/20.
 //
 
-#import "FHSView.h"
-#import "FLEXUtility.h"
-#import "NSArray+FLEX.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
 
 @interface FHSView (Snapshotting)
 + (UIImage *)_snapshotView:(UIView *)view;

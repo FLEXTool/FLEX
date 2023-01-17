@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
-#import "FLEXGlobalsEntry.h"
+#import "Classes/Headers/FLEXTableViewController.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
 
 @interface FLEXLiveObjectsController : FLEXTableViewController <FLEXGlobalsEntry>
 

@@ -5,7 +5,7 @@
 //  Created by Tanner Bennett on 1/7/20.
 //
 
-#import "FHSViewSnapshot.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSViewSnapshot.h"
 #import <SceneKit/SceneKit.h>
 
 NS_ASSUME_NONNULL_BEGIN

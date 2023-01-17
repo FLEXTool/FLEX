@@ -6,15 +6,15 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import "FLEXTableListViewController.h"
-#import "FLEXDatabaseManager.h"
-#import "FLEXSQLiteDatabaseManager.h"
-#import "FLEXRealmDatabaseManager.h"
-#import "FLEXTableContentViewController.h"
-#import "FLEXMutableListSection.h"
-#import "NSArray+FLEX.h"
-#import "FLEXAlert.h"
-#import "FLEXMacros.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableListViewController.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXDatabaseManager.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLiteDatabaseManager.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXRealmDatabaseManager.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableContentViewController.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/Utility/FLEXMacros.h"
 
 @interface FLEXTableListViewController ()
 @property (nonatomic, readonly) id<FLEXDatabaseManager> dbm;

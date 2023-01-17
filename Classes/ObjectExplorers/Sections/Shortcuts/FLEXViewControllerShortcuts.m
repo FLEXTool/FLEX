@@ -6,11 +6,11 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXViewControllerShortcuts.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXShortcut.h"
-#import "FLEXAlert.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXViewControllerShortcuts.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/FLEXAlert.h"
 
 @interface FLEXViewControllerShortcuts ()
 @end

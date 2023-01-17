@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXUIAppShortcuts.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXShortcut.h"
-#import "FLEXAlert.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXUIAppShortcuts.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/FLEXAlert.h"
 
 @implementation FLEXUIAppShortcuts
 

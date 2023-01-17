@@ -6,21 +6,21 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXRuntimeExporter.h"
-#import "FLEXSQLiteDatabaseManager.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXRuntimeController.h"
-#import "FLEXRuntimeClient.h"
-#import "NSArray+FLEX.h"
-#import "FLEXTypeEncodingParser.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeExporter.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLiteDatabaseManager.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeController.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeClient.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Runtime/Objc/FLEXTypeEncodingParser.h"
 #import <sqlite3.h>
 
-#import "FLEXProtocol.h"
-#import "FLEXProperty.h"
-#import "FLEXIvar.h"
-#import "FLEXMethodBase.h"
-#import "FLEXMethod.h"
-#import "FLEXPropertyAttributes.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProtocol.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethodBase.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
 
 NSString * const kFREEnableForeignKeys = @"PRAGMA foreign_keys = ON;";
 

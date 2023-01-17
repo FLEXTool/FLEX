@@ -5,9 +5,9 @@
 //  Created by Tanner Bennett on 8/22/21.
 //
 
-#import "FLEXMITMDataSource.h"
-#import "FLEXNetworkTransaction.h"
-#import "FLEXUtility.h"
+#import "Classes/Network/FLEXMITMDataSource.h"
+#import "Classes/Network/FLEXNetworkTransaction.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXMITMDataSource ()
 @property (nonatomic, readonly) NSArray *(^dataProvider)(void);

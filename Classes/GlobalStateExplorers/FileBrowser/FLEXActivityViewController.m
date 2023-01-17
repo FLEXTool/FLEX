@@ -5,8 +5,8 @@
 //  Created by Tanner Bennett on 5/26/22.
 //
 
-#import "FLEXActivityViewController.h"
-#import "FLEXMacros.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXActivityViewController.h"
+#import "Classes/Utility/FLEXMacros.h"
 
 @interface FLEXActivityViewController ()
 @end

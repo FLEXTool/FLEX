@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputObjectView.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputObjectView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 static const CGFloat kSegmentInputMargin = 10;
 

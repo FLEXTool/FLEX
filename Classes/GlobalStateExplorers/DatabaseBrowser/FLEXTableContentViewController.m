@@ -6,12 +6,12 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import "FLEXTableContentViewController.h"
-#import "FLEXTableRowDataViewController.h"
-#import "FLEXMultiColumnTableView.h"
-#import "FLEXWebViewController.h"
-#import "FLEXUtility.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableContentViewController.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableRowDataViewController.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXMultiColumnTableView.h"
+#import "Classes/GlobalStateExplorers/FLEXWebViewController.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 
 @interface FLEXTableContentViewController () <
     FLEXMultiColumnTableViewDataSource, FLEXMultiColumnTableViewDelegate

@@ -6,7 +6,7 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXRuntimeKeyPath.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeKeyPath.h"
 
 /// Wraps FLEXRuntimeClient and provides extra caching mechanisms
 @interface FLEXRuntimeController : NSObject

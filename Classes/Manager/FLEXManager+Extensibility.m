@@ -6,17 +6,17 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXManager+Extensibility.h"
-#import "FLEXManager+Private.h"
-#import "FLEXNavigationController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXKeyboardShortcutManager.h"
-#import "FLEXExplorerViewController.h"
-#import "FLEXNetworkMITMViewController.h"
-#import "FLEXKeyboardHelpViewController.h"
-#import "FLEXFileBrowserController.h"
-#import "FLEXArgumentInputStructView.h"
-#import "FLEXUtility.h"
+#import "Classes/Headers/FLEXManager+Extensibility.h"
+#import "Classes/Manager/Private/FLEXManager+Private.h"
+#import "Classes/Headers/FLEXNavigationController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Utility/Keyboard/FLEXKeyboardShortcutManager.h"
+#import "Classes/ExplorerInterface/FLEXExplorerViewController.h"
+#import "Classes/Network/FLEXNetworkMITMViewController.h"
+#import "Classes/Utility/Keyboard/FLEXKeyboardHelpViewController.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputStructView.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXManager (ExtensibilityPrivate)
 @property (nonatomic, readonly) UIViewController *topViewController;

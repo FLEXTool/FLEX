@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FHSViewSnapshot.h"
-#import "NSArray+FLEX.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSViewSnapshot.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
 
 @implementation FHSViewSnapshot
 

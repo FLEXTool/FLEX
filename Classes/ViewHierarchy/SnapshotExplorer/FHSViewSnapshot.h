@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FHSView.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

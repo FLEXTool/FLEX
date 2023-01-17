@@ -6,10 +6,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXSystemLogCell.h"
-#import "FLEXSystemLogMessage.h"
-#import "UIFont+FLEX.h"
-#import "NSDateFormatter+FLEX.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXSystemLogCell.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXSystemLogMessage.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
+#import "Classes/Utility/Categories/NSDateFormatter+FLEX.h"
 
 NSString *const kFLEXSystemLogCellIdentifier = @"FLEXSystemLogCellIdentifier";
 

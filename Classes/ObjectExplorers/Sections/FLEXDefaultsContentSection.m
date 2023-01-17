@@ -6,9 +6,9 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXDefaultsContentSection.h"
-#import "FLEXDefaultEditorViewController.h"
-#import "FLEXUtility.h"
+#import "Classes/Headers/FLEXDefaultsContentSection.h"
+#import "Classes/Editing/FLEXDefaultEditorViewController.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXDefaultsContentSection ()
 @property (nonatomic) NSUserDefaults *defaults;

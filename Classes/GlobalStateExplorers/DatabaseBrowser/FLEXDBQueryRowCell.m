@@ -6,11 +6,11 @@
 //  Copyright © 2015年 f. All rights reserved.
 //
 
-#import "FLEXDBQueryRowCell.h"
-#import "FLEXMultiColumnTableView.h"
-#import "NSArray+FLEX.h"
-#import "UIFont+FLEX.h"
-#import "FLEXColor.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXDBQueryRowCell.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXMultiColumnTableView.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
+#import "Classes/Utility/FLEXColor.h"
 
 NSString * const kFLEXDBQueryRowCellReuse = @"kFLEXDBQueryRowCellReuse";
 

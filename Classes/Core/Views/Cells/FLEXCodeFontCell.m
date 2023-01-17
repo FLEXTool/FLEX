@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXCodeFontCell.h"
-#import "UIFont+FLEX.h"
+#import "Classes/Headers/FLEXCodeFontCell.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
 
 @implementation FLEXCodeFontCell
 

@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTabList.h"
-#import "FLEXUtility.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabList.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface FLEXTabList () {
     NSMutableArray *_openTabs;

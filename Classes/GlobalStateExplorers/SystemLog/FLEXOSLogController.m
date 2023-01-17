@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXOSLogController.h"
-#import "NSUserDefaults+FLEX.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXOSLogController.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
 #include <dlfcn.h>
-#include "ActivityStreamAPI.h"
+#include "Classes/GlobalStateExplorers/SystemLog/ActivityStreamAPI.h"
 
 static os_activity_stream_for_pid_t OSActivityStreamForPID;
 static os_activity_stream_resume_t OSActivityStreamResume;

@@ -6,17 +6,17 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXShortcut.h"
-#import "FLEXProperty.h"
-#import "FLEXPropertyAttributes.h"
-#import "FLEXIvar.h"
-#import "FLEXMethod.h"
-#import "FLEXRuntime+UIKitHelpers.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXFieldEditorViewController.h"
-#import "FLEXMethodCallingViewController.h"
-#import "FLEXMetadataSection.h"
-#import "FLEXTableView.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Utility/Categories/FLEXRuntime+UIKitHelpers.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Editing/FLEXFieldEditorViewController.h"
+#import "Classes/Editing/FLEXMethodCallingViewController.h"
+#import "Classes/Headers/FLEXMetadataSection.h"
+#import "Classes/Headers/FLEXTableView.h"
 
 
 #pragma mark - FLEXShortcut

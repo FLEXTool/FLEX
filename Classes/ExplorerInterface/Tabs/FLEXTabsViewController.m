@@ -6,17 +6,17 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTabsViewController.h"
-#import "FLEXNavigationController.h"
-#import "FLEXTabList.h"
-#import "FLEXBookmarkManager.h"
-#import "FLEXTableView.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
-#import "UIBarButtonItem+FLEX.h"
-#import "FLEXExplorerViewController.h"
-#import "FLEXGlobalsViewController.h"
-#import "FLEXBookmarksViewController.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabsViewController.h"
+#import "Classes/Headers/FLEXNavigationController.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabList.h"
+#import "Classes/ExplorerInterface/Bookmarks/FLEXBookmarkManager.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
+#import "Classes/ExplorerInterface/FLEXExplorerViewController.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsViewController.h"
+#import "Classes/ExplorerInterface/Bookmarks/FLEXBookmarksViewController.h"
 
 @interface FLEXTabsViewController ()
 @property (nonatomic, copy) NSArray<UINavigationController *> *openTabs;

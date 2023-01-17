@@ -21,8 +21,8 @@
 //  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import "FLEXBlockDescription.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXBlockDescription.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 struct block_object {
     void *isa;

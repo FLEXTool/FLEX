@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXLogController.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXLogController.h"
 
 #define FLEXOSLogAvailable() (NSProcessInfo.processInfo.operatingSystemVersion.majorVersion >= 10)
 

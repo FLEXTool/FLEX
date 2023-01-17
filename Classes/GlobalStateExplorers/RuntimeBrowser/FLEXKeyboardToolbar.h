@@ -6,7 +6,7 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXKBToolbarButton.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXKBToolbarButton.h"
 
 @interface FLEXKeyboardToolbar : UIView
 

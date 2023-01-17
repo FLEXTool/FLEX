@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXNavigationController.h"
+#import "Classes/Headers/FLEXNavigationController.h"
 
 @protocol FLEXHierarchyDelegate <NSObject>
 - (void)viewHierarchyDidDismiss:(UIView *)selectedView;

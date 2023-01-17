@@ -6,11 +6,11 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXClassShortcuts.h"
-#import "FLEXShortcut.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXObjectListViewController.h"
-#import "NSObject+FLEX_Reflection.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXClassShortcuts.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectListViewController.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
 
 @interface FLEXClassShortcuts ()
 @property (nonatomic, readonly) Class cls;

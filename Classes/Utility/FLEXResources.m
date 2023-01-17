@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXResources.h"
+#import "Classes/Utility/FLEXResources.h"
 
 // Useful regex for formatting pasted hex
 //

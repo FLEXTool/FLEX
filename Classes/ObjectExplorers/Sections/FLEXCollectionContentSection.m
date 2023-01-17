@@ -6,13 +6,13 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXCollectionContentSection.h"
-#import "FLEXUtility.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXSubtitleTableViewCell.h"
-#import "FLEXTableView.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXDefaultEditorViewController.h"
+#import "Classes/Headers/FLEXCollectionContentSection.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Headers/FLEXSubtitleTableViewCell.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Editing/FLEXDefaultEditorViewController.h"
 
 typedef NS_ENUM(NSUInteger, FLEXCollectionType) {
     FLEXUnsupportedCollection,

@@ -6,13 +6,13 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXNetworkRecorder.h"
-#import "FLEXNetworkCurlLogger.h"
-#import "FLEXNetworkTransaction.h"
-#import "FLEXUtility.h"
-#import "FLEXResources.h"
-#import "NSUserDefaults+FLEX.h"
-#import "OSCache.h"
+#import "Classes/Network/FLEXNetworkRecorder.h"
+#import "Classes/Network/FLEXNetworkCurlLogger.h"
+#import "Classes/Network/FLEXNetworkTransaction.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
+#import "Classes/Network/OSCache/OSCache.h"
 
 #define Synchronized(queue, obj) ({ \
     __block id __synchronized_retval = nil; \

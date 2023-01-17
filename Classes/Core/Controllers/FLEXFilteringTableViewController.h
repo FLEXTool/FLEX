@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
+#import "Classes/Headers/FLEXTableViewController.h"
 
 #pragma mark - FLEXTableViewFiltering
 @protocol FLEXTableViewFiltering <FLEXSearchResultsUpdating>

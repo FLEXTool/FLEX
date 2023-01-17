@@ -15,13 +15,13 @@
 //  git blame details these modifications.
 //
 
-#import "FLEXNetworkObserver.h"
-#import "FLEXNetworkRecorder.h"
-#import "FLEXUtility.h"
-#import "NSUserDefaults+FLEX.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXMethod.h"
-#import "Firestore.h"
+#import "Classes/Network/PonyDebugger/FLEXNetworkObserver.h"
+#import "Classes/Network/FLEXNetworkRecorder.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Network/Firestore.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>

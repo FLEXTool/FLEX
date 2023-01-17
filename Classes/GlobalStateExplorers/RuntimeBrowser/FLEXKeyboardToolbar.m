@@ -6,8 +6,8 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXKeyboardToolbar.h"
-#import "FLEXUtility.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXKeyboardToolbar.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 #define kToolbarHeight 44
 #define kButtonSpacing 6

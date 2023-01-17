@@ -6,13 +6,13 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXManager.h"
-#import "FLEXUtility.h"
-#import "FLEXExplorerViewController.h"
-#import "FLEXWindow.h"
-#import "FLEXNavigationController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXFileBrowserController.h"
+#import "Classes/Headers/FLEXManager.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/ExplorerInterface/FLEXExplorerViewController.h"
+#import "Classes/ExplorerInterface/FLEXWindow.h"
+#import "Classes/Headers/FLEXNavigationController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 

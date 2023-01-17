@@ -6,15 +6,15 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXObjcRuntimeViewController.h"
-#import "FLEXKeyPathSearchController.h"
-#import "FLEXRuntimeBrowserToolbar.h"
-#import "UIGestureRecognizer+Blocks.h"
-#import "UIBarButtonItem+FLEX.h"
-#import "FLEXTableView.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXAlert.h"
-#import "FLEXRuntimeClient.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXObjcRuntimeViewController.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXKeyPathSearchController.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeBrowserToolbar.h"
+#import "Classes/Utility/Categories/UIGestureRecognizer+Blocks.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeClient.h"
 #import <dlfcn.h>
 
 @interface FLEXObjcRuntimeViewController () <FLEXKeyPathSearchControllerDelegate>

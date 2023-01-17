@@ -7,16 +7,16 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXClassBuilder.h"
-#import "FLEXMirror.h"
-#import "FLEXProperty.h"
-#import "FLEXMethod.h"
-#import "FLEXIvar.h"
-#import "FLEXProtocol.h"
-#import "FLEXPropertyAttributes.h"
-#import "NSArray+FLEX.h"
-#import "FLEXUtility.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXClassBuilder.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMirror.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProtocol.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 
 NSString * FLEXTypeEncodingString(const char *returnType, NSUInteger count, ...) {

@@ -6,9 +6,9 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXCarouselCell.h"
-#import "FLEXColor.h"
-#import "UIView+FLEX_Layout.h"
+#import "Classes/Core/Views/Carousel/FLEXCarouselCell.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/Categories/Private/UIView+FLEX_Layout.h"
 
 @interface FLEXCarouselCell ()
 @property (nonatomic, readonly) UILabel *titleLabel;

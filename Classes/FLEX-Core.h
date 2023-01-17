@@ -6,17 +6,17 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXFilteringTableViewController.h"
-#import "FLEXNavigationController.h"
-#import "FLEXTableViewController.h"
-#import "FLEXTableView.h"
+#import "Classes/Headers/FLEXFilteringTableViewController.h"
+#import "Classes/Headers/FLEXNavigationController.h"
+#import "Classes/Headers/FLEXTableViewController.h"
+#import "Classes/Headers/FLEXTableView.h"
 
-#import "FLEXSingleRowSection.h"
-#import "FLEXTableViewSection.h"
+#import "Classes/Headers/FLEXSingleRowSection.h"
+#import "Classes/Headers/FLEXTableViewSection.h"
 
-#import "FLEXCodeFontCell.h"
-#import "FLEXSubtitleTableViewCell.h"
-#import "FLEXTableViewCell.h"
-#import "FLEXMultilineTableViewCell.h"
-#import "FLEXKeyValueTableViewCell.h"
+#import "Classes/Headers/FLEXCodeFontCell.h"
+#import "Classes/Headers/FLEXSubtitleTableViewCell.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
+#import "Classes/Headers/FLEXMultilineTableViewCell.h"
+#import "Classes/Headers/FLEXKeyValueTableViewCell.h"
 

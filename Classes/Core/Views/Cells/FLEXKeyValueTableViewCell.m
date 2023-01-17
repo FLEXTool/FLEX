@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXKeyValueTableViewCell.h"
+#import "Classes/Headers/FLEXKeyValueTableViewCell.h"
 
 @implementation FLEXKeyValueTableViewCell
 

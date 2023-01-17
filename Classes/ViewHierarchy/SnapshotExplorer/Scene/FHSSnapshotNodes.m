@@ -5,8 +5,8 @@
 //  Created by Tanner Bennett on 1/7/20.
 //
 
-#import "FHSSnapshotNodes.h"
-#import "SceneKit+Snapshot.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/Scene/FHSSnapshotNodes.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/Scene/SceneKit+Snapshot.h"
 
 @interface FHSSnapshotNodes ()
 @property (nonatomic, nullable) SCNNode *highlight;

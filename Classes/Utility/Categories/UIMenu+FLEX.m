@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "UIMenu+FLEX.h"
+#import "Classes/Utility/Categories/UIMenu+FLEX.h"
 
 @implementation UIMenu (FLEX)
 

@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXFilteringTableViewController.h"
-#import "FLEXGlobalsEntry.h"
+#import "Classes/Headers/FLEXFilteringTableViewController.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
 
 @interface FLEXSystemLogViewController : FLEXFilteringTableViewController <FLEXGlobalsEntry>
 

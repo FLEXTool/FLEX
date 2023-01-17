@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXSubtitleTableViewCell.h"
+#import "Classes/Headers/FLEXSubtitleTableViewCell.h"
 
 @implementation FLEXSubtitleTableViewCell
 

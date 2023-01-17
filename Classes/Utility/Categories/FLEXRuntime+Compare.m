@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXRuntime+Compare.h"
+#import "Classes/Utility/Categories/FLEXRuntime+Compare.h"
 
 @implementation FLEXProperty (Compare)
 

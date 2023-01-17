@@ -6,7 +6,7 @@
 //
 
 #import <SceneKit/SceneKit.h>
-#import "FHSViewSnapshot.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSViewSnapshot.h"
 @class FHSSnapshotNodes;
 
 extern CGFloat const kFHSSmallZOffset;

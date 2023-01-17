@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXManager.h"
+#import "Classes/Headers/FLEXManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

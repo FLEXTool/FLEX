@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXRuntimeConstants.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeConstants.h"
 @class FLEXObjectRef;
 
 #define PropertyKey(suffix) kFLEXPropertyAttributeKey##suffix : @""

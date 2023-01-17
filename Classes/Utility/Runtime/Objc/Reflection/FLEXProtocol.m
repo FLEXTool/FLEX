@@ -7,10 +7,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXProtocol.h"
-#import "FLEXProperty.h"
-#import "FLEXRuntimeUtility.h"
-#import "NSArray+FLEX.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProtocol.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
 #include <dlfcn.h>
 
 @implementation FLEXProtocol

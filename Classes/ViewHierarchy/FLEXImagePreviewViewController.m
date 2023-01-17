@@ -6,11 +6,11 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXImagePreviewViewController.h"
-#import "FLEXActivityViewController.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
-#import "FLEXResources.h"
+#import "Classes/ViewHierarchy/FLEXImagePreviewViewController.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXActivityViewController.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXResources.h"
 
 @interface FLEXImagePreviewViewController () <UIScrollViewDelegate>
 @property (nonatomic) UIImage *image;

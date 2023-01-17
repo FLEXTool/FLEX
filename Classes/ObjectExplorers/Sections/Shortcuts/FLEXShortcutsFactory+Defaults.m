@@ -6,14 +6,14 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXShortcutsFactory+Defaults.h"
-#import "FLEXShortcut.h"
-#import "FLEXMacros.h"
-#import "FLEXRuntimeUtility.h"
-#import "NSArray+FLEX.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXObjcInternal.h"
-#import "Cocoa+FLEXShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcutsFactory+Defaults.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/FLEXMacros.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Utility/Runtime/Objc/FLEXObjcInternal.h"
+#import "Classes/Utility/Categories/Private/Cocoa+FLEXShortcuts.h"
 
 #pragma mark - UIApplication
 

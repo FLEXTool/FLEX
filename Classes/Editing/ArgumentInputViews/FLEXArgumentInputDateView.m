@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputDateView.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputDateView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @interface FLEXArgumentInputDateView ()
 

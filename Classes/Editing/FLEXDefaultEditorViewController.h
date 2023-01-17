@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXFieldEditorViewController.h"
+#import "Classes/Editing/FLEXFieldEditorViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

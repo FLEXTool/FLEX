@@ -6,15 +6,15 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXFieldEditorViewController.h"
-#import "FLEXFieldEditorView.h"
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXPropertyAttributes.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXMetadataExtras.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/Editing/FLEXFieldEditorViewController.h"
+#import "Classes/Editing/FLEXFieldEditorView.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMetadataExtras.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 
 @interface FLEXFieldEditorViewController () <FLEXArgumentInputViewDelegate>
 

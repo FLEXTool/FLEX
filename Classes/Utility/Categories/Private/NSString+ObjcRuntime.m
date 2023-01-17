@@ -7,8 +7,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "NSString+ObjcRuntime.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Utility/Categories/Private/NSString+ObjcRuntime.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @implementation NSString (Utilities)
 

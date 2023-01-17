@@ -6,10 +6,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXUtility.h"
-#import "FLEXResources.h"
-#import "FLEXWindow.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/ExplorerInterface/FLEXWindow.h"
 #import <ImageIO/ImageIO.h>
 #import <objc/runtime.h>
 #import <zlib.h>

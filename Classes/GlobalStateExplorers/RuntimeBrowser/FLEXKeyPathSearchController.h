@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXRuntimeBrowserToolbar.h"
-#import "FLEXMethod.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeBrowserToolbar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
 
 @protocol FLEXKeyPathSearchControllerDelegate <UITableViewDataSource>
 

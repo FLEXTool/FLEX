@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputView.h"
 
 @interface FLEXArgumentInputFontView : FLEXArgumentInputView
 

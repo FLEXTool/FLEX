@@ -6,18 +6,18 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXRuntime+UIKitHelpers.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXPropertyAttributes.h"
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXFieldEditorViewController.h"
-#import "FLEXMethodCallingViewController.h"
-#import "FLEXObjectListViewController.h"
-#import "FLEXTableView.h"
-#import "FLEXUtility.h"
-#import "NSArray+FLEX.h"
-#import "NSString+FLEX.h"
+#import "Classes/Utility/Categories/FLEXRuntime+UIKitHelpers.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Editing/FLEXFieldEditorViewController.h"
+#import "Classes/Editing/FLEXMethodCallingViewController.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectListViewController.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/Private/NSString+FLEX.h"
 
 #define FLEXObjectExplorerDefaultsImpl \
 - (FLEXObjectExplorerDefaults *)defaults { \

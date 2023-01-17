@@ -6,10 +6,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXNetworkTransaction.h"
-#import "FLEXResources.h"
-#import "FLEXUtility.h"
-#import "NSDateFormatter+FLEX.h"
+#import "Classes/Network/FLEXNetworkTransaction.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Categories/NSDateFormatter+FLEX.h"
 
 @implementation FLEXNetworkTransaction
 

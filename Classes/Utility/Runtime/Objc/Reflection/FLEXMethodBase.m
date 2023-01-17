@@ -7,7 +7,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXMethodBase.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethodBase.h"
 
 
 @implementation FLEXMethodBase

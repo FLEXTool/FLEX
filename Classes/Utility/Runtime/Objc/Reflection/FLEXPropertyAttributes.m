@@ -7,10 +7,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXPropertyAttributes.h"
-#import "FLEXRuntimeUtility.h"
-#import "NSString+ObjcRuntime.h"
-#import "NSDictionary+ObjcRuntime.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXPropertyAttributes.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Categories/Private/NSString+ObjcRuntime.h"
+#import "Classes/Utility/Categories/Private/NSDictionary+ObjcRuntime.h"
 
 
 #pragma mark FLEXPropertyAttributes

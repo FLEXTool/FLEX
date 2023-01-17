@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Firestore.h"
+#import "Classes/Network/Firestore.h"
 
 typedef NS_ENUM(NSInteger, FLEXNetworkTransactionState) {
     FLEXNetworkTransactionStateUnstarted = -1,

@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "CALayer+FLEX.h"
+#import "Classes/Utility/Categories/CALayer+FLEX.h"
 
 @interface CALayer (Private)
 @property (nonatomic) BOOL continuousCorners;

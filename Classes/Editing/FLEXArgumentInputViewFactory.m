@@ -6,18 +6,18 @@
 //
 //
 
-#import "FLEXArgumentInputViewFactory.h"
-#import "FLEXArgumentInputView.h"
-#import "FLEXArgumentInputObjectView.h"
-#import "FLEXArgumentInputNumberView.h"
-#import "FLEXArgumentInputSwitchView.h"
-#import "FLEXArgumentInputStructView.h"
-#import "FLEXArgumentInputNotSupportedView.h"
-#import "FLEXArgumentInputStringView.h"
-#import "FLEXArgumentInputFontView.h"
-#import "FLEXArgumentInputColorView.h"
-#import "FLEXArgumentInputDateView.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Editing/FLEXArgumentInputViewFactory.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputObjectView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputNumberView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputSwitchView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputStructView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputNotSupportedView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputStringView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputFontView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputColorView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputDateView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @implementation FLEXArgumentInputViewFactory
 

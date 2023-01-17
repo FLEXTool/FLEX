@@ -6,12 +6,12 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXLiveObjectsController.h"
-#import "FLEXHeapEnumerator.h"
-#import "FLEXObjectListViewController.h"
-#import "FLEXUtility.h"
-#import "FLEXScopeCarousel.h"
-#import "FLEXTableView.h"
+#import "Classes/GlobalStateExplorers/FLEXLiveObjectsController.h"
+#import "Classes/Utility/FLEXHeapEnumerator.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectListViewController.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Core/Views/Carousel/FLEXScopeCarousel.h"
+#import "Classes/Headers/FLEXTableView.h"
 #import <objc/runtime.h>
 
 static const NSInteger kFLEXLiveObjectsSortAlphabeticallyIndex = 0;

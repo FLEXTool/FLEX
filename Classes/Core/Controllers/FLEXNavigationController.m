@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXNavigationController.h"
-#import "FLEXExplorerViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXTabList.h"
+#import "Classes/Headers/FLEXNavigationController.h"
+#import "Classes/ExplorerInterface/FLEXExplorerViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabList.h"
 
 @interface UINavigationController (Private) <UIGestureRecognizerDelegate>
 - (void)_gestureRecognizedInteractiveHide:(UIGestureRecognizer *)sender;

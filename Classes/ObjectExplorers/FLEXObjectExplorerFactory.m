@@ -6,22 +6,22 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXGlobalsViewController.h"
-#import "FLEXClassShortcuts.h"
-#import "FLEXViewShortcuts.h"
-#import "FLEXWindowShortcuts.h"
-#import "FLEXViewControllerShortcuts.h"
-#import "FLEXUIAppShortcuts.h"
-#import "FLEXImageShortcuts.h"
-#import "FLEXLayerShortcuts.h"
-#import "FLEXColorPreviewSection.h"
-#import "FLEXDefaultsContentSection.h"
-#import "FLEXBundleShortcuts.h"
-#import "FLEXNSStringShortcuts.h"
-#import "FLEXNSDataShortcuts.h"
-#import "FLEXBlockShortcuts.h"
-#import "FLEXUtility.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsViewController.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXClassShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXViewShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXWindowShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXViewControllerShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXUIAppShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXImageShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXLayerShortcuts.h"
+#import "Classes/Headers/FLEXColorPreviewSection.h"
+#import "Classes/Headers/FLEXDefaultsContentSection.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXBundleShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXNSStringShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXNSDataShortcuts.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXBlockShortcuts.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @implementation FLEXObjectExplorerFactory
 static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = nil;

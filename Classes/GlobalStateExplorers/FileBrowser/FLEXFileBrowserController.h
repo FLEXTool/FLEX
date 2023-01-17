@@ -6,9 +6,9 @@
 //  Based on previous work by Evan Doll
 //
 
-#import "FLEXTableViewController.h"
-#import "FLEXGlobalsEntry.h"
-#import "FLEXFileBrowserSearchOperation.h"
+#import "Classes/Headers/FLEXTableViewController.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserSearchOperation.h"
 
 @interface FLEXFileBrowserController : FLEXTableViewController <FLEXGlobalsEntry>
 

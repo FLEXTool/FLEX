@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "UIView+FLEX_Layout.h"
+#import "Classes/Utility/Categories/Private/UIView+FLEX_Layout.h"
 
 @implementation UIView (FLEX_Layout)
 

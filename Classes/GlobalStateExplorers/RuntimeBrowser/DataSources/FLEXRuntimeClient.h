@@ -6,7 +6,7 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXSearchToken.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXSearchToken.h"
 @class FLEXMethod;
 
 /// Accepts runtime queries given a token.

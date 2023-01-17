@@ -6,13 +6,13 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXHierarchyViewController.h"
-#import "FLEXHierarchyTableViewController.h"
-#import "FHSViewController.h"
-#import "FLEXUtility.h"
-#import "FLEXTabList.h"
-#import "FLEXResources.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/ViewHierarchy/FLEXHierarchyViewController.h"
+#import "Classes/ViewHierarchy/TreeExplorer/FLEXHierarchyTableViewController.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSViewController.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/ExplorerInterface/Tabs/FLEXTabList.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 
 typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
     FLEXHierarchyViewModeTree = 1,

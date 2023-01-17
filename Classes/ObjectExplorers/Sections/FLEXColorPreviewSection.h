@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXSingleRowSection.h"
-#import "FLEXObjectInfoSection.h"
+#import "Classes/Headers/FLEXSingleRowSection.h"
+#import "Classes/Headers/FLEXObjectInfoSection.h"
 
 @interface FLEXColorPreviewSection : FLEXSingleRowSection <FLEXObjectInfoSection>
 

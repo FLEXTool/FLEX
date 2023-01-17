@@ -7,7 +7,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXRuntimeConstants.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeConstants.h"
 @class FLEXProperty, FLEXMethodDescription;
 
 NS_ASSUME_NONNULL_BEGIN

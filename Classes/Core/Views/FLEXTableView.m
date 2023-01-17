@@ -6,12 +6,12 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableView.h"
-#import "FLEXUtility.h"
-#import "FLEXSubtitleTableViewCell.h"
-#import "FLEXMultilineTableViewCell.h"
-#import "FLEXKeyValueTableViewCell.h"
-#import "FLEXCodeFontCell.h"
+#import "Classes/Headers/FLEXTableView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Headers/FLEXSubtitleTableViewCell.h"
+#import "Classes/Headers/FLEXMultilineTableViewCell.h"
+#import "Classes/Headers/FLEXKeyValueTableViewCell.h"
+#import "Classes/Headers/FLEXCodeFontCell.h"
 
 FLEXTableViewCellReuseIdentifier const kFLEXDefaultCell = @"kFLEXDefaultCell";
 FLEXTableViewCellReuseIdentifier const kFLEXDetailCell = @"kFLEXDetailCell";

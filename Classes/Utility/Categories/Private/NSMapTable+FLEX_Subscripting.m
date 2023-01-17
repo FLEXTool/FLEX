@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "NSMapTable+FLEX_Subscripting.h"
+#import "Classes/Utility/Categories/Private/NSMapTable+FLEX_Subscripting.h"
 
 @implementation NSMapTable (FLEX_Subscripting)
 

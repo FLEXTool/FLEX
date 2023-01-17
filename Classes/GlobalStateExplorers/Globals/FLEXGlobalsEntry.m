@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXGlobalsEntry.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
 
 @implementation FLEXGlobalsEntry
 

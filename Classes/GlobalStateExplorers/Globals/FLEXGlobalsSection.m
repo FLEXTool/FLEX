@@ -6,9 +6,9 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXGlobalsSection.h"
-#import "NSArray+FLEX.h"
-#import "UIFont+FLEX.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsSection.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
 
 @interface FLEXGlobalsSection ()
 /// Filtered rows

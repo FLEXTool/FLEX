@@ -7,8 +7,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "NSDictionary+ObjcRuntime.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Utility/Categories/Private/NSDictionary+ObjcRuntime.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @implementation NSDictionary (ObjcRuntime)
 

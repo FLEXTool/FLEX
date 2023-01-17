@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXTableView.h"
+#import "Classes/Headers/FLEXTableView.h"
 @class FLEXScopeCarousel, FLEXWindow, FLEXTableViewSection;
 
 typedef CGFloat FLEXDebounceInterval;

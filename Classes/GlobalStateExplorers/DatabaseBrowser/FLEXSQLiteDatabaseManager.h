@@ -12,8 +12,8 @@
 //  which Flying Meat Inc. licenses this file to you.
 
 #import <Foundation/Foundation.h>
-#import "FLEXDatabaseManager.h"
-#import "FLEXSQLResult.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXDatabaseManager.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLResult.h"
 
 @interface FLEXSQLiteDatabaseManager : NSObject <FLEXDatabaseManager>
 

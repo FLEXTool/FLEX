@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputStringView.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputStringView.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @implementation FLEXArgumentInputStringView
 

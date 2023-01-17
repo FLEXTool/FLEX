@@ -6,11 +6,11 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXScopeCarousel.h"
-#import "FLEXCarouselCell.h"
-#import "FLEXColor.h"
-#import "FLEXMacros.h"
-#import "UIView+FLEX_Layout.h"
+#import "Classes/Core/Views/Carousel/FLEXScopeCarousel.h"
+#import "Classes/Core/Views/Carousel/FLEXCarouselCell.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXMacros.h"
+#import "Classes/Utility/Categories/Private/UIView+FLEX_Layout.h"
 
 const CGFloat kCarouselItemSpacing = 0;
 NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";

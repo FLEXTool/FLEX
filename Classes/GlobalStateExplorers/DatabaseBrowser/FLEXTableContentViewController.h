@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXDatabaseManager.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXDatabaseManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

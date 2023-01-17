@@ -6,9 +6,9 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputColorView.h"
-#import "FLEXUtility.h"
-#import "FLEXRuntimeUtility.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputColorView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
 
 @protocol FLEXColorComponentInputViewDelegate;
 

@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXCollectionContentSection.h"
-#import "FLEXObjectInfoSection.h"
+#import "Classes/Headers/FLEXCollectionContentSection.h"
+#import "Classes/Headers/FLEXObjectInfoSection.h"
 
 @interface FLEXDefaultsContentSection : FLEXCollectionContentSection <FLEXObjectInfoSection>
 

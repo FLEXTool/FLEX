@@ -5,9 +5,9 @@
 //  Created by Tanner on 3/29/21.
 //
 
-#import "FLEXNSStringShortcuts.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXShortcut.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXNSStringShortcuts.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXShortcut.h"
 
 @implementation FLEXNSStringShortcuts
 

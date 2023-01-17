@@ -6,15 +6,15 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FHSViewController.h"
-#import "FHSSnapshotView.h"
-#import "FLEXHierarchyViewController.h"
-#import "FLEXColor.h"
-#import "FLEXAlert.h"
-#import "FLEXWindow.h"
-#import "FLEXResources.h"
-#import "NSArray+FLEX.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSViewController.h"
+#import "Classes/ViewHierarchy/SnapshotExplorer/FHSSnapshotView.h"
+#import "Classes/ViewHierarchy/FLEXHierarchyViewController.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXAlert.h"
+#import "Classes/ExplorerInterface/FLEXWindow.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 
 BOOL const kFHSViewControllerExcludeFLEXWindows = YES;
 

@@ -6,10 +6,10 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXFieldEditorView.h"
-#import "FLEXArgumentInputView.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
+#import "Classes/Editing/FLEXFieldEditorView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputView.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
 
 @interface FLEXFieldEditorView ()
 

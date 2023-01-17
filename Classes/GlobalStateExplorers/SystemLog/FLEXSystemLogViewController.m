@@ -6,17 +6,17 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXSystemLogViewController.h"
-#import "FLEXASLLogController.h"
-#import "FLEXOSLogController.h"
-#import "FLEXSystemLogCell.h"
-#import "FLEXMutableListSection.h"
-#import "FLEXUtility.h"
-#import "FLEXColor.h"
-#import "FLEXResources.h"
-#import "UIBarButtonItem+FLEX.h"
-#import "NSUserDefaults+FLEX.h"
-#import "flex_fishhook.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXSystemLogViewController.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXASLLogController.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXOSLogController.h"
+#import "Classes/GlobalStateExplorers/SystemLog/FLEXSystemLogCell.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
+#import "Classes/Utility/Categories/NSUserDefaults+FLEX.h"
+#import "Classes/Utility/Runtime/flex_fishhook.h"
 #import <dlfcn.h>
 
 @interface FLEXSystemLogViewController ()

@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXBlockShortcuts.h"
-#import "FLEXShortcut.h"
-#import "FLEXBlockDescription.h"
-#import "FLEXObjectExplorerFactory.h"
+#import "Classes/ObjectExplorers/Sections/Shortcuts/FLEXBlockShortcuts.h"
+#import "Classes/Headers/FLEXShortcut.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXBlockDescription.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
 
 #pragma mark - 
 @implementation FLEXBlockShortcuts

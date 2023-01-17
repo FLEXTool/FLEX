@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FLEXRuntimeUtility.h"
-#import "FLEXObjcInternal.h"
-#import "FLEXObjectRef.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXTypeEncodingParser.h"
-#import "FLEXMethod.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/Runtime/Objc/FLEXObjcInternal.h"
+#import "Classes/GlobalStateExplorers/FLEXObjectRef.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Utility/Runtime/Objc/FLEXTypeEncodingParser.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
 
 NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain";
 

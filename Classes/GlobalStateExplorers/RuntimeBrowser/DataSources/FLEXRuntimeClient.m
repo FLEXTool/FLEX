@@ -6,11 +6,11 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXRuntimeClient.h"
-#import "NSObject+FLEX_Reflection.h"
-#import "FLEXMethod.h"
-#import "NSArray+FLEX.h"
-#import "FLEXRuntimeSafety.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/DataSources/FLEXRuntimeClient.h"
+#import "Classes/Utility/Categories/NSObject+FLEX_Reflection.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethod.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeSafety.h"
 #include <dlfcn.h>
 
 #define Equals(a, b)    ([a compare:b options:NSCaseInsensitiveSearch] == NSOrderedSame)

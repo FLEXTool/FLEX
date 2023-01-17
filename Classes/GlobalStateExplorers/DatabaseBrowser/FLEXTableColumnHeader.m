@@ -6,10 +6,10 @@
 //  Copyright © 2015年 f. All rights reserved.
 //
 
-#import "FLEXTableColumnHeader.h"
-#import "FLEXColor.h"
-#import "UIFont+FLEX.h"
-#import "FLEXUtility.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableColumnHeader.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/Utility/Categories/UIFont+FLEX.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 static const CGFloat kMargin = 5;
 static const CGFloat kArrowWidth = 20;

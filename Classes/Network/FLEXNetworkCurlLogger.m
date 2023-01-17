@@ -5,7 +5,7 @@
 // Created by Ji Pei on 07/27/16
 //
 
-#import "FLEXNetworkCurlLogger.h"
+#import "Classes/Network/FLEXNetworkCurlLogger.h"
 
 @implementation FLEXNetworkCurlLogger
 

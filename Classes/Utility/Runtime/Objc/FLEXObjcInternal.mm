@@ -28,7 +28,7 @@
  * @APPLE_LICENSE_HEADER_END@
  */
 
-#import "FLEXObjcInternal.h"
+#import "Classes/Utility/Runtime/Objc/FLEXObjcInternal.h"
 #import <objc/runtime.h>
 // For malloc_size
 #import <malloc/malloc.h>

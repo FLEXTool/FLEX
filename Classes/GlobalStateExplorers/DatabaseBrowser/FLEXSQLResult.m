@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXSQLResult.h"
-#import "NSArray+FLEX.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLResult.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
 
 @implementation FLEXSQLResult
 @synthesize keyedRows = _keyedRows;

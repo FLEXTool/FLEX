@@ -6,7 +6,7 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXArgumentInputSwitchView.h"
+#import "Classes/Editing/ArgumentInputViews/FLEXArgumentInputSwitchView.h"
 
 @interface FLEXArgumentInputSwitchView ()
 

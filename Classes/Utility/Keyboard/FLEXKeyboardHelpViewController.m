@@ -6,8 +6,8 @@
 //  Copyright © 2015 f. All rights reserved.
 //
 
-#import "FLEXKeyboardHelpViewController.h"
-#import "FLEXKeyboardShortcutManager.h"
+#import "Classes/Utility/Keyboard/FLEXKeyboardHelpViewController.h"
+#import "Classes/Utility/Keyboard/FLEXKeyboardShortcutManager.h"
 
 @interface FLEXKeyboardHelpViewController ()
 

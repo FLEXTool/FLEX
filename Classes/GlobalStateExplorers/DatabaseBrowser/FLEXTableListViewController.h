@@ -6,7 +6,7 @@
 //  Copyright © 2015年 Peng Tao. All rights reserved.
 //
 
-#import "FLEXFilteringTableViewController.h"
+#import "Classes/Headers/FLEXFilteringTableViewController.h"
 
 @interface FLEXTableListViewController : FLEXFilteringTableViewController
 

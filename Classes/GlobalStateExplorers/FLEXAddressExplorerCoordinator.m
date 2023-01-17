@@ -6,12 +6,12 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXAddressExplorerCoordinator.h"
-#import "FLEXGlobalsViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "FLEXRuntimeUtility.h"
-#import "FLEXUtility.h"
+#import "Classes/GlobalStateExplorers/FLEXAddressExplorerCoordinator.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
+#import "Classes/Utility/Runtime/FLEXRuntimeUtility.h"
+#import "Classes/Utility/FLEXUtility.h"
 
 @interface UITableViewController (FLEXAddressExploration)
 - (void)deselectSelectedRow;

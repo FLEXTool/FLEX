@@ -6,8 +6,8 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXWindow.h"
-#import "FLEXUtility.h"
+#import "Classes/ExplorerInterface/FLEXWindow.h"
+#import "Classes/Utility/FLEXUtility.h"
 #import <objc/runtime.h>
 
 @implementation FLEXWindow

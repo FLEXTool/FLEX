@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXShortcutsSection.h"
+#import "Classes/Headers/FLEXShortcutsSection.h"
 
 @interface FLEXLayerShortcuts : FLEXShortcutsSection
 

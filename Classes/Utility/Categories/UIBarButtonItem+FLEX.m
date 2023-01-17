@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "UIBarButtonItem+FLEX.h"
+#import "Classes/Utility/Categories/UIBarButtonItem+FLEX.h"
 
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 

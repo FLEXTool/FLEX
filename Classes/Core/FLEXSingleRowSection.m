@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXSingleRowSection.h"
-#import "FLEXTableView.h"
+#import "Classes/Headers/FLEXSingleRowSection.h"
+#import "Classes/Headers/FLEXTableView.h"
 
 @interface FLEXSingleRowSection ()
 @property (nonatomic, readonly) NSString *reuseIdentifier;

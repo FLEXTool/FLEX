@@ -6,10 +6,10 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXFilteringTableViewController.h"
-#import "FLEXTableViewSection.h"
-#import "NSArray+FLEX.h"
-#import "FLEXMacros.h"
+#import "Classes/Headers/FLEXFilteringTableViewController.h"
+#import "Classes/Headers/FLEXTableViewSection.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
+#import "Classes/Utility/FLEXMacros.h"
 
 @interface FLEXFilteringTableViewController ()
 

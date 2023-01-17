@@ -6,9 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FLEXMethodBase.h"
-#import "FLEXProperty.h"
-#import "FLEXIvar.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXMethodBase.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXProperty.h"
+#import "Classes/Utility/Runtime/Objc/Reflection/FLEXIvar.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 f. All rights reserved.
 //
 
-#import "FLEXFileBrowserSearchOperation.h"
+#import "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserSearchOperation.h"
 
 @implementation NSMutableArray (FLEXStack)
 

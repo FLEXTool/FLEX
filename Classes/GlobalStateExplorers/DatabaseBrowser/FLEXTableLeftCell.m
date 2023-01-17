@@ -6,7 +6,7 @@
 //  Copyright © 2015年 f. All rights reserved.
 //
 
-#import "FLEXTableLeftCell.h"
+#import "Classes/GlobalStateExplorers/DatabaseBrowser/FLEXTableLeftCell.h"
 
 @implementation FLEXTableLeftCell
 

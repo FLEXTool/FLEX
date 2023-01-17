@@ -6,8 +6,8 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXMutableListSection.h"
-#import "FLEXMacros.h"
+#import "Classes/Headers/FLEXMutableListSection.h"
+#import "Classes/Utility/FLEXMacros.h"
 
 @interface FLEXMutableListSection ()
 @property (nonatomic, readonly) FLEXMutableListCellForElement configureCell;

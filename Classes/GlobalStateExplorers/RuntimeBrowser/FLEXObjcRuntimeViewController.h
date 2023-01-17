@@ -6,8 +6,8 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXTableViewController.h"
-#import "FLEXGlobalsEntry.h"
+#import "Classes/Headers/FLEXTableViewController.h"
+#import "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
 
 @interface FLEXObjcRuntimeViewController : FLEXTableViewController <FLEXGlobalsEntry>
 

@@ -6,15 +6,15 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXHierarchyTableViewController.h"
-#import "NSMapTable+FLEX_Subscripting.h"
-#import "FLEXUtility.h"
-#import "FLEXHierarchyTableViewCell.h"
-#import "FLEXObjectExplorerViewController.h"
-#import "FLEXObjectExplorerFactory.h"
-#import "FLEXResources.h"
-#import "FLEXWindow.h"
+#import "Classes/Utility/FLEXColor.h"
+#import "Classes/ViewHierarchy/TreeExplorer/FLEXHierarchyTableViewController.h"
+#import "Classes/Utility/Categories/Private/NSMapTable+FLEX_Subscripting.h"
+#import "Classes/Utility/FLEXUtility.h"
+#import "Classes/ViewHierarchy/TreeExplorer/FLEXHierarchyTableViewCell.h"
+#import "Classes/Headers/FLEXObjectExplorerViewController.h"
+#import "Classes/Headers/FLEXObjectExplorerFactory.h"
+#import "Classes/Utility/FLEXResources.h"
+#import "Classes/ExplorerInterface/FLEXWindow.h"
 
 typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     FLEXHierarchyScopeFullHierarchy,

@@ -6,8 +6,8 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXKeyboardToolbar.h"
-#import "FLEXRuntimeKeyPath.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXKeyboardToolbar.h"
+#import "Classes/GlobalStateExplorers/RuntimeBrowser/FLEXRuntimeKeyPath.h"
 
 @interface FLEXRuntimeBrowserToolbar : FLEXKeyboardToolbar
 

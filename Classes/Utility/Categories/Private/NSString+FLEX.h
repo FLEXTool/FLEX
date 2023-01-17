@@ -6,7 +6,7 @@
 //  Copyright © 2017 Tanner Bennett. All rights reserved.
 //
 
-#import "FLEXRuntimeConstants.h"
+#import "Classes/Utility/Runtime/Objc/FLEXRuntimeConstants.h"
 
 @interface NSString (FLEXTypeEncoding)
 

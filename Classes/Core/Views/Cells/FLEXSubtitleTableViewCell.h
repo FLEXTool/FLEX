@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXTableViewCell.h"
+#import "Classes/Headers/FLEXTableViewCell.h"
 
 /// A cell initialized with \c UITableViewCellStyleSubtitle
 @interface FLEXSubtitleTableViewCell : FLEXTableViewCell

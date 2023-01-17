@@ -6,7 +6,7 @@
 //  Copyright © 2020 FLEX Team. All rights reserved.
 //
 
-#import "NSArray+FLEX.h"
+#import "Classes/Utility/Categories/NSArray+FLEX.h"
 
 #define FLEXArrayClassIsMutable(me) ([[self class] isSubclassOfClass:[NSMutableArray class]])
 
