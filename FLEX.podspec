@@ -42,12 +42,12 @@ Pod::Spec.new do |spec|
   spec.compiler_flags   = "-Wno-unsupported-availability-guard", "-Wno-deprecated-declarations"
   spec.public_header_files = [ "Classes/*.h", "Classes/Manager/*.h", "Classes/Toolbar/*.h",
                                "Classes/Core/Controllers/*.h", "Classes/Core/Views/*.h",
-                               "Classes/Core/Views/Cells/*.h", "Classes/Core/*.h", 
+                               "Classes/Core/Views/Cells/*.h", "Classes/Core/*.h",
                                "Classes/Utility/Categories/*.h",
                                "Classes/Utility/Runtime/Objc/**/*.h",
                                "Classes/ObjectExplorers/*.h",
                                "Classes/ObjectExplorers/Sections/*.h",
-                               
+
                                "Classes/Utility/FLEXMacros.h",
                                "Classes/Utility/FLEXAlert.h",
                                "Classes/Utility/FLEXResources.h",
