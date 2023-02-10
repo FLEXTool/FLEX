@@ -8,6 +8,7 @@
 
 #import "FLEXManager.h"
 #import "FLEXGlobalsEntry.h"
+#import "FLEXUserGlobalEntriesContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -45,9 +46,20 @@ NS_ASSUME_NONNULL_BEGIN
 /// with the host table view view controller. Use it to deselect the row or present an alert.
 /// @note This method must be called from the main thread.
 /// The rowSelectedAction will be invoked from the main thread.
-/// @note The passed block will be copied and retain for the duration of the application,
+/// @note The passed block will be copied and retained for the duration of the application,
 /// you may want to use __weak references as needed.
 - (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction;
+
+/// Adds an entry at the top of the list of Global State items.
+/// @param entryName The string to be displayed in the cell.
+/// @param nestedEntriesHandler When you tap on the row, this block will be invoked
+/// with the container object. Use it to register nested entries.
+/// @note This method must be called from the main thread.
+/// The nestedEntriesHandler will be invoked from the main thread.
+/// @note The passed block will be copied and retained for the duration of the application,
+/// you may want to use __weak references as needed.
+- (void)registerGlobalEntryWithName:(NSString *)entryName
+               nestedEntriesHandler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler;
 
 /// Removes all registered global entries.
 - (void)clearGlobalEntries;

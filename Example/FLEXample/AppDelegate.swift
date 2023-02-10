@@ -28,13 +28,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // To show off the global entries, register one of each type
 
-        FLEXManager.shared.registerGlobalEntry(withName: "Object") {
-            return "Object"
+        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - Object") {
+            return "Level 1 - Object"
         }
 
-        FLEXManager.shared.registerGlobalEntry(withName: "View controller") {
+        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - View controller") {
             let label = UILabel()
-            label.text = "View controller"
+            label.text = "Level 1 - View controller"
             label.translatesAutoresizingMaskIntoConstraints = false
 
             let controller = UIViewController()
@@ -48,8 +48,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return controller
         }
 
-        FLEXManager.shared.registerGlobalEntry(withName: "Action") { host in
-            FLEXAlert.showQuickAlert("Action", from: host)
+        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - Action") { host in
+            FLEXAlert.showQuickAlert("Level 1 - Action", from: host)
+        }
+
+        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - Nested") { container in
+            container.registerGlobalEntry(withName: "Level 2 - Object") {
+                return "Level 2 - Object"
+            }
+
+            container.registerGlobalEntry(withName: "Level 2 - View controller") {
+                let label = UILabel()
+                label.text = "Level 2 - View controller"
+                label.translatesAutoresizingMaskIntoConstraints = false
+
+                let controller = UIViewController()
+                controller.view.backgroundColor = .darkGray
+                controller.view.addSubview(label)
+                NSLayoutConstraint.activate([
+                    label.centerXAnchor.constraint(equalTo: controller.view.centerXAnchor),
+                    label.centerYAnchor.constraint(equalTo: controller.view.centerYAnchor)
+                ])
+
+                return controller
+            }
+
+            container.registerGlobalEntry(withName: "Level 2 - Action") { host in
+                FLEXAlert.showQuickAlert("Level 2 - Action", from: host)
+            }
+
+            container.registerGlobalEntry(withName: "Level 2 - Nested") { level2Container in
+                level2Container.registerGlobalEntry(withName: "Level 3 - Action") { host in
+                    FLEXAlert.showQuickAlert("Level 3 - Action", from: host)
+                }
+            }
         }
 
         // Add at least one custom user defaults key to explore

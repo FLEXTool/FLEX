@@ -10,6 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class FLEXUserGlobalEntriesContainer;
+
 typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowProcessInfo,
     FLEXGlobalsRowNetworkHistory,
@@ -51,8 +53,10 @@ typedef UIViewController * _Nullable (^FLEXGlobalsEntryViewControllerFuture)(voi
 /// Do something like present an alert, then use the host
 /// view controller to present or push another view controller.
 typedef void (^FLEXGlobalsEntryRowAction)(__kindof UITableViewController * _Nonnull host);
+/// Use the container to register nested global entries.
+typedef void (^FLEXNestedGlobalEntriesHandler)(FLEXUserGlobalEntriesContainer * _Nonnull container);
 
-/// For view controllers to conform to to indicate they support being used
+/// For view controllers to conform and to indicate they support being used
 /// in the globals table view controller. These methods help create concrete entries.
 ///
 /// Previously, the concrete entries relied on "futures" for the view controller and title.

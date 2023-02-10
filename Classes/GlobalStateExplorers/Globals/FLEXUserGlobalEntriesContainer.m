@@ -9,6 +9,7 @@
 #import "FLEXUserGlobalEntriesContainer.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXUserGlobalEntriesContainer+Private.h"
+#import "FLEXGlobalsViewController.h"
 
 @interface FLEXUserGlobalEntriesContainer ()
 
@@ -67,6 +68,29 @@
     FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString * _Nonnull{
         return entryName;
     } action:rowSelectedAction];
+
+    [self.entries addObject:entry];
+}
+
+- (void)registerGlobalEntryWithName:(NSString *)entryName nestedEntriesHandler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler {
+    NSParameterAssert(entryName);
+    NSParameterAssert(nestedEntriesHandler);
+    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
+
+    entryName = entryName.copy;
+    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString * _Nonnull{
+        return entryName;
+    } viewControllerFuture:^UIViewController * _Nullable{
+        FLEXUserGlobalEntriesContainer *container = [FLEXUserGlobalEntriesContainer new];
+        nestedEntriesHandler(container);
+
+        FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
+        controller.customTitle = entryName;
+        controller.customEntries = container.entries;
+        controller.showsDefaultEntries = NO;
+
+        return controller;
+    }];
 
     [self.entries addObject:entry];
 }

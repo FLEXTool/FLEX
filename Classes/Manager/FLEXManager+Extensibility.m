@@ -38,6 +38,10 @@
     [self.mainUserGlobalEntriesContainer registerGlobalEntryWithName:entryName action:rowSelectedAction];
 }
 
+- (void)registerGlobalEntryWithName:(NSString *)entryName nestedEntriesHandler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler {
+    [self.mainUserGlobalEntriesContainer registerGlobalEntryWithName:entryName nestedEntriesHandler:nestedEntriesHandler];
+}
+
 - (void)clearGlobalEntries {
     [self.mainUserGlobalEntriesContainer clearGlobalEntries];
 }
