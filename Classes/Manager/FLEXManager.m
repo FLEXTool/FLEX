@@ -13,6 +13,7 @@
 #import "FLEXNavigationController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXFileBrowserController.h"
+#import "FLEXUserGlobalEntriesContainer.h"
 
 @interface FLEXManager () <FLEXWindowEventDelegate, FLEXExplorerViewControllerDelegate>
 
@@ -21,7 +22,7 @@
 @property (nonatomic) FLEXWindow *explorerWindow;
 @property (nonatomic) FLEXExplorerViewController *explorerViewController;
 
-@property (nonatomic, readonly) NSMutableArray<FLEXGlobalsEntry *> *userGlobalEntries;
+@property (nonatomic, readonly) FLEXUserGlobalEntriesContainer *mainUserGlobalEntriesContainer;
 @property (nonatomic, readonly) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
 
 @end
@@ -40,7 +41,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _userGlobalEntries = [NSMutableArray new];
+        _mainUserGlobalEntriesContainer = [FLEXUserGlobalEntriesContainer new];
         _customContentTypeViewers = [NSMutableDictionary new];
     }
     return self;

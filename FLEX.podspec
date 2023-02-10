@@ -54,6 +54,7 @@ Pod::Spec.new do |spec|
                                "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcut.h",
                                "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcutsSection.h",
                                "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h",
-                               "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h"
+                               "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h",
+                               "Classes/GlobalStateExplorers/Globals/FLEXUserGlobalEntriesContainer.h"
                               ]
 end

@@ -19,6 +19,7 @@
 #import "FLEXCookiesViewController.h"
 #import "FLEXGlobalsEntry.h"
 #import "FLEXManager+Private.h"
+#import "FLEXUserGlobalEntriesContainer+Private.h"
 #import "FLEXSystemLogViewController.h"
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXAddressExplorerCoordinator.h"
@@ -188,11 +189,11 @@
 - (NSArray<FLEXGlobalsSection *> *)makeSections {
     NSMutableArray<FLEXGlobalsSection *> *sections = [NSMutableArray array];
     // Do we have custom sections to add?
-    if (FLEXManager.sharedManager.userGlobalEntries.count) {
+    if (FLEXManager.sharedManager.mainUserGlobalEntriesContainer.userGlobalEntries.count) {
         NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
         FLEXGlobalsSection *custom = [FLEXGlobalsSection
             title:title
-            rows:FLEXManager.sharedManager.userGlobalEntries
+            rows:FLEXManager.sharedManager.mainUserGlobalEntriesContainer.userGlobalEntries
         ];
         [sections addObject:custom];
     }
