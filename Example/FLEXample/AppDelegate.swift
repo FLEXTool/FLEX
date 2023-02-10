@@ -28,11 +28,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // To show off the global entries, register one of each type
 
-        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - Object") {
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Object") {
             return "Level 1 - Object"
         }
 
-        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - View controller") {
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - View controller") {
             let label = UILabel()
             label.text = "Level 1 - View controller"
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -48,11 +48,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return controller
         }
 
-        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - Action") { host in
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Action") { host in
             FLEXAlert.showQuickAlert("Level 1 - Action", from: host)
         }
 
-        FLEXManager.shared.registerGlobalEntry(withName: "Level 1 - Nested") { container in
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Nested") { container in
             container.registerGlobalEntry(withName: "Level 2 - Object") {
                 return "Level 2 - Object"
             }

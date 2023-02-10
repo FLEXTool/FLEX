@@ -16,9 +16,6 @@
 @property (nonatomic, readonly) FLEXWindow *explorerWindow;
 @property (nonatomic, readonly) FLEXExplorerViewController *explorerViewController;
 
-/// A FLEXUserGlobalEntriesContainer object that has FLEXGlobalsEntry
-/// registered by the user.
-@property (nonatomic, readonly) FLEXUserGlobalEntriesContainer *mainUserGlobalEntriesContainer;
 @property (nonatomic, readonly) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
 
 @end

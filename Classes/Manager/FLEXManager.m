@@ -22,7 +22,7 @@
 @property (nonatomic) FLEXWindow *explorerWindow;
 @property (nonatomic) FLEXExplorerViewController *explorerViewController;
 
-@property (nonatomic, readonly) FLEXUserGlobalEntriesContainer *mainUserGlobalEntriesContainer;
+@property (nonatomic, readonly) FLEXUserGlobalEntriesContainer *globalEntriesContainer;
 @property (nonatomic, readonly) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
 
 @end
@@ -41,7 +41,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _mainUserGlobalEntriesContainer = [FLEXUserGlobalEntriesContainer new];
+        _globalEntriesContainer = [FLEXUserGlobalEntriesContainer new];
         _customContentTypeViewers = [NSMutableDictionary new];
     }
     return self;

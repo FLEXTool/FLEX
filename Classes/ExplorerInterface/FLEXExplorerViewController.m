@@ -21,7 +21,7 @@
 #import "FLEXWindowManagerController.h"
 #import "FLEXViewControllersViewController.h"
 #import "NSUserDefaults+FLEX.h"
-#import "FLEXManager+Private.h"
+#import "FLEXManager+Extensibility.h"
 #import "FLEXUserGlobalEntriesContainer+Private.h"
 
 typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
@@ -1033,7 +1033,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)toggleMenuTool {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
         FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
-        controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+        controller.customEntries = FLEXManager.sharedManager.globalEntriesContainer.entries;
         controller.showsDefaultEntries = YES;
         return [FLEXNavigationController withRootViewController:controller];
     } completion:nil];

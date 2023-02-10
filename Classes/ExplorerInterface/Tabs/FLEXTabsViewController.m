@@ -17,7 +17,7 @@
 #import "FLEXExplorerViewController.h"
 #import "FLEXGlobalsViewController.h"
 #import "FLEXBookmarksViewController.h"
-#import "FLEXManager+Private.h"
+#import "FLEXManager+Extensibility.h"
 #import "FLEXUserGlobalEntriesContainer+Private.h"
 
 @interface FLEXTabsViewController ()
@@ -201,7 +201,7 @@
             make.title(@"New Tab");
             make.button(@"Main Menu").handler(^(NSArray<NSString *> *strings) {
                 FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
-                controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+                controller.customEntries = FLEXManager.sharedManager.globalEntriesContainer.entries;
                 controller.showsDefaultEntries = YES;
 
                 [self addTabAndDismiss:[FLEXNavigationController
@@ -217,7 +217,7 @@
         } showFrom:self source:sender];
     } else {
         FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
-        controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+        controller.customEntries = FLEXManager.sharedManager.globalEntriesContainer.entries;
         controller.showsDefaultEntries = YES;
 
         // No bookmarks, just open the main menu

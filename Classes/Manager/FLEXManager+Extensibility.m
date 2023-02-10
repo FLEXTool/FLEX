@@ -23,27 +23,28 @@
 @end
 
 @implementation FLEXManager (Extensibility)
+@dynamic globalEntriesContainer;
 
 #pragma mark - Globals Screen Entries
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock {
-    [self.mainUserGlobalEntriesContainer registerGlobalEntryWithName:entryName objectFutureBlock:objectFutureBlock];
+    [self.globalEntriesContainer registerGlobalEntryWithName:entryName objectFutureBlock:objectFutureBlock];
 }
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock {
-    [self.mainUserGlobalEntriesContainer registerGlobalEntryWithName:entryName viewControllerFutureBlock:viewControllerFutureBlock];
+    [self.globalEntriesContainer registerGlobalEntryWithName:entryName viewControllerFutureBlock:viewControllerFutureBlock];
 }
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction {
-    [self.mainUserGlobalEntriesContainer registerGlobalEntryWithName:entryName action:rowSelectedAction];
+    [self.globalEntriesContainer registerGlobalEntryWithName:entryName action:rowSelectedAction];
 }
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName nestedEntriesHandler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler {
-    [self.mainUserGlobalEntriesContainer registerGlobalEntryWithName:entryName nestedEntriesHandler:nestedEntriesHandler];
+    [self.globalEntriesContainer registerGlobalEntryWithName:entryName nestedEntriesHandler:nestedEntriesHandler];
 }
 
 - (void)clearGlobalEntries {
-    [self.mainUserGlobalEntriesContainer clearGlobalEntries];
+    [self.globalEntriesContainer clearGlobalEntries];
 }
 
 
