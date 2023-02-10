@@ -56,8 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// The nestedEntriesHandler will be invoked from the main thread.
 /// @note The passed block will be copied and retained for the duration of the application,
 /// you may want to use __weak references as needed.
-- (void)registerGlobalEntryWithName:(NSString *)entryName
-               nestedEntriesHandler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler;
+- (void)registerNestedGlobalEntryWithName:(NSString *)entryName handler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler;
 
 /// Removes all registered global entries.
 - (void)clearGlobalEntries;

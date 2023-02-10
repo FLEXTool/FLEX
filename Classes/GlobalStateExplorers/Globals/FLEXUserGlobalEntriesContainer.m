@@ -72,7 +72,7 @@
     [self.entries addObject:entry];
 }
 
-- (void)registerGlobalEntryWithName:(NSString *)entryName nestedEntriesHandler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler {
+- (void)registerNestedGlobalEntryWithName:(NSString *)entryName handler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler {
     NSParameterAssert(entryName);
     NSParameterAssert(nestedEntriesHandler);
     NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");

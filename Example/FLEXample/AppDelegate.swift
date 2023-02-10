@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             FLEXAlert.showQuickAlert("Level 1 - Action", from: host)
         }
 
-        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Nested") { container in
+        FLEXManager.shared.globalEntriesContainer.registerNestedGlobalEntry(withName: "Level 1 - Nested") { container in
             container.registerGlobalEntry(withName: "Level 2 - Object") {
                 return "Level 2 - Object"
             }
@@ -77,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 FLEXAlert.showQuickAlert("Level 2 - Action", from: host)
             }
 
-            container.registerGlobalEntry(withName: "Level 2 - Nested") { level2Container in
+            container.registerNestedGlobalEntry(withName: "Level 2 - Nested") { level2Container in
                 level2Container.registerGlobalEntry(withName: "Level 3 - Action") { host in
                     FLEXAlert.showQuickAlert("Level 3 - Action", from: host)
                 }
