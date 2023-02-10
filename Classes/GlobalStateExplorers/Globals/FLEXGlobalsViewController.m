@@ -168,7 +168,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = @"💪  FLEX";
+    self.title = self.customTitle ?: @"💪  FLEX";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.navigationItem.backBarButtonItem = [UIBarButtonItem flex_backItemWithTitle:@"Back"];

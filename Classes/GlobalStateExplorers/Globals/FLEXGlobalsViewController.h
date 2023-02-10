@@ -26,6 +26,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
 
 @interface FLEXGlobalsViewController : FLEXFilteringTableViewController
 
+@property (nonatomic, nullable) NSString *customTitle;
 @property (nonatomic, nonnull) NSArray<FLEXGlobalsEntry *> *customEntries;
 @property (nonatomic) BOOL showsDefaultEntries;
 
