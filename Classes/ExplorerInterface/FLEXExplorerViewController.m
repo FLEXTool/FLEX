@@ -1034,6 +1034,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
         FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
         controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+        controller.showsDefaultEntries = YES;
         return [FLEXNavigationController withRootViewController:controller];
     } completion:nil];
 }

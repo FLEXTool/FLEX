@@ -198,7 +198,9 @@
         [sections addObject:custom];
     }
 
-    [sections addObjectsFromArray:[self.class defaultGlobalSections]];
+    if (self.showsDefaultEntries) {
+        [sections addObjectsFromArray:[self.class defaultGlobalSections]];
+    }
 
     return sections;
 }

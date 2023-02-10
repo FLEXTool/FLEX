@@ -202,6 +202,7 @@
             make.button(@"Main Menu").handler(^(NSArray<NSString *> *strings) {
                 FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
                 controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+                controller.showsDefaultEntries = YES;
 
                 [self addTabAndDismiss:[FLEXNavigationController
                     withRootViewController:controller
@@ -217,6 +218,7 @@
     } else {
         FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
         controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+        controller.showsDefaultEntries = YES;
 
         // No bookmarks, just open the main menu
         [self addTabAndDismiss:[FLEXNavigationController
