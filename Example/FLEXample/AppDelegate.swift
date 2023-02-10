@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FLEXManager.shared.isNetworkDebuggingEnabled = true
         
-        // Add at least oen custom user defaults key to explore
+        // Add at least one custom user defaults key to explore
         UserDefaults.standard.set("foo", forKey: "FLEXamplePrefFoo")
         
         // To show off the system log viewer, send 10 example log messages at 3 second intervals
