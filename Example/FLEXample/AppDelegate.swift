@@ -25,7 +25,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FLEXManager.shared.isNetworkDebuggingEnabled = true
-        
+
+        // To show off the global entries, register one of each type
+
+        FLEXManager.shared.registerGlobalEntry(withName: "Object") {
+            return "Object"
+        }
+
+        FLEXManager.shared.registerGlobalEntry(withName: "View controller") {
+            let label = UILabel()
+            label.text = "View controller"
+            label.translatesAutoresizingMaskIntoConstraints = false
+
+            let controller = UIViewController()
+            controller.view.backgroundColor = .darkGray
+            controller.view.addSubview(label)
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: controller.view.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: controller.view.centerYAnchor)
+            ])
+
+            return controller
+        }
+
+        FLEXManager.shared.registerGlobalEntry(withName: "Action") { host in
+            FLEXAlert.showQuickAlert("Action", from: host)
+        }
+
         // Add at least one custom user defaults key to explore
         UserDefaults.standard.set("foo", forKey: "FLEXamplePrefFoo")
         
