@@ -7,6 +7,7 @@
 //
 
 #import "FLEXFilteringTableViewController.h"
+@class FLEXGlobalsEntry;
 @protocol FLEXGlobalsTableViewControllerDelegate;
 
 typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
@@ -24,5 +25,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsSectionKind) {
 };
 
 @interface FLEXGlobalsViewController : FLEXFilteringTableViewController
+
+@property (nonatomic, nonnull) NSArray<FLEXGlobalsEntry *> *customEntries;
 
 @end

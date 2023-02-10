@@ -17,6 +17,8 @@
 #import "FLEXExplorerViewController.h"
 #import "FLEXGlobalsViewController.h"
 #import "FLEXBookmarksViewController.h"
+#import "FLEXManager+Private.h"
+#import "FLEXUserGlobalEntriesContainer+Private.h"
 
 @interface FLEXTabsViewController ()
 @property (nonatomic, copy) NSArray<UINavigationController *> *openTabs;
@@ -198,8 +200,11 @@
         [FLEXAlert makeSheet:^(FLEXAlert *make) {
             make.title(@"New Tab");
             make.button(@"Main Menu").handler(^(NSArray<NSString *> *strings) {
+                FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
+                controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+
                 [self addTabAndDismiss:[FLEXNavigationController
-                    withRootViewController:[FLEXGlobalsViewController new]
+                    withRootViewController:controller
                 ]];
             });
             make.button(@"Choose from Bookmarks").handler(^(NSArray<NSString *> *strings) {
@@ -210,9 +215,12 @@
             make.button(@"Cancel").cancelStyle();
         } showFrom:self source:sender];
     } else {
+        FLEXGlobalsViewController *controller = [FLEXGlobalsViewController new];
+        controller.customEntries = FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries;
+
         // No bookmarks, just open the main menu
         [self addTabAndDismiss:[FLEXNavigationController
-            withRootViewController:[FLEXGlobalsViewController new]
+            withRootViewController:controller
         ]];
     }
 }
