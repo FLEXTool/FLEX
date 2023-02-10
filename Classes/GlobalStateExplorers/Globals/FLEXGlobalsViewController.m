@@ -189,11 +189,11 @@
 - (NSArray<FLEXGlobalsSection *> *)makeSections {
     NSMutableArray<FLEXGlobalsSection *> *sections = [NSMutableArray array];
     // Do we have custom sections to add?
-    if (FLEXManager.sharedManager.mainUserGlobalEntriesContainer.userGlobalEntries.count) {
+    if (FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries.count) {
         NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
         FLEXGlobalsSection *custom = [FLEXGlobalsSection
             title:title
-            rows:FLEXManager.sharedManager.mainUserGlobalEntriesContainer.userGlobalEntries
+            rows:FLEXManager.sharedManager.mainUserGlobalEntriesContainer.entries
         ];
         [sections addObject:custom];
     }

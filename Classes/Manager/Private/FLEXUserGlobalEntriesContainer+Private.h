@@ -13,6 +13,6 @@
 @interface FLEXUserGlobalEntriesContainer (Private)
 
 /// An array of FLEXGlobalsEntry objects that have been registered by the user.
-@property (nonatomic, readonly) NSMutableArray<FLEXGlobalsEntry *> *userGlobalEntries;
+@property (nonatomic, readonly) NSMutableArray<FLEXGlobalsEntry *> *entries;
 
 @end

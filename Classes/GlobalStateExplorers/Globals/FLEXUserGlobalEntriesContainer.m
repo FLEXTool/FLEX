@@ -12,7 +12,7 @@
 
 @interface FLEXUserGlobalEntriesContainer ()
 
-@property (nonatomic, readonly) NSMutableArray<FLEXGlobalsEntry *> *userGlobalEntries;
+@property (nonatomic, readonly) NSMutableArray<FLEXGlobalsEntry *> *entries;
 
 @end
 
@@ -21,7 +21,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _userGlobalEntries = [NSMutableArray new];
+        _entries = [NSMutableArray new];
     }
     return self;
 }
@@ -38,7 +38,7 @@
         return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
     }];
 
-    [self.userGlobalEntries addObject:entry];
+    [self.entries addObject:entry];
 }
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock {
@@ -55,7 +55,7 @@
         return viewController;
     }];
 
-    [self.userGlobalEntries addObject:entry];
+    [self.entries addObject:entry];
 }
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction {
@@ -68,11 +68,11 @@
         return entryName;
     } action:rowSelectedAction];
 
-    [self.userGlobalEntries addObject:entry];
+    [self.entries addObject:entry];
 }
 
 - (void)clearGlobalEntries {
-    [self.userGlobalEntries removeAllObjects];
+    [self.entries removeAllObjects];
 }
 
 @end
