@@ -285,7 +285,7 @@ static void _logos_method$_ungrouped$FIRDocumentReference$setData$merge$completi
     void (^orig)(NSError *) = completion;
     completion = ^(NSError *error) {
         [FLEXNetworkRecorder.defaultRecorder recordFIRDidSetData:error transactionID:requestID];
-        if (error != nil) {
+        if (orig != nil) {
             orig(error);
         }
     };
@@ -315,7 +315,7 @@ static void _logos_method$_ungrouped$FIRDocumentReference$setData$mergeFields$co
     void (^orig)(NSError *) = completion;
     completion = ^(NSError *error) {
         [FLEXNetworkRecorder.defaultRecorder recordFIRDidSetData:error transactionID:requestID];
-        if (error != nil) {
+        if (orig != nil) {
             orig(error);
         }
     };
@@ -337,7 +337,7 @@ static void _logos_method$_ungrouped$FIRDocumentReference$updateData$completion$
     void (^orig)(NSError *) = completion;
     completion = ^(NSError *error) {
         [FLEXNetworkRecorder.defaultRecorder recordFIRDidUpdateData:error transactionID:requestID];
-        if (error != nil) {
+        if (orig != nil) {
             orig(error);
         }
     };
@@ -359,7 +359,7 @@ static void _logos_method$_ungrouped$FIRDocumentReference$deleteDocumentWithComp
     void (^orig)(NSError *) = completion;
     completion = ^(NSError *error) {
         [FLEXNetworkRecorder.defaultRecorder recordFIRDidDeleteDocument:error transactionID:requestID];
-        if (error != nil) {
+        if (orig != nil) {
             orig(error);
         }
     };
@@ -379,7 +379,7 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
     void (^orig)(NSError *) = completion;
     completion = ^(NSError *error) {
         [FLEXNetworkRecorder.defaultRecorder recordFIRDidAddDocument:error transactionID:requestID];
-        if (error != nil) {
+        if (orig != nil) {
             orig(error);
         }
     };
