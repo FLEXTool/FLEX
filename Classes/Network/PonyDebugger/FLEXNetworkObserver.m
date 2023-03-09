@@ -668,9 +668,14 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         // parse the request, and cache them in advance. After that the HTTPParser
         // will be finalized. Make sure other threads inspecting the request
         // won't trigger a race to finalize the parser.
-        [slf.currentRequest HTTPBody];
 
-        [FLEXNetworkObserver.sharedObserver URLSessionTaskWillResume:slf];
+        // AVAggregateAssetDownloadTask currentRequest property is declared as NS_UNAVAILABLE
+        if (![slf isKindOfClass:[NSClassFromString(@"AVAggregateAssetDownloadTask") class]]) {
+            [slf.currentRequest HTTPBody];
+
+            [FLEXNetworkObserver.sharedObserver URLSessionTaskWillResume:slf];
+        }
+
         ((void(*)(id, SEL))objc_msgSend)(
             slf, swizzledSelector
         );
