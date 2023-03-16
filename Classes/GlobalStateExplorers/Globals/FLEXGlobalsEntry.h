@@ -85,15 +85,20 @@ typedef void (^FLEXNestedGlobalEntriesHandler)(FLEXUserGlobalEntriesContainer * 
 @interface FLEXGlobalsEntry : NSObject
 
 @property (nonatomic, readonly, nonnull)  FLEXGlobalsEntryNameFuture entryNameFuture;
+@property (nonatomic, readonly)           UITableViewCellAccessoryType cellAccessoryType;
 @property (nonatomic, readonly, nullable) FLEXGlobalsEntryViewControllerFuture viewControllerFuture;
 @property (nonatomic, readonly, nullable) FLEXGlobalsEntryRowAction rowAction;
 
-+ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)entry row:(FLEXGlobalsRow)row;
++ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)entry
+             cellAccessoryType:(UITableViewCellAccessoryType)cellAccessoryType
+                           row:(FLEXGlobalsRow)row;
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
+                  cellAccessoryType:(UITableViewCellAccessoryType)cellAccessoryType
                viewControllerFuture:(FLEXGlobalsEntryViewControllerFuture)viewControllerFuture;
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
+                  cellAccessoryType:(UITableViewCellAccessoryType)cellAccessoryType
                              action:(FLEXGlobalsEntryRowAction)rowSelectedAction;
 
 @end

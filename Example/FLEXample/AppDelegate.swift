@@ -28,11 +28,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // To show off the global entries, register one of each type
 
-        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Object") {
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Object", cellAccessoryType: .none) {
             return "Level 1 - Object"
         }
 
-        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - View controller") {
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - View controller", cellAccessoryType: .none) {
             let label = UILabel()
             label.text = "Level 1 - View controller"
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -48,16 +48,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return controller
         }
 
-        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Action") { host in
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Action", cellAccessoryType: .none) { host in
             FLEXAlert.showQuickAlert("Level 1 - Action", from: host)
         }
 
         FLEXManager.shared.globalEntriesContainer.registerNestedGlobalEntry(withName: "Level 1 - Nested") { container in
-            container.registerGlobalEntry(withName: "Level 2 - Object") {
+            container.registerGlobalEntry(withName: "Level 2 - Object", cellAccessoryType: .none) {
                 return "Level 2 - Object"
             }
 
-            container.registerGlobalEntry(withName: "Level 2 - View controller") {
+            container.registerGlobalEntry(withName: "Level 2 - View controller", cellAccessoryType: .none) {
                 let label = UILabel()
                 label.text = "Level 2 - View controller"
                 label.translatesAutoresizingMaskIntoConstraints = false
@@ -73,12 +73,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return controller
             }
 
-            container.registerGlobalEntry(withName: "Level 2 - Action") { host in
+            container.registerGlobalEntry(withName: "Level 2 - Action", cellAccessoryType: .none) { host in
                 FLEXAlert.showQuickAlert("Level 2 - Action", from: host)
             }
 
             container.registerNestedGlobalEntry(withName: "Level 2 - Nested") { level2Container in
-                level2Container.registerGlobalEntry(withName: "Level 3 - Action") { host in
+                level2Container.registerGlobalEntry(withName: "Level 3 - Action", cellAccessoryType: .none) { host in
                     FLEXAlert.showQuickAlert("Level 3 - Action", from: host)
                 }
             }

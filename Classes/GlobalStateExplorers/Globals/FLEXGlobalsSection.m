@@ -69,7 +69,7 @@
 }
 
 - (void)configureCell:(__kindof UITableViewCell *)cell forRow:(NSInteger)row {
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    cell.accessoryType = self.rows[row].cellAccessoryType;
     cell.textLabel.font = UIFont.flex_defaultTableCellFont;
     cell.textLabel.text = self.rows[row].entryNameFuture();
 }
