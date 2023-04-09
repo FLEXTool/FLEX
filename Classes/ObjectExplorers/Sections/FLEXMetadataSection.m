@@ -221,12 +221,12 @@
     ]];
     if (self.metadataKind == FLEXMetadataKindIvars) {
         [menuItems addObject:[UIAction
-            actionWithTitle:@"Explore Metadata"
+            actionWithTitle:@"Reflect Ivar"
             image:nil
             identifier:nil
             handler:^(__kindof UIAction *action) {
                 [sender.navigationController pushViewController:[FLEXObjectExplorerFactory
-                    explorerViewControllerForObject:[FLEXIvarReflection reflectionOn:self ivar:self.explorer.ivars[row].name]
+                    explorerViewControllerForObject:[FLEXIvarReflection reflectionOn:self.explorer.object ivar:self.explorer.ivars[row].name]
                 ] animated:YES];
             }
         ]];

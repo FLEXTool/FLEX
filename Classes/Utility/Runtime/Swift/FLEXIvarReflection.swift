@@ -12,7 +12,7 @@ import Foundation
     @objc public static func reflection(on obj: AnyObject, ivar: String) -> AnyObject? {
         let ObjMirror = Mirror(reflecting: obj)
         for child in ObjMirror.children {
-            if child.label == ivar {
+            if child.label! == ivar {
                 return child as AnyObject
             }
         }
