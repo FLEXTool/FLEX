@@ -15,6 +15,7 @@
 #import "FLEXIvar.h"
 #import "NSArray+FLEX.h"
 #import "FLEXRuntime+UIKitHelpers.h"
+#import <FLEX/FLEX-Swift.h>
 
 @interface FLEXMetadataSection ()
 @property (nonatomic, readonly) FLEXObjectExplorer *explorer;
@@ -218,6 +219,18 @@
             ] animated:YES];
         }
     ]];
+    if (self.metadataKind == FLEXMetadataKindIvars) {
+        [menuItems addObject:[UIAction
+            actionWithTitle:@"Explore Metadata"
+            image:nil
+            identifier:nil
+            handler:^(__kindof UIAction *action) {
+                [sender.navigationController pushViewController:[FLEXObjectExplorerFactory
+                    explorerViewControllerForObject:[FLEXIvarReflection reflectionOn:self ivar:self.explorer.ivars[row].name]
+                ] animated:YES];
+            }
+        ]];
+    }
     [menuItems addObjectsFromArray:[metadata
         additionalActionsWithTarget:self.explorer.object sender:sender
     ]];

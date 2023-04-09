@@ -375,6 +375,7 @@
 		C3F977862311B38F0032776D /* NSString+ObjcRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F977802311B38F0032776D /* NSString+ObjcRuntime.m */; };
 		C3F977872311B38F0032776D /* NSObject+FLEX_Reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F977812311B38F0032776D /* NSObject+FLEX_Reflection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3F977882311B38F0032776D /* NSObject+FLEX_Reflection.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F977822311B38F0032776D /* NSObject+FLEX_Reflection.m */; };
+		EE2A8C1229E37526007D18B5 /* FLEXIvarReflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A8C1129E37526007D18B5 /* FLEXIvarReflection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -763,6 +764,7 @@
 		C3F977802311B38F0032776D /* NSString+ObjcRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ObjcRuntime.m"; sourceTree = "<group>"; };
 		C3F977812311B38F0032776D /* NSObject+FLEX_Reflection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+FLEX_Reflection.h"; sourceTree = "<group>"; };
 		C3F977822311B38F0032776D /* NSObject+FLEX_Reflection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+FLEX_Reflection.m"; sourceTree = "<group>"; };
+		EE2A8C1129E37526007D18B5 /* FLEXIvarReflection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLEXIvarReflection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1263,6 +1265,7 @@
 		C36FBFB8230F3B52008D95D5 /* Runtime */ = {
 			isa = PBXGroup;
 			children = (
+				EE2A8C1029E37507007D18B5 /* Swift */,
 				C313854523F5F6120046E63C /* Objc */,
 				C313854723F5F7D50046E63C /* flex_fishhook.h */,
 				C313854623F5F7D40046E63C /* flex_fishhook.c */,
@@ -1520,6 +1523,14 @@
 			path = Private;
 			sourceTree = "<group>";
 		};
+		EE2A8C1029E37507007D18B5 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				EE2A8C1129E37526007D18B5 /* FLEXIvarReflection.swift */,
+			);
+			path = Swift;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1769,7 +1780,7 @@
 					};
 					3A4C941E1B5B20570088C3F2 = {
 						CreatedOnToolsVersion = 6.4;
-						LastSwiftMigration = 1130;
+						LastSwiftMigration = 1430;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -2002,6 +2013,7 @@
 				C3511B9222D7C99E0057BAB7 /* FLEXGlobalsSection.m in Sources */,
 				C32A19632317378C00EB02AC /* FLEXDefaultsContentSection.m in Sources */,
 				C3EE76C022DFC63600EC0AA0 /* FLEXScopeCarousel.m in Sources */,
+				EE2A8C1229E37526007D18B5 /* FLEXIvarReflection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2019,6 +2031,7 @@
 		1C27A8BE1F0E5A0400F0D02D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -2036,6 +2049,7 @@
 		1C27A8BF1F0E5A0400F0D02D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
