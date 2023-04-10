@@ -226,7 +226,7 @@
             identifier:nil
             handler:^(__kindof UIAction *action) {
                 [sender.navigationController pushViewController:[FLEXObjectExplorerFactory
-                    explorerViewControllerForObject:[FLEXIvarReflection reflectionOn:self.explorer.object ivar:self.explorer.ivars[row].name]
+                    explorerViewControllerForObject:[self.explorer.object reflectIvarNamed:self.explorer.ivars[row].name]
                 ] animated:YES];
             }
         ]];

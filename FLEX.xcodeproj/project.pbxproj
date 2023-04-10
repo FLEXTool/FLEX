@@ -375,7 +375,7 @@
 		C3F977862311B38F0032776D /* NSString+ObjcRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F977802311B38F0032776D /* NSString+ObjcRuntime.m */; };
 		C3F977872311B38F0032776D /* NSObject+FLEX_Reflection.h in Headers */ = {isa = PBXBuildFile; fileRef = C3F977812311B38F0032776D /* NSObject+FLEX_Reflection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C3F977882311B38F0032776D /* NSObject+FLEX_Reflection.m in Sources */ = {isa = PBXBuildFile; fileRef = C3F977822311B38F0032776D /* NSObject+FLEX_Reflection.m */; };
-		EE2A8C1229E37526007D18B5 /* FLEXIvarReflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2A8C1129E37526007D18B5 /* FLEXIvarReflection.swift */; };
+		EEB7D72F29E4575300A8F322 /* NSObject+IvarReflection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEB7D72E29E4575300A8F322 /* NSObject+IvarReflection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -764,7 +764,7 @@
 		C3F977802311B38F0032776D /* NSString+ObjcRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ObjcRuntime.m"; sourceTree = "<group>"; };
 		C3F977812311B38F0032776D /* NSObject+FLEX_Reflection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+FLEX_Reflection.h"; sourceTree = "<group>"; };
 		C3F977822311B38F0032776D /* NSObject+FLEX_Reflection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+FLEX_Reflection.m"; sourceTree = "<group>"; };
-		EE2A8C1129E37526007D18B5 /* FLEXIvarReflection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLEXIvarReflection.swift; sourceTree = "<group>"; };
+		EEB7D72E29E4575300A8F322 /* NSObject+IvarReflection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+IvarReflection.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1265,7 +1265,6 @@
 		C36FBFB8230F3B52008D95D5 /* Runtime */ = {
 			isa = PBXGroup;
 			children = (
-				EE2A8C1029E37507007D18B5 /* Swift */,
 				C313854523F5F6120046E63C /* Objc */,
 				C313854723F5F7D50046E63C /* flex_fishhook.h */,
 				C313854623F5F7D40046E63C /* flex_fishhook.c */,
@@ -1347,6 +1346,7 @@
 				C3694DC123EA147F006625D7 /* UIBarButtonItem+FLEX.m */,
 				C30199482409B38A00759E8E /* CALayer+FLEX.h */,
 				C30199492409B38A00759E8E /* CALayer+FLEX.m */,
+				EEB7D72E29E4575300A8F322 /* NSObject+IvarReflection.swift */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -1521,14 +1521,6 @@
 				94A515161C4CA1D70063292F /* FLEXManager+Private.h */,
 			);
 			path = Private;
-			sourceTree = "<group>";
-		};
-		EE2A8C1029E37507007D18B5 /* Swift */ = {
-			isa = PBXGroup;
-			children = (
-				EE2A8C1129E37526007D18B5 /* FLEXIvarReflection.swift */,
-			);
-			path = Swift;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2000,6 +1992,7 @@
 				C398625023AD6C67007E6793 /* FLEXObjcRuntimeViewController.m in Sources */,
 				C398626E23AD71C1007E6793 /* FLEXRuntimeClient.m in Sources */,
 				3A4C953D1B5B21410088C3F2 /* FLEXNetworkTransaction.m in Sources */,
+				EEB7D72F29E4575300A8F322 /* NSObject+IvarReflection.swift in Sources */,
 				3A4C94E81B5B21410088C3F2 /* FLEXHierarchyTableViewCell.m in Sources */,
 				3A4C950A1B5B21410088C3F2 /* FLEXFieldEditorView.m in Sources */,
 				3A4C95061B5B21410088C3F2 /* FLEXArgumentInputViewFactory.m in Sources */,
@@ -2013,7 +2006,6 @@
 				C3511B9222D7C99E0057BAB7 /* FLEXGlobalsSection.m in Sources */,
 				C32A19632317378C00EB02AC /* FLEXDefaultsContentSection.m in Sources */,
 				C3EE76C022DFC63600EC0AA0 /* FLEXScopeCarousel.m in Sources */,
-				EE2A8C1229E37526007D18B5 /* FLEXIvarReflection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
