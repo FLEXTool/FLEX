@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>output_path</key>
+        <string>build</string>
+        <key>framework</key>
+        <string>FLEX</string>
+        <key>targets</key>
+        <array>
+            <dict>
+                <key>sdk</key>
+                <string>iOS</string>
+                <key>project</key>
+                <string>FLEX.xcodeproj</string>
+                <key>scheme</key>
+                <string>FLEX</string>
+            </dict>
+            <dict>
+                <key>sdk</key>
+                <string>iOSSimulator</string>
+                <key>project</key>
+                <string>FLEX.xcodeproj</string>
+                <key>scheme</key>
+                <string>FLEX</string>
+            </dict>
+            <!--
+               Remove this comment and add more targets for Simulators and the Devices.
+            -->
+        </array>
+        <key>finalActions</key>
+        <array>
+            <string>openDirectory</string>
+        </array>
+    </dict>
+</plist>
