@@ -17,6 +17,7 @@
 #import "FLEXFileBrowserController.h"
 #import "FLEXArgumentInputStructView.h"
 #import "FLEXUtility.h"
+#import "FLEXTabList.h"
 
 @interface FLEXManager (ExtensibilityPrivate)
 @property (nonatomic, readonly) UIViewController *topViewController;
@@ -175,6 +176,9 @@
     } description:@"Toggle (this) help menu"];
 
     [self registerDefaultSimulatorShortcutWithKey:UIKeyInputEscape modifiers:0 action:^{
+        if ([self.topViewController isKindOfClass:[UINavigationController class]]) {
+          [FLEXTabList.sharedList closeTab:(UINavigationController *)self.topViewController];
+        }
         [[self.topViewController presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     } description:@"End editing text\n\t\tDismiss top view controller"];
 
