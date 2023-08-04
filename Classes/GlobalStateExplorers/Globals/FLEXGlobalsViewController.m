@@ -171,7 +171,7 @@
     self.title = self.customTitle ?: @"💪  FLEX";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem flex_backItemWithTitle:@"Back"];
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem flex_backItemWithTitle:self.showsDefaultEntries ? @"Back" : self.title];
 
     _manuallyDeselectOnAppear = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 10;
 }
