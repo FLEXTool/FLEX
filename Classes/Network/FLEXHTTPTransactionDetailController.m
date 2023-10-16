@@ -492,6 +492,10 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
         }
     }
 
+    if (!data) {
+        data = [NSData data];
+    }
+    
     // FIXME (RKO): Don't rely on UTF8 string encoding
     UIViewController *detailViewController = nil;
     if ([FLEXUtility isValidJSONData:data]) {
