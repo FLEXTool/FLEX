@@ -891,64 +891,7 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
 }
 
 + (void)injectIntoNSURLSessionAsyncUploadTaskMethods:(Class)sessionClass {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        Class class = sessionClass;
-        
-        // The method signatures here are close enough that we can use the same logic to inject into both of them.
-        // Note that they have 3 arguments, so we can't easily combine with the data and download method above.
-        typedef NSURLSessionUploadTask *(^UploadTaskMethod)(
-            NSURLSession *, NSURLRequest *, id, NSURLSessionAsyncCompletion
-        );
-        const SEL selectors[] = {
-            @selector(uploadTaskWithRequest:fromData:completionHandler:),
-            @selector(uploadTaskWithRequest:fromFile:completionHandler:)
-        };
-
-        const int numSelectors = sizeof(selectors) / sizeof(SEL);
-
-        for (int selectorIndex = 0; selectorIndex < numSelectors; selectorIndex++) {
-            SEL selector = selectors[selectorIndex];
-            SEL swizzledSelector = [FLEXUtility swizzledSelectorForSelector:selector];
-
-            if ([FLEXUtility instanceRespondsButDoesNotImplementSelector:selector class:class]) {
-                // iOS 7 does not implement these methods on NSURLSession. We actually want to
-                // swizzle __NSCFURLSession, which we can get from the class of the shared session
-                class = [NSURLSession.sharedSession class];
-            }
-
-            
-            UploadTaskMethod swizzleBlock = ^NSURLSessionUploadTask *(NSURLSession * slf,
-                                                                      NSURLRequest *request,
-                                                                      id argument,
-                                                                      NSURLSessionAsyncCompletion completion) {
-                NSURLSessionUploadTask *task = nil;
-                if (FLEXNetworkObserver.isEnabled && completion) {
-                    NSString *requestID = [self nextRequestID];
-                    NSString *mechanism = [self mechanismFromClassMethod:selector onClass:class];
-                    NSURLSessionAsyncCompletion completionWrapper = [self
-                        asyncCompletionWrapperForRequestID:requestID
-                        mechanism:mechanism
-                        completion:completion
-                    ];
-                    
-                    task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
-                        slf, swizzledSelector, request, argument, completionWrapper
-                    );
-                    [self setRequestID:requestID forConnectionOrTask:task];
-                } else {
-                    task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
-                        slf, swizzledSelector, request, argument, completion
-                    );
-                }
-                return task;
-            };
-            
-            [FLEXUtility replaceImplementationOfKnownSelector:selector
-                onClass:class withBlock:swizzleBlock swizzledSelector:swizzledSelector
-            ];
-        }
-    });
+    
 }
 
 + (NSString *)mechanismFromClassMethod:(SEL)selector onClass:(Class)class {
@@ -1109,7 +1052,7 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
     DidReceiveDataBlock undefinedBlock = ^(id<NSURLConnectionDelegate> slf,
                                            NSURLConnection *connection,
                                            NSData *data) {
-        [FLEXNetworkObserver.sharedObserver connection:connection 
+        [FLEXNetworkObserver.sharedObserver connection:connection
             didReceiveData:data delegate:slf
         ];
     };
@@ -1645,7 +1588,7 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
     SendMessageBlock implementationBlock = ^(
         NSURLSessionWebSocketTask *slf,
         void (^completion)(NSURLSessionWebSocketMessage *message, NSError *error)
-    ) {        
+    ) {
         id completionHook = ^(NSURLSessionWebSocketMessage *message, NSError *error) {
             [FLEXNetworkObserver.sharedObserver
                 websocketTask:slf receiveMessagage:message error:error
@@ -1803,7 +1746,7 @@ didReceiveResponse:(NSURLResponse *)response
         // and clutter up the logs. Only record the failure if the
         // recorder already knows about the request through willSendRequest:...
         if (requestState.request) {
-            [FLEXNetworkRecorder.defaultRecorder 
+            [FLEXNetworkRecorder.defaultRecorder
                 recordLoadingFailedWithRequestID:requestID error:error
             ];
         }
@@ -1920,7 +1863,7 @@ didCompleteWithError:(NSError *)error
             ];
         } else {
             [FLEXNetworkRecorder.defaultRecorder
-                recordLoadingFinishedWithRequestID:requestID 
+                recordLoadingFinishedWithRequestID:requestID
                 responseBody:requestState.dataAccumulator
             ];
         }
@@ -2018,7 +1961,7 @@ didFinishDownloadingToURL:(NSURL *)location data:(NSData *)data
             [FLEXNetworkRecorder.defaultRecorder
                 recordWebsocketMessageReceived:message
                 task:task
-            ];            
+            ];
         }
     }];
 }
