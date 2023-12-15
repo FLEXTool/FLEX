@@ -18,3 +18,4 @@
 #import "NSArray+FLEX.h"
 #import "NSUserDefaults+FLEX.h"
 #import "NSTimer+FLEX.h"
+#import "NSDateFormatter+FLEX.h"

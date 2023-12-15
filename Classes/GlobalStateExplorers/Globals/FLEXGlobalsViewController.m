@@ -11,6 +11,7 @@
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcRuntimeViewController.h"
 #import "FLEXKeychainViewController.h"
+#import "FLEXAPNSViewController.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXLiveObjectsController.h"
@@ -57,6 +58,8 @@
     switch (row) {
         case FLEXGlobalsRowAppKeychainItems:
             return [FLEXKeychainViewController flex_concreteGlobalsEntry:row];
+        case FLEXGlobalsRowPushNotifications:
+            return [FLEXAPNSViewController flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowAddressInspector:
             return [FLEXAddressExplorerCoordinator flex_concreteGlobalsEntry:row];
         case FLEXGlobalsRowBrowseRuntime:
@@ -94,13 +97,14 @@
         case FLEXGlobalsRowMainThread:
         case FLEXGlobalsRowOperationQueue:
             return [FLEXObjectExplorerFactory flex_concreteGlobalsEntry:row];
-
-        default:
-            @throw [NSException
-                exceptionWithName:NSInternalInconsistencyException
-                reason:@"Missing globals case in switch" userInfo:nil
-            ];
+        
+        case FLEXGlobalsRowCount: break;
     }
+    
+    @throw [NSException
+        exceptionWithName:NSInternalInconsistencyException
+        reason:@"Missing globals case in switch" userInfo:nil
+    ];
 }
 
 + (NSArray<FLEXGlobalsSection *> *)defaultGlobalSections {
@@ -122,6 +126,7 @@
                 [self globalsEntryForRow:FLEXGlobalsRowMainBundle],
                 [self globalsEntryForRow:FLEXGlobalsRowUserDefaults],
                 [self globalsEntryForRow:FLEXGlobalsRowAppKeychainItems],
+                [self globalsEntryForRow:FLEXGlobalsRowPushNotifications],
                 [self globalsEntryForRow:FLEXGlobalsRowApplication],
                 [self globalsEntryForRow:FLEXGlobalsRowAppDelegate],
                 [self globalsEntryForRow:FLEXGlobalsRowKeyWindow],

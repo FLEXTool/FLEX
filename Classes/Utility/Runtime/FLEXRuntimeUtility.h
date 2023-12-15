@@ -7,6 +7,7 @@
 //
 
 #import "FLEXRuntimeConstants.h"
+@class FLEXObjectRef;
 
 #define PropertyKey(suffix) kFLEXPropertyAttributeKey##suffix : @""
 #define PropertyKeyGetter(getter) kFLEXPropertyAttributeKeyCustomGetter : NSStringFromSelector(@selector(getter))
@@ -45,7 +46,9 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 
 @interface FLEXRuntimeUtility : NSObject
 
-// General Helpers
+#pragma mark - General Helpers
+
+/// Calls into \c FLEXPointerIsValidObjcObject()
 + (BOOL)pointerIsValidObjcObject:(const void *)pointer;
 /// Unwraps raw pointers to objects stored in NSValue, and re-boxes C strings into NSStrings.
 + (id)potentiallyUnwrapBoxedPointer:(id)returnedObjectOrNil type:(const FLEXTypeEncoding *)returnType;
@@ -59,6 +62,8 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 /// @return The class hierarchy for the given object or class,
 /// from the current class to the root-most class.
 + (NSArray<Class> *)classHierarchyOfObject:(id)objectOrClass;
+/// @return Every subclass of the given class name.
++ (NSArray<FLEXObjectRef *> *)subclassesOfClassWithName:(NSString *)className;
 
 /// Used to describe an object in brief within an explorer row
 + (NSString *)summaryForObject:(id)value;
@@ -69,16 +74,19 @@ typedef NS_ENUM(NSInteger, FLEXRuntimeUtilityErrorCode) {
 + (BOOL)safeObject:(id)object isKindOfClass:(Class)cls;
 + (BOOL)safeObject:(id)object respondsToSelector:(SEL)sel;
 
-// Property Helpers
+#pragma mark - Property Helpers
+
 + (BOOL)tryAddPropertyWithName:(const char *)name
                     attributes:(NSDictionary<NSString *, NSString *> *)attributePairs
                        toClass:(__unsafe_unretained Class)theClass;
 + (NSArray<NSString *> *)allPropertyAttributeKeys;
 
-// Method Helpers
+#pragma mark - Method Helpers
+
 + (NSArray *)prettyArgumentComponentsForMethod:(Method)method;
 
-// Method Calling/Field Editing
+#pragma mark - Method Calling/Field Editing
+
 + (id)performSelector:(SEL)selector onObject:(id)object;
 + (id)performSelector:(SEL)selector
              onObject:(id)object

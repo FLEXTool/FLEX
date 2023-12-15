@@ -26,6 +26,14 @@
     self.title = @"Cookies";
 }
 
+- (NSString *)headerTitle {
+    return self.cookies.title;
+}
+
+- (void)setHeaderTitle:(NSString *)headerTitle {
+    self.cookies.customTitle = headerTitle;
+}
+
 - (NSArray<FLEXTableViewSection *> *)makeSections {
     NSSortDescriptor *nameSortDescriptor = [[NSSortDescriptor alloc]
         initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)

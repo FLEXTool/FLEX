@@ -22,6 +22,18 @@ typedef struct {
     Class isa;
 } flex_maybe_object_t;
 
+@implementation FLEXHeapSnapshot
++ (instancetype)snapshotWithCounts:(NSDictionary<NSString *, NSNumber *> *)counts
+                             sizes:(NSDictionary<NSString *, NSNumber *> *)sizes {
+    FLEXHeapSnapshot *snapshot = [FLEXHeapSnapshot new];
+    snapshot->_classNames = counts.allKeys;
+    snapshot->_instanceCountsForClassNames = counts;
+    snapshot->_instanceSizesForClassNames = sizes;
+    
+    return snapshot;
+}
+@end
+
 @implementation FLEXHeapEnumerator
 
 static void range_callback(task_t task, void *context, unsigned type, vm_range_t *ranges, unsigned rangeCount) {
@@ -138,12 +150,6 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     return references;
 }
 
-+ (NSArray<FLEXObjectRef *> *)subclassesOfClassWithName:(NSString *)className {
-    NSArray<Class> *classes = FLEXGetAllSubclasses(NSClassFromString(className), NO);
-    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingClasses:classes];
-    return references;
-}
-
 + (NSArray<FLEXObjectRef *> *)objectsWithReferencesToObject:(id)object retained:(BOOL)retain {
     NSMutableArray<FLEXObjectRef *> *instances = [NSMutableArray new];
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id tryObject, __unsafe_unretained Class actualClass) {
@@ -183,6 +189,50 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     }];
 
     return instances;
+}
+
++ (FLEXHeapSnapshot *)generateHeapSnapshot {
+    // Set up a CFMutableDictionary with class pointer keys and NSUInteger values.
+    // We abuse CFMutableDictionary a little to have primitive keys through judicious casting, but it gets the job done.
+    // The dictionary is intialized with a 0 count for each class so that it doesn't have to expand during enumeration.
+    // While it might be a little cleaner to populate an NSMutableDictionary with class name string keys to NSNumber
+    // counts, we choose the CF/primitives approach because it lets us enumerate the objects in the heap without
+    // allocating any memory during enumeration. The alternative of creating one NSString/NSNumber per object
+    // on the heap ends up polluting the count of live objects quite a bit.
+    unsigned int classCount = 0;
+    Class *classes = objc_copyClassList(&classCount);
+    CFMutableDictionaryRef mutableCountsForClasses = CFDictionaryCreateMutable(NULL, classCount, NULL, NULL);
+    for (unsigned int i = 0; i < classCount; i++) {
+        CFDictionarySetValue(mutableCountsForClasses, (__bridge const void *)classes[i], (const void *)0);
+    }
+    
+    // Enumerate all objects on the heap to build the counts of instances for each class
+    [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class cls) {
+        NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(
+            mutableCountsForClasses, (__bridge const void *)cls
+        );
+        instanceCount++;
+        CFDictionarySetValue(
+            mutableCountsForClasses, (__bridge const void *)cls, (const void *)instanceCount
+        );
+    }];
+    
+    // Convert our CF primitive dictionary into a nicer mapping of class name strings to instance counts
+    NSMutableDictionary<NSString *, NSNumber *> *countsForClassNames = [NSMutableDictionary new];
+    NSMutableDictionary<NSString *, NSNumber *> *sizesForClassNames = [NSMutableDictionary new];
+    for (unsigned int i = 0; i < classCount; i++) {
+        Class class = classes[i];
+        NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));
+        NSString *className = @(class_getName(class));
+        
+        if (instanceCount > 0) {
+            countsForClassNames[className] = @(instanceCount);
+            sizesForClassNames[className] = @(class_getInstanceSize(class));
+        }
+    }
+    free(classes);
+    
+    return [FLEXHeapSnapshot snapshotWithCounts:countsForClassNames sizes:sizesForClassNames];
 }
 
 @end

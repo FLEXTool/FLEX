@@ -33,7 +33,7 @@
 + (instancetype)itemWithTitle:(NSString *)title image:(UIImage *)image sibling:(FLEXExplorerToolbarItem *)backupItem {
     NSParameterAssert(title); NSParameterAssert(image);
     
-    FLEXExplorerToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeSystem];
+    FLEXExplorerToolbarItem *toolbarItem = [self buttonWithType:UIButtonTypeCustom];
     toolbarItem.sibling = backupItem;
     toolbarItem.title = title;
     toolbarItem.image = image;

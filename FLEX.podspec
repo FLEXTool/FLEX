@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name             = "FLEX"
-  spec.version          = "4.7.0"
+  spec.version          = "5.22.10"
   spec.summary          = "A set of in-app debugging and exploration tools for iOS"
   spec.description      = <<-DESC
                         - Inspect and modify views in the hierarchy.
@@ -28,7 +28,6 @@ Pod::Spec.new do |spec|
 
   spec.license          = { :type => "BSD", :file => "LICENSE" }
   spec.author           = { "Tanner Bennett" => "tannerbennett@me.com" }
-  spec.social_media_url = "https://twitter.com/NSExceptional"
   spec.platform         = :ios, "9.0"
   spec.source           = { :git => "https://github.com/FLEXTool/FLEX.git", :tag => "#{spec.version}" }
   spec.source_files     = "Classes/**/*.{h,c,m,mm}"
@@ -37,7 +36,7 @@ Pod::Spec.new do |spec|
   spec.libraries        = [ "z", "sqlite3" ]
   spec.requires_arc     = true
   spec.library = 'stdc++'
-  spec.xcconfig = {
+  spec.pod_target_xcconfig = {
        'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++11',
   }
   spec.compiler_flags   = "-Wno-unsupported-availability-guard", "-Wno-deprecated-declarations"

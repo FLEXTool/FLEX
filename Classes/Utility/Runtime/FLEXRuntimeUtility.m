@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
+#import "FLEXObjectRef.h"
+#import "NSObject+FLEX_Reflection.h"
 #import "FLEXTypeEncodingParser.h"
 #import "FLEXMethod.h"
 
@@ -92,6 +94,12 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     return superClasses;
 }
 
++ (NSArray<FLEXObjectRef *> *)subclassesOfClassWithName:(NSString *)className {
+    NSArray<Class> *classes = FLEXGetAllSubclasses(NSClassFromString(className), NO);
+    NSArray<FLEXObjectRef *> *references = [FLEXObjectRef referencingClasses:classes];
+    return references;
+}
+
 + (NSString *)safeClassNameForObject:(id)object {
     // Don't assume that we have an NSObject subclass
     if ([self safeObject:object respondsToSelector:@selector(class)]) {
@@ -160,6 +168,7 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
         // Single line display - replace newlines and tabs with spaces.
         description = [[self safeDescriptionForObject:value] stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
         description = [description stringByReplacingOccurrencesOfString:@"\t" withString:@" "];
+        description = [description stringByReplacingOccurrencesOfString:@"    " withString:@" "];
     } @catch (NSException *e) {
         description = [@"Thrown: " stringByAppendingString:e.reason ?: @"(nil exception reason)"];
     }

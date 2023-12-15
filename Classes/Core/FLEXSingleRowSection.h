@@ -8,6 +8,8 @@
 
 #import "FLEXTableViewSection.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// A section providing a specific single row.
 ///
 /// You may optionally provide a view controller to push when the row
@@ -16,13 +18,15 @@
 @interface FLEXSingleRowSection : FLEXTableViewSection
 
 /// @param reuseIdentifier if nil, kFLEXDefaultCell is used.
-+ (instancetype)title:(NSString *)sectionTitle
-                reuse:(NSString *)reuseIdentifier
++ (instancetype)title:(nullable NSString *)sectionTitle
+                reuse:(nullable NSString *)reuseIdentifier
                  cell:(void(^)(__kindof UITableViewCell *cell))cellConfiguration;
 
-@property (nonatomic) UIViewController *pushOnSelection;
-@property (nonatomic) void (^selectionAction)(UIViewController *host);
+@property (nullable, nonatomic) UIViewController *pushOnSelection;
+@property (nullable, nonatomic) void (^selectionAction)(UIViewController *host);
 /// Called to determine whether the single row should display itself or not.
 @property (nonatomic) BOOL (^filterMatcher)(NSString *filterText);
 
 @end
+
+NS_ASSUME_NONNULL_END

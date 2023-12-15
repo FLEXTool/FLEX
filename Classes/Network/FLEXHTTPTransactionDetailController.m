@@ -18,6 +18,7 @@
 #import "FLEXManager+Private.h"
 #import "FLEXTableView.h"
 #import "UIBarButtonItem+FLEX.h"
+#import "NSDateFormatter+FLEX.h"
 
 typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
@@ -375,19 +376,14 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     mechanismRow.detailText = transaction.requestMechanism;
     [rows addObject:mechanismRow];
 
-    NSDateFormatter *startTimeFormatter = [NSDateFormatter new];
-    startTimeFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
-
     FLEXNetworkDetailRow *localStartTimeRow = [FLEXNetworkDetailRow new];
     localStartTimeRow.title = [NSString stringWithFormat:@"Start Time (%@)", [NSTimeZone.localTimeZone abbreviationForDate:transaction.startTime]];
-    localStartTimeRow.detailText = [startTimeFormatter stringFromDate:transaction.startTime];
+    localStartTimeRow.detailText = [NSDateFormatter flex_stringFrom:transaction.startTime format:FLEXDateFormatVerbose];
     [rows addObject:localStartTimeRow];
-
-    startTimeFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
 
     FLEXNetworkDetailRow *utcStartTimeRow = [FLEXNetworkDetailRow new];
     utcStartTimeRow.title = @"Start Time (UTC)";
-    utcStartTimeRow.detailText = [startTimeFormatter stringFromDate:transaction.startTime];
+    utcStartTimeRow.detailText = [NSDateFormatter flex_stringFrom:transaction.startTime format:FLEXDateFormatVerbose];
     [rows addObject:utcStartTimeRow];
 
     FLEXNetworkDetailRow *unixStartTime = [FLEXNetworkDetailRow new];
