@@ -7,7 +7,9 @@ enum FLEXBuildOptions {
     static let silenceWarnings = false
 }
 
-#if swift(>=5.7)
+#if swift(>=5.9)
+let platforms: [PackageDescription.SupportedPlatform] = [.iOS(.v12)]
+#elseif swift(>=5.7)
 let platforms: [PackageDescription.SupportedPlatform] = [.iOS(.v11)]
 #else
 let platforms: [PackageDescription.SupportedPlatform] = [.iOS(.v10)]
