@@ -238,7 +238,9 @@ static void _logos_method$_ungrouped$FIRDocumentReference$getDocumentWithComplet
     FIRDocumentSnapshotBlock orig = completion;
     completion = ^(FIRDocumentSnapshot *document, NSError *error) {
         [FLEXNetworkRecorder.defaultRecorder recordFIRDocumentDidFetch:document error:error transactionID:requestID];
-        orig(document, error);
+        if (orig != nil) {
+            orig(document, error);
+        }
     };
     
     // Forward invocation
@@ -257,7 +259,9 @@ static void _logos_method$_ungrouped$FIRQuery$getDocumentsWithCompletion$(
     FIRQuerySnapshotBlock orig = completion;
     completion = ^(FIRQuerySnapshot *query, NSError *error) {
         [FLEXNetworkRecorder.defaultRecorder recordFIRQueryDidFetch:query error:error transactionID:requestID];
-        orig(query, error);
+        if (orig != nil) {
+            orig(query, error);
+        }
     };
     
     // Forward invocation
