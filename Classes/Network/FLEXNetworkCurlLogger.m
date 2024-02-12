@@ -35,8 +35,8 @@
             // Fallback to using base64 encoding
             [curlCommandString appendString:@"--data-binary @-"];
 
-            NSString* base64 = [request.HTTPBody base64EncodedStringWithOptions:0];
-            NSString* prefix = [NSString stringWithFormat:@"echo -n '%@' | base64 -D | ", base64];
+            NSString *base64 = [request.HTTPBody base64EncodedStringWithOptions:0];
+            NSString *prefix = [NSString stringWithFormat:@"echo -n '%@' | base64 -D | ", base64];
             [curlCommandString insertString:prefix atIndex:0];
         }
     }
