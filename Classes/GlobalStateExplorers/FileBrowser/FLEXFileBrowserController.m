@@ -266,13 +266,12 @@ typedef NS_ENUM(NSUInteger, FLEXFileBrowserSortAttribute) {
             prettyString = [FLEXUtility prettyJSONStringFromData:fileData];
         } else {
             // Regardless of file extension...
-            
-            id object = nil;
-            @try {
-                // Try to decode an archived object regardless of file extension
-                object = [NSKeyedUnarchiver unarchiveObjectWithData:fileData];
-            } @catch (NSException *e) { }
-            
+
+            // Try to decode an archived object regardless of file extension
+            NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:fileData error:nil];
+            unarchiver.requiresSecureCoding = NO;
+            id object = [unarchiver decodeObjectForKey:NSKeyedArchiveRootObjectKey];
+
             // Try to decode other things instead
             object = object ?: [NSPropertyListSerialization
                 propertyListWithData:fileData

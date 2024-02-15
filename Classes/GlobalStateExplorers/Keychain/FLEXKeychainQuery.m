@@ -150,13 +150,15 @@
 #pragma mark - Accessors
 
 - (void)setPasswordObject:(id<NSCoding>)object {
-    self.passwordData = [NSKeyedArchiver archivedDataWithRootObject:object];
+    self.passwordData = [NSKeyedArchiver archivedDataWithRootObject:object requiringSecureCoding:NO error:nil];
 }
 
 
 - (id<NSCoding>)passwordObject {
     if (self.passwordData.length) {
-        return [NSKeyedUnarchiver unarchiveObjectWithData:self.passwordData];
+        NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:self.passwordData error:nil];
+        unarchiver.requiresSecureCoding = NO;
+        return [unarchiver decodeObjectForKey:NSKeyedArchiveRootObjectKey];
     }
     
     return nil;
