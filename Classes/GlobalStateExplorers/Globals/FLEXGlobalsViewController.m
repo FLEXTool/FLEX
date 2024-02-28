@@ -19,6 +19,7 @@
 #import "FLEXCookiesViewController.h"
 #import "FLEXGlobalsEntry.h"
 #import "FLEXManager+Private.h"
+#import "FLEXUserGlobalEntriesContainer+Private.h"
 #import "FLEXSystemLogViewController.h"
 #import "FLEXNetworkMITMViewController.h"
 #import "FLEXAddressExplorerCoordinator.h"
@@ -97,10 +98,10 @@
         case FLEXGlobalsRowMainThread:
         case FLEXGlobalsRowOperationQueue:
             return [FLEXObjectExplorerFactory flex_concreteGlobalsEntry:row];
-        
+
         case FLEXGlobalsRowCount: break;
     }
-    
+
     @throw [NSException
         exceptionWithName:NSInternalInconsistencyException
         reason:@"Missing globals case in switch" userInfo:nil
@@ -157,7 +158,7 @@
             [sections addObject:[FLEXGlobalsSection title:title rows:rowsBySection[@(i)]]];
         }
     });
-    
+
     return sections;
 }
 
@@ -167,19 +168,19 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = @"💪  FLEX";
+    self.title = self.customTitle ?: @"💪  FLEX";
     self.showsSearchBar = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
-    self.navigationItem.backBarButtonItem = [UIBarButtonItem flex_backItemWithTitle:@"Back"];
-    
+    self.navigationItem.backBarButtonItem = [UIBarButtonItem flex_backItemWithTitle:self.showsDefaultEntries ? @"Back" : self.title];
+
     _manuallyDeselectOnAppear = NSProcessInfo.processInfo.operatingSystemVersion.majorVersion < 10;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     [self disableToolbar];
-    
+
     if (self.manuallyDeselectOnAppear) {
         [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
     }
@@ -188,16 +189,18 @@
 - (NSArray<FLEXGlobalsSection *> *)makeSections {
     NSMutableArray<FLEXGlobalsSection *> *sections = [NSMutableArray array];
     // Do we have custom sections to add?
-    if (FLEXManager.sharedManager.userGlobalEntries.count) {
+    if (self.customEntries.count) {
         NSString *title = [[self class] globalsTitleForSection:FLEXGlobalsSectionCustom];
         FLEXGlobalsSection *custom = [FLEXGlobalsSection
             title:title
-            rows:FLEXManager.sharedManager.userGlobalEntries
+            rows:self.customEntries
         ];
         [sections addObject:custom];
     }
 
-    [sections addObjectsFromArray:[self.class defaultGlobalSections]];
+    if (self.showsDefaultEntries) {
+        [sections addObjectsFromArray:[self.class defaultGlobalSections]];
+    }
 
     return sections;
 }
