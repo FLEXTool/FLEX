@@ -589,9 +589,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
 
         void (^swizzleBlock)(NSURLConnection *) = ^(NSURLConnection *slf) {
             [FLEXNetworkObserver.sharedObserver connectionWillCancel:slf];
-            ((void(*)(id, SEL))objc_msgSend)(
-                slf, swizzledSelector
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL))objc_msgSend)(
+                    slf, swizzledSelector
+                );
+            }
         };
 
         IMP implementation = imp_implementationWithBlock(swizzleBlock);
@@ -680,10 +682,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
 
             [FLEXNetworkObserver.sharedObserver URLSessionTaskWillResume:slf];
         }
-
-        ((void(*)(id, SEL))objc_msgSend)(
-            slf, swizzledSelector
-        );
+        if ([slf respondsToSelector:swizzledSelector]) {
+            ((void(*)(id, SEL))objc_msgSend)(
+                slf, swizzledSelector
+            );
+        }
     });
     
     class_addMethod(class, swizzledSelector, implementation, method_getTypeEncoding(originalResume));
@@ -745,13 +748,17 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                         completion(response, data, error);
                     }
                 };
-                ((void(*)(id, SEL, id, id, id))objc_msgSend)(
-                    slf, swizzledSelector, request, queue, wrapper
-                );
+                if ([slf respondsToSelector:swizzledSelector]) {
+                    ((void(*)(id, SEL, id, id, id))objc_msgSend)(
+                        slf, swizzledSelector, request, queue, wrapper
+                    );
+                }
             } else {
-                ((void(*)(id, SEL, id, id, id))objc_msgSend)(
-                    slf, swizzledSelector, request, queue, completion
-                );
+                if ([slf respondsToSelector:swizzledSelector]) {
+                    ((void(*)(id, SEL, id, id, id))objc_msgSend)(
+                        slf, swizzledSelector, request, queue, completion
+                    );
+                }
             }
         };
         
@@ -786,9 +793,12 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                 [FLEXNetworkRecorder.defaultRecorder recordMechanism:mechanism forRequestID:requestID];
                 NSError *temporaryError = nil;
                 NSURLResponse *temporaryResponse = nil;
-                data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(
-                    slf, swizzledSelector, request, &temporaryResponse, &temporaryError
-                );
+
+                if ([slf respondsToSelector:swizzledSelector]) {
+                    data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(
+                        slf, swizzledSelector, request, &temporaryResponse, &temporaryError
+                    );
+                }
                 
                 [FLEXNetworkRecorder.defaultRecorder
                     recordResponseReceivedWithRequestID:requestID
@@ -818,9 +828,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                     *response = temporaryResponse;
                 }
             } else {
-                data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(
-                    slf, swizzledSelector, request, response, error
-                );
+                if ([slf respondsToSelector:swizzledSelector]) {
+                    data = ((id(*)(id, SEL, id, NSURLResponse **, NSError **))objc_msgSend)(
+                        slf, swizzledSelector, request, response, error
+                    );
+                }
             }
 
             return data;
@@ -878,16 +890,21 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                     ];
                     
                     // Call the original method
-                    task = ((id(*)(id, SEL, id, id))objc_msgSend)(
-                        slf, swizzledSelector, argument, completionWrapper
-                    );
+                    if ([slf respondsToSelector:swizzledSelector]) {
+                        task = ((id(*)(id, SEL, id, id))objc_msgSend)(
+                            slf, swizzledSelector, argument, completionWrapper
+                        );
+                    }
                     [self setRequestID:requestID forConnectionOrTask:task];
                 } else {
                     // Network observer disabled or no callback provided,
                     // just pass through to the original method
-                    task = ((id(*)(id, SEL, id, id))objc_msgSend)(
-                        slf, swizzledSelector, argument, completion
-                    );
+                    if ([slf respondsToSelector:swizzledSelector]) {
+                        task = ((id(*)(id, SEL, id, id))objc_msgSend)(
+                            slf, swizzledSelector, argument, completion
+                        );
+                    }
+
                 }
                 return task;
             };
@@ -942,14 +959,18 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                         completion:completion
                     ];
                     
-                    task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
-                        slf, swizzledSelector, request, argument, completionWrapper
-                    );
+                    if ([slf respondsToSelector:swizzledSelector]) {
+                        task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
+                            slf, swizzledSelector, request, argument, completionWrapper
+                        );
+                    }
                     [self setRequestID:requestID forConnectionOrTask:task];
                 } else {
-                    task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
-                        slf, swizzledSelector, request, argument, completion
-                    );
+                    if ([slf respondsToSelector:swizzledSelector]) {
+                        task = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
+                            slf, swizzledSelector, request, argument, completion
+                        );
+                    }
                 }
                 return task;
             };
@@ -1043,9 +1064,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
             undefinedBlock(slf, connection, request, response);
         } originalImplementationBlock:^{
-            returnValue = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
-                slf, swizzledSelector, connection, request, response
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                returnValue = ((id(*)(id, SEL, id, id, id))objc_msgSend)(
+                    slf, swizzledSelector, connection, request, response
+                );
+            }
         }];
         return returnValue;
     };
@@ -1087,9 +1110,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
             undefinedBlock(slf, connection, response);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id))objc_msgSend)(
-                slf, swizzledSelector, connection, response
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id))objc_msgSend)(
+                    slf, swizzledSelector, connection, response
+                );
+            }
         }];
     };
     
@@ -1130,9 +1155,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
             undefinedBlock(slf, connection, data);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id))objc_msgSend)(
-                slf, swizzledSelector, connection, data
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id))objc_msgSend)(
+                    slf, swizzledSelector, connection, data
+                );
+            }
         }];
     };
     
@@ -1165,9 +1192,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
             undefinedBlock(slf, connection);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id))objc_msgSend)(
-                slf, swizzledSelector, connection
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id))objc_msgSend)(
+                    slf, swizzledSelector, connection
+                );
+            }
         }];
     };
     
@@ -1205,9 +1234,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:connection selector:selector sniffingBlock:^{
             undefinedBlock(slf, connection, error);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id))objc_msgSend)(
-                slf, swizzledSelector, connection, error
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id))objc_msgSend)(
+                    slf, swizzledSelector, connection, error
+                );
+            }
         }];
     };
     
@@ -1265,9 +1296,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                 delegate:slf
             ];
         } originalImplementationBlock:^{
-            ((id(*)(id, SEL, id, id, id, id, void(^)(NSURLRequest *)))objc_msgSend)(
-                slf, swizzledSelector, session, task, response, newRequest, completionHandler
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((id(*)(id, SEL, id, id, id, id, void(^)(NSURLRequest *)))objc_msgSend)(
+                    slf, swizzledSelector, session, task, response, newRequest, completionHandler
+                );
+            }
         }];
     };
 
@@ -1308,9 +1341,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
             undefinedBlock(slf, session, dataTask, data);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(
-                slf, swizzledSelector, session, dataTask, data
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id, id))objc_msgSend)(
+                    slf, swizzledSelector, session, dataTask, data
+                );
+            }
         }];
     };
     
@@ -1352,9 +1387,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
             undefinedBlock(slf, session, dataTask, downloadTask);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(
-                slf, swizzledSelector, session, dataTask, downloadTask
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id, id))objc_msgSend)(
+                    slf, swizzledSelector, session, dataTask, downloadTask
+                );
+            }
         }];
     };
 
@@ -1410,9 +1447,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                 delegate:slf
             ];
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id, void(^)(NSURLSessionResponseDisposition)))objc_msgSend)(
-                slf, swizzledSelector, session, dataTask, response, completion
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id, id, void(^)(NSURLSessionResponseDisposition)))objc_msgSend)(
+                    slf, swizzledSelector, session, dataTask, response, completion
+                );
+            }
         }];
     };
     
@@ -1455,9 +1494,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
             undefinedBlock(slf, session, task, error);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(
-                slf, swizzledSelector, session, task, error
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id, id))objc_msgSend)(
+                    slf, swizzledSelector, session, task, error
+                );
+            }
         }];
     };
 
@@ -1530,9 +1571,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         [self sniffWithoutDuplicationForObject:session selector:selector sniffingBlock:^{
             undefinedBlock(slf, session, task, location);
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, id))objc_msgSend)(
-                slf, swizzledSelector, session, task, location
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id, id))objc_msgSend)(
+                    slf, swizzledSelector, session, task, location
+                );
+            }
         }];
     };
 
@@ -1586,10 +1629,12 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                 totalBytesWritten, totalBytesExpectedToWrite
             );
         } originalImplementationBlock:^{
-            ((void(*)(id, SEL, id, id, int64_t, int64_t, int64_t))objc_msgSend)(
-                slf, swizzledSelector, session, task, bytesWritten,
-                totalBytesWritten, totalBytesExpectedToWrite
-            );
+            if ([slf respondsToSelector:swizzledSelector]) {
+                ((void(*)(id, SEL, id, id, int64_t, int64_t, int64_t))objc_msgSend)(
+                    slf, swizzledSelector, session, task, bytesWritten,
+                    totalBytesWritten, totalBytesExpectedToWrite
+                );
+            }
         }];
     };
 
@@ -1631,9 +1676,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
             }
         };
         
-        ((void(*)(id, SEL, id, id))objc_msgSend)(
-            slf, swizzledSelector, message, completionHook
-        );
+        if ([slf respondsToSelector:swizzledSelector]) {
+            ((void(*)(id, SEL, id, id))objc_msgSend)(
+                slf, swizzledSelector, message, completionHook
+            );
+        }
     };
 
     [FLEXUtility replaceImplementationOfKnownSelector:selector
@@ -1663,9 +1710,11 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
             completion(message, error);
         };
         
-        ((void(*)(id, SEL, id))objc_msgSend)(
-            slf, swizzledSelector, completionHook
-        );
+        if ([slf respondsToSelector:swizzledSelector]) {
+            ((void(*)(id, SEL, id))objc_msgSend)(
+                slf, swizzledSelector, completionHook
+            );
+        }
 
     };
 
