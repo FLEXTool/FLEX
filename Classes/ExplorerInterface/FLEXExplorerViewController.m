@@ -28,6 +28,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
+int __isOSVersionAtLeast(int major, int minor, int patch) {
+    NSOperatingSystemVersion version;
+    version.majorVersion = major;
+    version.minorVersion = minor;
+    version.patchVersion = patch;
+    return [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:version];
+};
+
 @interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>
 
 /// Tracks the currently active tool/mode
