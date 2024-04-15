@@ -28,13 +28,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
-int __isOSVersionAtLeast(int major, int minor, int patch) {
-    NSOperatingSystemVersion version;
-    version.majorVersion = major;
-    version.minorVersion = minor;
-    version.patchVersion = patch;
-    return [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:version];
-};
+// https://stackoverflow.com/a/5337804
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 @interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>
 
@@ -134,7 +129,7 @@ int __isOSVersionAtLeast(int major, int minor, int patch) {
     [self.view addGestureRecognizer:self.movePanGR];
     
     // Feedback
-    if (@available(iOS 10.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
     
@@ -437,7 +432,7 @@ int __isOSVersionAtLeast(int major, int minor, int patch) {
 }
 
 - (UIWindow *)statusWindow {
-    if (!@available(iOS 16, *)) {
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"16.0")) {
         NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
         return [UIApplication.sharedApplication valueForKey:statusBarString];
     }
@@ -692,7 +687,7 @@ int __isOSVersionAtLeast(int major, int minor, int patch) {
 }
 
 - (void)actuateSelectionChangedFeedback {
-    if (@available(iOS 10.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
         [self.selectionFBG selectionChanged];
     }
 }
@@ -832,7 +827,7 @@ int __isOSVersionAtLeast(int major, int minor, int patch) {
 
 - (CGRect)viewSafeArea {
     CGRect safeArea = self.view.bounds;
-    if (@available(iOS 11.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"11.0")) {
         safeArea = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
     }
 
@@ -840,7 +835,7 @@ int __isOSVersionAtLeast(int major, int minor, int patch) {
 }
 
 - (void)viewSafeAreaInsetsDidChange {
-    if (@available(iOS 11.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"11.0")) {
         [super viewSafeAreaInsetsDidChange];
 
         CGRect safeArea = [self viewSafeArea];
@@ -924,7 +919,7 @@ int __isOSVersionAtLeast(int major, int minor, int patch) {
     [self.view.window makeKeyWindow];
 
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
-    if (!@available(iOS 13, *)) {
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0")) {
         [self statusWindow].windowLevel = self.view.window.windowLevel + 1.0;
     }
     
