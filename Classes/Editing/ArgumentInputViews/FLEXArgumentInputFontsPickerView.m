@@ -46,7 +46,6 @@
     UIPickerView *fontsPicker = [UIPickerView new];
     fontsPicker.dataSource = self;
     fontsPicker.delegate = self;
-    fontsPicker.showsSelectionIndicator = YES;
     return fontsPicker;
 }
 
