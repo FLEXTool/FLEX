@@ -74,25 +74,24 @@
     //───────────────────────────────────────────//
     //     UNUserNotificationCenter Delegate     //
     //───────────────────────────────────────────//
-    
-    if (@available(iOS 10.0, *)) {
-        Class unusernc = UNUserNotificationCenter.self;
-        auto orig_unusernc_setDelegate = (void(*)(id, SEL, id))class_getMethodImplementation(
-            unusernc, @selector(setDelegate:)
-        );
-        
-        IMP unusernc_setDelegate = imp_implementationWithBlock(^(id _, id delegate) {
-            [self hookUNUserNotificationCenterDelegateClass:[delegate class]];
-            orig_unusernc_setDelegate(_, @selector(setDelegate:), delegate);
-        });
-        
-        class_replaceMethod(
-            unusernc,
-            @selector(setDelegate:),
-            unusernc_setDelegate,
-            "v@:@"
-        );
-    }
+
+    Class unusernc = UNUserNotificationCenter.self;
+    auto orig_unusernc_setDelegate = (void(*)(id, SEL, id))class_getMethodImplementation(
+        unusernc, @selector(setDelegate:)
+    );
+
+    IMP unusernc_setDelegate = imp_implementationWithBlock(^(id _, id delegate) {
+        [self hookUNUserNotificationCenterDelegateClass:[delegate class]];
+        orig_unusernc_setDelegate(_, @selector(setDelegate:), delegate);
+    });
+
+    class_replaceMethod(
+        unusernc,
+        @selector(setDelegate:),
+        unusernc_setDelegate,
+        "v@:@"
+    );
+
 }
 
 + (void)hookAppDelegateClass:(Class)appDelegate {
@@ -298,37 +297,32 @@ static NSError *_apnsRegistrationError = nil;
     };
     
     // User Notifications //
-    
-    if (@available(iOS 10.0, *)) {
-        self.userNotifications = [FLEXMutableListSection list:FLEXAPNSViewController.userNotifications
-            cellConfiguration:^(UITableViewCell *cell, UNNotification *notif, NSInteger row) {
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                
-                // Subtitle is 'subtitle \n date'
-                NSString *dateString = [NSDateFormatter flex_stringFrom:notif.date format:FLEXDateFormatPreciseClock];
-                NSString *subtitle = notif.request.content.subtitle;
-                subtitle = subtitle ? [NSString stringWithFormat:@"%@\n%@", subtitle, dateString] : dateString;
-            
-                cell.textLabel.text = notif.request.content.title;
-                cell.detailTextLabel.text = subtitle;
-            }
-            filterMatcher:^BOOL(NSString *filterText, NSDictionary *notif) {
-                return [notif.description localizedCaseInsensitiveContainsString:filterText];
-            }
-        ];
-        
-        self.userNotifications.customTitle = @"Push Notifications";
-        self.userNotifications.selectionHandler = ^(UIViewController *host, UNNotification *notif) {
-            [host.navigationController pushViewController:[
-                FLEXObjectExplorerFactory explorerViewControllerForObject:notif.request
-            ] animated:YES];
-        };
-        
-        return @[self.deviceToken, self.remoteNotifications, self.userNotifications];
-    }
-    else {
-        return @[self.deviceToken, self.remoteNotifications];
-    }
+
+    self.userNotifications = [FLEXMutableListSection list:FLEXAPNSViewController.userNotifications
+        cellConfiguration:^(UITableViewCell *cell, UNNotification *notif, NSInteger row) {
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
+            // Subtitle is 'subtitle \n date'
+            NSString *dateString = [NSDateFormatter flex_stringFrom:notif.date format:FLEXDateFormatPreciseClock];
+            NSString *subtitle = notif.request.content.subtitle;
+            subtitle = subtitle ? [NSString stringWithFormat:@"%@\n%@", subtitle, dateString] : dateString;
+
+            cell.textLabel.text = notif.request.content.title;
+            cell.detailTextLabel.text = subtitle;
+        }
+        filterMatcher:^BOOL(NSString *filterText, NSDictionary *notif) {
+            return [notif.description localizedCaseInsensitiveContainsString:filterText];
+        }
+    ];
+
+    self.userNotifications.customTitle = @"Push Notifications";
+    self.userNotifications.selectionHandler = ^(UIViewController *host, UNNotification *notif) {
+        [host.navigationController pushViewController:[
+            FLEXObjectExplorerFactory explorerViewControllerForObject:notif.request
+        ] animated:YES];
+    };
+
+    return @[self.deviceToken, self.remoteNotifications, self.userNotifications];
 }
 
 - (void)reloadData {

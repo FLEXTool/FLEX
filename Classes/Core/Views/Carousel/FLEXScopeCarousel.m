@@ -34,11 +34,8 @@ NSString * const kCarouselCellReuseIdentifier = @"kCarouselCellReuseIdentifier";
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.translatesAutoresizingMaskIntoConstraints = YES;
         _dynamicTypeHandlers = [NSMutableArray new];
-        
-        CGSize itemSize = CGSizeZero;
-        if (@available(iOS 10.0, *)) {
-            itemSize = UICollectionViewFlowLayoutAutomaticSize;
-        }
+
+        CGSize itemSize = UICollectionViewFlowLayoutAutomaticSize;
 
         // Collection view layout
         UICollectionViewFlowLayout *layout = ({

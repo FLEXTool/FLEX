@@ -384,11 +384,9 @@
         self.append.properties(@[
             @"delegate"
         ]).forClass(SafariVC);
-        if (@available(iOS 10.0, *)) {
-            self.append.properties(@[
-                @"preferredBarTintColor", @"preferredControlTintColor"
-            ]).forClass(SafariVC);
-        }
+        self.append.properties(@[
+            @"preferredBarTintColor", @"preferredControlTintColor"
+        ]).forClass(SafariVC);
         if (@available(iOS 11.0, *)) {
             self.append.properties(@[
                 @"configuration", @"dismissButtonStyle"

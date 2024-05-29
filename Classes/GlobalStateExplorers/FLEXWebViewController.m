@@ -23,10 +23,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         WKWebViewConfiguration *configuration = [WKWebViewConfiguration new];
-
-        if (@available(iOS 10.0, *)) {
-            configuration.dataDetectorTypes = WKDataDetectorTypeLink;
-        }
+        configuration.dataDetectorTypes = WKDataDetectorTypeLink;
 
         self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
         self.webView.navigationDelegate = self;
