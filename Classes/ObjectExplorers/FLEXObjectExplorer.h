@@ -71,3 +71,12 @@
 - (void)reloadClassHierarchy;
 
 @end
+
+
+@interface FLEXObjectExplorer (Reflex)
+
+/// Do not enable this property manually; Reflex will flip the switch when it is loaded.
+/// If you wish, you may \e disable it manually.
+@property (nonatomic, class) BOOL reflexAvailable;
+
+@end

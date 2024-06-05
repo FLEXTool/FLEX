@@ -19,6 +19,41 @@
 
 @implementation FLEXArgumentInputStructView
 
+static NSMutableDictionary<NSString *, NSArray<NSString *> *> *structFieldNameRegistrar = nil;
++ (void)initialize {
+    if (self == [FLEXArgumentInputStructView class]) {
+        structFieldNameRegistrar = [NSMutableDictionary new];
+        [self registerDefaultFieldNames];
+    }
+}
+
++ (void)registerDefaultFieldNames {
+    NSDictionary *defaults = @{
+        @(@encode(CGRect)):             @[@"CGPoint origin", @"CGSize size"],
+        @(@encode(CGPoint)):            @[@"CGFloat x", @"CGFloat y"],
+        @(@encode(CGSize)):             @[@"CGFloat width", @"CGFloat height"],
+        @(@encode(CGVector)):           @[@"CGFloat dx", @"CGFloat dy"],
+        @(@encode(UIEdgeInsets)):       @[@"CGFloat top", @"CGFloat left", @"CGFloat bottom", @"CGFloat right"],
+        @(@encode(UIOffset)):           @[@"CGFloat horizontal", @"CGFloat vertical"],
+        @(@encode(NSRange)):            @[@"NSUInteger location", @"NSUInteger length"],
+        @(@encode(CATransform3D)):      @[@"CGFloat m11", @"CGFloat m12", @"CGFloat m13", @"CGFloat m14",
+                                          @"CGFloat m21", @"CGFloat m22", @"CGFloat m23", @"CGFloat m24",
+                                          @"CGFloat m31", @"CGFloat m32", @"CGFloat m33", @"CGFloat m34",
+                                          @"CGFloat m41", @"CGFloat m42", @"CGFloat m43", @"CGFloat m44"],
+        @(@encode(CGAffineTransform)):  @[@"CGFloat a", @"CGFloat b",
+                                          @"CGFloat c", @"CGFloat d",
+                                          @"CGFloat tx", @"CGFloat ty"],
+    };
+    
+    [structFieldNameRegistrar addEntriesFromDictionary:defaults];
+    
+    if (@available(iOS 11.0, *)) {
+        structFieldNameRegistrar[@(@encode(NSDirectionalEdgeInsets))] = @[
+            @"CGFloat top", @"CGFloat leading", @"CGFloat bottom", @"CGFloat trailing"
+        ];
+    }
+}
+
 - (instancetype)initWithArgumentTypeEncoding:(const char *)typeEncoding {
     self = [super initWithArgumentTypeEncoding:typeEncoding];
     if (self) {
@@ -181,40 +216,13 @@
     return NO;
 }
 
++ (void)registerFieldNames:(NSArray<NSString *> *)names forTypeEncoding:(NSString *)typeEncoding {
+    NSParameterAssert(typeEncoding); NSParameterAssert(names);
+    structFieldNameRegistrar[typeEncoding] = names;
+}
+
 + (NSArray<NSString *> *)customFieldTitlesForTypeEncoding:(const char *)typeEncoding {
-    NSArray<NSString *> *customTitles = nil;
-    if (strcmp(typeEncoding, @encode(CGRect)) == 0) {
-        customTitles = @[@"CGPoint origin", @"CGSize size"];
-    } else if (strcmp(typeEncoding, @encode(CGPoint)) == 0) {
-        customTitles = @[@"CGFloat x", @"CGFloat y"];
-    } else if (strcmp(typeEncoding, @encode(CGSize)) == 0) {
-        customTitles = @[@"CGFloat width", @"CGFloat height"];
-    } else if (strcmp(typeEncoding, @encode(CGVector)) == 0) {
-        customTitles = @[@"CGFloat dx", @"CGFloat dy"];
-    } else if (strcmp(typeEncoding, @encode(UIEdgeInsets)) == 0) {
-        customTitles = @[@"CGFloat top", @"CGFloat left", @"CGFloat bottom", @"CGFloat right"];
-    } else if (strcmp(typeEncoding, @encode(UIOffset)) == 0) {
-        customTitles = @[@"CGFloat horizontal", @"CGFloat vertical"];
-    } else if (strcmp(typeEncoding, @encode(NSRange)) == 0) {
-        customTitles = @[@"NSUInteger location", @"NSUInteger length"];
-    } else if (strcmp(typeEncoding, @encode(CATransform3D)) == 0) {
-        customTitles = @[@"CGFloat m11", @"CGFloat m12", @"CGFloat m13", @"CGFloat m14",
-                         @"CGFloat m21", @"CGFloat m22", @"CGFloat m23", @"CGFloat m24",
-                         @"CGFloat m31", @"CGFloat m32", @"CGFloat m33", @"CGFloat m34",
-                         @"CGFloat m41", @"CGFloat m42", @"CGFloat m43", @"CGFloat m44"];
-    } else if (strcmp(typeEncoding, @encode(CGAffineTransform)) == 0) {
-        customTitles = @[@"CGFloat a", @"CGFloat b",
-                         @"CGFloat c", @"CGFloat d",
-                         @"CGFloat tx", @"CGFloat ty"];
-    } else {
-        if (@available(iOS 11.0, *)) {
-            if (strcmp(typeEncoding, @encode(NSDirectionalEdgeInsets)) == 0) {
-                customTitles = @[@"CGFloat top", @"CGFloat leading",
-                                 @"CGFloat bottom", @"CGFloat trailing"];
-            }
-        }
-    }
-    return customTitles;
+    return structFieldNameRegistrar[@(typeEncoding)];
 }
 
 @end

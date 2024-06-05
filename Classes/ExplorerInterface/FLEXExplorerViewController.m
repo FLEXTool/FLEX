@@ -129,6 +129,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     if (@available(iOS 10.0, *)) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
+    
+    // Observe keyboard to move self out of the way
+    [NSNotificationCenter.defaultCenter
+        addObserver:self
+        selector:@selector(keyboardShown:)
+        name:UIKeyboardWillShowNotification
+        object:nil
+    ];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -162,7 +170,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     UIViewController *viewControllerToAsk = [self viewControllerForRotationAndOrientation];
     UIInterfaceOrientationMask supportedOrientations = FLEXUtility.infoPlistSupportedInterfaceOrientationsMask;
-    if (viewControllerToAsk && ![viewControllerToAsk isKindOfClass:[self class]]) {
+    // We check its class by name because using isKindOfClass will fail for the same class defined
+    // twice in the runtime; and the goal here is to avoid calling -supportedInterfaceOrientations
+    // recursively when I'm inspecting FLEX with itself from a tweak dylib
+    if (viewControllerToAsk && ![NSStringFromClass([viewControllerToAsk class]) hasPrefix:@"FLEX"]) {
         supportedOrientations = [viewControllerToAsk supportedInterfaceOrientations];
     }
     
@@ -375,6 +386,21 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return [self.view convertRect:frameInWindow fromView:nil];
 }
 
+- (void)keyboardShown:(NSNotification *)notif {
+    CGRect keyboardFrame = [notif.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGRect toolbarFrame = self.explorerToolbar.frame;
+    
+    if (CGRectGetMinY(keyboardFrame) < CGRectGetMaxY(toolbarFrame)) {
+        toolbarFrame.origin.y = keyboardFrame.origin.y - toolbarFrame.size.height;
+        // Subtract a little more, to ignore accessory input views
+        toolbarFrame.origin.y -= 50;
+        
+        [UIView animateWithDuration:0.5 delay:0 usingSpringWithDamping:1 initialSpringVelocity:0.5
+                            options:UIViewAnimationOptionCurveEaseOut animations:^{
+            [self updateToolbarPositionWithUnconstrainedFrame:toolbarFrame];
+        } completion:nil];
+    }
+}
 
 #pragma mark - Toolbar Buttons
 
@@ -403,8 +429,12 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (UIWindow *)statusWindow {
-    NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
-    return [UIApplication.sharedApplication valueForKey:statusBarString];
+    if (!@available(iOS 16, *)) {
+        NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
+        return [UIApplication.sharedApplication valueForKey:statusBarString];
+    }
+    
+    return nil;
 }
 
 - (void)recentButtonTapped:(FLEXExplorerToolbarItem *)sender {
@@ -436,7 +466,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     toolbar.moveItem.selected = self.currentMode == FLEXExplorerModeMove;
     
     // Recent only enabled when we have a last active tab
-    toolbar.recentItem.enabled = FLEXTabList.sharedList.activeTab != nil;
+    if (!self.presentedViewController) {
+        toolbar.recentItem.enabled = FLEXTabList.sharedList.activeTab != nil;
+    } else {
+        toolbar.recentItem.enabled = NO;
+    }
 }
 
 
@@ -818,31 +852,34 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 #pragma mark - Touch Handling
 
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates {
-    BOOL shouldReceiveTouch = NO;
-    
     CGPoint pointInLocalCoordinates = [self.view convertPoint:pointInWindowCoordinates fromView:nil];
     
-    // Always if it's on the toolbar
-    if (CGRectContainsPoint(self.explorerToolbar.frame, pointInLocalCoordinates)) {
-        shouldReceiveTouch = YES;
+    // If we have a modal presented, is it in the modal?
+    if (self.presentedViewController) {
+        UIView *presentedView = self.presentedViewController.view;
+        CGPoint pipvc = [presentedView convertPoint:pointInLocalCoordinates fromView:self.view];
+        UIView *hit = [presentedView hitTest:pipvc withEvent:nil];
+        if (hit != nil) {
+            return YES;
+        }
     }
     
     // Always if we're in selection mode
-    if (!shouldReceiveTouch && self.currentMode == FLEXExplorerModeSelect) {
-        shouldReceiveTouch = YES;
+    if (self.currentMode == FLEXExplorerModeSelect) {
+        return YES;
     }
     
     // Always in move mode too
-    if (!shouldReceiveTouch && self.currentMode == FLEXExplorerModeMove) {
-        shouldReceiveTouch = YES;
+    if (self.currentMode == FLEXExplorerModeMove) {
+        return YES;
     }
     
-    // Always if we have a modal presented
-    if (!shouldReceiveTouch && self.presentedViewController) {
-        shouldReceiveTouch = YES;
+    // Always if it's on the toolbar
+    if (CGRectContainsPoint(self.explorerToolbar.frame, pointInLocalCoordinates)) {
+        return YES;
     }
     
-    return shouldReceiveTouch;
+    return NO;
 }
 
 
@@ -888,8 +925,14 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     // up in case we start replacing them again in the future
     self.appMenuItems = UIMenuController.sharedMenuController.menuItems;
     
+    [self updateButtonStates];
+    
     // Show the view controller
-    [super presentViewController:toPresent animated:animated completion:completion];
+    [super presentViewController:toPresent animated:animated completion:^{
+        [self updateButtonStates];
+        
+        if (completion) completion();
+    }];
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion {    
@@ -910,7 +953,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     
     [self updateButtonStates];
     
-    [super dismissViewControllerAnimated:animated completion:completion];
+    [super dismissViewControllerAnimated:animated completion:^{
+        [self updateButtonStates];
+        
+        if (completion) completion();
+    }];
 }
 
 - (BOOL)wantsWindowToBecomeKey {

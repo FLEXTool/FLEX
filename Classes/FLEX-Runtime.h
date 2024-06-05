@@ -7,6 +7,7 @@
 //
 
 #import "FLEXObjcInternal.h"
+#import "FLEXSwiftInternal.h"
 #import "FLEXRuntimeSafety.h"
 #import "FLEXBlockDescription.h"
 #import "FLEXTypeEncodingParser.h"
@@ -20,6 +21,7 @@
 #import "FLEXPropertyAttributes.h"
 #import "FLEXRuntime+Compare.h"
 #import "FLEXRuntime+UIKitHelpers.h"
+#import "FLEXMetadataExtras.h"
 
 #import "FLEXProtocolBuilder.h"
 #import "FLEXClassBuilder.h"

@@ -14,6 +14,13 @@
 #import "NSUserDefaults+FLEX.h"
 #import "OSCache.h"
 
+#define Synchronized(queue, obj) ({ \
+    __block id __synchronized_retval = nil; \
+    dispatch_sync(queue, ^{ __synchronized_retval = obj; }); \
+    __synchronized_retval; \
+})
+    
+
 NSString *const kFLEXNetworkRecorderNewTransactionNotification = @"kFLEXNetworkRecorderNewTransactionNotification";
 NSString *const kFLEXNetworkRecorderTransactionUpdatedNotification = @"kFLEXNetworkRecorderTransactionUpdatedNotification";
 NSString *const kFLEXNetworkRecorderUserInfoTransactionKey = @"transaction";
@@ -84,15 +91,15 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
 }
 
 - (NSArray<FLEXHTTPTransaction *> *)HTTPTransactions {
-    return self.orderedHTTPTransactions.copy;
+    return Synchronized(self.queue, self.orderedHTTPTransactions.copy);
 }
 
 - (NSArray<FLEXWebsocketTransaction *> *)websocketTransactions {
-    return self.orderedWSTransactions.copy;
+    return Synchronized(self.queue, self.orderedWSTransactions.copy);
 }
 
 - (NSArray<FLEXFirebaseTransaction *> *)firebaseTransactions {
-    return self.orderedFirebaseTransactions.copy;
+    return Synchronized(self.queue, self.orderedFirebaseTransactions.copy);
 }
 
 - (NSData *)cachedResponseBodyForTransaction:(FLEXHTTPTransaction *)transaction {

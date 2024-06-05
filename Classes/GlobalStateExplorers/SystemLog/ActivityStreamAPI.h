@@ -26,7 +26,7 @@
  *
  * See <os/object.h> for details.
  */
-#if !TARGET_OS_MACCATALYST
+#if !TARGET_OS_MACCATALYST && !__has_include(<xpc/xpc.h>)
 #if OS_OBJECT_USE_OBJC
 OS_OBJECT_DECL(xpc_object);
 #else

@@ -109,4 +109,10 @@
     _retainer = nil;
 }
 
+- (NSString *)debugDescription {
+    return [NSString stringWithFormat:@"<%@: %@>",
+        [self class], self.reference
+    ];
+}
+
 @end

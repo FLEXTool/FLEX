@@ -21,4 +21,7 @@
 /// Useful when deciding whether to edit or explore a property, ivar, or NSUserDefaults value.
 + (BOOL)canEditFieldWithTypeEncoding:(const char *)typeEncoding currentValue:(id)currentValue;
 
+/// Enable displaying ivar names for custom struct types
++ (void)registerFieldNames:(NSArray<NSString *> *)names forTypeEncoding:(NSString *)typeEncoding;
+
 @end

@@ -79,7 +79,7 @@
     return @"";
 }
 
-- (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13)) {
+- (NSArray<UIMenuElement *> *)menuItemsForRow:(NSInteger)row sender:(UIViewController *)sender API_AVAILABLE(ios(13.0)) {
     NSArray<NSString *> *copyItems = [self copyMenuItemsForRow:row];
     NSAssert(copyItems.count % 2 == 0, @"copyMenuItemsForRow: should return an even list");
     

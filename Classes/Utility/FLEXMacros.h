@@ -9,6 +9,11 @@
 #ifndef FLEXMacros_h
 #define FLEXMacros_h
 
+#ifndef __cplusplus
+#ifndef auto
+#define auto __auto_type
+#endif
+#endif
 
 #define flex_keywordify class NSObject;
 #define ctor flex_keywordify __attribute__((constructor)) void __flex_ctor_##__LINE__()

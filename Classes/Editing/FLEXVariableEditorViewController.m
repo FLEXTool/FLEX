@@ -37,7 +37,7 @@
         _commitHandler = onCommit;
         [NSNotificationCenter.defaultCenter
             addObserver:self selector:@selector(keyboardDidShow:)
-            name:UIKeyboardDidShowNotification object:nil
+            name:UIKeyboardWillShowNotification object:nil
         ];
         [NSNotificationCenter.defaultCenter
             addObserver:self selector:@selector(keyboardWillHide:)

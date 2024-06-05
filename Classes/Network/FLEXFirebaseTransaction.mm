@@ -15,9 +15,6 @@ typedef std::string (*ReturnsString)(void *);
 @implementation FLEXFirebaseSetDataInfo
 
 + (instancetype)data:(NSDictionary *)data merge:(NSNumber *)merge mergeFields:(NSArray *)mergeFields {
-    NSParameterAssert(data);
-    NSParameterAssert(merge || mergeFields);
-
     FLEXFirebaseSetDataInfo *info = [self new];
     info->_documentData = data;
     info->_merge = merge;

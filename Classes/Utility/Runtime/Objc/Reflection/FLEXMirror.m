@@ -45,64 +45,65 @@
 }
 
 - (NSString *)description {
-    NSString *type = self.isClass ? @"metaclass" : @"class";
-    return [NSString
-        stringWithFormat:@"<%@ %@=%@, %lu properties, %lu ivars, %lu methods, %lu protocols>",
+    return [NSString stringWithFormat:@"<%@ %@=%@>",
         NSStringFromClass(self.class),
-        type,
-        self.className,
-        (unsigned long)self.properties.count,
-        (unsigned long)self.ivars.count,
-        (unsigned long)self.methods.count,
-        (unsigned long)self.protocols.count
+        self.isClass ? @"metaclass" : @"class",
+        self.className
     ];
 }
 
 - (void)examine {
-    // cls is a metaclass if self.value is a class
-    Class cls = object_getClass(self.value);
-    
-    unsigned int pcount, mcount, ivcount, pccount;
-    objc_property_t *objcproperties     = class_copyPropertyList(cls, &pcount);
-    Protocol*__unsafe_unretained *procs = class_copyProtocolList(cls, &pccount);
-    Method *objcmethods                 = class_copyMethodList(cls, &mcount);
-    Ivar *objcivars                     = class_copyIvarList(cls, &ivcount);
-    
+    BOOL isClass = object_isClass(self.value);
+    Class cls  = isClass ? self.value : object_getClass(self.value);
+    Class meta = object_getClass(cls);
     _className = NSStringFromClass(cls);
-    _isClass   = class_isMetaClass(cls); // or object_isClass(self.value)
+    _isClass   = isClass;
     
-    NSMutableArray *properties = [NSMutableArray new];
-    for (int i = 0; i < pcount; i++)
-        [properties addObject:[FLEXProperty property:objcproperties[i]]];
-    _properties = properties;
+    unsigned int pcount, cpcount, mcount, cmcount, ivcount, pccount;
+    Ivar *objcIvars                       = class_copyIvarList(cls, &ivcount);
+    Method *objcMethods                   = class_copyMethodList(cls, &mcount);
+    Method *objcClsMethods                = class_copyMethodList(meta, &cmcount);
+    objc_property_t *objcProperties       = class_copyPropertyList(cls, &pcount);
+    objc_property_t *objcClsProperties    = class_copyPropertyList(meta, &cpcount);
+    Protocol *__unsafe_unretained *protos = class_copyProtocolList(cls, &pccount);
     
-    NSMutableArray *methods = [NSMutableArray new];
-    for (int i = 0; i < mcount; i++)
-        [methods addObject:[FLEXMethod method:objcmethods[i]]];
-    _methods = methods;
+    _ivars = [NSArray flex_forEachUpTo:ivcount map:^id(NSUInteger i) {
+        return [FLEXIvar ivar:objcIvars[i]];
+    }];
     
-    NSMutableArray *ivars = [NSMutableArray new];
-    for (int i = 0; i < ivcount; i++)
-        [ivars addObject:[FLEXIvar ivar:objcivars[i]]];
-    _ivars = ivars;
+    _methods = [NSArray flex_forEachUpTo:mcount map:^id(NSUInteger i) {
+        return [FLEXMethod method:objcMethods[i] isInstanceMethod:YES];
+    }];
+    _classMethods = [NSArray flex_forEachUpTo:cmcount map:^id(NSUInteger i) {
+        return [FLEXMethod method:objcClsMethods[i] isInstanceMethod:NO];
+    }];
     
-    NSMutableArray *protocols = [NSMutableArray new];
-    for (int i = 0; i < pccount; i++)
-        [protocols addObject:[FLEXProtocol protocol:procs[i]]];
-    _protocols = protocols;
+    _properties = [NSArray flex_forEachUpTo:pcount map:^id(NSUInteger i) {
+        return [FLEXProperty property:objcProperties[i] onClass:cls];
+    }];
+    _classProperties = [NSArray flex_forEachUpTo:cpcount map:^id(NSUInteger i) {
+        return [FLEXProperty property:objcClsProperties[i] onClass:meta];
+    }];
+    
+    _protocols = [NSArray flex_forEachUpTo:pccount map:^id(NSUInteger i) {
+        return [FLEXProtocol protocol:protos[i]];
+    }];
     
     // Cleanup
-    free(objcproperties);
-    free(objcmethods);
-    free(objcivars);
-    free(procs);
-    procs = NULL;
+    free(objcClsProperties);
+    free(objcProperties);
+    free(objcClsMethods);
+    free(objcMethods);
+    free(objcIvars);
+    free(protos);
+    protos = NULL;
 }
 
 #pragma mark Misc
 
 - (FLEXMirror *)superMirror {
-    return [FLEXMirror reflect:[self.value superclass]];
+    Class cls = _isClass ? _value : object_getClass(_value);
+    return [FLEXMirror reflect:class_getSuperclass(cls)];
 }
 
 @end
@@ -121,8 +122,16 @@
     return [self filter:self.methods forName:name];
 }
 
+- (FLEXMethod *)classMethodNamed:(NSString *)name {
+    return [self filter:self.classMethods forName:name];
+}
+
 - (FLEXProperty *)propertyNamed:(NSString *)name {
     return [self filter:self.properties forName:name];
+}
+
+- (FLEXProperty *)classPropertyNamed:(NSString *)name {
+    return [self filter:self.classProperties forName:name];
 }
 
 - (FLEXIvar *)ivarNamed:(NSString *)name {

@@ -158,7 +158,7 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
 }
 
 + (instancetype)subclassesOfClassWithName:(NSString *)className {
-    NSArray<FLEXObjectRef *> *references = [FLEXHeapEnumerator subclassesOfClassWithName:className];
+    NSArray<FLEXObjectRef *> *references = [FLEXRuntimeUtility subclassesOfClassWithName:className];
     FLEXObjectListViewController *controller = [[self alloc] initWithReferences:references];
     controller.title = [NSString stringWithFormat:@"Subclasses of %@ (%@)",
         className, @(references.count)
@@ -168,15 +168,6 @@ typedef NS_ENUM(NSUInteger, FLEXObjectReferenceSection) {
 }
 
 + (instancetype)objectsWithReferencesToObject:(id)object retained:(BOOL)retain {
-    static Class SwiftObjectClass = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        SwiftObjectClass = NSClassFromString(@"SwiftObject");
-        if (!SwiftObjectClass) {
-            SwiftObjectClass = NSClassFromString(@"Swift._SwiftObject");
-        }
-    });
-
     NSArray<FLEXObjectRef *> *instances = [FLEXHeapEnumerator
         objectsWithReferencesToObject:object retained:retain
     ];

@@ -28,6 +28,9 @@ typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionHandler)(void(^handler)(NSAr
 /// Shows a simple alert with one button which says "Dismiss"
 + (void)showAlert:(NSString * _Nullable)title message:(NSString * _Nullable)message from:(UIViewController *)viewController;
 
+/// Shows a simple alert with no buttons and only a title, for half a second
++ (void)showQuickAlert:(NSString *)title from:(UIViewController *)viewController;
+
 /// Construct and display an alert
 + (void)makeAlert:(FLEXAlertBuilder)block showFrom:(UIViewController *)viewController;
 /// Construct and display an action sheet-style alert
@@ -68,8 +71,11 @@ typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionHandler)(void(^handler)(NSAr
 @property (nonatomic, readonly) FLEXAlertActionStringProperty title;
 /// Make the action destructive. It appears with red text.
 @property (nonatomic, readonly) FLEXAlertActionProperty destructiveStyle;
-/// Make the action cancel-style. It appears with a bolder font.
+/// Make the action cancel-style. It sometimes appears with a bolder font.
 @property (nonatomic, readonly) FLEXAlertActionProperty cancelStyle;
+/// Make the action the preferred action. It appears with a bolder font.
+/// The first action that is set as preferred will be used as the preferred action.
+@property (nonatomic, readonly) FLEXAlertActionProperty preferred;
 /// Enable or disable the action. Enabled by default.
 @property (nonatomic, readonly) FLEXAlertActionBOOLProperty enabled;
 /// Give the button an action. The action takes an array of text field strings.

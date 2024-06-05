@@ -27,6 +27,8 @@
 	</dict>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>NSPhotoLibraryAddUsageDescription</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Save images</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

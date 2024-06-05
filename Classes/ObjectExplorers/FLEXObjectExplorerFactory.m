@@ -10,6 +10,7 @@
 #import "FLEXGlobalsViewController.h"
 #import "FLEXClassShortcuts.h"
 #import "FLEXViewShortcuts.h"
+#import "FLEXWindowShortcuts.h"
 #import "FLEXViewControllerShortcuts.h"
 #import "FLEXUIAppShortcuts.h"
 #import "FLEXImageShortcuts.h"
@@ -48,6 +49,7 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
             ClassKey(UIViewController) : [FLEXViewControllerShortcuts class],
             ClassKey(UIApplication)    : [FLEXUIAppShortcuts class],
             ClassKey(UIView)           : [FLEXViewShortcuts class],
+            ClassKey(UIWindow)         : [FLEXWindowShortcuts class],
             ClassKey(UIImage)          : [FLEXImageShortcuts class],
             ClassKey(CALayer)          : [FLEXLayerShortcuts class],
             ClassKey(UIColor)          : [FLEXColorPreviewSection class],
@@ -180,7 +182,7 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
             return [self explorerViewControllerForObject:UIDevice.currentDevice];
         case FLEXGlobalsRowPasteboard:
             return [self explorerViewControllerForObject:UIPasteboard.generalPasteboard];
-            case FLEXGlobalsRowURLSession:
+        case FLEXGlobalsRowURLSession:
             return [self explorerViewControllerForObject:NSURLSession.sharedSession];
         case FLEXGlobalsRowURLCache:
             return [self explorerViewControllerForObject:NSURLCache.sharedURLCache];
@@ -215,8 +217,22 @@ static NSMutableDictionary<id<NSCopying>, Class> *classesToRegisteredSections = 
 
             return nil;
         }
-        default: return nil;
+        
+        case FLEXGlobalsRowNetworkHistory:
+        case FLEXGlobalsRowSystemLog:
+        case FLEXGlobalsRowLiveObjects:
+        case FLEXGlobalsRowAddressInspector:
+        case FLEXGlobalsRowCookies:
+        case FLEXGlobalsRowBrowseRuntime:
+        case FLEXGlobalsRowAppKeychainItems:
+        case FLEXGlobalsRowPushNotifications:
+        case FLEXGlobalsRowBrowseBundle:
+        case FLEXGlobalsRowBrowseContainer:
+        case FLEXGlobalsRowCount:
+            return nil;
     }
+    
+    return nil;
 }
 
 + (FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {

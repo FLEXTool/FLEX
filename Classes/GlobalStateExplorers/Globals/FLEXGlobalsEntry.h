@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, FLEXGlobalsRow) {
     FLEXGlobalsRowCookies,
     FLEXGlobalsRowBrowseRuntime,
     FLEXGlobalsRowAppKeychainItems,
+    FLEXGlobalsRowPushNotifications,
     FLEXGlobalsRowAppDelegate,
     FLEXGlobalsRowRootViewController,
     FLEXGlobalsRowUserDefaults,

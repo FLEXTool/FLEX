@@ -10,4 +10,7 @@
 
 @interface FLEXArgumentInputStructView : FLEXArgumentInputView
 
+/// Enable displaying ivar names for custom struct types
++ (void)registerFieldNames:(NSArray<NSString *> *)names forTypeEncoding:(NSString *)typeEncoding;
+
 @end

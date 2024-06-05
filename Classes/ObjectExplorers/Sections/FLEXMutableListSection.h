@@ -55,4 +55,3 @@ typedef void (^FLEXMutableListCellForElement)(__kindof UITableViewCell *cell, id
 - (void)mutate:(void(^)(NSMutableArray *list))block;
 
 @end
-

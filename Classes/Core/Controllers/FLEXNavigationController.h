@@ -16,4 +16,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface UINavigationController (FLEXObjectExploring)
+
+/// Push an object explorer view controller onto the navigation stack
+- (void)pushExplorerForObject:(id)object;
+/// Push an object explorer view controller onto the navigation stack
+- (void)pushExplorerForObject:(id)object animated:(BOOL)animated;
+
+@end
+
 NS_ASSUME_NONNULL_END

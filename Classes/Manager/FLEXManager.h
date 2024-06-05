@@ -23,11 +23,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Programmatically dismiss anything presented by FLEX, leaving only the toolbar visible.
 - (void)dismissAnyPresentedTools:(void (^_Nullable)(void))completion;
+
 /// Programmatically present something on top of the FLEX toolbar.
 /// This method will automatically dismiss any currently presented tool,
 /// so you do not need to call \c dismissAnyPresentedTools: yourself.
 - (void)presentTool:(UINavigationController *(^)(void))viewControllerFuture
          completion:(void (^_Nullable)(void))completion;
+
+/// Programmatically presents a new navigation controller with the given view controller.
+/// The completion block is passed this new navigation controller.
+- (void)presentEmbeddedTool:(UIViewController *)viewController
+                 completion:(void (^_Nullable)(UINavigationController *))completion;
+
+/// Programmatically presents a new navigation controller exploring the given object.
+/// The completion block is passed this new navigation controller.
+- (void)presentObjectExplorer:(id)object completion:(void (^_Nullable)(UINavigationController *))completion;
 
 /// Use this to present the explorer in a specific scene when the one
 /// it chooses by default is not the one you wish to display it in.

@@ -332,13 +332,13 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
                 make.title(@"Network Monitor Disabled");
                 make.message(@"You must enable network monitoring to proceed.");
                 
-                make.button(@"Turn On").handler(^(NSArray<NSString *> *strings) {
+                make.button(@"Turn On").preferred().handler(^(NSArray<NSString *> *strings) {
                     FLEXNetworkObserver.enabled = YES;
                     [host.navigationController pushViewController:[
                         self globalsEntryViewController:row
                     ] animated:YES];
-                }).cancelStyle();
-                make.button(@"Dismiss");
+                });
+                make.button(@"Dismiss").cancelStyle();
             } showFrom:host];
         }
     };

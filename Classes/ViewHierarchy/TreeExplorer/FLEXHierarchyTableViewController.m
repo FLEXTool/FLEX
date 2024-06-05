@@ -24,7 +24,9 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 @interface FLEXHierarchyTableViewController ()
 
 @property (nonatomic) NSArray<UIView *> *allViews;
-@property (nonatomic) NSMapTable<UIView *, NSNumber *> *depthsForViews;
+/// Map of view's address to its depth
+/// @((uintptr_t)(__bridge void *)view) -> depth
+@property (nonatomic) NSMapTable<NSNumber *, NSNumber *> *depthsForViews;
 @property (nonatomic) NSArray<UIView *> *viewsAtTap;
 @property (nonatomic) NSArray<UIView *> *displayedViews;
 @property (nonatomic, readonly) BOOL showScopeBar;
@@ -46,7 +48,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 - (instancetype)initWithViews:(NSArray<UIView *> *)allViews
                    viewsAtTap:(NSArray<UIView *> *)viewsAtTap
                  selectedView:(UIView *)selectedView
-                       depths:(NSMapTable<UIView *, NSNumber *> *)depthsForViews {
+                       depths:(NSMapTable<NSNumber *, NSNumber *> *)depthsForViews {
     NSParameterAssert(allViews);
     NSParameterAssert(depthsForViews.count == allViews.count);
 
@@ -135,7 +137,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
             tryView = tryView.superview;
             depth++;
         }
-        depths[(id)view] = @(depth);
+        depths[@((uintptr_t)(__bridge void *)view)] = @(depth);
     }
 
     return depths;
@@ -223,7 +225,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     cell.textLabel.text = [FLEXUtility descriptionForView:view includingFrame:NO];
     cell.detailTextLabel.text = [FLEXUtility detailDescriptionForView:view];
     cell.randomColorTag = [FLEXUtility consistentRandomColorForObject:view];
-    cell.viewDepth = self.depthsForViews[view].integerValue;
+    cell.viewDepth = self.depthsForViews[@((uintptr_t)(__bridge void *)view)].integerValue;
     cell.indicatedViewColor = view.backgroundColor;
 
     if (view.isHidden || view.alpha < 0.01) {
