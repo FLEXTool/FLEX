@@ -88,6 +88,10 @@
 @implementation FHSView (Snapshotting)
 
 + (UIImage *)drawView:(UIView *)view {
+    if (CGRectIsEmpty(view.bounds)) {
+        return [UIImage new];
+    }
+
     CGSize size = view.bounds.size;
     CGRect bounds = view.bounds;
     CGFloat minUnit = 1.f / UIScreen.mainScreen.scale;
