@@ -339,10 +339,7 @@
 
         cell.accessoryType        = UITableViewCellAccessoryDisclosureIndicator;
         cell.textLabel.text       = self.filteredClasses[indexPath.row];
-        if (@available(iOS 10, *)) {
-            cell.detailTextLabel.text = summary.length ? summary : nil;
-        }
-
+        cell.detailTextLabel.text = summary.length ? summary : nil;
     }
     else {
         @throw NSInternalInconsistencyException;

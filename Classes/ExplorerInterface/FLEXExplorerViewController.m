@@ -126,10 +126,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.view addGestureRecognizer:self.movePanGR];
     
     // Feedback
-    if (@available(iOS 10.0, *)) {
-        _selectionFBG = [UISelectionFeedbackGenerator new];
-    }
-    
+    _selectionFBG = [UISelectionFeedbackGenerator new];
+
     // Observe keyboard to move self out of the way
     [NSNotificationCenter.defaultCenter
         addObserver:self
