@@ -8,7 +8,6 @@
 
 #import "FLEXTableViewController.h"
 #import "FLEXGlobalsEntry.h"
-#import "FLEXFileBrowserSearchOperation.h"
 
 @interface FLEXFileBrowserController : FLEXTableViewController <FLEXGlobalsEntry>
 
