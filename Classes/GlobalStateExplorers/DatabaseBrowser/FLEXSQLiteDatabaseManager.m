@@ -17,6 +17,13 @@
 kQuery(TABLENAMES, @"SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
 kQuery(ROWIDS, @"SELECT rowid FROM \"%@\" ORDER BY rowid ASC");
 
+#if SQLITE_HAS_CODEC
+SQLITE_API int sqlite3_key(
+    sqlite3 *db,
+    const void *pKey, int nKey
+    );
+#endif
+
 @interface FLEXSQLiteDatabaseManager ()
 @property (nonatomic) sqlite3 *db;
 @property (nonatomic, copy) NSString *path;
