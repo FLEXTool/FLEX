@@ -15,6 +15,7 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXObjectExplorerViewController.h"
 #import <mach-o/loader.h>
+#import "FLEXFileBrowserSearchOperation.h"
 
 @interface FLEXFileBrowserTableViewCell : UITableViewCell
 @end

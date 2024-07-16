@@ -33,6 +33,10 @@ generate_headers() {
 #    "Classes/ObjectExplorers/**/*.h", "Classes/Editing/**/*.h",
 #    "Classes/Utility/FLEXMacros.h", "Classes/Utility/Categories/*.h",
 #    "Classes/Utility/FLEXAlert.h", "Classes/Utility/FLEXResources.h"
+#    "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcut.h",
+#    "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcutsSection.h",
+#    "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h",
+#    "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h"
 
 rm -rf Classes/Headers
 mkdir -p Classes/Headers
@@ -58,6 +62,7 @@ makeheader "Classes/Utility/FLEXResources.h"
 makeheader "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcut.h"
 makeheader "Classes/ObjectExplorers/Sections/Shortcuts/FLEXShortcutsSection.h"
 makeheader "Classes/GlobalStateExplorers/Globals/FLEXGlobalsEntry.h"
+makeheader "Classes/GlobalStateExplorers/FileBrowser/FLEXFileBrowserController.h"
 
 # Print all folders in Classes for use in Package.swift
 for folder in `find "Classes" -type d`; do
