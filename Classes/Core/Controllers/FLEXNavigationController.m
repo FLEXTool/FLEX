@@ -209,6 +209,8 @@
             [self setToolbarHidden:NO animated:YES];
         } else if (yTranslation < -20) {
             [self setToolbarHidden:YES animated:YES];
+        } else {
+            [self setToolbarHidden:NO animated:YES];
         }
     }
 }
