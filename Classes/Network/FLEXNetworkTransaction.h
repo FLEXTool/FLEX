@@ -90,7 +90,7 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 @property (nonatomic) NSTimeInterval latency;
 @property (nonatomic) NSTimeInterval duration;
 
-/// Populated lazily. Handles both normal HTTPBody data and HTTPBodyStreams.
+/// Populated lazily, nullable. Handles both normal HTTPBody data and HTTPBodyStreams.
 @property (nonatomic, readonly) NSData *cachedRequestBody;
 
 @end
