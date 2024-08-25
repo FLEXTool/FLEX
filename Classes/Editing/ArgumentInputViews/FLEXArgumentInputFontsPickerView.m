@@ -46,7 +46,13 @@
     UIPickerView *fontsPicker = [UIPickerView new];
     fontsPicker.dataSource = self;
     fontsPicker.delegate = self;
+    
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    // Deprecated in iOS 13; from then on, selection is always shown
     fontsPicker.showsSelectionIndicator = YES;
+    #pragma clang diagnostic pop
+
     return fontsPicker;
 }
 
