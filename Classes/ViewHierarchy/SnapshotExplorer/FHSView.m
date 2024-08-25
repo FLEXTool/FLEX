@@ -93,7 +93,6 @@
     }
 
     CGSize size = view.bounds.size;
-    CGRect bounds = view.bounds;
     CGFloat minUnit = 1.f / UIScreen.mainScreen.scale;
 
     // Every drawn view must not have 0 width or height

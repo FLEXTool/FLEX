@@ -14,7 +14,7 @@
 #import <objc/runtime.h>
 #import <zlib.h>
 
-BOOL FLEXConstructorsShouldRun() {
+BOOL FLEXConstructorsShouldRun(void) {
     #if FLEX_DISABLE_CTORS
         return NO;
     #else
