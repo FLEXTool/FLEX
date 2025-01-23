@@ -170,7 +170,7 @@ Add the following flags to  to **Other Warnings Flags** in **Build Settings:**
 
 ### Swift Package Manager
 
-Include the dependency in the `depdendencies` value of your `Package.swift`
+Include the dependency in the `dependencies` value of your `Package.swift`
 
 ``` swift
 dependencies: [
