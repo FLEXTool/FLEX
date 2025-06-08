@@ -28,6 +28,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     FLEXExplorerModeMove
 };
 
+// https://stackoverflow.com/a/5337804
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 @interface FLEXExplorerViewController () <FLEXHierarchyDelegate, UIAdaptivePresentationControllerDelegate>
 
 /// Tracks the currently active tool/mode
@@ -126,7 +129,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.view addGestureRecognizer:self.movePanGR];
     
     // Feedback
-    if (@available(iOS 10.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
         _selectionFBG = [UISelectionFeedbackGenerator new];
     }
     
@@ -429,7 +432,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (UIWindow *)statusWindow {
-    if (!@available(iOS 16, *)) {
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"16.0")) {
         NSString *statusBarString = [NSString stringWithFormat:@"%@arWindow", @"_statusB"];
         return [UIApplication.sharedApplication valueForKey:statusBarString];
     }
@@ -684,7 +687,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)actuateSelectionChangedFeedback {
-    if (@available(iOS 10.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.0")) {
         [self.selectionFBG selectionChanged];
     }
 }
@@ -824,7 +827,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (CGRect)viewSafeArea {
     CGRect safeArea = self.view.bounds;
-    if (@available(iOS 11.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"11.0")) {
         safeArea = UIEdgeInsetsInsetRect(self.view.bounds, self.view.safeAreaInsets);
     }
 
@@ -832,7 +835,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)viewSafeAreaInsetsDidChange {
-    if (@available(iOS 11.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"11.0")) {
         [super viewSafeAreaInsetsDidChange];
 
         CGRect safeArea = [self viewSafeArea];
@@ -916,7 +919,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self.view.window makeKeyWindow];
 
     // Move the status bar on top of FLEX so we can get scroll to top behavior for taps.
-    if (!@available(iOS 13, *)) {
+    if (!SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0")) {
         [self statusWindow].windowLevel = self.view.window.windowLevel + 1.0;
     }
     
