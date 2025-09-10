@@ -94,8 +94,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    // Force LTR layout for FLEX explorer interface
+    if (@available(iOS 9.0, *)) {
+        self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    }
+
     // Toolbar
     _explorerToolbar = [FLEXExplorerToolbar new];
+    if (@available(iOS 9.0, *)) {
+        _explorerToolbar.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    }
 
     // Start the toolbar off below any bars that may be at the top of the view.
     CGFloat toolbarOriginY = NSUserDefaults.standardUserDefaults.flex_toolbarTopMargin;
