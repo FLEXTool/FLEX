@@ -61,6 +61,11 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Force LTR layout for network transaction detail screen
+    self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.tableView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.navigationController.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
 
     [NSNotificationCenter.defaultCenter addObserver:self
         selector:@selector(handleTransactionUpdatedNotification:)
@@ -156,6 +161,11 @@ typedef UIViewController *(^FLEXNetworkDetailRowSelectionFuture)(void);
     cell.textLabel.attributedText = [[self class] attributedTextForRow:rowModel];
     cell.accessoryType = rowModel.selectionFuture ? UITableViewCellAccessoryDisclosureIndicator : UITableViewCellAccessoryNone;
     cell.selectionStyle = rowModel.selectionFuture ? UITableViewCellSelectionStyleDefault : UITableViewCellSelectionStyleNone;
+    
+    // Force LTR layout for network detail cells
+    cell.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    cell.contentView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    cell.textLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
 
     return cell;
 }

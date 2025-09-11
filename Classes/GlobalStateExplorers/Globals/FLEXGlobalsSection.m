@@ -72,6 +72,15 @@
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.textLabel.font = UIFont.flex_defaultTableCellFont;
     cell.textLabel.text = self.rows[row].entryNameFuture();
+    
+    // Force LTR layout for FLEX table view cells
+    if (@available(iOS 9.0, *)) {
+        cell.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        cell.contentView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        if (cell.textLabel) {
+            cell.textLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        }
+    }
 }
 
 @end
