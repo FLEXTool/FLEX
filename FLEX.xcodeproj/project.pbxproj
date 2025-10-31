@@ -74,7 +74,6 @@
 		3A4C95101B5B21410088C3F2 /* FLEXMethodCallingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C948B1B5B21410088C3F2 /* FLEXMethodCallingViewController.m */; };
 		3A4C95221B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C949F1B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C95231B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94A01B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m */; };
-		3A4C95241B5B21410088C3F2 /* FLEXFileBrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94A11B5B21410088C3F2 /* FLEXFileBrowserController.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C95251B5B21410088C3F2 /* FLEXFileBrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94A21B5B21410088C3F2 /* FLEXFileBrowserController.m */; };
 		3A4C95261B5B21410088C3F2 /* FLEXGlobalsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94A31B5B21410088C3F2 /* FLEXGlobalsViewController.h */; };
 		3A4C95271B5B21410088C3F2 /* FLEXGlobalsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94A41B5B21410088C3F2 /* FLEXGlobalsViewController.m */; };
@@ -112,6 +111,7 @@
 		71E1C2192307FBB800F5032A /* FLEXKeychainQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E1C2112307FBB700F5032A /* FLEXKeychainQuery.m */; };
 		7349FD6A22B93CDF00051810 /* FLEXColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 7349FD6822B93CDF00051810 /* FLEXColor.h */; };
 		7349FD6B22B93CDF00051810 /* FLEXColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349FD6922B93CDF00051810 /* FLEXColor.m */; };
+		73902C712EB5691200B386D3 /* FLEXFileBrowserController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94A11B5B21410088C3F2 /* FLEXFileBrowserController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		779B1ECE1C0C4D7C001F5E49 /* FLEXDatabaseManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 779B1EC01C0C4D7C001F5E49 /* FLEXDatabaseManager.h */; };
 		779B1ED01C0C4D7C001F5E49 /* FLEXMultiColumnTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = 779B1EC21C0C4D7C001F5E49 /* FLEXMultiColumnTableView.h */; };
 		779B1ED11C0C4D7C001F5E49 /* FLEXMultiColumnTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 779B1EC31C0C4D7C001F5E49 /* FLEXMultiColumnTableView.m */; };
@@ -1527,6 +1527,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73902C712EB5691200B386D3 /* FLEXFileBrowserController.h in Headers */,
 				779B1EDA1C0C4D7C001F5E49 /* FLEXTableListViewController.h in Headers */,
 				C3531BA523E88A2100A184AD /* FLEXNavigationController.h in Headers */,
 				3A4C94ED1B5B21410088C3F2 /* FLEXArgumentInputColorView.h in Headers */,
@@ -1692,7 +1693,6 @@
 				3A4C95401B5B21410088C3F2 /* FLEXNetworkTransactionCell.h in Headers */,
 				C30D2960261FAE9E00D89649 /* FLEXNSStringShortcuts.h in Headers */,
 				C398626523AD70F5007E6793 /* FLEXKBToolbarButton.h in Headers */,
-				3A4C95241B5B21410088C3F2 /* FLEXFileBrowserController.h in Headers */,
 				C31D93E423E38CBE005517BF /* FLEXBlockShortcuts.h in Headers */,
 				94AAF0381BAF2E1F00DE8760 /* FLEXKeyboardHelpViewController.h in Headers */,
 				71E1C2152307FBB800F5032A /* FLEXKeychainQuery.h in Headers */,
