@@ -33,7 +33,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.repeatingLogExampleTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] (_) in
             if let self = self {
                 NSLog("Example log \(self.exampleLogSent)")
-        
+
+                // Test Swift print redirection
+                print("Swift print test \(self.exampleLogSent)")
+                print("Multiple line")
+                print("Swift print test")
+                debugPrint("Debug print test \(self.exampleLogSent)")
+
                 self.exampleLogSent += 1
                 if self.exampleLogSent > self.exampleLogLimit {
                     self.repeatingLogExampleTimer.invalidate()

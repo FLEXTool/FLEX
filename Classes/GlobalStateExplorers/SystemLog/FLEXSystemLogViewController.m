@@ -17,6 +17,7 @@
 #import "UIBarButtonItem+FLEX.h"
 #import "NSUserDefaults+FLEX.h"
 #import "flex_fishhook.h"
+#import "FLEXSwiftPrintRedirector.h"
 #import <dlfcn.h>
 
 @interface FLEXSystemLogViewController ()
@@ -110,6 +111,15 @@ static BOOL my_os_log_shim_enabled(void *addr) {
     } else {
         _logController = [FLEXASLLogController withUpdateHandler:logHandler];
     }
+
+    // Enable Swift print redirection
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [FLEXSwiftPrintRedirector setMessageHandler:^(FLEXSystemLogMessage *message) {
+            [self handleUpdateWithNewMessages:@[message]];
+        }];
+        [FLEXSwiftPrintRedirector enableSwiftPrintRedirection];
+    });
 
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.title = @"Waiting for Logs...";
