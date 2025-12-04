@@ -166,6 +166,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Force LTR layout for FLEX globals menu
+    if (@available(iOS 9.0, *)) {
+        self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        self.tableView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    }
 
     self.title = @"💪  FLEX";
     self.showsSearchBar = YES;

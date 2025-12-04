@@ -29,26 +29,47 @@ NSString * const kFLEXNetworkTransactionCellIdentifier = @"kFLEXNetworkTransacti
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+        // Force LTR layout for FLEX network cells
+        if (@available(iOS 9.0, *)) {
+            self.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+            self.contentView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        }
 
         self.nameLabel = [UILabel new];
         self.nameLabel.font = UIFont.flex_defaultTableCellFont;
+        self.nameLabel.textAlignment = NSTextAlignmentLeft;
+        if (@available(iOS 9.0, *)) {
+            self.nameLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        }
         [self.contentView addSubview:self.nameLabel];
 
         self.pathLabel = [UILabel new];
         self.pathLabel.font = UIFont.flex_defaultTableCellFont;
         self.pathLabel.textColor = [UIColor colorWithWhite:0.4 alpha:1.0];
         self.pathLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+        self.pathLabel.textAlignment = NSTextAlignmentLeft;
+        if (@available(iOS 9.0, *)) {
+            self.pathLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        }
         [self.contentView addSubview:self.pathLabel];
 
         self.thumbnailImageView = [UIImageView new];
         self.thumbnailImageView.layer.borderColor = UIColor.blackColor.CGColor;
         self.thumbnailImageView.layer.borderWidth = 1.0;
         self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFit;
+        if (@available(iOS 9.0, *)) {
+            self.thumbnailImageView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        }
         [self.contentView addSubview:self.thumbnailImageView];
 
         self.transactionDetailsLabel = [UILabel new];
         self.transactionDetailsLabel.font = [UIFont systemFontOfSize:10.0];
         self.transactionDetailsLabel.textColor = [UIColor colorWithWhite:0.65 alpha:1.0];
+        self.transactionDetailsLabel.textAlignment = NSTextAlignmentLeft;
+        if (@available(iOS 9.0, *)) {
+            self.transactionDetailsLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        }
         [self.contentView addSubview:self.transactionDetailsLabel];
     }
     return self;

@@ -38,7 +38,8 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     self.activatesSearchBarAutomatically = YES;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.showsCarousel = YES;
-    self.carousel.items = @[@"A→Z", @"Count", @"Size"];
+    // Use RTL-aware arrow that flips direction in Arabic/RTL layouts
+    self.carousel.items = @[@"A\u2192Z", @"Count", @"Size"];
     
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];

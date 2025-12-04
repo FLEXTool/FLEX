@@ -56,6 +56,11 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Force LTR layout for network history screen
+    self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.tableView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.navigationController.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
 
     self.showsSearchBar = YES;
     self.pinSearchBar = YES;

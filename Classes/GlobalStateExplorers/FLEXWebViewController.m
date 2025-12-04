@@ -74,7 +74,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Force LTR layout for technical content
+    self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.navigationController.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    
     [self.view addSubview:self.webView];
+    self.webView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
     self.webView.frame = self.view.bounds;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
