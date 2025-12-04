@@ -40,6 +40,8 @@ extern BOOL FLEXConstructorsShouldRun(void);
 /// A macro to return from the current procedure if we don't want to run constructors
 #define FLEX_EXIT_IF_NO_CTORS() if (!FLEXConstructorsShouldRun()) return;
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 /// Rounds down to the nearest "point" coordinate
 NS_INLINE CGFloat FLEXFloor(CGFloat x) {
     return floor(UIScreen.mainScreen.scale * (x)) / UIScreen.mainScreen.scale;
@@ -49,6 +51,7 @@ NS_INLINE CGFloat FLEXFloor(CGFloat x) {
 NS_INLINE CGFloat FLEXPointsToPixels(CGFloat points) {
     return points / UIScreen.mainScreen.scale;
 }
+#pragma clang diagnostic pop
 
 /// Creates a CGRect with all members rounded down to the nearest "point" coordinate
 NS_INLINE CGRect FLEXRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {
