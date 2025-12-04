@@ -9,7 +9,6 @@
 #import "FLEXManager+Extensibility.h"
 #import "FLEXManager+Private.h"
 #import "FLEXNavigationController.h"
-#import "FLEXObjectExplorerFactory.h"
 #import "FLEXKeyboardShortcutManager.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXNetworkMITMViewController.h"
@@ -17,62 +16,35 @@
 #import "FLEXFileBrowserController.h"
 #import "FLEXArgumentInputStructView.h"
 #import "FLEXUtility.h"
+#import "FLEXUserGlobalEntriesContainer.h"
 
 @interface FLEXManager (ExtensibilityPrivate)
 @property (nonatomic, readonly) UIViewController *topViewController;
 @end
 
 @implementation FLEXManager (Extensibility)
+@dynamic globalEntriesContainer;
 
 #pragma mark - Globals Screen Entries
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock {
-    NSParameterAssert(entryName);
-    NSParameterAssert(objectFutureBlock);
-    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
-
-    entryName = entryName.copy;
-    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString *{
-        return entryName;
-    } viewControllerFuture:^UIViewController *{
-        return [FLEXObjectExplorerFactory explorerViewControllerForObject:objectFutureBlock()];
-    }];
-
-    [self.userGlobalEntries addObject:entry];
+    [self.globalEntriesContainer registerGlobalEntryWithName:entryName objectFutureBlock:objectFutureBlock];
 }
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock {
-    NSParameterAssert(entryName);
-    NSParameterAssert(viewControllerFutureBlock);
-    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
-
-    entryName = entryName.copy;
-    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString *{
-        return entryName;
-    } viewControllerFuture:^UIViewController *{
-        UIViewController *viewController = viewControllerFutureBlock();
-        NSCAssert(viewController, @"'%@' entry returned nil viewController. viewControllerFutureBlock should never return nil.", entryName);
-        return viewController;
-    }];
-
-    [self.userGlobalEntries addObject:entry];
+    [self.globalEntriesContainer registerGlobalEntryWithName:entryName viewControllerFutureBlock:viewControllerFutureBlock];
 }
 
 - (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction {
-    NSParameterAssert(entryName);
-    NSParameterAssert(rowSelectedAction);
-    NSAssert(NSThread.isMainThread, @"This method must be called from the main thread.");
-    
-    entryName = entryName.copy;
-    FLEXGlobalsEntry *entry = [FLEXGlobalsEntry entryWithNameFuture:^NSString * _Nonnull{
-        return entryName;
-    } action:rowSelectedAction];
-    
-    [self.userGlobalEntries addObject:entry];
+    [self.globalEntriesContainer registerGlobalEntryWithName:entryName action:rowSelectedAction];
+}
+
+- (void)registerNestedGlobalEntryWithName:(NSString *)entryName handler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler {
+    [self.globalEntriesContainer registerNestedGlobalEntryWithName:entryName handler:nestedEntriesHandler];
 }
 
 - (void)clearGlobalEntries {
-    [self.userGlobalEntries removeAllObjects];
+    [self.globalEntriesContainer clearGlobalEntries];
 }
 
 
