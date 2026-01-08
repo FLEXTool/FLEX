@@ -8,38 +8,18 @@
 
 #import "CALayer+FLEX.h"
 
-@interface CALayer (Private)
-@property (nonatomic) BOOL continuousCorners;
-@end
-
 @implementation CALayer (FLEX)
 
-static BOOL respondsToContinuousCorners = NO;
-
-+ (void)load {
-    respondsToContinuousCorners = [CALayer
-        instancesRespondToSelector:@selector(setContinuousCorners:)
-    ];
-}
-
 - (BOOL)flex_continuousCorners {
-    if (respondsToContinuousCorners) {
-        return self.continuousCorners;
+    if (@available(iOS 13, *)) {
+        return self.cornerCurve == kCACornerCurveContinuous;
     }
-    
     return NO;
 }
 
 - (void)setFlex_continuousCorners:(BOOL)enabled {
-    if (respondsToContinuousCorners) {
-        if (@available(iOS 13, *)) {
-            self.cornerCurve = kCACornerCurveContinuous;
-        } else {
-            self.continuousCorners = enabled;
-//            self.masksToBounds = NO;
-    //        self.allowsEdgeAntialiasing = YES;
-    //        self.edgeAntialiasingMask = kCALayerLeftEdge | kCALayerRightEdge | kCALayerTopEdge | kCALayerBottomEdge;
-        }
+    if (@available(iOS 13, *)) {
+        self.cornerCurve = enabled ? kCACornerCurveContinuous : kCACornerCurveCircular;
     }
 }
 
