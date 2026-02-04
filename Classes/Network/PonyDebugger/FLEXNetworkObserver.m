@@ -487,16 +487,28 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
 
         const int numSelectors = sizeof(selectors) / sizeof(SEL);
 
-        Class *classes = NULL;
-        int numClasses = objc_getClassList(NULL, 0);
+        // T251807321: Use objc_copyClassList to get a fresh snapshot of registered classes.
+        // This is safer than objc_getClassList because it returns an owned copy that won't
+        // have stale pointers from classes that were unloaded during iteration.
+        unsigned int numClasses = 0;
+        Class *classes = objc_copyClassList(&numClasses);
 
-        if (numClasses > 0) {
-            classes = (__unsafe_unretained Class *)malloc(sizeof(Class) * numClasses);
-            numClasses = objc_getClassList(classes, numClasses);
-            for (NSInteger classIndex = 0; classIndex < numClasses; ++classIndex) {
+        if (numClasses > 0 && classes != NULL) {
+            for (unsigned int classIndex = 0; classIndex < numClasses; ++classIndex) {
                 Class class = classes[classIndex];
 
-                if (class == [FLEXNetworkObserver class]) {
+                if (class == NULL || class == [FLEXNetworkObserver class]) {
+                    continue;
+                }
+
+                // Skip metaclasses - we only want to swizzle instance methods on regular classes.
+                if (class_isMetaClass(class)) {
+                    continue;
+                }
+
+                // Double-check the class is still registered by looking it up by name.
+                const char *className = class_getName(class);
+                if (className == NULL || objc_lookUpClass(className) != class) {
                     continue;
                 }
 
@@ -507,6 +519,10 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                 // to the class. That's why we iterate through the method list.
                 unsigned int methodCount = 0;
                 Method *methods = class_copyMethodList(class, &methodCount);
+                if (methods == NULL) {
+                    continue;
+                }
+
                 BOOL matchingSelectorFound = NO;
                 for (unsigned int methodIndex = 0; methodIndex < methodCount; methodIndex++) {
                     for (int selectorIndex = 0; selectorIndex < numSelectors; ++selectorIndex) {
@@ -520,10 +536,10 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
                         break;
                     }
                 }
-                
+
                 free(methods);
             }
-            
+
             free(classes);
         }
 
@@ -536,7 +552,7 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
         Class URLSession = [NSURLSession class];
         [self injectIntoNSURLSessionAsyncDataAndDownloadTaskMethods:URLSession];
         [self injectIntoNSURLSessionAsyncUploadTaskMethods:URLSession];
-        
+
         // At some point, NSURLSession.sharedSession became an __NSURLSessionLocal,
         // which is not the class returned by [NSURLSession class], of course
         Class URLSessionLocal = NSClassFromString(@"__NSURLSessionLocal");
@@ -544,7 +560,7 @@ static FIRDocumentReference * _logos_method$_ungrouped$FIRCollectionReference$ad
             [self injectIntoNSURLSessionAsyncDataAndDownloadTaskMethods:URLSessionLocal];
             [self injectIntoNSURLSessionAsyncUploadTaskMethods:URLSessionLocal];
         }
-        
+
         if (@available(iOS 13.0, *)) {
             Class websocketTask = NSClassFromString(@"__NSURLSessionWebSocketTask");
             [self injectWebsocketSendMessage:websocketTask];
