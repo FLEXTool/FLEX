@@ -23,6 +23,8 @@
 
 @property (nonatomic, readonly) FLEXMutableListSection<FLEXSystemLogMessage *> *logMessages;
 @property (nonatomic, readonly) id<FLEXLogController> logController;
+@property (nonatomic) BOOL isPaused;
+@property (nonatomic, strong) UIBarButtonItem *pauseButton;
 
 @end
 
@@ -121,13 +123,19 @@ static BOOL my_os_log_shim_enabled(void *addr) {
         target:self
         action:@selector(scrollToLastRow)
     ];
+    self.pauseButton = [[UIBarButtonItem alloc]
+        initWithImage:[UIImage systemImageNamed:@"pause.fill"]
+        style:UIBarButtonItemStylePlain
+        target:self
+        action:@selector(togglePause)
+    ];
     UIBarButtonItem *settings = [UIBarButtonItem
         flex_itemWithImage:FLEXResources.gearIcon
         target:self
         action:@selector(showLogSettings)
     ];
 
-    [self addToolbarItems:@[scrollDown, settings]];
+    [self addToolbarItems:@[scrollDown, self.pauseButton, settings]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -170,6 +178,10 @@ static BOOL my_os_log_shim_enabled(void *addr) {
 #pragma mark - Private
 
 - (void)handleUpdateWithNewMessages:(NSArray<FLEXSystemLogMessage *> *)newMessages {
+    if (self.isPaused) {
+        return;
+    }
+
     self.title = [self.class globalsEntryTitle:FLEXGlobalsRowSystemLog];
 
     [self.logMessages mutate:^(NSMutableArray *list) {
@@ -196,6 +208,12 @@ static BOOL my_os_log_shim_enabled(void *addr) {
         NSIndexPath *last = [NSIndexPath indexPathForRow:numberOfRows - 1 inSection:0];
         [self.tableView scrollToRowAtIndexPath:last atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
+}
+
+- (void)togglePause {
+    self.isPaused = !self.isPaused;
+    UIImage *newIcon = self.isPaused ? [UIImage systemImageNamed:@"play.fill"] : [UIImage systemImageNamed:@"pause.fill"];
+    self.pauseButton.image = newIcon;
 }
 
 - (void)showLogSettings {
