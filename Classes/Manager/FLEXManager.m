@@ -7,6 +7,7 @@
 //
 
 #import "FLEXManager.h"
+#import "FLEXManager+Extensibility.h"
 #import "FLEXUtility.h"
 #import "FLEXExplorerViewController.h"
 #import "FLEXWindow.h"
@@ -23,6 +24,7 @@
 
 @property (nonatomic, readonly) NSMutableArray<FLEXGlobalsEntry *> *userGlobalEntries;
 @property (nonatomic, readonly) NSMutableDictionary<NSString *, FLEXCustomContentViewerFuture> *customContentTypeViewers;
+@property (nonatomic, copy, nullable) FLEXViewFilterPredicate skippedViewPredicate;
 
 @end
 
@@ -62,6 +64,7 @@
     if (!_explorerViewController) {
         _explorerViewController = [FLEXExplorerViewController new];
         _explorerViewController.delegate = self;
+        _explorerViewController.skippedViewPredicate = self.skippedViewPredicate;
     }
 
     return _explorerViewController;

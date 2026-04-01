@@ -57,6 +57,29 @@ NS_ASSUME_NONNULL_BEGIN
 /// Enable displaying ivar names for custom struct types
 + (void)registerFieldNames:(NSArray<NSString *> *)names forTypeEncoding:(NSString *)typeEncoding;
 
+#pragma mark - View Skipping
+
+/// A predicate block that returns YES if the given view should be excluded
+/// from FLEX's tap-to-select view picking. Use this to filter out overlay
+/// views, system containers, or any views you don't want selectable.
+///
+/// Example — exclude views whose class name contains certain substrings:
+/// @code
+/// [FLEXManager setSkippedViewPredicate:^BOOL(UIView *view) {
+///     NSString *className = NSStringFromClass([view class]);
+///     return [className containsString:@"FloatingBarHostingView"]
+///         || [className containsString:@"_UITabBarContainerView"];
+/// }];
+/// @endcode
+typedef BOOL(^FLEXViewFilterPredicate)(UIView *view);
+
+/// Set a predicate that determines which views are excluded from tap-to-select.
+/// The predicate is called for each candidate view; return YES to exclude it.
++ (void)setSkippedViewPredicate:(nullable FLEXViewFilterPredicate)predicate;
+
+/// Returns the current skipped-view predicate, or nil if none is set.
++ (nullable FLEXViewFilterPredicate)skippedViewPredicate;
+
 #pragma mark - Simulator Shortcuts
 
 /// Simulator keyboard shortcuts are enabled by default.
