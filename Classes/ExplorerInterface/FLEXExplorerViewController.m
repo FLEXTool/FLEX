@@ -55,6 +55,11 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// The actual views at the selection point with the deepest view last.
 @property (nonatomic) NSArray<UIView *> *viewsAtTapPoint;
 
+/// Tap-to-cycle state: repeated taps on the same point cycle through the view hierarchy.
+@property (nonatomic) CGPoint lastTapPoint;
+@property (nonatomic) NSInteger tapCycleIndex;
+@property (nonatomic) NSArray<UIView *> *viewsAtLastTapPoint;
+
 /// The view that we're currently highlighting with an overlay and displaying details for.
 @property (nonatomic) UIView *selectedView;
 
@@ -634,6 +639,21 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         // Thanks to @lascorbe for finding this: https://github.com/Flipboard/FLEX/pull/31
         CGPoint tapPointInView = [tapGR locationInView:self.view];
         CGPoint tapPointInWindow = [self.view convertPoint:tapPointInView toView:nil];
+
+        // Detect same-point re-tap (within 10pt tolerance) to cycle through views
+        static const CGFloat kSamePointThreshold = 10.0;
+        const CGFloat dx = tapPointInWindow.x - self.lastTapPoint.x;
+        const CGFloat dy = tapPointInWindow.y - self.lastTapPoint.y;
+        const BOOL isSamePoint = (dx * dx + dy * dy) <= (kSamePointThreshold * kSamePointThreshold);
+
+        if (isSamePoint && self.viewsAtLastTapPoint.count > 0) {
+            self.tapCycleIndex = (self.tapCycleIndex + 1) % self.viewsAtLastTapPoint.count;
+        } else {
+            self.tapCycleIndex = 0;
+            self.lastTapPoint = tapPointInWindow;
+            self.viewsAtLastTapPoint = nil;
+        }
+
         [self updateOutlineViewsForSelectionPoint:tapPointInWindow];
     }
 }
@@ -759,9 +779,24 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             }
         }
     }
-    
-    // Select the deepest visible view at the tap point. This generally corresponds to what the user wants to select.
-    return [self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES].lastObject;
+
+    NSArray<UIView *> *const visibleViews = [self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES];
+    if (visibleViews.count == 0) {
+        return nil;
+    }
+
+    // Cache the views array for tap-to-cycle on first tap at this point
+    if (!self.viewsAtLastTapPoint) {
+        self.viewsAtLastTapPoint = visibleViews;
+    }
+
+    // Index 0 = deepest (last element), 1 = next above, etc. Wrap around.
+    NSInteger idx = (NSInteger)visibleViews.count - 1 - self.tapCycleIndex;
+    if (idx < 0) {
+        idx = (NSInteger)visibleViews.count - 1;
+        self.tapCycleIndex = 0;
+    }
+    return visibleViews[idx];
 }
 
 - (NSArray<UIView *> *)recursiveSubviewsAtPoint:(CGPoint)pointInView
