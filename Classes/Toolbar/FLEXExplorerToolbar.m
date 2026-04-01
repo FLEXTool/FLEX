@@ -30,6 +30,8 @@
 @property (nonatomic) UILabel *selectedViewDescriptionLabel;
 
 @property (nonatomic,readwrite) UIView *backgroundView;
+@property (nonatomic) UIVisualEffectView *backgroundGlassView API_AVAILABLE(ios(26.0));
+@property (nonatomic) UIVisualEffectView *descriptionGlassView API_AVAILABLE(ios(26.0));
 
 @end
 
@@ -39,9 +41,18 @@
     self = [super initWithFrame:frame];
     if (self) {
         // Background
-        self.backgroundView = [UIView new];
-        self.backgroundView.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
-        [self addSubview:self.backgroundView];
+        if (@available(iOS 26, *)) {
+            UIGlassEffect *glassEffect = [[UIGlassEffect alloc] init];
+            self.backgroundGlassView = [[UIVisualEffectView alloc] initWithEffect:glassEffect];
+            self.backgroundGlassView.clipsToBounds = YES;
+            self.backgroundGlassView.layer.cornerRadius = 16;
+            [self addSubview:self.backgroundGlassView];
+            self.backgroundView = self.backgroundGlassView;
+        } else {
+            self.backgroundView = [UIView new];
+            self.backgroundView.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
+            [self addSubview:self.backgroundView];
+        }
 
         // Drag handle
         self.dragHandle = [UIView new];
@@ -61,14 +72,28 @@
 
         // Selected view box //
         
-        self.selectedViewDescriptionContainer = [UIView new];
-        self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor tertiaryBackgroundColorWithAlpha:0.95];
-        self.selectedViewDescriptionContainer.hidden = YES;
-        [self addSubview:self.selectedViewDescriptionContainer];
+        if (@available(iOS 26, *)) {
+            UIGlassEffect *descGlassEffect = [[UIGlassEffect alloc] init];
+            self.descriptionGlassView = [[UIVisualEffectView alloc] initWithEffect:descGlassEffect];
+            self.descriptionGlassView.clipsToBounds = YES;
+            self.descriptionGlassView.layer.cornerRadius = [[self class] descriptionContainerHeight] / 2.0;
+            self.descriptionGlassView.hidden = YES;
+            [self addSubview:self.descriptionGlassView];
+            self.selectedViewDescriptionContainer = self.descriptionGlassView;
+        } else {
+            self.selectedViewDescriptionContainer = [UIView new];
+            self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor tertiaryBackgroundColorWithAlpha:0.95];
+            self.selectedViewDescriptionContainer.hidden = YES;
+            [self addSubview:self.selectedViewDescriptionContainer];
+        }
 
         self.selectedViewDescriptionSafeAreaContainer = [UIView new];
         self.selectedViewDescriptionSafeAreaContainer.backgroundColor = UIColor.clearColor;
-        [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionSafeAreaContainer];
+        if (@available(iOS 26, *)) {
+            [self.descriptionGlassView.contentView addSubview:self.selectedViewDescriptionSafeAreaContainer];
+        } else {
+            [self.selectedViewDescriptionContainer addSubview:self.selectedViewDescriptionSafeAreaContainer];
+        }
         
         self.selectedViewColorIndicator = [UIView new];
         self.selectedViewColorIndicator.backgroundColor = UIColor.redColor;
@@ -93,16 +118,21 @@
     CGRect safeArea = [self safeArea];
     // Drag Handle
     const CGFloat kToolbarItemHeight = [[self class] toolbarItemHeight];
-    self.dragHandle.frame = CGRectMake(CGRectGetMinX(safeArea), CGRectGetMinY(safeArea), [[self class] dragHandleWidth], kToolbarItemHeight);
+    CGFloat topPadding = 0;
+    if (@available(iOS 26, *)) {
+        topPadding = [[self class] glassVerticalPadding];
+    }
+
+    self.dragHandle.frame = CGRectMake(CGRectGetMinX(safeArea), CGRectGetMinY(safeArea) + topPadding, [[self class] dragHandleWidth], kToolbarItemHeight);
     CGRect dragHandleImageFrame = self.dragHandleImageView.frame;
     dragHandleImageFrame.origin.x = FLEXFloor((self.dragHandle.frame.size.width - dragHandleImageFrame.size.width) / 2.0);
     dragHandleImageFrame.origin.y = FLEXFloor((self.dragHandle.frame.size.height - dragHandleImageFrame.size.height) / 2.0);
     self.dragHandleImageView.frame = dragHandleImageFrame;
-    
-    
+
+
     // Toolbar Items
     CGFloat originX = CGRectGetMaxX(self.dragHandle.frame);
-    CGFloat originY = CGRectGetMinY(safeArea);
+    CGFloat originY = CGRectGetMinY(safeArea) + topPadding;
     CGFloat height = kToolbarItemHeight;
     CGFloat width = FLEXFloor((CGRectGetWidth(safeArea) - CGRectGetWidth(self.dragHandle.frame)) / self.toolbarItems.count);
     for (FLEXExplorerToolbarItem *toolbarItem in self.toolbarItems) {
@@ -113,10 +143,24 @@
     // Make sure the last toolbar item goes to the edge to account for any accumulated rounding effects.
     UIView *lastToolbarItem = self.toolbarItems.lastObject.currentItem;
     CGRect lastToolbarItemFrame = lastToolbarItem.frame;
-    lastToolbarItemFrame.size.width = CGRectGetMaxX(safeArea) - lastToolbarItemFrame.origin.x;
+    CGFloat rightEdge = CGRectGetMaxX(safeArea);
+    if (@available(iOS 26, *)) {
+        const CGFloat kGlassInset = [[self class] glassHorizontalInset];
+        rightEdge = CGRectGetWidth(self.bounds) - kGlassInset;
+    }
+    lastToolbarItemFrame.size.width = rightEdge - lastToolbarItemFrame.origin.x;
     lastToolbarItem.frame = lastToolbarItemFrame;
 
-    self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), kToolbarItemHeight);
+    if (@available(iOS 26, *)) {
+        const CGFloat kGlassInset = [[self class] glassHorizontalInset];
+        const CGFloat kGlassPadding = [[self class] glassVerticalPadding];
+        self.backgroundView.frame = CGRectMake(
+            kGlassInset, 0,
+            CGRectGetWidth(self.bounds) - kGlassInset * 2, kToolbarItemHeight + kGlassPadding * 2
+        );
+    } else {
+        self.backgroundView.frame = CGRectMake(0, 0, CGRectGetWidth(self.bounds), kToolbarItemHeight);
+    }
     
     const CGFloat kSelectedViewColorDiameter = [[self class] selectedViewColorIndicatorDiameter];
     const CGFloat kDescriptionLabelHeight = [[self class] descriptionLabelHeight];
@@ -125,10 +169,19 @@
     const CGFloat kDescriptionContainerHeight = [[self class] descriptionContainerHeight];
     
     CGRect descriptionContainerFrame = CGRectZero;
-    descriptionContainerFrame.size.width = CGRectGetWidth(self.bounds);
-    descriptionContainerFrame.size.height = kDescriptionContainerHeight;
-    descriptionContainerFrame.origin.x = CGRectGetMinX(self.bounds);
-    descriptionContainerFrame.origin.y = CGRectGetMaxY(self.bounds) - kDescriptionContainerHeight;
+    if (@available(iOS 26, *)) {
+        const CGFloat kGlassInset = [[self class] glassHorizontalInset];
+        const CGFloat kGlassGap = 2;
+        descriptionContainerFrame.size.width = CGRectGetWidth(self.bounds) - kGlassInset * 2;
+        descriptionContainerFrame.size.height = kDescriptionContainerHeight;
+        descriptionContainerFrame.origin.x = kGlassInset;
+        descriptionContainerFrame.origin.y = CGRectGetMaxY(self.backgroundView.frame) + kGlassGap;
+    } else {
+        descriptionContainerFrame.size.width = CGRectGetWidth(self.bounds);
+        descriptionContainerFrame.size.height = kDescriptionContainerHeight;
+        descriptionContainerFrame.origin.x = CGRectGetMinX(self.bounds);
+        descriptionContainerFrame.origin.y = CGRectGetMaxY(self.bounds) - kDescriptionContainerHeight;
+    }
     self.selectedViewDescriptionContainer.frame = descriptionContainerFrame;
 
     CGRect descriptionSafeAreaContainerFrame = CGRectZero;
@@ -213,6 +266,14 @@
     return 44.0;
 }
 
++ (CGFloat)glassVerticalPadding {
+    return 6.0;
+}
+
++ (CGFloat)glassHorizontalInset {
+    return 4.0;
+}
+
 + (CGFloat)dragHandleWidth {
     return FLEXResources.dragHandle.size.width;
 }
@@ -241,6 +302,9 @@
     CGFloat height = 0.0;
     height += [[self class] toolbarItemHeight];
     height += [[self class] descriptionContainerHeight];
+    if (@available(iOS 26, *)) {
+        height += [[self class] glassVerticalPadding] * 2;
+    }
     return CGSizeMake(size.width, height);
 }
 
