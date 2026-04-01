@@ -768,13 +768,26 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
                                          inView:(UIView *)view
                                 skipHiddenViews:(BOOL)skipHidden {
     NSMutableArray<UIView *> *subviewsAtPoint = [NSMutableArray new];
+    BOOL (^skippedPredicate)(UIView *) = self.skippedViewPredicate;
     for (UIView *subview in view.subviews) {
         BOOL isHidden = subview.hidden || subview.alpha < 0.01;
         if (skipHidden && isHidden) {
             continue;
         }
-        
+
         BOOL subviewContainsPoint = CGRectContainsPoint(subview.frame, pointInView);
+
+        if (skippedPredicate && skippedPredicate(subview)) {
+            // Skip adding this view but still recurse into its subviews
+            if (subviewContainsPoint || !subview.clipsToBounds) {
+                CGPoint pointInSubview = [view convertPoint:pointInView toView:subview];
+                [subviewsAtPoint addObjectsFromArray:[self
+                    recursiveSubviewsAtPoint:pointInSubview inView:subview skipHiddenViews:skipHidden
+                ]];
+            }
+            continue;
+        }
+
         if (subviewContainsPoint) {
             [subviewsAtPoint addObject:subview];
         }
@@ -853,7 +866,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates {
     CGPoint pointInLocalCoordinates = [self.view convertPoint:pointInWindowCoordinates fromView:nil];
-    
+
     // If we have a modal presented, is it in the modal?
     if (self.presentedViewController) {
         UIView *presentedView = self.presentedViewController.view;
@@ -863,7 +876,20 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             return YES;
         }
     }
-    
+
+    // If the touch lands on a view matched by the skipped-view predicate,
+    // let it pass through so the view remains interactive during select/move mode.
+    if (self.skippedViewPredicate) {
+        UIWindow *appKeyWindow = [FLEXUtility appKeyWindow];
+        if (appKeyWindow) {
+            CGPoint pointInWindow = [appKeyWindow convertPoint:pointInWindowCoordinates fromView:nil];
+            UIView *hitView = [appKeyWindow hitTest:pointInWindow withEvent:nil];
+            if (hitView && self.skippedViewPredicate(hitView)) {
+                return NO;
+            }
+        }
+    }
+
     // Always if we're in selection mode
     if (self.currentMode == FLEXExplorerModeSelect) {
         return YES;
@@ -965,7 +991,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future
-                                  completion:(void (^)(void))completion {
+                                  completion:(void (^_Nullable)(void))completion {
     if (self.presentedViewController) {
         // We do NOT want to present the future; this is
         // a convenience method for toggling the SAME TOOL
@@ -976,7 +1002,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)presentTool:(UINavigationController *(^)(void))future
-         completion:(void (^)(void))completion {
+         completion:(void (^_Nullable)(void))completion {
     if (self.presentedViewController) {
         // If a tool is already presented, dismiss it first
         [self dismissViewControllerAnimated:YES completion:^{
