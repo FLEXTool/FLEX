@@ -63,12 +63,22 @@
         [self addSubview:self.dragHandle];
         
         // Buttons
-        self.globalsItem   = [FLEXExplorerToolbarItem itemWithTitle:@"menu" image:FLEXResources.globalsIcon];
-        self.hierarchyItem = [FLEXExplorerToolbarItem itemWithTitle:@"views" image:FLEXResources.hierarchyIcon];
-        self.selectItem    = [FLEXExplorerToolbarItem itemWithTitle:@"select" image:FLEXResources.selectIcon];
-        self.recentItem    = [FLEXExplorerToolbarItem itemWithTitle:@"recent" image:FLEXResources.recentIcon];
-        self.moveItem      = [FLEXExplorerToolbarItem itemWithTitle:@"move" image:FLEXResources.moveIcon sibling:self.recentItem];
-        self.closeItem     = [FLEXExplorerToolbarItem itemWithTitle:@"close" image:FLEXResources.closeIcon];
+        if (@available(iOS 26, *)) {
+            UIImageSymbolConfiguration *config = [UIImageSymbolConfiguration configurationWithPointSize:18 weight:UIImageSymbolWeightMedium];
+            self.globalsItem   = [FLEXExplorerToolbarItem itemWithTitle:@"menu" image:[UIImage systemImageNamed:@"wrench.fill" withConfiguration:config]];
+            self.hierarchyItem = [FLEXExplorerToolbarItem itemWithTitle:@"views" image:[UIImage systemImageNamed:@"square.3.layers.3d.top.filled" withConfiguration:config]];
+            self.selectItem    = [FLEXExplorerToolbarItem itemWithTitle:@"select" image:[UIImage systemImageNamed:@"rectangle.and.hand.point.up.left.filled" withConfiguration:config]];
+            self.recentItem    = [FLEXExplorerToolbarItem itemWithTitle:@"recent" image:[UIImage systemImageNamed:@"clock.fill" withConfiguration:config]];
+            self.moveItem      = [FLEXExplorerToolbarItem itemWithTitle:@"move" image:[UIImage systemImageNamed:@"arrow.up.and.down.and.arrow.left.and.right" withConfiguration:config] sibling:self.recentItem];
+            self.closeItem     = [FLEXExplorerToolbarItem itemWithTitle:@"close" image:[UIImage systemImageNamed:@"xmark.circle.fill" withConfiguration:config]];
+        } else {
+            self.globalsItem   = [FLEXExplorerToolbarItem itemWithTitle:@"menu" image:FLEXResources.globalsIcon];
+            self.hierarchyItem = [FLEXExplorerToolbarItem itemWithTitle:@"views" image:FLEXResources.hierarchyIcon];
+            self.selectItem    = [FLEXExplorerToolbarItem itemWithTitle:@"select" image:FLEXResources.selectIcon];
+            self.recentItem    = [FLEXExplorerToolbarItem itemWithTitle:@"recent" image:FLEXResources.recentIcon];
+            self.moveItem      = [FLEXExplorerToolbarItem itemWithTitle:@"move" image:FLEXResources.moveIcon sibling:self.recentItem];
+            self.closeItem     = [FLEXExplorerToolbarItem itemWithTitle:@"close" image:FLEXResources.closeIcon];
+        }
 
         // Selected view box //
         
