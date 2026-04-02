@@ -61,6 +61,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// The view that we're currently highlighting with an overlay and displaying details for.
 @property (nonatomic) UIView *selectedView;
 
+/// Brief visual indicator shown at the tap point, created once and reused.
+@property (nonatomic) UIView *tapIndicatorView;
+
 /// A colored transparent overlay to indicate that the view is selected.
 @property (nonatomic) UIView *selectedViewOverlay;
 
@@ -118,6 +121,13 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     [self setupToolbarGestures];
     
     // View selection
+    _tapIndicatorView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    _tapIndicatorView.backgroundColor = [UIColor colorWithRed:0 green:0.5 blue:1 alpha:0.5];
+    _tapIndicatorView.layer.cornerRadius = 10;
+    _tapIndicatorView.userInteractionEnabled = NO;
+    _tapIndicatorView.hidden = YES;
+    [self.view addSubview:_tapIndicatorView];
+
     UITapGestureRecognizer *selectionTapGR = [[UITapGestureRecognizer alloc]
         initWithTarget:self action:@selector(handleSelectionTap:)
     ];
@@ -637,6 +647,18 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         // Thanks to @lascorbe for finding this: https://github.com/Flipboard/FLEX/pull/31
         CGPoint tapPointInView = [tapGR locationInView:self.view];
         CGPoint tapPointInWindow = [self.view convertPoint:tapPointInView toView:nil];
+
+        // Show a brief visual indicator at the tap point
+        [self.tapIndicatorView.layer removeAllAnimations];
+        self.tapIndicatorView.center = tapPointInView;
+        self.tapIndicatorView.alpha = 1;
+        self.tapIndicatorView.hidden = NO;
+        [self.view bringSubviewToFront:self.tapIndicatorView];
+        [UIView animateWithDuration:0.3 delay:0.4 options:0 animations:^{
+            self.tapIndicatorView.alpha = 0;
+        } completion:^(BOOL finished) {
+            self.tapIndicatorView.hidden = YES;
+        }];
 
         [self updateOutlineViewsForSelectionPoint:tapPointInWindow];
         self.lastTapPoint = tapPointInWindow;
