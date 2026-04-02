@@ -120,7 +120,6 @@
 }
 
 
-
 #pragma mark - Shortcuts Defaults
 
 - (void)registerDefaultSimulatorShortcutWithKey:(NSString *)key modifiers:(UIKeyModifierFlags)modifiers action:(dispatch_block_t)action description:(NSString *)description {
