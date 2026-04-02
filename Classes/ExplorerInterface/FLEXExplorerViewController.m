@@ -55,6 +55,9 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// The actual views at the selection point with the deepest view last.
 @property (nonatomic) NSArray<UIView *> *viewsAtTapPoint;
 
+/// Last tap point for detecting same-point re-taps to cycle through the view hierarchy.
+@property (nonatomic) CGPoint lastTapPoint;
+
 /// The view that we're currently highlighting with an overlay and displaying details for.
 @property (nonatomic) UIView *selectedView;
 
@@ -658,6 +661,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         }];
 
         [self updateOutlineViewsForSelectionPoint:tapPointInWindow];
+        self.lastTapPoint = tapPointInWindow;
     }
 }
 
@@ -782,22 +786,86 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             }
         }
     }
-    
-    // Select the deepest visible view at the tap point. This generally corresponds to what the user wants to select.
-    return [self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES].lastObject;
+
+    NSArray<UIView *> *const visibleViews = [self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES];
+    if (visibleViews.count == 0) {
+        return nil;
+    }
+
+    // If this is a same-point re-tap and the currently selected view is in
+    // the fresh visible views, cycle to the next view up the hierarchy.
+    // Using the selected view reference instead of a cached index means we
+    // always work with the current view hierarchy, not stale state.
+    static const CGFloat kSamePointThreshold = 10.0;
+    const CGFloat dx = tapPointInWindow.x - self.lastTapPoint.x;
+    const CGFloat dy = tapPointInWindow.y - self.lastTapPoint.y;
+    const BOOL isSamePoint = (dx * dx + dy * dy) <= (kSamePointThreshold * kSamePointThreshold);
+
+    if (isSamePoint && self.selectedView) {
+        const NSUInteger currentIdx = [visibleViews indexOfObjectIdenticalTo:self.selectedView];
+        if (currentIdx != NSNotFound) {
+            // Move up the hierarchy; wrap around to the deepest view
+            return currentIdx > 0 ? visibleViews[currentIdx - 1] : visibleViews.lastObject;
+        }
+    }
+
+    // New point or no current selection: select the deepest view
+    return visibleViews.lastObject;
+}
+
+/// iOS 26 introduced several system overlay views (floating bars, context menus,
+/// passthrough containers) that sit above app content in the view hierarchy.
+/// These are almost never the views a developer wants to inspect, yet they
+/// dominate tap-to-select results — often requiring many taps to reach the
+/// actual app view underneath. Skip them by default on iOS 26+.
+static BOOL FLEXIsDefaultSkippedView(UIView *view) {
+    if (@available(iOS 26, *)) {
+        static NSSet<NSString *> *skippedSubstrings;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            skippedSubstrings = [NSSet setWithArray:@[
+                @"FloatingBarHostingView",
+                @"FloatingBarContainerView",
+                @"_UITabBarContainerView",
+                @"_UITouchPassthroughView",
+                @"_UIContextMenuContainerView",
+                @"_UIContextMenuPlatterTransitionView",
+            ]];
+        });
+        NSString *const className = NSStringFromClass([view class]);
+        for (NSString *substring in skippedSubstrings) {
+            if ([className containsString:substring]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 - (NSArray<UIView *> *)recursiveSubviewsAtPoint:(CGPoint)pointInView
                                          inView:(UIView *)view
                                 skipHiddenViews:(BOOL)skipHidden {
     NSMutableArray<UIView *> *subviewsAtPoint = [NSMutableArray new];
+    BOOL (^skippedPredicate)(UIView *) = self.skippedViewPredicate;
     for (UIView *subview in view.subviews) {
         BOOL isHidden = subview.hidden || subview.alpha < 0.01;
         if (skipHidden && isHidden) {
             continue;
         }
-        
+
         BOOL subviewContainsPoint = CGRectContainsPoint(subview.frame, pointInView);
+
+        if (FLEXIsDefaultSkippedView(subview) || (skippedPredicate && skippedPredicate(subview))) {
+            // Skip adding this view but still recurse into its subviews
+            if (subviewContainsPoint || !subview.clipsToBounds) {
+                const CGPoint pointInSubview = [view convertPoint:pointInView toView:subview];
+                [subviewsAtPoint addObjectsFromArray:[self
+                    recursiveSubviewsAtPoint:pointInSubview inView:subview skipHiddenViews:skipHidden
+                ]];
+            }
+            continue;
+        }
+
         if (subviewContainsPoint) {
             [subviewsAtPoint addObject:subview];
         }
@@ -876,7 +944,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
 - (BOOL)shouldReceiveTouchAtWindowPoint:(CGPoint)pointInWindowCoordinates {
     CGPoint pointInLocalCoordinates = [self.view convertPoint:pointInWindowCoordinates fromView:nil];
-    
+
     // If we have a modal presented, is it in the modal?
     if (self.presentedViewController) {
         UIView *presentedView = self.presentedViewController.view;
@@ -886,7 +954,22 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
             return YES;
         }
     }
-    
+
+    // If the touch lands on a view matched by the skipped-view predicate
+    // or the built-in iOS 26+ default skip list, let it pass through so
+    // the view remains interactive during select/move mode.
+    {
+        UIWindow *const appKeyWindow = [FLEXUtility appKeyWindow];
+        if (appKeyWindow) {
+            const CGPoint pointInWindow = [appKeyWindow convertPoint:pointInWindowCoordinates fromView:nil];
+            UIView *const hitView = [appKeyWindow hitTest:pointInWindow withEvent:nil];
+            if (hitView && (FLEXIsDefaultSkippedView(hitView) ||
+                            (self.skippedViewPredicate && self.skippedViewPredicate(hitView)))) {
+                return NO;
+            }
+        }
+    }
+
     // Always if we're in selection mode
     if (self.currentMode == FLEXExplorerModeSelect) {
         return YES;
@@ -988,7 +1071,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)toggleToolWithViewControllerProvider:(UINavigationController *(^)(void))future
-                                  completion:(void (^)(void))completion {
+                                  completion:(void (^_Nullable)(void))completion {
     if (self.presentedViewController) {
         // We do NOT want to present the future; this is
         // a convenience method for toggling the SAME TOOL
@@ -999,7 +1082,7 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 }
 
 - (void)presentTool:(UINavigationController *(^)(void))future
-         completion:(void (^)(void))completion {
+         completion:(void (^_Nullable)(void))completion {
     if (self.presentedViewController) {
         // If a tool is already presented, dismiss it first
         [self dismissViewControllerAnimated:YES completion:^{

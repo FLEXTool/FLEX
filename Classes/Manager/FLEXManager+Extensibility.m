@@ -20,6 +20,7 @@
 
 @interface FLEXManager (ExtensibilityPrivate)
 @property (nonatomic, readonly) UIViewController *topViewController;
+@property (nonatomic, copy, nullable) FLEXViewFilterPredicate skippedViewPredicate;
 @end
 
 @implementation FLEXManager (Extensibility)
@@ -103,6 +104,19 @@
 #else
     return NO;
 #endif
+}
+
+
+#pragma mark - View Skipping
+
++ (void)setSkippedViewPredicate:(FLEXViewFilterPredicate)predicate {
+    FLEXManager *manager = [FLEXManager sharedManager];
+    manager.skippedViewPredicate = predicate;
+    manager.explorerViewController.skippedViewPredicate = predicate;
+}
+
++ (FLEXViewFilterPredicate)skippedViewPredicate {
+    return [FLEXManager sharedManager].skippedViewPredicate;
 }
 
 

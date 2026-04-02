@@ -20,6 +20,8 @@
 @property (nonatomic, readonly, class) UIColor *highlightedBackgroundColor;
 @property (nonatomic, readonly, class) UIColor *selectedBackgroundColor;
 
+@property (nonatomic) UIView *highlightBackgroundView API_AVAILABLE(ios(26.0));
+
 @end
 
 @implementation FLEXExplorerToolbarItem
@@ -114,13 +116,41 @@
 + (id)_selectedIndicatorImage { return nil; }
 
 - (void)updateColors {
-    // Background color
-    if (self.highlighted) {
-        self.backgroundColor = self.class.highlightedBackgroundColor;
-    } else if (self.selected) {
-        self.backgroundColor = self.class.selectedBackgroundColor;
+    if (@available(iOS 26, *)) {
+        // Use an inset highlight view so the color doesn't fill edge-to-edge
+        self.backgroundColor = UIColor.clearColor;
+        if (!self.highlightBackgroundView) {
+            self.highlightBackgroundView = [UIView new];
+            self.highlightBackgroundView.layer.cornerRadius = 10;
+            self.highlightBackgroundView.userInteractionEnabled = NO;
+            [self insertSubview:self.highlightBackgroundView atIndex:0];
+        }
+
+        if (self.highlighted) {
+            self.highlightBackgroundView.backgroundColor = self.class.highlightedBackgroundColor;
+            self.highlightBackgroundView.hidden = NO;
+        } else if (self.selected) {
+            self.highlightBackgroundView.backgroundColor = self.class.selectedBackgroundColor;
+            self.highlightBackgroundView.hidden = NO;
+        } else {
+            self.highlightBackgroundView.hidden = YES;
+        }
     } else {
-        self.backgroundColor = self.class.defaultBackgroundColor;
+        if (self.highlighted) {
+            self.backgroundColor = self.class.highlightedBackgroundColor;
+        } else if (self.selected) {
+            self.backgroundColor = self.class.selectedBackgroundColor;
+        } else {
+            self.backgroundColor = self.class.defaultBackgroundColor;
+        }
+    }
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    if (@available(iOS 26, *)) {
+        const CGFloat kHorizontalInset = 4;
+        self.highlightBackgroundView.frame = CGRectInset(self.bounds, kHorizontalInset, 0);
     }
 }
 
