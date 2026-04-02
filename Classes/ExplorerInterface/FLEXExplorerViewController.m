@@ -55,10 +55,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// The actual views at the selection point with the deepest view last.
 @property (nonatomic) NSArray<UIView *> *viewsAtTapPoint;
 
-/// Tap-to-cycle state: repeated taps on the same point cycle through the view hierarchy.
+/// Last tap point for detecting same-point re-taps to cycle through the view hierarchy.
 @property (nonatomic) CGPoint lastTapPoint;
-@property (nonatomic) NSInteger tapCycleIndex;
-@property (nonatomic) NSArray<UIView *> *viewsAtLastTapPoint;
 
 /// The view that we're currently highlighting with an overlay and displaying details for.
 @property (nonatomic) UIView *selectedView;
@@ -640,21 +638,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         CGPoint tapPointInView = [tapGR locationInView:self.view];
         CGPoint tapPointInWindow = [self.view convertPoint:tapPointInView toView:nil];
 
-        // Detect same-point re-tap (within 10pt tolerance) to cycle through views
-        static const CGFloat kSamePointThreshold = 10.0;
-        const CGFloat dx = tapPointInWindow.x - self.lastTapPoint.x;
-        const CGFloat dy = tapPointInWindow.y - self.lastTapPoint.y;
-        const BOOL isSamePoint = (dx * dx + dy * dy) <= (kSamePointThreshold * kSamePointThreshold);
-
-        if (isSamePoint && self.viewsAtLastTapPoint.count > 0) {
-            self.tapCycleIndex = (self.tapCycleIndex + 1) % self.viewsAtLastTapPoint.count;
-        } else {
-            self.tapCycleIndex = 0;
-            self.lastTapPoint = tapPointInWindow;
-            self.viewsAtLastTapPoint = nil;
-        }
-
         [self updateOutlineViewsForSelectionPoint:tapPointInWindow];
+        self.lastTapPoint = tapPointInWindow;
     }
 }
 
@@ -785,18 +770,25 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         return nil;
     }
 
-    // Cache the views array for tap-to-cycle on first tap at this point
-    if (!self.viewsAtLastTapPoint) {
-        self.viewsAtLastTapPoint = visibleViews;
+    // If this is a same-point re-tap and the currently selected view is in
+    // the fresh visible views, cycle to the next view up the hierarchy.
+    // Using the selected view reference instead of a cached index means we
+    // always work with the current view hierarchy, not stale state.
+    static const CGFloat kSamePointThreshold = 10.0;
+    const CGFloat dx = tapPointInWindow.x - self.lastTapPoint.x;
+    const CGFloat dy = tapPointInWindow.y - self.lastTapPoint.y;
+    const BOOL isSamePoint = (dx * dx + dy * dy) <= (kSamePointThreshold * kSamePointThreshold);
+
+    if (isSamePoint && self.selectedView) {
+        const NSUInteger currentIdx = [visibleViews indexOfObjectIdenticalTo:self.selectedView];
+        if (currentIdx != NSNotFound) {
+            // Move up the hierarchy; wrap around to the deepest view
+            return currentIdx > 0 ? visibleViews[currentIdx - 1] : visibleViews.lastObject;
+        }
     }
 
-    // Index 0 = deepest (last element), 1 = next above, etc. Wrap around.
-    NSInteger idx = (NSInteger)visibleViews.count - 1 - self.tapCycleIndex;
-    if (idx < 0) {
-        idx = (NSInteger)visibleViews.count - 1;
-        self.tapCycleIndex = 0;
-    }
-    return visibleViews[idx];
+    // New point or no current selection: select the deepest view
+    return visibleViews.lastObject;
 }
 
 /// iOS 26 introduced several system overlay views (floating bars, context menus,
