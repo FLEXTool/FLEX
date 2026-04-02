@@ -799,6 +799,35 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     return visibleViews[idx];
 }
 
+/// iOS 26 introduced several system overlay views (floating bars, context menus,
+/// passthrough containers) that sit above app content in the view hierarchy.
+/// These are almost never the views a developer wants to inspect, yet they
+/// dominate tap-to-select results — often requiring many taps to reach the
+/// actual app view underneath. Skip them by default on iOS 26+.
+static BOOL FLEXIsDefaultSkippedView(UIView *view) {
+    if (@available(iOS 26, *)) {
+        static NSSet<NSString *> *skippedSubstrings;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            skippedSubstrings = [NSSet setWithArray:@[
+                @"FloatingBarHostingView",
+                @"FloatingBarContainerView",
+                @"_UITabBarContainerView",
+                @"_UITouchPassthroughView",
+                @"_UIContextMenuContainerView",
+                @"_UIContextMenuPlatterTransitionView",
+            ]];
+        });
+        NSString *const className = NSStringFromClass([view class]);
+        for (NSString *substring in skippedSubstrings) {
+            if ([className containsString:substring]) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
 - (NSArray<UIView *> *)recursiveSubviewsAtPoint:(CGPoint)pointInView
                                          inView:(UIView *)view
                                 skipHiddenViews:(BOOL)skipHidden {
@@ -812,10 +841,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 
         BOOL subviewContainsPoint = CGRectContainsPoint(subview.frame, pointInView);
 
-        if (skippedPredicate && skippedPredicate(subview)) {
+        if (FLEXIsDefaultSkippedView(subview) || (skippedPredicate && skippedPredicate(subview))) {
             // Skip adding this view but still recurse into its subviews
             if (subviewContainsPoint || !subview.clipsToBounds) {
-                CGPoint pointInSubview = [view convertPoint:pointInView toView:subview];
+                const CGPoint pointInSubview = [view convertPoint:pointInView toView:subview];
                 [subviewsAtPoint addObjectsFromArray:[self
                     recursiveSubviewsAtPoint:pointInSubview inView:subview skipHiddenViews:skipHidden
                 ]];
@@ -912,14 +941,16 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         }
     }
 
-    // If the touch lands on a view matched by the skipped-view predicate,
-    // let it pass through so the view remains interactive during select/move mode.
-    if (self.skippedViewPredicate) {
-        UIWindow *appKeyWindow = [FLEXUtility appKeyWindow];
+    // If the touch lands on a view matched by the skipped-view predicate
+    // or the built-in iOS 26+ default skip list, let it pass through so
+    // the view remains interactive during select/move mode.
+    {
+        UIWindow *const appKeyWindow = [FLEXUtility appKeyWindow];
         if (appKeyWindow) {
-            CGPoint pointInWindow = [appKeyWindow convertPoint:pointInWindowCoordinates fromView:nil];
-            UIView *hitView = [appKeyWindow hitTest:pointInWindow withEvent:nil];
-            if (hitView && self.skippedViewPredicate(hitView)) {
+            const CGPoint pointInWindow = [appKeyWindow convertPoint:pointInWindowCoordinates fromView:nil];
+            UIView *const hitView = [appKeyWindow hitTest:pointInWindow withEvent:nil];
+            if (hitView && (FLEXIsDefaultSkippedView(hitView) ||
+                            (self.skippedViewPredicate && self.skippedViewPredicate(hitView)))) {
                 return NO;
             }
         }
