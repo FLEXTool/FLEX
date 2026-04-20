@@ -12,6 +12,12 @@
 #import "FLEXResources.h"
 #import "FLEXUtility.h"
 
+// Workaround for Xcode < 26, because I don't like Xcode 26 :)
+#if !__has_include(<UIKit/UIGlassEffect.h>)
+@interface UIGlassEffect : UIVisualEffect @end
+@implementation UIGlassEffect @end
+#endif
+
 @interface FLEXExplorerToolbar ()
 
 @property (nonatomic, readwrite) FLEXExplorerToolbarItem *globalsItem;
@@ -29,7 +35,7 @@
 @property (nonatomic) UIView *selectedViewColorIndicator;
 @property (nonatomic) UILabel *selectedViewDescriptionLabel;
 
-@property (nonatomic,readwrite) UIView *backgroundView;
+@property (nonatomic, readwrite) UIView *backgroundView;
 @property (nonatomic) UIVisualEffectView *backgroundGlassView API_AVAILABLE(ios(26.0));
 @property (nonatomic) UIVisualEffectView *descriptionGlassView API_AVAILABLE(ios(26.0));
 
