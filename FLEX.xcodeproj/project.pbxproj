@@ -12,6 +12,7 @@
 		04F1CA191C137CF1000A52B0 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 04F1CA181C137CF1000A52B0 /* LICENSE */; };
 		1C27A8B91F0E5A0400F0D02D /* FLEXTestsMethodsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */; };
 		1C27A8BB1F0E5A0400F0D02D /* FLEX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A4C941F1B5B20570088C3F2 /* FLEX.framework */; };
+		1E0E7518C6B9B89C64DB7174 /* FLEXNetworkExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = E3F94D34B345EEDBDAC4F753 /* FLEXNetworkExporter.h */; };
 		222C88221C7339DC007CA15F /* FLEXRealmDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 222C88211C7339DC007CA15F /* FLEXRealmDefines.h */; };
 		224D49A81C673AB5000EAB86 /* FLEXRealmDatabaseManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 224D49A41C673AB5000EAB86 /* FLEXRealmDatabaseManager.h */; };
 		224D49A91C673AB5000EAB86 /* FLEXRealmDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 224D49A51C673AB5000EAB86 /* FLEXRealmDatabaseManager.m */; };
@@ -126,6 +127,7 @@
 		779B1EDA1C0C4D7C001F5E49 /* FLEXTableListViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 779B1ECC1C0C4D7C001F5E49 /* FLEXTableListViewController.h */; };
 		779B1EDB1C0C4D7C001F5E49 /* FLEXTableListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 779B1ECD1C0C4D7C001F5E49 /* FLEXTableListViewController.m */; };
 		779B1EDD1C0C4EAD001F5E49 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 779B1EDC1C0C4EAD001F5E49 /* libsqlite3.dylib */; };
+		7868C677D17F931D557187B9 /* FLEXNetworkExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C5398E0B292F90F21F13CF8 /* FLEXNetworkExporter.m */; };
 		942DCD871BAE0CA300DB5DC2 /* FLEXKeyboardShortcutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DCD831BAE0AD300DB5DC2 /* FLEXKeyboardShortcutManager.m */; };
 		94A515141C4CA1C00063292F /* FLEXManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 94A515131C4CA1C00063292F /* FLEXManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		94A515171C4CA1D70063292F /* FLEXManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 94A515151C4CA1D70063292F /* FLEXManager.m */; };
@@ -394,6 +396,7 @@
 		1C27A8B61F0E5A0300F0D02D /* FLEXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FLEXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C27A8B81F0E5A0400F0D02D /* FLEXTestsMethodsList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTestsMethodsList.m; sourceTree = "<group>"; };
 		1C27A8BA1F0E5A0400F0D02D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C5398E0B292F90F21F13CF8 /* FLEXNetworkExporter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkExporter.m; sourceTree = "<group>"; };
 		222C88211C7339DC007CA15F /* FLEXRealmDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXRealmDefines.h; sourceTree = "<group>"; };
 		224D49A41C673AB5000EAB86 /* FLEXRealmDatabaseManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXRealmDatabaseManager.h; sourceTree = "<group>"; };
 		224D49A51C673AB5000EAB86 /* FLEXRealmDatabaseManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXRealmDatabaseManager.m; sourceTree = "<group>"; };
@@ -763,6 +766,7 @@
 		C3F977802311B38F0032776D /* NSString+ObjcRuntime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ObjcRuntime.m"; sourceTree = "<group>"; };
 		C3F977812311B38F0032776D /* NSObject+FLEX_Reflection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+FLEX_Reflection.h"; sourceTree = "<group>"; };
 		C3F977822311B38F0032776D /* NSObject+FLEX_Reflection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+FLEX_Reflection.m"; sourceTree = "<group>"; };
+		E3F94D34B345EEDBDAC4F753 /* FLEXNetworkExporter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = FLEXNetworkExporter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1028,6 +1032,8 @@
 				2EF6B04B1D494BE50006BDA5 /* FLEXNetworkCurlLogger.m */,
 				C3DBFD0926CE2FAF00E0466A /* OSCache */,
 				3A4C94C11B5B21410088C3F2 /* PonyDebugger */,
+				E3F94D34B345EEDBDAC4F753 /* FLEXNetworkExporter.h */,
+				1C5398E0B292F90F21F13CF8 /* FLEXNetworkExporter.m */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1712,6 +1718,7 @@
 				3A4C94E11B5B21410088C3F2 /* FLEXResources.h in Headers */,
 				C3EB6F8E242E9C83006EA386 /* FLEXRuntimeExporter.h in Headers */,
 				779B1ED81C0C4D7C001F5E49 /* FLEXTableLeftCell.h in Headers */,
+				1E0E7518C6B9B89C64DB7174 /* FLEXNetworkExporter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2002,6 +2009,7 @@
 				C3511B9222D7C99E0057BAB7 /* FLEXGlobalsSection.m in Sources */,
 				C32A19632317378C00EB02AC /* FLEXDefaultsContentSection.m in Sources */,
 				C3EE76C022DFC63600EC0AA0 /* FLEXScopeCarousel.m in Sources */,
+				7868C677D17F931D557187B9 /* FLEXNetworkExporter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
