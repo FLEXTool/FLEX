@@ -233,6 +233,7 @@
         make.message(@"Service: ").message(query.service);
         make.message(@"\nAccount: ").message(query.account);
         make.message(@"\nPassword: ").message(query.password);
+        make.message(@"\nPassword Data: ").message(query.passwordData.description);
         make.message(@"\nGroup: ").message(query.accessGroup);
 
         make.button(@"Copy Service").handler(^(NSArray<NSString *> *strings) {
@@ -243,6 +244,9 @@
         });
         make.button(@"Copy Password").handler(^(NSArray<NSString *> *strings) {
             [UIPasteboard.generalPasteboard flex_copy:query.password];
+        });
+        make.button(@"Copy Password Data").handler(^(NSArray<NSString *> *strings) {
+            [UIPasteboard.generalPasteboard flex_copy:query.passwordData.debugDescription];
         });
         make.button(@"Dismiss").cancelStyle();
         
