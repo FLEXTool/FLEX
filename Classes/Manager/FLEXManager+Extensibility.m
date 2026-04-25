@@ -106,6 +106,11 @@
 #endif
 }
 
+- (void)setSimulatorShortcutIgnoredClassNames:(NSArray<NSString *> *)ignoredClassNames {
+#if TARGET_OS_SIMULATOR
+    [FLEXKeyboardShortcutManager.sharedManager setSimulatorShortcutIgnoredClassNames:ignoredClassNames];
+#endif
+}
 
 #pragma mark - View Skipping
 

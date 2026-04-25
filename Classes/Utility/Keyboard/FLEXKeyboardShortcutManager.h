@@ -23,6 +23,9 @@
                              description:(NSString *)description
                            allowOverride:(BOOL)allowOverride;
 
+/// @param ignoredClassNames Classes that should be ignored by the simulator shortcut manager.
+- (void)setSimulatorShortcutIgnoredClassNames:(NSArray<NSString *> *)ignoredClassNames;
+
 @property (nonatomic, getter=isEnabled) BOOL enabled;
 @property (nonatomic, readonly) NSString *keyboardShortcutsDescription;
 
