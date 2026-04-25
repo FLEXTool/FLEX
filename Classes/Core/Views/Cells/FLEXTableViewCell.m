@@ -44,6 +44,12 @@
     
     self.titleLabel.numberOfLines = 1;
     self.subtitleLabel.numberOfLines = 1;
+    
+    // Force LTR layout for all FLEX table view cells
+    self.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.contentView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.titleLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.subtitleLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
 }
 
 - (UILabel *)titleLabel {

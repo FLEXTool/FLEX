@@ -19,6 +19,11 @@
         // If we make the window level too high, we block out UIAlertViews.
         // There's a balance between staying above the app's windows and staying below alerts.
         self.windowLevel = UIWindowLevelAlert - 1;
+        
+        // Force LTR layout for FLEX window
+        if (@available(iOS 9.0, *)) {
+            self.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        }
     }
     return self;
 }

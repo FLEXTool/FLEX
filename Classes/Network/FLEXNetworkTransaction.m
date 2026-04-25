@@ -265,8 +265,12 @@
 }
 
 - (NSArray<NSString *> *)details API_AVAILABLE(ios(13.0)) {
+    // Use RTL-aware arrows that automatically flip direction based on layout
+    NSString *outgoingArrow = @"SENT \u2192"; // Right arrow (→) that flips in RTL
+    NSString *incomingArrow = @"\u2190 RECEIVED"; // Left arrow (←) that flips in RTL
+    
     return @[
-        self.direction == FLEXWebsocketOutgoing ? @"SENT →" : @"→ RECEIVED",
+        self.direction == FLEXWebsocketOutgoing ? outgoingArrow : incomingArrow,
         [NSByteCountFormatter
             stringFromByteCount:self.dataLength
             countStyle:NSByteCountFormatterCountStyleBinary

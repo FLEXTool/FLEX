@@ -232,6 +232,12 @@ CGFloat const kFLEXDebounceForExpensiveIO = 0.5;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Force LTR layout for all FLEX table views
+    if (@available(iOS 9.0, *)) {
+        self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        self.tableView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    }
+    
     self.tableView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
     
     // Toolbar
