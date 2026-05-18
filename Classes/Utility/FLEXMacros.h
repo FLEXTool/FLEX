@@ -50,10 +50,14 @@ NS_INLINE UIScreen *FLEXScreen(void) {
             if (scene.activationState == UISceneActivationStateForegroundActive) {
                 return screen;
             }
-            if (!fallback) fallback = screen;
+            if (!fallback) {
+                fallback = screen;
+            }
         }
     }
-    if (fallback) return fallback;
+    if (fallback) {
+        return fallback;
+    }
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     return UIScreen.mainScreen;
