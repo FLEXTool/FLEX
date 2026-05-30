@@ -41,22 +41,26 @@ extern BOOL FLEXConstructorsShouldRun(void);
 #define FLEX_EXIT_IF_NO_CTORS() if (!FLEXConstructorsShouldRun()) return;
 
 /// Returns a UIScreen instance found through the application's scene context,
-/// since +[UIScreen mainScreen] is deprecated in iOS 26.
+/// since +[UIScreen mainScreen] is deprecated in iOS 26. Falls back to
+/// +[UIScreen mainScreen] on iOS < 13, where scenes are unavailable and
+/// +mainScreen is not yet deprecated.
 NS_INLINE UIScreen *FLEXScreen(void) {
-    UIScreen *fallback = nil;
-    for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
-        if ([scene isKindOfClass:[UIWindowScene class]]) {
-            UIScreen *screen = ((UIWindowScene *)scene).screen;
-            if (scene.activationState == UISceneActivationStateForegroundActive) {
-                return screen;
-            }
-            if (!fallback) {
-                fallback = screen;
+    if (@available(iOS 13.0, *)) {
+        UIScreen *fallback = nil;
+        for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+            if ([scene isKindOfClass:[UIWindowScene class]]) {
+                UIScreen *screen = ((UIWindowScene *)scene).screen;
+                if (scene.activationState == UISceneActivationStateForegroundActive) {
+                    return screen;
+                }
+                if (!fallback) {
+                    fallback = screen;
+                }
             }
         }
-    }
-    if (fallback) {
-        return fallback;
+        if (fallback) {
+            return fallback;
+        }
     }
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
