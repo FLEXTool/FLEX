@@ -491,6 +491,9 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
         cell.backgroundColor = FLEXColor.primaryBackgroundColor;
     }
 
+    // Add accessibility identifier for automated testing
+    cell.accessibilityIdentifier = [NSString stringWithFormat:@"network_call_%ld", (long)indexPath.row];
+
     return cell;
 }
 
