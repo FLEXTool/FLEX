@@ -8,12 +8,16 @@
 
 #import "FLEXManager.h"
 #import "FLEXGlobalsEntry.h"
+#import "FLEXUserGlobalEntriesContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FLEXManager (Extensibility)
 
 #pragma mark - Globals Screen Entries
+
+/// Use this property to add entries at the top of the list of Global State items.
+@property (nonatomic, readonly) FLEXUserGlobalEntriesContainer *globalEntriesContainer;
 
 /// Adds an entry at the top of the list of Global State items.
 /// Call this method before this view controller is displayed.
@@ -25,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// The objectFutureBlock will be invoked from the main thread and may return nil.
 /// @note The passed block will be copied and retain for the duration of the application,
 /// you may want to use __weak references.
-- (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock;
+- (void)registerGlobalEntryWithName:(NSString *)entryName objectFutureBlock:(id (^)(void))objectFutureBlock __attribute((deprecated("Use the same method on the globalEntriesContainer property instead.")));
 
 /// Adds an entry at the top of the list of Global State items.
 /// Call this method before this view controller is displayed.
@@ -37,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @note The passed block will be copied and retain for the duration of the application,
 /// you may want to use __weak references as needed.
 - (void)registerGlobalEntryWithName:(NSString *)entryName
-          viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock;
+          viewControllerFutureBlock:(UIViewController * (^)(void))viewControllerFutureBlock __attribute((deprecated("Use the same method on the globalEntriesContainer property instead.")));
 
 /// Adds an entry at the top of the list of Global State items.
 /// @param entryName The string to be displayed in the cell.
@@ -45,12 +49,23 @@ NS_ASSUME_NONNULL_BEGIN
 /// with the host table view view controller. Use it to deselect the row or present an alert.
 /// @note This method must be called from the main thread.
 /// The rowSelectedAction will be invoked from the main thread.
-/// @note The passed block will be copied and retain for the duration of the application,
+/// @note The passed block will be copied and retained for the duration of the application,
 /// you may want to use __weak references as needed.
-- (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction;
+- (void)registerGlobalEntryWithName:(NSString *)entryName action:(FLEXGlobalsEntryRowAction)rowSelectedAction __attribute((deprecated("Use the same method on the globalEntriesContainer property instead.")));
+
+/// Adds an entry at the top of the list of Global State items.
+/// @param entryName The string to be displayed in the cell.
+/// @param nestedEntriesHandler When you tap on the row, this block will be invoked
+/// with the container object. Use it to register nested entries.
+/// @note This method must be called from the main thread.
+/// The nestedEntriesHandler will be invoked from the main thread.
+/// @note The passed block will be copied and retained for the duration of the application,
+/// you may want to use __weak references as needed.
+- (void)registerNestedGlobalEntryWithName:(NSString *)entryName
+                                  handler:(FLEXNestedGlobalEntriesHandler)nestedEntriesHandler __attribute((deprecated("Use the same method on the globalEntriesContainer property instead.")));
 
 /// Removes all registered global entries.
-- (void)clearGlobalEntries;
+- (void)clearGlobalEntries __attribute((deprecated("Use the same method on the globalEntriesContainer property instead.")));
 
 #pragma mark - Editing
 

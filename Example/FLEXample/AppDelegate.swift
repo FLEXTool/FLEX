@@ -25,8 +25,66 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FLEXManager.shared.isNetworkDebuggingEnabled = true
-        
-        // Add at least oen custom user defaults key to explore
+
+        // To show off the global entries, register one of each type
+
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Object", cellAccessoryType: .none) {
+            return "Level 1 - Object"
+        }
+
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - View controller", cellAccessoryType: .none) {
+            let label = UILabel()
+            label.text = "Level 1 - View controller"
+            label.translatesAutoresizingMaskIntoConstraints = false
+
+            let controller = UIViewController()
+            controller.view.backgroundColor = .darkGray
+            controller.view.addSubview(label)
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: controller.view.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: controller.view.centerYAnchor)
+            ])
+
+            return controller
+        }
+
+        FLEXManager.shared.globalEntriesContainer.registerGlobalEntry(withName: "Level 1 - Action", cellAccessoryType: .none) { host in
+            FLEXAlert.showQuickAlert("Level 1 - Action", from: host)
+        }
+
+        FLEXManager.shared.globalEntriesContainer.registerNestedGlobalEntry(withName: "Level 1 - Nested") { container in
+            container.registerGlobalEntry(withName: "Level 2 - Object", cellAccessoryType: .none) {
+                return "Level 2 - Object"
+            }
+
+            container.registerGlobalEntry(withName: "Level 2 - View controller", cellAccessoryType: .none) {
+                let label = UILabel()
+                label.text = "Level 2 - View controller"
+                label.translatesAutoresizingMaskIntoConstraints = false
+
+                let controller = UIViewController()
+                controller.view.backgroundColor = .darkGray
+                controller.view.addSubview(label)
+                NSLayoutConstraint.activate([
+                    label.centerXAnchor.constraint(equalTo: controller.view.centerXAnchor),
+                    label.centerYAnchor.constraint(equalTo: controller.view.centerYAnchor)
+                ])
+
+                return controller
+            }
+
+            container.registerGlobalEntry(withName: "Level 2 - Action", cellAccessoryType: .none) { host in
+                FLEXAlert.showQuickAlert("Level 2 - Action", from: host)
+            }
+
+            container.registerNestedGlobalEntry(withName: "Level 2 - Nested") { level2Container in
+                level2Container.registerGlobalEntry(withName: "Level 3 - Action", cellAccessoryType: .none) { host in
+                    FLEXAlert.showQuickAlert("Level 3 - Action", from: host)
+                }
+            }
+        }
+
+        // Add at least one custom user defaults key to explore
         UserDefaults.standard.set("foo", forKey: "FLEXamplePrefFoo")
         
         // To show off the system log viewer, send 10 example log messages at 3 second intervals
