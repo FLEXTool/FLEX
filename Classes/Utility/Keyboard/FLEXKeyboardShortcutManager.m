@@ -119,7 +119,9 @@
 
 @end
 
-@implementation FLEXKeyboardShortcutManager
+@implementation FLEXKeyboardShortcutManager {
+    NSArray<NSString *> *_ignoredFirstResponderClassNames;
+}
 
 + (instancetype)sharedManager {
     static FLEXKeyboardShortcutManager *sharedManager = nil;
@@ -222,6 +224,10 @@
     }
 }
 
+- (void)setSimulatorShortcutIgnoredClassNames:(NSArray<NSString *> *)ignoredClassNames {
+    _ignoredFirstResponderClassNames = ignoredClassNames;
+}
+
 static const long kFLEXControlKeyCode = 0xe0;
 static const long kFLEXShiftKeyCode = 0xe1;
 static const long kFLEXCommandKeyCode = 0xe3;
@@ -257,8 +263,9 @@ static const long kFLEXCommandKeyCode = 0xe3;
     if (isKeyDown && modifiedInput.length > 0 && interactionEnabled) {
         UIResponder *firstResponder = nil;
         for (UIWindow *window in FLEXUtility.allWindows) {
-            firstResponder = [window valueForKey:@"firstResponder"];
-            if (firstResponder) {
+            NSString *const className = NSStringFromClass([firstResponder class]);
+            const BOOL isIgnored = [_ignoredFirstResponderClassNames containsObject:className];
+            if (firstResponder && !isIgnored) {
                 hasFirstResponder = YES;
                 break;
             }

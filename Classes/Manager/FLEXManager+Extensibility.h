@@ -101,6 +101,11 @@ typedef BOOL(^FLEXViewFilterPredicate)(UIView *view);
                                   action:(dispatch_block_t)action
                              description:(NSString *)description;
 
+/// The simulator shortcuts will no-op if there is already a first responder in the window.
+/// Sometimes we might want to still allow simulator shortcuts despite this.
+/// @param ignoredClassNames Classes that should be ignored by the simulator shortcut manager.
+- (void)setSimulatorShortcutIgnoredClassNames:(NSArray<NSString *> *)ignoredClassNames;
+
 @end
 
 NS_ASSUME_NONNULL_END
