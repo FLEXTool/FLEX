@@ -11,6 +11,9 @@
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXTabList.h"
 
+// https://stackoverflow.com/a/5337804
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 @interface UINavigationController (Private) <UIGestureRecognizerDelegate>
 - (void)_gestureRecognizedInteractiveHide:(UIGestureRecognizer *)sender;
 @end
@@ -48,7 +51,7 @@
     [self.navigationBar addGestureRecognizer:navbarTapGesture];
     
     // Add gesture to dismiss if not presented with a sheet style
-    if (@available(iOS 13, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"13.0")) {
         switch (self.modalPresentationStyle) {
             case UIModalPresentationAutomatic:
             case UIModalPresentationPageSheet:
@@ -67,7 +70,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    if (@available(iOS 15.0, *)) {
+    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"15.0")) {
         UISheetPresentationController *presenter = self.sheetPresentationController;
         presenter.detents = @[
             UISheetPresentationControllerDetent.mediumDetent,
