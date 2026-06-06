@@ -5,11 +5,8 @@
 //  The macOS view-tree walker: NSApp → NSWindow → NSView, capturing the per-node
 //  facts in FLEXAppKitViewSnapshot. The macOS analog of FHSView.
 //
-//  Threading: every method must be called on the target's main thread. Main-thread
-//  marshaling, the socket, and the node-id registry are the headless server's job,
-//  not the walker's (see domain.walker).
-//
-//  SPEC: domain.walker
+//  Threading: every method must be called on the main thread — AppKit view state
+//  is main-thread-only; reading it off-main is undefined behavior.
 //
 
 #import <Foundation/Foundation.h>

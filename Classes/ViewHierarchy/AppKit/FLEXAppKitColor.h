@@ -16,8 +16,6 @@
 //  a no-op. Read view-level colors as NSColor (not via the layer) to recover the
 //  catalog name and appearance.
 //
-//  SPEC: domain.walker
-//
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>

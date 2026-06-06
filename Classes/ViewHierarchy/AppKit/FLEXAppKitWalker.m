@@ -2,8 +2,6 @@
 //  FLEXAppKitWalker.m
 //  FLEX
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXAppKitWalker.h"
 
@@ -247,9 +245,9 @@ static NSString *FLEXBlendingModeName(NSVisualEffectBlendingMode mode) {
     return [self snapshotForView:hit inWindow:window maxDepth:0];
 }
 
-/// Normalized top-left rect, full-window-frame-relative (titlebar included), per
-/// domain.walker. Computed through screen coordinates so per-view isFlipped is
-/// resolved by AppKit's own conversion rather than manual y-flipping.
+/// Normalized top-left rect, full-window-frame-relative (titlebar included).
+/// Computed through screen coordinates so per-view isFlipped is resolved by
+/// AppKit's own conversion rather than manual y-flipping.
 + (CGRect)topLeftFrameForView:(NSView *)view inWindow:(nullable NSWindow *)window {
     if (window == nil) {
         return view.frame;

@@ -5,8 +5,6 @@
 //  Internal readwrite surface so FLEXAppKitWalker can populate an otherwise
 //  immutable snapshot during construction. Not part of the public contract.
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXAppKitViewSnapshot.h"
 

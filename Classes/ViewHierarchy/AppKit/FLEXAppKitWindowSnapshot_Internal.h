@@ -4,8 +4,6 @@
 //
 //  Internal readwrite surface for FLEXAppKitWalker. Not part of the public contract.
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXAppKitWindowSnapshot.h"
 

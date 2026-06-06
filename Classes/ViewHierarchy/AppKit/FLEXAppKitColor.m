@@ -2,8 +2,6 @@
 //  FLEXAppKitColor.m
 //  FLEX
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXAppKitColor.h"
 

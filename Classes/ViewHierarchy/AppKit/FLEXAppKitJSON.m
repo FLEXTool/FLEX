@@ -2,8 +2,6 @@
 //  FLEXAppKitJSON.m
 //  FLEX
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXAppKitJSON.h"
 

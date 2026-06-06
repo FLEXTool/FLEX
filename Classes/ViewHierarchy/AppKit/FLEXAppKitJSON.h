@@ -3,13 +3,9 @@
 //  FLEX
 //
 //  Projects the walker's snapshot model into JSON-serializable Foundation
-//  dictionaries shaped per the flexscope node schema (domain.node). Floats are
-//  emitted at fixed precision and nils as NSNull so the output is deterministic
-//  and round-trips through NSJSONSerialization. The final string serialization is
-//  the consumer's job (ARCHITECTURE §5.3: the FLEX side returns Foundation
-//  collections; the server/CLI serializes).
-//
-//  SPEC: domain.walker
+//  dictionaries (floats at fixed precision, nils as NSNull) so the output is
+//  deterministic and round-trips through NSJSONSerialization. The final string
+//  serialization is left to the consumer — this returns Foundation collections.
 //
 
 #import <Foundation/Foundation.h>

@@ -5,8 +5,6 @@
 //  A top-level NSWindow root produced by FLEXAppKitWalker. Each on-screen window
 //  is a tree root; its contentView subtree hangs below.
 //
-//  SPEC: domain.walker
-//
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>

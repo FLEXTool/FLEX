@@ -7,8 +7,6 @@
 //  and standalone sublayers (backing no view) are included here. CALayer is the
 //  same class on macOS and iOS, so this is cross-platform.
 //
-//  SPEC: domain.walker
-//
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>

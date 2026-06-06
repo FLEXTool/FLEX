@@ -6,8 +6,6 @@
 //  weight trait AND the nearest named weight — never a lossy NSFontManager
 //  (1–14) conversion.
 //
-//  SPEC: domain.walker
-//
 
 #import <Foundation/Foundation.h>
 

@@ -6,8 +6,6 @@
 //  of FHSViewSnapshot. Captures only the facts read on the main thread; holds no
 //  live NSView, so it is safe to serialize off-main.
 //
-//  SPEC: domain.walker
-//
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>

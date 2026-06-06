@@ -2,8 +2,6 @@
 //  FLEXAppKitFont.m
 //  FLEX
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXAppKitFont.h"
 
@@ -21,7 +19,7 @@
 @end
 
 /// The font, read off `object` directly or off its `-cell`, or nil. The carrier set is
-/// "any object responding to -font" per domain.walker — not a hardcoded class list.
+/// "any object responding to -font" — not a hardcoded class list.
 static NSFont *FLEXFontFromCarrier(id object) {
     if (object == nil) {
         return nil;

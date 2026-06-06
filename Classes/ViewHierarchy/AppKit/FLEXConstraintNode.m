@@ -2,8 +2,6 @@
 //  FLEXConstraintNode.m
 //  FLEX
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXConstraintNode.h"
 
@@ -162,7 +160,7 @@ static NSString *FLEXRelationName(NSLayoutRelation relation) {
     // its own constraints that reference it, plus any ancestor-held constraint that
     // references it (AppKit has no public reverse index). A view also holds
     // constraints purely between its descendants — those don't touch it and are
-    // excluded, matching the spec's "constraints that touch it".
+    // excluded (they do not touch the view).
     collect(view.constraints, YES);
     for (NSView *ancestor = view.superview; ancestor != nil; ancestor = ancestor.superview) {
         collect(ancestor.constraints, YES);

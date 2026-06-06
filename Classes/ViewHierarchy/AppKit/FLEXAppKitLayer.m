@@ -2,8 +2,6 @@
 //  FLEXAppKitLayer.m
 //  FLEX
 //
-//  SPEC: domain.walker
-//
 
 #import "FLEXAppKitLayer.h"
 

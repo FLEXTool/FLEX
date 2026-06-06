@@ -11,8 +11,6 @@
 //  Node-id stringification of each item is the server's concern; this captures the
 //  AppKit facts + each item's class and role (target / view / layoutGuide / none).
 //
-//  SPEC: domain.walker
-//
 
 #import <Foundation/Foundation.h>
 #import <CoreGraphics/CoreGraphics.h>
