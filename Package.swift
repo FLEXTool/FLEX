@@ -57,6 +57,11 @@ let package = Package(
       dependencies: ["FLEXAppKit"],
       path: "DevProbe"
     ),
+    .target(
+      name: "SampleAppKitDump",
+      dependencies: ["FLEXAppKit"],
+      path: "Samples/SampleAppKitDump"
+    ),
   ],
   // Required to compile FLEXSwiftInternal.mm
   cxxLanguageStandard: .gnucxx11
