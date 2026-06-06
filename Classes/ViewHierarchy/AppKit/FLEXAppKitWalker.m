@@ -234,6 +234,19 @@ static NSString *FLEXBlendingModeName(NSVisualEffectBlendingMode mode) {
     return snapshot;
 }
 
++ (nullable FLEXAppKitViewSnapshot *)snapshotForHitTestAtPoint:(CGPoint)point
+                                                     inWindow:(NSWindow *)window {
+    // hitTest: wants the point in the receiver's superview coordinates; the window's
+    // root view (the border/theme view) has the window base coordinate system, so a
+    // window-base point is correct for it.
+    NSView *root = window.contentView.superview ?: window.contentView;
+    NSView *hit = [root hitTest:point];
+    if (hit == nil) {
+        return nil;
+    }
+    return [self snapshotForView:hit inWindow:window maxDepth:0];
+}
+
 /// Normalized top-left rect, full-window-frame-relative (titlebar included), per
 /// domain.walker. Computed through screen coordinates so per-view isFlipped is
 /// resolved by AppKit's own conversion rather than manual y-flipping.

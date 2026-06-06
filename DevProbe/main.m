@@ -234,6 +234,18 @@ int main(void) {
               [NSString stringWithFormat:@"parallel layer tree has 2 sublayers (got %ld)",
                                          lhs.layer ? (long)lhs.layer.sublayerCount : -1]);
 
+        // 13. hitTest at a point
+        NSWindow *hitWindow = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 200, 200)
+                                                          styleMask:NSWindowStyleMaskTitled
+                                                            backing:NSBackingStoreBuffered
+                                                              defer:NO];
+        FLEXProbeView *htv = [[FLEXProbeView alloc] initWithFrame:NSMakeRect(10, 10, 50, 50)];
+        [hitWindow.contentView addSubview:htv];
+        FLEXAppKitViewSnapshot *hitSnap = [FLEXAppKitWalker snapshotForHitTestAtPoint:NSMakePoint(20, 20)
+                                                                            inWindow:hitWindow];
+        check(hitSnap != nil && [hitSnap.className isEqualToString:@"FLEXProbeView"],
+              [NSString stringWithFormat:@"hitTest at (20,20) hits FLEXProbeView (got %@)", hitSnap.className]);
+
         printf("\n%s (%d failure%s)\n", gFailures == 0 ? "ALL PASS" : "FAILURES",
                gFailures, gFailures == 1 ? "" : "s");
         return gFailures == 0 ? 0 : 1;

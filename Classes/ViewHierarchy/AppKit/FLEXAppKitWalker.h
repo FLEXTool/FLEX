@@ -42,6 +42,12 @@ NS_ASSUME_NONNULL_BEGIN
                                    inWindow:(nullable NSWindow *)window
                                    maxDepth:(NSInteger)maxDepth;
 
+/// The deepest view at `point` (window base coordinates, bottom-left origin),
+/// snapshotted as a single node with its children omitted. The macOS substitute
+/// for touch hit-testing. Returns nil if nothing is hit.
++ (nullable FLEXAppKitViewSnapshot *)snapshotForHitTestAtPoint:(CGPoint)point
+                                                     inWindow:(NSWindow *)window;
+
 @end
 
 NS_ASSUME_NONNULL_END
