@@ -138,6 +138,41 @@ int main(void) {
         check(vs.blendingMode.length > 0,
               [NSString stringWithFormat:@"blendingMode present (got %@)", vs.blendingMode]);
 
+        // 8. Node-schema completeness: superclasses / text / axRole / constraintsCount
+        check([cs.superclasses containsObject:@"NSView"] && [cs.superclasses.lastObject isEqualToString:@"NSObject"],
+              [NSString stringWithFormat:@"superclasses run up to NSObject (got %@)", cs.superclasses]);
+        check(ls.text != nil && [ls.text isEqualToString:@"Hi"],
+              [NSString stringWithFormat:@"text == 'Hi' for the label (got %@)", ls.text]);
+        check(ps.text == nil, @"plain NSView reports no text (null)");
+        check(ls.axRole.length > 0,
+              [NSString stringWithFormat:@"label carries an axRole (got %@)", ls.axRole]);
+
+        NSView *constrained = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 40, 40)];
+        [content addSubview:constrained];
+        [constrained addConstraint:[NSLayoutConstraint constraintWithItem:constrained
+                                                               attribute:NSLayoutAttributeWidth
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:nil
+                                                               attribute:NSLayoutAttributeNotAnAttribute
+                                                              multiplier:1
+                                                                constant:120]];
+        FLEXAppKitViewSnapshot *cns = [FLEXAppKitWalker snapshotForView:constrained inWindow:window];
+        check(cns.constraintsCount == 1,
+              [NSString stringWithFormat:@"constraintsCount == 1 (got %ld)", (long)cns.constraintsCount]);
+
+        // 9. Depth bound: truncated + childCount, children omitted past the bound
+        NSView *a = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)];
+        NSView *b = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 20, 20)];
+        NSView *cc = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 10, 10)];
+        [a addSubview:b];
+        [b addSubview:cc];
+        FLEXAppKitViewSnapshot *as = [FLEXAppKitWalker snapshotForView:a inWindow:nil maxDepth:1];
+        check(as.truncated == NO && as.childCount == 1 && as.children.count == 1,
+              @"depth root: not truncated, childCount 1, one child present");
+        FLEXAppKitViewSnapshot *deepB = as.children.firstObject;
+        check(deepB != nil && deepB.truncated == YES && deepB.childCount == 1 && deepB.children.count == 0,
+              @"depth bound: node truncated, childCount 1, children omitted");
+
         printf("\n%s (%d failure%s)\n", gFailures == 0 ? "ALL PASS" : "FAILURES",
                gFailures, gFailures == 1 ? "" : "s");
         return gFailures == 0 ? 0 : 1;

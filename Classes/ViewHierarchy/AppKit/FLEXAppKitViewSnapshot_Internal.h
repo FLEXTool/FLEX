@@ -20,6 +20,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL hidden;
 @property (nonatomic) double alpha;
 @property (nonatomic, copy, nullable) NSString *identifier;
+@property (nonatomic, copy, nullable) NSString *text;
+@property (nonatomic, copy, nullable) NSString *axRole;
+@property (nonatomic, copy) NSArray<NSString *> *superclasses;
+@property (nonatomic) NSInteger constraintsCount;
+@property (nonatomic) NSInteger childCount;
+@property (nonatomic) BOOL truncated;
 @property (nonatomic) BOOL swiftUIBoundary;
 @property (nonatomic, copy, nullable) NSString *material;
 @property (nonatomic, copy, nullable) NSString *blendingMode;

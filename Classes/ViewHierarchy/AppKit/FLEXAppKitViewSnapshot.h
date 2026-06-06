@@ -36,6 +36,28 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) double alpha;
 @property (nonatomic, readonly, copy, nullable) NSString *identifier;
 
+/// Displayed string where the view is text-bearing (NSControl/NSText); nil otherwise.
+/// What the selector grammar's `text` predicate matches against.
+@property (nonatomic, readonly, copy, nullable) NSString *text;
+
+/// The AX role (NSAccessibility), to cross-reference the AX dump.
+@property (nonatomic, readonly, copy, nullable) NSString *axRole;
+
+/// Runtime class hierarchy from the view's class up to NSView (exclusive of the
+/// view's own class, which is `className`). An --include field.
+@property (nonatomic, readonly, copy) NSArray<NSString *> *superclasses;
+
+/// Number of NSLayoutConstraints touching this view (both directions). The full
+/// list is produced separately; this is the default-projection count.
+@property (nonatomic, readonly) NSInteger constraintsCount;
+
+/// Number of subviews, always reported even when `children` is truncated.
+@property (nonatomic, readonly) NSInteger childCount;
+
+/// True when subviews were omitted because the depth bound was reached. A leaf is
+/// never truncated; `childCount` still reports the real subview count.
+@property (nonatomic, readonly) BOOL truncated;
+
 /// True at an NSHostingView (SwiftUI's AppKit host): below it the class names are
 /// SwiftUI internals, but the layer-backed scaffold is still real and traversed.
 @property (nonatomic, readonly) BOOL swiftUIBoundary;

@@ -27,10 +27,20 @@ NS_ASSUME_NONNULL_BEGIN
 /// with its contentView subtree. The rooted entry point for a full app walk.
 + (NSArray<FLEXAppKitWindowSnapshot *> *)snapshotApplicationWindows;
 
-/// Recursively snapshot `view` and its subtree. Frames are normalized against
-/// `window`'s full frame (titlebar included); pass the view's window. When `window`
-/// is nil, `frameTopLeft` falls back to the raw frame.
+/// As above, bounded to `maxDepth` levels below each window's contentView. Nodes
+/// at the bound report `truncated` + `childCount` with `children` omitted.
++ (NSArray<FLEXAppKitWindowSnapshot *> *)snapshotApplicationWindowsWithMaxDepth:(NSInteger)maxDepth;
+
+/// Recursively snapshot `view` and its subtree (unbounded depth). Frames are
+/// normalized against `window`'s full frame (titlebar included); pass the view's
+/// window. When `window` is nil, `frameTopLeft` falls back to the raw frame.
 + (FLEXAppKitViewSnapshot *)snapshotForView:(NSView *)view inWindow:(nullable NSWindow *)window;
+
+/// As above, bounded to `maxDepth` levels below `view`. A node at the bound with
+/// subviews reports `truncated == YES` + `childCount` and omits `children`.
++ (FLEXAppKitViewSnapshot *)snapshotForView:(NSView *)view
+                                   inWindow:(nullable NSWindow *)window
+                                   maxDepth:(NSInteger)maxDepth;
 
 @end
 

@@ -16,6 +16,13 @@
 #import <AppKit/AppKit.h>
 #import <objc/runtime.h>
 
+@interface FLEXAppKitWalker ()
++ (FLEXAppKitViewSnapshot *)snapshotForView:(NSView *)view
+                                   inWindow:(nullable NSWindow *)window
+                                      depth:(NSInteger)depth
+                                   maxDepth:(NSInteger)maxDepth;
+@end
+
 /// True if the view's class chain contains an NSHostingView (SwiftUI's host). The
 /// generic NSHostingView<Content> has a mangled Swift name, so match by substring
 /// across the hierarchy rather than isKindOfClass against a single concrete class.
@@ -27,6 +34,31 @@ static BOOL FLEXIsSwiftUIBoundary(NSView *view) {
         }
     }
     return NO;
+}
+
+/// Class hierarchy from the immediate superclass up to (and including) NSObject.
+static NSArray<NSString *> *FLEXSuperclassNames(NSView *view) {
+    NSMutableArray<NSString *> *names = [NSMutableArray array];
+    Class cls = class_getSuperclass(object_getClass(view));
+    while (cls != Nil) {
+        [names addObject:NSStringFromClass(cls)];
+        if (cls == [NSObject class]) {
+            break;
+        }
+        cls = class_getSuperclass(cls);
+    }
+    return names;
+}
+
+/// Displayed text for the text-bearing view bases; nil otherwise.
+static NSString *FLEXTextForView(NSView *view) {
+    NSString *text = nil;
+    if ([view isKindOfClass:[NSControl class]]) {
+        text = [(NSControl *)view stringValue];
+    } else if ([view isKindOfClass:[NSText class]]) {
+        text = [(NSText *)view string];
+    }
+    return text.length > 0 ? text : nil;
 }
 
 static NSString *FLEXMaterialName(NSVisualEffectMaterial material) {
@@ -60,6 +92,10 @@ static NSString *FLEXBlendingModeName(NSVisualEffectBlendingMode mode) {
 @implementation FLEXAppKitWalker
 
 + (NSArray<FLEXAppKitWindowSnapshot *> *)snapshotApplicationWindows {
+    return [self snapshotApplicationWindowsWithMaxDepth:NSIntegerMax];
+}
+
++ (NSArray<FLEXAppKitWindowSnapshot *> *)snapshotApplicationWindowsWithMaxDepth:(NSInteger)maxDepth {
     NSApplication *app = NSApplication.sharedApplication;
     NSWindow *keyWindow = app.keyWindow;
     NSWindow *mainWindow = app.mainWindow;
@@ -76,13 +112,30 @@ static NSString *FLEXBlendingModeName(NSVisualEffectBlendingMode mode) {
         snapshot.isPanel = [window isKindOfClass:[NSPanel class]];
         snapshot.frame = window.frame;
         NSView *content = window.contentView;
-        snapshot.contentView = content ? [self snapshotForView:content inWindow:window] : nil;
+        snapshot.contentView = content ? [self snapshotForView:content
+                                                       inWindow:window
+                                                          depth:0
+                                                       maxDepth:maxDepth]
+                                       : nil;
         [result addObject:snapshot];
     }
     return result;
 }
 
 + (FLEXAppKitViewSnapshot *)snapshotForView:(NSView *)view inWindow:(nullable NSWindow *)window {
+    return [self snapshotForView:view inWindow:window depth:0 maxDepth:NSIntegerMax];
+}
+
++ (FLEXAppKitViewSnapshot *)snapshotForView:(NSView *)view
+                                   inWindow:(nullable NSWindow *)window
+                                   maxDepth:(NSInteger)maxDepth {
+    return [self snapshotForView:view inWindow:window depth:0 maxDepth:maxDepth];
+}
+
++ (FLEXAppKitViewSnapshot *)snapshotForView:(NSView *)view
+                                   inWindow:(nullable NSWindow *)window
+                                      depth:(NSInteger)depth
+                                   maxDepth:(NSInteger)maxDepth {
     FLEXAppKitViewSnapshot *snapshot = [FLEXAppKitViewSnapshot new];
     snapshot.className = NSStringFromClass(object_getClass(view));
     snapshot.frame = view.frame;
@@ -91,6 +144,10 @@ static NSString *FLEXBlendingModeName(NSVisualEffectBlendingMode mode) {
     snapshot.hidden = view.isHidden;
     snapshot.alpha = view.alphaValue;
     snapshot.identifier = view.identifier;
+    snapshot.text = FLEXTextForView(view);
+    snapshot.axRole = view.accessibilityRole;
+    snapshot.superclasses = FLEXSuperclassNames(view);
+    snapshot.constraintsCount = (NSInteger)view.constraints.count;
     snapshot.swiftUIBoundary = FLEXIsSwiftUIBoundary(view);
     snapshot.font = [FLEXAppKitFont fontForObject:view];
 
@@ -106,12 +163,23 @@ static NSString *FLEXBlendingModeName(NSVisualEffectBlendingMode mode) {
                                             inAppearance:view.effectiveAppearance];
     }
 
-    NSMutableArray<FLEXAppKitViewSnapshot *> *children =
-        [NSMutableArray arrayWithCapacity:view.subviews.count];
-    for (NSView *subview in view.subviews) {
-        [children addObject:[self snapshotForView:subview inWindow:window]];
+    NSArray<NSView *> *subviews = view.subviews;
+    snapshot.childCount = (NSInteger)subviews.count;
+    if (subviews.count > 0 && depth >= maxDepth) {
+        // Depth bound reached: omit children but record how many were pruned.
+        snapshot.truncated = YES;
+        snapshot.children = @[];
+    } else {
+        NSMutableArray<FLEXAppKitViewSnapshot *> *children =
+            [NSMutableArray arrayWithCapacity:subviews.count];
+        for (NSView *subview in subviews) {
+            [children addObject:[self snapshotForView:subview
+                                             inWindow:window
+                                                depth:depth + 1
+                                             maxDepth:maxDepth]];
+        }
+        snapshot.children = children;
     }
-    snapshot.children = children;
     return snapshot;
 }
 
