@@ -34,6 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) FLEXAppKitColor *shadowColor;
 /// The parallel sublayer tree, including standalone sublayers backing no view.
 @property (nonatomic, readonly, copy) NSArray<FLEXAppKitLayer *> *sublayers;
+/// Number of direct sublayers, always reported even when `sublayers` is truncated.
+@property (nonatomic, readonly) NSInteger sublayerCount;
+/// True when sublayers were omitted because the depth bound was reached — guards
+/// against pathological deep layer trees (CATiledLayer/WebKit/Metal) blowing the stack.
+@property (nonatomic, readonly) BOOL truncated;
 
 @end
 

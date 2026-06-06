@@ -100,26 +100,77 @@ static NSString *FLEXBlendingModeName(NSVisualEffectBlendingMode mode) {
     NSWindow *keyWindow = app.keyWindow;
     NSWindow *mainWindow = app.mainWindow;
 
+    // Only top-level windows are roots: a window attached as a sheet or held as a
+    // child window is nested under its parent, not emitted as a separate root.
+    NSMutableSet *visited = [NSMutableSet set];
     NSMutableArray<FLEXAppKitWindowSnapshot *> *result = [NSMutableArray array];
     for (NSWindow *window in app.windows) {
-        FLEXAppKitWindowSnapshot *snapshot = [FLEXAppKitWindowSnapshot new];
-        snapshot.className = NSStringFromClass(object_getClass(window));
-        snapshot.title = window.title;
-        snapshot.identifier = window.identifier;
-        snapshot.isKeyWindow = (window == keyWindow);
-        snapshot.isMainWindow = (window == mainWindow);
-        snapshot.isVisible = window.isVisible;
-        snapshot.isPanel = [window isKindOfClass:[NSPanel class]];
-        snapshot.frame = window.frame;
-        NSView *content = window.contentView;
-        snapshot.contentView = content ? [self snapshotForView:content
-                                                       inWindow:window
-                                                          depth:0
-                                                       maxDepth:maxDepth]
-                                       : nil;
-        [result addObject:snapshot];
+        if (window.parentWindow != nil || window.sheetParent != nil) {
+            continue;
+        }
+        FLEXAppKitWindowSnapshot *snapshot = [self windowSnapshotFor:window
+                                                                 key:keyWindow
+                                                                main:mainWindow
+                                                            maxDepth:maxDepth
+                                                             visited:visited];
+        if (snapshot != nil) {
+            [result addObject:snapshot];
+        }
     }
     return result;
+}
+
++ (nullable FLEXAppKitWindowSnapshot *)windowSnapshotFor:(NSWindow *)window
+                                                     key:(nullable NSWindow *)keyWindow
+                                                    main:(nullable NSWindow *)mainWindow
+                                                maxDepth:(NSInteger)maxDepth
+                                                 visited:(NSMutableSet *)visited {
+    NSValue *box = [NSValue valueWithNonretainedObject:window];
+    if ([visited containsObject:box]) {
+        return nil; // guard against a window appearing in two relationships
+    }
+    [visited addObject:box];
+
+    FLEXAppKitWindowSnapshot *snapshot = [FLEXAppKitWindowSnapshot new];
+    snapshot.className = NSStringFromClass(object_getClass(window));
+    snapshot.title = window.title;
+    snapshot.identifier = window.identifier;
+    snapshot.isKeyWindow = (window == keyWindow);
+    snapshot.isMainWindow = (window == mainWindow);
+    snapshot.isVisible = window.isVisible;
+    snapshot.isPanel = [window isKindOfClass:[NSPanel class]];
+    snapshot.frame = window.frame;
+    NSView *content = window.contentView;
+    snapshot.contentView = content ? [self snapshotForView:content
+                                                   inWindow:window
+                                                      depth:0
+                                                   maxDepth:maxDepth]
+                                   : nil;
+
+    NSMutableArray<FLEXAppKitWindowSnapshot *> *children = [NSMutableArray array];
+    for (NSWindow *child in window.childWindows) {
+        FLEXAppKitWindowSnapshot *childSnapshot = [self windowSnapshotFor:child
+                                                                     key:keyWindow
+                                                                    main:mainWindow
+                                                                maxDepth:maxDepth
+                                                                 visited:visited];
+        if (childSnapshot != nil) {
+            [children addObject:childSnapshot];
+        }
+    }
+    NSWindow *sheet = window.attachedSheet;
+    if (sheet != nil) {
+        FLEXAppKitWindowSnapshot *sheetSnapshot = [self windowSnapshotFor:sheet
+                                                                     key:keyWindow
+                                                                    main:mainWindow
+                                                                maxDepth:maxDepth
+                                                                 visited:visited];
+        if (sheetSnapshot != nil) {
+            [children addObject:sheetSnapshot];
+        }
+    }
+    snapshot.childWindows = children;
+    return snapshot;
 }
 
 + (FLEXAppKitViewSnapshot *)snapshotForView:(NSView *)view inWindow:(nullable NSWindow *)window {

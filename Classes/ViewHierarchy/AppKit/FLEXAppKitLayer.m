@@ -25,11 +25,24 @@
 @property (nonatomic) CGSize shadowOffset;
 @property (nonatomic, nullable) FLEXAppKitColor *shadowColor;
 @property (nonatomic, copy) NSArray<FLEXAppKitLayer *> *sublayers;
+@property (nonatomic) NSInteger sublayerCount;
+@property (nonatomic) BOOL truncated;
 @end
+
+/// CALayer trees are normally shallow, but pathological backing (CATiledLayer
+/// pyramids, WebKit compositing, Metal/AVPlayer stacks) can be deep; cap recursion
+/// so a walk can never overflow the stack on a hostile tree.
+static const NSInteger kFLEXMaxLayerDepth = 64;
 
 @implementation FLEXAppKitLayer
 
 + (instancetype)layerFromLayer:(CALayer *)layer inAppearance:(nullable id)appearance {
+    return [self layerFromLayer:layer inAppearance:appearance depth:0];
+}
+
++ (instancetype)layerFromLayer:(CALayer *)layer
+                  inAppearance:(nullable id)appearance
+                         depth:(NSInteger)depth {
     FLEXAppKitLayer *result = [FLEXAppKitLayer new];
     result.className = NSStringFromClass(object_getClass(layer));
     result.cornerRadius = layer.cornerRadius;
@@ -46,12 +59,19 @@
     result.shadowColor = [FLEXAppKitColor colorFromColor:(__bridge id)layer.shadowColor
                                            inAppearance:appearance];
 
-    NSMutableArray<FLEXAppKitLayer *> *subs =
-        [NSMutableArray arrayWithCapacity:layer.sublayers.count];
-    for (CALayer *sub in layer.sublayers) {
-        [subs addObject:[self layerFromLayer:sub inAppearance:appearance]];
+    NSArray<CALayer *> *sublayers = layer.sublayers;
+    result.sublayerCount = (NSInteger)sublayers.count;
+    if (sublayers.count > 0 && depth >= kFLEXMaxLayerDepth) {
+        result.truncated = YES;
+        result.sublayers = @[];
+    } else {
+        NSMutableArray<FLEXAppKitLayer *> *subs =
+            [NSMutableArray arrayWithCapacity:sublayers.count];
+        for (CALayer *sub in sublayers) {
+            [subs addObject:[self layerFromLayer:sub inAppearance:appearance depth:depth + 1]];
+        }
+        result.sublayers = subs;
     }
-    result.sublayers = subs;
     return result;
 }
 

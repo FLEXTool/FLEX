@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL isPanel;
 @property (nonatomic) CGRect frame;
 @property (nonatomic, nullable) FLEXAppKitViewSnapshot *contentView;
+@property (nonatomic, copy) NSArray<FLEXAppKitWindowSnapshot *> *childWindows;
 @end
 
 NS_ASSUME_NONNULL_END

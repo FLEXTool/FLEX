@@ -2,11 +2,19 @@
 //  FLEXAppKitColor.h
 //  FLEX
 //
-//  A resolved color fact: the unambiguous sRGB hex snapshot PLUS the catalog/
-//  dynamic name where one is available (what a native reimplementation actually
-//  uses) PLUS the appearance context it was resolved under. Catalog/dynamic
-//  NSColors return nil or throw if components are read without first resolving
-//  through an appearance + a concrete color space — this type does that.
+//  A resolved color fact: the unambiguous sRGB hex snapshot, plus — for live
+//  NSColor inputs — the catalog/dynamic name where available (what a native
+//  reimplementation actually uses) and the appearance context it was resolved
+//  under. A live catalog/dynamic NSColor is resolved through an appearance + a
+//  concrete color space (otherwise reading components throws or yields the wrong
+//  appearance).
+//
+//  CGColor inputs (e.g. a CALayer's backgroundColor) are already FLATTENED by the
+//  time the walker sees them: the dynamic/catalog identity was baked away when the
+//  view set the layer color, so for a CGColor only `hex` is populated (the baked
+//  sRGB value); `catalogName` and `appearanceName` are nil and `inAppearance:` is
+//  a no-op. Read view-level colors as NSColor (not via the layer) to recover the
+//  catalog name and appearance.
 //
 //  SPEC: domain.walker
 //

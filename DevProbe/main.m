@@ -173,6 +173,67 @@ int main(void) {
         check(deepB != nil && deepB.truncated == YES && deepB.childCount == 1 && deepB.children.count == 0,
               @"depth bound: node truncated, childCount 1, children omitted");
 
+        // 10. Constraints extraction (FLEXConstraintNode)
+        FLEXConstraintNode *cn = [FLEXConstraintNode constraintsForView:constrained];
+        FLEXConstraint *wc = cn.constraints.firstObject;
+        check(wc != nil && [wc.first.attribute isEqualToString:@"width"]
+                  && [wc.relation isEqualToString:@"equal"] && approx(wc.constant, 120)
+                  && [wc.second.kind isEqualToString:@"none"] && wc.first.isTarget,
+              @"width constraint serialized (width == 120, second none, first is target)");
+
+        NSView *cont = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 200, 50)];
+        NSView *cA = [NSView new];
+        NSView *cB = [NSView new];
+        cA.translatesAutoresizingMaskIntoConstraints = NO;
+        cB.translatesAutoresizingMaskIntoConstraints = NO;
+        [cont addSubview:cA];
+        [cont addSubview:cB];
+        [cont addConstraint:[NSLayoutConstraint constraintWithItem:cA
+                                                         attribute:NSLayoutAttributeTrailing
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:cB
+                                                         attribute:NSLayoutAttributeLeading
+                                                        multiplier:1
+                                                          constant:8]];
+        FLEXConstraintNode *cnA = [FLEXConstraintNode constraintsForView:cA];
+        FLEXConstraint *bc = cnA.constraints.firstObject;
+        check(cnA.constraints.count == 1 && bc != nil && [bc.first.attribute isEqualToString:@"trailing"]
+                  && bc.first.isTarget && [bc.second.kind isEqualToString:@"view"] && approx(bc.constant, 8),
+              @"sibling constraint found for the first item (ancestor-held, both directions)");
+        FLEXConstraintNode *cnB = [FLEXConstraintNode constraintsForView:cB];
+        check(cnB.constraints.count == 1, @"same constraint found for the SECOND item (reverse direction)");
+
+        // 11. Window nesting: a child window nests under its parent, not as a root
+        NSWindow *childWin = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 100, 100)
+                                                         styleMask:NSWindowStyleMaskTitled
+                                                           backing:NSBackingStoreBuffered
+                                                             defer:NO];
+        childWin.title = @"ChildProbeWindow";
+        [window addChildWindow:childWin ordered:NSWindowAbove];
+        NSArray<FLEXAppKitWindowSnapshot *> *ws2 = [FLEXAppKitWalker snapshotApplicationWindows];
+        BOOL childIsRoot = NO;
+        FLEXAppKitWindowSnapshot *parentRoot = nil;
+        for (FLEXAppKitWindowSnapshot *w in ws2) {
+            if ([w.title isEqualToString:@"ChildProbeWindow"]) { childIsRoot = YES; }
+            if ([w.title isEqualToString:@"ProbeWindow"]) { parentRoot = w; }
+        }
+        check(!childIsRoot, @"child window is NOT a top-level root");
+        BOOL childNested = NO;
+        for (FLEXAppKitWindowSnapshot *c in parentRoot.childWindows) {
+            if ([c.title isEqualToString:@"ChildProbeWindow"]) { childNested = YES; }
+        }
+        check(parentRoot != nil && childNested, @"child window nested under its parent window");
+
+        // 12. Parallel CALayer sublayer tree + count
+        NSView *layerHost = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 30, 30)];
+        layerHost.wantsLayer = YES;
+        [layerHost.layer addSublayer:[CALayer layer]];
+        [layerHost.layer addSublayer:[CALayer layer]];
+        FLEXAppKitViewSnapshot *lhs = [FLEXAppKitWalker snapshotForView:layerHost inWindow:nil];
+        check(lhs.layer != nil && lhs.layer.sublayerCount == 2 && lhs.layer.sublayers.count == 2 && !lhs.layer.truncated,
+              [NSString stringWithFormat:@"parallel layer tree has 2 sublayers (got %ld)",
+                                         lhs.layer ? (long)lhs.layer.sublayerCount : -1]);
+
         printf("\n%s (%d failure%s)\n", gFailures == 0 ? "ALL PASS" : "FAILURES",
                gFailures, gFailures == 1 ? "" : "s");
         return gFailures == 0 ? 0 : 1;

@@ -30,6 +30,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Snapshot of the window's contentView subtree; nil if there is no contentView.
 @property (nonatomic, readonly, nullable) FLEXAppKitViewSnapshot *contentView;
 
+/// Transient/child windows nested under this one — attached sheets, child windows
+/// (NSPopover content, panels). Only top-level windows are roots; these are not.
+@property (nonatomic, readonly, copy) NSArray<FLEXAppKitWindowSnapshot *> *childWindows;
+
 @end
 
 NS_ASSUME_NONNULL_END

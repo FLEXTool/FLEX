@@ -17,6 +17,19 @@
 @property (nonatomic, copy, nullable) NSString *appearanceName;
 @end
 
+/// sRGB hex of a color already converted to sRGB, or nil. The caller must convert
+/// first — reading components on a non-RGB color throws.
+static NSString *FLEXHexOfSRGBColor(NSColor *srgb) {
+    if (srgb == nil) {
+        return nil;
+    }
+    int r = (int)lround(srgb.redComponent * 255.0);
+    int g = (int)lround(srgb.greenComponent * 255.0);
+    int b = (int)lround(srgb.blueComponent * 255.0);
+    int a = (int)lround(srgb.alphaComponent * 255.0);
+    return [NSString stringWithFormat:@"#%02X%02X%02X%02X", r, g, b, a];
+}
+
 @implementation FLEXAppKitColor
 
 + (nullable FLEXAppKitColor *)colorFromColor:(nullable id)input
@@ -25,16 +38,26 @@
         return nil;
     }
 
-    NSColor *color = nil;
-    if ([input isKindOfClass:[NSColor class]]) {
-        color = input;
-    } else if (CFGetTypeID((__bridge CFTypeRef)input) == CGColorGetTypeID()) {
-        color = [NSColor colorWithCGColor:(__bridge CGColorRef)input];
-    }
-    if (color == nil) {
-        return nil;
+    // CGColor (e.g. a layer's backgroundColor): already a flat, baked color. It
+    // cannot carry a catalog name and is NOT re-resolvable to a different
+    // appearance — the dynamic identity was lost when the view baked it into the
+    // layer. Capture the baked sRGB hex as-is; catalogName/appearanceName stay nil.
+    if (![input isKindOfClass:[NSColor class]]
+        && CFGetTypeID((__bridge CFTypeRef)input) == CGColorGetTypeID()) {
+        NSColor *flat = [NSColor colorWithCGColor:(__bridge CGColorRef)input];
+        NSString *hex = FLEXHexOfSRGBColor([flat colorUsingColorSpace:[NSColorSpace sRGBColorSpace]]);
+        if (hex == nil) {
+            return nil; // unconvertible (e.g. a pattern color) — no misleading value
+        }
+        FLEXAppKitColor *result = [FLEXAppKitColor new];
+        result.hex = hex;
+        return result;
     }
 
+    if (![input isKindOfClass:[NSColor class]]) {
+        return nil;
+    }
+    NSColor *color = input;
     FLEXAppKitColor *result = [FLEXAppKitColor new];
 
     // Catalog/dynamic NAME, only where the color genuinely is a catalog color
@@ -48,8 +71,8 @@
     NSAppearance *resolveAppearance = [appearance isKindOfClass:[NSAppearance class]] ? appearance : nil;
     result.appearanceName = resolveAppearance.name;
 
-    // Resolve to sRGB components UNDER the appearance — required for catalog/dynamic
-    // colors, which otherwise return nil or throw.
+    // Resolve to sRGB UNDER the appearance — required for a live catalog/dynamic
+    // NSColor, which otherwise returns nil or resolves under the wrong appearance.
     __block NSColor *resolved = nil;
     void (^toSRGB)(void) = ^{
         resolved = [color colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
@@ -64,14 +87,7 @@
         toSRGB();
     }
 
-    if (resolved != nil) {
-        int r = (int)lround(resolved.redComponent * 255.0);
-        int g = (int)lround(resolved.greenComponent * 255.0);
-        int b = (int)lround(resolved.blueComponent * 255.0);
-        int a = (int)lround(resolved.alphaComponent * 255.0);
-        result.hex = [NSString stringWithFormat:@"#%02X%02X%02X%02X", r, g, b, a];
-    }
-
+    result.hex = FLEXHexOfSRGBColor(resolved);
     return result;
 }
 
