@@ -3,12 +3,12 @@
 //
 //  A scoped correctness harness for FLEXAppKitWalker. Builds only against FLEXAppKit
 //  (not the UIKit FLEX target), so it runs on macOS via `swift run FLEXAppKitProbe`.
-//  Asserts the walker's output against geometry/font facts computed independently.
-//
-//  This is dev tooling, not part of the upstream library.
+//  Asserts the walker's output against geometry/font/color/layer facts computed
+//  independently. This is dev tooling, not part of the upstream library.
 //
 
 #import <AppKit/AppKit.h>
+#import <objc/runtime.h>
 #import <math.h>
 #import <stdio.h>
 @import FLEXAppKit;
@@ -43,12 +43,11 @@ int main(void) {
         check([cs.className isEqualToString:@"FLEXProbeView"],
               [NSString stringWithFormat:@"real class == FLEXProbeView (got %@)", cs.className]);
 
-        // A titled window; its content bottom-left coincides with the window frame
-        // bottom-left (titlebar is at the top), so winH = contentH + titlebar.
         NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 400, 300)
                                                        styleMask:NSWindowStyleMaskTitled
                                                          backing:NSBackingStoreBuffered
                                                            defer:NO];
+        window.title = @"ProbeWindow";
         NSView *content = window.contentView;
         CGFloat winH = window.frame.size.height;
         CGFloat titlebar = winH - 300;
@@ -89,9 +88,55 @@ int main(void) {
         check(ls.font && approx(ls.font.weightTrait, NSFontWeightSemibold),
               @"weightTrait ~ NSFontWeightSemibold (raw, not converted)");
         check(ls.font.postScriptName.length > 0, @"postScriptName present");
-
-        // 4. No font carrier -> null, a success not an error
         check(ps.font == nil, @"plain NSView reports no font (null)");
+
+        // 4. Rooted traversal: NSApp.windows enumeration
+        NSArray<FLEXAppKitWindowSnapshot *> *windows = [FLEXAppKitWalker snapshotApplicationWindows];
+        FLEXAppKitWindowSnapshot *probeWindow = nil;
+        for (FLEXAppKitWindowSnapshot *w in windows) {
+            if ([w.title isEqualToString:@"ProbeWindow"]) { probeWindow = w; break; }
+        }
+        check(probeWindow != nil, @"NSApp.windows enumeration finds ProbeWindow as a root");
+        check(probeWindow.className.length > 0 && [probeWindow.className containsString:@"Window"],
+              [NSString stringWithFormat:@"window real class looks like an NSWindow (got %@)", probeWindow.className]);
+        check(probeWindow.contentView != nil && probeWindow.contentView.children.count >= 1,
+              @"window root carries its contentView subtree");
+
+        // 5. swiftUIBoundary: a class whose name contains NSHostingView trips the flag
+        Class hostingStub = objc_allocateClassPair([NSView class], "NSHostingViewStub", 0);
+        objc_registerClassPair(hostingStub);
+        NSView *fakeHost = [[hostingStub alloc] initWithFrame:NSMakeRect(0, 0, 10, 10)];
+        FLEXAppKitViewSnapshot *hs = [FLEXAppKitWalker snapshotForView:fakeHost inWindow:nil];
+        check(hs.swiftUIBoundary == YES, @"swiftUIBoundary == YES at an NSHostingView-named class");
+        check(ps.swiftUIBoundary == NO, @"swiftUIBoundary == NO for a plain view");
+
+        // 6. Layer sub-shape + NSColor decomposition (standalone, layer-backed)
+        NSView *backed = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+        backed.wantsLayer = YES;
+        backed.layer.cornerRadius = 8;
+        backed.layer.masksToBounds = YES;
+        backed.layer.backgroundColor = [NSColor colorWithSRGBRed:1 green:0 blue:0 alpha:1].CGColor;
+        FLEXAppKitViewSnapshot *bs = [FLEXAppKitWalker snapshotForView:backed inWindow:nil];
+        check(bs.layer != nil, @"layer-backed view captures a layer");
+        check(bs.layer && approx(bs.layer.cornerRadius, 8), @"layer cornerRadius == 8");
+        check(bs.layer && bs.layer.masksToBounds == YES, @"layer masksToBounds == YES");
+        check(bs.layer.backgroundColor != nil, @"layer has a decomposed backgroundColor");
+        check(bs.layer.backgroundColor && [bs.layer.backgroundColor.hex isEqualToString:@"#FF0000FF"],
+              [NSString stringWithFormat:@"bg color hex == #FF0000FF (got %@)", bs.layer.backgroundColor.hex]);
+
+        // 6b. nil-layer: a standalone, non-wantsLayer view reports no layer (success)
+        NSView *unbacked = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 10, 10)];
+        FLEXAppKitViewSnapshot *us = [FLEXAppKitWalker snapshotForView:unbacked inWindow:nil];
+        check(us.layer == nil, @"unbacked standalone view reports no layer (nil, not error)");
+
+        // 7. NSVisualEffectView material / blendingMode
+        NSVisualEffectView *vev = [[NSVisualEffectView alloc] initWithFrame:NSMakeRect(0, 0, 50, 50)];
+        vev.material = NSVisualEffectMaterialSidebar;
+        FLEXAppKitViewSnapshot *vs = [FLEXAppKitWalker snapshotForView:vev inWindow:nil];
+        check([vs.material isEqualToString:@"sidebar"],
+              [NSString stringWithFormat:@"material == sidebar (got %@)", vs.material]);
+        check(vs.blendingMode.length > 0,
+              [NSString stringWithFormat:@"blendingMode present (got %@)", vs.blendingMode]);
 
         printf("\n%s (%d failure%s)\n", gFailures == 0 ? "ALL PASS" : "FAILURES",
                gFailures, gFailures == 1 ? "" : "s");
