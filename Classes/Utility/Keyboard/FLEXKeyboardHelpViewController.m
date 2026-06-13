@@ -19,8 +19,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Force LTR layout for technical content
+    self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.navigationController.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
 
     self.textView = [[UITextView alloc] initWithFrame:self.view.bounds];
+    self.textView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
     self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:self.textView];
 #if TARGET_OS_SIMULATOR

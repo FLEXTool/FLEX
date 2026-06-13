@@ -31,6 +31,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Force LTR layout for network settings screen
+    self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.tableView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.navigationController.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    
     [self disableToolbar];
     self.hostDenylist = FLEXNetworkRecorder.defaultRecorder.hostDenylist.mutableCopy;
     
@@ -144,6 +149,11 @@
     
     cell.accessoryView = nil;
     cell.textLabel.textColor = FLEXColor.primaryTextColor;
+    
+    // Force LTR layout for network settings cells
+    cell.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    cell.contentView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    cell.textLabel.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
     
     switch (indexPath.section) {
         // Settings
