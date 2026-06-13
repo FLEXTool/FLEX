@@ -19,7 +19,8 @@ let package = Package(
     name: "FLEX",
     platforms: platforms,
     products: [
-        .library(name: "FLEX", targets: ["FLEX"])
+        .library(name: "FLEX", targets: ["FLEX"]),
+        .library(name: "FLEXAppKit", targets: ["FLEXAppKit"]),
     ],
     targets: [
         .target(
@@ -27,6 +28,7 @@ let package = Package(
             path: "Classes",
             exclude: [
                 "Info.plist",
+                "ViewHierarchy/AppKit",
                 "Utility/APPLE_LICENSE",
                 "Network/OSCache/LICENSE.md",
                 "Network/PonyDebugger/LICENSE",
@@ -41,7 +43,25 @@ let package = Package(
                 .linkedLibrary("sqlite3"),
                 .linkedLibrary("z"),
             ]
-        )
+        ),
+        .target(
+            name: "FLEXAppKit",
+            path: "Classes/ViewHierarchy/AppKit",
+            publicHeadersPath: ".",
+            linkerSettings: [
+                .linkedFramework("AppKit", .when(platforms: [.macOS]))
+            ]
+        ),
+        .target(
+            name: "FLEXAppKitProbe",
+            dependencies: ["FLEXAppKit"],
+            path: "DevProbe"
+        ),
+        .target(
+            name: "SampleAppKitDump",
+            dependencies: ["FLEXAppKit"],
+            path: "Samples/SampleAppKitDump"
+        ),
     ],
     // Required to compile FLEXSwiftInternal.mm
     cxxLanguageStandard: .gnucxx11
