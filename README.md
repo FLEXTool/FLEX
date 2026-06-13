@@ -77,10 +77,27 @@ Once a view is selected, you can tap on the info bar below the toolbar to presen
 
 <img alt="Modify Views" width=36% height=36% src=https://user-images.githubusercontent.com/8371943/70271816-c5c2b480-176c-11ea-8bf4-2c5a755bc392.gif>
 
-### Network History
-When enabled, network debugging allows you to view all requests made using NSURLConnection or NSURLSession. Settings allow you to adjust what kind of response bodies get cached and the maximum size limit of the response cache. You can choose to have network debugging enabled automatically on app launch. This setting is persisted across launches.
+### Network History & Export
+When enabled, network debugging allows you to view all requests made using NSURLConnection or NSURLSession. New in this version is the ability to export requests in multiple formats.
 
 <img alt="Network History" width=36% height=36% src=https://user-images.githubusercontent.com/8371943/70271876-e5f27380-176c-11ea-98ef-24170205b706.gif>
+
+#### Enhanced Network Export
+Export captured requests with smart filters (Images, Analytics, Firebase):
+
+<table>
+  <tr>
+    <td align="center"><strong>Export Menu</strong></td>
+    <td align="center"><strong>Export Filters</strong></td>
+  </tr>
+  <tr>
+    <td><img width="280" alt="Export Menu" src="https://github.com/user-attachments/assets/6c27e51e-8f70-449d-a379-cdeaedf6e342" /></td>
+    <td><img width="280" alt="Export Filters" src="https://github.com/user-attachments/assets/796bdfb9-5d60-44b4-80f9-d4bfbe5c4a55" /></td>
+  </tr>
+</table>
+
+* **Formats**: HAR, Postman Collection, Swagger/OpenAPI, Curl ZIP, Raw Text
+* **Filters**: Settings allow you to exclude Images, Analytics SDKs (80+ providers), and Firebase Analytics while keeping Remote Config.
 
 ### All Objects on the Heap
 FLEX queries malloc for all the live allocated memory blocks and searches for ones that look like objects. You can see everything from here.
