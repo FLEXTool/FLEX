@@ -13,7 +13,6 @@
 #import "FLEXSingleRowSection.h"
 #import "FLEXRuntimeUtility.h"
 #import "FLEXTableView.h"
-#import "FLEXTableViewCell.h"
 #import "FLEXManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -124,14 +123,14 @@ NS_ASSUME_NONNULL_BEGIN
     NSArray<FLEXRecommendation *> *recs = [engine suggestionsForObject:object context:nil];
 
     for (FLEXRecommendation *rec in recs) {
-        FLEXSingleRowSection *section = [FLEXSingleRowSection title:rec.title
-                                                            reuse:kFLEXDefaultCell
-                                                             cell:^(FLEXTableViewCell *cell) {
+        FLEXSingleRowSection *section = [[FLEXSingleRowSection alloc] initWithTitle:rec.title
+                                                                           reuseIdentifier:kFLEXDefaultCell
+                                                                          cellConfiguration:^(FLEXTableViewCell *cell) {
             cell.titleLabel.text = rec.title;
             cell.titleLabel.font = UIFont.flex_defaultTableCellFont;
         }];
-        section.selectionAction = ^(UIViewController *host) {
-            [[FLEXManager sharedManager] presentObjectExplorer:rec.relevantObject completion:nil];
+        section.selectionAction = ^(__kindof UIViewController *host) {
+            [[FLEXManager sharedManager] showExplorerForObject:rec.relevantObject];
         };
         [customSections addObject:section];
     }
