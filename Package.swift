@@ -37,7 +37,14 @@ let package = Package(
             publicHeadersPath: "Headers",
             cSettings: .headerSearchPaths + .warningFlags,
             linkerSettings: [
+                .linkedFramework("Foundation"),
+                .linkedFramework("UIKit"),
                 .linkedFramework("CoreGraphics"),
+                .linkedFramework("ImageIO"),
+                .linkedFramework("QuartzCore"),
+                .linkedFramework("WebKit"),
+                .linkedFramework("Security"),
+                .linkedFramework("SceneKit"),
                 .linkedLibrary("sqlite3"),
                 .linkedLibrary("z"),
             ]
