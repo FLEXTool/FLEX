@@ -39,10 +39,10 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     self.searchBarDebounceInterval = kFLEXDebounceInstant;
     self.showsCarousel = YES;
     self.carousel.items = @[@"A→Z", @"Count", @"Size"];
-    
+
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidRefresh:) forControlEvents:UIControlEventValueChanged];
-    
+
     [self reloadTableData];
 }
 
@@ -63,31 +63,40 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
     for (unsigned int i = 0; i < classCount; i++) {
         CFDictionarySetValue(mutableCountsForClasses, (__bridge const void *)classes[i], (const void *)0);
     }
-    
+
     // Enumerate all objects on the heap to build the counts of instances for each class.
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class actualClass) {
+        if (!actualClass) {
+            return;
+        }
+
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)actualClass);
         instanceCount++;
         CFDictionarySetValue(mutableCountsForClasses, (__bridge const void *)actualClass, (const void *)instanceCount);
     }];
-    
+
     // Convert our CF primitive dictionary into a nicer mapping of class name strings to counts that we will use as the table's model.
     NSMutableDictionary<NSString *, NSNumber *> *mutableCountsForClassNames = [NSMutableDictionary new];
     NSMutableDictionary<NSString *, NSNumber *> *mutableSizesForClassNames = [NSMutableDictionary new];
     for (unsigned int i = 0; i < classCount; i++) {
         Class class = classes[i];
+        const char *classNameCString = class_getName(class);
+        if (!classNameCString) {
+            continue;
+        }
+
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));
-        NSString *className = @(class_getName(class));
+        NSString *className = @(classNameCString);
         if (instanceCount > 0) {
             [mutableCountsForClassNames setObject:@(instanceCount) forKey:className];
         }
         [mutableSizesForClassNames setObject:@(class_getInstanceSize(class)) forKey:className];
     }
     free(classes);
-    
+
     self.instanceCountsForClassNames = mutableCountsForClassNames;
     self.instanceSizesForClassNames = mutableSizesForClassNames;
-    
+
     [self updateSearchResults:nil];
 }
 
@@ -112,7 +121,7 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
         filteredCount += count;
         filteredSize += count * self.instanceSizesForClassNames[className].unsignedIntegerValue;
     }
-    
+
     if (filteredCount == totalCount) {
         // Unfiltered
         self.headerTitle = [NSString
@@ -132,8 +141,6 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
         ];
     }
 }
-
-
 #pragma mark - FLEXGlobalsEntry
 
 + (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
@@ -146,20 +153,18 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
 
     return liveObjectsViewController;
 }
-
-
 #pragma mark - Search bar
 
 - (void)updateSearchResults:(NSString *)filter {
     NSInteger selectedScope = self.selectedScope;
-    
+
     if (filter.length) {
         NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", filter];
         self.filteredClassNames = [self.allClassNames filteredArrayUsingPredicate:searchPredicate];
     } else {
         self.filteredClassNames = self.allClassNames;
     }
-    
+
     if (selectedScope == kFLEXLiveObjectsSortAlphabeticallyIndex) {
         self.filteredClassNames = [self.filteredClassNames sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     } else if (selectedScope == kFLEXLiveObjectsSortByCountIndex) {
@@ -179,12 +184,10 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
             return [@(count2.integerValue * size2.integerValue) compare:@(count1.integerValue * size1.integerValue)];
         }];
     }
-    
+
     [self updateHeaderTitle];
     [self.tableView reloadData];
 }
-
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -213,15 +216,13 @@ static const NSInteger kFLEXLiveObjectsSortBySizeIndex = 2;
             countStyle:NSByteCountFormatterCountStyleFile
         ]
     ];
-    
+
     return cell;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return self.headerTitle;
 }
-
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

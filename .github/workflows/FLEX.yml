@@ -1,0 +1,90 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - codex/flex-mit-github-actions-kompilieren
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  xcode:
+    name: Xcode build and tests
+    runs-on: macos-15
+
+    env:
+      DERIVED_DATA_PATH: build/DerivedData
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Show build environment
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
+      - name: Build FLEX framework
+        run: |
+          xcodebuild build \
+            -project FLEX.xcodeproj \
+            -scheme FLEX \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$DERIVED_DATA_PATH" \
+            CODE_SIGNING_ALLOWED=NO
+      - name: Upload FLEX framework
+        uses: actions/upload-artifact@v6
+        with:
+          name: FLEX-framework-debug-iphonesimulator
+          path: ${{ env.DERIVED_DATA_PATH }}/Build/Products/Debug-iphonesimulator/FLEX.framework
+          if-no-files-found: error
+
+      - name: Build FLEX tests
+        run: |
+          xcodebuild build-for-testing \
+            -project FLEX.xcodeproj \
+            -scheme FLEXTests \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$DERIVED_DATA_PATH" \
+            CODE_SIGNING_ALLOWED=NO
+  tweak:
+    name: Theos tweak package
+    runs-on: macos-15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git "$HOME/theos"
+          echo "THEOS=$HOME/theos" >> "$GITHUB_ENV"
+      - name: Install tweak signing tools
+        run: |
+          brew install ldid
+      - name: Build FLEX Loader tweak package
+        working-directory: Tweak
+        run: |
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+      - name: Collect injectable FLEX Loader dylib
+        run: |
+          mkdir -p Tweak/artifacts
+          cp Tweak/.theos/obj/FLEXLoader.dylib Tweak/artifacts/FLEXLoader.dylib
+      - name: Upload injectable FLEX Loader dylib
+        uses: actions/upload-artifact@v6
+        with:
+          name: FLEXLoader-dylib
+          path: Tweak/artifacts/FLEXLoader.dylib
+          if-no-files-found: error
+
+      - name: Upload FLEX Loader tweak
+        uses: actions/upload-artifact@v6
+        with:
+          name: FLEXLoader-tweak
+          path: Tweak/packages/*.deb
+          if-no-files-found: error

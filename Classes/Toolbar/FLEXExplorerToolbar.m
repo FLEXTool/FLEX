@@ -52,11 +52,12 @@
             self.backgroundGlassView = [[UIVisualEffectView alloc] initWithEffect:glassEffect];
             self.backgroundGlassView.clipsToBounds = YES;
             self.backgroundGlassView.layer.cornerRadius = 16;
+            self.backgroundGlassView.backgroundColor = FLEXColor.toolbarBackgroundColor;
             [self addSubview:self.backgroundGlassView];
             self.backgroundView = self.backgroundGlassView;
         } else {
             self.backgroundView = [UIView new];
-            self.backgroundView.backgroundColor = [FLEXColor secondaryBackgroundColorWithAlpha:0.95];
+            self.backgroundView.backgroundColor = FLEXColor.toolbarBackgroundColor;
             [self addSubview:self.backgroundView];
         }
 
@@ -64,7 +65,7 @@
         self.dragHandle = [UIView new];
         self.dragHandle.backgroundColor = UIColor.clearColor;
         self.dragHandleImageView = [[UIImageView alloc] initWithImage:FLEXResources.dragHandle];
-        self.dragHandleImageView.tintColor = [FLEXColor.iconColor colorWithAlphaComponent:0.666];
+        self.dragHandleImageView.tintColor = FLEXColor.toolbarDragHandleColor;
         [self.dragHandle addSubview:self.dragHandleImageView];
         [self addSubview:self.dragHandle];
         
@@ -93,12 +94,13 @@
             self.descriptionGlassView = [[UIVisualEffectView alloc] initWithEffect:descGlassEffect];
             self.descriptionGlassView.clipsToBounds = YES;
             self.descriptionGlassView.layer.cornerRadius = [[self class] descriptionContainerHeight] / 2.0;
+            self.descriptionGlassView.backgroundColor = FLEXColor.toolbarDescriptionBackgroundColor;
             self.descriptionGlassView.hidden = YES;
             [self addSubview:self.descriptionGlassView];
             self.selectedViewDescriptionContainer = self.descriptionGlassView;
         } else {
             self.selectedViewDescriptionContainer = [UIView new];
-            self.selectedViewDescriptionContainer.backgroundColor = [FLEXColor tertiaryBackgroundColorWithAlpha:0.95];
+            self.selectedViewDescriptionContainer.backgroundColor = FLEXColor.toolbarDescriptionBackgroundColor;
             self.selectedViewDescriptionContainer.hidden = YES;
             [self addSubview:self.selectedViewDescriptionContainer];
         }
@@ -117,6 +119,7 @@
         
         self.selectedViewDescriptionLabel = [UILabel new];
         self.selectedViewDescriptionLabel.backgroundColor = UIColor.clearColor;
+        self.selectedViewDescriptionLabel.textColor = FLEXColor.toolbarTextColor;
         self.selectedViewDescriptionLabel.font = [[self class] descriptionLabelFont];
         [self.selectedViewDescriptionSafeAreaContainer addSubview:self.selectedViewDescriptionLabel];
         

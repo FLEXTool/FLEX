@@ -1,0 +1,9 @@
+Package: com.flextool.flexloader
+Name: FLEX Loader
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Loads FLEX automatically into UIKit applications.
+Maintainer: FLEX Team
+Author: FLEX Team
+Section: Tweaks
+Depends: mobilesubstrate
