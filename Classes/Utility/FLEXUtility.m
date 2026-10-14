@@ -142,6 +142,45 @@ static NSString *FLEXReadableClassName(Class cls) {
     return description;
 }
 
++ (NSString *)descriptionForNode:(id)node includingFrame:(BOOL)includeFrame {
+    if ([node isKindOfClass:[UIView class]]) {
+        return [self descriptionForView:node includingFrame:includeFrame];
+    }
+
+    CALayer *layer = node;
+    NSString *description = FLEXReadableClassName([layer class]);
+
+    if (layer.name.length > 0) {
+        description = [description stringByAppendingFormat:@" (%@)", layer.name];
+    }
+
+    if (includeFrame) {
+        description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:layer.frame]];
+    }
+
+    UIView *owner = [self viewForLayer:layer];
+    if (owner) {
+        description = [description stringByAppendingFormat:@" · in %@", FLEXReadableClassName([owner class])];
+    }
+
+    return description;
+}
+
++ (BOOL)layerIsViewBacked:(CALayer *)layer {
+    id delegate = layer.delegate;
+    return [delegate isKindOfClass:[UIView class]] && [delegate layer] == layer;
+}
+
++ (UIView *)viewForLayer:(CALayer *)layer {
+    for (CALayer *current = layer; current; current = current.superlayer) {
+        if ([self layerIsViewBacked:current]) {
+            return (UIView *)current.delegate;
+        }
+    }
+
+    return nil;
+}
+
 + (NSString *)stringForCGRect:(CGRect)rect {
     return [NSString stringWithFormat:@"{(%g, %g), (%g, %g)}",
         rect.origin.x, rect.origin.y, rect.size.width, rect.size.height
