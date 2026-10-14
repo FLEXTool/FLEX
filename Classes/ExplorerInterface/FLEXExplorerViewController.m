@@ -9,6 +9,7 @@
 #import "FLEXExplorerViewController.h"
 #import "FLEXExplorerToolbarItem.h"
 #import "FLEXUtility.h"
+#import "FLEXSwiftUIInspector.h"
 #import "FLEXWindow.h"
 #import "FLEXTabList.h"
 #import "FLEXNavigationController.h"
@@ -762,6 +763,9 @@ static CGRect FLEXFrameInWindow(id node) {
 
 - (void)updateOutlineViewsForSelectionPoint:(CGPoint)selectionPointInWindow {
     [self removeAndClearOutlineViews];
+
+    // The screen may have changed since the last tap, so re-read SwiftUI's tree
+    [FLEXSwiftUIInspector invalidate];
     
     // Include hidden views in the "viewsAtTapPoint" array so we can show them in the hierarchy list.
     self.viewsAtTapPoint = [self viewsAtPoint:selectionPointInWindow skipHiddenViews:NO];

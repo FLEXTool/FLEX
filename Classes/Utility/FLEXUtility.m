@@ -9,6 +9,7 @@
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
+#import "FLEXSwiftUIInspector.h"
 #import "FLEXWindow.h"
 #import <ImageIO/ImageIO.h>
 #import <dlfcn.h>
@@ -147,8 +148,28 @@ static NSString *FLEXReadableClassName(Class cls) {
         return [self descriptionForView:node includingFrame:includeFrame];
     }
 
+    // "AView {...} · in SwiftUIDemoView"
+    if ([node isKindOfClass:[FLEXSwiftUIViewNode class]]) {
+        FLEXSwiftUIViewNode *view = node;
+        NSString *description = view.name;
+        if (includeFrame) {
+            description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:view.frameInHostingView]];
+        }
+        if (view.enclosingName) {
+            description = [description stringByAppendingFormat:@" · in %@", view.enclosingName];
+        }
+        return description;
+    }
+
     CALayer *layer = node;
     NSString *description = FLEXReadableClassName([layer class]);
+
+    // "Text (SwiftUI.CGDrawingLayer) {...} · in AView"
+    NSString *component = nil, *swiftUIOwner = nil;
+    [FLEXSwiftUIInspector describeLayer:layer component:&component owner:&swiftUIOwner];
+    if (component) {
+        description = [NSString stringWithFormat:@"%@ (%@)", component, description];
+    }
 
     if (layer.name.length > 0) {
         description = [description stringByAppendingFormat:@" (%@)", layer.name];
@@ -159,7 +180,9 @@ static NSString *FLEXReadableClassName(Class cls) {
     }
 
     UIView *owner = [self viewForLayer:layer];
-    if (owner) {
+    if (swiftUIOwner) {
+        description = [description stringByAppendingFormat:@" · in %@", swiftUIOwner];
+    } else if (owner) {
         description = [description stringByAppendingFormat:@" · in %@", FLEXReadableClassName([owner class])];
     }
 
