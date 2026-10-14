@@ -65,6 +65,10 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
 /// and displaying details for. See \c viewsAtTapPoint.
 @property (nonatomic) id selectedView;
 
+/// What the hierarchy was opened on in place of a selected layer, which it can't list:
+/// the SwiftUI view that drew it, or the view that owns it.
+@property (nonatomic, weak) id hierarchyStandIn;
+
 /// Brief visual indicator shown at the tap point, created once and reused.
 @property (nonatomic) UIView *tapIndicatorView;
 
@@ -222,7 +226,24 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
         }
         self.selectedViewOverlay.hidden = YES;
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        for (UIView *view in self.viewsAtTapPoint) {
+        // Re-read SwiftUI's layout, which updates the frames of the nodes already listed
+        [FLEXSwiftUIInspector invalidate];
+        NSMutableArray *items = [NSMutableArray arrayWithArray:self.viewsAtTapPoint];
+        if (self.selectedView) {
+            [items addObject:self.selectedView];
+        }
+        NSHashTable<UIView *> *hostingViews = [NSHashTable weakObjectsHashTable];
+        for (id node in items) {
+            UIView *hostingView = [node isKindOfClass:[FLEXSwiftUIViewNode class]] ? [node hostingView] : nil;
+            if (hostingView) {
+                [hostingViews addObject:hostingView];
+            }
+        }
+        for (UIView *hostingView in hostingViews) {
+            [FLEXSwiftUIInspector rootNodesInHostingView:hostingView];
+        }
+
+        for (id view in self.viewsAtTapPoint) {
             NSValue *key = [NSValue valueWithNonretainedObject:view];
             UIView *outlineView = self.outlineViewsForVisibleViews[key];
             [self placeOutline:outlineView overNode:view];
@@ -340,8 +361,8 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }];
 }
 
-/// The selected view when a view is selected; \c nil for a bare layer, which
-/// has no superview to be moved within.
+/// The selected view when a view is selected; \c nil for a bare layer or a SwiftUI
+/// view, which have no superview to be moved within.
 - (UIView *)movableSelectedView {
     return [self.selectedView isKindOfClass:[UIView class]] ? self.selectedView : nil;
 }
@@ -409,13 +430,17 @@ typedef NS_ENUM(NSUInteger, FLEXExplorerMode) {
     }
 }
 
-/// Window-space frame of a view or layer. Layers convert through the view that owns
-/// them, so the result stays correct across windows. \c CGRectNull for a layer that
-/// has since been removed from the screen.
+/// Window-space frame of a view, layer, or SwiftUI view node. Layers convert through
+/// the view that owns them, so the result stays correct across windows. \c CGRectNull
+/// for something no longer on screen.
 static CGRect FLEXFrameInWindow(id node) {
     if ([node isKindOfClass:[UIView class]]) {
         UIView *view = node;
         return [view convertRect:view.bounds toView:nil];
+    }
+
+    if ([node isKindOfClass:[FLEXSwiftUIViewNode class]]) {
+        return [(FLEXSwiftUIViewNode *)node frameInWindow];
     }
 
     CALayer *layer = node;
@@ -812,12 +837,100 @@ static CGRect FLEXFrameInWindow(id node) {
         // Don't include the explorer's own window or subviews.
         if (window != self.view.window && [window pointInside:tapPointInWindow withEvent:nil]) {
             [views addObject:window];
-            [views addObjectsFromArray:[self
+            [views addObjectsFromArray:[self candidatesByAddingSwiftUIViews:[self
                 recursiveSubviewsAtPoint:tapPointInWindow inView:window skipHiddenViews:skipHidden
-            ]];
+            ] atPoint:tapPointInWindow]];
         }
     }
     return views;
+}
+
+/// How deep a SwiftUI layer or custom view sits among custom views: a custom view counts
+/// itself and the custom views around it, and a layer sits half a level below the
+/// innermost custom view containing what it drew.
+static CGFloat FLEXSwiftUIDepth(id item) {
+    BOOL isLayer = [item isKindOfClass:[CALayer class]];
+    FLEXSwiftUIViewNode *node = isLayer ? [FLEXSwiftUIInspector nodeForLayer:item] : item;
+    CGFloat depth = isLayer ? 0.5 : 0;
+    for (; node; node = node.parent) {
+        depth += node.kind == FLEXSwiftUIViewKindCustom ? 1 : 0;
+    }
+
+    return depth;
+}
+
+static BOOL FLEXLayerIsInside(CALayer *layer, CALayer *ancestor) {
+    for (; layer; layer = layer.superlayer) {
+        if (layer == ancestor) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+/// Adds the custom SwiftUI views under the point, which have no view or layer of their
+/// own to find, and orders them with the layers SwiftUI drew: outermost first, each layer
+/// right after the innermost custom view containing what it drew. So re-tapping a row's
+/// text walks out to the row, then to the background drawn behind it, then the section.
+/// UIKit views SwiftUI draws into, such as a scroll view's content, come before them, and
+/// UIKit views it shows, such as a switch, after them.
+- (NSArray *)candidatesByAddingSwiftUIViews:(NSArray *)candidates atPoint:(CGPoint)pointInWindow {
+    NSMutableArray *result = [candidates mutableCopy];
+    for (id candidate in candidates) {
+        if (![candidate isKindOfClass:[UIView class]] || ![FLEXSwiftUIInspector isHostingView:candidate]) {
+            continue;
+        }
+
+        UIView *hostingView = candidate;
+        NSMutableArray *swiftUIItems = [[FLEXSwiftUIInspector
+            customViewNodesInHostingView:hostingView containingPoint:pointInWindow
+        ] mutableCopy];
+
+        // Take out everything in the hosting view after it
+        NSUInteger start = [result indexOfObjectIdenticalTo:hostingView] + 1, end = start;
+        NSMutableArray<UIView *> *views = [NSMutableArray new];
+        for (; end < result.count; end++) {
+            id next = result[end];
+            if ([next isKindOfClass:[CALayer class]] && [FLEXSwiftUIInspector hostingViewForLayer:next] == hostingView) {
+                [swiftUIItems addObject:next];
+            } else if ([next isKindOfClass:[UIView class]] && [(UIView *)next isDescendantOfView:hostingView]) {
+                [views addObject:next];
+            } else {
+                break;
+            }
+        }
+
+        if (!swiftUIItems.count) {
+            continue;
+        }
+
+        NSMapTable<id, NSNumber *> *depths = [NSMapTable strongToStrongObjectsMapTable];
+        for (id item in swiftUIItems) {
+            [depths setObject:@(FLEXSwiftUIDepth(item)) forKey:item];
+        }
+        [swiftUIItems sortWithOptions:NSSortStable usingComparator:^NSComparisonResult(id a, id b) {
+            return [[depths objectForKey:a] compare:[depths objectForKey:b]];
+        }];
+
+        NSMutableArray *ordered = [NSMutableArray new], *shown = [NSMutableArray new];
+        for (UIView *view in views) {
+            BOOL drawnInto = NO;
+            for (id item in swiftUIItems) {
+                if ([item isKindOfClass:[CALayer class]] && FLEXLayerIsInside(item, view.layer)) {
+                    drawnInto = YES;
+                    break;
+                }
+            }
+            [drawnInto ? ordered : shown addObject:view];
+        }
+        [ordered addObjectsFromArray:swiftUIItems];
+        [ordered addObjectsFromArray:shown];
+
+        [result replaceObjectsInRange:NSMakeRange(start, end - start) withObjectsFromArray:ordered];
+    }
+
+    return result;
 }
 
 - (id)viewForSelectionAtPoint:(CGPoint)tapPointInWindow {
@@ -835,7 +948,9 @@ static CGRect FLEXFrameInWindow(id node) {
         }
     }
 
-    NSArray *const visibleViews = [self recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES];
+    NSArray *const visibleViews = [self candidatesByAddingSwiftUIViews:[self
+        recursiveSubviewsAtPoint:tapPointInWindow inView:windowForSelection skipHiddenViews:YES
+    ] atPoint:tapPointInWindow];
     if (visibleViews.count == 0) {
         return nil;
     }
@@ -1113,7 +1228,12 @@ static BOOL FLEXIsSwiftUIView(UIView *view) {
 
 #pragma mark - FLEXHierarchyDelegate
 
-- (void)viewHierarchyDidDismiss:(UIView *)selectedView {
+- (void)viewHierarchyDidDismiss:(id)selectedView {
+    // Keep a selected layer or SwiftUI view if the hierarchy came back with its stand-in
+    if (selectedView && selectedView == self.hierarchyStandIn) {
+        selectedView = self.selectedView;
+    }
+
     // Note that we need to wait until the view controller is dismissed to calculate the frame
     // of the outline view, otherwise the coordinate conversion doesn't give the correct result.
     [self toggleViewsToolWithCompletion:^{
@@ -1244,11 +1364,21 @@ static BOOL FLEXIsSwiftUIView(UIView *view) {
 
 - (void)toggleViewsToolWithCompletion:(void(^)(void))completion {
     [self toggleToolWithViewControllerProvider:^UINavigationController *{
-        // The hierarchy is view-based, so use the view that owns a selected layer
-        UIView *selected = self.movableSelectedView ?: [FLEXUtility viewForLayer:self.selectedView];
+        // The hierarchy lists views and SwiftUI views, so a selected layer stands in as
+        // the SwiftUI view that drew it, or else the view that owns it
+        [FLEXSwiftUIInspector invalidate];
+        id selected = self.selectedView;
+        BOOL isLayer = selected && ![selected isKindOfClass:[UIView class]]
+            && ![selected isKindOfClass:[FLEXSwiftUIViewNode class]];
+        if (isLayer) {
+            selected = [FLEXSwiftUIInspector nodeForLayer:selected] ?: [FLEXUtility viewForLayer:selected];
+        }
+        self.hierarchyStandIn = isLayer ? selected : nil;
 
         if (selected) {
-            NSArray<UIView *> *views = self.viewsOnlyAtTapPoint;
+            NSArray *views = [self.viewsAtTapPoint flex_filtered:^BOOL(id item, NSUInteger idx) {
+                return [item isKindOfClass:[UIView class]] || [item isKindOfClass:[FLEXSwiftUIViewNode class]];
+            }];
             if (![views containsObject:selected]) {
                 views = [views arrayByAddingObject:selected];
             }

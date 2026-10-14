@@ -9,7 +9,8 @@
 #import "FLEXNavigationController.h"
 
 @protocol FLEXHierarchyDelegate <NSObject>
-- (void)viewHierarchyDidDismiss:(UIView *)selectedView;
+/// @param selectedView A \c UIView or a \c FLEXSwiftUIViewNode
+- (void)viewHierarchyDidDismiss:(id)selectedView;
 @end
 
 /// A navigation controller which manages two child view controllers:
@@ -17,9 +18,10 @@
 @interface FLEXHierarchyViewController : FLEXNavigationController
 
 + (instancetype)delegate:(id<FLEXHierarchyDelegate>)delegate;
+/// \c viewsAtTap and \c selectedView hold \c UIView or \c FLEXSwiftUIViewNode objects.
 + (instancetype)delegate:(id<FLEXHierarchyDelegate>)delegate
-              viewsAtTap:(NSArray<UIView *> *)viewsAtTap
-            selectedView:(UIView *)selectedView;
+              viewsAtTap:(NSArray *)viewsAtTap
+            selectedView:(id)selectedView;
 
 - (void)toggleHierarchyMode;
 

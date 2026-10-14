@@ -10,8 +10,11 @@
 #import "FLEXHierarchyTableViewController.h"
 #import "FHSViewController.h"
 #import "FLEXUtility.h"
+#import "FLEXSwiftUIInspector.h"
 #import "FLEXTabList.h"
 #import "FLEXResources.h"
+#import "FLEXAlert.h"
+#import "NSUserDefaults+FLEX.h"
 #import "UIBarButtonItem+FLEX.h"
 
 typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
@@ -26,7 +29,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
 
 @property (nonatomic) FLEXHierarchyViewMode mode;
 
-@property (nonatomic, readonly) UIView *selectedView;
+@property (nonatomic, readonly) id selectedView;
 @end
 
 @implementation FLEXHierarchyViewController
@@ -38,12 +41,12 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
 }
 
 + (instancetype)delegate:(id<FLEXHierarchyDelegate>)delegate
-              viewsAtTap:(NSArray<UIView *> *)viewsAtTap
-            selectedView:(UIView *)selectedView {
+              viewsAtTap:(NSArray *)viewsAtTap
+            selectedView:(id)selectedView {
     return [[self alloc] initWithDelegate:delegate viewsAtTap:viewsAtTap selectedView:selectedView];
 }
 
-- (id)initWithDelegate:(id)delegate viewsAtTap:(NSArray<UIView *> *)viewsAtTap selectedView:(UIView *)view {
+- (id)initWithDelegate:(id)delegate viewsAtTap:(NSArray *)viewsAtTap selectedView:(id)view {
     self = [super init];
     if (self) {
         NSArray<UIWindow *> *allWindows = FLEXUtility.allWindows;
@@ -52,8 +55,14 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
             windows:allWindows viewsAtTap:viewsAtTap selectedView:view
         ];
 
+        // The 3D snapshot shows views only; a SwiftUI view stands in as its hosting view
         if (viewsAtTap) {
-            _snapshotViewController = [FHSViewController snapshotViewsAtTap:viewsAtTap selectedView:view];
+            NSArray<UIView *> *views = [viewsAtTap flex_filtered:^BOOL(id item, NSUInteger idx) {
+                return [item isKindOfClass:[UIView class]];
+            }];
+            _snapshotViewController = [FHSViewController
+                snapshotViewsAtTap:views selectedView:[self.class viewForItem:view]
+            ];
         } else {
             _snapshotViewController = [FHSViewController snapshotWindows:allWindows];
         }
@@ -70,14 +79,15 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    // 3D toggle button
-    self.treeViewController.navigationItem.leftBarButtonItem = [UIBarButtonItem
-        flex_itemWithImage:FLEXResources.toggle3DIcon target:self action:@selector(toggleHierarchyMode)
+    // 3D toggle and SwiftUI settings buttons
+    self.treeViewController.navigationItem.leftBarButtonItems = @[
+        [UIBarButtonItem flex_itemWithImage:FLEXResources.toggle3DIcon target:self action:@selector(toggleHierarchyMode)],
+        [UIBarButtonItem flex_itemWithTitle:@"SwiftUI" target:self action:@selector(swiftUISettingsTapped)],
     ];
 
     // Dismiss when tree view row is selected
     __weak id<FLEXHierarchyDelegate> delegate = self.hierarchyDelegate;
-    self.treeViewController.didSelectRowAction = ^(UIView *selectedView) {
+    self.treeViewController.didSelectRowAction = ^(id selectedView) {
         [delegate viewHierarchyDidDismiss:selectedView];
     };
 
@@ -104,6 +114,26 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
     // FLEXNavigationController doesn't ever close tabs itself 
     [FLEXTabList.sharedList closeTab:self];
     [self.hierarchyDelegate viewHierarchyDidDismiss:self.selectedView];
+}
+
+- (void)swiftUISettingsTapped {
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    BOOL recording = defaults.flex_recordSwiftUIViews;
+
+    [FLEXAlert makeAlert:^(FLEXAlert *make) {
+        make.title(@"SwiftUI Views")
+            .message(@"Name SwiftUI views and list them here, using the view tree SwiftUI records for ")
+            .message(@"Xcode's view debugger. Recording starts at launch and covers every SwiftUI view ")
+            .message(@"in the app. Restart the app for changes to take effect.");
+        if (FLEXSwiftUIInspector.isRecording && !recording) {
+            make.message(@"\n\nThe app already turns recording on with SWIFTUI_VIEW_DEBUG.");
+        }
+
+        make.button(recording ? @"Stop Recording" : @"Record SwiftUI Views").handler(^(NSArray<NSString *> *strings) {
+            [defaults flex_toggleBoolForKey:kFLEXDefaultsRecordSwiftUIViewsKey];
+        });
+        make.button(@"Dismiss").cancelStyle();
+    } showFrom:self];
 }
 
 - (void)toggleHierarchyMode {
@@ -133,7 +163,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
             case FLEXHierarchyViewMode3DSnapshot:
                 [self pushViewController:self.snapshotViewController animated:NO];
                 self.toolbarHidden = NO;
-                self.snapshotViewController.selectedView = self.selectedView;
+                self.snapshotViewController.selectedView = [self.class viewForItem:self.selectedView];
                 break;
         }
 
@@ -142,7 +172,16 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyViewMode) {
     }
 }
 
-- (UIView *)selectedView {
+/// A view, or the hosting view of a SwiftUI view.
++ (UIView *)viewForItem:(id)item {
+    if ([item isKindOfClass:[FLEXSwiftUIViewNode class]]) {
+        return [(FLEXSwiftUIViewNode *)item hostingView];
+    }
+
+    return item;
+}
+
+- (id)selectedView {
     switch (self.mode) {
         case FLEXHierarchyViewModeTree:
             return self.treeViewController.selectedView;
