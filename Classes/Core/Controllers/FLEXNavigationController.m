@@ -36,6 +36,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Force LTR layout for FLEX interface
+    if (@available(iOS 9.0, *)) {
+        self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+        self.navigationBar.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    }
+    
+    // Set navigation bar title text color to ensure visibility
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        [appearance configureWithDefaultBackground];
+        appearance.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor labelColor]};
+        appearance.largeTitleTextAttributes = @{NSForegroundColorAttributeName: [UIColor labelColor]};
+        self.navigationBar.standardAppearance = appearance;
+        self.navigationBar.scrollEdgeAppearance = appearance;
+    } else {
+        self.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor]};
+    }
+    
     self.waitingToAddTab = YES;
     
     // Add gesture to reveal toolbar if hidden

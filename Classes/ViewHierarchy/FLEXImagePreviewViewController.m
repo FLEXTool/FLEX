@@ -61,8 +61,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Force LTR layout for UI consistency
+    self.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    self.navigationController.view.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
+    
     self.imageView = [[UIImageView alloc] initWithImage:self.image];
+    self.imageView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+    self.scrollView.semanticContentAttribute = UISemanticContentAttributeForceLeftToRight;
     self.scrollView.delegate = self;
     self.scrollView.backgroundColor = self.backgroundColors.firstObject;
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
