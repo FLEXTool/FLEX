@@ -9,18 +9,18 @@
 #import <Foundation/Foundation.h>
 
 // Only use these if the getters and setters aren't good enough for whatever reason
-extern NSString * const kFLEXDefaultsToolbarTopMarginKey;
-extern NSString * const kFLEXDefaultsiOSPersistentOSLogKey;
-extern NSString * const kFLEXDefaultsHidePropertyIvarsKey;
-extern NSString * const kFLEXDefaultsHidePropertyMethodsKey;
-extern NSString * const kFLEXDefaultsHidePrivateMethodsKey;
-extern NSString * const kFLEXDefaultsShowMethodOverridesKey;
-extern NSString * const kFLEXDefaultsHideVariablePreviewsKey;
-extern NSString * const kFLEXDefaultsNetworkObserverEnabledKey;
-extern NSString * const kFLEXDefaultsNetworkHostDenylistKey;
-extern NSString * const kFLEXDefaultsDisableOSLogForceASLKey;
-extern NSString * const kFLEXDefaultsAPNSCaptureEnabledKey;
-extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
+extern NSString *const kFLEXDefaultsToolbarTopMarginKey;
+extern NSString *const kFLEXDefaultsiOSPersistentOSLogKey;
+extern NSString *const kFLEXDefaultsHidePropertyIvarsKey;
+extern NSString *const kFLEXDefaultsHidePropertyMethodsKey;
+extern NSString *const kFLEXDefaultsHidePrivateMethodsKey;
+extern NSString *const kFLEXDefaultsShowMethodOverridesKey;
+extern NSString *const kFLEXDefaultsHideVariablePreviewsKey;
+extern NSString *const kFLEXDefaultsNetworkObserverEnabledKey;
+extern NSString *const kFLEXDefaultsNetworkHostDenylistKey;
+extern NSString *const kFLEXDefaultsDisableOSLogForceASLKey;
+extern NSString *const kFLEXDefaultsAPNSCaptureEnabledKey;
+extern NSString *const kFLEXDefaultsRegisterJSONExplorerKey;
 
 /// All BOOL preferences are NO by default
 @interface NSUserDefaults (FLEX)
@@ -50,5 +50,11 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 @property (nonatomic) BOOL flex_explorerHidesPrivateMethods;
 @property (nonatomic) BOOL flex_explorerShowsMethodOverrides;
 @property (nonatomic) BOOL flex_explorerHidesVariablePreviews;
+
+#pragma mark - Export Filters
+
+@property (nonatomic) BOOL flex_exportExcludeImages;
+@property (nonatomic) BOOL flex_exportExcludeAnalytics;
+@property (nonatomic) BOOL flex_exportExcludeFirebaseAnalytics;
 
 @end

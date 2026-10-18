@@ -6,22 +6,24 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
-#import "FLEXUtility.h"
-#import "FLEXMITMDataSource.h"
 #import "FLEXNetworkMITMViewController.h"
-#import "FLEXNetworkTransaction.h"
-#import "FLEXNetworkRecorder.h"
-#import "FLEXNetworkObserver.h"
-#import "FLEXNetworkTransactionCell.h"
-#import "FLEXHTTPTransactionDetailController.h"
-#import "FLEXNetworkSettingsController.h"
-#import "FLEXObjectExplorerFactory.h"
+#import "FLEXActivityViewController.h"
+#import "FLEXColor.h"
 #import "FLEXGlobalsViewController.h"
-#import "FLEXWebViewController.h"
-#import "UIBarButtonItem+FLEX.h"
+#import "FLEXHTTPTransactionDetailController.h"
+#import "FLEXMITMDataSource.h"
+#import "FLEXNetworkExporter.h"
+#import "FLEXNetworkObserver.h"
+#import "FLEXNetworkRecorder.h"
+#import "FLEXNetworkSettingsController.h"
+#import "FLEXNetworkTransaction.h"
+#import "FLEXNetworkTransactionCell.h"
+#import "FLEXObjectExplorerFactory.h"
 #import "FLEXResources.h"
+#import "FLEXUtility.h"
+#import "FLEXWebViewController.h"
 #import "NSUserDefaults+FLEX.h"
+#import "UIBarButtonItem+FLEX.h"
 
 #define kFirebaseAvailable NSClassFromString(@"FIRDocumentReference")
 #define kWebsocketsAvailable @available(iOS 13.0, *)
@@ -50,18 +52,20 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 #pragma mark - Lifecycle
 
-- (id)init {
+- (id)init
+{
     return [self initWithStyle:UITableViewStylePlain];
 }
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 
     self.showsSearchBar = YES;
     self.pinSearchBar = YES;
     self.showSearchBarInitially = NO;
     NSMutableArray *scopeTitles = [NSMutableArray arrayWithObject:@"REST"];
-    
+
     _HTTPDataSource = [FLEXMITMDataSource dataSourceWithProvider:^NSArray * {
         return FLEXNetworkRecorder.defaultRecorder.HTTPTransactions;
     }];
@@ -79,7 +83,7 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             return FLEXNetworkRecorder.defaultRecorder.websocketTransactions;
         }];
     }
-    
+
     // Scopes will only be shown if we have either firebase or websockets available
     self.searchController.searchBar.showsScopeBar = scopeTitles.count > 1;
     self.searchController.searchBar.scopeButtonTitles = scopeTitles;
@@ -88,20 +92,21 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     [self addToolbarItems:@[
         [UIBarButtonItem
             flex_itemWithImage:FLEXResources.gearIcon
-            target:self
-            action:@selector(settingsButtonTapped:)
-        ],
+                        target:self
+                        action:@selector(settingsButtonTapped:)],
+        [UIBarButtonItem
+            flex_systemItem:UIBarButtonSystemItemAction
+                     target:self
+                     action:@selector(exportButtonTapped:)],
         [[UIBarButtonItem
-          flex_systemItem:UIBarButtonSystemItemTrash
-          target:self
-          action:@selector(trashButtonTapped:)
-        ] flex_withTintColor:UIColor.redColor]
+            flex_systemItem:UIBarButtonSystemItemTrash
+                     target:self
+                     action:@selector(trashButtonTapped:)] flex_withTintColor:UIColor.redColor]
     ]];
 
     [self.tableView
-        registerClass:FLEXNetworkTransactionCell.class
-        forCellReuseIdentifier:FLEXNetworkTransactionCell.reuseID
-    ];
+                 registerClass:FLEXNetworkTransactionCell.class
+        forCellReuseIdentifier:FLEXNetworkTransactionCell.reuseID];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.rowHeight = FLEXNetworkTransactionCell.preferredCellHeight;
 
@@ -109,9 +114,10 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     [self updateTransactions:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:animated];
-    
+
     // Reload the table if we received updates while not on-screen
     if (self.pendingReload) {
         [self.tableView reloadData];
@@ -119,26 +125,29 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     }
 }
 
-- (void)dealloc {
+- (void)dealloc
+{
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
-- (void)registerForNotifications {
+- (void)registerForNotifications
+{
     NSDictionary *notifications = @{
-        kFLEXNetworkRecorderNewTransactionNotification:
+        kFLEXNetworkRecorderNewTransactionNotification :
             NSStringFromSelector(@selector(handleNewTransactionRecordedNotification:)),
-        kFLEXNetworkRecorderTransactionUpdatedNotification:
+        kFLEXNetworkRecorderTransactionUpdatedNotification :
             NSStringFromSelector(@selector(handleTransactionUpdatedNotification:)),
-        kFLEXNetworkRecorderTransactionsClearedNotification:
+        kFLEXNetworkRecorderTransactionsClearedNotification :
             NSStringFromSelector(@selector(handleTransactionsClearedNotification:)),
-        kFLEXNetworkObserverEnabledStateChangedNotification:
+        kFLEXNetworkObserverEnabledStateChangedNotification :
             NSStringFromSelector(@selector(handleNetworkObserverEnabledStateChangedNotification:)),
     };
-    
+
     for (NSString *name in notifications.allKeys) {
         [NSNotificationCenter.defaultCenter addObserver:self
-            selector:NSSelectorFromString(notifications[name]) name:name object:nil
-        ];
+                                               selector:NSSelectorFromString(notifications[name])
+                                                   name:name
+                                                 object:nil];
     }
 }
 
@@ -147,49 +156,279 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 #pragma mark Button Actions
 
-- (void)settingsButtonTapped:(UIBarButtonItem *)sender {
+- (void)settingsButtonTapped:(UIBarButtonItem *)sender
+{
     UIViewController *settings = [FLEXNetworkSettingsController new];
     settings.navigationItem.rightBarButtonItem = FLEXBarButtonItemSystem(
-        Done, self, @selector(settingsViewControllerDoneTapped:)
-    );
+        Done, self, @selector(settingsViewControllerDoneTapped:));
     settings.title = @"Network Debugging Settings";
-    
+
     // This is not a FLEXNavigationController because it is not intended as a new tab
     UIViewController *nav = [[UINavigationController alloc] initWithRootViewController:settings];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)trashButtonTapped:(UIBarButtonItem *)sender {
-    [FLEXAlert makeSheet:^(FLEXAlert *make) {
-        BOOL clearAll = !self.dataSource.isFiltered;
-        if (!clearAll) {
-            make.title(@"Clear Filtered Requests?");
-            make.message(@"This will only remove the requests matching your search string on this screen.");
-        } else {
-            make.title(@"Clear All Recorded Requests?");
-            make.message(@"This cannot be undone.");
-        }
-        
-        make.button(@"Cancel").cancelStyle();
-        make.button(@"Clear").destructiveStyle().handler(^(NSArray *strings) {
-            if (clearAll) {
-                [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
+- (void)trashButtonTapped:(UIBarButtonItem *)sender
+{
+    [FLEXAlert
+        makeSheet:^(FLEXAlert *make) {
+            BOOL clearAll = !self.dataSource.isFiltered;
+            if (!clearAll) {
+                make.title(@"Clear Filtered Requests?");
+                make.message(@"This will only remove the requests matching your search string on this screen.");
             } else {
-                FLEXNetworkTransactionKind kind = (FLEXNetworkTransactionKind)self.mode;
-                [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity:kind matching:self.searchText];
+                make.title(@"Clear All Recorded Requests?");
+                make.message(@"This cannot be undone.");
             }
-        });
-    } showFrom:self source:sender];
+
+            make.button(@"Cancel").cancelStyle();
+            make.button(@"Clear").destructiveStyle().handler(^(NSArray *strings) {
+                if (clearAll) {
+                    [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity];
+                } else {
+                    FLEXNetworkTransactionKind kind = (FLEXNetworkTransactionKind)self.mode;
+                    [FLEXNetworkRecorder.defaultRecorder clearRecordedActivity:kind matching:self.searchText];
+                }
+            });
+        }
+         showFrom:self
+           source:sender];
 }
 
-- (void)settingsViewControllerDoneTapped:(id)sender {
+- (void)settingsViewControllerDoneTapped:(id)sender
+{
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)exportButtonTapped:(UIBarButtonItem *)sender
+{
+    // Check if we're in REST mode (HTTP transactions)
+    if (self.mode != FLEXNetworkObserverModeREST) {
+        [FLEXAlert
+            makeAlert:^(FLEXAlert *make) {
+                make.title(@"Export Not Available");
+                make.message(@"Export is currently only available for REST/HTTP requests.");
+                make.button(@"OK").cancelStyle();
+            }
+             showFrom:self];
+        return;
+    }
+
+    NSArray<FLEXHTTPTransaction *> *transactions = self.HTTPDataSource.transactions;
+
+    if (transactions.count == 0) {
+        [FLEXAlert
+            makeAlert:^(FLEXAlert *make) {
+                make.title(@"No Requests to Export");
+                make.message(@"There are no network requests to export.");
+                make.button(@"OK").cancelStyle();
+            }
+             showFrom:self];
+        return;
+    }
+
+    [FLEXAlert
+        makeSheet:^(FLEXAlert *make) {
+            make.title(@"Export Network Requests");
+            make.message([NSString stringWithFormat:@"%lu request(s) available", (unsigned long)transactions.count]);
+
+            // Export all as HAR
+            make.button(@"Export All as HAR").handler(^(NSArray *strings) {
+                [self exportTransactions:transactions format:FLEXNetworkExportFormatHAR sender:sender];
+            });
+
+            // Export all as Postman Collection
+            make.button(@"Export as Postman Collection").handler(^(NSArray *strings) {
+                [self exportTransactions:transactions format:FLEXNetworkExportFormatPostman sender:sender];
+            });
+
+            // Export all as Swagger/OpenAPI
+            make.button(@"Export as Swagger/OpenAPI").handler(^(NSArray *strings) {
+                [self exportTransactions:transactions format:FLEXNetworkExportFormatSwagger sender:sender];
+            });
+
+            // Export all as Raw Text
+            make.button(@"Export All as Raw Text").handler(^(NSArray *strings) {
+                [self exportTransactions:transactions format:FLEXNetworkExportFormatRaw sender:sender];
+            });
+
+            // Export as Curl commands ZIP
+            make.button(@"Export as Curl Scripts (ZIP)").handler(^(NSArray *strings) {
+                [self exportTransactions:transactions format:FLEXNetworkExportFormatCurlZip sender:sender];
+            });
+
+            // Export filtered/visible if search is active
+            if (self.HTTPDataSource.isFiltered && transactions.count > 0) {
+                make.button([NSString stringWithFormat:@"Export Filtered (%lu) as HAR", (unsigned long)transactions.count]).handler(^(NSArray *strings) {
+                    [self exportTransactions:transactions format:FLEXNetworkExportFormatHAR sender:sender];
+                });
+            }
+
+            make.button(@"Cancel").cancelStyle();
+        }
+         showFrom:self
+           source:sender];
+}
+- (void)exportTransactions:(NSArray<FLEXHTTPTransaction *> *)transactions
+                    format:(FLEXNetworkExportFormat)format
+                    sender:(UIBarButtonItem *)sender
+{
+    // Create HUD overlay
+    UIView *hudView = [[UIView alloc] initWithFrame:self.view.bounds];
+    hudView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+    hudView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+    // Container for spinner and label
+    UIView *container = [[UIView alloc] init];
+    container.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.95];
+    container.layer.cornerRadius = 12;
+    container.translatesAutoresizingMaskIntoConstraints = NO;
+    [hudView addSubview:container];
+
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    spinner.translatesAutoresizingMaskIntoConstraints = NO;
+    [spinner startAnimating];
+    [container addSubview:spinner];
+
+    UILabel *label = [[UILabel alloc] init];
+    label.text = @"Exporting...";
+    label.textColor = [UIColor darkGrayColor];
+    label.font = [UIFont systemFontOfSize:14];
+    label.translatesAutoresizingMaskIntoConstraints = NO;
+    [container addSubview:label];
+
+    // Layout constraints
+    [NSLayoutConstraint activateConstraints:@[
+        [container.centerXAnchor constraintEqualToAnchor:hudView.centerXAnchor],
+        [container.centerYAnchor constraintEqualToAnchor:hudView.centerYAnchor],
+        [container.widthAnchor constraintEqualToConstant:140],
+        [container.heightAnchor constraintEqualToConstant:80],
+        [spinner.centerXAnchor constraintEqualToAnchor:container.centerXAnchor],
+        [spinner.topAnchor constraintEqualToAnchor:container.topAnchor
+                                          constant:16],
+        [label.centerXAnchor constraintEqualToAnchor:container.centerXAnchor],
+        [label.topAnchor constraintEqualToAnchor:spinner.bottomAnchor
+                                        constant:8],
+    ]];
+
+    [self.view addSubview:hudView];
+
+    // Helper block to remove HUD
+    void (^removeHUD)(void) = ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hudView removeFromSuperview];
+        });
+    };
+
+    // Perform export on background thread
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // Apply export filters based on user settings
+        NSArray<FLEXHTTPTransaction *> *filteredTransactions = [FLEXNetworkExporter filterTransactionsForExport:transactions];
+
+        if (filteredTransactions.count == 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                removeHUD();
+                [FLEXAlert
+                    makeAlert:^(FLEXAlert *make) {
+                        make.title(@"No Requests to Export");
+                        make.message(@"All requests were filtered out. Check your export filter settings.");
+                        make.button(@"OK").cancelStyle();
+                    }
+                     showFrom:self];
+            });
+            return;
+        }
+
+        NSString *content = nil;
+        NSString *filename = nil;
+        NSURL *zipURL = nil;
+
+        switch (format) {
+            case FLEXNetworkExportFormatHAR:
+                content = [FLEXNetworkExporter harJSONStringForTransactions:filteredTransactions];
+                filename = [FLEXNetworkExporter suggestedFilenameForFormat:format isMultiple:YES];
+                break;
+            case FLEXNetworkExportFormatRaw:
+                content = [FLEXNetworkExporter rawStringForTransactions:filteredTransactions];
+                filename = [FLEXNetworkExporter suggestedFilenameForFormat:format isMultiple:YES];
+                break;
+            case FLEXNetworkExportFormatPostman:
+                content = [FLEXNetworkExporter postmanCollectionForTransactions:filteredTransactions];
+                filename = [FLEXNetworkExporter suggestedFilenameForFormat:format isMultiple:YES];
+                break;
+            case FLEXNetworkExportFormatSwagger:
+                content = [FLEXNetworkExporter swaggerSpecForTransactions:filteredTransactions];
+                filename = [FLEXNetworkExporter suggestedFilenameForFormat:format isMultiple:YES];
+                break;
+            case FLEXNetworkExportFormatCurlZip:
+                zipURL = [FLEXNetworkExporter curlZipForTransactions:filteredTransactions];
+                break;
+            default:
+                removeHUD();
+                return;
+        }
+
+        // Handle ZIP export
+        if (format == FLEXNetworkExportFormatCurlZip) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                removeHUD();
+                if (!zipURL) {
+                    [FLEXAlert
+                        makeAlert:^(FLEXAlert *make) {
+                            make.title(@"Export Failed");
+                            make.message(@"Failed to create ZIP file.");
+                            make.button(@"OK").cancelStyle();
+                        }
+                         showFrom:self];
+                    return;
+                }
+                UIViewController *activityVC = [FLEXActivityViewController sharing:@[ zipURL ] source:sender];
+                [self presentViewController:activityVC animated:YES completion:nil];
+            });
+            return;
+        }
+
+        // Handle other exports
+        if (!content) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                removeHUD();
+                [FLEXAlert
+                    makeAlert:^(FLEXAlert *make) {
+                        make.title(@"Export Failed");
+                        make.message(@"Failed to generate export content.");
+                        make.button(@"OK").cancelStyle();
+                    }
+                     showFrom:self];
+            });
+            return;
+        }
+
+        NSURL *fileURL = [FLEXNetworkExporter saveToTemporaryFile:content withFilename:filename];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            removeHUD();
+            if (!fileURL) {
+                [FLEXAlert
+                    makeAlert:^(FLEXAlert *make) {
+                        make.title(@"Export Failed");
+                        make.message(@"Failed to save export file.");
+                        make.button(@"OK").cancelStyle();
+                    }
+                     showFrom:self];
+                return;
+            }
+
+            UIViewController *activityVC = [FLEXActivityViewController sharing:@[ fileURL ] source:sender];
+            [self presentViewController:activityVC animated:YES completion:nil];
+        });
+    });
 }
 
 
 #pragma mark Transactions
 
-- (FLEXNetworkObserverMode)mode {
+- (FLEXNetworkObserverMode)mode
+{
     FLEXNetworkObserverMode mode = self.searchController.searchBar.selectedScopeButtonIndex;
     switch (mode) {
         case FLEXNetworkObserverModeFirebase:
@@ -209,30 +448,31 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     }
 }
 
-- (void)setMode:(FLEXNetworkObserverMode)mode {
-// The segmentd control will have different appearances based on which APIs
-// are available. For example, when only Websockets is available:
-//
-//               0                           1
-// ┌───────────────────────────┬────────────────────────────┐
-// │            REST           │         Websockets         │
-// └───────────────────────────┴────────────────────────────┘
-//
-// And when both Firebase and Websockets are available:
-//
-//          0                  1                  2
-// ┌──────────────────┬──────────────────┬──────────────────┐
-// │     Firebase     │       REST       │    Websockets    │
-// └──────────────────┴──────────────────┴──────────────────┘
-//
-// As a result, we need to adjust the input mode variable accordingly
-// before we actually set it. When we try to set it to Firebase but
-// Firebase is not available, we don't do anything, because when Firebase
-// is unavailable, FLEXNetworkObserverModeFirebase represents the same index
-// as REST would without Firebase. For each of the others, we subtract 1
-// from them for every relevant API that is unavailable. So for Websockets,
-// if it is unavailable, we subtract 1 and it becomes FLEXNetworkObserverModeREST.
-// And if Firebase is also unavailable, we subtract 1 again.
+- (void)setMode:(FLEXNetworkObserverMode)mode
+{
+    // The segmentd control will have different appearances based on which APIs
+    // are available. For example, when only Websockets is available:
+    //
+    //               0                           1
+    // ┌───────────────────────────┬────────────────────────────┐
+    // │            REST           │         Websockets         │
+    // └───────────────────────────┴────────────────────────────┘
+    //
+    // And when both Firebase and Websockets are available:
+    //
+    //          0                  1                  2
+    // ┌──────────────────┬──────────────────┬──────────────────┐
+    // │     Firebase     │       REST       │    Websockets    │
+    // └──────────────────┴──────────────────┴──────────────────┘
+    //
+    // As a result, we need to adjust the input mode variable accordingly
+    // before we actually set it. When we try to set it to Firebase but
+    // Firebase is not available, we don't do anything, because when Firebase
+    // is unavailable, FLEXNetworkObserverModeFirebase represents the same index
+    // as REST would without Firebase. For each of the others, we subtract 1
+    // from them for every relevant API that is unavailable. So for Websockets,
+    // if it is unavailable, we subtract 1 and it becomes FLEXNetworkObserverModeREST.
+    // And if Firebase is also unavailable, we subtract 1 again.
 
     switch (mode) {
         case FLEXNetworkObserverModeFirebase:
@@ -258,7 +498,8 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     self.searchController.searchBar.selectedScopeButtonIndex = mode;
 }
 
-- (FLEXMITMDataSource<FLEXNetworkTransaction *> *)dataSource {
+- (FLEXMITMDataSource<FLEXNetworkTransaction *> *)dataSource
+{
     switch (self.mode) {
         case FLEXNetworkObserverModeREST:
             return self.HTTPDataSource;
@@ -269,13 +510,15 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     }
 }
 
-- (void)updateTransactions:(void(^)(void))callback {
+- (void)updateTransactions:(void (^)(void))callback
+{
     id completion = ^(FLEXMITMDataSource *dataSource) {
         // Update byte count
         [self updateFirstSectionHeader];
-        if (callback && dataSource == self.dataSource) callback();
+        if (callback && dataSource == self.dataSource)
+            callback();
     };
-    
+
     [self.HTTPDataSource reloadData:completion];
     [self.websocketDataSource reloadData:completion];
     [self.firebaseDataSource reloadData:completion];
@@ -284,7 +527,8 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 #pragma mark Header
 
-- (void)updateFirstSectionHeader {
+- (void)updateFirstSectionHeader
+{
     UIView *view = [self.tableView headerViewForSection:0];
     if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
         UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
@@ -293,58 +537,58 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     }
 }
 
-- (NSString *)headerText {
+- (NSString *)headerText
+{
     long long bytesReceived = self.dataSource.bytesReceived;
     NSInteger totalRequests = self.dataSource.transactions.count;
-    
+
     NSString *byteCountText = [NSByteCountFormatter
-        stringFromByteCount:bytesReceived countStyle:NSByteCountFormatterCountStyleBinary
-    ];
+        stringFromByteCount:bytesReceived
+                 countStyle:NSByteCountFormatterCountStyleBinary];
     NSString *requestsText = totalRequests == 1 ? @"Request" : @"Requests";
-    
+
     // Exclude byte count from Firebase
     if (self.mode == FLEXNetworkObserverModeFirebase) {
         return [NSString stringWithFormat:@"%@ %@",
-            @(totalRequests), requestsText
-        ];
+            @(totalRequests), requestsText];
     }
-    
+
     return [NSString stringWithFormat:@"%@ %@ (%@ received)",
-        @(totalRequests), requestsText, byteCountText
-    ];
+        @(totalRequests), requestsText, byteCountText];
 }
 
 
 #pragma mark - FLEXGlobalsEntry
 
-+ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row {
++ (NSString *)globalsEntryTitle:(FLEXGlobalsRow)row
+{
     return @"📡  Network History";
 }
 
-+ (FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row {
++ (FLEXGlobalsEntryRowAction)globalsEntryRowAction:(FLEXGlobalsRow)row
+{
     return ^(UITableViewController *host) {
         if (FLEXNetworkObserver.isEnabled) {
-            [host.navigationController pushViewController:[
-                self globalsEntryViewController:row
-            ] animated:YES];
+            [host.navigationController pushViewController:[self globalsEntryViewController:row] animated:YES];
         } else {
-            [FLEXAlert makeAlert:^(FLEXAlert *make) {
-                make.title(@"Network Monitor Disabled");
-                make.message(@"You must enable network monitoring to proceed.");
-                
-                make.button(@"Turn On").preferred().handler(^(NSArray<NSString *> *strings) {
-                    FLEXNetworkObserver.enabled = YES;
-                    [host.navigationController pushViewController:[
-                        self globalsEntryViewController:row
-                    ] animated:YES];
-                });
-                make.button(@"Dismiss").cancelStyle();
-            } showFrom:host];
+            [FLEXAlert
+                makeAlert:^(FLEXAlert *make) {
+                    make.title(@"Network Monitor Disabled");
+                    make.message(@"You must enable network monitoring to proceed.");
+
+                    make.button(@"Turn On").preferred().handler(^(NSArray<NSString *> *strings) {
+                        FLEXNetworkObserver.enabled = YES;
+                        [host.navigationController pushViewController:[self globalsEntryViewController:row] animated:YES];
+                    });
+                    make.button(@"Dismiss").cancelStyle();
+                }
+                 showFrom:host];
         }
     };
 }
 
-+ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row {
++ (UIViewController *)globalsEntryViewController:(FLEXGlobalsRow)row
+{
     UIViewController *controller = [self new];
     controller.title = [self globalsEntryTitle:row];
     return controller;
@@ -353,57 +597,59 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 #pragma mark - Notification Handlers
 
-- (void)handleNewTransactionRecordedNotification:(NSNotification *)notification {
+- (void)handleNewTransactionRecordedNotification:(NSNotification *)notification
+{
     [self tryUpdateTransactions];
 }
 
-- (void)tryUpdateTransactions {
+- (void)tryUpdateTransactions
+{
     // Don't do any view updating if we aren't in the view hierarchy
     if (!self.viewIfLoaded.window) {
         [self updateTransactions:nil];
         self.pendingReload = YES;
         return;
     }
-    
+
     // Let the previous row insert animation finish before starting a new one to avoid stomping.
     // We'll try calling the method again when the insertion completes,
     // and we properly no-op if there haven't been changes.
     if (self.updateInProgress) {
         return;
     }
-    
+
     self.updateInProgress = YES;
 
     // Get state before update
     NSString *currentFilter = self.searchText;
     FLEXNetworkObserverMode currentMode = self.mode;
     NSInteger existingRowCount = self.dataSource.transactions.count;
-    
+
     [self updateTransactions:^{
         // Compare to state after update
         NSString *newFilter = self.searchText;
         FLEXNetworkObserverMode newMode = self.mode;
         NSInteger newRowCount = self.dataSource.transactions.count;
         NSInteger rowCountDiff = newRowCount - existingRowCount;
-        
+
         // Abort if the observation mode changed, or if the search field text changed
         if (newMode != currentMode || ![currentFilter isEqualToString:newFilter]) {
             self.updateInProgress = NO;
             return;
         }
-        
+
         if (rowCountDiff) {
             // Insert animation if we're at the top.
             if (self.tableView.contentOffset.y <= 0.0 && rowCountDiff > 0) {
                 [CATransaction begin];
-                
+
                 [CATransaction setCompletionBlock:^{
                     self.updateInProgress = NO;
                     // This isn't an infinite loop, it won't run a third time
                     // if there were no new transactions the second time
                     [self tryUpdateTransactions];
                 }];
-                
+
                 NSMutableArray<NSIndexPath *> *indexPathsToReload = [NSMutableArray new];
                 for (NSInteger row = 0; row < rowCountDiff; row++) {
                     [indexPathsToReload addObject:[NSIndexPath indexPathForRow:row inSection:0]];
@@ -425,7 +671,8 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     }];
 }
 
-- (void)handleTransactionUpdatedNotification:(NSNotification *)notification {
+- (void)handleTransactionUpdatedNotification:(NSNotification *)notification
+{
     [self.HTTPDataSource reloadByteCounts];
     [self.websocketDataSource reloadByteCounts];
     // Don't need to reload Firebase here
@@ -442,17 +689,19 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             break;
         }
     }
-    
+
     [self updateFirstSectionHeader];
 }
 
-- (void)handleTransactionsClearedNotification:(NSNotification *)notification {
+- (void)handleTransactionsClearedNotification:(NSNotification *)notification
+{
     [self updateTransactions:^{
         [self.tableView reloadData];
     }];
 }
 
-- (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification {
+- (void)handleNetworkObserverEnabledStateChangedNotification:(NSNotification *)notification
+{
     // Update the header, which displays a warning when network debugging is disabled
     [self updateFirstSectionHeader];
 }
@@ -460,27 +709,30 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 #pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     return self.dataSource.transactions.count;
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
     return [self headerText];
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
     if ([view isKindOfClass:[UITableViewHeaderFooterView class]]) {
         UITableViewHeaderFooterView *headerView = (UITableViewHeaderFooterView *)view;
         headerView.textLabel.font = [UIFont systemFontOfSize:14.0 weight:UIFontWeightSemibold];
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     FLEXNetworkTransactionCell *cell = [tableView
         dequeueReusableCellWithIdentifier:FLEXNetworkTransactionCell.reuseID
-        forIndexPath:indexPath
-    ];
-    
+                             forIndexPath:indexPath];
+
     cell.transaction = [self transactionAtIndexPath:indexPath];
 
     // Since we insert from the top, assign background colors bottom up to keep them consistent for each transaction.
@@ -494,7 +746,8 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
     switch (self.mode) {
         case FLEXNetworkObserverModeREST: {
             FLEXHTTPTransaction *transaction = [self HTTPTransactionAtIndexPath:indexPath];
@@ -502,26 +755,26 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
             [self.navigationController pushViewController:details animated:YES];
             break;
         }
-            
+
         case FLEXNetworkObserverModeWebsockets: {
             if (@available(iOS 13.0, *)) { // This check will never fail
                 FLEXWebsocketTransaction *transaction = [self websocketTransactionAtIndexPath:indexPath];
-                
+
                 UIViewController *details = nil;
                 if (transaction.message.type == NSURLSessionWebSocketMessageTypeData) {
                     details = [FLEXObjectExplorerFactory explorerViewControllerForObject:transaction.message.data];
                 } else {
                     details = [[FLEXWebViewController alloc] initWithText:transaction.message.string];
                 }
-                
+
                 [self.navigationController pushViewController:details animated:YES];
             }
             break;
         }
-        
+
         case FLEXNetworkObserverModeFirebase: {
             FLEXFirebaseTransaction *transaction = [self firebaseTransactionAtIndexPath:indexPath];
-//            id obj = transaction.documents.count == 1 ? transaction.documents.firstObject : transaction.documents;
+            //            id obj = transaction.documents.count == 1 ? transaction.documents.firstObject : transaction.documents;
             UIViewController *explorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:transaction];
             [self.navigationController pushViewController:explorer animated:YES];
         }
@@ -531,102 +784,111 @@ typedef NS_ENUM(NSInteger, FLEXNetworkObserverMode) {
 
 #pragma mark - Menu Actions
 
-- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return YES;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
     return action == @selector(copy:);
 }
 
-- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
     if (action == @selector(copy:)) {
         UIPasteboard.generalPasteboard.string = [self transactionAtIndexPath:indexPath].copyString;
     }
 }
 
-- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0) {
-    
+- (UIContextMenuConfiguration *)tableView:(UITableView *)tableView contextMenuConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath point:(CGPoint)point __IOS_AVAILABLE(13.0)
+{
+
     FLEXNetworkTransaction *transaction = [self transactionAtIndexPath:indexPath];
-    
+
     return [UIContextMenuConfiguration
         configurationWithIdentifier:nil
-        previewProvider:nil
-        actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
-            UIAction *copy = [UIAction
-                actionWithTitle:@"Copy URL"
-                image:nil
-                identifier:nil
-                handler:^(__kindof UIAction *action) {
-                    UIPasteboard.generalPasteboard.string = transaction.copyString;
-                }
-            ];
-        
-            NSArray *children = @[copy];
-            if (self.mode == FLEXNetworkObserverModeREST) {
-                NSURLRequest *request = [self HTTPTransactionAtIndexPath:indexPath].request;
-                UIAction *denylist = [UIAction
-                    actionWithTitle:[NSString stringWithFormat:@"Exclude '%@'", request.URL.host]
-                    image:nil
-                    identifier:nil
-                    handler:^(__kindof UIAction *action) {
-                        NSMutableArray *denylist =  FLEXNetworkRecorder.defaultRecorder.hostDenylist;
-                        [denylist addObject:request.URL.host];
-                        [FLEXNetworkRecorder.defaultRecorder clearExcludedTransactions];
-                        [FLEXNetworkRecorder.defaultRecorder synchronizeDenylist];
-                        [self tryUpdateTransactions];
-                    }
-                ];
-                
-                children = [children arrayByAddingObject:denylist];
-            }
-            return [UIMenu
-                menuWithTitle:@"" image:nil identifier:nil
-                options:UIMenuOptionsDisplayInline
-                children:children
-            ];
-        }
-    ];
+                    previewProvider:nil
+                     actionProvider:^UIMenu *(NSArray<UIMenuElement *> *suggestedActions) {
+                         UIAction *copy = [UIAction
+                             actionWithTitle:@"Copy URL"
+                                       image:nil
+                                  identifier:nil
+                                     handler:^(__kindof UIAction *action) {
+                                         UIPasteboard.generalPasteboard.string = transaction.copyString;
+                                     }];
+
+                         NSArray *children = @[ copy ];
+                         if (self.mode == FLEXNetworkObserverModeREST) {
+                             NSURLRequest *request = [self HTTPTransactionAtIndexPath:indexPath].request;
+                             UIAction *denylist = [UIAction
+                                 actionWithTitle:[NSString stringWithFormat:@"Exclude '%@'", request.URL.host]
+                                           image:nil
+                                      identifier:nil
+                                         handler:^(__kindof UIAction *action) {
+                                             NSMutableArray *denylist = FLEXNetworkRecorder.defaultRecorder.hostDenylist;
+                                             [denylist addObject:request.URL.host];
+                                             [FLEXNetworkRecorder.defaultRecorder clearExcludedTransactions];
+                                             [FLEXNetworkRecorder.defaultRecorder synchronizeDenylist];
+                                             [self tryUpdateTransactions];
+                                         }];
+
+                             children = [children arrayByAddingObject:denylist];
+                         }
+                         return [UIMenu
+                             menuWithTitle:@""
+                                     image:nil
+                                identifier:nil
+                                   options:UIMenuOptionsDisplayInline
+                                  children:children];
+                     }];
 }
 
-- (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath {
+- (FLEXNetworkTransaction *)transactionAtIndexPath:(NSIndexPath *)indexPath
+{
     return self.dataSource.transactions[indexPath.row];
 }
 
-- (FLEXHTTPTransaction *)HTTPTransactionAtIndexPath:(NSIndexPath *)indexPath {
+- (FLEXHTTPTransaction *)HTTPTransactionAtIndexPath:(NSIndexPath *)indexPath
+{
     return self.HTTPDataSource.transactions[indexPath.row];
 }
 
-- (FLEXWebsocketTransaction *)websocketTransactionAtIndexPath:(NSIndexPath *)indexPath {
+- (FLEXWebsocketTransaction *)websocketTransactionAtIndexPath:(NSIndexPath *)indexPath
+{
     return self.websocketDataSource.transactions[indexPath.row];
 }
 
-- (FLEXFirebaseTransaction *)firebaseTransactionAtIndexPath:(NSIndexPath *)indexPath {
+- (FLEXFirebaseTransaction *)firebaseTransactionAtIndexPath:(NSIndexPath *)indexPath
+{
     return self.firebaseDataSource.transactions[indexPath.row];
 }
 
 #pragma mark - Search Bar
 
-- (void)updateSearchResults:(NSString *)searchString {
+- (void)updateSearchResults:(NSString *)searchString
+{
     id callback = ^(FLEXMITMDataSource *dataSource) {
         if (self.dataSource == dataSource) {
             [self.tableView reloadData];
         }
     };
-    
+
     [self.HTTPDataSource filter:searchString completion:callback];
     [self.websocketDataSource filter:searchString completion:callback];
     [self.firebaseDataSource filter:searchString completion:callback];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)newScope {
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)newScope
+{
     [self updateFirstSectionHeader];
     [self.tableView reloadData];
 
     NSUserDefaults.standardUserDefaults.flex_lastNetworkObserverMode = self.mode;
 }
 
-- (void)willDismissSearchController:(UISearchController *)searchController {
+- (void)willDismissSearchController:(UISearchController *)searchController
+{
     [self.tableView reloadData];
 }
 
