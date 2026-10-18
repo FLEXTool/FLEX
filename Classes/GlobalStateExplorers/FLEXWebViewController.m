@@ -78,6 +78,28 @@
     self.webView.frame = self.view.bounds;
     self.webView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
+    // Set accessibility identifiers for automated testing
+    if ([self.title containsString:@"Request"]) {
+        self.webView.accessibilityIdentifier = @"network_request_body";
+        self.webView.accessibilityLabel = @"Request Body";
+        if (self.originalText.length > 0) {
+            self.webView.accessibilityValue = self.originalText;
+        }
+    } else if ([self.title containsString:@"Response"]) {
+        self.webView.accessibilityIdentifier = @"network_response_body";
+        self.webView.accessibilityLabel = @"Response Body";
+        if (self.originalText.length > 0) {
+            self.webView.accessibilityValue = self.originalText;
+        }
+    } else {
+        // Generic body content
+        self.webView.accessibilityIdentifier = @"network_body_content";
+        self.webView.accessibilityLabel = @"Network Body Content";
+        if (self.originalText.length > 0) {
+            self.webView.accessibilityValue = self.originalText;
+        }
+    }
+
     if (self.originalText.length > 0) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
             initWithTitle:@"Copy" style:UIBarButtonItemStylePlain target:self action:@selector(copyButtonTapped:)
