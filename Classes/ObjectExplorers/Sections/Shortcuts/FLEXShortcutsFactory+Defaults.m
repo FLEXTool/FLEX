@@ -14,6 +14,7 @@
 #import "NSObject+FLEX_Reflection.h"
 #import "FLEXObjcInternal.h"
 #import "Cocoa+FLEXShortcuts.h"
+#import "FLEXSwiftUIInspector.h"
 
 #pragma mark - UIApplication
 
@@ -132,6 +133,19 @@
         @"userInteractionEnabled", @"layer", @"superview", @"subviews",
         @"accessibilityIdentifier", @"accessibilityLabel"
     ]).forClass(UIImageView.class);
+
+    // CALayer
+    self.append.properties(@[
+        @"frame", @"bounds", @"position", @"transform", @"opacity",
+        @"hidden", @"masksToBounds", @"cornerRadius", @"backgroundColor",
+        @"contents", @"name", @"delegate", @"superlayer", @"sublayers"
+    ]).forClass(CALayer.class);
+
+    // FLEXSwiftUIViewNode
+    self.append.properties(@[
+        @"name", @"typeName", @"enclosingName", @"frameInHostingView",
+        @"hostingView", @"parent", @"children"
+    ]).forClass(FLEXSwiftUIViewNode.class);
 }
 
 @end

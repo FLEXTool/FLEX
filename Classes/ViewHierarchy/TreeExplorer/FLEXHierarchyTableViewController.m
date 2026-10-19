@@ -11,6 +11,7 @@
 #import "NSMapTable+FLEX_Subscripting.h"
 #import "FLEXUtility.h"
 #import "FLEXHierarchyTableViewCell.h"
+#import "FLEXSwiftUIInspector.h"
 #import "FLEXObjectExplorerViewController.h"
 #import "FLEXObjectExplorerFactory.h"
 #import "FLEXResources.h"
@@ -23,12 +24,13 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 
 @interface FLEXHierarchyTableViewController ()
 
-@property (nonatomic) NSArray<UIView *> *allViews;
-/// Map of view's address to its depth
+/// Views, and the SwiftUI view nodes listed under their hosting views
+@property (nonatomic) NSArray *allViews;
+/// Map of view's or node's address to its depth
 /// @((uintptr_t)(__bridge void *)view) -> depth
 @property (nonatomic) NSMapTable<NSNumber *, NSNumber *> *depthsForViews;
-@property (nonatomic) NSArray<UIView *> *viewsAtTap;
-@property (nonatomic) NSArray<UIView *> *displayedViews;
+@property (nonatomic) NSArray *viewsAtTap;
+@property (nonatomic) NSArray *displayedViews;
 @property (nonatomic, readonly) BOOL showScopeBar;
 
 @end
@@ -36,8 +38,8 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 @implementation FLEXHierarchyTableViewController
 
 + (instancetype)windows:(NSArray<UIWindow *> *)allWindows
-             viewsAtTap:(NSArray<UIView *> *)viewsAtTap
-           selectedView:(UIView *)selected {
+             viewsAtTap:(NSArray *)viewsAtTap
+           selectedView:(id)selected {
     NSParameterAssert(allWindows.count);
 
     NSArray *allViews = [self allViewsInHierarchy:allWindows];
@@ -45,9 +47,9 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     return [[self alloc] initWithViews:allViews viewsAtTap:viewsAtTap selectedView:selected depths:depths];
 }
 
-- (instancetype)initWithViews:(NSArray<UIView *> *)allViews
-                   viewsAtTap:(NSArray<UIView *> *)viewsAtTap
-                 selectedView:(UIView *)selectedView
+- (instancetype)initWithViews:(NSArray *)allViews
+                   viewsAtTap:(NSArray *)viewsAtTap
+                 selectedView:(id)selectedView
                        depths:(NSMapTable<NSNumber *, NSNumber *> *)depthsForViews {
     NSParameterAssert(allViews);
     NSParameterAssert(depthsForViews.count == allViews.count);
@@ -109,7 +111,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 
 #pragma mark - Hierarchy helpers
 
-+ (NSArray<UIView *> *)allViewsInHierarchy:(NSArray<UIWindow *> *)windows {
++ (NSArray *)allViewsInHierarchy:(NSArray<UIWindow *> *)windows {
     return [windows flex_flatmapped:^id(UIWindow *window, NSUInteger idx) {
         if (![window isKindOfClass:[FLEXWindow class]]) {
             return [self viewWithRecursiveSubviews:window];
@@ -119,8 +121,16 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     }];
 }
 
-+ (NSArray<UIView *> *)viewWithRecursiveSubviews:(UIView *)view {
-    NSMutableArray<UIView *> *subviews = [NSMutableArray arrayWithObject:view];
++ (NSArray *)viewWithRecursiveSubviews:(UIView *)view {
+    NSMutableArray *subviews = [NSMutableArray arrayWithObject:view];
+
+    // A hosting view's SwiftUI views go right under it, ahead of its UIKit internals
+    if ([FLEXSwiftUIInspector isHostingView:view]) {
+        for (FLEXSwiftUIViewNode *root in [FLEXSwiftUIInspector rootNodesInHostingView:view]) {
+            [subviews addObjectsFromArray:[self nodeWithDescendants:root]];
+        }
+    }
+
     for (UIView *subview in view.subviews) {
         [subviews addObjectsFromArray:[self viewWithRecursiveSubviews:subview]];
     }
@@ -128,14 +138,37 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     return subviews;
 }
 
-+ (NSMapTable<UIView *, NSNumber *> *)hierarchyDepthsForViews:(NSArray<UIView *> *)views {
-    NSMapTable<UIView *, NSNumber *> *depths = [NSMapTable strongToStrongObjectsMapTable];
-    for (UIView *view in views) {
-        NSInteger depth = 0;
-        UIView *tryView = view;
-        while (tryView.superview) {
-            tryView = tryView.superview;
-            depth++;
++ (NSArray<FLEXSwiftUIViewNode *> *)nodeWithDescendants:(FLEXSwiftUIViewNode *)node {
+    NSMutableArray<FLEXSwiftUIViewNode *> *nodes = [NSMutableArray arrayWithObject:node];
+    for (FLEXSwiftUIViewNode *child in node.children) {
+        [nodes addObjectsFromArray:[self nodeWithDescendants:child]];
+    }
+
+    return nodes;
+}
+
++ (NSInteger)depthOfView:(UIView *)view {
+    NSInteger depth = 0;
+    for (UIView *tryView = view; tryView.superview; tryView = tryView.superview) {
+        depth++;
+    }
+
+    return depth;
+}
+
++ (NSMapTable<NSNumber *, NSNumber *> *)hierarchyDepthsForViews:(NSArray *)views {
+    NSMapTable<NSNumber *, NSNumber *> *depths = [NSMapTable strongToStrongObjectsMapTable];
+    for (id view in views) {
+        NSInteger depth;
+        if ([view isKindOfClass:[FLEXSwiftUIViewNode class]]) {
+            // One level under its hosting view, then nested by the SwiftUI tree
+            FLEXSwiftUIViewNode *node = view;
+            depth = [self depthOfView:node.hostingView] + 1;
+            for (FLEXSwiftUIViewNode *parent = node.parent; parent; parent = parent.parent) {
+                depth++;
+            }
+        } else {
+            depth = [self depthOfView:view];
         }
         depths[@((uintptr_t)(__bridge void *)view)] = @(depth);
     }
@@ -156,7 +189,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 }
 
 - (void)updateDisplayedViews {
-    NSArray<UIView *> *candidateViews = nil;
+    NSArray *candidateViews = nil;
     if (self.showScopeBar) {
         if (self.selectedScope == FLEXHierarchyScopeViewsAtTap) {
             candidateViews = self.viewsAtTap;
@@ -168,8 +201,8 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     }
     
     if (self.searchText.length) {
-        self.displayedViews = [candidateViews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(UIView *candidateView, NSDictionary<NSString *, id> *bindings) {
-            NSString *title = [FLEXUtility descriptionForView:candidateView includingFrame:NO];
+        self.displayedViews = [candidateViews filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id candidateView, NSDictionary<NSString *, id> *bindings) {
+            NSString *title = [FLEXUtility descriptionForNode:candidateView includingFrame:NO];
             NSString *candidateViewPointerAddress = [NSString stringWithFormat:@"%p", candidateView];
             BOOL matchedViewPointerAddress = [candidateViewPointerAddress rangeOfString:self.searchText options:NSCaseInsensitiveSearch].location != NSNotFound;
             BOOL matchedViewTitle = [title rangeOfString:self.searchText options:NSCaseInsensitiveSearch].location != NSNotFound;
@@ -182,7 +215,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
     [self.tableView reloadData];
 }
 
-- (void)setSelectedView:(UIView *)selectedView {
+- (void)setSelectedView:(id)selectedView {
     _selectedView = selectedView;
     if (self.isViewLoaded) {
         [self trySelectCellForSelectedView];
@@ -220,15 +253,18 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
         cell = [[FLEXHierarchyTableViewCell alloc] initWithReuseIdentifier:CellIdentifier];
     }
     
-    UIView *view = self.displayedViews[indexPath.row];
+    id item = self.displayedViews[indexPath.row];
+    UIView *view = [item isKindOfClass:[UIView class]] ? item : nil;
 
-    cell.textLabel.text = [FLEXUtility descriptionForView:view includingFrame:NO];
-    cell.detailTextLabel.text = [FLEXUtility detailDescriptionForView:view];
-    cell.randomColorTag = [FLEXUtility consistentRandomColorForObject:view];
-    cell.viewDepth = self.depthsForViews[@((uintptr_t)(__bridge void *)view)].integerValue;
+    cell.textLabel.text = [FLEXUtility descriptionForNode:item includingFrame:NO];
+    cell.detailTextLabel.text = view ? [FLEXUtility detailDescriptionForView:view] : [NSString
+        stringWithFormat:@"frame %@", [FLEXUtility stringForCGRect:[(FLEXSwiftUIViewNode *)item frameInHostingView]]
+    ];
+    cell.randomColorTag = [FLEXUtility consistentRandomColorForObject:item];
+    cell.viewDepth = self.depthsForViews[@((uintptr_t)(__bridge void *)item)].integerValue;
     cell.indicatedViewColor = view.backgroundColor;
 
-    if (view.isHidden || view.alpha < 0.01) {
+    if (view && (view.isHidden || view.alpha < 0.01)) {
         cell.textLabel.textColor = FLEXColor.deemphasizedTextColor;
         cell.detailTextLabel.textColor = FLEXColor.deemphasizedTextColor;
     } else {
@@ -247,7 +283,7 @@ typedef NS_ENUM(NSUInteger, FLEXHierarchyScope) {
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    UIView *drillInView = self.displayedViews[indexPath.row];
+    id drillInView = self.displayedViews[indexPath.row];
     FLEXObjectExplorerViewController *viewExplorer = [FLEXObjectExplorerFactory explorerViewControllerForObject:drillInView];
     [self.navigationController pushViewController:viewExplorer animated:YES];
 }

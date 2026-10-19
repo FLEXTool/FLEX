@@ -31,9 +31,15 @@
 
 + (UIColor *)consistentRandomColorForObject:(id)object;
 + (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame;
+/// Describes either a \c UIView or a \c CALayer, naming the view that owns the layer.
++ (NSString *)descriptionForNode:(id)node includingFrame:(BOOL)includeFrame;
 + (NSString *)stringForCGRect:(CGRect)rect;
 + (UIViewController *)viewControllerForView:(UIView *)view;
 + (UIViewController *)viewControllerForAncestralView:(UIView *)view;
+/// \c YES if \c layer is a view's backing layer, and so is already in the view hierarchy.
++ (BOOL)layerIsViewBacked:(CALayer *)layer;
+/// The view backed by \c layer or by its nearest ancestor layer.
++ (UIView *)viewForLayer:(CALayer *)layer;
 + (UIImage *)previewImageForView:(UIView *)view;
 + (UIImage *)previewImageForLayer:(CALayer *)layer;
 + (NSString *)detailDescriptionForView:(UIView *)view;

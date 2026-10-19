@@ -21,6 +21,7 @@ NSString * const kFLEXDefaultsNetworkHostDenylistKey = @"com.flipboard.FLEX.netw
 NSString * const kFLEXDefaultsDisableOSLogForceASLKey = @"com.flipboard.FLEX.try_disable_os_log";
 NSString * const kFLEXDefaultsAPNSCaptureEnabledKey = @"com.flipboard.FLEX.capture_apns";
 NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.view_json_as_object";
+NSString * const kFLEXDefaultsRecordSwiftUIViewsKey = @"com.flipboard.FLEX.record_swiftui_views";
 
 #define FLEXDefaultsPathForFile(name) ({ \
     NSArray *paths = NSSearchPathForDirectoriesInDomains( \
@@ -132,6 +133,14 @@ NSString * const kFLEXDefaultsRegisterJSONExplorerKey = @"com.flipboard.FLEX.vie
 
 - (void)setFlex_enableAPNSCapture:(BOOL)enable {
     [self setBool:enable forKey:kFLEXDefaultsAPNSCaptureEnabledKey];
+}
+
+- (BOOL)flex_recordSwiftUIViews {
+    return [self boolForKey:kFLEXDefaultsRecordSwiftUIViewsKey];
+}
+
+- (void)setFlex_recordSwiftUIViews:(BOOL)record {
+    [self setBool:record forKey:kFLEXDefaultsRecordSwiftUIViewsKey];
 }
 
 #pragma mark Object Explorer

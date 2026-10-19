@@ -33,7 +33,9 @@
 		3A4C94E31B5B21410088C3F2 /* FLEXRuntimeUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C945B1B5B21410088C3F2 /* FLEXRuntimeUtility.h */; };
 		3A4C94E41B5B21410088C3F2 /* FLEXRuntimeUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C945C1B5B21410088C3F2 /* FLEXRuntimeUtility.m */; };
 		3A4C94E51B5B21410088C3F2 /* FLEXUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C945D1B5B21410088C3F2 /* FLEXUtility.h */; };
+		59F225A46CC2B9578E5EDBD7 /* FLEXSwiftUIInspector.h in Headers */ = {isa = PBXBuildFile; fileRef = A6C04D0FFA527C478B9AC63E /* FLEXSwiftUIInspector.h */; };
 		3A4C94E61B5B21410088C3F2 /* FLEXUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C945E1B5B21410088C3F2 /* FLEXUtility.m */; };
+		B1DEEC5DAF5BFED10338B7FA /* FLEXSwiftUIInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 45344B77E0647B5ECACB158E /* FLEXSwiftUIInspector.m */; };
 		3A4C94E71B5B21410088C3F2 /* FLEXHierarchyTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94601B5B21410088C3F2 /* FLEXHierarchyTableViewCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		3A4C94E81B5B21410088C3F2 /* FLEXHierarchyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A4C94611B5B21410088C3F2 /* FLEXHierarchyTableViewCell.m */; };
 		3A4C94E91B5B21410088C3F2 /* FLEXHierarchyTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4C94621B5B21410088C3F2 /* FLEXHierarchyTableViewController.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -418,6 +420,8 @@
 		3A4C945C1B5B21410088C3F2 /* FLEXRuntimeUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXRuntimeUtility.m; sourceTree = "<group>"; };
 		3A4C945D1B5B21410088C3F2 /* FLEXUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXUtility.h; sourceTree = "<group>"; };
 		3A4C945E1B5B21410088C3F2 /* FLEXUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXUtility.m; sourceTree = "<group>"; };
+		A6C04D0FFA527C478B9AC63E /* FLEXSwiftUIInspector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXSwiftUIInspector.h; sourceTree = "<group>"; };
+		45344B77E0647B5ECACB158E /* FLEXSwiftUIInspector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXSwiftUIInspector.m; sourceTree = "<group>"; };
 		3A4C94601B5B21410088C3F2 /* FLEXHierarchyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXHierarchyTableViewCell.h; sourceTree = "<group>"; };
 		3A4C94611B5B21410088C3F2 /* FLEXHierarchyTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLEXHierarchyTableViewCell.m; sourceTree = "<group>"; };
 		3A4C94621B5B21410088C3F2 /* FLEXHierarchyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLEXHierarchyTableViewController.h; sourceTree = "<group>"; };
@@ -875,6 +879,8 @@
 				3A4C945A1B5B21410088C3F2 /* FLEXResources.m */,
 				3A4C945D1B5B21410088C3F2 /* FLEXUtility.h */,
 				3A4C945E1B5B21410088C3F2 /* FLEXUtility.m */,
+				A6C04D0FFA527C478B9AC63E /* FLEXSwiftUIInspector.h */,
+				45344B77E0647B5ECACB158E /* FLEXSwiftUIInspector.m */,
 				C38F3F2F230C958F004E3731 /* FLEXAlert.h */,
 				C38F3F30230C958F004E3731 /* FLEXAlert.m */,
 				7349FD6822B93CDF00051810 /* FLEXColor.h */,
@@ -1653,6 +1659,7 @@
 				3A4C94F71B5B21410088C3F2 /* FLEXArgumentInputNotSupportedView.h in Headers */,
 				C3F31D3E2267D883003C991A /* FLEXTableViewCell.h in Headers */,
 				3A4C94E51B5B21410088C3F2 /* FLEXUtility.h in Headers */,
+				59F225A46CC2B9578E5EDBD7 /* FLEXSwiftUIInspector.h in Headers */,
 				2EF6B04E1D494BE50006BDA5 /* FLEXNetworkCurlLogger.h in Headers */,
 				C386D6E924199C1B00699085 /* FLEX-Core.h in Headers */,
 				C3F31D3D2267D883003C991A /* FLEXSubtitleTableViewCell.h in Headers */,
@@ -1979,6 +1986,7 @@
 				C36FBFDA230F3B98008D95D5 /* FLEXPropertyAttributes.m in Sources */,
 				779B1ED91C0C4D7C001F5E49 /* FLEXTableLeftCell.m in Sources */,
 				3A4C94E61B5B21410088C3F2 /* FLEXUtility.m in Sources */,
+				B1DEEC5DAF5BFED10338B7FA /* FLEXSwiftUIInspector.m in Sources */,
 				3A4C95231B5B21410088C3F2 /* FLEXFileBrowserSearchOperation.m in Sources */,
 				C3490E20233BDD73002AE200 /* FLEXSingleRowSection.m in Sources */,
 				C34D4EB923A2B17900C1F903 /* FLEXBundleShortcuts.m in Sources */,

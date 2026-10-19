@@ -9,8 +9,10 @@
 #import "FLEXColor.h"
 #import "FLEXUtility.h"
 #import "FLEXResources.h"
+#import "FLEXSwiftUIInspector.h"
 #import "FLEXWindow.h"
 #import <ImageIO/ImageIO.h>
+#import <dlfcn.h>
 #import <objc/runtime.h>
 #import <zlib.h>
 
@@ -88,10 +90,43 @@ BOOL FLEXConstructorsShouldRun(void) {
     return [UIColor colorWithHue:hue saturation:1.0 brightness:1.0 alpha:1.0];
 }
 
+/// The runtime leaves private and generic Swift classes mangled, so SwiftUI's render
+/// layers read as "_TtC7SwiftUIP33_863CC...14CGDrawingLayer".
+static NSString *FLEXReadableClassName(Class cls) {
+    NSString *name = NSStringFromClass(cls);
+    if (![name hasPrefix:@"_Tt"]) {
+        return name;
+    }
+
+    static char *(*demangle)(const char *, size_t, char *, size_t *, uint32_t);
+    static NSRegularExpression *discriminator = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        demangle = dlsym(RTLD_DEFAULT, "swift_demangle");
+        discriminator = [NSRegularExpression
+            regularExpressionWithPattern:@"\\((\\w+) in [^)]*\\)" options:0 error:nil
+        ];
+    });
+
+    const char *mangled = name.UTF8String;
+    char *demangled = demangle ? demangle(mangled, strlen(mangled), NULL, NULL, 0) : NULL;
+    if (!demangled) {
+        return name;
+    }
+
+    NSString *readable = @(demangled);
+    free(demangled);
+
+    // Private types demangle to "Module.(Name in <discriminator>)"; keep just the name
+    return [discriminator stringByReplacingMatchesInString:readable
+        options:0 range:NSMakeRange(0, readable.length) withTemplate:@"$1"
+    ];
+}
+
 + (NSString *)descriptionForView:(UIView *)view includingFrame:(BOOL)includeFrame {
-    NSString *description = [[view class] description];
-    
-    NSString *viewControllerDescription = [[[self viewControllerForView:view] class] description];
+    NSString *description = FLEXReadableClassName([view class]);
+
+    NSString *viewControllerDescription = FLEXReadableClassName([[self viewControllerForView:view] class]);
     if (viewControllerDescription.length > 0) {
         description = [description stringByAppendingFormat:@" (%@)", viewControllerDescription];
     }
@@ -106,6 +141,67 @@ BOOL FLEXConstructorsShouldRun(void) {
     }
     
     return description;
+}
+
++ (NSString *)descriptionForNode:(id)node includingFrame:(BOOL)includeFrame {
+    if ([node isKindOfClass:[UIView class]]) {
+        return [self descriptionForView:node includingFrame:includeFrame];
+    }
+
+    // "AView {...} · in SwiftUIDemoView"
+    if ([node isKindOfClass:[FLEXSwiftUIViewNode class]]) {
+        FLEXSwiftUIViewNode *view = node;
+        NSString *description = view.name;
+        if (includeFrame) {
+            description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:view.frameInHostingView]];
+        }
+        if (view.enclosingName) {
+            description = [description stringByAppendingFormat:@" · in %@", view.enclosingName];
+        }
+        return description;
+    }
+
+    CALayer *layer = node;
+    NSString *description = FLEXReadableClassName([layer class]);
+
+    // "Text (SwiftUI.CGDrawingLayer) {...} · in AView"
+    NSString *component = nil, *swiftUIOwner = nil;
+    [FLEXSwiftUIInspector describeLayer:layer component:&component owner:&swiftUIOwner];
+    if (component) {
+        description = [NSString stringWithFormat:@"%@ (%@)", component, description];
+    }
+
+    if (layer.name.length > 0) {
+        description = [description stringByAppendingFormat:@" (%@)", layer.name];
+    }
+
+    if (includeFrame) {
+        description = [description stringByAppendingFormat:@" %@", [self stringForCGRect:layer.frame]];
+    }
+
+    UIView *owner = [self viewForLayer:layer];
+    if (swiftUIOwner) {
+        description = [description stringByAppendingFormat:@" · in %@", swiftUIOwner];
+    } else if (owner) {
+        description = [description stringByAppendingFormat:@" · in %@", FLEXReadableClassName([owner class])];
+    }
+
+    return description;
+}
+
++ (BOOL)layerIsViewBacked:(CALayer *)layer {
+    id delegate = layer.delegate;
+    return [delegate isKindOfClass:[UIView class]] && [delegate layer] == layer;
+}
+
++ (UIView *)viewForLayer:(CALayer *)layer {
+    for (CALayer *current = layer; current; current = current.superlayer) {
+        if ([self layerIsViewBacked:current]) {
+            return (UIView *)current.delegate;
+        }
+    }
+
+    return nil;
 }
 
 + (NSString *)stringForCGRect:(CGRect)rect {

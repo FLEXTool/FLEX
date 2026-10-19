@@ -21,6 +21,7 @@ extern NSString * const kFLEXDefaultsNetworkHostDenylistKey;
 extern NSString * const kFLEXDefaultsDisableOSLogForceASLKey;
 extern NSString * const kFLEXDefaultsAPNSCaptureEnabledKey;
 extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
+extern NSString * const kFLEXDefaultsRecordSwiftUIViewsKey;
 
 /// All BOOL preferences are NO by default
 @interface NSUserDefaults (FLEX)
@@ -44,6 +45,10 @@ extern NSString * const kFLEXDefaultsRegisterJSONExplorerKey;
 @property (nonatomic) BOOL flex_cacheOSLogMessages;
 
 @property (nonatomic) BOOL flex_enableAPNSCapture;
+
+/// Have SwiftUI record its view tree from launch, so that SwiftUI views can be named
+/// and selected. Takes effect on the next launch.
+@property (nonatomic) BOOL flex_recordSwiftUIViews;
 
 @property (nonatomic) BOOL flex_explorerHidesPropertyIvars;
 @property (nonatomic) BOOL flex_explorerHidesPropertyMethods;

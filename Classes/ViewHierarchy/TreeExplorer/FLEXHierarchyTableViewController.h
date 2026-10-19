@@ -10,11 +10,14 @@
 
 @interface FLEXHierarchyTableViewController : FLEXTableViewController
 
+/// Lists every view, and under each SwiftUI hosting view its SwiftUI view tree.
+/// \c viewsAtTap and \c selectedView hold \c UIView or \c FLEXSwiftUIViewNode objects.
 + (instancetype)windows:(NSArray<UIWindow *> *)allWindows
-             viewsAtTap:(NSArray<UIView *> *)viewsAtTap
-           selectedView:(UIView *)selectedView;
+             viewsAtTap:(NSArray *)viewsAtTap
+           selectedView:(id)selectedView;
 
-@property (nonatomic) UIView *selectedView;
-@property (nonatomic) void(^didSelectRowAction)(UIView *selectedView);
+/// A \c UIView or a \c FLEXSwiftUIViewNode
+@property (nonatomic) id selectedView;
+@property (nonatomic) void(^didSelectRowAction)(id selectedView);
 
 @end
