@@ -132,6 +132,13 @@
         @"userInteractionEnabled", @"layer", @"superview", @"subviews",
         @"accessibilityIdentifier", @"accessibilityLabel"
     ]).forClass(UIImageView.class);
+
+    // CALayer
+    self.append.properties(@[
+        @"frame", @"bounds", @"position", @"transform", @"opacity",
+        @"hidden", @"masksToBounds", @"cornerRadius", @"backgroundColor",
+        @"contents", @"name", @"delegate", @"superlayer", @"sublayers"
+    ]).forClass(CALayer.class);
 }
 
 @end
