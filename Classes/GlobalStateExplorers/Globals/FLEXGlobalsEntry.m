@@ -10,7 +10,9 @@
 
 @implementation FLEXGlobalsEntry
 
-+ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)cls row:(FLEXGlobalsRow)row {
++ (instancetype)entryWithEntry:(Class<FLEXGlobalsEntry>)cls
+             cellAccessoryType:(UITableViewCellAccessoryType)cellAccessoryType
+                           row:(FLEXGlobalsRow)row {
     BOOL providesVCs = [cls respondsToSelector:@selector(globalsEntryViewController:)];
     BOOL providesActions = [cls respondsToSelector:@selector(globalsEntryRowAction:)];
     NSParameterAssert(cls);
@@ -18,6 +20,7 @@
 
     FLEXGlobalsEntry *entry = [self new];
     entry->_entryNameFuture = ^{ return [cls globalsEntryTitle:row]; };
+    entry->_cellAccessoryType = cellAccessoryType;
 
     if (providesVCs) {
         id action = providesActions ? [cls globalsEntryRowAction:row] : nil;
@@ -34,24 +37,28 @@
 }
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
+                  cellAccessoryType:(UITableViewCellAccessoryType)cellAccessoryType
                viewControllerFuture:(FLEXGlobalsEntryViewControllerFuture)viewControllerFuture {
     NSParameterAssert(nameFuture);
     NSParameterAssert(viewControllerFuture);
 
     FLEXGlobalsEntry *entry = [self new];
     entry->_entryNameFuture = [nameFuture copy];
+    entry->_cellAccessoryType = cellAccessoryType;
     entry->_viewControllerFuture = [viewControllerFuture copy];
 
     return entry;
 }
 
 + (instancetype)entryWithNameFuture:(FLEXGlobalsEntryNameFuture)nameFuture
+                  cellAccessoryType:(UITableViewCellAccessoryType)cellAccessoryType
                              action:(FLEXGlobalsEntryRowAction)rowSelectedAction {
     NSParameterAssert(nameFuture);
     NSParameterAssert(rowSelectedAction);
 
     FLEXGlobalsEntry *entry = [self new];
     entry->_entryNameFuture = [nameFuture copy];
+    entry->_cellAccessoryType = cellAccessoryType;
     entry->_rowAction = [rowSelectedAction copy];
 
     return entry;
@@ -77,7 +84,10 @@
 
 + (FLEXGlobalsEntry *)flex_concreteGlobalsEntry:(FLEXGlobalsRow)row {
     if ([self conformsToProtocol:@protocol(FLEXGlobalsEntry)]) {
-        return [FLEXGlobalsEntry entryWithEntry:self row:row];
+        return [FLEXGlobalsEntry entryWithEntry:self
+                              cellAccessoryType:UITableViewCellAccessoryDisclosureIndicator
+                                            row:row
+        ];
     }
 
     return nil;
