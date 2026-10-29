@@ -208,6 +208,10 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     
     // Enumerate all objects on the heap to build the counts of instances for each class
     [FLEXHeapEnumerator enumerateLiveObjectsUsingBlock:^(__unsafe_unretained id object, __unsafe_unretained Class cls) {
+        if (!cls) {
+            return;
+        }
+
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(
             mutableCountsForClasses, (__bridge const void *)cls
         );
@@ -222,8 +226,13 @@ static kern_return_t reader(__unused task_t remote_task, vm_address_t remote_add
     NSMutableDictionary<NSString *, NSNumber *> *sizesForClassNames = [NSMutableDictionary new];
     for (unsigned int i = 0; i < classCount; i++) {
         Class class = classes[i];
+        const char *classNameCString = class_getName(class);
+        if (!classNameCString) {
+            continue;
+        }
+
         NSUInteger instanceCount = (NSUInteger)CFDictionaryGetValue(mutableCountsForClasses, (__bridge const void *)(class));
-        NSString *className = @(class_getName(class));
+        NSString *className = @(classNameCString);
         
         if (instanceCount > 0) {
             countsForClassNames[className] = @(instanceCount);

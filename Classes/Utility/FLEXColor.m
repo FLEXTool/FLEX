@@ -111,18 +111,62 @@
     return [self primaryBackgroundColor];
 }
 
++ (UIColor *)toolbarBackgroundColor {
+    if (@available(iOS 13.0, *)) {
+        return [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traits) {
+            if (traits.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                return [UIColor colorWithWhite:1.0 alpha:0.82];
+            }
+
+            return [UIColor colorWithWhite:0.0 alpha:0.78];
+        }];
+    }
+
+    return [UIColor colorWithWhite:0.0 alpha:0.78];
+}
+
++ (UIColor *)toolbarDescriptionBackgroundColor {
+    if (@available(iOS 13.0, *)) {
+        return [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traits) {
+            if (traits.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                return [UIColor colorWithWhite:1.0 alpha:0.90];
+            }
+
+            return [UIColor colorWithWhite:0.0 alpha:0.86];
+        }];
+    }
+
+    return [UIColor colorWithWhite:0.0 alpha:0.86];
+}
+
++ (UIColor *)toolbarTextColor {
+    if (@available(iOS 13.0, *)) {
+        return [UIColor colorWithDynamicProvider:^UIColor *(UITraitCollection *traits) {
+            if (traits.userInterfaceStyle == UIUserInterfaceStyleDark) {
+                return UIColor.blackColor;
+            }
+
+            return UIColor.whiteColor;
+        }];
+    }
+
+    return UIColor.whiteColor;
+}
+
++ (UIColor *)toolbarDisabledTextColor {
+    return [[self toolbarTextColor] colorWithAlphaComponent:0.45];
+}
+
++ (UIColor *)toolbarDragHandleColor {
+    return [[self toolbarTextColor] colorWithAlphaComponent:0.72];
+}
+
 + (UIColor *)toolbarItemHighlightedColor {
-    return FLEXDynamicColor(
-        quaternaryLabelColor,
-        colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.6
-    );
+    return [[self toolbarTextColor] colorWithAlphaComponent:0.18];
 }
 
 + (UIColor *)toolbarItemSelectedColor {
-    return FLEXDynamicColor(
-        secondaryLabelColor,
-        colorWithHue:2.0/3.0 saturation:0.1 brightness:0.25 alpha:0.68
-    );
+    return [[self toolbarTextColor] colorWithAlphaComponent:0.28];
 }
 
 + (UIColor *)hairlineColor {

@@ -39,13 +39,13 @@
     toolbarItem.sibling = backupItem;
     toolbarItem.title = title;
     toolbarItem.image = image;
-    toolbarItem.tintColor = FLEXColor.iconColor;
+    toolbarItem.tintColor = FLEXColor.toolbarTextColor;
     toolbarItem.backgroundColor = self.defaultBackgroundColor;
     toolbarItem.titleLabel.font = [UIFont systemFontOfSize:12.0];
     [toolbarItem setTitle:title forState:UIControlStateNormal];
     [toolbarItem setImage:image forState:UIControlStateNormal];
-    [toolbarItem setTitleColor:FLEXColor.primaryTextColor forState:UIControlStateNormal];
-    [toolbarItem setTitleColor:FLEXColor.deemphasizedTextColor forState:UIControlStateDisabled];
+    [toolbarItem setTitleColor:FLEXColor.toolbarTextColor forState:UIControlStateNormal];
+    [toolbarItem setTitleColor:FLEXColor.toolbarDisabledTextColor forState:UIControlStateDisabled];
     return toolbarItem;
 }
 
