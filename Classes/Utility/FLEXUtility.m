@@ -6,10 +6,12 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
-#import "FLEXColor.h"
 #import "FLEXUtility.h"
+#if !TARGET_OS_OSX
+#import "FLEXColor.h"
 #import "FLEXResources.h"
 #import "FLEXWindow.h"
+#endif
 #import <ImageIO/ImageIO.h>
 #import <objc/runtime.h>
 #import <zlib.h>
@@ -34,6 +36,7 @@ BOOL FLEXConstructorsShouldRun(void) {
 
 @implementation FLEXUtility
 
+#if !TARGET_OS_OSX
 + (UIWindow *)appKeyWindow {
     // First, check UIApplication.keyWindow
     FLEXWindow *window = (id)UIApplication.sharedApplication.keyWindow;
@@ -203,6 +206,8 @@ BOOL FLEXConstructorsShouldRun(void) {
     return patternColor;
 }
 
+#endif
+
 + (NSString *)applicationImageName {
     return NSBundle.mainBundle.executablePath;
 }
@@ -252,6 +257,7 @@ BOOL FLEXConstructorsShouldRun(void) {
     return [mutableString copy];
 }
 
+#if !TARGET_OS_OSX
 + (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask {
     NSArray<NSString *> *supportedOrientations = NSBundle.mainBundle.infoDictionary[@"UISupportedInterfaceOrientations"];
     UIInterfaceOrientationMask supportedOrientationsMask = 0;
@@ -291,6 +297,7 @@ BOOL FLEXConstructorsShouldRun(void) {
     }
     return thumbnail;
 }
+#endif
 
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration {
     NSString *string = @"0s";
@@ -418,6 +425,7 @@ BOOL FLEXConstructorsShouldRun(void) {
     return ([contentEncoding rangeOfString:@"deflate" options:NSCaseInsensitiveSearch].length > 0 || [contentEncoding rangeOfString:@"gzip" options:NSCaseInsensitiveSearch].length > 0);
 }
 
+#if !TARGET_OS_OSX
 + (NSArray<UIWindow *> *)allWindows {
     BOOL includeInternalWindows = YES;
     BOOL onlyVisibleWindows = NO;
@@ -449,6 +457,7 @@ BOOL FLEXConstructorsShouldRun(void) {
         preferredStyle:UIAlertControllerStyleAlert
     ];
 }
+#endif
 
 + (SEL)swizzledSelectorForSelector:(SEL)selector {
     return NSSelectorFromString([NSString stringWithFormat:

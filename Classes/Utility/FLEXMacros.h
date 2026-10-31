@@ -40,6 +40,24 @@ extern BOOL FLEXConstructorsShouldRun(void);
 /// A macro to return from the current procedure if we don't want to run constructors
 #define FLEX_EXIT_IF_NO_CTORS() if (!FLEXConstructorsShouldRun()) return;
 
+#if TARGET_OS_OSX
+/// The backing scale factor of the main screen
+NS_INLINE CGFloat FLEXScreenScale(void) {
+    CGFloat scale = NSScreen.mainScreen.backingScaleFactor;
+    return scale > 0 ? scale : 1;
+}
+
+/// Rounds down to the nearest "point" coordinate
+NS_INLINE CGFloat FLEXFloor(CGFloat x) {
+    CGFloat scale = FLEXScreenScale();
+    return floor(scale * (x)) / scale;
+}
+
+/// Returns the given number of points in pixels
+NS_INLINE CGFloat FLEXPointsToPixels(CGFloat points) {
+    return points / FLEXScreenScale();
+}
+#else
 /// Returns a UIScreen instance found through the application's scene context,
 /// since +[UIScreen mainScreen] is deprecated in iOS 26. Falls back to
 /// +[UIScreen mainScreen] on iOS < 13, where scenes are unavailable and
@@ -78,6 +96,7 @@ NS_INLINE CGFloat FLEXFloor(CGFloat x) {
 NS_INLINE CGFloat FLEXPointsToPixels(CGFloat points) {
     return points / FLEXScreen().scale;
 }
+#endif
 
 /// Creates a CGRect with all members rounded down to the nearest "point" coordinate
 NS_INLINE CGRect FLEXRectMake(CGFloat x, CGFloat y, CGFloat width, CGFloat height) {

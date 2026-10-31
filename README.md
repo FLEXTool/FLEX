@@ -30,6 +30,10 @@ FLEX (Flipboard Explorer) is a set of in-app debugging and exploration tools for
 Unlike many other debugging tools, FLEX runs entirely inside your app, so you don't need to be connected to LLDB/Xcode or a different remote debugging server. It works well in the simulator and on physical devices.
 
 
+## macOS
+
+FLEX also runs natively on macOS (AppKit). See [macOS/README.md](macOS/README.md) for setup, features and the example app.
+
 ## Usage
 
 In the iOS simulator, you can use keyboard shortcuts to activate FLEX. `f` will toggle the FLEX toolbar. Hit the `?` key for a full list of shortcuts. You can also show FLEX programmatically:

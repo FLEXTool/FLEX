@@ -6,54 +6,63 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
+#import <TargetConditionals.h>
+#if TARGET_OS_OSX
+#import <AppKit/AppKit.h>
+typedef NSImage FLEXResourceImage;
+typedef NSColor FLEXResourceColor;
+#else
 #import <UIKit/UIKit.h>
+typedef UIImage FLEXResourceImage;
+typedef UIColor FLEXResourceColor;
+#endif
 
 @interface FLEXResources : NSObject
 
 #pragma mark - FLEX Toolbar Icons
 
-@property (readonly, class) UIImage *closeIcon;
-@property (readonly, class) UIImage *dragHandle;
-@property (readonly, class) UIImage *globalsIcon;
-@property (readonly, class) UIImage *hierarchyIcon;
-@property (readonly, class) UIImage *recentIcon;
-@property (readonly, class) UIImage *moveIcon;
-@property (readonly, class) UIImage *selectIcon;
+@property (readonly, class) FLEXResourceImage *closeIcon;
+@property (readonly, class) FLEXResourceImage *dragHandle;
+@property (readonly, class) FLEXResourceImage *globalsIcon;
+@property (readonly, class) FLEXResourceImage *hierarchyIcon;
+@property (readonly, class) FLEXResourceImage *recentIcon;
+@property (readonly, class) FLEXResourceImage *moveIcon;
+@property (readonly, class) FLEXResourceImage *selectIcon;
 
 #pragma mark - Toolbar Icons
 
-@property (readonly, class) UIImage *bookmarksIcon;
-@property (readonly, class) UIImage *openTabsIcon;
-@property (readonly, class) UIImage *moreIcon;
-@property (readonly, class) UIImage *gearIcon;
-@property (readonly, class) UIImage *scrollToBottomIcon;
+@property (readonly, class) FLEXResourceImage *bookmarksIcon;
+@property (readonly, class) FLEXResourceImage *openTabsIcon;
+@property (readonly, class) FLEXResourceImage *moreIcon;
+@property (readonly, class) FLEXResourceImage *gearIcon;
+@property (readonly, class) FLEXResourceImage *scrollToBottomIcon;
 
 #pragma mark - Content Type Icons
 
-@property (readonly, class) UIImage *jsonIcon;
-@property (readonly, class) UIImage *textPlainIcon;
-@property (readonly, class) UIImage *htmlIcon;
-@property (readonly, class) UIImage *audioIcon;
-@property (readonly, class) UIImage *jsIcon;
-@property (readonly, class) UIImage *plistIcon;
-@property (readonly, class) UIImage *textIcon;
-@property (readonly, class) UIImage *videoIcon;
-@property (readonly, class) UIImage *xmlIcon;
-@property (readonly, class) UIImage *binaryIcon;
+@property (readonly, class) FLEXResourceImage *jsonIcon;
+@property (readonly, class) FLEXResourceImage *textPlainIcon;
+@property (readonly, class) FLEXResourceImage *htmlIcon;
+@property (readonly, class) FLEXResourceImage *audioIcon;
+@property (readonly, class) FLEXResourceImage *jsIcon;
+@property (readonly, class) FLEXResourceImage *plistIcon;
+@property (readonly, class) FLEXResourceImage *textIcon;
+@property (readonly, class) FLEXResourceImage *videoIcon;
+@property (readonly, class) FLEXResourceImage *xmlIcon;
+@property (readonly, class) FLEXResourceImage *binaryIcon;
 
 #pragma mark - 3D Explorer Icons
 
-@property (readonly, class) UIImage *toggle2DIcon;
-@property (readonly, class) UIImage *toggle3DIcon;
-@property (readonly, class) UIImage *rangeSliderLeftHandle;
-@property (readonly, class) UIImage *rangeSliderRightHandle;
-@property (readonly, class) UIImage *rangeSliderTrack;
-@property (readonly, class) UIImage *rangeSliderFill;
+@property (readonly, class) FLEXResourceImage *toggle2DIcon;
+@property (readonly, class) FLEXResourceImage *toggle3DIcon;
+@property (readonly, class) FLEXResourceImage *rangeSliderLeftHandle;
+@property (readonly, class) FLEXResourceImage *rangeSliderRightHandle;
+@property (readonly, class) FLEXResourceImage *rangeSliderTrack;
+@property (readonly, class) FLEXResourceImage *rangeSliderFill;
 
 #pragma mark - Misc Icons
 
-@property (readonly, class) UIImage *checkerPattern;
-@property (readonly, class) UIColor *checkerPatternColor;
-@property (readonly, class) UIImage *hierarchyIndentPattern;
+@property (readonly, class) FLEXResourceImage *checkerPattern;
+@property (readonly, class) FLEXResourceColor *checkerPatternColor;
+@property (readonly, class) FLEXResourceImage *hierarchyIndentPattern;
 
 @end

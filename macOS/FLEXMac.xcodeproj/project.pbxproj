@@ -1,0 +1,1345 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		002EEEE0539B465A3D5F1480 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C46761FA02CFB4BB8CD982AE /* main.m */; };
+		010786A5697683FEB200E681 /* FLEXNetworkTransaction.m in Sources */ = {isa = PBXBuildFile; fileRef = EB86F8651C10A12D4FE7FB91 /* FLEXNetworkTransaction.m */; };
+		029DB47A1D3610F66D1B6DAF /* FLEXMacNetworkViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 91F8C9BAC210AD8813ACC568 /* FLEXMacNetworkViewController.h */; };
+		088C198F6E3C3973AD041873 /* FLEXInjectEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A8CA18717FEF3B9C2D9DB83 /* FLEXInjectEngine.m */; };
+		09DF6C3B4EDD143800738F7E /* FLEXMacRuntimeBrowserViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 131F631F20AF12E48E7A0F17 /* FLEXMacRuntimeBrowserViewController.h */; };
+		0E8B27A4EE57C51482D43E4A /* FLEXFirebaseTransaction.mm in Sources */ = {isa = PBXBuildFile; fileRef = 158380E8BC98583FE45E8E88 /* FLEXFirebaseTransaction.mm */; };
+		0FB4DE80D18E1E42EC56DEE8 /* FLEXMacSystemLogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FA1988A8977B9F7EAE46695 /* FLEXMacSystemLogViewController.m */; };
+		12A4E579E83B7CA983479C2B /* FLEXMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F1BF6C4433253D75A852CA /* FLEXMethod.m */; };
+		159275DE2481D647D37DBC66 /* FLEXMac.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD49C38911E914728970133 /* FLEXMac.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		15A9C7BDF34BDA74424937F4 /* FLEXMirror.m in Sources */ = {isa = PBXBuildFile; fileRef = 3032471ED560B40A49817A55 /* FLEXMirror.m */; };
+		1643736BF953C111132B3DC0 /* FLEXMacToolbarPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = CF045149605499D366A611A7 /* FLEXMacToolbarPanel.m */; };
+		1C1FA386F9654DB0FEF400AA /* NSMapTable+FLEX_Subscripting.m in Sources */ = {isa = PBXBuildFile; fileRef = 3E7AE104B104A857D68310A0 /* NSMapTable+FLEX_Subscripting.m */; };
+		1F29E93290F43D98B885F871 /* FLEXMacToolbarPanel.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A4EAC71CD52B24F426CF9FA /* FLEXMacToolbarPanel.h */; };
+		23DD01DB70AFD7D4584D294A /* FLEXMacNetworkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 69C603C06F7842D3202ACB6B /* FLEXMacNetworkViewController.m */; };
+		23F2893C9132E05790715BF0 /* FLEXMacHighlightWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 90004C3E8218E1687670A03B /* FLEXMacHighlightWindow.h */; };
+		247E564F3C277E3E0090CE76 /* FLEXMacGlobalsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = AFA6F0A74A796E99095ABB49 /* FLEXMacGlobalsViewController.h */; };
+		24D14129140F7B5EC416FD09 /* FLEXMacPreviewViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = 59A95A0831ABCA18B0C27790 /* FLEXMacPreviewViewControllers.m */; };
+		2C21471EB851CC0DBF003D6C /* FLEXHeapEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 061161105304BE6F877B7BFF /* FLEXHeapEnumerator.m */; };
+		2F42362AF7548A62F63FE7B9 /* NSString+ObjcRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBA24DEA5C563B187F09DFC /* NSString+ObjcRuntime.m */; };
+		32949B6C1E93DD1C95B4E55F /* FLEXNetworkObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 175CF5A4D8C100962E0D2E88 /* FLEXNetworkObserver.m */; };
+		349B2E4FE5933C80D9A52C33 /* FLEXObjectRef.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C4358EED9451AD9CF9BF6D1 /* FLEXObjectRef.m */; };
+		357530565A1AA696F43F5A55 /* FLEXMacShortcuts.m in Sources */ = {isa = PBXBuildFile; fileRef = F565D6110782F6FAF9D5F7E2 /* FLEXMacShortcuts.m */; };
+		38AB99C47A41BB656CA83ADA /* FLEXTypeEncodingParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C6A84FF697E8CCCCA6E939BA /* FLEXTypeEncodingParser.m */; };
+		3987ECA3B9B661A5941A1DB3 /* FLEXMacPreviewViewControllers.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E1819336555C5FE94850375 /* FLEXMacPreviewViewControllers.h */; };
+		399BBCD86204757EFB55616F /* FLEXKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 68BB8BCA648A1287828577E3 /* FLEXKeychain.m */; };
+		3B899F3905FE94B498191632 /* FLEXMethodBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 273F988839D704018E02F405 /* FLEXMethodBase.m */; };
+		3CC1B0F840AE8416C2C4EF5D /* FLEXSQLiteDatabaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B77E8B950E09454E954EA4C /* FLEXSQLiteDatabaseManager.m */; };
+		4110420E4F9524E5BD9C3EE9 /* FLEXMacSystemLogViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 49F6D78058D91432E5F7C125 /* FLEXMacSystemLogViewController.h */; };
+		417E335ACE6F2323C771D2C3 /* FLEXMacTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F491D1EB38ABE39E25BE5805 /* FLEXMacTableViewController.m */; };
+		420CFE6F90BE682674C0690E /* FLEXMacShortcuts.h in Headers */ = {isa = PBXBuildFile; fileRef = D475183C736B6AA3F2ACA60A /* FLEXMacShortcuts.h */; };
+		4E191039F2618918BCA910FF /* FLEXMacObjectExplorerViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 23BF6B3E5A7B354AB465EABE /* FLEXMacObjectExplorerViewController.h */; };
+		5090391DFA09F3234CDB0A77 /* FLEXResources.m in Sources */ = {isa = PBXBuildFile; fileRef = F3E27E4A0DD5A690A0A6D338 /* FLEXResources.m */; };
+		519B585B7394BAB3BDD04C96 /* InjectorAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 98C664B2760EEEB67E4C63FD /* InjectorAppDelegate.m */; };
+		52B6EB1F858346158BF89CA2 /* FLEXSwiftInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = 290CA5E801AC196B47A0507E /* FLEXSwiftInternal.mm */; };
+		52EFEB095531A61BCAB00A94 /* NSString+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = D8342B4C57EECB1BDECDC8CC /* NSString+FLEX.m */; };
+		53AD511054DF78A6A5B460C0 /* FLEXSQLResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F504E690867809FC3FDC0DF /* FLEXSQLResult.m */; };
+		553B2B4CEC5798D6CF896362 /* FLEXMacExplorerWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = FB2525790A813E66F48E6E8A /* FLEXMacExplorerWindowController.h */; };
+		572134D56D63C1E17DD28F7D /* FLEXMacEditorViewControllers.m in Sources */ = {isa = PBXBuildFile; fileRef = B66D87172CAEB9A266911337 /* FLEXMacEditorViewControllers.m */; };
+		598C77C0890ABA48865BC2D2 /* FLEXMacTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 963FAE4A8468BD5CE6F9D783 /* FLEXMacTests.m */; };
+		5A2E2F54119DF18C3D137540 /* FLEXRuntimeUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 082FED2C5A577A90EE7515E2 /* FLEXRuntimeUtility.m */; };
+		5F12EF42A858F5CA2FC7D825 /* FLEXMacKeychainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D7AC08DD8BF702A7620F2FED /* FLEXMacKeychainViewController.m */; };
+		60D4546CD6DA58FF13CEA8C1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F093FCEE6FC92083F46A5627 /* QuartzCore.framework */; };
+		673D6DF1AC01516A1C381BCA /* FLEXNetworkCurlLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C3A2B3647E4664782C9F54A /* FLEXNetworkCurlLogger.m */; };
+		6770141C25E91627FD281B50 /* FLEXMacTableModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 18A9EB3FE29DB585457B3C3C /* FLEXMacTableModel.m */; };
+		684E1D527E108B4D72F2C9C4 /* FLEXMacFileBrowserViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = F49DF48EC74F6459937B5B36 /* FLEXMacFileBrowserViewController.h */; };
+		6B0C0CAA31AB9228DC44991B /* NSTimer+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = B53D9781AD546C7F11907A1E /* NSTimer+FLEX.m */; };
+		6BF793D1C736B79C5160054D /* FLEXMacHeapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00389E155F4914AE9501C84F /* FLEXMacHeapViewController.m */; };
+		6D13BF28C43A895E94F5CB8B /* FLEXMacObjectExplorerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F274BDD785EEE6D1B13BCF1A /* FLEXMacObjectExplorerViewController.m */; };
+		7732DE0385F00A965C39E49A /* FLEXProtocolBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 9959CC10E1404440B16E35D9 /* FLEXProtocolBuilder.m */; };
+		78E29419CD801A846D80DD73 /* FLEXClassBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = F883B3768524F5580567BE32 /* FLEXClassBuilder.m */; };
+		7D0467E13B6EA277F28829E0 /* FLEXMacGlobalsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 409E2B3E7A3095103ADFD60C /* FLEXMacGlobalsViewController.m */; };
+		7D179D91B0B8639C4EF60CA8 /* FLEX.h in Headers */ = {isa = PBXBuildFile; fileRef = B0EE93260ABF37BE123CFB97 /* FLEX.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7F08BFEEEC4395135A50FB2F /* OSCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E11975AEC74B2B8FB4917EF5 /* OSCache.m */; };
+		802089D33859A204D6F8ADC7 /* flex_fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = A0118E996F2C2D39538A8ECB /* flex_fishhook.c */; };
+		855E84FBB243B00FDE37C1A2 /* OSLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5171F3F014F7025F5B4CA36 /* OSLog.framework */; };
+		915A64EDC1D0A20AF29C0411 /* FLEXManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 471B28E02B410CF1068C7BD9 /* FLEXManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		922506CC4489BF2B4D4469E4 /* FLEXProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C502AC55DC891E4AE56D61 /* FLEXProtocol.m */; };
+		937FC6C2027354DB41B49976 /* FLEXMacFileBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94DBD314D15D230BB5E41687 /* FLEXMacFileBrowserViewController.m */; };
+		9874271DAF964352628BD68C /* FLEXMacObjectListViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = CC9A34F7BF5E3B1D505CCAB3 /* FLEXMacObjectListViewController.h */; };
+		9DCFDAAFC7F3184ECD986890 /* FLEXMacEditorViewControllers.h in Headers */ = {isa = PBXBuildFile; fileRef = B4FC2C302D81E7C35B9D50E4 /* FLEXMacEditorViewControllers.h */; };
+		A12FC0E219055CC187056835 /* FLEXIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = 287536EB1C3C04F4754F52C2 /* FLEXIvar.m */; };
+		A845F5DCF24FF763F3525CD1 /* FLEXMacNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AAFF62A7490F75C925D0E79 /* FLEXMacNavigationController.m */; };
+		AA1D137630FCECF33C67D6E3 /* FLEXMacArgumentInputView.h in Headers */ = {isa = PBXBuildFile; fileRef = AEE6037C0055DF4E6642CE40 /* FLEXMacArgumentInputView.h */; };
+		AAD75441F978EF42E4970830 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BBED0AC9880A4EE10F492C7 /* AppDelegate.m */; };
+		AB54EE57C8458982E13D7B6C /* FLEXMacViewHierarchyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BA6F7D5C1FA1397ED6889A88 /* FLEXMacViewHierarchyViewController.m */; };
+		AD82CE4E1F85305BC08E42B1 /* FLEXRuntime+Compare.m in Sources */ = {isa = PBXBuildFile; fileRef = 6EE72A44C01A596EA4DB75BA /* FLEXRuntime+Compare.m */; };
+		AF2849C9ED1F786C67F7C8D3 /* NSDateFormatter+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = 00FD4B3F14462B1E4CE5BD1D /* NSDateFormatter+FLEX.m */; };
+		B0C5A28B3BB07078F3AE62C1 /* FLEXMacViewHierarchyViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 096018DA98A533128A525E04 /* FLEXMacViewHierarchyViewController.h */; };
+		B15DD726D0C2BDF8119A8B26 /* NSArray+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = 9528DC007D172B71DCA04003 /* NSArray+FLEX.m */; };
+		B6C139695FA035882132F57B /* FLEXMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD49C38911E914728970133 /* FLEXMac.framework */; };
+		B77C00EC153C29702D5A297F /* NSDictionary+ObjcRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F2DD08E575CBB9F9B3A3611 /* NSDictionary+ObjcRuntime.m */; };
+		B79A2FE898543B39F3C1953A /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD0E306039E0A3CF941FD0E2 /* UniformTypeIdentifiers.framework */; };
+		B7C222E28B5FD9775C65D760 /* FLEXRuntimeSafety.m in Sources */ = {isa = PBXBuildFile; fileRef = 346A29349FA3637E076EA9AF /* FLEXRuntimeSafety.m */; };
+		B9A65319B7B3851FA98EB5B5 /* FLEXBlockDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 29AABF69A399A78391156A10 /* FLEXBlockDescription.m */; };
+		B9EFE229A9E521F42CE1B0FB /* FLEXMacViewSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = B0574D7FF43907502D5B0FAE /* FLEXMacViewSelector.h */; };
+		BB1880A8974F7B2371066A5D /* FLEXMacArgumentInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = C198085028EAD2466826B078 /* FLEXMacArgumentInputView.m */; };
+		BB2A6A23924FB5992C83FE0B /* FLEXMacTableViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B82A27BB8841EE8722D83C5 /* FLEXMacTableViewController.h */; };
+		BE8711D3BF4994923754CBEC /* FLEXMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD49C38911E914728970133 /* FLEXMac.framework */; };
+		BE9A1E8AE85DADD7AF1BE3AE /* FLEXMac.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD49C38911E914728970133 /* FLEXMac.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C0904AEA8187331B58BDCC47 /* FLEXMacViewSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DDD1E70515024A7BE095CA0 /* FLEXMacViewSelector.m */; };
+		C1A3DDCC08DFA301C5EC25F1 /* FLEXMacHighlightWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 189DD361BD10F00206607AA0 /* FLEXMacHighlightWindow.m */; };
+		C86A1FD92796890594BB995F /* FLEXProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = B65E7F9D2C493FA8AB4F1BAD /* FLEXProperty.m */; };
+		D2C23C7D540BD53B7B20A611 /* FLEXManager+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1111025B9B4D246FC3CA1C71 /* FLEXManager+Private.h */; };
+		D2DB3175A15CFBAD569237F5 /* FLEXAutoInject.m in Sources */ = {isa = PBXBuildFile; fileRef = 943A33EB063E573469D3D70B /* FLEXAutoInject.m */; };
+		D587E756A5D17F34461BFBF6 /* FLEXMacRuntimeBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64C872234C8189073B3FDF96 /* FLEXMacRuntimeBrowserViewController.m */; };
+		D6FA09C5D4BC31BD85E4EA83 /* FLEXMacNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BE86851B1839F65F5147082 /* FLEXMacNavigationController.h */; };
+		D76BF9A3BD71EEB3D1919D68 /* FLEXObjcInternal.mm in Sources */ = {isa = PBXBuildFile; fileRef = F082B2EC7C5B88B27522C590 /* FLEXObjcInternal.mm */; };
+		DDB90E56FB9279D5D39BB545 /* FLEXMetadataExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 70F7D200711DDA5293FBAD04 /* FLEXMetadataExtras.m */; };
+		DF095575379E2488622726D7 /* NSObject+FLEX_Reflection.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D9FFF7A144DAF95EBB48ED2 /* NSObject+FLEX_Reflection.m */; };
+		DF171313D59AE99B3E36445B /* FLEXMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD49C38911E914728970133 /* FLEXMac.framework */; };
+		E027B30DCE2E00A42EB641C2 /* FLEXKeychainQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 8CE9F2593EA9CB0DD2AEF5E6 /* FLEXKeychainQuery.m */; };
+		E0CAE379C2E79D3FE3E2C56A /* FLEXManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B0D85D17085201D79822D67 /* FLEXManager.m */; };
+		E2A3F755FBA036CD245CC7F5 /* FLEXRuntimeConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 969EF944B64524B5DFD36277 /* FLEXRuntimeConstants.m */; };
+		E6F9BCFBCA01624A87C04250 /* FLEXMacTableModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 15DC192D879B7742A203E48F /* FLEXMacTableModel.h */; };
+		E7F2904A28C16E77467DD843 /* FLEXMacUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = B72AE39D810A5ED8EA1C63D9 /* FLEXMacUtility.m */; };
+		E843E2C07E962E6E14763A02 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A295C39948C1973657BF8EF /* main.m */; };
+		E93D06733663CC72D9127C96 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1DC7324BB9F34691BB9CF8A /* Security.framework */; };
+		EB76B703437DC1506E9C00C0 /* FLEXNetworkRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 88CCD28156304642163C6E77 /* FLEXNetworkRecorder.m */; };
+		ED5D093738D0338829B8A7A8 /* FLEXInjectEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A8CA18717FEF3B9C2D9DB83 /* FLEXInjectEngine.m */; };
+		EEC85EE2E532592B6AD5F2A9 /* FLEXMacKeychainViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1772FD1B261D659B871A3E2E /* FLEXMacKeychainViewController.h */; };
+		EFBEF0F63887B00B0F7ECAC7 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 752C58A66C0EDBF807890E6E /* AppKit.framework */; };
+		F2CB4725ACD7581B8F91E9A6 /* FLEXUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BCB4F4973229C56DD5A7BC1 /* FLEXUtility.m */; };
+		F3ED85559BDA9ED7774B2081 /* FLEXMacHeapViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 046A57954D8FEF6B8C5595B4 /* FLEXMacHeapViewController.h */; };
+		F49F5BB23D9CDE3D198E3D9D /* FLEXMacUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = FA6CFEE6766844BCB5565FF5 /* FLEXMacUtility.h */; };
+		F7320C76F43F6814D1403536 /* ExampleModels.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EDFB2BBC8C50B357A438CC /* ExampleModels.m */; };
+		F73A9547F709CE87B07DE54A /* NSUserDefaults+FLEX.m in Sources */ = {isa = PBXBuildFile; fileRef = 33CC6C59378EB0C1AD5FCEE1 /* NSUserDefaults+FLEX.m */; };
+		F82893AFE1F81E75744EA1CE /* FLEXMacExplorerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 088A70F1C8E18352E2145EC2 /* FLEXMacExplorerWindowController.m */; };
+		FAC304A29073DD286E1B46F1 /* FLEXPropertyAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F83D1E891BF04D244F08634 /* FLEXPropertyAttributes.m */; };
+		FFB2028FCD8A8A11093E8E13 /* FLEXMacObjectListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A91BFE93E3A4FDC8E6C02BA8 /* FLEXMacObjectListViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		23AD57F465EA6A8C6A4B46DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD67E5D751BCA67CA9CF5FD1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 81EF870D67374F0BAE183676;
+			remoteInfo = FLEXMacExample;
+		};
+		2CA1DD329A28303EB1E01084 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD67E5D751BCA67CA9CF5FD1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18523A8CF9BED707E424B0BF;
+			remoteInfo = FLEXMac;
+		};
+		3923D386C537CE89A373C21E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD67E5D751BCA67CA9CF5FD1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18523A8CF9BED707E424B0BF;
+			remoteInfo = FLEXMac;
+		};
+		7F5EEFEAE403B7C60343FE04 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DD67E5D751BCA67CA9CF5FD1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18523A8CF9BED707E424B0BF;
+			remoteInfo = FLEXMac;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		17B31021C18336DDB51CD960 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BE9A1E8AE85DADD7AF1BE3AE /* FLEXMac.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C679AE4234BBE58B6CD56D8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				159275DE2481D647D37DBC66 /* FLEXMac.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		00389E155F4914AE9501C84F /* FLEXMacHeapViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacHeapViewController.m; sourceTree = "<group>"; };
+		00FD4B3F14462B1E4CE5BD1D /* NSDateFormatter+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDateFormatter+FLEX.m"; sourceTree = "<group>"; };
+		046A57954D8FEF6B8C5595B4 /* FLEXMacHeapViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacHeapViewController.h; sourceTree = "<group>"; };
+		061161105304BE6F877B7BFF /* FLEXHeapEnumerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXHeapEnumerator.m; sourceTree = "<group>"; };
+		082FED2C5A577A90EE7515E2 /* FLEXRuntimeUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXRuntimeUtility.m; sourceTree = "<group>"; };
+		088A70F1C8E18352E2145EC2 /* FLEXMacExplorerWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacExplorerWindowController.m; sourceTree = "<group>"; };
+		096018DA98A533128A525E04 /* FLEXMacViewHierarchyViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacViewHierarchyViewController.h; sourceTree = "<group>"; };
+		0BE78E8792B8E4B3F2969240 /* FLEXInjector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FLEXInjector.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0DDD1E70515024A7BE095CA0 /* FLEXMacViewSelector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacViewSelector.m; sourceTree = "<group>"; };
+		1111025B9B4D246FC3CA1C71 /* FLEXManager+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FLEXManager+Private.h"; sourceTree = "<group>"; };
+		131F631F20AF12E48E7A0F17 /* FLEXMacRuntimeBrowserViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacRuntimeBrowserViewController.h; sourceTree = "<group>"; };
+		158380E8BC98583FE45E8E88 /* FLEXFirebaseTransaction.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXFirebaseTransaction.mm; sourceTree = "<group>"; };
+		15DC192D879B7742A203E48F /* FLEXMacTableModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacTableModel.h; sourceTree = "<group>"; };
+		175CF5A4D8C100962E0D2E88 /* FLEXNetworkObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkObserver.m; sourceTree = "<group>"; };
+		1772FD1B261D659B871A3E2E /* FLEXMacKeychainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacKeychainViewController.h; sourceTree = "<group>"; };
+		189DD361BD10F00206607AA0 /* FLEXMacHighlightWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacHighlightWindow.m; sourceTree = "<group>"; };
+		18A9EB3FE29DB585457B3C3C /* FLEXMacTableModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacTableModel.m; sourceTree = "<group>"; };
+		1B77E8B950E09454E954EA4C /* FLEXSQLiteDatabaseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXSQLiteDatabaseManager.m; sourceTree = "<group>"; };
+		1F2DD08E575CBB9F9B3A3611 /* NSDictionary+ObjcRuntime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+ObjcRuntime.m"; sourceTree = "<group>"; };
+		1F504E690867809FC3FDC0DF /* FLEXSQLResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXSQLResult.m; sourceTree = "<group>"; };
+		216A1CD318CC6F3BC969B95C /* InjectorAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InjectorAppDelegate.h; sourceTree = "<group>"; };
+		23BF6B3E5A7B354AB465EABE /* FLEXMacObjectExplorerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacObjectExplorerViewController.h; sourceTree = "<group>"; };
+		273F988839D704018E02F405 /* FLEXMethodBase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMethodBase.m; sourceTree = "<group>"; };
+		287536EB1C3C04F4754F52C2 /* FLEXIvar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXIvar.m; sourceTree = "<group>"; };
+		290CA5E801AC196B47A0507E /* FLEXSwiftInternal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXSwiftInternal.mm; sourceTree = "<group>"; };
+		29AABF69A399A78391156A10 /* FLEXBlockDescription.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXBlockDescription.m; sourceTree = "<group>"; };
+		2BE86851B1839F65F5147082 /* FLEXMacNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacNavigationController.h; sourceTree = "<group>"; };
+		2CD49C38911E914728970133 /* FLEXMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FLEXMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2FA1988A8977B9F7EAE46695 /* FLEXMacSystemLogViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacSystemLogViewController.m; sourceTree = "<group>"; };
+		3032471ED560B40A49817A55 /* FLEXMirror.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMirror.m; sourceTree = "<group>"; };
+		33CC6C59378EB0C1AD5FCEE1 /* NSUserDefaults+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSUserDefaults+FLEX.m"; sourceTree = "<group>"; };
+		346A29349FA3637E076EA9AF /* FLEXRuntimeSafety.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXRuntimeSafety.m; sourceTree = "<group>"; };
+		3A4EAC71CD52B24F426CF9FA /* FLEXMacToolbarPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacToolbarPanel.h; sourceTree = "<group>"; };
+		3BCB4F4973229C56DD5A7BC1 /* FLEXUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXUtility.m; sourceTree = "<group>"; };
+		3E7AE104B104A857D68310A0 /* NSMapTable+FLEX_Subscripting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMapTable+FLEX_Subscripting.m"; sourceTree = "<group>"; };
+		409E2B3E7A3095103ADFD60C /* FLEXMacGlobalsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacGlobalsViewController.m; sourceTree = "<group>"; };
+		471B28E02B410CF1068C7BD9 /* FLEXManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXManager.h; sourceTree = "<group>"; };
+		48C502AC55DC891E4AE56D61 /* FLEXProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXProtocol.m; sourceTree = "<group>"; };
+		49F6D78058D91432E5F7C125 /* FLEXMacSystemLogViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacSystemLogViewController.h; sourceTree = "<group>"; };
+		4BDF6859E25B305F42232E09 /* FLEXMacExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FLEXMacExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E1819336555C5FE94850375 /* FLEXMacPreviewViewControllers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacPreviewViewControllers.h; sourceTree = "<group>"; };
+		59A95A0831ABCA18B0C27790 /* FLEXMacPreviewViewControllers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacPreviewViewControllers.m; sourceTree = "<group>"; };
+		5BBED0AC9880A4EE10F492C7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		5C4358EED9451AD9CF9BF6D1 /* FLEXObjectRef.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXObjectRef.m; sourceTree = "<group>"; };
+		64C872234C8189073B3FDF96 /* FLEXMacRuntimeBrowserViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacRuntimeBrowserViewController.m; sourceTree = "<group>"; };
+		68BB8BCA648A1287828577E3 /* FLEXKeychain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXKeychain.m; sourceTree = "<group>"; };
+		69C603C06F7842D3202ACB6B /* FLEXMacNetworkViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacNetworkViewController.m; sourceTree = "<group>"; };
+		6A8CA18717FEF3B9C2D9DB83 /* FLEXInjectEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXInjectEngine.m; sourceTree = "<group>"; };
+		6AAFF62A7490F75C925D0E79 /* FLEXMacNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacNavigationController.m; sourceTree = "<group>"; };
+		6B82A27BB8841EE8722D83C5 /* FLEXMacTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacTableViewController.h; sourceTree = "<group>"; };
+		6EE72A44C01A596EA4DB75BA /* FLEXRuntime+Compare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "FLEXRuntime+Compare.m"; sourceTree = "<group>"; };
+		70F7D200711DDA5293FBAD04 /* FLEXMetadataExtras.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMetadataExtras.m; sourceTree = "<group>"; };
+		752C58A66C0EDBF807890E6E /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		7C3A2B3647E4664782C9F54A /* FLEXNetworkCurlLogger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkCurlLogger.m; sourceTree = "<group>"; };
+		8179BDD8C31F3C096AFBE2BD /* FLEXInjectEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXInjectEngine.h; sourceTree = "<group>"; };
+		88CCD28156304642163C6E77 /* FLEXNetworkRecorder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkRecorder.m; sourceTree = "<group>"; };
+		8A295C39948C1973657BF8EF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		8B0D85D17085201D79822D67 /* FLEXManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXManager.m; sourceTree = "<group>"; };
+		8CE9F2593EA9CB0DD2AEF5E6 /* FLEXKeychainQuery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXKeychainQuery.m; sourceTree = "<group>"; };
+		90004C3E8218E1687670A03B /* FLEXMacHighlightWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacHighlightWindow.h; sourceTree = "<group>"; };
+		91F8C9BAC210AD8813ACC568 /* FLEXMacNetworkViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacNetworkViewController.h; sourceTree = "<group>"; };
+		943A33EB063E573469D3D70B /* FLEXAutoInject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXAutoInject.m; sourceTree = "<group>"; };
+		94DBD314D15D230BB5E41687 /* FLEXMacFileBrowserViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacFileBrowserViewController.m; sourceTree = "<group>"; };
+		9528DC007D172B71DCA04003 /* NSArray+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+FLEX.m"; sourceTree = "<group>"; };
+		963FAE4A8468BD5CE6F9D783 /* FLEXMacTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacTests.m; sourceTree = "<group>"; };
+		969EF944B64524B5DFD36277 /* FLEXRuntimeConstants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXRuntimeConstants.m; sourceTree = "<group>"; };
+		98C664B2760EEEB67E4C63FD /* InjectorAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InjectorAppDelegate.m; sourceTree = "<group>"; };
+		9959CC10E1404440B16E35D9 /* FLEXProtocolBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXProtocolBuilder.m; sourceTree = "<group>"; };
+		9D9FFF7A144DAF95EBB48ED2 /* NSObject+FLEX_Reflection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+FLEX_Reflection.m"; sourceTree = "<group>"; };
+		9F83D1E891BF04D244F08634 /* FLEXPropertyAttributes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXPropertyAttributes.m; sourceTree = "<group>"; };
+		A0118E996F2C2D39538A8ECB /* flex_fishhook.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = flex_fishhook.c; sourceTree = "<group>"; };
+		A8F1BF6C4433253D75A852CA /* FLEXMethod.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMethod.m; sourceTree = "<group>"; };
+		A91BFE93E3A4FDC8E6C02BA8 /* FLEXMacObjectListViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacObjectListViewController.m; sourceTree = "<group>"; };
+		AEE6037C0055DF4E6642CE40 /* FLEXMacArgumentInputView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacArgumentInputView.h; sourceTree = "<group>"; };
+		AFA6F0A74A796E99095ABB49 /* FLEXMacGlobalsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacGlobalsViewController.h; sourceTree = "<group>"; };
+		B0574D7FF43907502D5B0FAE /* FLEXMacViewSelector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacViewSelector.h; sourceTree = "<group>"; };
+		B0EE93260ABF37BE123CFB97 /* FLEX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEX.h; sourceTree = "<group>"; };
+		B4FC2C302D81E7C35B9D50E4 /* FLEXMacEditorViewControllers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacEditorViewControllers.h; sourceTree = "<group>"; };
+		B53D9781AD546C7F11907A1E /* NSTimer+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+FLEX.m"; sourceTree = "<group>"; };
+		B626EDCC8912372F93026CAB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B65E7F9D2C493FA8AB4F1BAD /* FLEXProperty.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXProperty.m; sourceTree = "<group>"; };
+		B66D87172CAEB9A266911337 /* FLEXMacEditorViewControllers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacEditorViewControllers.m; sourceTree = "<group>"; };
+		B72AE39D810A5ED8EA1C63D9 /* FLEXMacUtility.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacUtility.m; sourceTree = "<group>"; };
+		B804479312AADCF5D088D095 /* ExampleModels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExampleModels.h; sourceTree = "<group>"; };
+		BA6F7D5C1FA1397ED6889A88 /* FLEXMacViewHierarchyViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacViewHierarchyViewController.m; sourceTree = "<group>"; };
+		BD0E306039E0A3CF941FD0E2 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
+		C198085028EAD2466826B078 /* FLEXMacArgumentInputView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacArgumentInputView.m; sourceTree = "<group>"; };
+		C46761FA02CFB4BB8CD982AE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C6A84FF697E8CCCCA6E939BA /* FLEXTypeEncodingParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXTypeEncodingParser.m; sourceTree = "<group>"; };
+		CC9A34F7BF5E3B1D505CCAB3 /* FLEXMacObjectListViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacObjectListViewController.h; sourceTree = "<group>"; };
+		CF045149605499D366A611A7 /* FLEXMacToolbarPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacToolbarPanel.m; sourceTree = "<group>"; };
+		D475183C736B6AA3F2ACA60A /* FLEXMacShortcuts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacShortcuts.h; sourceTree = "<group>"; };
+		D5171F3F014F7025F5B4CA36 /* OSLog.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OSLog.framework; path = System/Library/Frameworks/OSLog.framework; sourceTree = SDKROOT; };
+		D7AC08DD8BF702A7620F2FED /* FLEXMacKeychainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacKeychainViewController.m; sourceTree = "<group>"; };
+		D8342B4C57EECB1BDECDC8CC /* NSString+FLEX.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+FLEX.m"; sourceTree = "<group>"; };
+		DEBA24DEA5C563B187F09DFC /* NSString+ObjcRuntime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+ObjcRuntime.m"; sourceTree = "<group>"; };
+		E11975AEC74B2B8FB4917EF5 /* OSCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OSCache.m; sourceTree = "<group>"; };
+		E1DC7324BB9F34691BB9CF8A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		E9EDFB2BBC8C50B357A438CC /* ExampleModels.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleModels.m; sourceTree = "<group>"; };
+		EA6AEF605E8EB0A794489B2D /* FLEXMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FLEXMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB86F8651C10A12D4FE7FB91 /* FLEXNetworkTransaction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXNetworkTransaction.m; sourceTree = "<group>"; };
+		F082B2EC7C5B88B27522C590 /* FLEXObjcInternal.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FLEXObjcInternal.mm; sourceTree = "<group>"; };
+		F093FCEE6FC92083F46A5627 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		F274BDD785EEE6D1B13BCF1A /* FLEXMacObjectExplorerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacObjectExplorerViewController.m; sourceTree = "<group>"; };
+		F3E27E4A0DD5A690A0A6D338 /* FLEXResources.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXResources.m; sourceTree = "<group>"; };
+		F491D1EB38ABE39E25BE5805 /* FLEXMacTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacTableViewController.m; sourceTree = "<group>"; };
+		F49DF48EC74F6459937B5B36 /* FLEXMacFileBrowserViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacFileBrowserViewController.h; sourceTree = "<group>"; };
+		F565D6110782F6FAF9D5F7E2 /* FLEXMacShortcuts.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXMacShortcuts.m; sourceTree = "<group>"; };
+		F883B3768524F5580567BE32 /* FLEXClassBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FLEXClassBuilder.m; sourceTree = "<group>"; };
+		FA6CFEE6766844BCB5565FF5 /* FLEXMacUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacUtility.h; sourceTree = "<group>"; };
+		FB2525790A813E66F48E6E8A /* FLEXMacExplorerWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FLEXMacExplorerWindowController.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		052DA41FC4ACAF7903471423 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF171313D59AE99B3E36445B /* FLEXMac.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		074E9A8D83D49A549CAD1761 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE8711D3BF4994923754CBEC /* FLEXMac.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E6B5BAF09AD163A8686DC9B6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B6C139695FA035882132F57B /* FLEXMac.framework in Frameworks */,
+				B79A2FE898543B39F3C1953A /* UniformTypeIdentifiers.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F07B1DA78C698BAD7563D27F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFBEF0F63887B00B0F7ECAC7 /* AppKit.framework in Frameworks */,
+				60D4546CD6DA58FF13CEA8C1 /* QuartzCore.framework in Frameworks */,
+				855E84FBB243B00FDE37C1A2 /* OSLog.framework in Frameworks */,
+				E93D06733663CC72D9127C96 /* Security.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0A216947D9A86F7D96DA8085 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				6EE72A44C01A596EA4DB75BA /* FLEXRuntime+Compare.m */,
+				9528DC007D172B71DCA04003 /* NSArray+FLEX.m */,
+				00FD4B3F14462B1E4CE5BD1D /* NSDateFormatter+FLEX.m */,
+				9D9FFF7A144DAF95EBB48ED2 /* NSObject+FLEX_Reflection.m */,
+				B53D9781AD546C7F11907A1E /* NSTimer+FLEX.m */,
+				33CC6C59378EB0C1AD5FCEE1 /* NSUserDefaults+FLEX.m */,
+			);
+			name = Categories;
+			path = ../Classes/Utility/Categories;
+			sourceTree = "<group>";
+		};
+		161387C8EB03CBDB6D855CD5 /* ObjectExplorer */ = {
+			isa = PBXGroup;
+			children = (
+				AEE6037C0055DF4E6642CE40 /* FLEXMacArgumentInputView.h */,
+				C198085028EAD2466826B078 /* FLEXMacArgumentInputView.m */,
+				B4FC2C302D81E7C35B9D50E4 /* FLEXMacEditorViewControllers.h */,
+				B66D87172CAEB9A266911337 /* FLEXMacEditorViewControllers.m */,
+				23BF6B3E5A7B354AB465EABE /* FLEXMacObjectExplorerViewController.h */,
+				F274BDD785EEE6D1B13BCF1A /* FLEXMacObjectExplorerViewController.m */,
+				CC9A34F7BF5E3B1D505CCAB3 /* FLEXMacObjectListViewController.h */,
+				A91BFE93E3A4FDC8E6C02BA8 /* FLEXMacObjectListViewController.m */,
+				D475183C736B6AA3F2ACA60A /* FLEXMacShortcuts.h */,
+				F565D6110782F6FAF9D5F7E2 /* FLEXMacShortcuts.m */,
+			);
+			path = ObjectExplorer;
+			sourceTree = "<group>";
+		};
+		19BED37C510411112EDBB534 /* GlobalStateExplorers */ = {
+			isa = PBXGroup;
+			children = (
+				5C4358EED9451AD9CF9BF6D1 /* FLEXObjectRef.m */,
+			);
+			name = GlobalStateExplorers;
+			path = ../Classes/GlobalStateExplorers;
+			sourceTree = "<group>";
+		};
+		2AE4F733318556C4F295627B /* FLEXMac */ = {
+			isa = PBXGroup;
+			children = (
+				B0EE93260ABF37BE123CFB97 /* FLEX.h */,
+				943A33EB063E573469D3D70B /* FLEXAutoInject.m */,
+				471B28E02B410CF1068C7BD9 /* FLEXManager.h */,
+				8B0D85D17085201D79822D67 /* FLEXManager.m */,
+				1111025B9B4D246FC3CA1C71 /* FLEXManager+Private.h */,
+				B2682A7384C9D4962FB14C0A /* Core */,
+				98E086F948BA31917FBFC969 /* Globals */,
+				E802A99A2C25867476314BD3 /* Network */,
+				161387C8EB03CBDB6D855CD5 /* ObjectExplorer */,
+				D562208A4EB4D2B9F29CFFAA /* Toolbar */,
+				D2F32A51ADC65FEE233011BB /* ViewHierarchy */,
+			);
+			path = FLEXMac;
+			sourceTree = "<group>";
+		};
+		590F4808DE0505D692C68213 /* PonyDebugger */ = {
+			isa = PBXGroup;
+			children = (
+				175CF5A4D8C100962E0D2E88 /* FLEXNetworkObserver.m */,
+			);
+			name = PonyDebugger;
+			path = ../Classes/Network/PonyDebugger;
+			sourceTree = "<group>";
+		};
+		6C81A476AAB8EFF73AB137E9 = {
+			isa = PBXGroup;
+			children = (
+				0A216947D9A86F7D96DA8085 /* Categories */,
+				A809069B10BB1B4EE62951D8 /* DatabaseBrowser */,
+				BB4304517420B709307D04B9 /* Example */,
+				2AE4F733318556C4F295627B /* FLEXMac */,
+				19BED37C510411112EDBB534 /* GlobalStateExplorers */,
+				D3F9155E12016809E549AFB7 /* Injector */,
+				75A859A684070DA84E210A0C /* Keychain */,
+				AB1C1CC9C7E5A6F5960985E6 /* Network */,
+				B76F9EF25849DF274020D63C /* Objc */,
+				F86DB53403326A389E0CA7C3 /* OSCache */,
+				590F4808DE0505D692C68213 /* PonyDebugger */,
+				F74489CBC04DE2EA009573D8 /* Private */,
+				F4982F8CD0D86054AC20906E /* Reflection */,
+				AEF67F51D977C0078AAD67FF /* Runtime */,
+				EA5CCDAC0AA6B3AD6F4C7956 /* Tests */,
+				C50E44CFBD333B841407AAFD /* Utility */,
+				A79A9DBC2A7CC8795FA87790 /* Frameworks */,
+				A09648A326CEB136C39475F8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		75A859A684070DA84E210A0C /* Keychain */ = {
+			isa = PBXGroup;
+			children = (
+				68BB8BCA648A1287828577E3 /* FLEXKeychain.m */,
+				8CE9F2593EA9CB0DD2AEF5E6 /* FLEXKeychainQuery.m */,
+			);
+			name = Keychain;
+			path = ../Classes/GlobalStateExplorers/Keychain;
+			sourceTree = "<group>";
+		};
+		98E086F948BA31917FBFC969 /* Globals */ = {
+			isa = PBXGroup;
+			children = (
+				F49DF48EC74F6459937B5B36 /* FLEXMacFileBrowserViewController.h */,
+				94DBD314D15D230BB5E41687 /* FLEXMacFileBrowserViewController.m */,
+				AFA6F0A74A796E99095ABB49 /* FLEXMacGlobalsViewController.h */,
+				409E2B3E7A3095103ADFD60C /* FLEXMacGlobalsViewController.m */,
+				046A57954D8FEF6B8C5595B4 /* FLEXMacHeapViewController.h */,
+				00389E155F4914AE9501C84F /* FLEXMacHeapViewController.m */,
+				1772FD1B261D659B871A3E2E /* FLEXMacKeychainViewController.h */,
+				D7AC08DD8BF702A7620F2FED /* FLEXMacKeychainViewController.m */,
+				131F631F20AF12E48E7A0F17 /* FLEXMacRuntimeBrowserViewController.h */,
+				64C872234C8189073B3FDF96 /* FLEXMacRuntimeBrowserViewController.m */,
+				49F6D78058D91432E5F7C125 /* FLEXMacSystemLogViewController.h */,
+				2FA1988A8977B9F7EAE46695 /* FLEXMacSystemLogViewController.m */,
+			);
+			path = Globals;
+			sourceTree = "<group>";
+		};
+		A09648A326CEB136C39475F8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0BE78E8792B8E4B3F2969240 /* FLEXInjector.app */,
+				2CD49C38911E914728970133 /* FLEXMac.framework */,
+				4BDF6859E25B305F42232E09 /* FLEXMacExample.app */,
+				EA6AEF605E8EB0A794489B2D /* FLEXMacTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A79A9DBC2A7CC8795FA87790 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				752C58A66C0EDBF807890E6E /* AppKit.framework */,
+				D5171F3F014F7025F5B4CA36 /* OSLog.framework */,
+				F093FCEE6FC92083F46A5627 /* QuartzCore.framework */,
+				E1DC7324BB9F34691BB9CF8A /* Security.framework */,
+				BD0E306039E0A3CF941FD0E2 /* UniformTypeIdentifiers.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A809069B10BB1B4EE62951D8 /* DatabaseBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				1B77E8B950E09454E954EA4C /* FLEXSQLiteDatabaseManager.m */,
+				1F504E690867809FC3FDC0DF /* FLEXSQLResult.m */,
+			);
+			name = DatabaseBrowser;
+			path = ../Classes/GlobalStateExplorers/DatabaseBrowser;
+			sourceTree = "<group>";
+		};
+		AB1C1CC9C7E5A6F5960985E6 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				158380E8BC98583FE45E8E88 /* FLEXFirebaseTransaction.mm */,
+				7C3A2B3647E4664782C9F54A /* FLEXNetworkCurlLogger.m */,
+				88CCD28156304642163C6E77 /* FLEXNetworkRecorder.m */,
+				EB86F8651C10A12D4FE7FB91 /* FLEXNetworkTransaction.m */,
+			);
+			name = Network;
+			path = ../Classes/Network;
+			sourceTree = "<group>";
+		};
+		AEF67F51D977C0078AAD67FF /* Runtime */ = {
+			isa = PBXGroup;
+			children = (
+				A0118E996F2C2D39538A8ECB /* flex_fishhook.c */,
+				082FED2C5A577A90EE7515E2 /* FLEXRuntimeUtility.m */,
+			);
+			name = Runtime;
+			path = ../Classes/Utility/Runtime;
+			sourceTree = "<group>";
+		};
+		B2682A7384C9D4962FB14C0A /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FB2525790A813E66F48E6E8A /* FLEXMacExplorerWindowController.h */,
+				088A70F1C8E18352E2145EC2 /* FLEXMacExplorerWindowController.m */,
+				2BE86851B1839F65F5147082 /* FLEXMacNavigationController.h */,
+				6AAFF62A7490F75C925D0E79 /* FLEXMacNavigationController.m */,
+				4E1819336555C5FE94850375 /* FLEXMacPreviewViewControllers.h */,
+				59A95A0831ABCA18B0C27790 /* FLEXMacPreviewViewControllers.m */,
+				15DC192D879B7742A203E48F /* FLEXMacTableModel.h */,
+				18A9EB3FE29DB585457B3C3C /* FLEXMacTableModel.m */,
+				6B82A27BB8841EE8722D83C5 /* FLEXMacTableViewController.h */,
+				F491D1EB38ABE39E25BE5805 /* FLEXMacTableViewController.m */,
+				FA6CFEE6766844BCB5565FF5 /* FLEXMacUtility.h */,
+				B72AE39D810A5ED8EA1C63D9 /* FLEXMacUtility.m */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		B76F9EF25849DF274020D63C /* Objc */ = {
+			isa = PBXGroup;
+			children = (
+				F082B2EC7C5B88B27522C590 /* FLEXObjcInternal.mm */,
+				969EF944B64524B5DFD36277 /* FLEXRuntimeConstants.m */,
+				346A29349FA3637E076EA9AF /* FLEXRuntimeSafety.m */,
+				290CA5E801AC196B47A0507E /* FLEXSwiftInternal.mm */,
+				C6A84FF697E8CCCCA6E939BA /* FLEXTypeEncodingParser.m */,
+			);
+			name = Objc;
+			path = ../Classes/Utility/Runtime/Objc;
+			sourceTree = "<group>";
+		};
+		BB4304517420B709307D04B9 /* Example */ = {
+			isa = PBXGroup;
+			children = (
+				B626EDCC8912372F93026CAB /* AppDelegate.h */,
+				5BBED0AC9880A4EE10F492C7 /* AppDelegate.m */,
+				B804479312AADCF5D088D095 /* ExampleModels.h */,
+				E9EDFB2BBC8C50B357A438CC /* ExampleModels.m */,
+				8A295C39948C1973657BF8EF /* main.m */,
+			);
+			path = Example;
+			sourceTree = "<group>";
+		};
+		C50E44CFBD333B841407AAFD /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				061161105304BE6F877B7BFF /* FLEXHeapEnumerator.m */,
+				F3E27E4A0DD5A690A0A6D338 /* FLEXResources.m */,
+				3BCB4F4973229C56DD5A7BC1 /* FLEXUtility.m */,
+			);
+			name = Utility;
+			path = ../Classes/Utility;
+			sourceTree = "<group>";
+		};
+		D2F32A51ADC65FEE233011BB /* ViewHierarchy */ = {
+			isa = PBXGroup;
+			children = (
+				90004C3E8218E1687670A03B /* FLEXMacHighlightWindow.h */,
+				189DD361BD10F00206607AA0 /* FLEXMacHighlightWindow.m */,
+				096018DA98A533128A525E04 /* FLEXMacViewHierarchyViewController.h */,
+				BA6F7D5C1FA1397ED6889A88 /* FLEXMacViewHierarchyViewController.m */,
+				B0574D7FF43907502D5B0FAE /* FLEXMacViewSelector.h */,
+				0DDD1E70515024A7BE095CA0 /* FLEXMacViewSelector.m */,
+			);
+			path = ViewHierarchy;
+			sourceTree = "<group>";
+		};
+		D3F9155E12016809E549AFB7 /* Injector */ = {
+			isa = PBXGroup;
+			children = (
+				8179BDD8C31F3C096AFBE2BD /* FLEXInjectEngine.h */,
+				6A8CA18717FEF3B9C2D9DB83 /* FLEXInjectEngine.m */,
+				216A1CD318CC6F3BC969B95C /* InjectorAppDelegate.h */,
+				98C664B2760EEEB67E4C63FD /* InjectorAppDelegate.m */,
+				C46761FA02CFB4BB8CD982AE /* main.m */,
+			);
+			path = Injector;
+			sourceTree = "<group>";
+		};
+		D562208A4EB4D2B9F29CFFAA /* Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				3A4EAC71CD52B24F426CF9FA /* FLEXMacToolbarPanel.h */,
+				CF045149605499D366A611A7 /* FLEXMacToolbarPanel.m */,
+			);
+			path = Toolbar;
+			sourceTree = "<group>";
+		};
+		E802A99A2C25867476314BD3 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				91F8C9BAC210AD8813ACC568 /* FLEXMacNetworkViewController.h */,
+				69C603C06F7842D3202ACB6B /* FLEXMacNetworkViewController.m */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		EA5CCDAC0AA6B3AD6F4C7956 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				963FAE4A8468BD5CE6F9D783 /* FLEXMacTests.m */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		F4982F8CD0D86054AC20906E /* Reflection */ = {
+			isa = PBXGroup;
+			children = (
+				29AABF69A399A78391156A10 /* FLEXBlockDescription.m */,
+				F883B3768524F5580567BE32 /* FLEXClassBuilder.m */,
+				287536EB1C3C04F4754F52C2 /* FLEXIvar.m */,
+				70F7D200711DDA5293FBAD04 /* FLEXMetadataExtras.m */,
+				A8F1BF6C4433253D75A852CA /* FLEXMethod.m */,
+				273F988839D704018E02F405 /* FLEXMethodBase.m */,
+				3032471ED560B40A49817A55 /* FLEXMirror.m */,
+				B65E7F9D2C493FA8AB4F1BAD /* FLEXProperty.m */,
+				9F83D1E891BF04D244F08634 /* FLEXPropertyAttributes.m */,
+				48C502AC55DC891E4AE56D61 /* FLEXProtocol.m */,
+				9959CC10E1404440B16E35D9 /* FLEXProtocolBuilder.m */,
+			);
+			name = Reflection;
+			path = ../Classes/Utility/Runtime/Objc/Reflection;
+			sourceTree = "<group>";
+		};
+		F74489CBC04DE2EA009573D8 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				1F2DD08E575CBB9F9B3A3611 /* NSDictionary+ObjcRuntime.m */,
+				3E7AE104B104A857D68310A0 /* NSMapTable+FLEX_Subscripting.m */,
+				D8342B4C57EECB1BDECDC8CC /* NSString+FLEX.m */,
+				DEBA24DEA5C563B187F09DFC /* NSString+ObjcRuntime.m */,
+			);
+			name = Private;
+			path = ../Classes/Utility/Categories/Private;
+			sourceTree = "<group>";
+		};
+		F86DB53403326A389E0CA7C3 /* OSCache */ = {
+			isa = PBXGroup;
+			children = (
+				E11975AEC74B2B8FB4917EF5 /* OSCache.m */,
+			);
+			name = OSCache;
+			path = ../Classes/Network/OSCache;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F442F0D252EDD0CA81186B3D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7D179D91B0B8639C4EF60CA8 /* FLEX.h in Headers */,
+				AA1D137630FCECF33C67D6E3 /* FLEXMacArgumentInputView.h in Headers */,
+				9DCFDAAFC7F3184ECD986890 /* FLEXMacEditorViewControllers.h in Headers */,
+				553B2B4CEC5798D6CF896362 /* FLEXMacExplorerWindowController.h in Headers */,
+				684E1D527E108B4D72F2C9C4 /* FLEXMacFileBrowserViewController.h in Headers */,
+				247E564F3C277E3E0090CE76 /* FLEXMacGlobalsViewController.h in Headers */,
+				F3ED85559BDA9ED7774B2081 /* FLEXMacHeapViewController.h in Headers */,
+				23F2893C9132E05790715BF0 /* FLEXMacHighlightWindow.h in Headers */,
+				EEC85EE2E532592B6AD5F2A9 /* FLEXMacKeychainViewController.h in Headers */,
+				D6FA09C5D4BC31BD85E4EA83 /* FLEXMacNavigationController.h in Headers */,
+				029DB47A1D3610F66D1B6DAF /* FLEXMacNetworkViewController.h in Headers */,
+				4E191039F2618918BCA910FF /* FLEXMacObjectExplorerViewController.h in Headers */,
+				9874271DAF964352628BD68C /* FLEXMacObjectListViewController.h in Headers */,
+				3987ECA3B9B661A5941A1DB3 /* FLEXMacPreviewViewControllers.h in Headers */,
+				09DF6C3B4EDD143800738F7E /* FLEXMacRuntimeBrowserViewController.h in Headers */,
+				420CFE6F90BE682674C0690E /* FLEXMacShortcuts.h in Headers */,
+				4110420E4F9524E5BD9C3EE9 /* FLEXMacSystemLogViewController.h in Headers */,
+				E6F9BCFBCA01624A87C04250 /* FLEXMacTableModel.h in Headers */,
+				BB2A6A23924FB5992C83FE0B /* FLEXMacTableViewController.h in Headers */,
+				1F29E93290F43D98B885F871 /* FLEXMacToolbarPanel.h in Headers */,
+				F49F5BB23D9CDE3D198E3D9D /* FLEXMacUtility.h in Headers */,
+				B0C5A28B3BB07078F3AE62C1 /* FLEXMacViewHierarchyViewController.h in Headers */,
+				B9EFE229A9E521F42CE1B0FB /* FLEXMacViewSelector.h in Headers */,
+				D2C23C7D540BD53B7B20A611 /* FLEXManager+Private.h in Headers */,
+				915A64EDC1D0A20AF29C0411 /* FLEXManager.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		18523A8CF9BED707E424B0BF /* FLEXMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2BF6B6B2A0ECB94A4E3BAA01 /* Build configuration list for PBXNativeTarget "FLEXMac" */;
+			buildPhases = (
+				F442F0D252EDD0CA81186B3D /* Headers */,
+				041EE7603ECA08888D944B1F /* Sources */,
+				F07B1DA78C698BAD7563D27F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FLEXMac;
+			packageProductDependencies = (
+			);
+			productName = FLEXMac;
+			productReference = 2CD49C38911E914728970133 /* FLEXMac.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		5FFA4C2F6E4405982D086844 /* FLEXInjector */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 68E3DA36CFD22F8FCAC6CEB2 /* Build configuration list for PBXNativeTarget "FLEXInjector" */;
+			buildPhases = (
+				9B4871ED9C2FE02115254165 /* Sources */,
+				E6B5BAF09AD163A8686DC9B6 /* Frameworks */,
+				6C679AE4234BBE58B6CD56D8 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4FD34DDA5D1430BD5218FDAA /* PBXTargetDependency */,
+			);
+			name = FLEXInjector;
+			packageProductDependencies = (
+			);
+			productName = FLEXInjector;
+			productReference = 0BE78E8792B8E4B3F2969240 /* FLEXInjector.app */;
+			productType = "com.apple.product-type.application";
+		};
+		81EF870D67374F0BAE183676 /* FLEXMacExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23483C87ACEAE5FCFEE34AED /* Build configuration list for PBXNativeTarget "FLEXMacExample" */;
+			buildPhases = (
+				E50B3787DE1A20DC0BB4E3BE /* Sources */,
+				052DA41FC4ACAF7903471423 /* Frameworks */,
+				17B31021C18336DDB51CD960 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C729AB20089EBC89BBD72BA1 /* PBXTargetDependency */,
+			);
+			name = FLEXMacExample;
+			packageProductDependencies = (
+			);
+			productName = FLEXMacExample;
+			productReference = 4BDF6859E25B305F42232E09 /* FLEXMacExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E9425E3B0E171485C96618C6 /* FLEXMacTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 738A91800F78B01A407AF497 /* Build configuration list for PBXNativeTarget "FLEXMacTests" */;
+			buildPhases = (
+				0AB0516299197D368F78CC0B /* Sources */,
+				074E9A8D83D49A549CAD1761 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				89079F035F4C52765BE4E1A0 /* PBXTargetDependency */,
+				FEC476CB0A124796B3515B47 /* PBXTargetDependency */,
+			);
+			name = FLEXMacTests;
+			packageProductDependencies = (
+			);
+			productName = FLEXMacTests;
+			productReference = EA6AEF605E8EB0A794489B2D /* FLEXMacTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DD67E5D751BCA67CA9CF5FD1 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					18523A8CF9BED707E424B0BF = {
+						ProvisioningStyle = Automatic;
+					};
+					5FFA4C2F6E4405982D086844 = {
+						ProvisioningStyle = Automatic;
+					};
+					81EF870D67374F0BAE183676 = {
+						ProvisioningStyle = Automatic;
+					};
+					E9425E3B0E171485C96618C6 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = F04A7198A70F63BEF7BAB63C /* Build configuration list for PBXProject "FLEXMac" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6C81A476AAB8EFF73AB137E9;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A09648A326CEB136C39475F8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18523A8CF9BED707E424B0BF /* FLEXMac */,
+				5FFA4C2F6E4405982D086844 /* FLEXInjector */,
+				81EF870D67374F0BAE183676 /* FLEXMacExample */,
+				E9425E3B0E171485C96618C6 /* FLEXMacTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		041EE7603ECA08888D944B1F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2DB3175A15CFBAD569237F5 /* FLEXAutoInject.m in Sources */,
+				B9A65319B7B3851FA98EB5B5 /* FLEXBlockDescription.m in Sources */,
+				78E29419CD801A846D80DD73 /* FLEXClassBuilder.m in Sources */,
+				0E8B27A4EE57C51482D43E4A /* FLEXFirebaseTransaction.mm in Sources */,
+				2C21471EB851CC0DBF003D6C /* FLEXHeapEnumerator.m in Sources */,
+				A12FC0E219055CC187056835 /* FLEXIvar.m in Sources */,
+				399BBCD86204757EFB55616F /* FLEXKeychain.m in Sources */,
+				E027B30DCE2E00A42EB641C2 /* FLEXKeychainQuery.m in Sources */,
+				BB1880A8974F7B2371066A5D /* FLEXMacArgumentInputView.m in Sources */,
+				572134D56D63C1E17DD28F7D /* FLEXMacEditorViewControllers.m in Sources */,
+				F82893AFE1F81E75744EA1CE /* FLEXMacExplorerWindowController.m in Sources */,
+				937FC6C2027354DB41B49976 /* FLEXMacFileBrowserViewController.m in Sources */,
+				7D0467E13B6EA277F28829E0 /* FLEXMacGlobalsViewController.m in Sources */,
+				6BF793D1C736B79C5160054D /* FLEXMacHeapViewController.m in Sources */,
+				C1A3DDCC08DFA301C5EC25F1 /* FLEXMacHighlightWindow.m in Sources */,
+				5F12EF42A858F5CA2FC7D825 /* FLEXMacKeychainViewController.m in Sources */,
+				A845F5DCF24FF763F3525CD1 /* FLEXMacNavigationController.m in Sources */,
+				23DD01DB70AFD7D4584D294A /* FLEXMacNetworkViewController.m in Sources */,
+				6D13BF28C43A895E94F5CB8B /* FLEXMacObjectExplorerViewController.m in Sources */,
+				FFB2028FCD8A8A11093E8E13 /* FLEXMacObjectListViewController.m in Sources */,
+				24D14129140F7B5EC416FD09 /* FLEXMacPreviewViewControllers.m in Sources */,
+				D587E756A5D17F34461BFBF6 /* FLEXMacRuntimeBrowserViewController.m in Sources */,
+				357530565A1AA696F43F5A55 /* FLEXMacShortcuts.m in Sources */,
+				0FB4DE80D18E1E42EC56DEE8 /* FLEXMacSystemLogViewController.m in Sources */,
+				6770141C25E91627FD281B50 /* FLEXMacTableModel.m in Sources */,
+				417E335ACE6F2323C771D2C3 /* FLEXMacTableViewController.m in Sources */,
+				1643736BF953C111132B3DC0 /* FLEXMacToolbarPanel.m in Sources */,
+				E7F2904A28C16E77467DD843 /* FLEXMacUtility.m in Sources */,
+				AB54EE57C8458982E13D7B6C /* FLEXMacViewHierarchyViewController.m in Sources */,
+				C0904AEA8187331B58BDCC47 /* FLEXMacViewSelector.m in Sources */,
+				E0CAE379C2E79D3FE3E2C56A /* FLEXManager.m in Sources */,
+				DDB90E56FB9279D5D39BB545 /* FLEXMetadataExtras.m in Sources */,
+				12A4E579E83B7CA983479C2B /* FLEXMethod.m in Sources */,
+				3B899F3905FE94B498191632 /* FLEXMethodBase.m in Sources */,
+				15A9C7BDF34BDA74424937F4 /* FLEXMirror.m in Sources */,
+				673D6DF1AC01516A1C381BCA /* FLEXNetworkCurlLogger.m in Sources */,
+				32949B6C1E93DD1C95B4E55F /* FLEXNetworkObserver.m in Sources */,
+				EB76B703437DC1506E9C00C0 /* FLEXNetworkRecorder.m in Sources */,
+				010786A5697683FEB200E681 /* FLEXNetworkTransaction.m in Sources */,
+				D76BF9A3BD71EEB3D1919D68 /* FLEXObjcInternal.mm in Sources */,
+				349B2E4FE5933C80D9A52C33 /* FLEXObjectRef.m in Sources */,
+				C86A1FD92796890594BB995F /* FLEXProperty.m in Sources */,
+				FAC304A29073DD286E1B46F1 /* FLEXPropertyAttributes.m in Sources */,
+				922506CC4489BF2B4D4469E4 /* FLEXProtocol.m in Sources */,
+				7732DE0385F00A965C39E49A /* FLEXProtocolBuilder.m in Sources */,
+				5090391DFA09F3234CDB0A77 /* FLEXResources.m in Sources */,
+				AD82CE4E1F85305BC08E42B1 /* FLEXRuntime+Compare.m in Sources */,
+				E2A3F755FBA036CD245CC7F5 /* FLEXRuntimeConstants.m in Sources */,
+				B7C222E28B5FD9775C65D760 /* FLEXRuntimeSafety.m in Sources */,
+				5A2E2F54119DF18C3D137540 /* FLEXRuntimeUtility.m in Sources */,
+				53AD511054DF78A6A5B460C0 /* FLEXSQLResult.m in Sources */,
+				3CC1B0F840AE8416C2C4EF5D /* FLEXSQLiteDatabaseManager.m in Sources */,
+				52B6EB1F858346158BF89CA2 /* FLEXSwiftInternal.mm in Sources */,
+				38AB99C47A41BB656CA83ADA /* FLEXTypeEncodingParser.m in Sources */,
+				F2CB4725ACD7581B8F91E9A6 /* FLEXUtility.m in Sources */,
+				B15DD726D0C2BDF8119A8B26 /* NSArray+FLEX.m in Sources */,
+				AF2849C9ED1F786C67F7C8D3 /* NSDateFormatter+FLEX.m in Sources */,
+				B77C00EC153C29702D5A297F /* NSDictionary+ObjcRuntime.m in Sources */,
+				1C1FA386F9654DB0FEF400AA /* NSMapTable+FLEX_Subscripting.m in Sources */,
+				DF095575379E2488622726D7 /* NSObject+FLEX_Reflection.m in Sources */,
+				52EFEB095531A61BCAB00A94 /* NSString+FLEX.m in Sources */,
+				2F42362AF7548A62F63FE7B9 /* NSString+ObjcRuntime.m in Sources */,
+				6B0C0CAA31AB9228DC44991B /* NSTimer+FLEX.m in Sources */,
+				F73A9547F709CE87B07DE54A /* NSUserDefaults+FLEX.m in Sources */,
+				7F08BFEEEC4395135A50FB2F /* OSCache.m in Sources */,
+				802089D33859A204D6F8ADC7 /* flex_fishhook.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0AB0516299197D368F78CC0B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				088C198F6E3C3973AD041873 /* FLEXInjectEngine.m in Sources */,
+				598C77C0890ABA48865BC2D2 /* FLEXMacTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B4871ED9C2FE02115254165 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED5D093738D0338829B8A7A8 /* FLEXInjectEngine.m in Sources */,
+				519B585B7394BAB3BDD04C96 /* InjectorAppDelegate.m in Sources */,
+				002EEEE0539B465A3D5F1480 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E50B3787DE1A20DC0BB4E3BE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AAD75441F978EF42E4970830 /* AppDelegate.m in Sources */,
+				F7320C76F43F6814D1403536 /* ExampleModels.m in Sources */,
+				E843E2C07E962E6E14763A02 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4FD34DDA5D1430BD5218FDAA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18523A8CF9BED707E424B0BF /* FLEXMac */;
+			targetProxy = 7F5EEFEAE403B7C60343FE04 /* PBXContainerItemProxy */;
+		};
+		89079F035F4C52765BE4E1A0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 81EF870D67374F0BAE183676 /* FLEXMacExample */;
+			targetProxy = 23AD57F465EA6A8C6A4B46DD /* PBXContainerItemProxy */;
+		};
+		C729AB20089EBC89BBD72BA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18523A8CF9BED707E424B0BF /* FLEXMac */;
+			targetProxy = 2CA1DD329A28303EB1E01084 /* PBXContainerItemProxy */;
+		};
+		FEC476CB0A124796B3515B47 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18523A8CF9BED707E424B0BF /* FLEXMac */;
+			targetProxy = 3923D386C537CE89A373C21E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		11DF889C39CD360F7BCC6D36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flextool.FLEXMacTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FLEXMacExample.app/Contents/MacOS/FLEXMacExample";
+				USER_HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/FLEXMac/**",
+					"$(SRCROOT)/Injector",
+					"$(SRCROOT)/../Classes/Utility/**",
+					"$(SRCROOT)/../Classes/Network/**",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/**",
+				);
+			};
+			name = Debug;
+		};
+		136A9C764DFAD545026E9DA2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "FLEX macOS Example";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flextool.FLEXMacExample;
+				PRODUCT_NAME = FLEXMacExample;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		593B37B1FC82885AF2F290F7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6BC5698669AAFBFC12ED4B26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 5.22.10;
+				MODULEMAP_FILE = "";
+				OTHER_LDFLAGS = "-lsqlite3 -lz";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flextool.FLEX-macOS";
+				PRODUCT_MODULE_NAME = FLEX;
+				PRODUCT_NAME = FLEX;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/FLEXMac/**",
+					"$(SRCROOT)/../Classes/Utility",
+					"$(SRCROOT)/../Classes/Utility/Runtime",
+					"$(SRCROOT)/../Classes/Utility/Runtime/Objc",
+					"$(SRCROOT)/../Classes/Utility/Runtime/Objc/Reflection",
+					"$(SRCROOT)/../Classes/Utility/Categories",
+					"$(SRCROOT)/../Classes/Utility/Categories/Private",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/Keychain",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/DatabaseBrowser",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/SystemLog",
+					"$(SRCROOT)/../Classes/Network",
+					"$(SRCROOT)/../Classes/Network/OSCache",
+					"$(SRCROOT)/../Classes/Network/PonyDebugger",
+				);
+				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = "-Wno-unsupported-availability-guard -Wno-deprecated-declarations";
+			};
+			name = Release;
+		};
+		6D67BAA76628C75354026BF7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "@rpath";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 5.22.10;
+				MODULEMAP_FILE = "";
+				OTHER_LDFLAGS = "-lsqlite3 -lz";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.flextool.FLEX-macOS";
+				PRODUCT_MODULE_NAME = FLEX;
+				PRODUCT_NAME = FLEX;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/FLEXMac/**",
+					"$(SRCROOT)/../Classes/Utility",
+					"$(SRCROOT)/../Classes/Utility/Runtime",
+					"$(SRCROOT)/../Classes/Utility/Runtime/Objc",
+					"$(SRCROOT)/../Classes/Utility/Runtime/Objc/Reflection",
+					"$(SRCROOT)/../Classes/Utility/Categories",
+					"$(SRCROOT)/../Classes/Utility/Categories/Private",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/Keychain",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/DatabaseBrowser",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/SystemLog",
+					"$(SRCROOT)/../Classes/Network",
+					"$(SRCROOT)/../Classes/Network/OSCache",
+					"$(SRCROOT)/../Classes/Network/PonyDebugger",
+				);
+				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = "-Wno-unsupported-availability-guard -Wno-deprecated-declarations";
+			};
+			name = Debug;
+		};
+		87404057F2121EA763812F73 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "FLEX macOS Example";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-lsqlite3";
+				PRODUCT_BUNDLE_IDENTIFIER = com.flextool.FLEXMacExample;
+				PRODUCT_NAME = FLEXMacExample;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		A99F95544AAFCDE4B2371C9E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "FLEX Injector";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Developer tool — injects dylibs into your own debuggable apps.";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flextool.FLEXInjector;
+				PRODUCT_NAME = "FLEX Injector";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B4B37975C5BEDDAD2BAECB37 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flextool.FLEXMacTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FLEXMacExample.app/Contents/MacOS/FLEXMacExample";
+				USER_HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/FLEXMac/**",
+					"$(SRCROOT)/Injector",
+					"$(SRCROOT)/../Classes/Utility/**",
+					"$(SRCROOT)/../Classes/Network/**",
+					"$(SRCROOT)/../Classes/GlobalStateExplorers/**",
+				);
+			};
+			name = Release;
+		};
+		DB76FCBB83F4A91A86FA8F70 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "FLEX Injector";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Developer tool — injects dylibs into your own debuggable apps.";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flextool.FLEXInjector;
+				PRODUCT_NAME = "FLEX Injector";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FD24FDC1DCFBB5CFF2B16223 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		23483C87ACEAE5FCFEE34AED /* Build configuration list for PBXNativeTarget "FLEXMacExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				87404057F2121EA763812F73 /* Debug */,
+				136A9C764DFAD545026E9DA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2BF6B6B2A0ECB94A4E3BAA01 /* Build configuration list for PBXNativeTarget "FLEXMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D67BAA76628C75354026BF7 /* Debug */,
+				6BC5698669AAFBFC12ED4B26 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		68E3DA36CFD22F8FCAC6CEB2 /* Build configuration list for PBXNativeTarget "FLEXInjector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB76FCBB83F4A91A86FA8F70 /* Debug */,
+				A99F95544AAFCDE4B2371C9E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		738A91800F78B01A407AF497 /* Build configuration list for PBXNativeTarget "FLEXMacTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				11DF889C39CD360F7BCC6D36 /* Debug */,
+				B4B37975C5BEDDAD2BAECB37 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F04A7198A70F63BEF7BAB63C /* Build configuration list for PBXProject "FLEXMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				593B37B1FC82885AF2F290F7 /* Debug */,
+				FD24FDC1DCFBB5CFF2B16223 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DD67E5D751BCA67CA9CF5FD1 /* Project object */;
+}

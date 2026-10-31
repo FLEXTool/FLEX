@@ -6,7 +6,15 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
+#import <TargetConditionals.h>
+#if TARGET_OS_OSX
+#import <AppKit/AppKit.h>
+#import <QuartzCore/QuartzCore.h>
+#define FLEXPlatformColor NSColor
+#else
 #import <UIKit/UIKit.h>
+#define FLEXPlatformColor UIColor
+#endif
 #import "FLEXRuntimeUtility.h"
 #import "FLEXObjcInternal.h"
 #import "FLEXObjectRef.h"
@@ -386,8 +394,8 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
                 // Object
                 [invocation setArgument:&argumentObject atIndex:argumentIndex];
             } else if (strcmp(typeEncodingCString, @encode(CGColorRef)) == 0 &&
-                    [argumentObject isKindOfClass:[UIColor class]]) {
-                // Bridging UIColor to CGColorRef
+                    [argumentObject isKindOfClass:[FLEXPlatformColor class]]) {
+                // Bridging UIColor/NSColor to CGColorRef
                 CGColorRef colorRef = [argumentObject CGColor];
                 [invocation setArgument:&colorRef atIndex:argumentIndex];
             } else if ([argumentObject isKindOfClass:[NSValue class]]) {
@@ -777,11 +785,16 @@ NSString * const FLEXRuntimeUtilityErrorDomain = @"FLEXRuntimeUtilityErrorDomain
     TRANSLATE(CGPoint);
     TRANSLATE(CGSize);
     TRANSLATE(CGVector);
+#if TARGET_OS_OSX
+    TRANSLATE(NSEdgeInsets);
+    TRANSLATE(NSDirectionalEdgeInsets);
+#else
     TRANSLATE(UIEdgeInsets);
     if (@available(iOS 11.0, *)) {
       TRANSLATE(NSDirectionalEdgeInsets);
     }
     TRANSLATE(UIOffset);
+#endif
     TRANSLATE(NSRange);
     TRANSLATE(CGAffineTransform);
     TRANSLATE(CATransform3D);

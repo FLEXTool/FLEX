@@ -262,11 +262,24 @@ NSString *const kFLEXNetworkRecorderResponseCacheLimitDefaultsKey = @"com.flex.r
         if ([mimeType hasPrefix:@"image/"] && responseBody.length > 0) {
             // Thumbnail image previews on a separate background queue
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+#if TARGET_OS_OSX
+                NSImage *image = [[NSImage alloc] initWithData:responseBody];
+                if (image) {
+                    CGFloat side = 32.0;
+                    NSSize size = image.size;
+                    CGFloat ratio = MIN(side / MAX(size.width, 1), side / MAX(size.height, 1));
+                    if (ratio < 1) {
+                        image.size = NSMakeSize(size.width * ratio, size.height * ratio);
+                    }
+                }
+                transaction.thumbnail = image;
+#else
                 NSInteger maxPixelDimension = UIScreen.mainScreen.scale * 32.0;
                 transaction.thumbnail = [FLEXUtility
                     thumbnailedImageWithMaxPixelDimension:maxPixelDimension
                     fromImageData:responseBody
                 ];
+#endif
                 [self postUpdateNotificationForTransaction:transaction];
             });
         } else if ([mimeType isEqual:@"application/json"]) {
