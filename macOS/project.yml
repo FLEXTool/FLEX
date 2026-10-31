@@ -1,0 +1,208 @@
+# XcodeGen spec for FLEX on macOS.
+# Regenerate FLEXMac.xcodeproj with:  cd macOS && xcodegen generate
+name: FLEXMac
+options:
+  bundleIdPrefix: com.flextool
+  deploymentTarget:
+    macOS: "12.0"
+  createIntermediateGroups: false
+
+settings:
+  base:
+    MACOSX_DEPLOYMENT_TARGET: "12.0"
+    CLANG_ENABLE_OBJC_ARC: YES
+    CLANG_ENABLE_MODULES: YES
+    CLANG_CXX_LANGUAGE_STANDARD: gnu++17
+    GCC_C_LANGUAGE_STANDARD: gnu11
+    ENABLE_STRICT_OBJC_MSGSEND: YES
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGN_IDENTITY: "-"
+    DEAD_CODE_STRIPPING: YES
+
+targets:
+  FLEXMac:
+    type: framework
+    platform: macOS
+    deploymentTarget: "12.0"
+    sources:
+      # macOS (AppKit) interface
+      - path: FLEXMac
+        headerVisibility: project
+        excludes:
+          - FLEX.h
+          - FLEXManager.h
+      - path: FLEXMac/FLEX.h
+        headerVisibility: public
+      - path: FLEXMac/FLEXManager.h
+        headerVisibility: public
+
+      # Platform-independent FLEX core, shared with iOS
+      - path: ../Classes/Utility/FLEXUtility.m
+      - path: ../Classes/Utility/FLEXResources.m
+      - path: ../Classes/Utility/FLEXHeapEnumerator.m
+      - path: ../Classes/Utility/Runtime/FLEXRuntimeUtility.m
+      - path: ../Classes/Utility/Runtime/flex_fishhook.c
+      - path: ../Classes/Utility/Runtime/Objc
+        includes: ["*.m", "*.mm"]
+        excludes: ["Reflection"]
+      - path: ../Classes/Utility/Runtime/Objc/Reflection
+        includes: ["*.m"]
+      - path: ../Classes/Utility/Categories/NSObject+FLEX_Reflection.m
+      - path: ../Classes/Utility/Categories/FLEXRuntime+Compare.m
+      - path: ../Classes/Utility/Categories/NSArray+FLEX.m
+      - path: ../Classes/Utility/Categories/NSDateFormatter+FLEX.m
+      - path: ../Classes/Utility/Categories/NSTimer+FLEX.m
+      - path: ../Classes/Utility/Categories/NSUserDefaults+FLEX.m
+      - path: ../Classes/Utility/Categories/Private/NSString+FLEX.m
+      - path: ../Classes/Utility/Categories/Private/NSString+ObjcRuntime.m
+      - path: ../Classes/Utility/Categories/Private/NSDictionary+ObjcRuntime.m
+      - path: ../Classes/Utility/Categories/Private/NSMapTable+FLEX_Subscripting.m
+      - path: ../Classes/GlobalStateExplorers/FLEXObjectRef.m
+      - path: ../Classes/GlobalStateExplorers/Keychain/FLEXKeychain.m
+      - path: ../Classes/GlobalStateExplorers/Keychain/FLEXKeychainQuery.m
+      - path: ../Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLiteDatabaseManager.m
+      - path: ../Classes/GlobalStateExplorers/DatabaseBrowser/FLEXSQLResult.m
+      - path: ../Classes/Network/FLEXNetworkRecorder.m
+      - path: ../Classes/Network/FLEXNetworkTransaction.m
+      - path: ../Classes/Network/FLEXNetworkCurlLogger.m
+      - path: ../Classes/Network/FLEXFirebaseTransaction.mm
+      - path: ../Classes/Network/OSCache/OSCache.m
+      - path: ../Classes/Network/PonyDebugger/FLEXNetworkObserver.m
+    settings:
+      base:
+        PRODUCT_NAME: FLEX
+        PRODUCT_MODULE_NAME: FLEX
+        PRODUCT_BUNDLE_IDENTIFIER: com.flextool.FLEX-macOS
+        GENERATE_INFOPLIST_FILE: YES
+        DEFINES_MODULE: YES
+        MODULEMAP_FILE: ""
+        SKIP_INSTALL: YES
+        INSTALL_PATH: "@rpath"
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks @loader_path/Frameworks"
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: "5.22.10"
+        VERSIONING_SYSTEM: apple-generic
+        CLANG_WARN_STRICT_PROTOTYPES: NO
+        GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS: NO
+        WARNING_CFLAGS: "-Wno-unsupported-availability-guard -Wno-deprecated-declarations"
+        OTHER_LDFLAGS: "-lsqlite3 -lz"
+        USER_HEADER_SEARCH_PATHS:
+          - "$(SRCROOT)/FLEXMac/**"
+          - "$(SRCROOT)/../Classes/Utility"
+          - "$(SRCROOT)/../Classes/Utility/Runtime"
+          - "$(SRCROOT)/../Classes/Utility/Runtime/Objc"
+          - "$(SRCROOT)/../Classes/Utility/Runtime/Objc/Reflection"
+          - "$(SRCROOT)/../Classes/Utility/Categories"
+          - "$(SRCROOT)/../Classes/Utility/Categories/Private"
+          - "$(SRCROOT)/../Classes/GlobalStateExplorers"
+          - "$(SRCROOT)/../Classes/GlobalStateExplorers/Keychain"
+          - "$(SRCROOT)/../Classes/GlobalStateExplorers/DatabaseBrowser"
+          - "$(SRCROOT)/../Classes/GlobalStateExplorers/SystemLog"
+          - "$(SRCROOT)/../Classes/Network"
+          - "$(SRCROOT)/../Classes/Network/OSCache"
+          - "$(SRCROOT)/../Classes/Network/PonyDebugger"
+    dependencies:
+      - sdk: AppKit.framework
+      - sdk: QuartzCore.framework
+      - sdk: OSLog.framework
+      - sdk: Security.framework
+
+  FLEXInjector:
+    type: application
+    platform: macOS
+    deploymentTarget: "12.0"
+    sources:
+      - path: Injector
+    settings:
+      base:
+        PRODUCT_NAME: FLEX Injector
+        PRODUCT_BUNDLE_IDENTIFIER: com.flextool.FLEXInjector
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSPrincipalClass: NSApplication
+        INFOPLIST_KEY_CFBundleDisplayName: FLEX Injector
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+        INFOPLIST_KEY_NSHumanReadableCopyright: "Developer tool — injects dylibs into your own debuggable apps."
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: "1.0"
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks"
+        # No hardened runtime / no sandbox: the tool launches local executables
+        # with a modified environment, the way a terminal would.
+        ENABLE_HARDENED_RUNTIME: NO
+        ENABLE_APP_SANDBOX: NO
+    dependencies:
+      - target: FLEXMac
+        embed: true
+      - sdk: UniformTypeIdentifiers.framework
+
+  FLEXMacExample:
+    type: application
+    platform: macOS
+    deploymentTarget: "12.0"
+    sources:
+      - path: Example
+    settings:
+      base:
+        PRODUCT_NAME: FLEXMacExample
+        PRODUCT_BUNDLE_IDENTIFIER: com.flextool.FLEXMacExample
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_NSPrincipalClass: NSApplication
+        INFOPLIST_KEY_CFBundleDisplayName: FLEX macOS Example
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.developer-tools
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: "1.0"
+        OTHER_LDFLAGS: "-lsqlite3"
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks"
+        ENABLE_HARDENED_RUNTIME: NO
+    dependencies:
+      - target: FLEXMac
+        embed: true
+
+  FLEXMacTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "12.0"
+    sources:
+      - path: Tests
+      - path: Injector/FLEXInjectEngine.h
+      - path: Injector/FLEXInjectEngine.m
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.flextool.FLEXMacTests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/FLEXMacExample.app/Contents/MacOS/FLEXMacExample"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        USER_HEADER_SEARCH_PATHS:
+          - "$(SRCROOT)/FLEXMac/**"
+          - "$(SRCROOT)/Injector"
+          - "$(SRCROOT)/../Classes/Utility/**"
+          - "$(SRCROOT)/../Classes/Network/**"
+          - "$(SRCROOT)/../Classes/GlobalStateExplorers/**"
+    dependencies:
+      - target: FLEXMacExample
+      - target: FLEXMac
+        embed: false
+
+schemes:
+  FLEXMac:
+    build:
+      targets:
+        FLEXMac: all
+  FLEXMacExample:
+    build:
+      targets:
+        FLEXMacExample: all
+        FLEXMac: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - FLEXMacTests
+  FLEXInjector:
+    build:
+      targets:
+        FLEXInjector: all
+        FLEXMac: all
+        FLEXMacExample: all
+    run:
+      config: Debug

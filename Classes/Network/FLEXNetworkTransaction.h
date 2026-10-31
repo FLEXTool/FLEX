@@ -6,7 +6,13 @@
 //  Copyright (c) 2020 FLEX Team. All rights reserved.
 //
 
+#import <TargetConditionals.h>
+#if TARGET_OS_OSX
+#import <AppKit/AppKit.h>
+#else
 #import <UIKit/UIKit.h>
+#endif
+#import "FLEXResources.h"
 #import "Firestore.h"
 
 typedef NS_ENUM(NSInteger, FLEXNetworkTransactionState) {
@@ -45,7 +51,7 @@ typedef NS_ENUM(NSUInteger, FLEXWebsocketMessageDirection) {
 @property (nonatomic) FLEXNetworkTransactionState state;
 @property (nonatomic) int64_t receivedDataLength;
 /// A small thumbnail to preview the type of/the response
-@property (nonatomic) UIImage *thumbnail;
+@property (nonatomic) FLEXResourceImage *thumbnail;
 
 /// The most prominent line of the cell. Typically a URL endpoint or other distinguishing attribute.
 /// This line turns red when the transaction indicates an error.

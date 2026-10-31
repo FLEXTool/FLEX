@@ -9,16 +9,26 @@
 #import <Availability.h>
 #import <AvailabilityInternal.h>
 #import <Foundation/Foundation.h>
+#import <TargetConditionals.h>
+#if TARGET_OS_OSX
+#import <AppKit/AppKit.h>
+#else
 #import <UIKit/UIKit.h>
+#endif
 #import <objc/runtime.h>
 #import "FLEXTypeEncodingParser.h"
+#if !TARGET_OS_OSX
 #import "FLEXAlert.h"
+#endif
 #import "NSArray+FLEX.h"
+#if !TARGET_OS_OSX
 #import "UIFont+FLEX.h"
+#endif
 #import "FLEXMacros.h"
 
 @interface FLEXUtility : NSObject
 
+#if !TARGET_OS_OSX
 /// The key window of the app, if it is not a \c FLEXWindow.
 /// If it is, then \c FLEXWindow.previousKeyWindow is returned.
 @property (nonatomic, readonly, class) UIWindow *appKeyWindow;
@@ -39,11 +49,13 @@
 + (NSString *)detailDescriptionForView:(UIView *)view;
 + (UIImage *)circularImageWithColor:(UIColor *)color radius:(CGFloat)radius;
 + (UIColor *)hierarchyIndentPatternColor;
++ (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
++ (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
+#endif
+
 + (NSString *)pointerToString:(void *)ptr;
 + (NSString *)addressOfObject:(id)object;
 + (NSString *)stringByEscapingHTMLEntitiesInString:(NSString *)originalString;
-+ (UIInterfaceOrientationMask)infoPlistSupportedInterfaceOrientationsMask;
-+ (UIImage *)thumbnailedImageWithMaxPixelDimension:(NSInteger)dimension fromImageData:(NSData *)data;
 + (NSString *)stringFromRequestDuration:(NSTimeInterval)duration;
 + (NSString *)statusCodeStringFromURLResponse:(NSURLResponse *)response;
 + (BOOL)isErrorStatusCodeFromURLResponse:(NSURLResponse *)response;

@@ -8692,6 +8692,18 @@ static const u_int8_t FLEXHierarchyIndentPattern3x[] = {
 
 @implementation FLEXResources
 
+#if TARGET_OS_OSX
+// AppKit picks the right representation at draw time, so always use the @2x data
+#define FLEXImage(base) ( \
+    [self imageWithBytesNoCopy:(void *)base##2x length:sizeof(base##2x) scale:2.0] \
+)
+
+#define FLEXImageTemplate(base) ({ \
+    NSImage *_flex_img = FLEXImage(base); \
+    _flex_img.template = YES; \
+    _flex_img; \
+})
+#else
 #define FLEXImage(base) ( \
     (UIScreen.mainScreen.scale > 1.5) ? \
         ( (UIScreen.mainScreen.scale > 2.5) ? \
@@ -8703,146 +8715,160 @@ static const u_int8_t FLEXHierarchyIndentPattern3x[] = {
 
 #define FLEXImageTemplate(base) ([FLEXImage(base) imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate])
 
+#endif
+
 #define FLEXRetinaOnlyImage(base) ([self imageWithBytesNoCopy:(void *)(base) length:sizeof(base) scale:2.0])
 
 
 #pragma mark - FLEX Toolbar Icons
 
-+ (UIImage *)closeIcon {
++ (FLEXResourceImage *)closeIcon {
     return FLEXImageTemplate(FLEXCloseIcon);
 }
 
-+ (UIImage *)dragHandle {
++ (FLEXResourceImage *)dragHandle {
     return FLEXImageTemplate(FLEXDragHandle);
 }
 
-+ (UIImage *)globalsIcon {
++ (FLEXResourceImage *)globalsIcon {
     return FLEXImageTemplate(FLEXGlobalsIcon);
 }
 
-+ (UIImage *)hierarchyIcon {
++ (FLEXResourceImage *)hierarchyIcon {
     return FLEXImageTemplate(FLEXHierarchyIcon);
 }
 
-+ (UIImage *)recentIcon {
++ (FLEXResourceImage *)recentIcon {
     return FLEXImageTemplate(FLEXRecentTabIcon);
 }
 
-+ (UIImage *)moveIcon {
++ (FLEXResourceImage *)moveIcon {
     return FLEXImageTemplate(FLEXMoveIcon);
 }
 
-+ (UIImage *)selectIcon {
++ (FLEXResourceImage *)selectIcon {
     return FLEXImageTemplate(FLEXSelectIcon);
 }
 
 
 #pragma mark - Toolbar Icons
 
-+ (UIImage *)bookmarksIcon {
++ (FLEXResourceImage *)bookmarksIcon {
     return FLEXImage(FLEXBookmarksIcon);
 }
 
-+ (UIImage *)openTabsIcon {
++ (FLEXResourceImage *)openTabsIcon {
     return FLEXImage(FLEXOpenTabsIcon);
 }
 
-+ (UIImage *)moreIcon {
++ (FLEXResourceImage *)moreIcon {
     return FLEXImage(FLEXMoreIcon);
 }
 
-+ (UIImage *)gearIcon {
++ (FLEXResourceImage *)gearIcon {
     return FLEXImage(FLEXGearIcon);
 }
 
-+ (UIImage *)scrollToBottomIcon {
++ (FLEXResourceImage *)scrollToBottomIcon {
     return FLEXImage(FLEXCircleDownArrowIcon);
 }
 
 
 #pragma mark - Content Type Icons
 
-+ (UIImage *)jsonIcon {
++ (FLEXResourceImage *)jsonIcon {
     return FLEXImage(FLEXJSONIcon);
 }
 
-+ (UIImage *)textPlainIcon {
++ (FLEXResourceImage *)textPlainIcon {
     return FLEXImage(FLEXTextPlainIcon);
 }
 
-+ (UIImage *)htmlIcon {
++ (FLEXResourceImage *)htmlIcon {
     return FLEXImage(FLEXHTMLIcon);
 }
 
-+ (UIImage *)audioIcon {
++ (FLEXResourceImage *)audioIcon {
     return FLEXImage(FLEXAudioIcon);
 }
 
-+ (UIImage *)jsIcon {
++ (FLEXResourceImage *)jsIcon {
     return FLEXImage(FLEXJSIcon);
 }
 
-+ (UIImage *)plistIcon {
++ (FLEXResourceImage *)plistIcon {
     return FLEXImage(FLEXPlistIcon);
 }
 
-+ (UIImage *)textIcon {
++ (FLEXResourceImage *)textIcon {
     return FLEXImage(FLEXTextIcon);
 }
 
-+ (UIImage *)videoIcon {
++ (FLEXResourceImage *)videoIcon {
     return FLEXImage(FLEXVideoIcon);
 }
 
-+ (UIImage *)xmlIcon {
++ (FLEXResourceImage *)xmlIcon {
     return FLEXImage(FLEXXMLIcon);
 }
 
-+ (UIImage *)binaryIcon {
++ (FLEXResourceImage *)binaryIcon {
     return FLEXImage(FLEXBinaryIcon);
 }
 
 
 #pragma mark - 3D Explorer Icons
 
-+ (UIImage *)toggle2DIcon {
++ (FLEXResourceImage *)toggle2DIcon {
     return FLEXImage(FLEXToggle2DIcon);
 }
 
-+ (UIImage *)toggle3DIcon {
++ (FLEXResourceImage *)toggle3DIcon {
     return FLEXImage(FLEXToggle3DIcon);
 }
 
-+ (UIImage *)rangeSliderLeftHandle {
++ (FLEXResourceImage *)rangeSliderLeftHandle {
     return FLEXImage(FLEXRangeSliderLeftHandle);
 }
 
-+ (UIImage *)rangeSliderRightHandle {
++ (FLEXResourceImage *)rangeSliderRightHandle {
     return FLEXImage(FLEXRangeSliderRightHandle);
 }
 
-+ (UIImage *)rangeSliderTrack {
++ (FLEXResourceImage *)rangeSliderTrack {
+#if TARGET_OS_OSX
+    NSImage *image = FLEXImage(FLEXRangeSliderTrack);
+    image.capInsets = NSEdgeInsetsMake(0, 5, 0, 4);
+    return image;
+#else
     UIEdgeInsets cap = UIEdgeInsetsMake(0, 5, 0, 4);
     return [FLEXImage(FLEXRangeSliderTrack) resizableImageWithCapInsets:cap];
+#endif
 }
 
-+ (UIImage *)rangeSliderFill {
++ (FLEXResourceImage *)rangeSliderFill {
+#if TARGET_OS_OSX
+    NSImage *image = FLEXImage(FLEXRangeSliderFill);
+    image.capInsets = NSEdgeInsetsMake(0, 5, 0, 4);
+    return image;
+#else
     UIEdgeInsets cap = UIEdgeInsetsMake(0, 5, 0, 4);
     return [FLEXImage(FLEXRangeSliderFill) resizableImageWithCapInsets:cap];
+#endif
 }
 
 
 #pragma mark - Misc Icons
 
-+ (UIImage *)checkerPattern {
++ (FLEXResourceImage *)checkerPattern {
     return FLEXImage(FLEXCheckerPattern);
 }
 
-+ (UIColor *)checkerPatternColor {
-    return [UIColor colorWithPatternImage:FLEXResources.checkerPattern];
++ (FLEXResourceColor *)checkerPatternColor {
+    return [FLEXResourceColor colorWithPatternImage:FLEXResources.checkerPattern];
 }
 
-+ (UIImage *)hierarchyIndentPattern {
++ (FLEXResourceImage *)hierarchyIndentPattern {
     return FLEXImageTemplate(FLEXHierarchyIndentPattern);
 }
 
@@ -8853,9 +8879,20 @@ static const u_int8_t FLEXHierarchyIndentPattern3x[] = {
 
 #pragma mark - Helpers
 
-+ (UIImage *)imageWithBytesNoCopy:(void *)bytes length:(NSUInteger)length scale:(CGFloat)scale {
++ (FLEXResourceImage *)imageWithBytesNoCopy:(void *)bytes length:(NSUInteger)length scale:(CGFloat)scale {
     NSData *data = [NSData dataWithBytesNoCopy:bytes length:length freeWhenDone:NO];
+#if TARGET_OS_OSX
+    NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:data];
+    if (!rep) {
+        return nil;
+    }
+    rep.size = NSMakeSize(rep.pixelsWide / scale, rep.pixelsHigh / scale);
+    NSImage *image = [[NSImage alloc] initWithSize:rep.size];
+    [image addRepresentation:rep];
+    return image;
+#else
     return [UIImage imageWithData:data scale:scale];
+#endif
 }
 
 @end
